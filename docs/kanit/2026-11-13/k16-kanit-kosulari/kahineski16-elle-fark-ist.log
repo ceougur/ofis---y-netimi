@@ -1,0 +1,43 @@
+d41-c5-s136-s139-s145-s148.json: 21 elle beklenti değişti
+    değer                  adim:s7e:durum: "(yok)" → "ret"
+    değer                  adim:s8t:durum: "(yok)" → "ok"
+    değer                  adim:s9t:durum: "(yok)" → "ok"
+    değer                  k1:cari:S7:bakiye: "(yok)" → 100000
+    değer                  k1:cari:S7:gecikmis: "(yok)" → 10000
+    değer                  k1:cari:S8:bakiye: "(yok)" → 95000
+    değer                  k1:cari:S9:bakiye: "(yok)" → 110000
+    değer                  k1:hareket:s7x:kalan: "(yok)" → 100000
+    elleYok kalktı         adim:s7e:durum: "yok" → ""
+    elleYok kalktı         adim:s8t:durum: "yok" → ""
+    elleYok kalktı         adim:s9t:durum: "yok" → ""
+    elleYok kalktı         k1:cari:S7:bakiye: "yok" → ""
+    elleYok kalktı         k1:cari:S7:gecikmis: "yok" → ""
+    elleYok kalktı         k1:cari:S8:bakiye: "yok" → ""
+    elleYok kalktı         k1:cari:S9:bakiye: "yok" → ""
+    elleYok kalktı         k1:hareket:s7x:kalan: "yok" → ""
+    elleBelirsiz kalktı    ["cari R7 S130 görünümü tanımsız", "SK-30", "KULLANICIYA SORULMALI"]: "" → ""
+    elleBelirsiz kalktı    ["adım s7e", "S145", "SK-33"]: "" → ""
+    elleBelirsiz kalktı    ["adım s8t", "S145", "SK-34 (a)"]: "" → ""
+    elleBelirsiz kalktı    ["adım s9t", "S145", "SK-34 (b)"]: "" → ""
+    elleBelirsiz eklendi   ["cari R7 S130 görünümü tanımsız", "SK-30", "BİLİNEN SINIR (kullanıcı kararı S156 = C) S156"]: "" → ""
+d42-c5-s140-s151-satis-karti-iade.json: 15 elle beklenti değişti
+    değer                  k1:kart:KT7:odenen: "(yok)" → 0
+    değer                  k1:kart:KT7:taksit1:odenen: "(yok)" → 0
+    değer                  k1:kart:KT7:taksit2:odenen: "(yok)" → 0
+    değer                  k1:kart:KT7:taksit3:odenen: "(yok)" → 0
+    elleYok kalktı         k1:kart:KT7:odenen: "yok" → ""
+    elleYok kalktı         k1:kart:KT7:taksit1:odenen: "yok" → ""
+    elleYok kalktı         k1:kart:KT7:taksit2:odenen: "yok" → ""
+    elleYok kalktı         k1:kart:KT7:taksit3:odenen: "yok" → ""
+    elleBelirsiz kalktı    ["cari T4 tanımsız", "S140", "SK-31 (a)"]: "" → ""
+    elleBelirsiz kalktı    ["cari T5 tanımsız", "S140", "SK-31 (b)"]: "" → ""
+    elleBelirsiz kalktı    ["kart KT7", "SK-32"]: "" → ""
+    elleBelirsiz kalktı    ["cari T8 tanımsız", "S140", "SK-31 (c)"]: "" → ""
+    elleBelirsiz eklendi   ["cari T4 tanımsız", "S140", "SK-31 (a)", "BİLİNEN SINIR (kullanıcı kararı S157 = C) S157"]: "" → ""
+    elleBelirsiz eklendi   ["cari T5 tanımsız", "S140", "SK-31 (b)", "BİLİNEN SINIR (kullanıcı kararı S157 = C) S157"]: "" → ""
+    elleBelirsiz eklendi   ["cari T8 tanımsız", "S140", "SK-31 (c)", "BİLİNEN SINIR (kullanıcı kararı S157 = C) S157"]: "" → ""
+yeni elle senaryo: d44-c5-s155-s158.json
+# tests 97
+# pass 97
+# fail 0
+97/97 denetim geçti

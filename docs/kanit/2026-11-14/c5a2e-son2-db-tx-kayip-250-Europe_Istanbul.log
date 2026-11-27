@@ -1,0 +1,18 @@
+▶ store.run / store.tx — derinlik > 0 iken bağlantıda işlem yoksa yazım yok, açık hata (2.5.0 BS-6)
+  ✔ (k1) iç işlemde SQLite işlemi kendiliğinden geri alır, çağıran yakalayıp sürer → sonraki yazımlar ERR_TX_LOST, yarım yazım yok; Linux'ta gerçek G/Ç hatası (27.351357ms)
+  ✔ (k2) işlem kayboldu ama sonra yazım yok → en dış COMMIT asıl nedeni söyler ("cannot commit - no transaction is active" değil); iç düzeyde RELEASE de (5.058491ms)
+  ✔ (k3) işlem canlıyken seçici yakalama bugünkü gibi: iç işlem geri alınır, dış işlem yazmayı sürdürür ve kesinleşir; işlem dışı yazım etkilenmez (5.399871ms)
+✔ store.run / store.tx — derinlik > 0 iken bağlantıda işlem yoksa yazım yok, açık hata (2.5.0 BS-6) (38.611474ms)
+▶ store.exec / store.get / store.all — kayıptan sonra yazım yok, ilk hata okuma / exec hatasında da (2.5.0 BİRLEŞİK TUR 5)
+  ✔ (k4) kayıptan sonra exec INSERT / DROP TABLE / DROP TRIGGER / PRAGMA user_version ve get / all ile yazım (RETURNING, UPDATE, WITH) → ERR_TX_LOST, diskte değişiklik yok; okuma çalışır; Linux'ta gerçek G/Ç hatası (23.786246ms)
+  ✔ (k5) işlemi kendiliğinden geri aldıran hata bir OKUMA ya da exec ise ERR_TX_LOST iletisi onu "ilk hata" diye söyler; Linux'ta gerçek: işlem içindeki SELECT önbelleği taşırırken G/Ç hatası (83.526795ms)
+  ✔ (k6) meşru yollar yanlış ERR_TX_LOST almaz: iç işlemde yakalanan kısıt hatası, iç içe JS hatası, işlem içinde okunamayan tablo + exec DDL + PRAGMA, işlem içinde exec / get RETURNING yazımı, store.raw, işlem dışı exec / get yazımı (9.806243ms)
+✔ store.exec / store.get / store.all — kayıptan sonra yazım yok, ilk hata okuma / exec hatasında da (2.5.0 BİRLEŞİK TUR 5) (117.479752ms)
+ℹ tests 6
+ℹ suites 2
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 460.574026

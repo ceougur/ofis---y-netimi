@@ -63,7 +63,7 @@ export function registerBankRoutes(router, context) {
   const settingsView = () => {
     const values = service.settings.read();
     const sections = service.settings.sections().map(section => ({ ...section, items: section.items.map(item => (item.type === "fixed" ? item : { ...item, value: values[section.id]?.[item.key] })) }));
-    // chart: hesap eşlemelerinde kodun yanında hesap adı (770 Genel Giderler ve Alış Faturaları …).
+    // chart: hesap eşlemelerinde kodun yanında hesap adı (770 Genel Yönetim Giderleri …).
     return { values, defaults: service.settings.defaults(), sections, chart: CHART };
   };
 

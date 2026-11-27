@@ -1,0 +1,18 @@
+önce 598 · sonra 357 · kapanan 241 · yeni 0
+kapanan paket: {'Ç5-A': 228, 'Ç5-B tur 2': 6, 'eşleme': 7}
+kalan paket: {'Ç5-B tur 2': 357}
+değeri değişen: 0
+Ç5-A dışı kapanan kayıtlar (neden: sürücü eşlemesi — karşılıksızda cari adımı artık gönderiliyor):
+  eşleme | d11-c5-s66-carisiz-karsiliksiz | OKUMA HATASI: x1: karşılıksızda cari seçimi eşlemesi yok (KARSILIKSIZ_CARI — Ç5-A verir) — adım gönderilmedi | beklenen None | program okunamadı
+  eşleme | d11-c5-s66-carisiz-karsiliksiz | OKUMA HATASI: x4: karşılıksızda cari seçimi eşlemesi yok (KARSILIKSIZ_CARI — Ç5-A verir) — adım gönderilmedi | beklenen None | program okunamadı
+  eşleme | d11-c5-s66-carisiz-karsiliksiz | OKUMA HATASI: x5: karşılıksızda cari seçimi eşlemesi yok (KARSILIKSIZ_CARI — Ç5-A verir) — adım gönderilmedi | beklenen None | program okunamadı
+  Ç5-B tur 2 | d11-c5-s66-carisiz-karsiliksiz | k1:cari:A:gecikmis | beklenen 50000 | program 0
+  Ç5-B tur 2 | d11-c5-s66-carisiz-karsiliksiz | k1:cari:B:gecikmis | beklenen 90000 | program 40000
+  Ç5-B tur 2 | d11-c5-s66-carisiz-karsiliksiz | k1:cari:T:gecikmis | beklenen 25000 | program 0
+  eşleme | d14-c5-s91-vadesiz-kayit-gunu | OKUMA HATASI: x1: karşılıksızda cari seçimi eşlemesi yok (KARSILIKSIZ_CARI — Ç5-A verir) — adım gönderilmedi | beklenen None | program okunamadı
+  eşleme | d14-c5-s91-vadesiz-kayit-gunu | OKUMA HATASI: x2: karşılıksızda cari seçimi eşlemesi yok (KARSILIKSIZ_CARI — Ç5-A verir) — adım gönderilmedi | beklenen None | program okunamadı
+  Ç5-B tur 2 | d14-c5-s91-vadesiz-kayit-gunu | k1:cari:Q:gecikmis | beklenen 60000 | program 0
+  eşleme | d15-c5-s91-vadesiz-ertesi-gun | OKUMA HATASI: x1: karşılıksızda cari seçimi eşlemesi yok (KARSILIKSIZ_CARI — Ç5-A verir) — adım gönderilmedi | beklenen None | program okunamadı
+  eşleme | d15-c5-s91-vadesiz-ertesi-gun | OKUMA HATASI: x2: karşılıksızda cari seçimi eşlemesi yok (KARSILIKSIZ_CARI — Ç5-A verir) — adım gönderilmedi | beklenen None | program okunamadı
+  Ç5-B tur 2 | d15-c5-s91-vadesiz-ertesi-gun | k1:cari:Q2:gecikmis | beklenen 35000 | program 0
+  Ç5-B tur 2 | d15-c5-s91-vadesiz-ertesi-gun | k1:cari:Q:gecikmis | beklenen 60000 | program 0

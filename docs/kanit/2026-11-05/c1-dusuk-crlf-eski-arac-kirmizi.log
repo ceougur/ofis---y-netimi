@@ -1,0 +1,12 @@
+taban: 8 geçti / 0 kaldı (çıkış 0)
+file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c1-dusuk-af73/kopya-eski-test/test/hesap-plani-sinif-250-mutasyon.mjs:51
+  if (adet !== 1) throw new Error(`mutasyon ${no} kurulamadı: eski metin ${adet} kez geçiyor (${F})`);
+                        ^
+
+Error: mutasyon 7 kurulamadı: eski metin 0 kez geçiyor (server/lib/general-ledger.mjs)
+    at file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c1-dusuk-af73/kopya-eski-test/test/hesap-plani-sinif-250-mutasyon.mjs:51:25
+    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+
+Node.js v22.23.4

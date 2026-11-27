@@ -1,0 +1,11 @@
+Kanıt: Ç5-B kapanış düzeltme turu (docs/kanit/2026-11-12/c5bkd)
+
+Kanıt aracı kayıtları (madde başına testler iki saat diliminde; komşu 183 dosya 2.310 / 2.310 × 2;
+kâhin ↔ program 14.844 / 14.914 × 2 — 70'i "yapım aşaması kapandı", başka fark 0; 45 ekran
+senaryosu 45 / 45), hız kabul ölçümü (Ç5-B öncesi / bugün / bu dal) ve ılık döngü profili, mutabakat
+motorunun mutant kanıtları ve 1.500 işlemlik koşuları, dar kontrol betiklerinin taban ↔ dal
+karşılaştırması (öbür fark 0), tam mutasyon (163 / 163), ayrı S99 bulgusunun dökümleri, betikler.
+İçindekiler: OKU-BENI.txt.
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01EhegDvmPQ9hx2ibfitm6og

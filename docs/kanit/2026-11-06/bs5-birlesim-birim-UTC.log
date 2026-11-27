@@ -1,0 +1,220 @@
+TAP version 13
+# Subtest: kılavuz ad denetimi (bütün bölümler)
+    # Subtest: bütün bölümleri tarar (bölüm verilmezse)
+    ok 1 - bütün bölümleri tarar (bölüm verilmezse)
+      ---
+      duration_ms: 10.062925
+      type: 'test'
+      ...
+    # Subtest: ekrandaki ad 'ekranda'; ekranda olmayan ama kaynakta birebir geçen ad 7./8. dışında 'kaynakta'
+    ok 2 - ekrandaki ad 'ekranda'; ekranda olmayan ama kaynakta birebir geçen ad 7./8. dışında 'kaynakta'
+      ---
+      duration_ms: 0.234955
+      type: 'test'
+      ...
+    # Subtest: 7. ve 8. bölümde ekran zorunlu: kaynakta olsa da ekranda yoksa EKSİK
+    ok 3 - 7. ve 8. bölümde ekran zorunlu: kaynakta olsa da ekranda yoksa EKSİK
+      ---
+      duration_ms: 0.124264
+      type: 'test'
+      ...
+    # Subtest: eski / yorumdaki / hiç olmayan ad EKSİK (yorumlar ayıklanır, Inno Setup ';' yorumu dahil)
+    ok 4 - eski / yorumdaki / hiç olmayan ad EKSİK (yorumlar ayıklanır, Inno Setup ';' yorumu dahil)
+      ---
+      duration_ms: 0.11993
+      type: 'test'
+      ...
+    # Subtest: accept="image/*" yorum başlangıcı sayılmaz (arkasındaki kod silinmez); adresteki :// yorum değildir
+    ok 5 - accept="image/*" yorum başlangıcı sayılmaz (arkasındaki kod silinmez); adresteki :// yorum değildir
+      ---
+      duration_ms: 0.126767
+      type: 'test'
+      ...
+    # Subtest: yer tutuculu ad, büyük harfli başlık ve etiketle bölünmüş ad bulunur
+    ok 6 - yer tutuculu ad, büyük harfli başlık ve etiketle bölünmüş ad bulunur
+      ---
+      duration_ms: 0.108781
+      type: 'test'
+      ...
+    # Subtest: madde başı vurgusu ve program dışı ekran adı denetim dışında (ayrı listede)
+    ok 7 - madde başı vurgusu ve program dışı ekran adı denetim dışında (ayrı listede)
+      ---
+      duration_ms: 0.088848
+      type: 'test'
+      ...
+    1..7
+ok 1 - kılavuz ad denetimi (bütün bölümler)
+  ---
+  duration_ms: 12.17234
+  type: 'suite'
+  ...
+# Subtest: Kılavuz PDF sürümü (client/kilavuz)
+    # Subtest: PDF metni okunur (boş değil, bilinen başlık var)
+    ok 1 - PDF metni okunur (boş değil, bilinen başlık var)
+      ---
+      duration_ms: 486.983738
+      type: 'test'
+      ...
+    # Subtest: PDF kapağı ve dip notu = HTML sürümü = program sürümü
+    ok 2 - PDF kapağı ve dip notu = HTML sürümü = program sürümü
+      ---
+      duration_ms: 8.451339
+      type: 'test'
+      ...
+    1..2
+ok 2 - Kılavuz PDF sürümü (client/kilavuz)
+  ---
+  duration_ms: 504.634827
+  type: 'suite'
+  ...
+# Subtest: Kullanım kılavuzu sürümü
+    # Subtest: kapakta “Sürüm <program sürümü>” yazar
+    ok 1 - kapakta “Sürüm <program sürümü>” yazar
+      ---
+      duration_ms: 18.816224
+      type: 'test'
+      ...
+    # Subtest: dip notta “DestekOfis <program sürümü> · Kısa Kullanım Kılavuzu” yazar
+    ok 2 - dip notta “DestekOfis <program sürümü> · Kısa Kullanım Kılavuzu” yazar
+      ---
+      duration_ms: 0.352486
+      type: 'test'
+      ...
+    1..2
+ok 3 - Kullanım kılavuzu sürümü
+  ---
+  duration_ms: 20.122108
+  type: 'suite'
+  ...
+# Subtest: gerçek programı ayrı süreçte açan her test ve araç (test/ + tools/) lisans servisini yerel ölü adrese yönlendirir
+ok 4 - gerçek programı ayrı süreçte açan her test ve araç (test/ + tools/) lisans servisini yerel ölü adrese yönlendirir
+  ---
+  duration_ms: 17.574308
+  type: 'test'
+  ...
+# Subtest: aynı süreçte gerçek programı açan her createApp çağrısı (test/ + tools/) lisans servisine deneme atamaz
+ok 5 - aynı süreçte gerçek programı açan her createApp çağrısı (test/ + tools/) lisans servisine deneme atamaz
+  ---
+  duration_ms: 137.418268
+  type: 'test'
+  ...
+# Subtest: gerçek kurulum paketini kuran/servisi başlatan her iş akışı işi lisans servisini önce engeller, nöbetçiyle kanıtlar
+ok 6 - gerçek kurulum paketini kuran/servisi başlatan her iş akışı işi lisans servisini önce engeller, nöbetçiyle kanıtlar
+  ---
+  duration_ms: 2.294367
+  type: 'test'
+  ...
+# Subtest: iş akışlarında lisans servisi adresi gerçek servise çevrilmez
+ok 7 - iş akışlarında lisans servisi adresi gerçek servise çevrilmez
+  ---
+  duration_ms: 0.647699
+  type: 'test'
+  ...
+# Subtest: lisans servisi adresi yalnız yerel ölü adres ya da yerel sahte servistir
+ok 8 - lisans servisi adresi yalnız yerel ölü adres ya da yerel sahte servistir
+  ---
+  duration_ms: 1.162546
+  type: 'test'
+  ...
+# Subtest: platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta yok
+    # Subtest: taranan dosya var
+    ok 1 - taranan dosya var
+      ---
+      duration_ms: 1.831992
+      type: 'test'
+      ...
+    # Subtest: import(path.join/resolve(…)) yerine import(pathToFileURL(…).href)
+    ok 2 - import(path.join/resolve(…)) yerine import(pathToFileURL(…).href)
+      ---
+      duration_ms: 194.345087
+      type: 'test'
+      ...
+    # Subtest: new URL(…, import.meta.url).pathname yerine fileURLToPath(…)
+    ok 3 - new URL(…, import.meta.url).pathname yerine fileURLToPath(…)
+      ---
+      duration_ms: 252.196881
+      type: 'test'
+      ...
+    # Subtest: signal === "SIGKILL" iddiası Windows kolu olmadan (process.platform === "win32")
+    ok 4 - signal === "SIGKILL" iddiası Windows kolu olmadan (process.platform === "win32")
+      ---
+      duration_ms: 303.860802
+      type: 'test'
+      ...
+    # Subtest: path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join("/"))
+    ok 5 - path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join("/"))
+      ---
+      duration_ms: 349.746785
+      type: 'test'
+      ...
+    1..5
+ok 9 - platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta yok
+  ---
+  duration_ms: 1103.355769
+  type: 'suite'
+  ...
+# Subtest: platform taşınabilirliği: depodaki dosya adları Windows'ta açılır
+    # Subtest: dosya adlarında < > : " | ? * yok, ad boşluk ya da noktayla bitmiyor
+    ok 1 - dosya adlarında < > : " | ? * yok, ad boşluk ya da noktayla bitmiyor
+      ---
+      duration_ms: 72.49163
+      type: 'test'
+      ...
+    1..1
+ok 10 - platform taşınabilirliği: depodaki dosya adları Windows'ta açılır
+  ---
+  duration_ms: 72.645804
+  type: 'suite'
+  ...
+# Subtest: yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+    # Subtest: arayüz dosyalarında kurala uymayan ad yok
+    ok 1 - arayüz dosyalarında kurala uymayan ad yok
+      ---
+      duration_ms: 115.569224
+      type: 'test'
+      ...
+    # Subtest: hareket türü adları ve programın varsayılan adları kurala uyuyor
+    ok 2 - hareket türü adları ve programın varsayılan adları kurala uyuyor
+      ---
+      duration_ms: 5.882606
+      type: 'test'
+      ...
+    # Subtest: derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+    ok 3 - derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+      ---
+      duration_ms: 2.458987
+      type: 'test'
+      ...
+    # Subtest: Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+    ok 4 - Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+      ---
+      duration_ms: 4.965402
+      type: 'test'
+      ...
+    # Subtest: mobil görünümde (client/mobil) kurala uymayan ad yok
+    ok 5 - mobil görünümde (client/mobil) kurala uymayan ad yok
+      ---
+      duration_ms: 3.599684
+      type: 'test'
+      ...
+    # Subtest: rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+    ok 6 - rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+      ---
+      duration_ms: 53.711372
+      type: 'test'
+      ...
+    1..6
+ok 11 - yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+  ---
+  duration_ms: 187.43233
+  type: 'suite'
+  ...
+1..11
+# tests 28
+# suites 6
+# pass 28
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3427.898216

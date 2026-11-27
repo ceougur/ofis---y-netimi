@@ -1,0 +1,108 @@
+TAP version 13
+# Subtest: BS-7 şema sürüm kapısı
+    # Subtest: göç: yeni şemalı dosyada hiçbir göç adımı koşmaz (ensureBankSchema dahil), dosya aynen kalır
+    ok 1 - göç: yeni şemalı dosyada hiçbir göç adımı koşmaz (ensureBankSchema dahil), dosya aynen kalır
+      ---
+      duration_ms: 444.992554
+      type: 'test'
+      ...
+    # Subtest: 002 yeni şemalı, 001 normal: 002 yalnız görüntülenir, 001 çalışır; 002 dosyası bayt bayt aynı mantıksal içerikte kalır
+    ok 2 - 002 yeni şemalı, 001 normal: 002 yalnız görüntülenir, 001 çalışır; 002 dosyası bayt bayt aynı mantıksal içerikte kalır
+      ---
+      duration_ms: 3636.777625
+      type: 'test'
+      ...
+    # Subtest: 001 yeni şemalı, 002 normal: giriş ve okuma çalışır, 001'e veri yazılmaz; 002'ye geçilip çalışılır
+    ok 3 - 001 yeni şemalı, 002 normal: giriş ve okuma çalışır, 001'e veri yazılmaz; 002'ye geçilip çalışılır
+      ---
+      duration_ms: 2635.59015
+      type: 'test'
+      ...
+    # Subtest: geri yükleme + kapı: yeni şemalı 002 eski yedeğine döner (kapı kalkar); 001 eski yedeği yeniden açılışta uygulanır; daha yeni yedek reddedilir
+    ok 4 - geri yükleme + kapı: yeni şemalı 002 eski yedeğine döner (kapı kalkar); 001 eski yedeği yeniden açılışta uygulanır; daha yeni yedek reddedilir
+      ---
+      duration_ms: 2504.391083
+      type: 'test'
+      ...
+    1..4
+ok 1 - BS-7 şema sürüm kapısı
+  ---
+  duration_ms: 9224.633098
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 WE — Elle Bağla webhook bilgileri: program gösterir, kurulum başına, gizli
+    # Subtest: WE-1 yönetici: Callback URL = ofisin adresi + /wa/kanca/<43>, Verify token 43 karakter; yeniden sorulunca ve öbür şirkette AYNI (kurulum başına); WABA'nın bildirim adresinden farklı
+    ok 1 - WE-1 yönetici: Callback URL = ofisin adresi + /wa/kanca/<43>, Verify token 43 karakter; yeniden sorulunca ve öbür şirkette AYNI (kurulum başına); WABA'nın bildirim adresinden farklı
+      ---
+      duration_ms: 1431.291896
+      type: 'test'
+      ...
+    # Subtest: WE-2 Meta doğrulaması: GET doğru belirteç → 200 challenge, yanlış / eksik → 403; POST 200 ama İŞLENMEZ (iş Meta Kabul Etti kalır, defterde teslim ve bildirim yolu işareti yok); WABA adresi aynen çalışır
+    ok 2 - WE-2 Meta doğrulaması: GET doğru belirteç → 200 challenge, yanlış / eksik → 403; POST 200 ama İŞLENMEZ (iş Meta Kabul Etti kalır, defterde teslim ve bildirim yolu işareti yok); WABA adresi aynen çalışır
+      ---
+      duration_ms: 1184.656735
+      type: 'test'
+      ...
+    # Subtest: WE-3 yetkisiz kullanıcı (Personel) göremez (403); belirteç ve gizli yol yöneticinin öbür yanıtlarında da yok (bağlantı, gönderim durumu, onay, sayaç, işlem geçmişi)
+    ok 3 - WE-3 yetkisiz kullanıcı (Personel) göremez (403); belirteç ve gizli yol yöneticinin öbür yanıtlarında da yok (bağlantı, gönderim durumu, onay, sayaç, işlem geçmişi)
+      ---
+      duration_ms: 1575.412305
+      type: 'test'
+      ...
+    # Subtest: WE-4 sızıntı yok: günlük, veri klasöründeki BÜTÜN dosyalar (şirket dosyası, makine defteri, WAL) ve yedek belirteci / gizli yolu AÇIK hâlde taşımaz; ayar yazılamazsa 503 + Türkçe ileti (değer yok)
+    ok 4 - WE-4 sızıntı yok: günlük, veri klasöründeki BÜTÜN dosyalar (şirket dosyası, makine defteri, WAL) ve yedek belirteci / gizli yolu AÇIK hâlde taşımaz; ayar yazılamazsa 503 + Türkçe ileti (değer yok)
+      ---
+      duration_ms: 1152.9004
+      type: 'test'
+      ...
+    # Subtest: WE-5 kalıcılık: program yeniden açılınca ve Şirket Verisini Sıfırla'dan sonra AYNI değerler; secret.key değişince (veri başka bilgisayarda) yeni değerler, eski yol kapanır
+    ok 5 - WE-5 kalıcılık: program yeniden açılınca ve Şirket Verisini Sıfırla'dan sonra AYNI değerler; secret.key değişince (veri başka bilgisayarda) yeni değerler, eski yol kapanır
+      ---
+      duration_ms: 1128.495056
+      type: 'test'
+      ...
+    # Subtest: WE-6 ofisin uzaktan adresi hazır değil: ready false, adres boş, neden Türkçe cümle; belirteç yine gösterilir (aynı)
+    ok 6 - WE-6 ofisin uzaktan adresi hazır değil: ready false, adres boş, neden Türkçe cümle; belirteç yine gösterilir (aynı)
+      ---
+      duration_ms: 943.047897
+      type: 'test'
+      ...
+    # Subtest: WE-7 001 yeni şemalı, çift YOK: 001'den ve 002'den sorulunca 200 + ready false + Türkçe neden, değer boş; 001'e webhook ayarı yazılmaz; kapı kalkınca çift üretilir (çıkmaz yok)
+    ok 7 - WE-7 001 yeni şemalı, çift YOK: 001'den ve 002'den sorulunca 200 + ready false + Türkçe neden, değer boş; 001'e webhook ayarı yazılmaz; kapı kalkınca çift üretilir (çıkmaz yok)
+      ---
+      duration_ms: 1719.59634
+      type: 'test'
+      ...
+    # Subtest: WE-8 001 yeni şemalı, çift VAR: aynı değerler gösterilir (001 ve 002), Meta doğrulaması geçer, ayar satırı aynen; secret.key değişince yeni çift ÜRETİLMEZ (ready false + neden, satır aynen)
+    ok 8 - WE-8 001 yeni şemalı, çift VAR: aynı değerler gösterilir (001 ve 002), Meta doğrulaması geçer, ayar satırı aynen; secret.key değişince yeni çift ÜRETİLMEZ (ready false + neden, satır aynen)
+      ---
+      duration_ms: 1623.203098
+      type: 'test'
+      ...
+    # Subtest: WE-9 001 yedekten geri yüklenir (yedek çift gösterilmeden ÖNCE alınmış): çift AYNI, Meta'ya girilmiş eski çiftle doğrulama 200
+    ok 9 - WE-9 001 yedekten geri yüklenir (yedek çift gösterilmeden ÖNCE alınmış): çift AYNI, Meta'ya girilmiş eski çiftle doğrulama 200
+      ---
+      duration_ms: 1506.766212
+      type: 'test'
+      ...
+    # Subtest: WE-9 001 yedekten geri yüklenir (yedek çift gösterilmeden SONRA alınmış): çift AYNI, Meta'ya girilmiş eski çiftle doğrulama 200
+    ok 10 - WE-9 001 yedekten geri yüklenir (yedek çift gösterilmeden SONRA alınmış): çift AYNI, Meta'ya girilmiş eski çiftle doğrulama 200
+      ---
+      duration_ms: 1444.136215
+      type: 'test'
+      ...
+    1..10
+ok 2 - 2.5.0 WE — Elle Bağla webhook bilgileri: program gösterir, kurulum başına, gizli
+  ---
+  duration_ms: 13712.234505
+  type: 'suite'
+  ...
+1..2
+# tests 14
+# suites 2
+# pass 14
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 24092.976145

@@ -1,0 +1,32 @@
+{
+  "ad": "c3t4y-t16y-yeni-utc",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/donmus-defter-tur4-250.test.mjs test/whatsapp-t-durum-karar-tablosu-248.test.mjs",
+  "commit": "4b41bca7ab4a8266b3c649f8edfa56707725a590",
+  "dal": "watur2-birlesim",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T16:14:07.369Z",
+  "sure_sn": 266.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 107,
+    "gecen": 107,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../birlesik3-kanit/2026-11-06/c3t4y-t16y-yeni-utc.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-birlesim-ag",
+  "ham_cikti_sha256": "ed602c2edc537a5955b3f221a138d22a25febbeed5b953d1cb505576678f11d9",
+  "ham_cikti_bayt": 42983
+}

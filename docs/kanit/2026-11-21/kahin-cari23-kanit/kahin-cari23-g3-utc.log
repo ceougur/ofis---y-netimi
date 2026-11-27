@@ -1,0 +1,94 @@
+ÜRETİCİ: 20/20 aynı dizi (tur s1 + ux18, tohum 1–10 × 120 işlem)
+ADIMLAR: eski kopyadaki 105 elle senaryonun 0'inin adımları değişti: yok · izinli: yok · yeni elle senaryo: d52-c5-s229-s230-gosterilen-acik
+EŞDEĞERLİK (2.4.9 / 2.4.6 / 2.4.5 / --legacy; eski kopyanın 105 elle + yeni kopyanın yeni 1 elle + 20 rastgele senaryo × 4 kip): 504/504 bayt bayt aynı
+G3 (kural 2.5.0; 126 senaryo — eski kopyanın 105 elle senaryosu + yeni elle + 20 rastgele): eski 51068 denetim · yeni 77122 denetim · değişen / kalkan / yeni toplam 26054 · BEKLENMEYEN 0 · yalnız etiketi değişen 0
+  GÖSTERİM-YENİ  yeni     25985
+      örn. b1-5b-borc k0:fatura:FD:gosterilen: "(denetim yok)" → 40000
+      örn. b1-5b-borc k0:fatura:FD:kartta: "(denetim yok)" → 0
+      örn. b1-5b-borc k0:fatura:FD:liste:gosterilen: "(denetim yok)" → 40000
+      örn. b1-5b-borc k0:fatura:FD:liste:taksitte: "(denetim yok)" → false
+  S200           yeni        51
+      örn. d35-c5-s120-elle-borclar k1:cari:H8:acikEsitBakiye: "(denetim yok)" → true
+      örn. d35-c5-s120-elle-borclar k1:cari:H8:acikToplam: "(denetim yok)" → 90000
+      örn. d35-c5-s120-elle-borclar k1:cari:H8:gecikmis: "(denetim yok)" → 65000
+      örn. d35-c5-s120-elle-borclar k1:fatura:H8F:acik: "(denetim yok)" → 60000
+  S200-E0        yeni        17
+      örn. d52-c5-s229-s230-gosterilen-acik k1:cari:P6:acikEsitBakiye: "(denetim yok)" → true
+      örn. d52-c5-s229-s230-gosterilen-acik k1:cari:P6:acikToplam: "(denetim yok)" → 3000000
+      örn. d52-c5-s229-s230-gosterilen-acik k1:cari:P6:gecikmis: "(denetim yok)" → 0
+      örn. d52-c5-s229-s230-gosterilen-acik k1:fatura:FP6:acik: "(denetim yok)" → 3000000
+  S200-SK18      yeni         1
+      örn. d52-c5-s229-s230-gosterilen-acik adim:kp6b:durum: "(denetim yok)" → "ok"
+G3 senaryo senaryo (sınıf/tür: adet; listede olmayan senaryoda fark 0):
+  b1-5b-borc                               GÖSTERİM-YENİ/yeni 20
+  b2-ux18-karsiliksiz                      GÖSTERİM-YENİ/yeni 105
+  b2-ux18-retler                           GÖSTERİM-YENİ/yeni 45
+  b2-ux18-sira                             GÖSTERİM-YENİ/yeni 100
+  b2-ux18-temel                            GÖSTERİM-YENİ/yeni 215
+  c11-ks81-sa-mevcut-borc-karti            GÖSTERİM-YENİ/yeni 15
+  c12-ks81-sb-kalan-dagilimi               GÖSTERİM-YENİ/yeni 50
+  c13-ks83-ayni-gun-sira                   GÖSTERİM-YENİ/yeni 35
+  c14a-c1-hareket-turleri                  GÖSTERİM-YENİ/yeni 15
+  c4-uyari-kapisi                          GÖSTERİM-YENİ/yeni 10
+  c6-cari-vade-fifo                        GÖSTERİM-YENİ/yeni 120
+  c7-ks7-bagsiz-kapaticilar                GÖSTERİM-YENİ/yeni 60
+  c7b-supheli-kalan                        GÖSTERİM-YENİ/yeni 10
+  c8-ks8-iade-geri-odemesi                 GÖSTERİM-YENİ/yeni 350
+  c8b-ks8-bagli-iade-odemesi               GÖSTERİM-YENİ/yeni 40
+  d11-c5-s66-carisiz-karsiliksiz           GÖSTERİM-YENİ/yeni 10
+  d16-c5-s92-net-gorunum                   GÖSTERİM-YENİ/yeni 25
+  d17-c5-s93-verilen-avans                 GÖSTERİM-YENİ/yeni 25
+  d18-c5-s93-avans-ertesi-gun              GÖSTERİM-YENİ/yeni 25
+  d19-c5-s92-okuma-ayrisan                 GÖSTERİM-YENİ/yeni 10
+  d20-c5-s95-netlesme-sonrasi-odeme        GÖSTERİM-YENİ/yeni 10
+  d21-c5-s95-ertesi-ay                     GÖSTERİM-YENİ/yeni 10
+  d22-c5-s96-avans-kalemi                  GÖSTERİM-YENİ/yeni 15
+  d23-c5-s96-avans-ertesi-gun              GÖSTERİM-YENİ/yeni 15
+  d25-c5-s98-avans-sirasi                  GÖSTERİM-YENİ/yeni 5
+  d26-c5-bakim5-susan                      GÖSTERİM-YENİ/yeni 15
+  d27-c5-s99-taksitli-avans                GÖSTERİM-YENİ/yeni 10
+  d28-c5-s99-taksit-vade-gunu              GÖSTERİM-YENİ/yeni 5
+  d29-c5-s99-taksit-ertesi-gun             GÖSTERİM-YENİ/yeni 5
+  d33-c5-s102-s105-sinirlar                GÖSTERİM-YENİ/yeni 40
+  d34-c5-s110-kendi-borcu                  GÖSTERİM-YENİ/yeni 55
+  d35-c5-s120-elle-borclar                 GÖSTERİM-YENİ/yeni 80 · S200/yeni 15
+  d36-c5-s122-kart-odemesi                 GÖSTERİM-YENİ/yeni 65
+  d37-c5-s126-faturali-kart                GÖSTERİM-YENİ/yeni 86
+  d38-c5-s128-ozge-kalemli-kart            GÖSTERİM-YENİ/yeni 10
+  d39-c5-s130-supheli-kalemleri            GÖSTERİM-YENİ/yeni 50
+  d40-c5-s130-sus-bilinen-sinir            GÖSTERİM-YENİ/yeni 20
+  d41-c5-s136-s139-s145-s148               GÖSTERİM-YENİ/yeni 15
+  d44-c5-s155-s158                         GÖSTERİM-YENİ/yeni 5
+  d45-c5-s159-s154-s162-s163               GÖSTERİM-YENİ/yeni 5
+  d47-c5-s168-s181-bagli-tahsilat          GÖSTERİM-YENİ/yeni 61
+  d49-c5-s15-s25-iptal-ve-fazla            GÖSTERİM-YENİ/yeni 50
+  d5-c5-s2-vade-sirasi                     GÖSTERİM-YENİ/yeni 10
+  d50-c5-s206-s25c-b1-iptal-havale         GÖSTERİM-YENİ/yeni 45
+  d51-c5-s210-s211-kart-kapanir            GÖSTERİM-YENİ/yeni 5
+  d52-c5-s229-s230-gosterilen-acik         GÖSTERİM-YENİ/yeni 53 · S200/yeni 36 · S200-E0/yeni 17 · S200-SK18/yeni 1
+  d6-c5-aninda                             GÖSTERİM-YENİ/yeni 20
+  d9-c5-s68-borc-tarafi-vade               GÖSTERİM-YENİ/yeni 30
+  rastgele-s1-1                            GÖSTERİM-YENİ/yeni 1015
+  rastgele-s1-10                           GÖSTERİM-YENİ/yeni 760
+  rastgele-s1-2                            GÖSTERİM-YENİ/yeni 770
+  rastgele-s1-3                            GÖSTERİM-YENİ/yeni 885
+  rastgele-s1-4                            GÖSTERİM-YENİ/yeni 640
+  rastgele-s1-5                            GÖSTERİM-YENİ/yeni 745
+  rastgele-s1-6                            GÖSTERİM-YENİ/yeni 600
+  rastgele-s1-7                            GÖSTERİM-YENİ/yeni 1105
+  rastgele-s1-8                            GÖSTERİM-YENİ/yeni 720
+  rastgele-s1-9                            GÖSTERİM-YENİ/yeni 830
+  rastgele-ux18-1                          GÖSTERİM-YENİ/yeni 1565
+  rastgele-ux18-10                         GÖSTERİM-YENİ/yeni 1600
+  rastgele-ux18-2                          GÖSTERİM-YENİ/yeni 1785
+  rastgele-ux18-3                          GÖSTERİM-YENİ/yeni 1395
+  rastgele-ux18-4                          GÖSTERİM-YENİ/yeni 1255
+  rastgele-ux18-5                          GÖSTERİM-YENİ/yeni 1850
+  rastgele-ux18-6                          GÖSTERİM-YENİ/yeni 1470
+  rastgele-ux18-7                          GÖSTERİM-YENİ/yeni 1630
+  rastgele-ux18-8                          GÖSTERİM-YENİ/yeni 1550
+  rastgele-ux18-9                          GÖSTERİM-YENİ/yeni 1735
+# tests 630
+# pass 630
+# fail 0
+630/630 denetim geçti

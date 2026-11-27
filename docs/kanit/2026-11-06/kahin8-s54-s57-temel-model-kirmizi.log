@@ -1,0 +1,237 @@
+.............F..............................................................................................FFFF.....F..........................F....F.................
+======================================================================
+FAIL: test_senaryo_ve_beklenen_dosyalari_guncel (__main__.Dosyalar.test_senaryo_ve_beklenen_dosyalari_guncel)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/model.py", line 2643, in _o_duzenle
+    self._kasa_acilis_oncesi(d, dg.get("tarih", k.tarih), lambda dd: self._duzelt(dd.kaynaklar[k.id], dg))
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/model.py", line 2568, in _kasa_acilis_oncesi
+    raise Red("KASA_ACILIS_ONCE", f"Kasa hareketi {min(once)} < Kasa açılışı {a0}")
+model.Red: KASA_ACILIS_ONCE: Kasa hareketi 2026-01-10 < Kasa açılışı 2026-01-15
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/test_model.py", line 944, in test_senaryo_ve_beklenen_dosyalari_guncel
+    self.assertEqual(UB.main(denetle=True), 0, "python3 test/bagimsiz/muhasebe/uret_beklenen.py ile yeniden yazın")
+                     ~~~~~~~^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/uret_beklenen.py", line 54, in main
+    for yol, icerik in ((os.path.join(SEN, s["ad"] + ".json"), metin(s)), (os.path.join(BEK, s["ad"] + ".json"), metin(beklenen(s)))):
+                                                                                                                       ~~~~~~~~^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/uret_beklenen.py", line 41, in beklenen
+    r = M.kos(s, M.Kurallar.etiketten(et))
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/model.py", line 3761, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/model.py", line 2511, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/model.py", line 2537, in uygula
+    return getattr(self, "_o_" + tur)(o, d)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/model.py", line 2654, in _o_duzenle
+    dg = self._s44_kapsam(d, k, dg)
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/model.py", line 2691, in _s44_kapsam
+    raise AssertionError("senaryo hatası: bağlı kaydın bağı ve carisi AYNI düzeltmede değişti — 'önce bağı kaldırın' ayrı adım mı, kâhin susar "
+                         "(README bakım 7 V7, KULLANICIYA SORULMALI 1)")
+AssertionError: senaryo hatası: bağlı kaydın bağı ve carisi AYNI düzeltmede değişti — 'önce bağı kaldırın' ayrı adım mı, kâhin susar (README bakım 7 V7, KULLANICIYA SORULMALI 1)
+
+======================================================================
+FAIL: test_s94_s54_ayni_duzeltmede_bag_cari (__main__.ElleSenaryolar.test_s94_s54_ayni_duzeltmede_bag_cari)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/model.py", line 2643, in _o_duzenle
+    self._kasa_acilis_oncesi(d, dg.get("tarih", k.tarih), lambda dd: self._duzelt(dd.kaynaklar[k.id], dg))
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/model.py", line 2568, in _kasa_acilis_oncesi
+    raise Red("KASA_ACILIS_ONCE", f"Kasa hareketi {min(once)} < Kasa açılışı {a0}")
+model.Red: KASA_ACILIS_ONCE: Kasa hareketi 2026-01-10 < Kasa açılışı 2026-01-15
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/test_model.py", line 704, in test
+    r = M.kos(x, M.Kurallar.etiketten(et))
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/model.py", line 3761, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/model.py", line 2511, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/model.py", line 2537, in uygula
+    return getattr(self, "_o_" + tur)(o, d)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/model.py", line 2654, in _o_duzenle
+    dg = self._s44_kapsam(d, k, dg)
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/model.py", line 2691, in _s44_kapsam
+    raise AssertionError("senaryo hatası: bağlı kaydın bağı ve carisi AYNI düzeltmede değişti — 'önce bağı kaldırın' ayrı adım mı, kâhin susar "
+                         "(README bakım 7 V7, KULLANICIYA SORULMALI 1)")
+AssertionError: senaryo hatası: bağlı kaydın bağı ve carisi AYNI düzeltmede değişti — 'önce bağı kaldırın' ayrı adım mı, kâhin susar (README bakım 7 V7, KULLANICIYA SORULMALI 1)
+
+======================================================================
+FAIL: test_s95_s55_bag_hedefi_sonra (__main__.ElleSenaryolar.test_s95_s55_bag_hedefi_sonra)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/model.py", line 2643, in _o_duzenle
+    self._kasa_acilis_oncesi(d, dg.get("tarih", k.tarih), lambda dd: self._duzelt(dd.kaynaklar[k.id], dg))
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/model.py", line 2568, in _kasa_acilis_oncesi
+    raise Red("KASA_ACILIS_ONCE", f"Kasa hareketi {min(once)} < Kasa açılışı {a0}")
+model.Red: KASA_ACILIS_ONCE: Kasa hareketi 2026-01-10 < Kasa açılışı 2026-01-15
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/test_model.py", line 704, in test
+    r = M.kos(x, M.Kurallar.etiketten(et))
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/model.py", line 3761, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/model.py", line 2511, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/model.py", line 2537, in uygula
+    return getattr(self, "_o_" + tur)(o, d)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/model.py", line 2654, in _o_duzenle
+    dg = self._s44_kapsam(d, k, dg)
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/model.py", line 2706, in _s44_kapsam
+    raise AssertionError(f"senaryo hatası: bağ hedefi {v['fatura']} ({f.tarih}) kayıttan ({k.tarih}) SONRA tarihli — bağın hangi gün uygulanacağı karar "
+                         "metninde yok; kâhin susar (README bakım 7 V3 (c), KULLANICIYA SORULMALI 2)")
+AssertionError: senaryo hatası: bağ hedefi F2 (2026-01-20) kayıttan (2026-01-10) SONRA tarihli — bağın hangi gün uygulanacağı karar metninde yok; kâhin susar (README bakım 7 V3 (c), KULLANICIYA SORULMALI 2)
+
+======================================================================
+FAIL: test_s96_s56_s44_normal_cari_siniri (__main__.ElleSenaryolar.test_s96_s56_s44_normal_cari_siniri)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/model.py", line 2643, in _o_duzenle
+    self._kasa_acilis_oncesi(d, dg.get("tarih", k.tarih), lambda dd: self._duzelt(dd.kaynaklar[k.id], dg))
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/model.py", line 2568, in _kasa_acilis_oncesi
+    raise Red("KASA_ACILIS_ONCE", f"Kasa hareketi {min(once)} < Kasa açılışı {a0}")
+model.Red: KASA_ACILIS_ONCE: Kasa hareketi 2026-01-10 < Kasa açılışı 2026-01-15
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/test_model.py", line 704, in test
+    r = M.kos(x, M.Kurallar.etiketten(et))
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/model.py", line 3761, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/model.py", line 2511, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/model.py", line 2537, in uygula
+    return getattr(self, "_o_" + tur)(o, d)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/model.py", line 2654, in _o_duzenle
+    dg = self._s44_kapsam(d, k, dg)
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/model.py", line 2716, in _s44_kapsam
+    self._s44_sinir(d, k, v)
+    ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/model.py", line 2734, in _s44_sinir
+    raise AssertionError(f"senaryo hatası: düzeltmeyle 120'ye yazılacak {normal} > kaydın günündeki 120 bakiyesi — şüpheli-normal aşım sınırının düzeltmeye "
+                         "uygulanıp uygulanmadığı karar metninde yok; kâhin susar (README bakım 7 V3 (d), KULLANICIYA SORULMALI 3)")
+AssertionError: senaryo hatası: düzeltmeyle 120'ye yazılacak 3000 > kaydın günündeki 120 bakiyesi — şüpheli-normal aşım sınırının düzeltmeye uygulanıp uygulanmadığı karar metninde yok; kâhin susar (README bakım 7 V3 (d), KULLANICIYA SORULMALI 3)
+
+======================================================================
+FAIL: test_s97_s57_olagan_bagli_kayit_cari (__main__.ElleSenaryolar.test_s97_s57_olagan_bagli_kayit_cari)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/test_model.py", line 707, in test
+    self.assertEqual(gercek, bek, f"{s['ad']} [{et}] {yol}")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [] != ['BAG_KALDIRILMALI', 'BAG_KALDIRILMALI', 'BAG_KALDIRILMALI', 'BAG_KALDIRILMALI']
+
+Second list contains 4 additional elements.
+First extra element 0:
+'BAG_KALDIRILMALI'
+
+- []
++ ['BAG_KALDIRILMALI', 'BAG_KALDIRILMALI', 'BAG_KALDIRILMALI', 'BAG_KALDIRILMALI'] : s97-s57-olagan-bagli-kayit-cari [A] redler
+
+======================================================================
+FAIL: test_EK2_4_1_ayni_gun_yazim_sirasi_sonucu_degistirmez (__main__.OlayMaddeleri.test_EK2_4_1_ayni_gun_yazim_sirasi_sonucu_degistirmez)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/model.py", line 2643, in _o_duzenle
+    self._kasa_acilis_oncesi(d, dg.get("tarih", k.tarih), lambda dd: self._duzelt(dd.kaynaklar[k.id], dg))
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/model.py", line 2568, in _kasa_acilis_oncesi
+    raise Red("KASA_ACILIS_ONCE", f"Kasa hareketi {min(once)} < Kasa açılışı {a0}")
+model.Red: KASA_ACILIS_ONCE: Kasa hareketi 2026-01-10 < Kasa açılışı 2026-01-15
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/test_model.py", line 612, in test_EK2_4_1_ayni_gun_yazim_sirasi_sonucu_degistirmez
+    self.assertEqual(ozet(x), ozet(y), s["ad"])
+                     ~~~~^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/test_model.py", line 592, in ozet
+    m.kos()
+    ~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/model.py", line 2511, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/model.py", line 2537, in uygula
+    return getattr(self, "_o_" + tur)(o, d)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/model.py", line 2654, in _o_duzenle
+    dg = self._s44_kapsam(d, k, dg)
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/model.py", line 2691, in _s44_kapsam
+    raise AssertionError("senaryo hatası: bağlı kaydın bağı ve carisi AYNI düzeltmede değişti — 'önce bağı kaldırın' ayrı adım mı, kâhin susar "
+                         "(README bakım 7 V7, KULLANICIYA SORULMALI 1)")
+AssertionError: senaryo hatası: bağlı kaydın bağı ve carisi AYNI düzeltmede değişti — 'önce bağı kaldırın' ayrı adım mı, kâhin susar (README bakım 7 V7, KULLANICIYA SORULMALI 1)
+
+======================================================================
+FAIL: test_S40_S44_S45_kapsam_ve_susma (__main__.OlayMaddeleri.test_S40_S44_S45_kapsam_ve_susma)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/model.py", line 2643, in _o_duzenle
+    self._kasa_acilis_oncesi(d, dg.get("tarih", k.tarih), lambda dd: self._duzelt(dd.kaynaklar[k.id], dg))
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/model.py", line 2568, in _kasa_acilis_oncesi
+    raise Red("KASA_ACILIS_ONCE", f"Kasa hareketi {min(once)} < Kasa açılışı {a0}")
+model.Red: KASA_ACILIS_ONCE: Kasa hareketi 2026-01-26 < Kasa açılışı 2026-02-01
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/test_model.py", line 466, in test_S40_S44_S45_kapsam_ve_susma
+    r = M.kos(senaryo(bas + [o("duzenle", kaynak="PB", degisiklik=dg), E.MZ("mz", "2026-01-01", "2026-02-28"),
+                             E.R("ak", "acik_kalemler", cari="C3", tarih="2026-03-01")]))
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/model.py", line 3761, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/model.py", line 2511, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/model.py", line 2537, in uygula
+    return getattr(self, "_o_" + tur)(o, d)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/model.py", line 2654, in _o_duzenle
+    dg = self._s44_kapsam(d, k, dg)
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/model.py", line 2691, in _s44_kapsam
+    raise AssertionError("senaryo hatası: bağlı kaydın bağı ve carisi AYNI düzeltmede değişti — 'önce bağı kaldırın' ayrı adım mı, kâhin susar "
+                         "(README bakım 7 V7, KULLANICIYA SORULMALI 1)")
+AssertionError: senaryo hatası: bağlı kaydın bağı ve carisi AYNI düzeltmede değişti — 'önce bağı kaldırın' ayrı adım mı, kâhin susar (README bakım 7 V7, KULLANICIYA SORULMALI 1)
+
+======================================================================
+FAIL: test_S57_olagan_kayit_susma (__main__.OlayMaddeleri.test_S57_olagan_kayit_susma)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-temel/test/bagimsiz/muhasebe/test_model.py", line 507, in test_S57_olagan_kayit_susma
+    with self.assertRaises(AssertionError, msg=f"{kaynak} {dg}"):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: AssertionError not raised : PB {'cari': 'C3', 'fatura': 'F3'}
+
+----------------------------------------------------------------------
+Ran 167 tests in 14.072s
+
+FAILED (failures=8)
+# tests 167
+# pass 159
+# fail 8
+# skipped 0

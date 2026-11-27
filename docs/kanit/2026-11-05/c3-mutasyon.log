@@ -1,0 +1,22 @@
+taban: 19 geçti / 0 kaldı (çıkış 0)
+ok 1 - kilitli dönemde güncel türetmeye düşme (karma okuma donmuş defteri okumaz): çıkış 1, 9 geçti / 3 kaldı
+not ok 2 - donmuş satır kaybı (iş parçacığı son parçadan bir satır düşürür): çıkış 0, 12 geçti / 0 kaldı — beklenen neden görülmedi (/uç dondurma bittikten sonra yanıt verir/)
+
+ok 3 - donmuş satır kaybı (okuma kapsam gününü atlar): çıkış 1, 4 geçti / 8 kaldı
+ok 4 - kilit günü donmaz (aralık kilit gününü dışlar): çıkış 1, 5 geçti / 7 kaldı
+ok 5 - kilit ile donma ayrışması (kanca önceki kilidi dondurur): çıkış 1, 5 geçti / 7 kaldı
+ok 6 - geri çekmede iz yok: çıkış 1, 11 geçti / 1 kaldı
+ok 7 - fark denetimi susuyor: çıkış 1, 11 geçti / 1 kaldı
+ok 8 - göçte 2.5.0 kuralı kullanılıyor: çıkış 1, 6 geçti / 1 kaldı
+ok 9 - UPDATE tetikleyicisi yok (satır): çıkış 1, 10 geçti / 2 kaldı
+ok 10 - DELETE tetikleyicisi yok (satır): çıkış 1, 11 geçti / 1 kaldı
+ok 11 - Şirket Verisini Sıfırla donmuş defteri silmez: çıkış 1, 17 geçti / 2 kaldı
+ok 12 - eski sürüm kilidinin açılış onarımı yok: çıkış 1, 6 geçti / 1 kaldı
+ok 13 - postAll lockThrough dondurmaz (kanca çağrılmaz): çıkış 1, 11 geçti / 1 kaldı
+ok 14 - kaynak izi denetimi yok: çıkış 1, 11 geçti / 1 kaldı
+ok 15 - bayat satırlar temizlenmez: çıkış 1, 11 geçti / 1 kaldı
+ok 16 - 2.4.9 kopyası değişti (649 yerine 642): çıkış 1, 15 geçti / 4 kaldı
+
+# tests 16
+# pass 15
+# fail 1

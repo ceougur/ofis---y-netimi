@@ -1,0 +1,158 @@
+{
+  "ad": "c5bson-eski2b1-yenitest-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/tyk-tur2b2-250.test.mjs test/tyk-250.test.mjs test/tyk-onbellek-250.test.mjs test/tyk-tur2b1-250.test.mjs test/tyk-kilit-taksitli-250.test.mjs test/tyk-fark-v249-250.test.mjs test/bulgu-223.test.mjs test/cari-vade-245.test.mjs test/iade-geri-odeme-246.test.mjs test/plans.test.mjs test/ux18-cek-fatura-244.test.mjs test/whatsapp-onizleme-olcek-248.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-12T09:29:13.766Z",
+  "sure_sn": 61.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 238,
+    "gecen": 198,
+    "basarisiz": 40,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 40 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.0.23 Bulgu 2: taksit kartı ↔ fatura kapama › E: taksitli fatura + cari kartından bağsız tahsilat — fatura açığı = kendi kartının kalanı",
+      "konum": "test/bulgu-223.test.mjs:191:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.0.23 gözden geçirme: kapamanın kalan yolları › \\#6: eski veride taksitli faturaya bağlı cari tahsilatı düzeltilebilir (bağ değişmeden)",
+      "konum": "test/bulgu-223.test.mjs:398:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.5 madde 6: cari borç vadesi (Vade Tarihi, Beklenen Ödeme Tarihi, Kalan, takvim kalemi) › karar (5): müşterideki elle Alacak müşterinin borcuyla kendi tarihinde netleşir; sonradan gelen bağsız ödeme netleşmeyi geri alır (S95)",
+      "konum": "test/cari-vade-245.test.mjs:205:3",
+      "hata": "netleşme geri alındı: Borç 1.000 (S95) · 700 !== 1000 (beklenen 1000, gelen 700)"
+    },
+    {
+      "ad": "DB1 API: cari kartından iade geri ödemesi iadeye bağlanır (Geri Ödenen İade) › açık bağ bağsızdan önce gelir (elle Alacak varken): bağsız Ödeme önce Alacak'ı kapatır (B 200); iadeye bağlanınca iadeyi geri öder (B 500, Alacak açık), takvim de; verilen çekte aynı (K-e)",
+      "konum": "test/iade-geri-odeme-246.test.mjs:517:3",
+      "hata": "takvim: borç 200 + B 300 (S95: ödeme Alacak'ı kapattı, netleşme geri alındı) · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "taksit modülü API (v2.0.4) › kart açılır (taksit sorulmadan), sonra otomatik dağıtılır; tahsilat kalanı düşürür ve Kasa'ya iner",
+      "konum": "test/plans.test.mjs:145:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + 'active' (beklenen overdue, gelen active)"
+    },
+    {
+      "ad": "taksit modülü API (v2.0.4) › gecikmiş taksit tahsilat takvimine ve bildirimlere düşer; kart kapatılınca düşmez",
+      "konum": "test/plans.test.mjs:198:3",
+      "hata": "The input did not match the regular expression /taksit/. Input: · 'Taksitlendirilmemiş Kalan' (beklenen , gelen Taksitlendirilmemiş Kalan)"
+    },
+    {
+      "ad": "taksit modülü API (v2.0.4) › ekstre ve makbuz PDF üretilir",
+      "konum": "test/plans.test.mjs:210:3",
+      "hata": "Cannot read properties of undefined (reading 'id')"
+    },
+    {
+      "ad": "taksit modülü API (v2.0.4) › hareket silinip geri yüklenir; kart silinip geri yüklenir; Kasa yeniden hesaplanır",
+      "konum": "test/plans.test.mjs:238:3",
+      "hata": "Cannot read properties of undefined (reading 'id')"
+    },
+    {
+      "ad": "TYK — taksit kartları (S50, M1a, M1e, K8-3) › M1a / S50: taksitli faturanın kendi kartının taksitleri de tek kuyrukta — bağsız tahsilat vadesi gelmiş taksiti kapatır",
+      "konum": "test/tyk-250.test.mjs:235:3",
+      "hata": "S99: taksitli faturanın açığı = kartının KUYRUK kalanı · 1200 !== 600 (beklenen 600, gelen 1200)"
+    },
+    {
+      "ad": "TYK — taksit kartları (S50, M1a, M1e, K8-3) › karar (3) × v2.0.24: kilitten önceki bağsız avans varken kilitten sonraki kart tahsilatı taksitli faturayı KAPATIR (fatura durumu); net görünümde karar (3) aynen",
+      "konum": "test/tyk-250.test.mjs:251:3",
+      "hata": "S99: kart tahsilatından önce avans taksitleri kapattı — fatura Ödendi · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "TYK tur 2a — değişmez: kalemler toplamı = cari bakiyesi (kartlı, tohumlu rastgele) › tohum 11: 200 cari × 22 olay — Σ kalem = bakiye (S99 / S101 / S110 / S120 içeride); karşı yönsüz caride fatura açığı = net kuyruk",
+      "konum": "test/tyk-250.test.mjs:524:5",
+      "hata": "tohum 11 cari 1: Σ kalem 2972 ≠ bakiye 2600 · 297200 !== 260000 (beklenen 260000, gelen 297200)"
+    },
+    {
+      "ad": "TYK tur 2a — değişmez: kalemler toplamı = cari bakiyesi (kartlı, tohumlu rastgele) › tohum 12: 200 cari × 22 olay — Σ kalem = bakiye (S99 / S101 / S110 / S120 içeride); karşı yönsüz caride fatura açığı = net kuyruk",
+      "konum": "test/tyk-250.test.mjs:524:5",
+      "hata": "tohum 12 cari 0: Σ kalem -870 ≠ bakiye -1280 · + actual - expected · + -87000 (beklenen -128000, gelen -87000)"
+    },
+    {
+      "ad": "TYK tur 2a — değişmez: kalemler toplamı = cari bakiyesi (kartlı, tohumlu rastgele) › tohum 13: 200 cari × 22 olay — Σ kalem = bakiye (S99 / S101 / S110 / S120 içeride); karşı yönsüz caride fatura açığı = net kuyruk",
+      "konum": "test/tyk-250.test.mjs:524:5",
+      "hata": "tohum 13 cari 0: Σ kalem 480 ≠ bakiye -110 · 48000 !== -11000 (beklenen -11000, gelen 48000)"
+    },
+    {
+      "ad": "2.5.0 Ç5-B — v2.4.9 GERÇEK verisinde sınıf sınıf fark testi (her fark karar numarasıyla) › fikstür bugünkü kodla: bütün farklar beklenen-farklar.json'da, değerleri aynı; listede kapanmış fark yok",
+      "konum": "test/tyk-fark-v249-250.test.mjs:23:3",
+      "hata": "beklenen-farklar.json'da YAZILI OLMAYAN fark (karar numarasıyla açıklanmadı): · TYKF I Aynı Gün İki Kart · gecikmis: 500 → 1000 · TYKF I Aynı Gün İki Kart · kart1.durum: \"overdue\" → \"done\" (beklenen 0, gelen 21)"
+    },
+    {
+      "ad": "2.5.0 Ç5-B — kilit × taksitli fatura: kart tahsilatı faturayı kapatır (v2.0.24 değişmezi, karar (3)) › avans 1.000 → taksitli fatura 169,03 → kilit faturadan sonraya → kart tahsilatı 169,03: fatura Ödendi (açık 0 = kartın kalanı), kapatan kart tahsilatı (Bağlı)",
+      "konum": "test/tyk-kilit-taksitli-250.test.mjs:34:3",
+      "hata": "S99: kart tahsilatından önce avans taksitleri kapattı — fatura Ödendi · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 Ç5-B tur 2b-1 — G-2: taksitsiz / eksik taksitli kart 'Bitti' olmaz (v2.4.9) › her kart türü × taksitsiz × (ödeme yok / kart tahsilatı / cari tahsilatı): durum ve Taksitler sekmesi v2.4.9 ile aynı",
+      "konum": "test/tyk-tur2b1-250.test.mjs:112:3",
+      "hata": "Ayrı · taksitsiz · ödeme yok · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç5-B tur 2b-2 — S95 / S97 / S102 / S103 (karşı yönlü kalemler, sonradan gelen bağsız ödeme) › S95 = A: satış 10.000 (vade 31.03) · alış 6.000 (10.03) · biz alışı 6.000 bağlamadan öderiz (12.03) ⇒ alış Ödendi, satış 10.000 vade 31.03, 31.03'e kadar gecikmiş 0",
+      "konum": "test/tyk-tur2b2-250.test.mjs:39:3",
+      "hata": "net görünüm: satış 10.000 (netleşme geri alındı) · 4000 !== 10000 (beklenen 10000, gelen 4000)"
+    },
+    {
+      "ad": "Ç5-B tur 2b-2 — S95 / S97 / S102 / S103 (karşı yönlü kalemler, sonradan gelen bağsız ödeme) › S97 = A: aynı gün Borç 1.000 + Alacak 300 + tahsilat 1.000 ⇒ Alacak 0 + müşterinin 300 avansı; ERTESİ gün tahsilat ⇒ Alacak 300 açık (S95; D 10.11 18:25 (1))",
+      "konum": "test/tyk-tur2b2-250.test.mjs:51:3",
+      "hata": "ertesi gün: Alacak 300 açık ('Ödenecek Borç'), avans yok · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç5-B tur 2b-2 — S95 / S97 / S102 / S103 (karşı yönlü kalemler, sonradan gelen bağsız ödeme) › S102 = A: 01.06 Borç 1.000 · 02.06 Alacak X 300 · 03.06 Alacak Y 300 + aynı gün tahsilat 1.000 ⇒ X 300 açık, Y 0, müşterinin avansı 300",
+      "konum": "test/tyk-tur2b2-250.test.mjs:60:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç5-B tur 2b-2 — S95 / S97 / S102 / S103 (karşı yönlü kalemler, sonradan gelen bağsız ödeme) › S102 iki önceki gün: en YENİ önceki gün netleşmesi önce geri alınır (01.06 B 1.000 · 02.06 X 300 · 03.06 Y 300 · 04.06 tahsilat 700 ⇒ Y 300 açık, X 0)",
+      "konum": "test/tyk-tur2b2-250.test.mjs:66:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç5-B tur 2b-2 — S98 / S104 / S105 (avans da kalemdir; sıra) › S105 = A: tedarikçi — 01.03 Ödeme 300 · 05.03 faturasız Alış İadesi 200 · 10.03 alış 250 ⇒ iade alacağı 0, avans 250",
+      "konum": "test/tyk-tur2b2-250.test.mjs:91:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç5-B tur 2b-2 — S99 (fatura durumu tek kuyruktan) › S99 = A: avans 500 → taksitli fatura B 300 (kendi kartı) → taksitsiz fatura A 500 ⇒ B Ödendi, A 300 açık; Σ fatura açığı = cari bakiyesi 300; kart taksitleri kapalı",
+      "konum": "test/tyk-tur2b2-250.test.mjs:102:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç5-B tur 2b-2 — S99 (fatura durumu tek kuyruktan) › S98 × S99: müşteriye Ödeme 200 (01.03) · satış 100 (05.03) · tahsilat 150 (10.03) ⇒ tahsilat önce avansı kapatır: fatura 100 açık (Vadesi Geçti), avans 50 — Vade Takip ile aynı",
+      "konum": "test/tyk-tur2b2-250.test.mjs:115:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç5-B tur 2b-2 — S99 (fatura durumu tek kuyruktan) › S98 × S99 (ters yön): müşterinin avansı 500 (01.03) · müşteriye geri Ödeme 300 (05.03) · satış 500 (10.03) ⇒ fatura 300 açık (avansın 200'ü kaldı); ödeme müşterinin avansını kapatır",
+      "konum": "test/tyk-tur2b2-250.test.mjs:122:3",
+      "hata": "fatura durumu = net görünüm · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç5-B tur 2b-2 — S99 (fatura durumu tek kuyruktan) › S98 × S99 (taksitli, kâhin d27 P3): verilen avans 200 (01.05) · taksitli satış 600 (2 × 300, 01.06 / 01.07) · tahsilat 300 (10.05) ⇒ fatura 500 açık, 1. taksit 200",
+      "konum": "test/tyk-tur2b2-250.test.mjs:129:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../c5bson-kanit/2026-11-12/c5bson-eski2b1-yenitest-UTC.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bson-eski2b1",
+  "ham_cikti_sha256": "bfe65a83dc44d5ae1bf8403332c8af0ca5a5599b7ee4b3d71c41b5ec32a6c8d6",
+  "ham_cikti_bayt": 145631
+}

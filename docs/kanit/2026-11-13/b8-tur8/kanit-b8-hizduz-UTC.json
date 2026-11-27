@@ -1,0 +1,32 @@
+{
+  "ad": "b8-hizduz-UTC",
+  "komut": "node --test --test-concurrency=2 test/tyk-birlesik8-ekranlar-250.test.mjs test/kasa-acilis-silinenler-ozet-b8-250.test.mjs test/kasa-acilis-kimlik-b7-250.test.mjs",
+  "commit": "f9c9aa7ccfece27e43b2450394e3e840bc947368",
+  "dal": "worktree-agent-a2ba3cc62b2d80923",
+  "kirli": 3,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v445 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-13T13:42:42.553Z",
+  "sure_sn": 19.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 52,
+    "gecen": 52,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8-kanit/2026-11-13/b8-hizduz-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a2ba3cc62b2d80923",
+  "ham_cikti_sha256": "604cf1c8d0a6f2969e0313e5a2be013bceaa5ea43c290ce77814385ec26e620a",
+  "ham_cikti_bayt": 24273
+}

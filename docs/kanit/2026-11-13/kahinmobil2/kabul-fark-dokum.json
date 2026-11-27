@@ -1,0 +1,629 @@
+{
+ "aciklamasi_degisen": [
+  "E05-es-taksit-masaustu",
+  "E05-es-taksit-mobil",
+  "E41-es-odenmis-kart-avans-masaustu",
+  "E41-es-odenmis-kart-avans-mobil"
+ ],
+ "adimi_degisen": [
+  "E05-es-taksit-masaustu",
+  "E05-es-taksit-mobil",
+  "E41-es-odenmis-kart-avans-masaustu",
+  "E41-es-odenmis-kart-avans-mobil"
+ ],
+ "beklenmeyen": [],
+ "degisen": [
+  {
+   "anahtar": "k2:001:kart:KT1:kalan",
+   "eski": [
+    0,
+    -10000
+   ],
+   "secim": "{}",
+   "senaryo": "E05-es-taksit-masaustu",
+   "sinif": "S154 B — avanslı kartın Kalan listesi 0'a indi (kararın 'Kalan 0')",
+   "yeni": 0
+  },
+  {
+   "anahtar": "k2:001:kart:KT1:odenen",
+   "eski": [
+    120000,
+    130000
+   ],
+   "secim": "{}",
+   "senaryo": "E05-es-taksit-masaustu",
+   "sinif": "S154 B — SM-1 listesi okuma (b)'ye (karttan alınan paranın tamamı) indi",
+   "yeni": 130000
+  },
+  {
+   "anahtar": "k2:001:kart:KT1:kalan",
+   "eski": [
+    0,
+    -10000
+   ],
+   "secim": "{\"onay\": \"sorar\", \"taksit\": \"kart_secilir\"}",
+   "senaryo": "E05-es-taksit-mobil",
+   "sinif": "S154 B — avanslı kartın Kalan listesi 0'a indi (kararın 'Kalan 0')",
+   "yeni": 0
+  },
+  {
+   "anahtar": "k2:001:kart:KT1:odenen",
+   "eski": [
+    120000,
+    130000
+   ],
+   "secim": "{\"onay\": \"sorar\", \"taksit\": \"kart_secilir\"}",
+   "senaryo": "E05-es-taksit-mobil",
+   "sinif": "S154 B — SM-1 listesi okuma (b)'ye (karttan alınan paranın tamamı) indi",
+   "yeni": 130000
+  },
+  {
+   "anahtar": "k1:001:kart:KT:kalan",
+   "eski": [
+    0,
+    -50000
+   ],
+   "secim": "{}",
+   "senaryo": "E41-es-odenmis-kart-avans-masaustu",
+   "sinif": "S154 B — avanslı kartın Kalan listesi 0'a indi (kararın 'Kalan 0')",
+   "yeni": 0
+  },
+  {
+   "anahtar": "k1:001:kart:KT:odenen",
+   "eski": [
+    100000,
+    150000
+   ],
+   "secim": "{}",
+   "senaryo": "E41-es-odenmis-kart-avans-masaustu",
+   "sinif": "S154 B — SM-1 listesi okuma (b)'ye (karttan alınan paranın tamamı) indi",
+   "yeni": 150000
+  },
+  {
+   "anahtar": "k1:001:kart:KT:kalan",
+   "eski": [
+    0,
+    -50000
+   ],
+   "secim": "{\"onay\": \"sorar\", \"taksit\": \"kart_secilir\"}",
+   "senaryo": "E41-es-odenmis-kart-avans-mobil",
+   "sinif": "S154 B — avanslı kartın Kalan listesi 0'a indi (kararın 'Kalan 0')",
+   "yeni": 0
+  },
+  {
+   "anahtar": "k1:001:kart:KT:odenen",
+   "eski": [
+    100000,
+    150000
+   ],
+   "secim": "{\"onay\": \"sorar\", \"taksit\": \"kart_secilir\"}",
+   "senaryo": "E41-es-odenmis-kart-avans-mobil",
+   "sinif": "S154 B — SM-1 listesi okuma (b)'ye (karttan alınan paranın tamamı) indi",
+   "yeni": 150000
+  },
+  {
+   "anahtar": "k1729:001:kart:KT1_2:kalan",
+   "eski": [
+    0,
+    -60543
+   ],
+   "secim": "{\"eksi_stok\": \"sorar\", \"gec_yeniden\": \"telefon_24s\", \"kapatilacak\": \"yalniz_fifo\", \"onay\": \"sorar\", \"stok_yonu\": \"yalniz_giris\", \"taksit\": \"kart_secilir\", \"tarih\": \"sunucu_gunu\", \"yollar\": \"nakit_havale_pos\"}",
+   "senaryo": "R1-rastgele-tohum1",
+   "sinif": "S154 B — avanslı kartın Kalan listesi 0'a indi (kararın 'Kalan 0')",
+   "yeni": 0
+  },
+  {
+   "anahtar": "k1729:001:kart:KT1_2:odenen",
+   "eski": [
+    120000,
+    180543
+   ],
+   "secim": "{\"eksi_stok\": \"sorar\", \"gec_yeniden\": \"telefon_24s\", \"kapatilacak\": \"yalniz_fifo\", \"onay\": \"sorar\", \"stok_yonu\": \"yalniz_giris\", \"taksit\": \"kart_secilir\", \"tarih\": \"sunucu_gunu\", \"yollar\": \"nakit_havale_pos\"}",
+   "senaryo": "R1-rastgele-tohum1",
+   "sinif": "S154 B — SM-1 listesi okuma (b)'ye (karttan alınan paranın tamamı) indi",
+   "yeni": 180543
+  },
+  {
+   "anahtar": "k1729:002:kart:KT2_3:kalan",
+   "eski": [
+    0,
+    -5332
+   ],
+   "secim": "{\"eksi_stok\": \"sorar\", \"gec_yeniden\": \"telefon_24s\", \"kapatilacak\": \"yalniz_fifo\", \"onay\": \"sorar\", \"stok_yonu\": \"yalniz_giris\", \"taksit\": \"kart_secilir\", \"tarih\": \"sunucu_gunu\", \"yollar\": \"nakit_havale_pos\"}",
+   "senaryo": "R1-rastgele-tohum1",
+   "sinif": "S154 B — avanslı kartın Kalan listesi 0'a indi (kararın 'Kalan 0')",
+   "yeni": 0
+  },
+  {
+   "anahtar": "k1729:002:kart:KT2_3:odenen",
+   "eski": [
+    240000,
+    245332
+   ],
+   "secim": "{\"eksi_stok\": \"sorar\", \"gec_yeniden\": \"telefon_24s\", \"kapatilacak\": \"yalniz_fifo\", \"onay\": \"sorar\", \"stok_yonu\": \"yalniz_giris\", \"taksit\": \"kart_secilir\", \"tarih\": \"sunucu_gunu\", \"yollar\": \"nakit_havale_pos\"}",
+   "senaryo": "R1-rastgele-tohum1",
+   "sinif": "S154 B — SM-1 listesi okuma (b)'ye (karttan alınan paranın tamamı) indi",
+   "yeni": 245332
+  },
+  {
+   "anahtar": "k2570:001:kart:KT1_1:kalan",
+   "eski": [
+    0,
+    -51051
+   ],
+   "secim": "{\"eksi_stok\": \"sorar\", \"gec_yeniden\": \"telefon_24s\", \"kapatilacak\": \"yalniz_fifo\", \"onay\": \"sorar\", \"stok_yonu\": \"yalniz_giris\", \"taksit\": \"kart_secilir\", \"tarih\": \"sunucu_gunu\", \"yollar\": \"nakit_havale_pos\"}",
+   "senaryo": "R1-rastgele-tohum1",
+   "sinif": "S154 B — avanslı kartın Kalan listesi 0'a indi (kararın 'Kalan 0')",
+   "yeni": 0
+  },
+  {
+   "anahtar": "k2570:001:kart:KT1_1:odenen",
+   "eski": [
+    120000,
+    171051
+   ],
+   "secim": "{\"eksi_stok\": \"sorar\", \"gec_yeniden\": \"telefon_24s\", \"kapatilacak\": \"yalniz_fifo\", \"onay\": \"sorar\", \"stok_yonu\": \"yalniz_giris\", \"taksit\": \"kart_secilir\", \"tarih\": \"sunucu_gunu\", \"yollar\": \"nakit_havale_pos\"}",
+   "senaryo": "R1-rastgele-tohum1",
+   "sinif": "S154 B — SM-1 listesi okuma (b)'ye (karttan alınan paranın tamamı) indi",
+   "yeni": 171051
+  },
+  {
+   "anahtar": "k2570:001:kart:KT1_2:kalan",
+   "eski": [
+    0,
+    -104943
+   ],
+   "secim": "{\"eksi_stok\": \"sorar\", \"gec_yeniden\": \"telefon_24s\", \"kapatilacak\": \"yalniz_fifo\", \"onay\": \"sorar\", \"stok_yonu\": \"yalniz_giris\", \"taksit\": \"kart_secilir\", \"tarih\": \"sunucu_gunu\", \"yollar\": \"nakit_havale_pos\"}",
+   "senaryo": "R1-rastgele-tohum1",
+   "sinif": "S154 B — avanslı kartın Kalan listesi 0'a indi (kararın 'Kalan 0')",
+   "yeni": 0
+  },
+  {
+   "anahtar": "k2570:001:kart:KT1_2:odenen",
+   "eski": [
+    120000,
+    224943
+   ],
+   "secim": "{\"eksi_stok\": \"sorar\", \"gec_yeniden\": \"telefon_24s\", \"kapatilacak\": \"yalniz_fifo\", \"onay\": \"sorar\", \"stok_yonu\": \"yalniz_giris\", \"taksit\": \"kart_secilir\", \"tarih\": \"sunucu_gunu\", \"yollar\": \"nakit_havale_pos\"}",
+   "senaryo": "R1-rastgele-tohum1",
+   "sinif": "S154 B — SM-1 listesi okuma (b)'ye (karttan alınan paranın tamamı) indi",
+   "yeni": 224943
+  },
+  {
+   "anahtar": "k2570:001:kart:KT1_3:kalan",
+   "eski": [
+    0,
+    -16731
+   ],
+   "secim": "{\"eksi_stok\": \"sorar\", \"gec_yeniden\": \"telefon_24s\", \"kapatilacak\": \"yalniz_fifo\", \"onay\": \"sorar\", \"stok_yonu\": \"yalniz_giris\", \"taksit\": \"kart_secilir\", \"tarih\": \"sunucu_gunu\", \"yollar\": \"nakit_havale_pos\"}",
+   "senaryo": "R1-rastgele-tohum1",
+   "sinif": "S154 B — avanslı kartın Kalan listesi 0'a indi (kararın 'Kalan 0')",
+   "yeni": 0
+  },
+  {
+   "anahtar": "k2570:001:kart:KT1_3:odenen",
+   "eski": [
+    400000,
+    416731
+   ],
+   "secim": "{\"eksi_stok\": \"sorar\", \"gec_yeniden\": \"telefon_24s\", \"kapatilacak\": \"yalniz_fifo\", \"onay\": \"sorar\", \"stok_yonu\": \"yalniz_giris\", \"taksit\": \"kart_secilir\", \"tarih\": \"sunucu_gunu\", \"yollar\": \"nakit_havale_pos\"}",
+   "senaryo": "R1-rastgele-tohum1",
+   "sinif": "S154 B — SM-1 listesi okuma (b)'ye (karttan alınan paranın tamamı) indi",
+   "yeni": 416731
+  },
+  {
+   "anahtar": "k2570:002:kart:KT2_3:kalan",
+   "eski": [
+    0,
+    -5332
+   ],
+   "secim": "{\"eksi_stok\": \"sorar\", \"gec_yeniden\": \"telefon_24s\", \"kapatilacak\": \"yalniz_fifo\", \"onay\": \"sorar\", \"stok_yonu\": \"yalniz_giris\", \"taksit\": \"kart_secilir\", \"tarih\": \"sunucu_gunu\", \"yollar\": \"nakit_havale_pos\"}",
+   "senaryo": "R1-rastgele-tohum1",
+   "sinif": "S154 B — avanslı kartın Kalan listesi 0'a indi (kararın 'Kalan 0')",
+   "yeni": 0
+  },
+  {
+   "anahtar": "k2570:002:kart:KT2_3:odenen",
+   "eski": [
+    240000,
+    245332
+   ],
+   "secim": "{\"eksi_stok\": \"sorar\", \"gec_yeniden\": \"telefon_24s\", \"kapatilacak\": \"yalniz_fifo\", \"onay\": \"sorar\", \"stok_yonu\": \"yalniz_giris\", \"taksit\": \"kart_secilir\", \"tarih\": \"sunucu_gunu\", \"yollar\": \"nakit_havale_pos\"}",
+   "senaryo": "R1-rastgele-tohum1",
+   "sinif": "S154 B — SM-1 listesi okuma (b)'ye (karttan alınan paranın tamamı) indi",
+   "yeni": 245332
+  },
+  {
+   "anahtar": "k1715:001:kart:KT1_1:kalan",
+   "eski": [
+    0,
+    -19291
+   ],
+   "secim": "{\"eksi_stok\": \"sorar\", \"gec_yeniden\": \"telefon_24s\", \"kapatilacak\": \"yalniz_fifo\", \"onay\": \"sorar\", \"stok_yonu\": \"yalniz_giris\", \"taksit\": \"kart_secilir\", \"tarih\": \"sunucu_gunu\", \"yollar\": \"nakit_havale_pos\"}",
+   "senaryo": "R2-rastgele-tohum2",
+   "sinif": "S154 B — avanslı kartın Kalan listesi 0'a indi (kararın 'Kalan 0')",
+   "yeni": 0
+  },
+  {
+   "anahtar": "k1715:001:kart:KT1_1:odenen",
+   "eski": [
+    400000,
+    419291
+   ],
+   "secim": "{\"eksi_stok\": \"sorar\", \"gec_yeniden\": \"telefon_24s\", \"kapatilacak\": \"yalniz_fifo\", \"onay\": \"sorar\", \"stok_yonu\": \"yalniz_giris\", \"taksit\": \"kart_secilir\", \"tarih\": \"sunucu_gunu\", \"yollar\": \"nakit_havale_pos\"}",
+   "senaryo": "R2-rastgele-tohum2",
+   "sinif": "S154 B — SM-1 listesi okuma (b)'ye (karttan alınan paranın tamamı) indi",
+   "yeni": 419291
+  },
+  {
+   "anahtar": "k1715:002:kart:KT2_1:kalan",
+   "eski": [
+    0,
+    -28799
+   ],
+   "secim": "{\"eksi_stok\": \"sorar\", \"gec_yeniden\": \"telefon_24s\", \"kapatilacak\": \"yalniz_fifo\", \"onay\": \"sorar\", \"stok_yonu\": \"yalniz_giris\", \"taksit\": \"kart_secilir\", \"tarih\": \"sunucu_gunu\", \"yollar\": \"nakit_havale_pos\"}",
+   "senaryo": "R2-rastgele-tohum2",
+   "sinif": "S154 B — avanslı kartın Kalan listesi 0'a indi (kararın 'Kalan 0')",
+   "yeni": 0
+  },
+  {
+   "anahtar": "k1715:002:kart:KT2_1:odenen",
+   "eski": [
+    120000,
+    148799
+   ],
+   "secim": "{\"eksi_stok\": \"sorar\", \"gec_yeniden\": \"telefon_24s\", \"kapatilacak\": \"yalniz_fifo\", \"onay\": \"sorar\", \"stok_yonu\": \"yalniz_giris\", \"taksit\": \"kart_secilir\", \"tarih\": \"sunucu_gunu\", \"yollar\": \"nakit_havale_pos\"}",
+   "senaryo": "R2-rastgele-tohum2",
+   "sinif": "S154 B — SM-1 listesi okuma (b)'ye (karttan alınan paranın tamamı) indi",
+   "yeni": 148799
+  },
+  {
+   "anahtar": "k1715:002:kart:KT2_3:kalan",
+   "eski": [
+    0,
+    -22690
+   ],
+   "secim": "{\"eksi_stok\": \"sorar\", \"gec_yeniden\": \"telefon_24s\", \"kapatilacak\": \"yalniz_fifo\", \"onay\": \"sorar\", \"stok_yonu\": \"yalniz_giris\", \"taksit\": \"kart_secilir\", \"tarih\": \"sunucu_gunu\", \"yollar\": \"nakit_havale_pos\"}",
+   "senaryo": "R2-rastgele-tohum2",
+   "sinif": "S154 B — avanslı kartın Kalan listesi 0'a indi (kararın 'Kalan 0')",
+   "yeni": 0
+  },
+  {
+   "anahtar": "k1715:002:kart:KT2_3:odenen",
+   "eski": [
+    120000,
+    142690
+   ],
+   "secim": "{\"eksi_stok\": \"sorar\", \"gec_yeniden\": \"telefon_24s\", \"kapatilacak\": \"yalniz_fifo\", \"onay\": \"sorar\", \"stok_yonu\": \"yalniz_giris\", \"taksit\": \"kart_secilir\", \"tarih\": \"sunucu_gunu\", \"yollar\": \"nakit_havale_pos\"}",
+   "senaryo": "R2-rastgele-tohum2",
+   "sinif": "S154 B — SM-1 listesi okuma (b)'ye (karttan alınan paranın tamamı) indi",
+   "yeni": 142690
+  },
+  {
+   "anahtar": "k2563:001:kart:KT1_1:kalan",
+   "eski": [
+    0,
+    -121291
+   ],
+   "secim": "{\"eksi_stok\": \"sorar\", \"gec_yeniden\": \"telefon_24s\", \"kapatilacak\": \"yalniz_fifo\", \"onay\": \"sorar\", \"stok_yonu\": \"yalniz_giris\", \"taksit\": \"kart_secilir\", \"tarih\": \"sunucu_gunu\", \"yollar\": \"nakit_havale_pos\"}",
+   "senaryo": "R2-rastgele-tohum2",
+   "sinif": "S154 B — avanslı kartın Kalan listesi 0'a indi (kararın 'Kalan 0')",
+   "yeni": 0
+  },
+  {
+   "anahtar": "k2563:001:kart:KT1_1:odenen",
+   "eski": [
+    400000,
+    521291
+   ],
+   "secim": "{\"eksi_stok\": \"sorar\", \"gec_yeniden\": \"telefon_24s\", \"kapatilacak\": \"yalniz_fifo\", \"onay\": \"sorar\", \"stok_yonu\": \"yalniz_giris\", \"taksit\": \"kart_secilir\", \"tarih\": \"sunucu_gunu\", \"yollar\": \"nakit_havale_pos\"}",
+   "senaryo": "R2-rastgele-tohum2",
+   "sinif": "S154 B — SM-1 listesi okuma (b)'ye (karttan alınan paranın tamamı) indi",
+   "yeni": 521291
+  },
+  {
+   "anahtar": "k2563:001:kart:KT1_2:kalan",
+   "eski": [
+    0,
+    -89625
+   ],
+   "secim": "{\"eksi_stok\": \"sorar\", \"gec_yeniden\": \"telefon_24s\", \"kapatilacak\": \"yalniz_fifo\", \"onay\": \"sorar\", \"stok_yonu\": \"yalniz_giris\", \"taksit\": \"kart_secilir\", \"tarih\": \"sunucu_gunu\", \"yollar\": \"nakit_havale_pos\"}",
+   "senaryo": "R2-rastgele-tohum2",
+   "sinif": "S154 B — avanslı kartın Kalan listesi 0'a indi (kararın 'Kalan 0')",
+   "yeni": 0
+  },
+  {
+   "anahtar": "k2563:001:kart:KT1_2:odenen",
+   "eski": [
+    360000,
+    449625
+   ],
+   "secim": "{\"eksi_stok\": \"sorar\", \"gec_yeniden\": \"telefon_24s\", \"kapatilacak\": \"yalniz_fifo\", \"onay\": \"sorar\", \"stok_yonu\": \"yalniz_giris\", \"taksit\": \"kart_secilir\", \"tarih\": \"sunucu_gunu\", \"yollar\": \"nakit_havale_pos\"}",
+   "senaryo": "R2-rastgele-tohum2",
+   "sinif": "S154 B — SM-1 listesi okuma (b)'ye (karttan alınan paranın tamamı) indi",
+   "yeni": 449625
+  },
+  {
+   "anahtar": "k2563:002:kart:KT2_1:kalan",
+   "eski": [
+    0,
+    -28799
+   ],
+   "secim": "{\"eksi_stok\": \"sorar\", \"gec_yeniden\": \"telefon_24s\", \"kapatilacak\": \"yalniz_fifo\", \"onay\": \"sorar\", \"stok_yonu\": \"yalniz_giris\", \"taksit\": \"kart_secilir\", \"tarih\": \"sunucu_gunu\", \"yollar\": \"nakit_havale_pos\"}",
+   "senaryo": "R2-rastgele-tohum2",
+   "sinif": "S154 B — avanslı kartın Kalan listesi 0'a indi (kararın 'Kalan 0')",
+   "yeni": 0
+  },
+  {
+   "anahtar": "k2563:002:kart:KT2_1:odenen",
+   "eski": [
+    120000,
+    148799
+   ],
+   "secim": "{\"eksi_stok\": \"sorar\", \"gec_yeniden\": \"telefon_24s\", \"kapatilacak\": \"yalniz_fifo\", \"onay\": \"sorar\", \"stok_yonu\": \"yalniz_giris\", \"taksit\": \"kart_secilir\", \"tarih\": \"sunucu_gunu\", \"yollar\": \"nakit_havale_pos\"}",
+   "senaryo": "R2-rastgele-tohum2",
+   "sinif": "S154 B — SM-1 listesi okuma (b)'ye (karttan alınan paranın tamamı) indi",
+   "yeni": 148799
+  },
+  {
+   "anahtar": "k2563:002:kart:KT2_3:kalan",
+   "eski": [
+    0,
+    -22690
+   ],
+   "secim": "{\"eksi_stok\": \"sorar\", \"gec_yeniden\": \"telefon_24s\", \"kapatilacak\": \"yalniz_fifo\", \"onay\": \"sorar\", \"stok_yonu\": \"yalniz_giris\", \"taksit\": \"kart_secilir\", \"tarih\": \"sunucu_gunu\", \"yollar\": \"nakit_havale_pos\"}",
+   "senaryo": "R2-rastgele-tohum2",
+   "sinif": "S154 B — avanslı kartın Kalan listesi 0'a indi (kararın 'Kalan 0')",
+   "yeni": 0
+  },
+  {
+   "anahtar": "k2563:002:kart:KT2_3:odenen",
+   "eski": [
+    120000,
+    142690
+   ],
+   "secim": "{\"eksi_stok\": \"sorar\", \"gec_yeniden\": \"telefon_24s\", \"kapatilacak\": \"yalniz_fifo\", \"onay\": \"sorar\", \"stok_yonu\": \"yalniz_giris\", \"taksit\": \"kart_secilir\", \"tarih\": \"sunucu_gunu\", \"yollar\": \"nakit_havale_pos\"}",
+   "senaryo": "R2-rastgele-tohum2",
+   "sinif": "S154 B — SM-1 listesi okuma (b)'ye (karttan alınan paranın tamamı) indi",
+   "yeni": 142690
+  },
+  {
+   "anahtar": "k892:001:kart:KT1_1:kalan",
+   "eski": [
+    0,
+    -19291
+   ],
+   "secim": "{\"eksi_stok\": \"sorar\", \"gec_yeniden\": \"telefon_24s\", \"kapatilacak\": \"yalniz_fifo\", \"onay\": \"sorar\", \"stok_yonu\": \"yalniz_giris\", \"taksit\": \"kart_secilir\", \"tarih\": \"sunucu_gunu\", \"yollar\": \"nakit_havale_pos\"}",
+   "senaryo": "R2-rastgele-tohum2",
+   "sinif": "S154 B — avanslı kartın Kalan listesi 0'a indi (kararın 'Kalan 0')",
+   "yeni": 0
+  },
+  {
+   "anahtar": "k892:001:kart:KT1_1:odenen",
+   "eski": [
+    400000,
+    419291
+   ],
+   "secim": "{\"eksi_stok\": \"sorar\", \"gec_yeniden\": \"telefon_24s\", \"kapatilacak\": \"yalniz_fifo\", \"onay\": \"sorar\", \"stok_yonu\": \"yalniz_giris\", \"taksit\": \"kart_secilir\", \"tarih\": \"sunucu_gunu\", \"yollar\": \"nakit_havale_pos\"}",
+   "senaryo": "R2-rastgele-tohum2",
+   "sinif": "S154 B — SM-1 listesi okuma (b)'ye (karttan alınan paranın tamamı) indi",
+   "yeni": 419291
+  },
+  {
+   "anahtar": "k1732:001:kart:KT1_1:kalan",
+   "eski": [
+    0,
+    -16837
+   ],
+   "secim": "{\"eksi_stok\": \"sorar\", \"gec_yeniden\": \"telefon_24s\", \"kapatilacak\": \"yalniz_fifo\", \"onay\": \"sorar\", \"stok_yonu\": \"yalniz_giris\", \"taksit\": \"kart_secilir\", \"tarih\": \"sunucu_gunu\", \"yollar\": \"nakit_havale_pos\"}",
+   "senaryo": "R3-rastgele-tohum3",
+   "sinif": "S154 B — avanslı kartın Kalan listesi 0'a indi (kararın 'Kalan 0')",
+   "yeni": 0
+  },
+  {
+   "anahtar": "k1732:001:kart:KT1_1:odenen",
+   "eski": [
+    120000,
+    136837
+   ],
+   "secim": "{\"eksi_stok\": \"sorar\", \"gec_yeniden\": \"telefon_24s\", \"kapatilacak\": \"yalniz_fifo\", \"onay\": \"sorar\", \"stok_yonu\": \"yalniz_giris\", \"taksit\": \"kart_secilir\", \"tarih\": \"sunucu_gunu\", \"yollar\": \"nakit_havale_pos\"}",
+   "senaryo": "R3-rastgele-tohum3",
+   "sinif": "S154 B — SM-1 listesi okuma (b)'ye (karttan alınan paranın tamamı) indi",
+   "yeni": 136837
+  },
+  {
+   "anahtar": "k1732:001:kart:KT1_3:kalan",
+   "eski": [
+    0,
+    -86500
+   ],
+   "secim": "{\"eksi_stok\": \"sorar\", \"gec_yeniden\": \"telefon_24s\", \"kapatilacak\": \"yalniz_fifo\", \"onay\": \"sorar\", \"stok_yonu\": \"yalniz_giris\", \"taksit\": \"kart_secilir\", \"tarih\": \"sunucu_gunu\", \"yollar\": \"nakit_havale_pos\"}",
+   "senaryo": "R3-rastgele-tohum3",
+   "sinif": "S154 B — avanslı kartın Kalan listesi 0'a indi (kararın 'Kalan 0')",
+   "yeni": 0
+  },
+  {
+   "anahtar": "k1732:001:kart:KT1_3:odenen",
+   "eski": [
+    240000,
+    326500
+   ],
+   "secim": "{\"eksi_stok\": \"sorar\", \"gec_yeniden\": \"telefon_24s\", \"kapatilacak\": \"yalniz_fifo\", \"onay\": \"sorar\", \"stok_yonu\": \"yalniz_giris\", \"taksit\": \"kart_secilir\", \"tarih\": \"sunucu_gunu\", \"yollar\": \"nakit_havale_pos\"}",
+   "senaryo": "R3-rastgele-tohum3",
+   "sinif": "S154 B — SM-1 listesi okuma (b)'ye (karttan alınan paranın tamamı) indi",
+   "yeni": 326500
+  },
+  {
+   "anahtar": "k2589:001:kart:KT1_1:kalan",
+   "eski": [
+    0,
+    -37837
+   ],
+   "secim": "{\"eksi_stok\": \"sorar\", \"gec_yeniden\": \"telefon_24s\", \"kapatilacak\": \"yalniz_fifo\", \"onay\": \"sorar\", \"stok_yonu\": \"yalniz_giris\", \"taksit\": \"kart_secilir\", \"tarih\": \"sunucu_gunu\", \"yollar\": \"nakit_havale_pos\"}",
+   "senaryo": "R3-rastgele-tohum3",
+   "sinif": "S154 B — avanslı kartın Kalan listesi 0'a indi (kararın 'Kalan 0')",
+   "yeni": 0
+  },
+  {
+   "anahtar": "k2589:001:kart:KT1_1:odenen",
+   "eski": [
+    120000,
+    157837
+   ],
+   "secim": "{\"eksi_stok\": \"sorar\", \"gec_yeniden\": \"telefon_24s\", \"kapatilacak\": \"yalniz_fifo\", \"onay\": \"sorar\", \"stok_yonu\": \"yalniz_giris\", \"taksit\": \"kart_secilir\", \"tarih\": \"sunucu_gunu\", \"yollar\": \"nakit_havale_pos\"}",
+   "senaryo": "R3-rastgele-tohum3",
+   "sinif": "S154 B — SM-1 listesi okuma (b)'ye (karttan alınan paranın tamamı) indi",
+   "yeni": 157837
+  },
+  {
+   "anahtar": "k2589:001:kart:KT1_2:kalan",
+   "eski": [
+    0,
+    -33097
+   ],
+   "secim": "{\"eksi_stok\": \"sorar\", \"gec_yeniden\": \"telefon_24s\", \"kapatilacak\": \"yalniz_fifo\", \"onay\": \"sorar\", \"stok_yonu\": \"yalniz_giris\", \"taksit\": \"kart_secilir\", \"tarih\": \"sunucu_gunu\", \"yollar\": \"nakit_havale_pos\"}",
+   "senaryo": "R3-rastgele-tohum3",
+   "sinif": "S154 B — avanslı kartın Kalan listesi 0'a indi (kararın 'Kalan 0')",
+   "yeni": 0
+  },
+  {
+   "anahtar": "k2589:001:kart:KT1_2:odenen",
+   "eski": [
+    400000,
+    433097
+   ],
+   "secim": "{\"eksi_stok\": \"sorar\", \"gec_yeniden\": \"telefon_24s\", \"kapatilacak\": \"yalniz_fifo\", \"onay\": \"sorar\", \"stok_yonu\": \"yalniz_giris\", \"taksit\": \"kart_secilir\", \"tarih\": \"sunucu_gunu\", \"yollar\": \"nakit_havale_pos\"}",
+   "senaryo": "R3-rastgele-tohum3",
+   "sinif": "S154 B — SM-1 listesi okuma (b)'ye (karttan alınan paranın tamamı) indi",
+   "yeni": 433097
+  },
+  {
+   "anahtar": "k2589:001:kart:KT1_3:kalan",
+   "eski": [
+    0,
+    -86500
+   ],
+   "secim": "{\"eksi_stok\": \"sorar\", \"gec_yeniden\": \"telefon_24s\", \"kapatilacak\": \"yalniz_fifo\", \"onay\": \"sorar\", \"stok_yonu\": \"yalniz_giris\", \"taksit\": \"kart_secilir\", \"tarih\": \"sunucu_gunu\", \"yollar\": \"nakit_havale_pos\"}",
+   "senaryo": "R3-rastgele-tohum3",
+   "sinif": "S154 B — avanslı kartın Kalan listesi 0'a indi (kararın 'Kalan 0')",
+   "yeni": 0
+  },
+  {
+   "anahtar": "k2589:001:kart:KT1_3:odenen",
+   "eski": [
+    240000,
+    326500
+   ],
+   "secim": "{\"eksi_stok\": \"sorar\", \"gec_yeniden\": \"telefon_24s\", \"kapatilacak\": \"yalniz_fifo\", \"onay\": \"sorar\", \"stok_yonu\": \"yalniz_giris\", \"taksit\": \"kart_secilir\", \"tarih\": \"sunucu_gunu\", \"yollar\": \"nakit_havale_pos\"}",
+   "senaryo": "R3-rastgele-tohum3",
+   "sinif": "S154 B — SM-1 listesi okuma (b)'ye (karttan alınan paranın tamamı) indi",
+   "yeni": 326500
+  },
+  {
+   "anahtar": "k2589:002:kart:KT2_2:kalan",
+   "eski": [
+    0,
+    -18122
+   ],
+   "secim": "{\"eksi_stok\": \"sorar\", \"gec_yeniden\": \"telefon_24s\", \"kapatilacak\": \"yalniz_fifo\", \"onay\": \"sorar\", \"stok_yonu\": \"yalniz_giris\", \"taksit\": \"kart_secilir\", \"tarih\": \"sunucu_gunu\", \"yollar\": \"nakit_havale_pos\"}",
+   "senaryo": "R3-rastgele-tohum3",
+   "sinif": "S154 B — avanslı kartın Kalan listesi 0'a indi (kararın 'Kalan 0')",
+   "yeni": 0
+  },
+  {
+   "anahtar": "k2589:002:kart:KT2_2:odenen",
+   "eski": [
+    360000,
+    378122
+   ],
+   "secim": "{\"eksi_stok\": \"sorar\", \"gec_yeniden\": \"telefon_24s\", \"kapatilacak\": \"yalniz_fifo\", \"onay\": \"sorar\", \"stok_yonu\": \"yalniz_giris\", \"taksit\": \"kart_secilir\", \"tarih\": \"sunucu_gunu\", \"yollar\": \"nakit_havale_pos\"}",
+   "senaryo": "R3-rastgele-tohum3",
+   "sinif": "S154 B — SM-1 listesi okuma (b)'ye (karttan alınan paranın tamamı) indi",
+   "yeni": 378122
+  },
+  {
+   "anahtar": "k2589:002:kart:KT2_3:kalan",
+   "eski": [
+    0,
+    -49391
+   ],
+   "secim": "{\"eksi_stok\": \"sorar\", \"gec_yeniden\": \"telefon_24s\", \"kapatilacak\": \"yalniz_fifo\", \"onay\": \"sorar\", \"stok_yonu\": \"yalniz_giris\", \"taksit\": \"kart_secilir\", \"tarih\": \"sunucu_gunu\", \"yollar\": \"nakit_havale_pos\"}",
+   "senaryo": "R3-rastgele-tohum3",
+   "sinif": "S154 B — avanslı kartın Kalan listesi 0'a indi (kararın 'Kalan 0')",
+   "yeni": 0
+  },
+  {
+   "anahtar": "k2589:002:kart:KT2_3:odenen",
+   "eski": [
+    120000,
+    169391
+   ],
+   "secim": "{\"eksi_stok\": \"sorar\", \"gec_yeniden\": \"telefon_24s\", \"kapatilacak\": \"yalniz_fifo\", \"onay\": \"sorar\", \"stok_yonu\": \"yalniz_giris\", \"taksit\": \"kart_secilir\", \"tarih\": \"sunucu_gunu\", \"yollar\": \"nakit_havale_pos\"}",
+   "senaryo": "R3-rastgele-tohum3",
+   "sinif": "S154 B — SM-1 listesi okuma (b)'ye (karttan alınan paranın tamamı) indi",
+   "yeni": 169391
+  }
+ ],
+ "kalkan_senaryo": [],
+ "ozet": [
+  [
+   "E05",
+   "S154 B — SM-1 listesi okuma (b)'ye (karttan alınan paranın tamamı) indi",
+   2
+  ],
+  [
+   "E05",
+   "S154 B — avanslı kartın Kalan listesi 0'a indi (kararın 'Kalan 0')",
+   2
+  ],
+  [
+   "E41",
+   "S154 B — SM-1 listesi okuma (b)'ye (karttan alınan paranın tamamı) indi",
+   2
+  ],
+  [
+   "E41",
+   "S154 B — avanslı kartın Kalan listesi 0'a indi (kararın 'Kalan 0')",
+   2
+  ],
+  [
+   "R1",
+   "S154 B — SM-1 listesi okuma (b)'ye (karttan alınan paranın tamamı) indi",
+   6
+  ],
+  [
+   "R1",
+   "S154 B — avanslı kartın Kalan listesi 0'a indi (kararın 'Kalan 0')",
+   6
+  ],
+  [
+   "R2",
+   "S154 B — SM-1 listesi okuma (b)'ye (karttan alınan paranın tamamı) indi",
+   8
+  ],
+  [
+   "R2",
+   "S154 B — avanslı kartın Kalan listesi 0'a indi (kararın 'Kalan 0')",
+   8
+  ],
+  [
+   "R3",
+   "S154 B — SM-1 listesi okuma (b)'ye (karttan alınan paranın tamamı) indi",
+   7
+  ],
+  [
+   "R3",
+   "S154 B — avanslı kartın Kalan listesi 0'a indi (kararın 'Kalan 0')",
+   7
+  ]
+ ],
+ "ust_alan_degisen": [
+  "cari_model_sha256",
+  "kaynak",
+  "secim_notu"
+ ],
+ "yeni_senaryo": [
+  "E43-es-iade-sinir-masaustu",
+  "E43-es-iade-sinir-mobil"
+ ]
+}

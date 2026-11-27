@@ -1,0 +1,21 @@
+{
+ "dil": "destekofis-cari/3",
+ "ad": "d4-c5-s50-tek-kuyruk",
+ "aciklama": "2.5.0 C13.4 (S50 A + M1e + S2): Mert'in Açılış 3.000'ini 'Carinin Mevcut Borcu' kartı (15.05, 3 × 1.000, 20.05'ten aylık) tüketir; KART SEÇİLMEDEN alınan 1.500 (01.06) vadesi gelmiş 1. taksiti (1.000) ve 2. taksitin 500'ünü kapatır (2.4.9: kart ödeneni 0). Açılış'ın Kalan'ı (defter kalanı, K6.5) 1.500; takvim kalemi yok (kapsanan borç taksitlerle bir kez). Gecikmiş (25.06): 2. taksitin kalanı 500. Sınır 'hareket önce': Pelin'in tahsilatı (05.05) karttan (10.05) ÖNCE — açılışı kapatır, karta sayılmaz; kart açılıştan kalan 1.500'ü tüketir; gecikmiş 1. + 2. taksit 1.000.",
+ "dayanak": "KARARLAR.md §13 C13.4, C13.5",
+ "bugun": "2026-06-25",
+ "adimlar": [
+  {"id": "cm", "islem": "cari_ac", "ad": "M", "isim": "Mert Taksit", "tarih": "2026-05-01", "acilis": "3000", "acilisVade": "2026-05-10"},
+  {"id": "km", "islem": "kart_ac", "ad": "K1", "cari": "M", "tutar": "3000", "taksit": 3, "ilkVade": "2026-05-20", "tarih": "2026-05-15", "mevcut": true},
+  {"id": "t1", "islem": "tahsilat", "cari": "M", "tutar": "1500", "tarih": "2026-06-01"},
+  {"id": "cp", "islem": "cari_ac", "ad": "P", "isim": "Pelin Önce", "tarih": "2026-05-01", "acilis": "2000"},
+  {"id": "tp", "islem": "tahsilat", "cari": "P", "tutar": "500", "tarih": "2026-05-05"},
+  {"id": "kp", "islem": "kart_ac", "ad": "KP", "cari": "P", "tutar": "1500", "taksit": 3, "ilkVade": "2026-05-20", "tarih": "2026-05-10", "mevcut": true},
+  {"id": "k1", "islem": "kontrol", "gecikmis": true}
+ ],
+ "elleBeklenen": {
+  "k1:kart:K1:odenen": 150000, "k1:kart:K1:kalan": 150000, "k1:kart:K1:taksit1:odenen": 100000, "k1:kart:K1:taksit2:odenen": 50000, "k1:kart:K1:taksit3:odenen": 0,
+  "k1:hareket:acilis:M:kalan": 150000, "k1:takvim:hareket:acilis:M": "yok", "k1:cari:M:bakiye": 150000, "k1:cari:M:gecikmis": 50000,
+  "k1:kart:KP:odenen": 0, "k1:hareket:acilis:P:kalan": 150000, "k1:cari:P:bakiye": 150000, "k1:cari:P:gecikmis": 100000
+ }
+}

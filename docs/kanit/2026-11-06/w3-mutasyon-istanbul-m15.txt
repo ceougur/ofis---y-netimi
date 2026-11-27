@@ -1,0 +1,3 @@
+{"name":"M15-defter-anonimlesmez","verdict":"YAKALANDI","tests":14,"fail":4,"exit":1,"failed":["S-W3 + S35: talep → içerik, telefon, PDF, ad, wamid HEMEN silinir, iz ","S-W3 1 yıl (yerel saat; gece yarısı yerel ≠ UTC) + Y17-6: sınırdan 1 s","S42: talep anında iş Gönderiliyor — içerik + telefon (dosya + defter) ","KVKK sızıntı denetimi: talepten sonra günlükte, veri klasöründeki BÜTÜ"]}
+# mutasyon 1/1 yakalandı (TZ=Europe/Istanbul)
+exit 0

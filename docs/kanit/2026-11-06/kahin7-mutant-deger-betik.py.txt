@@ -1,0 +1,56 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""Kâhin bakımı 7 — yeni mutantlar (B70–B79) DEĞERLE mi yakalanıyor?
+
+Her yeni mutant için test_model.py'nin mutasyonda koşan sınıfları koşulur; her kırmızı test sınıflanır:
+  DEĞER   — assertEqual / assertTrue / assertRaises beklentisi tutmadı (ileti 'senaryo hatası' içermiyor)
+  SUSMA   — mutantlı kâhin 'senaryo hatası' verdi (beklenen kabul / red yerine susma)
+  HATA    — AssertionError dışı istisna
+Kullanım: python3 -I mutant_deger.py <kâhin klasörü>
+"""
+import contextlib
+import io
+import sys
+import unittest
+
+KLASOR = sys.argv[1]
+sys.path.insert(0, KLASOR)
+import mutasyon as MU  # noqa: E402
+
+with open(MU.MODEL, encoding="utf-8") as f:
+    SRC = f.read()
+
+
+def kos(src):
+    tm = MU.yukle(src)
+    suite = unittest.TestSuite()
+    for sinif in (tm.Yardimci, tm.OlayMaddeleri, tm.ElleSenaryolar, tm.Rastgele, tm.DegismezDenetcileri):
+        suite.addTests(unittest.defaultTestLoader.loadTestsFromTestCase(sinif))
+    with contextlib.redirect_stderr(io.StringIO()), contextlib.redirect_stdout(io.StringIO()):
+        r = unittest.TextTestRunner(stream=io.StringIO(), verbosity=0).run(suite)
+    out = []
+    for t, tb in r.failures:
+        son = [s for s in tb.strip().splitlines() if s.strip()][-1]
+        out.append((t.id().split(".")[-1], "SUSMA" if "senaryo hatası" in tb.splitlines()[-1] or "senaryo hatası" in son else "DEĞER", son[:200]))
+    for t, tb in r.errors:
+        son = [s for s in tb.strip().splitlines() if s.strip()][-1]
+        out.append((t.id().split(".")[-1], "HATA", son[:200]))
+    return r.testsRun, out
+
+
+yeni = [(ad, d) for ad, d in MU.MUTANTLAR if ad.startswith("B7")]
+print(f"yeni mutant: {len(yeni)}")
+eksik = 0
+for ad, degisiklikler in yeni:
+    n, out = kos(MU.mutant_kaynak(SRC, degisiklikler))
+    deger = [x for x in out if x[1] == "DEĞER"]
+    durum = "DEĞERLE" if deger else ("YALNIZ SUSMA/HATA" if out else "SAĞ KALDI")
+    if not deger:
+        eksik += 1
+    print(f"{ad}\n  → {durum}: {len(out)}/{n} test kırmızı (değer {len(deger)}, susma {sum(x[1] == 'SUSMA' for x in out)}, hata {sum(x[1] == 'HATA' for x in out)})")
+    for t, tur, son in out[:6]:
+        print(f"     [{tur}] {t}: {son}")
+print(f"# tests {len(yeni)}")
+print(f"# pass {len(yeni) - eksik}")
+print(f"# fail {eksik}")
+sys.exit(1 if eksik else 0)

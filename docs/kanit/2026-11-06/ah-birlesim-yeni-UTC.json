@@ -1,0 +1,32 @@
+{
+  "ad": "ah-birlesim-yeni-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/acilis-onarimi-hiz-250.test.mjs test/db-tx-kayip-250.test.mjs test/iade-210-onarim.test.mjs test/db-tx-commit-hata-249.test.mjs test/kapama-tek-gecis-245.test.mjs",
+  "commit": "a6e63b6618124562b1aeb9d67bb4302402d68b32",
+  "dal": "ah-birlesim",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T08:00:50.528Z",
+  "sure_sn": 11.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 26,
+    "gecen": 26,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../bekleyen-kanit/2026-11-06/2026-11-06/ah-birlesim-yeni-UTC.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ah-birlesim-ag",
+  "ham_cikti_sha256": "e59ff2e37e40bff600810de2d3bf95516facd3217688bed6da9aeb62ad8ec000",
+  "ham_cikti_bayt": 11687
+}

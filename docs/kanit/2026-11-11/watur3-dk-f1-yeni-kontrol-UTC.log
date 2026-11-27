@@ -1,0 +1,6 @@
+1) Yol 2: J1 accepted (wamid.SAHTE0001) → imzalı 'sent' → J1 sent; işaret="VAR" kip="embedded"; B yolu Meta'da kayıtlı
+2) Yol 1'e geçildi (kip manual); işaret="" kip=""
+3) Yol 1: J2 accepted (wamid.SAHTE0002)
+4) (kontrol) geç bildirim yok
+5) 13,5 sa sonra: J2 accepted; Bora Demir önizlemesi: Daha Önce Gönderildi; işaret="" kip=""
+# SONUÇ (kontrol): J2 Meta Kabul Etti — işaret sayılmadı

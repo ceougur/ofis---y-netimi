@@ -1,0 +1,33 @@
+// DK-Ç3 sonda 7: dondurma sürerken REDDEDİLEN bir kilit isteği (geçersiz / gelecek tarih → 400) süren dondurmayı durduruyor mu; koşu bekler, kimse sürdürmez mi?
+// Kullanım: node p7-gecersiz-istek-iptal.mjs <kök>
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+const ROOT = path.resolve(process.argv[2]);
+const { loginAdmin, startTestServer } = await import(pathToFileURL(path.join(ROOT, "test/helpers.mjs")).href);
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+// Dondurma kancası: her parça yazımından sonra 150 ms bekle (iş uzun sürsün; ürün davranışı değişmez, yalnız süre).
+const hook = { fn: async phase => { if (phase === "batch") await sleep(150); } };
+const server = await startTestServer({ now: { time: "2027-01-10T10:00:00+03:00", fixed: true }, __testFreezeHook: hook, freezeBatchLines: 5 });
+try {
+  const admin = await loginAdmin(server);
+  const S = server.app.ledger.snapshots;
+  for (let i = 1; i <= 40; i += 1) await admin.post("/api/workspace/cash", { kind: "in", amount: String(10 + i), date: `2026-${String(1 + (i % 12)).padStart(2, "0")}-1${i % 9}`, description: `Giriş ${i}` });
+  const first = admin.put("/api/admin/period-lock", { lockedUntil: "2026-12-31" });
+  for (let i = 0; i < 100 && !(S.status().running && S.status().phase === "yazım"); i += 1) await sleep(20);
+  console.log("dondurma sürüyor:", JSON.stringify(S.status()));
+  const bad = await admin.put("/api/admin/period-lock", { lockedUntil: "2099-01-01" });
+  console.log("geçersiz istek:", bad.status, JSON.stringify(bad.data).slice(0, 160));
+  const r1 = await first;
+  console.log("ilk istek:", r1.status, JSON.stringify(r1.data?.data));
+  // Ç3 tur 2: uç artık dondurmayı beklemez — 3 sn yerine dondurma bitene (en çok 30 sn) beklenir; eski kodda koşu "durdu" kalır, bekleme boşa döner.
+  for (let i = 0; i < 300 && !(S.state().coverage === "2026-12-31" && !S.status().running); i += 1) await sleep(100);
+  console.log("3 sn sonra durum:", JSON.stringify(S.status()), "state:", JSON.stringify(S.state()));
+  const lock = await admin.get("/api/workspace/ledger/lock");
+  console.log("GET lock:", JSON.stringify(lock.data?.data));
+  const done = S.state().coverage === "2026-12-31";
+  console.log(done ? "SONUÇ: dondurma tamamlandı" : "SONUÇ: HATA — reddedilen istek süren dondurmayı durdurdu; kilit 31.12.2026, donmuş kapsam boş, koşu bekliyor ve sürdüren yok (yeniden başlatmaya ya da sonraki kilit isteğine kadar)");
+  console.log(`\n# tests 1\n# pass ${done ? 1 : 0}\n# fail ${done ? 0 : 1}`);
+  process.exitCode = done ? 0 : 1;
+} finally {
+  await server.close();
+}

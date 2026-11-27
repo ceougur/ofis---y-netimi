@@ -1,0 +1,32 @@
+{
+  "ad": "kahineski6-elle-yeni-cari-ist",
+  "komut": "python3 -I -B /home/user/ofis---y-netimi/.claude/worktrees/agent-a465471c0e1816b16/docs/kanit/2026-11-10/kahineski6-arac/elle-karsilastir.py --model /home/user/ofis---y-netimi/.claude/worktrees/agent-a465471c0e1816b16/test/bagimsiz/cari /home/user/ofis---y-netimi/.claude/worktrees/agent-a465471c0e1816b16/test/bagimsiz/cari/senaryolar/d25-c5-s98-avans-sirasi.json /home/user/ofis---y-netimi/.claude/worktrees/agent-a465471c0e1816b16/test/bagimsiz/cari/senaryolar/d26-c5-bakim5-susan.json /home/user/ofis---y-netimi/.claude/worktrees/agent-a465471c0e1816b16/test/bagimsiz/cari/senaryolar/d27-c5-s99-taksitli-avans.json /home/user/ofis---y-netimi/.claude/worktrees/agent-a465471c0e1816b16/test/bagimsiz/cari/senaryolar/d28-c5-s99-taksit-vade-gunu.json /home/user/ofis---y-netimi/.claude/worktrees/agent-a465471c0e1816b16/test/bagimsiz/cari/senaryolar/d29-c5-s99-taksit-ertesi-gun.json /home/user/ofis---y-netimi/.claude/worktrees/agent-a465471c0e1816b16/test/bagimsiz/cari/senaryolar/d30-c5-s101-bitti-kart.json /home/user/ofis---y-netimi/.claude/worktrees/agent-a465471c0e1816b16/test/bagimsiz/cari/senaryolar/d31-c5-s101-taksit-vade-gunu.json /home/user/ofis---y-netimi/.claude/worktrees/agent-a465471c0e1816b16/test/bagimsiz/cari/senaryolar/d32-c5-s101-taksit-ertesi-gun.json /home/user/ofis---y-netimi/.claude/worktrees/agent-a465471c0e1816b16/test/bagimsiz/cari/senaryolar/d33-c5-s102-s105-sinirlar.json",
+  "commit": "92ba247181331a7c5383cccedd181c26f604cda6",
+  "dal": "worktree-agent-a465471c0e1816b16",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v338 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-10T19:19:07.727Z",
+  "sure_sn": 0.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 335,
+    "gecen": 335,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahineski6-k6/kanit/2026-11-10/kahineski6-elle-yeni-cari-ist.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a465471c0e1816b16",
+  "ham_cikti_sha256": "46925b505162d56b3a75b7398357694e012fc299c073a3dbefe90266da690a86",
+  "ham_cikti_bayt": 614
+}

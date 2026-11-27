@@ -12,7 +12,13 @@
 //       yazısı + Bağlantıyı Sına Meta'daki adresi bu bilgisayara geri alır.
 //   A4c (2.4.9 UI tur B, ORTA-3) Meta abonelik kaydını reddedince (100 "must be subscribed"): Bağlantıyı Sına / Kaydet ve Sına UYARI bildirimi; neden düğmelerin altında
 //       Türkçe, hücrede yalnız "Kaydedilemedi · <tarih>", Meta'nın ham iletisi ayrı satırda; düzelince yeşil bildirim aynen. (A2: App ID yardımı Ekstre şablonunu söyler — D8.)
+//   A4d (2.5.0 BS-1) Meta yalnız hata kodu döndürünce (ileti yok) kod neden satırında "(Meta hata kodu 100)"; Meta iletisi satırı yok.
+//   A4e (2.5.0 WE) Webhook Bilgileri: Callback URL + Verify Token pencerede, Kopyala; değerler sunucununkiyle aynı; pencere kapanınca sayfada yok. A6: Personel 403.
+//   A4f (2.5.0 WhatsApp tur 1) kapıda belirteç yok (ready false): boş Verify Token satırı ve Belirteci Kopyala gizli, neden metni görünür.
 //   A5 Bağlantıyı Kaldır (onay penceresi) → "Bağlı Değil"; ayar satırı silindi.
+//   A5b (2.5.0 W-2) Meta abonelik silmeyi reddederse bağlantı yine kaldırılır; uyarı "Meta tarafında kaldırılamadı" + Veri Silme Adımları düğmesi.
+//   A5c (2.5.0 W-1(a)) Yol 2 bağlantısı 53. gün: uyarı satırı, Bağlantı Süresi, Yeniden Bağla; ana ekranda günde bir bildirim; 60. gün Süresi Doldu, Kendime Deneme Gönder
+//       pasif + neden, Yeniden Bağla ve Bağlantıyı Sına etkin. A7'de gerçek kapıcıyla bağlanınca "60 gün kaldı".
 //   A6 yetkisiz (Personel): Yönetim açılmaz; API 403.
 //   2.4.8 W7 TAŞINAMAZ BAĞLANTI (bağımsız gözden geçirme ORTA; ikinci program + YEREL kapıcı https://kapi.destekofis.test + sahte Facebook SDK / Meta penceresi —
 //   Playwright yönlendirmesi, gerçek Meta'ya istek YOK; dış istek sayılır ve 0 beklenir):
@@ -220,6 +226,9 @@ await step("A2 Elle Bağla: Tab ile insan hızında yazım → Kaydet ve Sına �
   // lib/whatsapp/templates.mjs). Yardım yazısı bunu söyler.
   const appHelp = await text(`${modal} label:has([name="appId"]) small`).catch(() => "");
   ok(/^İsteğe bağlı; Ekstre şablonunu Meta'da açmak için gerekir/.test(appHelp), `App ID yardımı Ekstre şablonunu söylüyor: ${appHelp}`);
+  // 2.5.0 W-1(a) düzeltme turu 1 (dar kontrol, metin): System User belirtecinde süre "Never" seçilmeli (60 günlük belirtecin bitişi programa gelmez).
+  const tokenHelp = await text(`${modal} label:has([name="token"]) small`).catch(() => "");
+  ok(/Token expiration\) olarak Never seçin/.test(tokenHelp), `belirteç yardımı süre için Never diyor: ${tokenHelp}`);
   await page.click(`${modal} [name="phoneNumberId"]`);
   await typeSlow(PNID);
   await page.keyboard.press("Tab");
@@ -410,14 +419,162 @@ await step("A4c Bildirim Yolu kaydedilemedi (Meta 100 abonelik): uyarı bildirim
   server.app.mobileRemote.setPublicUrl("");
 });
 
-await step("A5 Bağlantıyı Kaldır (onaylı) → Bağlı Değil; ayar satırı silindi", async () => {
+// 2.5.0 BS-1 (2.4.9 birleşik son dar kontrol DÜŞÜK-3, gerileme): Meta YALNIZ hata kodu döndürüp ileti göndermezse kod ekrandan düşüyordu (UI tur B'den önce hücrede görünürdü).
+await step("A4d Bildirim Yolu kaydedilemedi, Meta yalnız hata kodu döndürdü (ileti yok): neden satırında '(Meta hata kodu 100)', Meta iletisi satırı yok; düzelince satır kalkar", async () => {
+  server.app.mobileRemote.setPublicUrl("http://ofisx.destekofis.test");
+  fake.state.override = null; // ön koşul (zorla): Meta'daki adres kalkmış → Bağlantıyı Sına yeniden kaydetmeyi dener
+  fake.set({ failNext: { match: /^POST \/\d+\/subscribed_apps$/, sticky: true, status: 400, body: { error: { code: 100, type: "OAuthException", fbtrace_id: "AbCdEfGh" } } } });
+  const subscribePosts = () => fake.requests.filter(item => item.method === "POST" && /\/subscribed_apps$/.test(item.path)).length;
+  const before = subscribePosts();
+  await clearToasts();
+  await page.click('[data-wa-action="test"]');
+  await page.waitForFunction(() => /^Kaydedilemedi/.test(document.querySelector('[data-wa-fact="hook"] dd')?.textContent.trim() || ""), null, { timeout: 15000 });
+  ok(subscribePosts() === before + 1, `ön koşul oluştu: abonelik kaydı istendi ve reddedildi (${subscribePosts() - before} istek)`);
+  const why = ((await page.textContent("[data-wa-hook-why]").catch(() => "")) || "").trim();
+  ok(/^Bildirim Yolu kaydedilemedi — .+ \(Meta hata kodu 100\)\. Kaydedilene dek teslim ve okundu bilgisi/.test(why), `neden satırında Meta hata kodu: ${why.slice(0, 200)}`);
+  ok((await page.locator("[data-wa-hook-meta]").count()) === 0, "Meta iletisi satırı yok (Meta ileti göndermedi)");
+  await shot("05e-bildirim-yolu-yalniz-kod");
+  fake.set({ failNext: null });
+  await clearToasts();
+  await page.click('[data-wa-action="test"]');
+  await page.waitForFunction(() => /^Çalışıyor/.test(document.querySelector('[data-wa-fact="hook"] dd')?.textContent.trim() || ""), null, { timeout: 15000 });
+  ok((await page.locator("[data-wa-hook-why]").count()) === 0, "düzelince neden satırı kalktı");
+  server.app.mobileRemote.setPublicUrl("");
+});
+
+// 2.5.0 WE: Elle Bağla'nın uygulama düzeyi webhook bilgileri programda (kılavuzdaki "destekten alın" kalktı). Değerler yalnız pencerede; belirteç gizli.
+await step("A4e Webhook Bilgileri: pencerede Callback URL (ofisin adresi + /wa/kanca/…) ve Verify Token; Belirteci Kopyala bildirimi; değerler sunucununkiyle aynı; pencere kapanınca sayfada yok", async () => {
+  server.app.mobileRemote.setPublicUrl("http://ofisx.destekofis.test");
+  await page.click('[data-wa-action="webhook"]');
+  const modal = await topModal();
+  ok((await text(`${modal} .hof-modal-title, ${modal} h2`)).includes("Webhook Bilgileri"), "pencere başlığı Webhook Bilgileri");
+  const callback = await text(`${modal} [data-wa-webhook-value="callback"]`);
+  const verify = await text(`${modal} [data-wa-webhook-value="verify"]`);
+  ok(/^http:\/\/ofisx\.destekofis\.test\/wa\/kanca\/[A-Za-z0-9_-]{43}$/.test(callback), `Callback URL: ${callback}`);
+  ok(/^[A-Za-z0-9_-]{43}$/.test(verify), "Verify Token 43 karakter");
+  const labels = await page.$$eval(`${modal} [data-wa-webhook] dt`, nodes => nodes.map(node => node.textContent.trim()));
+  ok(JSON.stringify(labels) === JSON.stringify(["Callback URL (Bildirim Adresi)", "Verify Token (Doğrulama Belirteci)"]), `etiketler: ${labels.join(" | ")}`);
+  const buttons = await page.$$eval(`${modal} [data-wa-webhook-copy]`, nodes => nodes.map(node => node.textContent.trim()));
+  ok(JSON.stringify(buttons) === JSON.stringify(["Adresi Kopyala", "Belirteci Kopyala"]), `düğmeler: ${buttons.join(" | ")}`);
+  const api = await page.evaluate(async () => (await (await fetch("/api/workspace/whatsapp/app-webhook")).json()).data);
+  ok(api.callbackUrl === callback && api.verifyToken === verify, "ekrandaki değerler sunucununkiyle aynı");
+  await clearToasts();
+  await page.click(`${modal} [data-wa-webhook-copy="verify"]`);
+  const copied = await firstToast();
+  ok(copied.some(item => /hof-toast-success[^|]*\|Doğrulama belirteci panoya kopyalandı\.$/.test(item)), `Belirteci Kopyala bildirimi: ${copied.join(" ‖ ")}`);
+  await shot("05f-webhook-bilgileri");
+  await page.keyboard.press("Escape");
+  // Pencere kapanınca düğüm kısa geçişten (160 ms) sonra sayfadan kalkar — okuma ondan sonra (ders 39).
+  await page.waitForFunction(() => !document.querySelector("[data-wa-webhook-value]"), null, { timeout: 15000 });
+  ok(!(await page.content()).includes(verify), "pencere kapanınca sayfada belirteç yok");
+  server.app.mobileRemote.setPublicUrl("");
+});
+
+// 2.5.0 WhatsApp tur 1 — BAŞ MİMAR KARARI (WE + BS-7 dar kontrolü sonrası): 001 şema kapısında ve çift yokken sunucu ready false + boş belirteç + neden döner (sunucu tarafı
+// test/whatsapp-we-webhook-bilgisi-250.test.mjs WE-7). Ekranda boş "Verify Token" satırı ve boş değer kopyalayan "Belirteci Kopyala" GÖRÜNMEZ; neden metni görünür. Sunucunun
+// bu yanıtı yönlendirmeyle verilir (kapıyı bu senaryoda kurmak 001'i yeni şemaya alıp programı yeniden açmayı ister — o yol WE-7'de).
+await step("A4f Webhook Bilgileri · kapıda belirteç yok: boş Verify Token satırı ve Belirteci Kopyala gizli, neden metni görünür, Adresi Kopyala yok", async () => {
+  const reason = "001 şirketinin verisi programın daha yeni bir sürümüyle açıldığı için webhook bilgileri hazırlanamıyor; programı güncelleyince burada görünür.";
+  const route = /\/api\/workspace\/whatsapp\/app-webhook(\?|$)/; // sorgu (şirket seçimi) olsa da
+  await page.route(route, request => request.fulfill({ status: 200, contentType: "application/json; charset=utf-8", body: JSON.stringify({ ok: true, data: { ready: false, callbackUrl: "", verifyToken: "", reason } }) }));
+  try {
+    await page.click('[data-wa-action="webhook"]');
+    const modal = await topModal();
+    ok((await text(`${modal} [data-wa-webhook-why]`)) === reason, "neden metni görünür (Türkçe cümle)");
+    ok((await page.locator(`${modal} [data-wa-webhook="verify"]`).count()) === 0, "boş Verify Token satırı yok");
+    ok((await page.locator(`${modal} [data-wa-webhook-copy="verify"]`).count()) === 0, "Belirteci Kopyala yok (boş değer kopyalanmaz)");
+    ok((await page.locator(`${modal} [data-wa-webhook-copy]`).count()) === 0 && (await page.locator(`${modal} [data-wa-webhook]`).count()) === 0, "pencerede hiçbir değer satırı / kopyala düğmesi yok");
+    await shot("05g-webhook-bilgileri-kapida");
+    await page.keyboard.press("Escape");
+    await page.waitForFunction(() => !document.querySelector("[data-wa-webhook-why]"), null, { timeout: 15000 });
+  } finally {
+    await page.unroute(route);
+  }
+});
+
+const unsubscribes = () => fake.requests.filter(item => item.method === "DELETE" && /\/subscribed_apps$/.test(item.path)).length;
+await step("A5 Bağlantıyı Kaldır (onaylı) → Bağlı Değil; ayar satırı silindi; 2.5.0 W-2: Meta'daki abonelik de silindi, yeşil bildirim", async () => {
+  await clearToasts();
   await page.click('[data-wa-action="remove"]');
   const modal = await topModal();
   ok(/kaldırılsın mı/.test(await text(modal)), "onay sorusu soruldu");
+  // 2.5.0 W-2 düzeltme turu 1 (metin): Elle Bağla'da abonelik müşterinin kendi Meta uygulamasınındır ("DestekOfis'in" değil).
+  const sure = await text(modal);
+  ok(/Meta uygulamanızın bu WhatsApp hesabındaki bildirim aboneliği de kaldırılır/.test(sure) && !/DestekOfis'in/.test(sure) && /bekleyen otomatik gönderimler durdurulur/.test(sure), `onay metni (Elle Bağla) kendi uygulamanın aboneliğini ve bekleyen gönderimleri söylüyor: ${sure.slice(0, 220)}`);
   await page.click(`${modal} .hof-button-danger`);
   ok((await waitState("Bağlı Değil")) === "Bağlı Değil", "durum Bağlı Değil");
   ok(settingRow() === null, "veri tabanında bağlantı yok");
+  ok(unsubscribes() === 1, `Meta'ya bir abonelik silme isteği (${unsubscribes()})`);
+  const toasts = await firstToast();
+  ok(toasts.some(item => /hof-toast-success[^|]*\|WhatsApp bağlantısı kaldırıldı; Meta'daki abonelik de silindi\./.test(item)), `yeşil bildirim: ${toasts.join(" ‖ ")}`);
   await shot("06-kaldirildi");
+});
+
+// 2.5.0 W-2 (plan §1 W-2): Meta tarafı düşerse yerel kaldırma YİNE yapılır; uyarı + destekofis.net/veri-silme düğmesi.
+await step("A5b Meta abonelik silmeyi reddederse: bağlantı yine kaldırılır, uyarı bildirimi 'Meta tarafında kaldırılamadı' + Veri Silme Adımları düğmesi", async () => {
+  ok((await adminApi.put("/api/workspace/whatsapp/connection", { phoneNumberId: PNID, wabaId: WABA, appId: APP, token: TOKEN })).status === 200, "ön koşul: yeniden bağlandı");
+  await page.reload();
+  await page.waitForSelector('[data-wa-action="remove"]');
+  fake.set({ failNext: { match: /^DELETE \/\d+\/subscribed_apps$/, status: 400, body: { error: { message: "(#100) Invalid parameter", type: "OAuthException", code: 100, fbtrace_id: "AbCd" } } } });
+  await clearToasts();
+  await page.click('[data-wa-action="remove"]');
+  const modal = await topModal();
+  await page.click(`${modal} .hof-button-danger`);
+  ok((await waitState("Bağlı Değil")) === "Bağlı Değil", "durum Bağlı Değil (yerel kaldırma yapıldı)");
+  ok(settingRow() === null, "veri tabanında bağlantı yok");
+  const toasts = await firstToast();
+  ok(toasts.some(item => /hof-toast-warn[^|]*\|.*Meta tarafında kaldırılamadı.*destekofis\.net\/veri-silme/.test(item)), `uyarı bildirimi: ${toasts.join(" ‖ ")}`);
+  ok((await page.locator("#hof-toasts .hof-toast-action").allTextContents()).includes("Veri Silme Adımları"), "Veri Silme Adımları düğmesi");
+  await shot("06b-meta-kaldirilamadi");
+});
+
+// 2.5.0 W-1(a) (plan §1 W-1 (a)): Yol 2 bağlantısı bağlanma + 60 gün; bitişe 7 gün kala satır + günde bir bildirim; bitişte Süresi Doldu, deneme pasif + neden, Yeniden Bağla açık.
+await step("A5c belirteç süresi: 53. gün uyarı satırı + Yeniden Bağla; ana ekranda günde bir bildirim; 60. gün Süresi Doldu, Kendime Deneme Gönder pasif + neden, Yeniden Bağla ve Bağlantıyı Sına açık", async () => {
+  const clock = server.app.config.now;
+  const t0 = clock.ms();
+  try {
+    const admin = server.app.store.get("SELECT * FROM users WHERE username = 'admin'");
+    server.app.context.whatsapp.connection.saveEmbedded(admin, { token: TOKEN, wabaId: WABA, phoneNumberId: PNID, olay: "FINISH", appId: APP });
+    clock.set(t0 + 53 * 86_400_000);
+    // Sayfa zaten Yönetim → WhatsApp'ta (aynı adrese goto yenilemez): yeniden yüklenir.
+    await page.reload();
+    await page.waitForSelector("[data-wa-token-why]");
+    const why = await text("[data-wa-token-why]");
+    ok(why.startsWith("WhatsApp bağlantınızın süresi doluyor — yeniden bağlayın") && /7 gün kaldı/.test(why), `uyarı satırı: ${why}`);
+    ok(/tarihine kadar · 7 gün kaldı$/.test(await fact("tokenExpiry")), `Bağlantı Süresi: ${await fact("tokenExpiry")}`);
+    ok(await page.isVisible('[data-wa-action="reconnect"]') && !(await page.isDisabled('[data-wa-action="reconnect"]')), "Yeniden Bağla görünür ve etkin");
+    await shot("06c-suresi-doluyor");
+    // Ana ekran: yöneticiye bildirim (günde en çok bir kez).
+    const notices = () => page.evaluate(() => [...document.querySelectorAll("#hof-toasts .hof-toast")].filter(node => /süresi doluyor/.test(node.textContent)).length);
+    await page.goto(`${server.base}/`);
+    await page.waitForSelector("#hof-sidecard", { timeout: 60000 });
+    const shown = await page.waitForFunction(() => /süresi doluyor — yeniden bağlayın/.test(document.getElementById("hof-toasts")?.textContent || ""), null, { timeout: 15000 }).then(() => true, () => false);
+    ok(shown, "ana ekranda bildirim çıktı");
+    ok((await page.locator("#hof-toasts .hof-toast-action").allTextContents()).includes("Yeniden Bağla"), "bildirimde Yeniden Bağla düğmesi");
+    await page.reload();
+    await page.waitForSelector("#hof-sidecard", { timeout: 60000 });
+    await page.waitForTimeout(4000);
+    ok((await notices()) === 0, "aynı gün yeniden açılınca bildirim yok (günde en çok bir kez)");
+    // Bitiş: Süresi Doldu.
+    clock.set(t0 + 60 * 86_400_000 + 60_000);
+    await page.goto(`${server.base}/admin.html#whatsapp`);
+    ok((await waitState("Süresi Doldu")) === "Süresi Doldu", "durum Süresi Doldu");
+    ok(/süresi doldu/.test(await text("[data-wa-token-why]")), `neden satırı: ${await text("[data-wa-token-why]")}`);
+    ok(await page.isDisabled('[data-wa-action="self-test"]'), "Kendime Deneme Gönder pasif");
+    ok(/deneme iletisi gönderilemez/.test(await text("[data-wa-why-self]").catch(() => "")), `pasif düğmenin nedeni görünür: ${await text("[data-wa-why-self]").catch(() => "(yok)")}`);
+    ok(!(await page.isDisabled('[data-wa-action="reconnect"]')) && !(await page.isDisabled('[data-wa-action="test"]')), "Yeniden Bağla ve Bağlantıyı Sına etkin");
+    await shot("06d-suresi-doldu");
+    // Yeniden Bağla (WhatsApp'ı Bağla yolu): bu kurulumda kapıcı yok → açık ileti (düğme çalışır, kilitlenmez).
+    await clearToasts();
+    const popupPromise = page.waitForEvent("popup", { timeout: 5000 }).catch(() => null);
+    await page.click('[data-wa-action="reconnect"]');
+    const popup = await popupPromise;
+    ok(await page.waitForFunction(() => (document.getElementById("hof-toasts")?.textContent || "").includes("WhatsApp'ı Bağla bu kurulumda kullanılamıyor"), null, { timeout: 15000 }).then(() => true, () => false), "Yeniden Bağla WhatsApp'ı Bağla yolunu açtı (kapıcısız kurulumda açık ileti)");
+    if (popup) await popup.waitForEvent("close", { timeout: 5000 }).catch(() => null);
+  } finally {
+    clock.set(t0);
+    await adminApi.del("/api/workspace/whatsapp/connection").catch(() => null);
+  }
 });
 
 await step("A6 yetkisiz (Personel): Yönetim açılmaz, WhatsApp bağlantı API'si 403", async () => {
@@ -434,6 +591,9 @@ await step("A6 yetkisiz (Personel): Yönetim açılmaz, WhatsApp bağlantı API'
   ok(await staffPage.isHidden("#adm-app"), "Yönetim paneli personelde kapalı");
   const status = await staffPage.evaluate(async () => (await fetch("/api/workspace/whatsapp/connection")).status);
   ok(status === 403, `API 403 (${status})`);
+  // 2.5.0 WE: Elle Bağla webhook bilgileri (gizli belirteç) yalnız yöneticiye.
+  const webhook = await staffPage.evaluate(async () => (await fetch("/api/workspace/whatsapp/app-webhook")).status);
+  ok(webhook === 403, `Webhook bilgileri API 403 (${webhook})`);
   await staff.close();
 });
 
@@ -492,6 +652,8 @@ await step("A7 WhatsApp'ı Bağla uçtan uca: pencere → sır postMessage ile �
   await page2.bringToFront();
   ok((await page2.waitForFunction(() => document.querySelector("[data-wa-state]")?.textContent.trim() === "Bağlı", null, { timeout: 30000 }).then(() => true)), "program Bağlı");
   ok((await page2.textContent('[data-wa-fact="mode"] dd'))?.trim() === "WhatsApp'ı Bağla", "Bağlantı Yolu: WhatsApp'ı Bağla");
+  // 2.5.0 W-1(a): gerçek kapıcı Meta'nın süresini aktarmaz → bağlanma + 60 gün (yapılandırmanın süresi).
+  ok(/tarihine kadar · 60 gün kaldı$/.test((await page2.textContent('[data-wa-fact="tokenExpiry"] dd').catch(() => ""))?.trim() || ""), `Bağlantı Süresi: ${(await page2.textContent('[data-wa-fact="tokenExpiry"] dd').catch(() => ""))?.trim()}`);
   // App ID kapıcıdan gelir (bulgu ORTA: embedded kipte boştu → Ekstre şablonu açılamıyor, ileti olmayan "Bilgileri Değiştir"e gönderiyordu). Program bağlanınca
   // şablonları kendisi açar: örnek PDF /<App ID>/uploads ile yüklenir, Ekstre Meta'ya gönderilir.
   ok((await page2.textContent('[data-wa-fact="appId"] dd').catch(() => ""))?.trim() === W7.app, "Uygulama Kimliği kapıcıdan geldi");

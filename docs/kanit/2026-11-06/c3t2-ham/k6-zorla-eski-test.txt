@@ -1,0 +1,42 @@
+TAP version 13
+# Subtest: 2.5.0 Ç3 tur 2 — dönem kilidi ucu: sıra (DÜŞÜK-1) ve arkada dondurma (İLERLEME)
+    # Subtest: K6: aynı güne yinelenen istek süren dondurmayı durdurmaz (koşu kaldığı yerden sürer, yenisi açılmaz)
+    not ok 1 - K6: aynı güne yinelenen istek süren dondurmayı durdurmaz (koşu kaldığı yerden sürer, yenisi açılmaz)
+      ---
+      duration_ms: 8109.693286
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t2-mut-6a7d7e92/test/k6-zorla.test.mjs:256:3'
+      failureType: 'testCodeFailure'
+      error: 'ön koşul: dondurma yazım adımında sürüyor ({"running":false,"phase":"tamam","done":84,"total":84,"run":1,"error":"","coverage":"2026-12-31"})'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        untilWriting (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t2-mut-6a7d7e92/test/k6-zorla.test.mjs:57:12)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t2-mut-6a7d7e92/test/k6-zorla.test.mjs:262:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 5)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..1
+not ok 1 - 2.5.0 Ç3 tur 2 — dönem kilidi ucu: sıra (DÜŞÜK-1) ve arkada dondurma (İLERLEME)
+  ---
+  duration_ms: 11310.746004
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t2-mut-6a7d7e92/test/k6-zorla.test.mjs:39:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 1
+# suites 1
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 12031.874318

@@ -1,0 +1,5662 @@
+{
+ "ozet": {
+  "S102-S105/yeni": 576,
+  "SK-13←S99/yeni": 6,
+  "sayac/yeni": 22
+ },
+ "senaryo": {
+  "d25-c5-s98-avans-sirasi": {
+   "SK-13←S99/yeni": 3
+  },
+  "d26-c5-bakim5-susan": {
+   "S102-S105/yeni": 45,
+   "SK-13←S99/yeni": 3
+  },
+  "rastgele-s1-10": {
+   "S102-S105/yeni": 34,
+   "sayac/yeni": 2
+  },
+  "rastgele-s1-2": {
+   "S102-S105/yeni": 67,
+   "sayac/yeni": 4
+  },
+  "rastgele-s1-4": {
+   "S102-S105/yeni": 70,
+   "sayac/yeni": 2
+  },
+  "rastgele-s1-5": {
+   "S102-S105/yeni": 79,
+   "sayac/yeni": 4
+  },
+  "rastgele-s1-8": {
+   "S102-S105/yeni": 281,
+   "sayac/yeni": 10
+  }
+ },
+ "etiket_degisen": 0,
+ "dokum": [
+  {
+   "senaryo": "d25-c5-s98-avans-sirasi",
+   "anahtar": "k1:cari:R3:acikEsitBakiye",
+   "eski": "(denetim yok)",
+   "yeni": false,
+   "sinif": "SK-13←S99",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d25-c5-s98-avans-sirasi",
+   "anahtar": "k1:cari:R3:acikToplam",
+   "eski": "(denetim yok)",
+   "yeni": 10000,
+   "sinif": "SK-13←S99",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d25-c5-s98-avans-sirasi",
+   "anahtar": "k1:fatura:R3F:acik",
+   "eski": "(denetim yok)",
+   "yeni": 10000,
+   "sinif": "SK-13←S99",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "anahtar": "k1:cari:S10:acikEsitBakiye",
+   "eski": "(denetim yok)",
+   "yeni": false,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "anahtar": "k1:cari:S10:acikToplam",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "anahtar": "k1:cari:S10:gecikmis",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "anahtar": "k1:cari:S11:acikEsitBakiye",
+   "eski": "(denetim yok)",
+   "yeni": false,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "anahtar": "k1:cari:S11:acikToplam",
+   "eski": "(denetim yok)",
+   "yeni": -20000,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "anahtar": "k1:cari:S11:gecikmis",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "anahtar": "k1:cari:S12:acikEsitBakiye",
+   "eski": "(denetim yok)",
+   "yeni": false,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "anahtar": "k1:cari:S12:acikToplam",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "anahtar": "k1:cari:S12:gecikmis",
+   "eski": "(denetim yok)",
+   "yeni": 25000,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "anahtar": "k1:cari:S13:acikEsitBakiye",
+   "eski": "(denetim yok)",
+   "yeni": false,
+   "sinif": "SK-13←S99",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "anahtar": "k1:cari:S13:acikToplam",
+   "eski": "(denetim yok)",
+   "yeni": 10000,
+   "sinif": "SK-13←S99",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "anahtar": "k1:cari:S9:acikEsitBakiye",
+   "eski": "(denetim yok)",
+   "yeni": false,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "anahtar": "k1:cari:S9:acikToplam",
+   "eski": "(denetim yok)",
+   "yeni": -30000,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "anahtar": "k1:cari:S9:gecikmis",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "anahtar": "k1:fatura:S10F:acik",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "anahtar": "k1:fatura:S13F:acik",
+   "eski": "(denetim yok)",
+   "yeni": 10000,
+   "sinif": "SK-13←S99",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "anahtar": "k1:hareket:s11a:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 20000,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "anahtar": "k1:hareket:s9b:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "anahtar": "k1:hareket:s9x:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 30000,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "anahtar": "k1:hareket:s9y:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "anahtar": "k1:projeksiyon:cariToplam:S12",
+   "eski": "(denetim yok)",
+   "yeni": 25000,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "anahtar": "k1:projeksiyon:fatura:S12F",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "anahtar": "k1:projeksiyon:hareket:s10o",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "anahtar": "k1:projeksiyon:hareket:s11a",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 20000,
+    "date": "2026-04-30",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "anahtar": "k1:projeksiyon:hareket:s11o",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "anahtar": "k1:projeksiyon:hareket:s12o",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 25000,
+    "date": "2026-03-01",
+    "direction": "in"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "anahtar": "k1:projeksiyon:hareket:s9b",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "anahtar": "k1:projeksiyon:hareket:s9x",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 30000,
+    "date": "2026-06-02",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "anahtar": "k1:projeksiyon:hareket:s9y",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "anahtar": "k1:takvim:cariToplam:S12",
+   "eski": "(denetim yok)",
+   "yeni": 25000,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "anahtar": "k1:takvim:fatura:S10F",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "anahtar": "k1:takvim:fatura:S12F",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "anahtar": "k1:takvim:hareket:s10o",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "anahtar": "k1:takvim:hareket:s11a",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 20000,
+    "dueDate": "2026-04-30",
+    "direction": "out",
+    "label": "Ödenecek Borç",
+    "state": "overdue",
+    "days": -46,
+    "cari": "S11",
+    "person": "Sk Onbir"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "anahtar": "k1:takvim:hareket:s11o",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "anahtar": "k1:takvim:hareket:s12o",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 25000,
+    "dueDate": "2026-03-01",
+    "direction": "in",
+    "label": "Tahsil Edilecek Borç",
+    "state": "overdue",
+    "days": -106,
+    "cari": "S12",
+    "person": "Sk Oniki"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "anahtar": "k1:takvim:hareket:s9b",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "anahtar": "k1:takvim:hareket:s9x",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 30000,
+    "dueDate": "2026-06-02",
+    "direction": "out",
+    "label": "Ödenecek Borç",
+    "state": "overdue",
+    "days": -13,
+    "cari": "S9",
+    "person": "Sk Dokuz"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "anahtar": "k1:takvim:hareket:s9y",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "anahtar": "k1:vadeTakip:cariToplam:S12",
+   "eski": "(denetim yok)",
+   "yeni": 25000,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "anahtar": "k1:vadeTakip:fatura:S12F",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "anahtar": "k1:vadeTakip:hareket:s10o",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "anahtar": "k1:vadeTakip:hareket:s11a",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 20000,
+    "date": "2026-04-30",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "anahtar": "k1:vadeTakip:hareket:s11o",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "anahtar": "k1:vadeTakip:hareket:s12o",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 25000,
+    "date": "2026-03-01",
+    "direction": "in"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "anahtar": "k1:vadeTakip:hareket:s9b",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "anahtar": "k1:vadeTakip:hareket:s9x",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 30000,
+    "date": "2026-06-02",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d26-c5-bakim5-susan",
+   "anahtar": "k1:vadeTakip:hareket:s9y",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k2:hareket:s003:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 70000,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k2:hareket:s006:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 191477,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k2:hareket:s018:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 90000,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k2:projeksiyon:hareket:s003",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 70000,
+    "date": "2026-06-14",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k2:projeksiyon:hareket:s006",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 191477,
+    "date": "2026-03-10",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k2:projeksiyon:hareket:s018",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 90000,
+    "date": "2026-07-26",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k2:takvim:fatura:A1",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k2:takvim:fatura:A2",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 81367,
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k2:takvim:fatura:A3",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 300000,
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k2:takvim:hareket:s003",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 70000,
+    "dueDate": "2026-06-14",
+    "direction": "out",
+    "label": "Ödenecek Borç (Ödeme Sözü)",
+    "state": "overdue",
+    "days": -22,
+    "cari": "S",
+    "person": "Rastgele Sigma Tedarik 2"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k2:takvim:hareket:s006",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 191477,
+    "dueDate": "2026-03-10",
+    "direction": "out",
+    "label": "Ödenecek Borç",
+    "state": "overdue",
+    "days": -112,
+    "cari": "S",
+    "person": "Rastgele Sigma Tedarik 2"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k2:takvim:hareket:s018",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k2:vadeTakip:hareket:s003",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 70000,
+    "date": "2026-06-14",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k2:vadeTakip:hareket:s006",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 191477,
+    "date": "2026-03-10",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:hareket:s003:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 70000,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:hareket:s006:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:hareket:s018:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 90000,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:hareket:s069:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 245299,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:hareket:s074:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 290296,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:hareket:s082:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 50475,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:projeksiyon:hareket:s003",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 70000,
+    "date": "2026-06-14",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:projeksiyon:hareket:s006",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:projeksiyon:hareket:s018",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 90000,
+    "date": "2026-07-26",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:projeksiyon:hareket:s024",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:projeksiyon:hareket:s029",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:projeksiyon:hareket:s040",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:projeksiyon:hareket:s064",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:projeksiyon:hareket:s065",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:projeksiyon:hareket:s067",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:projeksiyon:hareket:s069",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:projeksiyon:hareket:s074",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 290296,
+    "date": "2026-05-27",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:projeksiyon:hareket:s076",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:projeksiyon:hareket:s082",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 50475,
+    "date": "2026-07-24",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:projeksiyon:hareket:s088",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:takvim:fatura:A1",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:takvim:fatura:A2",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:takvim:fatura:A3",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:takvim:fatura:A4",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:takvim:fatura:A5",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 38994,
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:takvim:fatura:A6",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 172518,
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:takvim:fatura:A7",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 7022,
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:takvim:fatura:A8",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 52755,
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:takvim:hareket:s003",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 70000,
+    "dueDate": "2026-06-14",
+    "direction": "out",
+    "label": "Ödenecek Borç (Ödeme Sözü)",
+    "state": "overdue",
+    "days": -22,
+    "cari": "S",
+    "person": "Rastgele Sigma Tedarik 2"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:takvim:hareket:s006",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:takvim:hareket:s018",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:takvim:hareket:s024",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:takvim:hareket:s029",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:takvim:hareket:s040",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:takvim:hareket:s064",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:takvim:hareket:s065",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:takvim:hareket:s067",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:takvim:hareket:s069",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:takvim:hareket:s074",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 290296,
+    "dueDate": "2026-05-27",
+    "direction": "out",
+    "label": "Ödenecek Borç",
+    "state": "overdue",
+    "days": -34,
+    "cari": "S",
+    "person": "Rastgele Sigma Tedarik 2"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:takvim:hareket:s076",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:takvim:hareket:s082",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:takvim:hareket:s088",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:vadeTakip:hareket:s003",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 70000,
+    "date": "2026-06-14",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:vadeTakip:hareket:s006",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:vadeTakip:hareket:s024",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:vadeTakip:hareket:s029",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:vadeTakip:hareket:s040",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:vadeTakip:hareket:s064",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:vadeTakip:hareket:s065",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:vadeTakip:hareket:s067",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:vadeTakip:hareket:s074",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 290296,
+    "date": "2026-05-27",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:vadeTakip:hareket:s076",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:vadeTakip:hareket:s088",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k2:projeksiyon:cari",
+   "eski": "(denetim yok)",
+   "yeni": 6,
+   "sinif": "sayac",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k2:takvim:cariKalemSayisi",
+   "eski": "(denetim yok)",
+   "yeni": 5,
+   "sinif": "sayac",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:projeksiyon:cari",
+   "eski": "(denetim yok)",
+   "yeni": 10,
+   "sinif": "sayac",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-2",
+   "anahtar": "k9:takvim:cariKalemSayisi",
+   "eski": "(denetim yok)",
+   "yeni": 7,
+   "sinif": "sayac",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:hareket:acilis:S:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:hareket:s017:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:hareket:s021:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 130000,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:hareket:s026:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 11207,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:hareket:s040:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:hareket:s041:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 93855,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:hareket:s043:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 156263,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:hareket:s058:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 259703,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:hareket:s061:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 246368,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:hareket:s064:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 500000,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:hareket:s091:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 450000,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:hareket:s096:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 10000,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:hareket:s104:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 480000,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:projeksiyon:hareket:acilis:S",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:projeksiyon:hareket:s006",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:projeksiyon:hareket:s010",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:projeksiyon:hareket:s017",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:projeksiyon:hareket:s021",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:projeksiyon:hareket:s026",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 11207,
+    "date": "2026-06-12",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:projeksiyon:hareket:s034",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:projeksiyon:hareket:s040",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:projeksiyon:hareket:s041",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 93855,
+    "date": "2026-04-29",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:projeksiyon:hareket:s043",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:projeksiyon:hareket:s058",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 259703,
+    "date": "2026-06-05",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:projeksiyon:hareket:s061",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 246368,
+    "date": "2026-06-09",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:projeksiyon:hareket:s064",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:projeksiyon:hareket:s065",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:projeksiyon:hareket:s079",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:projeksiyon:hareket:s090",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:projeksiyon:hareket:s091",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:projeksiyon:hareket:s094",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:projeksiyon:hareket:s096",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:projeksiyon:hareket:s104",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:takvim:fatura:A1",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 51756,
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:takvim:fatura:A2",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 246840,
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:takvim:fatura:A3",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 94457,
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:takvim:hareket:acilis:S",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:takvim:hareket:s006",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:takvim:hareket:s010",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:takvim:hareket:s017",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:takvim:hareket:s021",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:takvim:hareket:s026",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 11207,
+    "dueDate": "2026-06-12",
+    "direction": "out",
+    "label": "Ödenecek Borç (Ödeme Sözü)",
+    "state": "overdue",
+    "days": -43,
+    "cari": "S",
+    "person": "Rastgele Sigma Tedarik 4"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:takvim:hareket:s034",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:takvim:hareket:s040",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:takvim:hareket:s041",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 93855,
+    "dueDate": "2026-04-29",
+    "direction": "out",
+    "label": "Ödenecek Borç",
+    "state": "overdue",
+    "days": -62,
+    "cari": "S",
+    "person": "Rastgele Sigma Tedarik 4"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:takvim:hareket:s043",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:takvim:hareket:s058",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 259703,
+    "dueDate": "2026-06-05",
+    "direction": "out",
+    "label": "Ödenecek Borç",
+    "state": "overdue",
+    "days": -25,
+    "cari": "S",
+    "person": "Rastgele Sigma Tedarik 4"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:takvim:hareket:s061",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 246368,
+    "dueDate": "2026-06-09",
+    "direction": "out",
+    "label": "Ödenecek Borç",
+    "state": "overdue",
+    "days": -21,
+    "cari": "S",
+    "person": "Rastgele Sigma Tedarik 4"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:takvim:hareket:s064",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:takvim:hareket:s065",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:takvim:hareket:s079",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:takvim:hareket:s090",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:takvim:hareket:s091",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:takvim:hareket:s094",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:takvim:hareket:s096",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:takvim:hareket:s104",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:vadeTakip:hareket:acilis:S",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:vadeTakip:hareket:s006",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:vadeTakip:hareket:s010",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:vadeTakip:hareket:s017",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:vadeTakip:hareket:s026",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 11207,
+    "date": "2026-06-12",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:vadeTakip:hareket:s034",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:vadeTakip:hareket:s040",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:vadeTakip:hareket:s041",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 93855,
+    "date": "2026-04-29",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:vadeTakip:hareket:s058",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 259703,
+    "date": "2026-06-05",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:vadeTakip:hareket:s061",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 246368,
+    "date": "2026-06-09",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:vadeTakip:hareket:s065",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:vadeTakip:hareket:s079",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:vadeTakip:hareket:s090",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:vadeTakip:hareket:s094",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:projeksiyon:cari",
+   "eski": "(denetim yok)",
+   "yeni": 6,
+   "sinif": "sayac",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-4",
+   "anahtar": "k11:takvim:cariKalemSayisi",
+   "eski": "(denetim yok)",
+   "yeni": 6,
+   "sinif": "sayac",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k6:hareket:acilis:S:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k6:hareket:s001:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k6:hareket:s003:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k6:hareket:s009:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 360000,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k6:hareket:s020:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k6:hareket:s046:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 80000,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k6:hareket:s049:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 145787,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k6:projeksiyon:hareket:acilis:S",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k6:projeksiyon:hareket:s001",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k6:projeksiyon:hareket:s003",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k6:projeksiyon:hareket:s009",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 360000,
+    "date": "2026-07-17",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k6:projeksiyon:hareket:s020",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k6:projeksiyon:hareket:s032",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k6:projeksiyon:hareket:s041",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k6:projeksiyon:hareket:s046",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 80000,
+    "date": "2026-07-07",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k6:projeksiyon:hareket:s049",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 145787,
+    "date": "2026-07-22",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k6:takvim:fatura:A1",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 302084,
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k6:takvim:fatura:A2",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 390000,
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k6:takvim:fatura:A3",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 320000,
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k6:takvim:fatura:A4",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 30000,
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k6:takvim:hareket:acilis:S",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k6:takvim:hareket:s001",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k6:takvim:hareket:s003",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k6:takvim:hareket:s009",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k6:takvim:hareket:s020",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k6:takvim:hareket:s032",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k6:takvim:hareket:s041",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k6:takvim:hareket:s046",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 80000,
+    "dueDate": "2026-07-07",
+    "direction": "out",
+    "label": "Ödenecek Borç",
+    "state": "upcoming",
+    "days": 7,
+    "cari": "S",
+    "person": "Rastgele Sigma Tedarik 5"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k6:takvim:hareket:s049",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k6:vadeTakip:hareket:acilis:S",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k6:vadeTakip:hareket:s001",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k6:vadeTakip:hareket:s003",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k6:vadeTakip:hareket:s020",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k6:vadeTakip:hareket:s032",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k6:vadeTakip:hareket:s041",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k7:hareket:acilis:S:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k7:hareket:s001:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k7:hareket:s003:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k7:hareket:s009:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 360000,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k7:hareket:s020:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k7:hareket:s046:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 80000,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k7:hareket:s049:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 145787,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k7:projeksiyon:hareket:acilis:S",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k7:projeksiyon:hareket:s001",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k7:projeksiyon:hareket:s003",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k7:projeksiyon:hareket:s009",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 360000,
+    "date": "2026-07-17",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k7:projeksiyon:hareket:s020",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k7:projeksiyon:hareket:s032",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k7:projeksiyon:hareket:s041",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k7:projeksiyon:hareket:s046",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 80000,
+    "date": "2026-07-07",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k7:projeksiyon:hareket:s049",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 145787,
+    "date": "2026-07-22",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k7:projeksiyon:hareket:s062",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k7:projeksiyon:hareket:s064",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k7:projeksiyon:hareket:s065",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k7:takvim:fatura:A1",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k7:takvim:fatura:A2",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 231739,
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k7:takvim:fatura:A3",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 320000,
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k7:takvim:fatura:A4",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 30000,
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k7:takvim:hareket:acilis:S",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k7:takvim:hareket:s001",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k7:takvim:hareket:s003",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k7:takvim:hareket:s009",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k7:takvim:hareket:s020",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k7:takvim:hareket:s032",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k7:takvim:hareket:s041",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k7:takvim:hareket:s046",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 80000,
+    "dueDate": "2026-07-07",
+    "direction": "out",
+    "label": "Ödenecek Borç",
+    "state": "upcoming",
+    "days": 7,
+    "cari": "S",
+    "person": "Rastgele Sigma Tedarik 5"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k7:takvim:hareket:s049",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k7:takvim:hareket:s062",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k7:takvim:hareket:s064",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k7:takvim:hareket:s065",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k7:vadeTakip:hareket:acilis:S",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k7:vadeTakip:hareket:s001",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k7:vadeTakip:hareket:s003",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k7:vadeTakip:hareket:s020",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k7:vadeTakip:hareket:s032",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k7:vadeTakip:hareket:s041",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k7:vadeTakip:hareket:s062",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k7:vadeTakip:hareket:s064",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k7:vadeTakip:hareket:s065",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k6:projeksiyon:cari",
+   "eski": "(denetim yok)",
+   "yeni": 3,
+   "sinif": "sayac",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k6:takvim:cariKalemSayisi",
+   "eski": "(denetim yok)",
+   "yeni": 1,
+   "sinif": "sayac",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k7:projeksiyon:cari",
+   "eski": "(denetim yok)",
+   "yeni": 3,
+   "sinif": "sayac",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-5",
+   "anahtar": "k7:takvim:cariKalemSayisi",
+   "eski": "(denetim yok)",
+   "yeni": 1,
+   "sinif": "sayac",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:hareket:acilis:S:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 234342,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:hareket:s011:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:hareket:s024:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:hareket:s025:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 300000,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:hareket:s030:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:hareket:s031:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 243231,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:hareket:s057:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 470000,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:hareket:s069:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 360000,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:hareket:s081:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 330000,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:hareket:s085:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 73476,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:projeksiyon:hareket:acilis:S",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 234342,
+    "date": "2026-07-02",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:projeksiyon:hareket:s011",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:projeksiyon:hareket:s016",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:projeksiyon:hareket:s024",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:projeksiyon:hareket:s025",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 300000,
+    "date": "2026-05-08",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:projeksiyon:hareket:s030",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:projeksiyon:hareket:s031",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 243231,
+    "date": "2026-04-26",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:projeksiyon:hareket:s040",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:projeksiyon:hareket:s057",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:projeksiyon:hareket:s069",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 360000,
+    "date": "2026-05-26",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:projeksiyon:hareket:s081",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:projeksiyon:hareket:s085",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 73476,
+    "date": "2026-06-16",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:projeksiyon:hareket:s086",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:projeksiyon:hareket:s090",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:projeksiyon:hareket:s091",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:takvim:fatura:A1",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:takvim:fatura:A2",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 3418,
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:takvim:fatura:A3",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 450000,
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:takvim:fatura:A4",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 280758,
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:takvim:hareket:acilis:S",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 234342,
+    "dueDate": "2026-07-02",
+    "direction": "out",
+    "label": "Ödenecek Borç (Ödeme Sözü)",
+    "state": "overdue",
+    "days": -14,
+    "cari": "S",
+    "person": "Rastgele Sigma Tedarik 8"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:takvim:hareket:s011",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:takvim:hareket:s016",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:takvim:hareket:s024",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:takvim:hareket:s025",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 300000,
+    "dueDate": "2026-05-08",
+    "direction": "out",
+    "label": "Ödenecek Borç (Ödeme Sözü)",
+    "state": "overdue",
+    "days": -53,
+    "cari": "S",
+    "person": "Rastgele Sigma Tedarik 8"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:takvim:hareket:s030",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:takvim:hareket:s031",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 243231,
+    "dueDate": "2026-04-26",
+    "direction": "out",
+    "label": "Ödenecek Borç",
+    "state": "overdue",
+    "days": -65,
+    "cari": "S",
+    "person": "Rastgele Sigma Tedarik 8"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:takvim:hareket:s040",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:takvim:hareket:s057",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:takvim:hareket:s069",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 360000,
+    "dueDate": "2026-05-26",
+    "direction": "out",
+    "label": "Ödenecek Borç",
+    "state": "overdue",
+    "days": -35,
+    "cari": "S",
+    "person": "Rastgele Sigma Tedarik 8"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:takvim:hareket:s081",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:takvim:hareket:s085",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 73476,
+    "dueDate": "2026-06-16",
+    "direction": "out",
+    "label": "Ödenecek Borç",
+    "state": "overdue",
+    "days": -14,
+    "cari": "S",
+    "person": "Rastgele Sigma Tedarik 8"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:takvim:hareket:s086",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:takvim:hareket:s090",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:takvim:hareket:s091",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:vadeTakip:hareket:acilis:S",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 234342,
+    "date": "2026-07-02",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:vadeTakip:hareket:s011",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:vadeTakip:hareket:s016",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:vadeTakip:hareket:s024",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:vadeTakip:hareket:s025",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 300000,
+    "date": "2026-05-08",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:vadeTakip:hareket:s030",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:vadeTakip:hareket:s031",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 243231,
+    "date": "2026-04-26",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:vadeTakip:hareket:s040",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:vadeTakip:hareket:s069",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 360000,
+    "date": "2026-05-26",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:vadeTakip:hareket:s085",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 73476,
+    "date": "2026-06-16",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:vadeTakip:hareket:s086",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:vadeTakip:hareket:s090",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:vadeTakip:hareket:s091",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:hareket:acilis:S:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 234342,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:hareket:s011:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:hareket:s024:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:hareket:s025:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 300000,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:hareket:s030:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:hareket:s031:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 161108,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:hareket:s057:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 470000,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:hareket:s069:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 360000,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:hareket:s081:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 330000,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:hareket:s085:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 73476,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:hareket:s109:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 261079,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:projeksiyon:hareket:acilis:S",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 234342,
+    "date": "2026-07-02",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:projeksiyon:hareket:s011",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:projeksiyon:hareket:s016",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:projeksiyon:hareket:s024",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:projeksiyon:hareket:s025",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 300000,
+    "date": "2026-05-08",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:projeksiyon:hareket:s030",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:projeksiyon:hareket:s031",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 161108,
+    "date": "2026-04-26",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:projeksiyon:hareket:s040",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:projeksiyon:hareket:s057",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:projeksiyon:hareket:s069",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 360000,
+    "date": "2026-05-26",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:projeksiyon:hareket:s081",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:projeksiyon:hareket:s085",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 73476,
+    "date": "2026-06-16",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:projeksiyon:hareket:s086",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:projeksiyon:hareket:s090",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:projeksiyon:hareket:s091",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:projeksiyon:hareket:s109",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:takvim:fatura:A1",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:takvim:fatura:A2",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 3418,
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:takvim:fatura:A3",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 450000,
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:takvim:fatura:A4",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 280758,
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:takvim:fatura:A5",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 13335,
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:takvim:fatura:A6",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 1747,
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:takvim:fatura:A7",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 81392,
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:takvim:fatura:A8",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 163049,
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:takvim:hareket:acilis:S",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 234342,
+    "dueDate": "2026-07-02",
+    "direction": "out",
+    "label": "Ödenecek Borç (Ödeme Sözü)",
+    "state": "overdue",
+    "days": -14,
+    "cari": "S",
+    "person": "Rastgele Sigma Tedarik 8"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:takvim:hareket:s011",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:takvim:hareket:s016",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:takvim:hareket:s024",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:takvim:hareket:s025",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 300000,
+    "dueDate": "2026-05-08",
+    "direction": "out",
+    "label": "Ödenecek Borç (Ödeme Sözü)",
+    "state": "overdue",
+    "days": -53,
+    "cari": "S",
+    "person": "Rastgele Sigma Tedarik 8"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:takvim:hareket:s030",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:takvim:hareket:s031",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 161108,
+    "dueDate": "2026-04-26",
+    "direction": "out",
+    "label": "Ödenecek Borç",
+    "state": "overdue",
+    "days": -65,
+    "cari": "S",
+    "person": "Rastgele Sigma Tedarik 8"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:takvim:hareket:s040",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:takvim:hareket:s057",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:takvim:hareket:s069",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 360000,
+    "dueDate": "2026-05-26",
+    "direction": "out",
+    "label": "Ödenecek Borç",
+    "state": "overdue",
+    "days": -35,
+    "cari": "S",
+    "person": "Rastgele Sigma Tedarik 8"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:takvim:hareket:s081",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:takvim:hareket:s085",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 73476,
+    "dueDate": "2026-06-16",
+    "direction": "out",
+    "label": "Ödenecek Borç",
+    "state": "overdue",
+    "days": -14,
+    "cari": "S",
+    "person": "Rastgele Sigma Tedarik 8"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:takvim:hareket:s086",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:takvim:hareket:s090",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:takvim:hareket:s091",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:takvim:hareket:s109",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:vadeTakip:hareket:acilis:S",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 234342,
+    "date": "2026-07-02",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:vadeTakip:hareket:s011",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:vadeTakip:hareket:s016",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:vadeTakip:hareket:s024",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:vadeTakip:hareket:s025",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 300000,
+    "date": "2026-05-08",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:vadeTakip:hareket:s030",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:vadeTakip:hareket:s031",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 161108,
+    "date": "2026-04-26",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:vadeTakip:hareket:s040",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:vadeTakip:hareket:s069",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 360000,
+    "date": "2026-05-26",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:vadeTakip:hareket:s085",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 73476,
+    "date": "2026-06-16",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:vadeTakip:hareket:s086",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:vadeTakip:hareket:s090",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:vadeTakip:hareket:s091",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:hareket:acilis:S:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 234342,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:hareket:s011:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:hareket:s024:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:hareket:s025:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 300000,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:hareket:s030:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:hareket:s031:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 74693,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:hareket:s057:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 470000,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:hareket:s069:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 360000,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:hareket:s081:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 330000,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:hareket:s085:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 73476,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:hareket:s109:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 261079,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:projeksiyon:hareket:acilis:S",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 234342,
+    "date": "2026-07-02",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:projeksiyon:hareket:s011",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:projeksiyon:hareket:s016",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:projeksiyon:hareket:s024",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:projeksiyon:hareket:s025",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 300000,
+    "date": "2026-05-08",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:projeksiyon:hareket:s030",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:projeksiyon:hareket:s031",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 74693,
+    "date": "2026-04-26",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:projeksiyon:hareket:s040",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:projeksiyon:hareket:s057",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:projeksiyon:hareket:s069",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 360000,
+    "date": "2026-05-26",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:projeksiyon:hareket:s081",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:projeksiyon:hareket:s085",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 73476,
+    "date": "2026-06-16",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:projeksiyon:hareket:s086",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:projeksiyon:hareket:s090",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:projeksiyon:hareket:s091",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:projeksiyon:hareket:s109",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:takvim:fatura:A1",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:takvim:fatura:A2",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 3418,
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:takvim:fatura:A3",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 450000,
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:takvim:fatura:A4",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 280758,
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:takvim:fatura:A5",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 13335,
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:takvim:fatura:A6",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 1747,
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:takvim:fatura:A7",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 81392,
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:takvim:fatura:A8",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 163049,
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:takvim:fatura:A9",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 167871,
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:takvim:hareket:acilis:S",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 234342,
+    "dueDate": "2026-07-02",
+    "direction": "out",
+    "label": "Ödenecek Borç (Ödeme Sözü)",
+    "state": "overdue",
+    "days": -14,
+    "cari": "S",
+    "person": "Rastgele Sigma Tedarik 8"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:takvim:hareket:s011",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:takvim:hareket:s016",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:takvim:hareket:s024",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:takvim:hareket:s025",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 300000,
+    "dueDate": "2026-05-08",
+    "direction": "out",
+    "label": "Ödenecek Borç (Ödeme Sözü)",
+    "state": "overdue",
+    "days": -53,
+    "cari": "S",
+    "person": "Rastgele Sigma Tedarik 8"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:takvim:hareket:s030",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:takvim:hareket:s031",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 74693,
+    "dueDate": "2026-04-26",
+    "direction": "out",
+    "label": "Ödenecek Borç",
+    "state": "overdue",
+    "days": -65,
+    "cari": "S",
+    "person": "Rastgele Sigma Tedarik 8"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:takvim:hareket:s040",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:takvim:hareket:s057",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:takvim:hareket:s069",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 360000,
+    "dueDate": "2026-05-26",
+    "direction": "out",
+    "label": "Ödenecek Borç",
+    "state": "overdue",
+    "days": -35,
+    "cari": "S",
+    "person": "Rastgele Sigma Tedarik 8"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:takvim:hareket:s081",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:takvim:hareket:s085",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 73476,
+    "dueDate": "2026-06-16",
+    "direction": "out",
+    "label": "Ödenecek Borç",
+    "state": "overdue",
+    "days": -14,
+    "cari": "S",
+    "person": "Rastgele Sigma Tedarik 8"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:takvim:hareket:s086",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:takvim:hareket:s090",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:takvim:hareket:s091",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:takvim:hareket:s109",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:vadeTakip:hareket:acilis:S",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 234342,
+    "date": "2026-07-02",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:vadeTakip:hareket:s011",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:vadeTakip:hareket:s016",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:vadeTakip:hareket:s024",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:vadeTakip:hareket:s025",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 300000,
+    "date": "2026-05-08",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:vadeTakip:hareket:s030",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:vadeTakip:hareket:s031",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 74693,
+    "date": "2026-04-26",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:vadeTakip:hareket:s040",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:vadeTakip:hareket:s069",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 360000,
+    "date": "2026-05-26",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:vadeTakip:hareket:s085",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 73476,
+    "date": "2026-06-16",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:vadeTakip:hareket:s086",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:vadeTakip:hareket:s090",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:vadeTakip:hareket:s091",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k5:hareket:acilis:S:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 234342,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k5:hareket:s019:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 210000,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k5:hareket:s024:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k5:hareket:s025:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 300000,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k5:hareket:s030:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 111947,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k5:hareket:s031:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 410000,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k5:projeksiyon:hareket:acilis:S",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 234342,
+    "date": "2026-07-02",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k5:projeksiyon:hareket:s016",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k5:projeksiyon:hareket:s019",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 210000,
+    "date": "2026-07-24",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k5:projeksiyon:hareket:s024",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k5:projeksiyon:hareket:s025",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 300000,
+    "date": "2026-05-08",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k5:projeksiyon:hareket:s030",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 111947,
+    "date": "2026-04-26",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k5:projeksiyon:hareket:s031",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 410000,
+    "date": "2026-04-26",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k5:projeksiyon:hareket:s040",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k5:takvim:fatura:A1",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k5:takvim:hareket:acilis:S",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 234342,
+    "dueDate": "2026-07-02",
+    "direction": "out",
+    "label": "Ödenecek Borç (Ödeme Sözü)",
+    "state": "overdue",
+    "days": -14,
+    "cari": "S",
+    "person": "Rastgele Sigma Tedarik 8"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k5:takvim:hareket:s016",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k5:takvim:hareket:s019",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k5:takvim:hareket:s024",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k5:takvim:hareket:s025",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 300000,
+    "dueDate": "2026-05-08",
+    "direction": "out",
+    "label": "Ödenecek Borç (Ödeme Sözü)",
+    "state": "overdue",
+    "days": -53,
+    "cari": "S",
+    "person": "Rastgele Sigma Tedarik 8"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k5:takvim:hareket:s030",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 111947,
+    "dueDate": "2026-04-26",
+    "direction": "out",
+    "label": "Ödenecek Borç (Ödeme Sözü)",
+    "state": "overdue",
+    "days": -82,
+    "cari": "S",
+    "person": "Rastgele Sigma Tedarik 8"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k5:takvim:hareket:s031",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 410000,
+    "dueDate": "2026-04-26",
+    "direction": "out",
+    "label": "Ödenecek Borç",
+    "state": "overdue",
+    "days": -65,
+    "cari": "S",
+    "person": "Rastgele Sigma Tedarik 8"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k5:takvim:hareket:s040",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k5:vadeTakip:hareket:acilis:S",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 234342,
+    "date": "2026-07-02",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k5:vadeTakip:hareket:s016",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k5:vadeTakip:hareket:s024",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k5:vadeTakip:hareket:s025",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 300000,
+    "date": "2026-05-08",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k5:vadeTakip:hareket:s030",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 111947,
+    "date": "2026-04-26",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k5:vadeTakip:hareket:s031",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 410000,
+    "date": "2026-04-26",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k5:vadeTakip:hareket:s040",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:hareket:acilis:S:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 234342,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:hareket:s011:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:hareket:s024:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:hareket:s025:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 300000,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:hareket:s030:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:hareket:s031:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 74693,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:hareket:s057:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 470000,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:hareket:s069:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 360000,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:hareket:s081:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 330000,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:hareket:s085:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 73476,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:hareket:s109:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 261079,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:projeksiyon:hareket:acilis:S",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 234342,
+    "date": "2026-07-02",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:projeksiyon:hareket:s011",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:projeksiyon:hareket:s016",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:projeksiyon:hareket:s024",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:projeksiyon:hareket:s025",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 300000,
+    "date": "2026-05-08",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:projeksiyon:hareket:s030",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:projeksiyon:hareket:s031",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 74693,
+    "date": "2026-04-26",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:projeksiyon:hareket:s040",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:projeksiyon:hareket:s057",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:projeksiyon:hareket:s069",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 360000,
+    "date": "2026-05-26",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:projeksiyon:hareket:s081",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:projeksiyon:hareket:s085",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 73476,
+    "date": "2026-06-16",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:projeksiyon:hareket:s086",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:projeksiyon:hareket:s090",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:projeksiyon:hareket:s091",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:projeksiyon:hareket:s109",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:takvim:fatura:A1",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:takvim:fatura:A2",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 3418,
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:takvim:fatura:A3",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 450000,
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:takvim:fatura:A4",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 280758,
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:takvim:fatura:A5",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 13335,
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:takvim:fatura:A6",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 1747,
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:takvim:fatura:A7",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 81392,
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:takvim:fatura:A8",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 163049,
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:takvim:fatura:A9",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 167871,
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:takvim:hareket:acilis:S",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 234342,
+    "dueDate": "2026-07-02",
+    "direction": "out",
+    "label": "Ödenecek Borç (Ödeme Sözü)",
+    "state": "overdue",
+    "days": -14,
+    "cari": "S",
+    "person": "Rastgele Sigma Tedarik 8"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:takvim:hareket:s011",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:takvim:hareket:s016",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:takvim:hareket:s024",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:takvim:hareket:s025",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 300000,
+    "dueDate": "2026-05-08",
+    "direction": "out",
+    "label": "Ödenecek Borç (Ödeme Sözü)",
+    "state": "overdue",
+    "days": -53,
+    "cari": "S",
+    "person": "Rastgele Sigma Tedarik 8"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:takvim:hareket:s030",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:takvim:hareket:s031",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 74693,
+    "dueDate": "2026-04-26",
+    "direction": "out",
+    "label": "Ödenecek Borç",
+    "state": "overdue",
+    "days": -65,
+    "cari": "S",
+    "person": "Rastgele Sigma Tedarik 8"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:takvim:hareket:s040",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:takvim:hareket:s057",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:takvim:hareket:s069",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 360000,
+    "dueDate": "2026-05-26",
+    "direction": "out",
+    "label": "Ödenecek Borç",
+    "state": "overdue",
+    "days": -35,
+    "cari": "S",
+    "person": "Rastgele Sigma Tedarik 8"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:takvim:hareket:s081",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:takvim:hareket:s085",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 73476,
+    "dueDate": "2026-06-16",
+    "direction": "out",
+    "label": "Ödenecek Borç",
+    "state": "overdue",
+    "days": -14,
+    "cari": "S",
+    "person": "Rastgele Sigma Tedarik 8"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:takvim:hareket:s086",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:takvim:hareket:s090",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:takvim:hareket:s091",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:takvim:hareket:s109",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:vadeTakip:hareket:acilis:S",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 234342,
+    "date": "2026-07-02",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:vadeTakip:hareket:s011",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:vadeTakip:hareket:s016",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:vadeTakip:hareket:s024",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:vadeTakip:hareket:s025",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 300000,
+    "date": "2026-05-08",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:vadeTakip:hareket:s030",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:vadeTakip:hareket:s031",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 74693,
+    "date": "2026-04-26",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:vadeTakip:hareket:s040",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:vadeTakip:hareket:s069",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 360000,
+    "date": "2026-05-26",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:vadeTakip:hareket:s085",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 73476,
+    "date": "2026-06-16",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:vadeTakip:hareket:s086",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:vadeTakip:hareket:s090",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:vadeTakip:hareket:s091",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:projeksiyon:cari",
+   "eski": "(denetim yok)",
+   "yeni": 6,
+   "sinif": "sayac",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k10:takvim:cariKalemSayisi",
+   "eski": "(denetim yok)",
+   "yeni": 5,
+   "sinif": "sayac",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:projeksiyon:cari",
+   "eski": "(denetim yok)",
+   "yeni": 5,
+   "sinif": "sayac",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k11:takvim:cariKalemSayisi",
+   "eski": "(denetim yok)",
+   "yeni": 5,
+   "sinif": "sayac",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:projeksiyon:cari",
+   "eski": "(denetim yok)",
+   "yeni": 6,
+   "sinif": "sayac",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k12:takvim:cariKalemSayisi",
+   "eski": "(denetim yok)",
+   "yeni": 6,
+   "sinif": "sayac",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k5:projeksiyon:cari",
+   "eski": "(denetim yok)",
+   "yeni": 6,
+   "sinif": "sayac",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "k5:takvim:cariKalemSayisi",
+   "eski": "(denetim yok)",
+   "yeni": 4,
+   "sinif": "sayac",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:projeksiyon:cari",
+   "eski": "(denetim yok)",
+   "yeni": 6,
+   "sinif": "sayac",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-8",
+   "anahtar": "kson:takvim:cariKalemSayisi",
+   "eski": "(denetim yok)",
+   "yeni": 6,
+   "sinif": "sayac",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-10",
+   "anahtar": "k6:hareket:acilis:S:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-10",
+   "anahtar": "k6:hareket:s001:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-10",
+   "anahtar": "k6:hareket:s015:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 105783,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-10",
+   "anahtar": "k6:hareket:s018:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 133351,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-10",
+   "anahtar": "k6:hareket:s024:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-10",
+   "anahtar": "k6:hareket:s044:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-10",
+   "anahtar": "k6:hareket:s055:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 50000,
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-10",
+   "anahtar": "k6:projeksiyon:hareket:acilis:S",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-10",
+   "anahtar": "k6:projeksiyon:hareket:s001",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-10",
+   "anahtar": "k6:projeksiyon:hareket:s015",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 105783,
+    "date": "2026-07-29",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-10",
+   "anahtar": "k6:projeksiyon:hareket:s016",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-10",
+   "anahtar": "k6:projeksiyon:hareket:s018",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 133351,
+    "date": "2026-07-29",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-10",
+   "anahtar": "k6:projeksiyon:hareket:s024",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-10",
+   "anahtar": "k6:projeksiyon:hareket:s026",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-10",
+   "anahtar": "k6:projeksiyon:hareket:s044",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-10",
+   "anahtar": "k6:projeksiyon:hareket:s055",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 50000,
+    "date": "2026-07-21",
+    "direction": "out"
+   },
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-10",
+   "anahtar": "k6:projeksiyon:hareket:s059",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-10",
+   "anahtar": "k6:takvim:hareket:acilis:S",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-10",
+   "anahtar": "k6:takvim:hareket:s001",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-10",
+   "anahtar": "k6:takvim:hareket:s015",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-10",
+   "anahtar": "k6:takvim:hareket:s016",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-10",
+   "anahtar": "k6:takvim:hareket:s018",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-10",
+   "anahtar": "k6:takvim:hareket:s024",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-10",
+   "anahtar": "k6:takvim:hareket:s026",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-10",
+   "anahtar": "k6:takvim:hareket:s044",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-10",
+   "anahtar": "k6:takvim:hareket:s055",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-10",
+   "anahtar": "k6:takvim:hareket:s059",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-10",
+   "anahtar": "k6:vadeTakip:hareket:acilis:S",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-10",
+   "anahtar": "k6:vadeTakip:hareket:s001",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-10",
+   "anahtar": "k6:vadeTakip:hareket:s016",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-10",
+   "anahtar": "k6:vadeTakip:hareket:s024",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-10",
+   "anahtar": "k6:vadeTakip:hareket:s026",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-10",
+   "anahtar": "k6:vadeTakip:hareket:s044",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-10",
+   "anahtar": "k6:vadeTakip:hareket:s059",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S102-S105",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-10",
+   "anahtar": "k6:projeksiyon:cari",
+   "eski": "(denetim yok)",
+   "yeni": 4,
+   "sinif": "sayac",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "rastgele-s1-10",
+   "anahtar": "k6:takvim:cariKalemSayisi",
+   "eski": "(denetim yok)",
+   "yeni": 1,
+   "sinif": "sayac",
+   "tur": "yeni"
+  }
+ ]
+}

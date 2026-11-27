@@ -1,0 +1,161 @@
+{
+ "aciklama": "Verilen çek 103, senet 321; ödeme ve geri alma.",
+ "ad": "s10-cek-senet-verilen",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "bil/aktif/I.A": 380000,
+   "bil/pasif/III.B": 80000,
+   "bil10/aktif/I.A": 380000,
+   "bil10/detay/I.A/103": -120000,
+   "bil10/pasif/III.B": 80000,
+   "bil10/pasif/V.F": -200000,
+   "bil10/pasif/V.G": 500000,
+   "mz/satirlar/102.B1/bakiye": 380000,
+   "mz/satirlar/103/bakiye": 0,
+   "mz/satirlar/320|T1/bakiye": -80000,
+   "mz/satirlar/321/bakiye": 0
+  }
+ },
+ "kapsam": [
+  "T-07",
+  "Ç-09",
+  "Ç-10",
+  "Ç-11"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "banka": "B1",
+   "tarih": "2026-01-01",
+   "tur": "banka_acilis",
+   "tutar": 500000
+  },
+  {
+   "K": 0,
+   "M": 200000,
+   "cari": "T1",
+   "fatura_turu": "gider",
+   "id": "A1",
+   "tarih": "2026-10-01",
+   "tur": "alis_faturasi"
+  },
+  {
+   "banka": "B1",
+   "cari": "T1",
+   "evrak": "VC1",
+   "tarih": "2026-10-02",
+   "tur": "odeme",
+   "tutar": 120000,
+   "yol": "cek"
+  },
+  {
+   "cari": "T1",
+   "evrak": "VS1",
+   "tarih": "2026-10-02",
+   "tur": "odeme",
+   "tutar": 80000,
+   "yol": "senet"
+  },
+  {
+   "ad": "bil10",
+   "rapor": "bilanco",
+   "tarih": "2026-10-10",
+   "tur": "rapor"
+  },
+  {
+   "banka": "B1",
+   "evrak": "VC1",
+   "tarih": "2026-10-20",
+   "tur": "verilen_evrak_ode"
+  },
+  {
+   "evrak": "VS1",
+   "tarih": "2026-10-21",
+   "tur": "verilen_evrak_geri_al"
+  },
+  {
+   "ad": "bil",
+   "rapor": "bilanco",
+   "tarih": "2026-10-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "mz",
+   "bas": "2026-01-01",
+   "rapor": "mizan",
+   "son": "2026-10-31",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

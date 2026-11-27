@@ -1,0 +1,18 @@
+// Birleşik tur 6 — G2 komşu taraması (ders 10): değişen işlevlerin / dosyaların adını geçiren testler + zorunlu komşular (şema kapısı, geri yükleme, yazım düzeni, kanıt aracı).
+import { readdirSync, readFileSync, writeFileSync } from "node:fs";
+import path from "node:path";
+
+const W = "/home/user/ofis---y-netimi/.claude/worktrees/agent-a115f88e3014ea777";
+const T = path.join(W, "test");
+const files = readdirSync(T).filter(name => name.endsWith(".test.mjs"));
+const patterns = [
+  /cash-opening|integrity|kapi-olcum|yapimAsamasi/, // görev metninin taraması
+  /restoringCash|cashRestoreMark|trash\/restore|backups\/restore/, // geri yükleme yolları
+  /scope\.born|scope\.inserted|addCommitGuard/, // db.mjs işlem kapsamı
+  /hof-core|keepFocus|FOCUS_KEYS|swapKeeping|hof-bank\.js|hof-bank-pos|hof-report-center|hof-invoices\.js/, // istemci kaynak tarayan testler
+  /tools\/mutabakat|mutabakat\.mjs|cash-tax-payment|tax\/payments/, // Vergi Ödemesi / araç
+];
+const named = new Set(["sema-kapisi-bs7.test.mjs", "yazim-duzeni.test.mjs", "kanit-araci.test.mjs", "platform-tasinabilirlik.test.mjs", "lisans-servisi-izolasyonu.test.mjs", "ci-kapi-listesi.test.mjs"]);
+const out = files.filter(name => named.has(name) || patterns.some(re => re.test(readFileSync(path.join(T, name), "utf8")))).sort();
+writeFileSync(process.argv[2], out.map(name => `test/${name}`).join("\n") + "\n");
+console.log(`${out.length} test dosyası`);

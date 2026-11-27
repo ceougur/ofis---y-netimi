@@ -1,0 +1,32 @@
+{
+  "ad": "tarih-e2e-senaryo-220-sonra-istanbul",
+  "komut": "node test/e2e/senaryo-220.mjs",
+  "commit": "9215357158176a87126fff1e4d291a15a59609d6",
+  "dal": "worktree-agent-a7187c0e87f23820b",
+  "kirli": 13,
+  "izlenmeyen": 5,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T23:11:04.114Z",
+  "sure_sn": 78.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 25,
+    "gecen": 25,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/tarih-e2e-senaryo-220-sonra-istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a7187c0e87f23820b",
+  "ham_cikti_sha256": "bda30a95fd84ff1d7f6f544022f751d2cc97e4ffd52788bb65d3d64ac6a1f826",
+  "ham_cikti_bayt": 2637
+}

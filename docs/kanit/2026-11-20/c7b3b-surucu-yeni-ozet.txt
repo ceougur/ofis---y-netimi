@@ -1,0 +1,8 @@
+
+# tests 7766
+# pass 7568
+# fail 58
+# cancelled 0
+# skipped 140
+# todo 0
+Çıktı: /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3b-ag/surucu-yeni

@@ -1,0 +1,3 @@
+senaryo 14 / 14 · sonuç aynı 14
+eski {'full(stock_moves: kimlik değişti)': 3, 'full(cash_entries: kimlik değişti)': 2, 'scoped': 1, '': 4}
+yeni {'scoped': 4, 'full(bulgu: bank:event)': 1, 'full(cash_entries: kimlik değişti)': 1, '': 4}

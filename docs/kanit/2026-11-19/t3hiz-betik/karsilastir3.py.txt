@@ -1,0 +1,36 @@
+# t3hiz: hiz3.sh çıktısı (ana, taban, uç, ana, taban, uç blokları) — ana oturumun karsilastir.py kuralı (ders 53 (a): en iyi VE ortanca > %10 → KÖTÜ; < 20 ms küçük), uç ↔ ANA hüküm; uç ↔ taban bilgi.
+# GEÇERSİZ (yük > 2) bloklar ATILIR ve sayısı yazılır. Çağrı: python3 -I karsilastir3.py <dosya> [<dosya> …]
+import re, sys
+ROLES = ['ana', 'taban', 'uc']
+val = {r: {} for r in ROLES}; sira = []; atilan = []
+for F in sys.argv[1:]:
+    cur = None; role = None; gec = False; n = 0
+    for l in open(F, encoding='utf-8'):
+        if l.startswith('=== '):
+            role = l.split()[1]; gec = 'GEÇERSİZ' in l
+            if gec: atilan.append(f"{F.split('/')[-1]}:{role}")
+        if l.startswith('kod '): cur = None if gec else role; n += 1
+        m = re.match(r'  (.+?): durum (\d+) · en iyi ([\d.]+) ms · ortanca ([\d.]+) ms · olay döngüsü en çok ([\d.]+)', l)
+        if m and cur:
+            y = m.group(1)
+            if y not in sira: sira.append(y)
+            val[cur].setdefault(y, []).append((int(m.group(2)), float(m.group(3)), float(m.group(4)), float(m.group(5))))
+    assert n == 6, (F, n)
+print('ATILAN (GEÇERSİZ) BLOKLAR:', atilan or 'yok')
+print('yol | ana en iyi / ort.ortanca / döngü | taban | uç | uç/ana en iyi | uç/ana ortanca | uç/taban ortanca | hüküm (uç ↔ ana)')
+kotu = 0
+for y in sira:
+    rows = {}
+    for r in ROLES:
+        v = val[r].get(y)
+        if v: rows[r] = (min(x[1] for x in v), sum(x[2] for x in v) / len(v), max(x[3] for x in v), set(x[0] for x in v))
+    if 'ana' not in rows or 'uc' not in rows:
+        print(f"{y[:46]} | TEK TARAFTA {sorted(rows)}"); continue
+    a, u = rows['ana'], rows['uc']; t = rows.get('taban')
+    rb = u[0] / a[0] if a[0] else 0; rm = u[1] / a[1] if a[1] else 0
+    h = 'küçük (<20 ms)' if max(a[0], u[0]) < 20 else ('KÖTÜ' if rb > 1.10 and rm > 1.10 else ('eşikte (tek ölçüt)' if rb > 1.10 or rm > 1.10 else 'tamam'))
+    kotu += h == 'KÖTÜ'
+    d = a[3] | u[3] | (t[3] if t else set())
+    fmt = lambda x: f"{x[0]:.0f} / {x[1]:.0f} / {x[2]:.0f}" if x else '-'
+    print(f"{y[:46]} | {fmt(a)} | {fmt(t)} | {fmt(u)} | {rb:.2f} | {rm:.2f} | {(u[1] / t[1]) if t and t[1] else 0:.2f} | {h}{'' if d == {200} else ' DURUM ' + str(d)}")
+print('KÖTÜLEŞEN YOL SAYISI (uç ↔ ana)', kotu)

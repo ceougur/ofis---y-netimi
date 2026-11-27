@@ -1,0 +1,6 @@
+ek-bag-sonra [TZ=Europe/Istanbul]: 16 olay · yapıldı 13 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 34 ms
+ek-bag-sonra [Europe/Istanbul] öz denetim TAMAM · AYNI 7 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 5 · ÖLÇÜLEMEDİ 0 · SUSMA 0 (adım 0, ara 0) · red farkı 0 · adım farkı 1 (sınıfsız 1)
+ADIM 7 tahsilat P2 {"ana": {"120": -1000, "128": 1000}} SINIFLANMADI
+af0205 fatura F2 p 1000 k 0 SINIFLANMADI
+mz ana 120 p 1000 k 2000 SINIFLANMADI
+mz ana 128 p 1000 k 0 SINIFLANMADI

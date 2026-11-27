@@ -1,0 +1,32 @@
+{
+  "ad": "bt5y-yeni-ist",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=4 test/db-tx-kayip-250.test.mjs test/whatsapp-we-webhook-bilgisi-250.test.mjs test/sema-kapisi-bs7.test.mjs test/kapali-kart-ekstre-tarihi-250.test.mjs test/birlesik-tur4-degisiklik-yok-250.test.mjs test/acilis-onarimi-savunma-250.test.mjs",
+  "commit": "d9c698de0b609ecd9d950b529f7fdca272482edf",
+  "dal": "bt5-birlesim",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T13:51:02.413Z",
+  "sure_sn": 39.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 87,
+    "gecen": 87,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../bt5y-kanit/2026-11-06/bt5y-yeni-ist.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt5-birlesim-ag",
+  "ham_cikti_sha256": "76cf42b94a326f75942c7128e28c438e690891cfad91bdeff6062c3caa6f5a45",
+  "ham_cikti_bayt": 30508
+}

@@ -1,0 +1,4 @@
+[zorla 1/2] test/c7b-goc52-kilit-izi-250.test.mjs · [dondurma yarışı] kip bitir · 1 örnek (açılışta bekliyor true · ilk adım runPending · ilk adımda bekliyor false · ilk adımda kanca tutuyordu null · bırakma adımla false · kanca tuttu false · sonra bitti true · listen'dan önce bitti true): ön koşul GERÇEKLEŞTİ · test YEŞİL · tests 3 pass 3 fail 0
+[zorla 2/2] test/c7b-goc52-kilit-izi-250.test.mjs · [dondurma yarışı] kip bitir · 1 örnek (açılışta bekliyor true · ilk adım runPending · ilk adımda bekliyor false · ilk adımda kanca tutuyordu null · bırakma adımla false · kanca tuttu false · sonra bitti true · listen'dan önce bitti true): ön koşul GERÇEKLEŞTİ · test YEŞİL · tests 3 pass 3 fail 0
+
+[zorla özet] test/c7b-goc52-kilit-izi-250.test.mjs · 2 yineleme · ön koşul gerçekleşti 2 · gerçekleşmedi 0 · ön koşullu yeşil 2 · ön koşullu kırmızı 0 · süre doldu, ön koşul bilinmiyor 0

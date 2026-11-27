@@ -1,0 +1,266 @@
+// Ç5-B SON TUR — Bölüm 1 (a): tur 2b-2 görev metninin "İş" maddelerinin (1–10 + S122) kararın KENDİ örneğiyle gerçek programda (API) koşusu. ROOT = sınanan kod kopyası.
+// Çıktı: JSON (senaryo → görünümler). Beklenenler karar metinlerinden ELLE yazılır (karar-tablo.py); bu betik yalnız programın sayısını OKUR.
+import { boot, day, views, TODAY } from "./h.mjs";
+
+const h = await boot();
+const out = {};
+const AUD = { id: "c5bson", role: "admin", permissions: [] };
+const r2 = v => Math.round(v * 100) / 100;
+const queue = acc => {
+  if (!h.ctx.invoices.obligationsFor) return null;
+  const res = h.ctx.invoices.obligationsFor(acc.id, h.ctx.accounts.detail(acc.id, AUD, { withRemaining: false }).ledger);
+  return {
+    kalemler: res.items.map(i => `${i.kind}|${i.side === "receivable" ? "+" : "-"}|${i.vade}|${i.amount}→${i.remaining}`),
+    sigma: r2(res.items.reduce((s, i) => s + (i.side === "receivable" ? 1 : -1) * i.remaining, 0)),
+    gecikmis: res.overdue(TODAY).amount,
+    kapsama: [...(res.coverage || new Map()).entries()].map(([, v]) => `${v.rule}:tük${v.consumed}/kap${v.capacity}:avans${v.advance}:kırp${v.trimmed}`),
+  };
+};
+const full = async (acc, opt = {}) => {
+  const v = await views(h, acc, opt);
+  const card = await h.card(acc);
+  v.kalanNot = (card.entries || []).filter(e => e.remaining !== undefined).map(e => `${e.note || e.kind}:${e.amount}→${e.remaining}`);
+  v.kuyruk = queue(acc);
+  const flow = await h.api.get(`/api/workspace/overview/nakit-akisi?from=${day(-60)}&to=${day(60)}&overdue=1&table=0`);
+  const rows = [...(flow.data?.rows || []), ...(flow.data?.overdue || [])].filter(r => r.party === acc.name || r.ref?.id === acc.id || r.accountId === acc.id);
+  v.nakit = rows.map(r => `${r.source}:${r.label}:${r.direction}:${r.amount}@${r.date}`).sort();
+  if (opt.plans) {
+    v.kartAyrinti = [];
+    for (const id of opt.plans) {
+      const p = (await h.api.get(`/api/workspace/plans/${id}`)).data;
+      v.kartAyrinti.push({ durum: p.state, taksitKalan: (p.items || []).map(i => i.remaining), taksitDurum: (p.items || []).map(i => i.state), kendiKalan: p.totals?.remaining, kuyrukKalan: p.totals?.queueRemaining, kendiOdenen: p.totals?.paid, cariPayi: p.totals?.accountPaid, geciken: p.totals?.overdue, gecikenAdet: p.totals?.overdueCount, gecikenRest: p.totals?.overdueRest, onerilen: p.ownNext?.remaining, kuyrukSiradaki: p.next?.remaining });
+    }
+  }
+  return v;
+};
+const sc = async (name, fn) => {
+  try {
+    out[name] = await fn();
+  } catch (error) {
+    out[name] = { HATA: String(error?.message || error).slice(0, 500) };
+  }
+};
+const note = (acc, n, body) => h.entry(acc, { note: n, ...body });
+let goods = null;
+const mal = async () => {
+  if (goods) return goods;
+  goods = await h.must("ürün", h.api.post("/api/workspace/stock", { kind: "goods", code: "C5BSON-MAL", name: "Son Tur Malı", unit: "Adet", openingQty: "100000", salePrice: "100" }));
+  return goods;
+};
+const stokSatis = async (acc, date, amount, installments = null) => h.must("stok satış", h.api.post(`/api/workspace/stock/${(await mal()).id}/moves`, { kind: "out", qty: "1", unitPrice: String(amount), pay: "account", accountId: acc.id, date, ...(installments ? { installments } : {}) }));
+const alisIadesi = async (acc, date, amount) => h.must("alış iadesi", h.api.post(`/api/workspace/stock/${(await mal()).id}/moves`, { kind: "out", reason: "preturn", qty: "1", unitPrice: String(amount), pay: "account", accountId: acc.id, date }));
+const kartAc = async (acc, date, total, count, firstDue, extra = {}) => h.api.post("/api/workspace/plans", { name: acc.name, registeredOn: date, total: String(total), accountId: acc.id, mode: "auto", count: String(count), firstDue, coversBalance: true, ...extra });
+const kartTahsil = (planId, date, amount, extra = {}) => h.api.post(`/api/workspace/plans/${planId}/entries`, { kind: "in", amount: String(amount), date, method: "cash", cashForce: true, similarOk: true, ...extra });
+const planOf = async acc => (await h.card(acc)).plans?.[0]?.id;
+
+// Satış faturaları belge tarihi sırasıyla kesilmeli (seri kronolojisi) → hepsi ÖN AŞAMADA, tarih sırasıyla; senaryolar hazır cariyi ve faturayı kullanır.
+const PRE = {
+  S95: { invoices: [[-40, 10000, 10]] },
+  S99: { invoices: [[-30, 300, -30, { rest: "installments", installments: { count: 2, firstDue: day(-20), everyMonths: 1 } }], [-25, 500, -25]] },
+  "S110 Elle": { invoices: [[-50, 600, -50]] },
+  S120: { invoices: [[-50, 600, -50]] },
+  S122: { invoices: [[-50, 600, -50]] },
+  "S120 b": { invoices: [[-45, 600, -45]] },
+  "S120 c": { invoices: [[-45, 600, -45]] },
+  S123: { invoices: [[-50, 600, -50]] },
+  S124: { invoices: [[-55, 600, -55]] },
+  S125: { invoices: [[-46, 600, -46]] },
+  ...(globalThis.EK_PRE || {}),
+};
+const pre = {};
+{
+  const jobs = [];
+  for (const [label, def] of Object.entries(PRE)) {
+    pre[label] = { acc: await h.account(label, def.type || "customer"), inv: [] };
+    def.invoices.forEach((row, index) => jobs.push({ label, index, row }));
+  }
+  jobs.sort((a, b) => a.row[0] - b.row[0]);
+  for (const job of jobs) {
+    const [d, amount, due, payment] = job.row;
+    pre[job.label].inv[job.index] = await h.sale(pre[job.label].acc, day(d), amount, day(due), payment || null);
+  }
+}
+
+try {
+  // ---- madde 1: S95, S97, S102, S103 ----
+  await sc("S95", async () => {
+    const a = pre.S95.acc;
+    const s = pre.S95.inv[0];
+    const p = await h.purchase(a, day(-30), 6000, day(-30));
+    await note(a, "odeme", { kind: "out", amount: "6000", date: day(-28) });
+    return full(a, { invoices: [s, p] });
+  });
+  await sc("S97_ayni_gun", async () => {
+    const a = await h.account("S97");
+    await note(a, "B", { kind: "debt", amount: "1000", date: day(-5) });
+    await note(a, "Y", { kind: "credit", amount: "300", date: day(-5) });
+    await note(a, "P", { kind: "in", amount: "1000", date: day(-5) });
+    return full(a);
+  });
+  await sc("S97_ters_yazim", async () => {
+    const a = await h.account("S97 ters");
+    await note(a, "P", { kind: "in", amount: "1000", date: day(-5) });
+    await note(a, "Y", { kind: "credit", amount: "300", date: day(-5) });
+    await note(a, "B", { kind: "debt", amount: "1000", date: day(-5) });
+    return full(a);
+  });
+  await sc("S102", async () => {
+    const a = await h.account("S102");
+    await note(a, "B", { kind: "debt", amount: "1000", date: day(-10) });
+    await note(a, "X", { kind: "credit", amount: "300", date: day(-9) });
+    await note(a, "Y", { kind: "credit", amount: "300", date: day(-8) });
+    await note(a, "P", { kind: "in", amount: "1000", date: day(-8) });
+    return full(a);
+  });
+  await sc("S103", async () => {
+    const t = await h.account("S103", "supplier");
+    await note(t, "O", { kind: "out", amount: "500", date: day(-20) });
+    const p = await h.purchase(t, day(-16), 300, day(-16));
+    await note(t, "P", { kind: "in", amount: "500", date: day(-11) });
+    return full(t, { invoices: [p] });
+  });
+  // ---- madde 2: S96 (+S93) ----
+  await sc("S96_nakit_tedarikci", async () => {
+    const t = await h.account("S96 Nakit", "supplier");
+    await note(t, "avans", { kind: "out", amount: "700", date: day(-10) });
+    return full(t);
+  });
+  await sc("S96_cek_tedarikci", async () => {
+    const t = await h.account("S96 Çek", "supplier");
+    await h.must("verilen çek", h.api.post("/api/workspace/cheques", { direction: "out", instrument: "cheque", amount: "700", issueDate: day(-10), dueDate: day(30), accountId: t.id, serialNo: "SON-1" }));
+    return full(t);
+  });
+  await sc("S96_musteri", async () => {
+    const m = await h.account("S96 Müşteri");
+    await note(m, "avans", { kind: "out", amount: "250", date: day(-3) });
+    return full(m);
+  });
+  // ---- madde 3: S98, S104, S105 ----
+  await sc("S98", async () => {
+    const a = await h.account("S98");
+    await note(a, "O", { kind: "out", amount: "200", date: day(-40) });
+    await note(a, "B", { kind: "debt", amount: "100", date: day(-35), dueDate: day(30) });
+    await note(a, "P", { kind: "in", amount: "150", date: day(-30) });
+    return full(a);
+  });
+  await sc("S104", async () => {
+    const a = await h.account("S104");
+    await note(a, "P", { kind: "in", amount: "500", date: day(-40) });
+    await note(a, "Y", { kind: "credit", amount: "200", date: day(-35), dueDate: day(30) });
+    await note(a, "O", { kind: "out", amount: "300", date: day(-30) });
+    return full(a);
+  });
+  await sc("S105", async () => {
+    const t = await h.account("S105", "supplier");
+    await note(t, "O", { kind: "out", amount: "300", date: day(-20) });
+    await alisIadesi(t, day(-16), 200);
+    const p = await h.purchase(t, day(-11), 250, day(-11));
+    return full(t, { invoices: [p] });
+  });
+  // ---- madde 4: S99 ----
+  await sc("S99", async () => {
+    const a = pre.S99.acc;
+    await note(a, "avans", { kind: "in", amount: "500", date: day(-40) });
+    const [b, s] = pre.S99.inv;
+    const doc = await h.invoice(b);
+    return { ...(await full(a, { invoices: [b, s], plans: doc.planId ? [doc.planId] : [] })), Bplan: doc.planId || "YOK" };
+  });
+  // ---- madde 5: S101 ----
+  await sc("S101", async () => {
+    const a = await h.account("S101");
+    await note(a, "avans", { kind: "in", amount: "1000", date: day(-40) });
+    await stokSatis(a, day(-30), 600, { count: "2", firstDue: day(-25), everyMonths: 1 });
+    const plan = await planOf(a);
+    const once = await full(a, { plans: [plan] });
+    const w = await kartTahsil(plan, day(-20), 300);
+    await note(a, "B500", { kind: "debt", amount: "500", date: day(-10) });
+    return { kartTahsilati: w.status, kartOncesi: { kart: once.kartAyrinti, gecikmis: once.gecikmisKart, zil: once.zil }, ...(await full(a, { plans: [plan] })) };
+  });
+  // ---- madde 6: S110 ----
+  await sc("S110_elle", async () => {
+    const a = pre["S110 Elle"].acc;
+    const f = pre["S110 Elle"].inv[0];
+    await note(a, "X900", { kind: "debt", amount: "900", date: day(-45) });
+    const k = await kartAc(a, day(-40), 900, 3, day(-10));
+    return { kart: k.status, ...(await full(a, { invoices: [f], plans: k.status === 200 ? [k.data.id] : [] })) };
+  });
+  await sc("S110_stok", async () => {
+    const a = await h.account("S110 Stok");
+    await note(a, "B500", { kind: "debt", amount: "500", date: day(-30) });
+    await stokSatis(a, day(-20), 1000, { count: "2", firstDue: day(-10), everyMonths: 1 });
+    const plan = await planOf(a);
+    return full(a, { plans: [plan] });
+  });
+  // ---- madde 7: S120, S122, S123–S125, Tablodan Aktar yok (API kapalı) ----
+  const s120 = async (label, pay = 0) => {
+    const a = pre[label].acc;
+    const f = pre[label].inv[0];
+    await note(a, "X500", { kind: "debt", amount: "500", date: day(-45) });
+    await note(a, "Y700", { kind: "debt", amount: "700", date: day(-43) });
+    const k = await kartAc(a, day(-40), 900, 3, day(-10));
+    if (pay) await kartTahsil(k.data.id, day(-2), pay);
+    return { kart: k.status, ...(await full(a, { invoices: [f], plans: k.status === 200 ? [k.data.id] : [] })) };
+  };
+  await sc("S120", () => s120("S120"));
+  await sc("S122", () => s120("S122", 300));
+  await sc("S120_b_kart600", async () => {
+    const a = pre["S120 b"].acc;
+    await note(a, "X900", { kind: "debt", amount: "900", date: day(-50) });
+    const f = pre["S120 b"].inv[0];
+    const k = await kartAc(a, day(-40), 600, 2, day(-10));
+    return { kart: k.status, ...(await full(a, { invoices: [f], plans: [k.data?.id] })) };
+  });
+  await sc("S120_c_kart500", async () => {
+    const a = pre["S120 c"].acc;
+    await note(a, "X900", { kind: "debt", amount: "900", date: day(-50) });
+    const f = pre["S120 c"].inv[0];
+    const k = await kartAc(a, day(-40), 500, 2, day(-10));
+    return { kart: k.status, ...(await full(a, { invoices: [f], plans: [k.data?.id] })) };
+  });
+  await sc("S123_sinir", async () => {
+    const a = pre.S123.acc;
+    const f = pre.S123.inv[0];
+    await note(a, "X300", { kind: "debt", amount: "300", date: day(-45) });
+    const k = await kartAc(a, day(-40), 500, 2, day(-10));
+    return { kart: k.status, ...(await full(a, { invoices: [f], plans: [k.data?.id] })) };
+  });
+  await sc("S124_sinir", async () => {
+    const a = pre.S124.acc;
+    const f = pre.S124.inv[0];
+    await note(a, "Z300", { kind: "debt", amount: "300", date: day(-50) });
+    await note(a, "X900", { kind: "debt", amount: "900", date: day(-48) });
+    await note(a, "Y900", { kind: "debt", amount: "900", date: day(-45) });
+    const k = await kartAc(a, day(-40), 900, 3, day(-10));
+    return { kart: k.status, ...(await full(a, { invoices: [f], plans: [k.data?.id] })) };
+  });
+  await sc("S125_sinir", async () => {
+    const a = pre.S125.acc;
+    await note(a, "X500", { kind: "debt", amount: "500", date: day(-48), dueDate: day(-20) });
+    const f = pre.S125.inv[0];
+    await note(a, "Y700", { kind: "debt", amount: "700", date: day(-45), dueDate: day(-40) });
+    const k = await kartAc(a, day(-38), 900, 3, day(-10));
+    return { kart: k.status, ...(await full(a, { invoices: [f], plans: [k.data?.id] })) };
+  });
+  // ---- madde 8: S118 ----
+  await sc("S118", async () => {
+    const a = await h.account("S118");
+    const paid = await h.must("ödenmiş kart", h.api.post("/api/workspace/plans", { accountId: a.id, name: "S118 Ödenmiş", total: "1000", mode: "auto", count: 1, firstDue: day(10), registeredOn: day(-30) }));
+    await h.must("1.000", kartTahsil(paid.id, day(-20), 1000));
+    await h.must("avans 100", kartTahsil(paid.id, day(-19), 100, { overpay: true }));
+    const open = await h.must("açık kart", h.api.post("/api/workspace/plans", { accountId: a.id, name: "S118 Açık", total: "1000", mode: "auto", count: 1, firstDue: day(10), registeredOn: day(-15) }));
+    await h.must("300", kartTahsil(open.id, day(-10), 300));
+    const v = await full(a, { plans: [open.id] });
+    const over = await kartTahsil(open.id, day(-1), 800);
+    return { ...v, sinir800: `${over.status}:${over.data?.code || ""}` };
+  });
+  // ---- madde 9: Y2 ----
+  await sc("Y2", async () => {
+    const a = await h.account("Y2");
+    const plan = await h.must("kart", h.api.post("/api/workspace/plans", { name: a.name, accountId: a.id, registeredOn: day(-20), total: "800" }));
+    const late = await h.api.get("/api/workspace/plans?status=overdue&limit=500");
+    return { gecikenSekmesinde: (late.data?.plans || []).some(x => x.id === plan.id), listeGosterge: late.data?.totals, ...(await full(a, { plans: [plan.id] })) };
+  });
+} finally {
+  await h.server.close();
+}
+console.log(JSON.stringify(out, null, 1));

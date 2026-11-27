@@ -1,0 +1,14 @@
+# Ç7b tur 2d — yeni bulgu (dosya sınırı dışı; kodlanmadı): "Tüm Hareketleri Sil" KDV mahsup fişlerini (vat_offsets) SİLMİYOR.
+# Yeniden üretim (geçici probe, depoya girmedi): bootBank 10.11.2026; satış 05.09.2026 1.000 + KDV 200; Eylül KDV mahsubu; POST /api/companies/sirket-001/reset {mode: movements}.
+## yeni kod (a44e4e5)
+önce {"120":1200,"360":-200,"391":0,"600":-1000} 1
+sıfırla 200
+sonra {"360":-200,"391":200} vat_offsets 1 invoices 0
+mutabakat true []
+## taban (c7b2d-taban = f0f1b88e) — AYNI
+önce {"120":1200,"360":-200,"391":0,"600":-1000} 1
+sıfırla 200
+sonra {"360":-200,"391":200} vat_offsets 1 invoices 0
+mutabakat true []
+# Kök neden: server/app.mjs MOVEMENT_TABLES listesinde "vat_offsets" yok (2.4.3'te tablo eklenirken listeye girmemiş); Mutabakat Testi 360 / 391'i
+# yakalamıyor (ok true). Sıfırlanan şirkette mizan 360 −200 / 391 +200 gösteriyor (faturasız).

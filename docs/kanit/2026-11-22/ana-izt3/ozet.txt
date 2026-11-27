@@ -1,0 +1,18 @@
+başta 1.82 2.37 2.40 2/157 8683 05:18:05 · yeni 89a10ca6  · eski 3b420085 
+yeni UTC çıkış 0 · # tests 19 # pass 19 # fail 0 # cancelled 0 # skipped 0 
+eski UTC çıkış 1 · # tests 19 # pass 14 # fail 5 # cancelled 0 # skipped 0 
+yeni Europe/Istanbul çıkış 0 · # tests 19 # pass 19 # fail 0 # cancelled 0 # skipped 0 
+eski Europe/Istanbul çıkış 1 · # tests 19 # pass 14 # fail 5 # cancelled 0 # skipped 0 
+m1 yazıldı
+mutant m1 çıkış 1 · # tests 14 # pass 11 # fail 3 
+m2 yazıldı
+mutant m2 çıkış 1 · # tests 14 # pass 13 # fail 1 
+kapı eski prod çıkış 0
+kapı yeni prod çıkış 0
+karşılaştır prod çıkış 0
+kapı eski test çıkış 0
+kapı yeni test çıkış 0
+karşılaştır test çıkış 0
+olay yeni çıkış 0
+olay eski çıkış 0
+bitti 05:20:49

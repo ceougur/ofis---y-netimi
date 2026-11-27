@@ -1,0 +1,41 @@
+Ç3 TUR 3 — birleşik Ç3 tur 1-2 dar kontrolünün bulguları (YÜKSEK-1, ORTA-1, DÜŞÜK-1) + S46 = A (ORTA-2) + Ç3 küçük işler (a) (b) (c). Tasarım notu docs/erp/C3-DONDURMA-TASARIM.md §19.
+Taban 834cd0ad (sınama birleşimi). Ürün: a430c4ee (ana iş) + 76bc91b8 (bütçe süresi performance.now). Test: a430c4ee + 2d42d493 (ilk sunucu denetim düşse de kapanır).
+Eski kod: git archive 834cd0ad → not defteri c3t3-eski-834cd0ad (ders 23, 25); yeni testler oraya kopyalanıp koşuldu. kanit.mjs kaydının "commit" alanı ÇALIŞMA AĞACININ HEAD'idir;
+eski kopyada koşulan kayıtlarda (c3t3-kirmizi-eski-*, c3t3-taban-834cd0ad-*) commit boştur, ölçülen kod 834cd0ad'dir.
+
+YEŞİL (son kod)
+- c3t3-final-yeni-utc / -istanbul (76bc91b8): test/donmus-defter-tur3-250 (11) + kilit-ucu K1–K9 (K6 genişledi) + banka-210-saat (12) = 32/32.
+- c3t3-son-yeni-utc / -istanbul (2d42d493): tur3 + kilit-ucu 20/20.
+- c3t3-final-e2e-donem-kilidi: senaryo-donem-kilidi-ilerleme-250 39/39 (adım 1, 2 genişledi; 5, 6, 7 yeni).
+- c3t3-e2e-senaryo-222 60/60, c3t3-e2e-senaryo-defter-243 24/24 (2d42d493).
+- c3t3-donmus-istanbul: donmus-defter-250 / -yasam / -bellek / -tur1 + yazım / platform / lisans tarayıcıları 54/54.
+- c3t3-komsu-utc (2d42d493; 129 dosya, c3t3-ham/komsu-liste-tam.txt): 1.471 / 1.473. Kırmızılar: banka-210-saat statik tarama (Date.now → performance.now, 76bc91b8;
+  c3t3-komsu-saat-yeniden GEÇTİ) ve sema-kapisi-bs7 (tabanda da: c3t3-taban-834cd0ad-sema-kapisi-bs7 aynı ileti "… whatsapp.appWebhook" — ana daldaki WE gerilemesi).
+
+KIRMIZI (eski kod 834cd0ad; ders 7, 38)
+- c3t3-kirmizi-eski-834cd0ad-son-utc / -istanbul: 9/19. BEKLENEN NEDEN: K6 / T1 / T2 "… süren koşunun yazdığı satırları sildi (0 / 5)", "(0 / 15)"; T3 "eksik satırlı koşu tamamlandı";
+  T5 "alt başlık … "kural değişti" diye adlandırıyor"; T6b "Mutabakat Testi kesik kayıtla düştü: 500"; U1 "eksilen 2.5.0 dönemi 2.4.9 kuralıyla yeniden dondu (S46 = A …)"; U3 "plan
+  dilimleri kendi kurallarıyla donmalı". ÖN KOŞUL (kanıt sayılmaz): T4 / T4b (eski kodda temizlik kancası ve cleanup alanı yok) — dişi mutant 311–314 ve 1 M ölçümü. U2 eski kodda da
+  yeşil (davranış aynı; dişi mutant 352).
+- c3t3-kirmizi-eski-834cd0ad-e2e-utc: 29/39 — Kilitle pasif değil, neden yok, form gönderimi 1 PUT, kilit kaldırılınca "donduruldu" bildirimi, mutabakat satırı "".
+- c3t3-t6-eski-yeni-utc (betik c3t3-ham/t6-eski-yeni.mjs.txt; v2.4.9 + v2.0.26 GERÇEK kodu, 600 tahsilat → 2.0.26 Tüm Hareketleri Sil → 2.4.9 açılışı kesik kayıt yazar):
+  v2.4.9'un kendi Mutabakat Testi 500, eski 834cd0ad 500, yeni 200 (kesik satır: detail null, "Kayıt ayrıntısı okunamadı (kesik ya da bozuk kayıt; 20000 karakter).").
+
+MUTASYON (test/donmus-defter-250-mutasyon.mjs)
+- c3t3-ham/mutasyon-kosu1-a430c4ee-durduruldu.txt: koşu 1 (a430c4ee kopyası), taban 56 + e2e 39; var olan 55 mutantın 55'i + 301–304 beklenen nedenle yakalandı (59 "ok", 0 "not ok").
+  Mutant 314'ün T4b'yi asılı bırakacağı görülünce durduruldu (ilk sunucu denetim düşünce kapanmıyordu; eski kodda da aynı) → test düzeltildi (2d42d493).
+- c3t3-mutasyon-tur3: koşu 2 (2d42d493 kopyası) 23/23: 15, 203, 206, 208, 209 (kaynak metni yeni koda göre) + 301–304, 311–314, 321–324 (e2e), 331, 341, 342, 351–353.
+
+ÖLÇÜM (flock scratchpad/olcum.lock; programın kendi verisi; yük kayıtlarda)
+- c3t3-ham/p4-100k-A2-yeni.*: 100.000, yazım sürerken (1.000 satır yazılmışken) aynı güne kilit → TUTARLI 274.616 / 274.616 / 274.616 (eski dar kontrol: 254.116 görünen, 20.500 kayıp).
+- c3t3-ham/p4-100k-B-yeni.*: Kilidi Aç 3.139 ms → hemen Yeniden Kilitle 5.006 ms 200 → TUTARLI.
+- c3t3-ham/p6-1m-yeni.*: 1.000.000 (2.741.312 donmuş satır): Kilidi Aç 5.005 ms; Yeniden Kilitle (hemen) 409 ledger-cleanup-running 5.009 ms (eski: 30.002 ms client-timeout);
+  temizlik +7,8 s; Yeniden Kilitle 200 5.011 ms; dondurma 106,0 / 93,8 s, görünen = kayıtlı; tablo doğrulaması 138 parça, parça en uzun 8 ms, toplam 543 ms.
+- c3t3-ham/p1-yeni-utc.json, p5-yeni-utc.json: dar kontrol p1 / p5 betikleri yeni kodda TUTARLI.
+
+YENİDEN KOŞU (ana oturum; KANIT_DIR kendi klasörü, HUKUK_LICENSE_URL=http://127.0.0.1:9)
+- TZ=UTC ve TZ=Europe/Istanbul: node --test --test-concurrency=1 test/donmus-defter-tur3-250.test.mjs test/donmus-defter-kilit-ucu-250.test.mjs test/banka-210-saat.test.mjs → 32/32
+  (etiket v2.4.9 / v2.0.26 yoksa T6 atlanır → 31 + 1 atlanan).
+- PLAYWRIGHT_BROWSERS_PATH=… node test/e2e/senaryo-donem-kilidi-ilerleme-250.mjs → 39/39.
+- Eski kod: git archive 834cd0ad ayrı kopya + yeni test dosyaları → 9/19 (yukarıdaki nedenler); e2e 29/39.
+- Mutasyon: git archive HEAD kopyası (+ node_modules bağı) → node test/donmus-defter-250-mutasyon.mjs --kopya <kopya> [--yalniz 301,…].

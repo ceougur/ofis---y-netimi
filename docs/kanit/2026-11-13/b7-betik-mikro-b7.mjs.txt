@@ -1,0 +1,31 @@
+// Mikro ölçüm: geri yüklemenin iki ölçümü — taban (sayı) ↔ yeni (kimlik kümesi) — aynı veri kopyasında, aynı süreçte. node mikro-b7.mjs <kod kökü> <veri kopyası>
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+import { DatabaseSync } from "node:sqlite";
+const [root, dir] = process.argv.slice(2);
+const dbFile = path.join(dir, "data", "destekofis.sqlite");
+{
+  const db = new DatabaseSync(dbFile);
+  if (!db.prepare("SELECT 1 AS f FROM cash_entries WHERE id = 'b7-olcum-acilis'").get()) {
+    const mid = db.prepare("SELECT date FROM cash_entries WHERE method = 'cash' ORDER BY date LIMIT 1 OFFSET (SELECT COUNT(*) / 2 FROM cash_entries WHERE method = 'cash')").get()?.date;
+    db.prepare("INSERT INTO cash_entries (id, kind, amount, date, description, method, is_opening, created_by, created_at) VALUES ('b7-olcum-acilis', 'in', 1000, ?, 'Açılış Bakiyesi', 'cash', 1, 'olcum', ?)").run(mid, `${mid}T08:00:00.000Z`);
+  }
+  db.close();
+}
+const { createStore, openDatabase } = await import(pathToFileURL(path.join(root, "server", "lib", "db.mjs")).href);
+const co = await import(pathToFileURL(path.join(root, "server", "lib", "cash-opening.mjs")).href);
+const store = createStore(openDatabase(dbFile, { readOnly: true }));
+const t = (label, fn, n = 12) => {
+  fn();
+  const ms = [];
+  for (let i = 0; i < n; i += 1) {
+    const s = performance.now();
+    fn();
+    ms.push(performance.now() - s);
+  }
+  ms.sort((a, b) => a - b);
+  console.log(`${label}: en iyi ${ms[0].toFixed(1)} ms · ortanca ${ms[Math.floor(n / 2)].toFixed(1)} ms`);
+};
+t("cashBeforeOpening (satır)", () => co.cashBeforeOpening(store).rows.length);
+t("sayı (taban: rows.length)", () => co.cashBeforeOpening(store)?.rows.length || 0);
+t("küme (yeni: Set(rows.key))", () => new Set((co.cashBeforeOpening(store)?.rows || []).map(row => row.key)));

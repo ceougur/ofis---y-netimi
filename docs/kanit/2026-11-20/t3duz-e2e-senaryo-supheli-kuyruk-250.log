@@ -1,0 +1,27 @@
+
+> destekofis@2.4.9 test:senaryo-supheli-kuyruk-250
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-supheli-kuyruk-250.mjs
+
+  ✓ kurulum: {"b120":100,"b128":1000} (120 = 100, 128 = 1.000)
+
+■ 1 + Tahsilat → Kapatılacak Fatura = Fatura 2 → 700 (120'ye düşecek 300 > şüpheli dışı borç 100): RET, form açık, ileti iki tutarı söyler
+  ✓ formun yardım metni yeni kuralı söyler
+  ✓ Kapatılacak Fatura listesinde Fatura 2 var
+  ✓ form kapanmadı
+  ✓ ileti: “Normal cari hesaba işlenecek kısım (300,00 TL; 700,00 TL tahsilatın 400,00 TL'si faturanın şüpheli alacaktaki payından düşüyor) carinin şüpheli dışı borç bakiyesini (100,00 TL) aşıyor; fazlası şüpheli alacaktan düşmek zorunda.”
+  ✓ veri tabanı: satır yazılmadı (3 satır, başta 3; {"b120":100,"b128":1000})
+
+■ 2 Tutarı 300'e düzelt (seç + yaz + Tab) → Kaydet: KABUL (bugünkü kuralda 409 idi); 128 = 700, 120 = 100
+  ✓ form kapandı (kayıt alındı)
+  ✓ veri tabanı: 4 satır (başta 3 + 1), {"b120":100,"b128":700} (128 = 700, 120 = 100)
+  ✓ yeni satır: {"amount":300,"invoiceId":"invoice-f49c0eb8-f838-45b9-a704-8f2c12200857","skip":0} (Fatura 2 FIS2026000000002)
+  ✓ mizan: 128 = 700, 120 = 100
+  ✓ Mutabakat Testi tamam (iki yükleyici aynı kural)
+
+■ 3 Hareketler etiketi: işaretli 400 'Normal Cariye İşlendi', F2'ye bağlı 300 (tamamı 128) etiketsiz; F2'ye bağlı 200 → 'Kısmen Normal Cariye İşlendi (₺100,00)'
+  ✓ etiketler (300'den sonra): {"full":["Normal Cariye İşlendi"],"part":[]} (yalnız işaretli 400'de 'Normal Cariye İşlendi')
+  ✓ veri tabanı: {"b120":0,"b128":600} (128 = 600, 120 = 0)
+  ✓ etiketler (200'den sonra): {"full":["Normal Cariye İşlendi"],"part":["Kısmen Normal Cariye İşlendi (₺100,00)"]} (tutar ekranın para biçimiyle)
+  ✓ sayfa hatası yok
+
+✓ senaryo-supheli-kuyruk-250: 15 geçti, 0 kaldı

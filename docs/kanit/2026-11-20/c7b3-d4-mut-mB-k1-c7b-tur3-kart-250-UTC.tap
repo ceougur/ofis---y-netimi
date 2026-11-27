@@ -1,0 +1,73 @@
+TAP version 13
+# (node:3102) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Ç7b tur 3 — kart küçülmesi (karar (4)), S15, S206 / S210 / S211, S217
+    # Subtest: (4) iade kartı vadesi EN ÖNCE gelen AÇIK taksitten küçültür; ödenmiş kısma dokunmaz
+    ok 1 - (4) iade kartı vadesi EN ÖNCE gelen AÇIK taksitten küçültür; ödenmiş kısma dokunmaz
+      ---
+      duration_ms: 293.465392
+      type: 'test'
+      ...
+    # Subtest: (4) faturasız stok iadesi: satış kartı kuyrukta AÇIK kalan en önce gelen taksitten küçülür (iadenin kapattığı taksit kesilmez; S140 = A / S151 = B)
+    ok 2 - (4) faturasız stok iadesi: satış kartı kuyrukta AÇIK kalan en önce gelen taksitten küçülür (iadenin kapattığı taksit kesilmez; S140 = A / S151 = B)
+      ---
+      duration_ms: 116.386573
+      type: 'test'
+      ...
+    # Subtest: S216 = C: iade iptal edilince kart bugünkü gibi SON taksitte büyür (takvim ilk hâline dönmez — BİLİNEN SINIR); bakiye ve kart toplamı geri gelir
+    ok 3 - S216 = C: iade iptal edilince kart bugünkü gibi SON taksitte büyür (takvim ilk hâline dönmez — BİLİNEN SINIR); bakiye ve kart toplamı geri gelir
+      ---
+      duration_ms: 229.027366
+      type: 'test'
+      ...
+    # Subtest: (4) iade kalanı aşarsa fazlası avans; parası geri verilen iade kartı küçültmez
+    ok 4 - (4) iade kalanı aşarsa fazlası avans; parası geri verilen iade kartı küçültmez
+      ---
+      duration_ms: 229.751133
+      type: 'test'
+      ...
+    # Subtest: S15 = A: kendi kartında tahsilatı olan faturanın İptal Et'i kabul; kart kapanır, tahsilat avans; Sil bugünkü gibi 409
+    ok 5 - S15 = A: kendi kartında tahsilatı olan faturanın İptal Et'i kabul; kart kapanır, tahsilat avans; Sil bugünkü gibi 409
+      ---
+      duration_ms: 184.414461
+      type: 'test'
+      ...
+    # Subtest: S206 = A / S211 = A: faturayı içine almış Mevcut Borç kartı faturanın iptalinde kapanır
+    ok 6 - S206 = A / S211 = A: faturayı içine almış Mevcut Borç kartı faturanın iptalinde kapanır
+      ---
+      duration_ms: 231.793477
+      type: 'test'
+      ...
+    # Subtest: Kartı Kapat'la önceden kapatılmış tahsilatlı kendi kartın faturası iptal edilmez (kalan iki kez düşülmesin)
+    ok 7 - Kartı Kapat'la önceden kapatılmış tahsilatlı kendi kartın faturası iptal edilmez (kalan iki kez düşülmesin)
+      ---
+      duration_ms: 86.685736
+      type: 'test'
+      ...
+    # Subtest: S206 / S211 ailesi: faturayı içine ALMAMIŞ Mevcut Borç kartı iptalde borçtan büyük kalırsa küçülür; kalanı 0'a inen kart kapanır (borçsuz açık kart kalmaz)
+    ok 8 - S206 / S211 ailesi: faturayı içine ALMAMIŞ Mevcut Borç kartı iptalde borçtan büyük kalırsa küçülür; kalanı 0'a inen kart kapanır (borçsuz açık kart kalmaz)
+      ---
+      duration_ms: 117.957367
+      type: 'test'
+      ...
+    # Subtest: S210 = A: kartta başka borç da varsa faturanın iptalinde kart yine KAPANIR; elle borç kendi vadesiyle carinin borcuna döner
+    ok 9 - S210 = A: kartta başka borç da varsa faturanın iptalinde kart yine KAPANIR; elle borç kendi vadesiyle carinin borcuna döner
+      ---
+      duration_ms: 137.213367
+      type: 'test'
+      ...
+    1..9
+ok 1 - Ç7b tur 3 — kart küçülmesi (karar (4)), S15, S206 / S210 / S211, S217
+  ---
+  duration_ms: 2090.437588
+  type: 'suite'
+  ...
+1..1
+# tests 9
+# suites 1
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2488.624412

@@ -1,0 +1,58 @@
+// Ç3 tur 3 — (b) kırmızı / yeşil: 2.4.9 + 2.0.26 GERÇEK koduyla (sürüm etiketleri, yeni ağacın surumler.mjs'i) kesik Mutabakat Günlüğü kaydı üretilir; aynı verinin iki kopyası
+// eski kod (834cd0ad, ayrı kopya) ve yeni kodla açılır, Mutabakat Testi HTTP kodu ve kesik satırın görünümü yazdırılır.
+// Kullanım: HUKUK_LICENSE_URL=http://127.0.0.1:9 node t6-eski-yeni.mjs <yeni ağaç> <eski kopya>
+import { cpSync, mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+
+const [NEW, OLD] = process.argv.slice(2);
+const { bootVersion } = await import(pathToFileURL(path.join(NEW, "test/guvenilirlik/surumler.mjs")).href);
+const { createClock } = await import(pathToFileURL(path.join(NEW, "server/lib/clock.mjs")).href);
+const { ADMIN_PASSWORD } = await import(pathToFileURL(path.join(NEW, "test/helpers.mjs")).href);
+const root = mkdtempSync(path.join(tmpdir(), "c3t3-t6-"));
+const dirs = { dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" } };
+const at = time => ({ ...dirs, now: createClock({ time, fixed: true }) });
+let tests = 0;
+let failed = 0;
+const check = (ok, text) => {
+  tests += 1;
+  if (!ok) failed += 1;
+  console.log(`${ok ? "ok" : "not ok"} ${tests} - ${text}`);
+};
+try {
+  let app = await bootVersion("v2.4.9", at("2027-01-10T10:00:00+03:00"));
+  const api = await app.login();
+  const acc = await api.post("/api/workspace/accounts", { name: "Kesik Cari", type: "customer", registeredOn: "2026-12-01" });
+  for (let i = 0; i < 600; i += 1) await api.post(`/api/workspace/accounts/${acc.data.id}/entries`, { kind: "in", amount: String(10 + i), date: "2027-01-05" });
+  await app.close();
+  app = await bootVersion("v2.0.26", at("2027-01-10T10:30:00+03:00"));
+  const reset = await (await app.login()).post("/api/companies/sirket-001/reset", { mode: "movements", confirm: "001", password: ADMIN_PASSWORD });
+  check(reset.status === 200, `v2.0.26 Tüm Hareketleri Sil: HTTP ${reset.status}`);
+  await app.close();
+  app = await bootVersion("v2.4.9", at("2027-01-10T11:00:00+03:00"));
+  const scan249 = await (await app.login()).get("/api/workspace/ledger/integrity");
+  console.log(`# v2.4.9 kendi Mutabakat Testi: HTTP ${scan249.status}`);
+  await app.close();
+  for (const [label, code, expect] of [["eski-834cd0ad", OLD, 500], ["yeni", NEW, 200]]) {
+    const copy = `${root}-${label}`;
+    cpSync(root, copy, { recursive: true });
+    const h = await import(pathToFileURL(path.join(code, "test/helpers.mjs")).href);
+    const server = await h.startTestServer({ dataDir: path.join(copy, "data"), backupDir: path.join(copy, "backups"), now: { time: "2027-01-10T12:00:00+03:00", fixed: true } });
+    try {
+      const admin = await h.loginAdmin(server);
+      const scan = await admin.get("/api/workspace/ledger/integrity");
+      const cut = scan.status === 200 ? scan.data.data.log.filter(row => row.detailUnreadable) : [];
+      const shown = scan.status === 200 ? `kesik satır ${cut.length}: ${JSON.stringify(cut.map(row => ({ action: row.action, detail: row.detail, detailNote: row.detailNote, summary: row.summary.slice(0, 80) })))}` : JSON.stringify(scan.data).slice(0, 200);
+      console.log(`# ${label}: HTTP ${scan.status} ${shown}`);
+      check(scan.status === expect, `${label}: Mutabakat Testi HTTP ${scan.status} (beklenen ${expect})`);
+    } finally {
+      await server.close();
+      rmSync(copy, { recursive: true, force: true });
+    }
+  }
+} finally {
+  rmSync(root, { recursive: true, force: true });
+}
+console.log(`\n# tests ${tests}\n# pass ${tests - failed}\n# fail ${failed}`);
+process.exit(failed ? 1 : 0);

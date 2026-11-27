@@ -1,0 +1,206 @@
+.............F..........FFF...............................................................................F................F...............................FFF.................
+======================================================================
+FAIL: test_senaryo_ve_beklenen_dosyalari_guncel (__main__.Dosyalar.test_senaryo_ve_beklenen_dosyalari_guncel)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin9-eskimodel/test/bagimsiz/muhasebe/test_model.py", line 1004, in test_senaryo_ve_beklenen_dosyalari_guncel
+    self.assertEqual(UB.main(denetle=True), 0, "python3 test/bagimsiz/muhasebe/uret_beklenen.py ile yeniden yazın")
+                     ~~~~~~~^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin9-eskimodel/test/bagimsiz/muhasebe/uret_beklenen.py", line 54, in main
+    for yol, icerik in ((os.path.join(SEN, s["ad"] + ".json"), metin(s)), (os.path.join(BEK, s["ad"] + ".json"), metin(beklenen(s)))):
+                                                                                                                       ~~~~~~~~^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin9-eskimodel/test/bagimsiz/muhasebe/uret_beklenen.py", line 41, in beklenen
+    r = M.kos(s, M.Kurallar.etiketten(et))
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin9-eskimodel/test/bagimsiz/muhasebe/model.py", line 3830, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin9-eskimodel/test/bagimsiz/muhasebe/model.py", line 2565, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin9-eskimodel/test/bagimsiz/muhasebe/model.py", line 2591, in uygula
+    return getattr(self, "_o_" + tur)(o, d)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin9-eskimodel/test/bagimsiz/muhasebe/model.py", line 2712, in _o_duzenle
+    self._s57_kapsam(k, dg)
+    ~~~~~~~~~~~~~~~~^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin9-eskimodel/test/bagimsiz/muhasebe/model.py", line 2726, in _s57_kapsam
+    raise AssertionError("senaryo hatası: olağan bağlı kayıtta AYNI düzeltmede bağ + cari — S57 harfiyen red mi, S54 gibi kabul mü; kâhin susar "
+                         "(README bakım 8 U7 (a), KULLANICIYA SORULMALI 8)")
+AssertionError: senaryo hatası: olağan bağlı kayıtta AYNI düzeltmede bağ + cari — S57 harfiyen red mi, S54 gibi kabul mü; kâhin susar (README bakım 8 U7 (a), KULLANICIYA SORULMALI 8)
+
+======================================================================
+FAIL: test_s101_s72_soz_gunu (__main__.ElleSenaryolar.test_s101_s72_soz_gunu)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin9-eskimodel/test/bagimsiz/muhasebe/test_model.py", line 767, in test
+    self.assertEqual(gercek, bek, f"{s['ad']} [{et}] {yol}")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'tar[97 chars]: {'C3': 500}, 'kahin_susuyor': [{'cari': 'C2'[23 chars]U'}]} != {'tar[97 chars]: {'C2': 800, 'C3': 500}}
+  {'elle': {},
+-  'kahin_susuyor': [{'cari': 'C2', 'neden': 'S52_SOZ_GUNU'}],
+-  'odeme_sozu_var': {'C3': 500},
++  'odeme_sozu_var': {'C2': 800, 'C3': 500},
+?                     +++++++++++
+
+   'otomatik': {'C1': 1000},
+   'supheli_etiketli': [],
+   'tarih': '2026-03-20'} : s101-s72-soz-gunu [A] h20
+
+======================================================================
+FAIL: test_s102_s73_soz_butun_borc (__main__.ElleSenaryolar.test_s102_s73_soz_butun_borc)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin9-eskimodel/test/bagimsiz/muhasebe/test_model.py", line 767, in test
+    self.assertEqual(gercek, bek, f"{s['ad']} [{et}] {yol}")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'tar[104 chars] 1000}, 'kahin_susuyor': [{'cari': 'C2', 'nede[20 chars]E'}]} != {'tar[104 chars] 1000, 'C2': 800}}
+  {'elle': {},
+-  'kahin_susuyor': [{'cari': 'C2', 'neden': 'S52_YENI_GECIKME'}],
+-  'odeme_sozu_var': {'C1': 1000},
++  'odeme_sozu_var': {'C1': 1000, 'C2': 800},
+?                               +++++++++++
+
+   'otomatik': {'C3': 100},
+   'supheli_etiketli': [],
+   'tarih': '2026-03-12'} : s102-s73-soz-butun-borc [A] h12
+
+======================================================================
+FAIL: test_s103_s79_olagan_bag_cari (__main__.ElleSenaryolar.test_s103_s79_olagan_bag_cari)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin9-eskimodel/test/bagimsiz/muhasebe/test_model.py", line 764, in test
+    r = M.kos(x, M.Kurallar.etiketten(et))
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin9-eskimodel/test/bagimsiz/muhasebe/model.py", line 3830, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin9-eskimodel/test/bagimsiz/muhasebe/model.py", line 2565, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin9-eskimodel/test/bagimsiz/muhasebe/model.py", line 2591, in uygula
+    return getattr(self, "_o_" + tur)(o, d)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin9-eskimodel/test/bagimsiz/muhasebe/model.py", line 2712, in _o_duzenle
+    self._s57_kapsam(k, dg)
+    ~~~~~~~~~~~~~~~~^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin9-eskimodel/test/bagimsiz/muhasebe/model.py", line 2726, in _s57_kapsam
+    raise AssertionError("senaryo hatası: olağan bağlı kayıtta AYNI düzeltmede bağ + cari — S57 harfiyen red mi, S54 gibi kabul mü; kâhin susar "
+                         "(README bakım 8 U7 (a), KULLANICIYA SORULMALI 8)")
+AssertionError: senaryo hatası: olağan bağlı kayıtta AYNI düzeltmede bağ + cari — S57 harfiyen red mi, S54 gibi kabul mü; kâhin susar (README bakım 8 U7 (a), KULLANICIYA SORULMALI 8)
+
+======================================================================
+FAIL: test_s88_s52_odeme_sozu (__main__.ElleSenaryolar.test_s88_s52_odeme_sozu)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin9-eskimodel/test/bagimsiz/muhasebe/test_model.py", line 767, in test
+    self.assertEqual(gercek, bek, f"{s['ad']} [{et}] {yol}")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'tar[96 chars]: {'C3': 500}, 'kahin_susuyor': [{'cari': 'C1'[23 chars]U'}]} != {'tar[96 chars]: {'C1': 600, 'C3': 500}}
+  {'elle': {},
+-  'kahin_susuyor': [{'cari': 'C1', 'neden': 'S52_SOZ_GUNU'}],
+-  'odeme_sozu_var': {'C3': 500},
++  'odeme_sozu_var': {'C1': 600, 'C3': 500},
+?                     +++++++++++
+
+   'otomatik': {'C2': 800},
+   'supheli_etiketli': [],
+   'tarih': '2026-03-20'} : s88-s52-odeme-sozu [A] hat3
+
+======================================================================
+FAIL: test_EK2_4_1_ayni_gun_yazim_sirasi_sonucu_degistirmez (__main__.OlayMaddeleri.test_EK2_4_1_ayni_gun_yazim_sirasi_sonucu_degistirmez)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin9-eskimodel/test/bagimsiz/muhasebe/test_model.py", line 672, in test_EK2_4_1_ayni_gun_yazim_sirasi_sonucu_degistirmez
+    self.assertEqual(ozet(x), ozet(y), s["ad"])
+                     ~~~~^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin9-eskimodel/test/bagimsiz/muhasebe/test_model.py", line 652, in ozet
+    m.kos()
+    ~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin9-eskimodel/test/bagimsiz/muhasebe/model.py", line 2565, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin9-eskimodel/test/bagimsiz/muhasebe/model.py", line 2591, in uygula
+    return getattr(self, "_o_" + tur)(o, d)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin9-eskimodel/test/bagimsiz/muhasebe/model.py", line 2712, in _o_duzenle
+    self._s57_kapsam(k, dg)
+    ~~~~~~~~~~~~~~~~^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin9-eskimodel/test/bagimsiz/muhasebe/model.py", line 2726, in _s57_kapsam
+    raise AssertionError("senaryo hatası: olağan bağlı kayıtta AYNI düzeltmede bağ + cari — S57 harfiyen red mi, S54 gibi kabul mü; kâhin susar "
+                         "(README bakım 8 U7 (a), KULLANICIYA SORULMALI 8)")
+AssertionError: senaryo hatası: olağan bağlı kayıtta AYNI düzeltmede bağ + cari — S57 harfiyen red mi, S54 gibi kabul mü; kâhin susar (README bakım 8 U7 (a), KULLANICIYA SORULMALI 8)
+
+======================================================================
+FAIL: test_S72_S73_soz_kapsami (__main__.OlayMaddeleri.test_S72_S73_soz_kapsami)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin9-eskimodel/test/bagimsiz/muhasebe/test_model.py", line 566, in test_S72_S73_soz_kapsami
+    self.assertEqual((r["h1"]["otomatik"], r["h1"].get("odeme_sozu_var"), r["h1"].get("kahin_susuyor")), ({}, {"C1": 1000}, None))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Tuples differ: ({}, None, [{'cari': 'C1', 'neden': 'S52_YENI_GECIKME'}]) != ({}, {'C1': 1000}, None)
+
+First differing element 1:
+None
+{'C1': 1000}
+
+- ({}, None, [{'cari': 'C1', 'neden': 'S52_YENI_GECIKME'}])
++ ({}, {'C1': 1000}, None)
+
+======================================================================
+FAIL: test_S79_S54_ile_ayni (__main__.OlayMaddeleri.test_S79_S54_ile_ayni)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin9-eskimodel/test/bagimsiz/muhasebe/test_model.py", line 550, in test_S79_S54_ile_ayni
+    r1, r2 = M.kos(kur(True)), M.kos(kur(False))
+             ~~~~~^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin9-eskimodel/test/bagimsiz/muhasebe/model.py", line 3830, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin9-eskimodel/test/bagimsiz/muhasebe/model.py", line 2565, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin9-eskimodel/test/bagimsiz/muhasebe/model.py", line 2591, in uygula
+    return getattr(self, "_o_" + tur)(o, d)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin9-eskimodel/test/bagimsiz/muhasebe/model.py", line 2712, in _o_duzenle
+    self._s57_kapsam(k, dg)
+    ~~~~~~~~~~~~~~~~^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin9-eskimodel/test/bagimsiz/muhasebe/model.py", line 2726, in _s57_kapsam
+    raise AssertionError("senaryo hatası: olağan bağlı kayıtta AYNI düzeltmede bağ + cari — S57 harfiyen red mi, S54 gibi kabul mü; kâhin susar "
+                         "(README bakım 8 U7 (a), KULLANICIYA SORULMALI 8)")
+AssertionError: senaryo hatası: olağan bağlı kayıtta AYNI düzeltmede bağ + cari — S57 harfiyen red mi, S54 gibi kabul mü; kâhin susar (README bakım 8 U7 (a), KULLANICIYA SORULMALI 8)
+
+======================================================================
+FAIL: test_S79_olagan_kayit_bag_cari (__main__.OlayMaddeleri.test_S79_olagan_kayit_bag_cari)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin9-eskimodel/test/bagimsiz/muhasebe/test_model.py", line 521, in test_S79_olagan_kayit_bag_cari
+    self.assertEqual([x["kod"] for x in kos(kaynak, dg)["redler"]], [], f"{kaynak} {dg}")
+                                        ~~~^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin9-eskimodel/test/bagimsiz/muhasebe/test_model.py", line 515, in kos
+    return M.kos(senaryo(bas + [o("duzenle", kaynak=kaynak, degisiklik=dg)]))
+           ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin9-eskimodel/test/bagimsiz/muhasebe/model.py", line 3830, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin9-eskimodel/test/bagimsiz/muhasebe/model.py", line 2565, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin9-eskimodel/test/bagimsiz/muhasebe/model.py", line 2591, in uygula
+    return getattr(self, "_o_" + tur)(o, d)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin9-eskimodel/test/bagimsiz/muhasebe/model.py", line 2712, in _o_duzenle
+    self._s57_kapsam(k, dg)
+    ~~~~~~~~~~~~~~~~^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin9-eskimodel/test/bagimsiz/muhasebe/model.py", line 2726, in _s57_kapsam
+    raise AssertionError("senaryo hatası: olağan bağlı kayıtta AYNI düzeltmede bağ + cari — S57 harfiyen red mi, S54 gibi kabul mü; kâhin susar "
+                         "(README bakım 8 U7 (a), KULLANICIYA SORULMALI 8)")
+AssertionError: senaryo hatası: olağan bağlı kayıtta AYNI düzeltmede bağ + cari — S57 harfiyen red mi, S54 gibi kabul mü; kâhin susar (README bakım 8 U7 (a), KULLANICIYA SORULMALI 8)
+
+----------------------------------------------------------------------
+Ran 175 tests in 20.160s
+
+FAILED (failures=9)
+# tests 175
+# pass 166
+# fail 9
+# skipped 0

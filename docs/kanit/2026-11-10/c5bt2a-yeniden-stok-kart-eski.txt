@@ -1,0 +1,88 @@
+{
+ "a_kart": {
+  "id": "plan-e5d8c6c0-90ab-4cc1-b76f-9a441626f874",
+  "kayitTarihi": "2025-09-15"
+ },
+ "a": {
+  "bakiye": 1000,
+  "gecikmisKart": 1000,
+  "gecikmisKartAdet": 1,
+  "eskiGeciken": 500,
+  "gecikmisListe": 1000,
+  "vade": [
+   "account:Tahsil Edilecek Borç:1000@2026-09-30"
+  ],
+  "vadeGecikmis": 1000,
+  "zil": [
+   "account:Tahsil Edilecek Borç:1000:overdue"
+  ],
+  "kalan": [],
+  "faturalar": [],
+  "kartlar": [
+   {
+    "state": "done",
+    "items": [
+     0,
+     0
+    ],
+    "own": 1000,
+    "queue": 0,
+    "accountPaid": 0
+   }
+  ]
+ },
+ "b_kartYaniti": 200,
+ "b": {
+  "bakiye": 1000,
+  "gecikmisKart": 1000,
+  "gecikmisKartAdet": 1,
+  "eskiGeciken": 500,
+  "gecikmisListe": 1000,
+  "vade": [
+   "account:Tahsil Edilecek Borç:1000@2026-09-30"
+  ],
+  "vadeGecikmis": 1000,
+  "zil": [
+   "account:Tahsil Edilecek Borç:1000:overdue"
+  ],
+  "kalan": [
+   "debt:1000→1000"
+  ],
+  "faturalar": [],
+  "kartlar": [
+   {
+    "state": "done",
+    "items": [
+     0,
+     0
+    ],
+    "own": 1000,
+    "queue": 0,
+    "accountPaid": 0
+   }
+  ]
+ },
+ "a_kalemler": [
+  "stock|2026-09-30|1000"
+ ],
+ "a_sigmaKalem": 1000,
+ "b_kalemler": [
+  "entry|2026-09-30|1000"
+ ],
+ "b_sigmaKalem": 1000,
+ "taksitListesi_active": [],
+ "taksitListesi_overdue": [],
+ "taksitListesi_done": [
+  "DK Stok Kartı:done:1000",
+  "DK Geriye Tarihli Kart:done:1000"
+ ],
+ "taksitListesi_all": [
+  "DK Stok Kartı:done:1000",
+  "DK Geriye Tarihli Kart:done:1000"
+ ],
+ "mutabakat": {
+  "status": 200,
+  "ok": true,
+  "bad": []
+ }
+}

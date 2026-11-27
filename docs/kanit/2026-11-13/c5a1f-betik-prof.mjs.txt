@@ -1,0 +1,33 @@
+// Tanı (kabul ölçümü DEĞİL): kilit izinin girdileri tek tek ne kadar sürüyor. Yöntem: lockDigestOf'un hazırladığı SQL'ler yakalanır, her biri 3 kez koşulur (eachRow gibi satır satır).
+// ROOT=<kod> DB=<sqlite> LOCK=<tarih> node prof.mjs
+import path from "node:path";
+import { DatabaseSync } from "node:sqlite";
+import { pathToFileURL } from "node:url";
+const imp = rel => import(pathToFileURL(path.join(process.env.ROOT, rel)).href);
+const { createStore } = await imp("server/lib/db.mjs");
+const { lockDigestOf } = await imp("server/lib/integrity.mjs");
+const db = new DatabaseSync(process.env.DB, { readOnly: true });
+const seen = [];
+const proto = DatabaseSync.prototype.prepare;
+db.prepare = function (sql) { seen.push(sql); return proto.call(this, sql); };
+const store = createStore(db);
+let t = performance.now();
+lockDigestOf(store, process.env.LOCK);
+const total = performance.now() - t;
+delete db.prepare;
+const rows = [];
+for (const sql of [...new Set(seen)]) {
+  if (/sqlite_master|PRAGMA/.test(sql)) continue;
+  const times = [];
+  let n = 0;
+  for (let i = 0; i < 3; i += 1) {
+    t = performance.now();
+    n = 0;
+    for (const _ of db.prepare(sql).iterate(process.env.LOCK)) n += 1;
+    times.push(performance.now() - t);
+  }
+  rows.push({ ms: Math.min(...times), n, sql: sql.replace(/\s+/g, " ").slice(0, 110) });
+}
+rows.sort((a, b) => b.ms - a.ms);
+console.log(`toplam lockDigestOf ${total.toFixed(0)} ms`);
+for (const r of rows.slice(0, 14)) console.log(`${r.ms.toFixed(0).padStart(6)} ms ${String(r.n).padStart(7)} satır  ${r.sql}`);

@@ -1,0 +1,32 @@
+{
+  "ad": "ana-kahin-cari24-liste-utc",
+  "komut": "node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs --mutasyonsuz --cikti /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-kc24/liste-utc test/bagimsiz/cari/senaryolar/d53-c5-s234-kapali-kart-iade.json test/bagimsiz/cari/senaryolar/d54-c5-s234-acik-kart-iade.json test/bagimsiz/cari/senaryolar/d55-c5-s234-iade-iptal-gecikmis.json",
+  "commit": "85f70cda4cfa691acf5717cb07590e95df3043a7",
+  "dal": "claude/epic-thompson-w0lc2l",
+  "kirli": 1,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-21T13:55:56.847Z",
+  "sure_sn": 6.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 1094,
+    "gecen": 1094,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-kc24/kanit/2026-11-21/ana-kahin-cari24-liste-utc.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "cd9d95dd8bd1c7407f4eec0337739c947c09a1aa63667f2d3068a3a57c8e24a7",
+  "ham_cikti_bayt": 2131
+}

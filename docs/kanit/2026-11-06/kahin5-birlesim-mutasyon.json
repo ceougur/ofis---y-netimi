@@ -1,0 +1,32 @@
+{
+  "ad": "kahin5-birlesim-mutasyon",
+  "komut": "python3 -I test/bagimsiz/muhasebe/mutasyon.py",
+  "commit": "e89cdda5c4101f5d7e52d236a97784d51ea1ccda",
+  "dal": "claude/epic-thompson-w0lc2l",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T07:58:39.954Z",
+  "sure_sn": 1083,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 169,
+    "gecen": 169,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bekleyen-kanit/2026-11-06/2026-11-06/kahin5-birlesim-mutasyon.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "40f857d2d05d23847f1e859180b64b2d97e894af29a26c01d6b68b934d73e620",
+  "ham_cikti_bayt": 32501
+}

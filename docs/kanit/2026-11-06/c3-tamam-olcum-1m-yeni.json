@@ -1,0 +1,32 @@
+{
+  "ad": "c3-tamam-olcum-1m-yeni",
+  "komut": "node --disable-warning=ExperimentalWarning test/donmus-defter-olcum-cekirdek-250.mjs --veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3-olcum-veri/n-1000000 --cikti /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3-tamam-a1/son-1m-yeni.json --kilit 2025-12-31 --parca 500 --esdeger",
+  "commit": "9d507460347ac764298d99875a2803c1239475b7",
+  "dal": "worktree-agent-ad96cd3b37191bfb1",
+  "kirli": 1,
+  "izlenmeyen": 77,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T02:17:03.266Z",
+  "sure_sn": 261.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 1,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-06/c3-tamam-olcum-1m-yeni.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad96cd3b37191bfb1",
+  "ham_cikti_sha256": "8175fda08a8d38f766cc16f27093f7b46e075cbd1b7e31e7b0c75add631d90ab",
+  "ham_cikti_bayt": 1147
+}

@@ -1,0 +1,30 @@
+  mutasyon 286 (Ç5 C26 (S136 B): Şüpheli Alacağa alınan tutar taksit kalemlerinden ve verilen avans kaleminden düşmez (taksitler / avans kendi tutarıyla)): YAKALANDI (d41-c5-s136-s139-s145-s148)
+  mutasyon 287 (Ç5 C26 (S136 yarım): taksitlerden düşer ama verilen avans kaleminden düşmez): YAKALANDI (d41-c5-s136-s139-s145-s148)
+  mutasyon 288 (Ç5 C26 (S139 B): şüpheli kayıtlı caride gecikmiş şüpheli tutar dahil (kuyruk kalanından)): YAKALANDI (d39-c5-s130-supheli-kalemleri, d40-c5-s130-sus-bilinen-sinir, d41-c5-s136-s139-s145-s148 …)
+  mutasyon 289 (Ç5 C26 (S139 yarım): gecikmişte taksit kalemleri görünen değil kuyruk kalanıyla): YAKALANDI (d40-c5-s130-sus-bilinen-sinir, d41-c5-s136-s139-s145-s148)
+  mutasyon 290 (Ç5 C26 (S140 öncesi): satış kartından sonraki faturasız stok iadesi kuyruk sırasıyla (S2) dağılır — kart kendi satışını taşımaz): YAKALANDI (d42-c5-s140-s151-satis-karti-iade)
+  mutasyon 291 (Ç5 C26 (S140 B): kart elle borcu da içine alır — iade önce kart dışı kalemleri, sonra kartın SON taksitinden kapatır): YAKALANDI (d42-c5-s140-s151-satis-karti-iade)
+  mutasyon 292 (Ç5 C26 (S140 yarım): iade kartın taksitlerini SONDAN (en son taksitten) kapatır): YAKALANDI (d42-c5-s140-s151-satis-karti-iade)
+  mutasyon 293 (Ç5 C26 / C27 (S145 B): tahsilat (bağsız / bağlı / Taksit Tahsilatı) hiç reddedilmez (borç açık şüphelinin altına düşse de; öbür türler denetlenir)): YAKALANDI (d39-c5-s130-supheli-kalemleri, d41-c5-s136-s139-s145-s148, d44-c5-s155-s158 …)
+  mutasyon 294 (Ç5 C26 / C27 (S155 sınır): adımdan sonra borç açık şüpheli tutara EŞİTKEN de ret): YAKALANDI (d41-c5-s136-s139-s145-s148, d44-c5-s155-s158)
+  mutasyon 295 (Ç5 C26 / C27 (S155 sınır): şüpheliyle AYNI günün alacak satırı denetimde şüpheliden düşmemiş ('önceki') sayılır): YAKALANDI (d41-c5-s136-s139-s145-s148)
+  mutasyon 296 (Ç5 C26 / C27 (S145 yarım): şüpheli tarihinden önceki her tahsilat ret (toplam borç yetse de)): YAKALANDI (c7b-supheli-kalan, d39-c5-s130-supheli-kalemleri, d41-c5-s136-s139-s145-s148 …)
+  mutasyon 297 (Ç5 C26 (S151 A): satış kartının 'Tahsil Edilen'i / taksit 'Ödenen'i faturasız stok iadesini sayar): YAKALANDI (d42-c5-s140-s151-satis-karti-iade, d44-c5-s155-s158)
+  mutasyon 298 (Ç5 C26 (S151 yarım): kartın 'Tahsil Edilen'i iadeyi saymaz ama taksit 'Ödenen'i sayar): YAKALANDI (d42-c5-s140-s151-satis-karti-iade, d44-c5-s155-s158)
+  mutasyon 299 (Ç5 C27 (S155 B): TARİH ölçüsü — her adımda şüpheli kaydının GÜNÜNDEKİ borç (o günün borç yönlü satırları dahil) şüpheli tutara yetmiyorsa ret; toplam ölçü yok): YAKALANDI (d44-c5-s155-s158)
+  mutasyon 300 (Ç5 C27 (S155 yarım): toplam ölçü yalnız tahsilatta (tahsilat / Taksit Tahsilatı); çek, Alacak Yaz, iade, borç silme, geri yükleme denetlenmez (kabul)): YAKALANDI (d41-c5-s136-s139-s145-s148, d44-c5-s155-s158)
+  mutasyon 301 (Ç5 C27 (S158 B): satış kartı OLMAYAN kartta 'Tahsil Edilen' / taksit 'Ödenen' iadeyi ve Değersiz'i sayar (yalnız satış kartında sayılmaz)): YAKALANDI (d42-c5-s140-s151-satis-karti-iade, d44-c5-s155-s158)
+  mutasyon 302 (Ç5 C27 (S158 yarım): yalnız faturasız stok iadesi sayılmaz — Değersiz ve iade faturası artanı 'Tahsil Edilen' / 'Ödenen'e sayılır): YAKALANDI (d44-c5-s155-s158)
+  liste mutasyonu 1 (senaryo adı yok sayılır): YAKALANDI
+  liste mutasyonu 2 (alt dizgi (joker) eşleşmesi): YAKALANDI
+  liste mutasyonu 3 (program değeri karşılaştırılmaz): YAKALANDI
+  liste mutasyonu 4 (kapanan kayıt denetlenmez): YAKALANDI
+  liste mutasyonu 5 (kâhin beklentisi karşılaştırılmaz): YAKALANDI
+  yapım aşaması listesi mutasyonu 1 (senaryo adı yok sayılır): YAKALANDI
+  yapım aşaması listesi mutasyonu 2 (alt dizgi (joker) eşleşmesi): YAKALANDI
+  yapım aşaması listesi mutasyonu 3 (program değeri karşılaştırılmaz): YAKALANDI
+  yapım aşaması listesi mutasyonu 4 (kapanan kayıt denetlenmez): YAKALANDI
+  yapım aşaması listesi mutasyonu 5 (kâhin beklentisi karşılaştırılmaz): YAKALANDI
+
+YAPIM-ASAMASI.json YAZILDI (../kanit/kahin-is2/yapim-taban.json): 41 kayıt (0 okuma hatası) — paketlere göre: Ç5-B tur 2 24, eşleme 17. Bu bir denetim sonucu DEĞİLDİR; liste varsayılan koşuyla denetlenir.
+ESKİ LİSTEYLE FARK: yeni 0, kapanan 0, değeri değişen 0 (eski liste 41 kayıt → yeni 41)

@@ -1,0 +1,52 @@
+TAP version 13
+# (node:7971) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:7971) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Ç5-A tur 2c İş 3 — Açılış Olabilir Kayıtlar: sayfalama, zil sayısı, toplu karar, geri al, kilitli satır, yetki
+    # Subtest: sayfalama + toplam; sayfasız çağrı tur 1 çıktısı (kilit alanı yok); zil sayısı kilitli dönemdeki adayı ayrıca verir; geçersiz sayfa 400
+    ok 1 - sayfalama + toplam; sayfasız çağrı tur 1 çıktısı (kilit alanı yok); zil sayısı kilitli dönemdeki adayı ayrıca verir; geçersiz sayfa 400
+      ---
+      duration_ms: 23.046557
+      type: 'test'
+      ...
+    # Subtest: toplu karar (aynı adlı iki cari): ikisi de onaylanır, 519; listede olmayan kimlik varsa HİÇBİRİ yazılmaz (404); karar tutar / tarih / yön / işaret değiştirmez
+    ok 2 - toplu karar (aynı adlı iki cari): ikisi de onaylanır, 519; listede olmayan kimlik varsa HİÇBİRİ yazılmaz (404); karar tutar / tarih / yön / işaret değiştirmez
+      ---
+      duration_ms: 39.611127
+      type: 'test'
+      ...
+    # Subtest: geri al: kararlı satır yeniden onay bekler (S47: defterde yine 519); ret → geri al → onay; listede olmayan satırda 404; adayda değişiklik yok
+    ok 3 - geri al: kararlı satır yeniden onay bekler (S47: defterde yine 519); ret → geri al → onay; listede olmayan satırda 404; adayda değişiklik yok
+      ---
+      duration_ms: 72.607475
+      type: 'test'
+      ...
+    # Subtest: kilitli satır: karar verilir, kilit izi ve donmuş defter değişmez; Kural Farkı fişi aday varken pasif, neden aday ekranını söyler (B16); karar verilince pasiflik kalkar
+    ok 4 - kilitli satır: karar verilir, kilit izi ve donmuş defter değişmez; Kural Farkı fişi aday varken pasif, neden aday ekranını söyler (B16); karar verilince pasiflik kalkar
+      ---
+      duration_ms: 42.101149
+      type: 'test'
+      ...
+    # Subtest: yetki: personel 403 (liste, zil, tek, toplu, geri al); Muhasebe uçları kullanır (tur 1 yetkisi accounts.manage); iki kişi aynı anda — son karar geçerli, kopya aynı
+    ok 5 - yetki: personel 403 (liste, zil, tek, toplu, geri al); Muhasebe uçları kullanır (tur 1 yetkisi accounts.manage); iki kişi aynı anda — son karar geçerli, kopya aynı
+      ---
+      duration_ms: 289.818442
+      type: 'test'
+      ...
+    1..5
+ok 1 - Ç5-A tur 2c İş 3 — Açılış Olabilir Kayıtlar: sayfalama, zil sayısı, toplu karar, geri al, kilitli satır, yetki
+  ---
+  duration_ms: 1782.159112
+  type: 'suite'
+  ...
+1..1
+# tests 5
+# suites 1
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2175.439178
+cikis=0

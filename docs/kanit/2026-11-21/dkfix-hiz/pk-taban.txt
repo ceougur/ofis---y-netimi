@@ -1,0 +1,9 @@
+T1 | 08.10 bakiye 300 gecikmiş 0 120 300 MT ok kartlar closed:900/K600 | 09.10 bakiye 300 gecikmiş 300 120 300 MT ok kartlar closed:900/K600
+T2 | 08.10 bakiye 600 gecikmiş 300 120 600 MT ok kartlar closed:900/K900 | 09.10 bakiye 600 gecikmiş 600 120 600 MT ok kartlar closed:900/K900
+T3 | 08.10 bakiye -300 gecikmiş 0 120 -300 MT ok kartlar closed:900/K900 | 09.10 bakiye -300 gecikmiş 0 120 -300 MT ok kartlar closed:900/K900
+T3b | 08.10 bakiye 600 gecikmiş 0 120 600 MT ok kartlar closed:900/K600 | 09.10 bakiye 600 gecikmiş 600 120 600 MT ok kartlar closed:900/K600
+T4 | 08.10 bakiye 600 gecikmiş 0 120 600 MT ok kartlar closed:900/K600 | 09.10 bakiye 600 gecikmiş 600 120 600 MT ok kartlar closed:900/K600
+T6 | 08.10 bakiye 600 gecikmiş 0 120 600 MT ok kartlar closed:900/K900,active:600/K600 | 09.10 bakiye 600 gecikmiş 0 120 600 MT ok kartlar closed:900/K900,active:600/K600
+T7 | 08.10 bakiye 300 gecikmiş 0 120 300 MT ok kartlar closed:900/K300 | 09.10 bakiye 300 gecikmiş 300 120 300 MT ok kartlar closed:900/K300
+T7b | 08.10 bakiye 600 gecikmiş 0 120 600 MT ok kartlar closed:900/K600 | 09.10 bakiye 600 gecikmiş 600 120 600 MT ok kartlar closed:900/K600
+T8 | 08.10 bakiye 900 gecikmiş 0 120 900 MT ok kartlar closed:900/K900,active:300/K300 | 09.10 bakiye 900 gecikmiş 600 120 900 MT ok kartlar closed:900/K900,active:300/K300

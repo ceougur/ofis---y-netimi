@@ -1,0 +1,32 @@
+{
+  "ad": "ah-yeni-Europe-Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/acilis-onarimi-hiz-250.test.mjs test/iade-210-onarim.test.mjs",
+  "commit": "f5b34f31ea68b6b3ce9e78552a2676e63aa98545",
+  "dal": "worktree-agent-ab0062d42feec8f21",
+  "kirli": 1,
+  "izlenmeyen": 9,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T06:10:11.344Z",
+  "sure_sn": 2.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 7,
+    "gecen": 7,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ah-kanit/2026-11-06/ah-yeni-Europe-Istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ab0062d42feec8f21",
+  "ham_cikti_sha256": "031aa23a1dca5d093167da2222bbdde9f641c973c44bdf55ab16aa55e53e0b4e",
+  "ham_cikti_bayt": 3022
+}

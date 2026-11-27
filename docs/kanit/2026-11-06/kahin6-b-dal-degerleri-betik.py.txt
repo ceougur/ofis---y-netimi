@@ -1,0 +1,42 @@
+#!/usr/bin/env python3
+"""Kâhin bakımı 6 — B seçeneği mutantlarında (B60 = S39 B, B63 = S40 B) s78 / s79'un sayıları (senaryo yorumlarındaki B değerlerinin denetimi)."""
+import copy
+import os
+import sys
+
+KOK = os.path.abspath(sys.argv[1])
+sys.path.insert(0, KOK)
+import mutasyon as MU  # noqa: E402
+
+with open(MU.MODEL, encoding="utf-8") as f:
+    SRC = f.read()
+
+
+def degerler(mutant_adi, senaryo_adi, yollar):
+    if mutant_adi == "TEMEL":
+        tm = MU.yukle(SRC)
+    else:
+        deg = next(d for a, d in MU.MUTANTLAR if a.startswith(mutant_adi + " "))
+        tm = MU.yukle(MU.mutant_kaynak(SRC, deg))
+    M, E = tm.M, tm.E
+    s = next(x for x in E.SENARYOLAR if x["ad"] == senaryo_adi)
+    x = dict(s)
+    x.update(copy.deepcopy(E.TANIM))
+    r = M.kos(x)
+    out = {"redler": [z["kod"] for z in r["redler"]]}
+    for y in yollar:
+        try:
+            out[y] = tm.yol_al(r, y, 0)
+        except Exception as e:  # noqa: BLE001
+            out[y] = f"yok ({e})"
+    return out
+
+
+for m in ("TEMEL", "B60"):
+    print(m, "s78", degerler(m, "s78-s39-kart-iade-supheli",
+                             ["mz/satirlar/128|C1/bakiye", "mz/satirlar/120|C1/bakiye", "mz/satirlar/128|C2/bakiye", "mz/satirlar/120|C2/bakiye",
+                              "mz/satirlar/128|C3/bakiye", "mz/satirlar/120|C3/bakiye", "g2/gecikmis"]))
+for m in ("TEMEL", "B63"):
+    print(m, "s79", degerler(m, "s79-s40-geri-yuklenen-kasa-tutar-disi-alan",
+                             ["mod14/kasa", "g1/gecikmis", "g3/gecikmis", "mz/satirlar/100/bakiye"]))
+MU.yukle(SRC)

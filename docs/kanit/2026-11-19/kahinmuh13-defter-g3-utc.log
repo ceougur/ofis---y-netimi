@@ -1,0 +1,8 @@
+senaryo.json 2.5.0 mut 0: D11-191-391 — 4 anahtar: kontroller/K_EYLUL/191 281600 → 303500; kontroller/K_EYLUL/391 -205500 → -227400; kontroller/K_SON/191 -40000 → 80000; kontroller/K_SON/391 80000 → -40000
+g10-a2-gecis-gunu-kilitli.json 2.5.0 mut 0: YENI — 6 anahtar: kontroller/K1/191 ∅ → 800; kontroller/K1/391 -10800 → -11600; kontroller/K2/191 ∅ → 2800; kontroller/K2/391 -18800 → -21600; kontroller/K3/191 ∅ → 800; kontroller/K3/391 -10800 → -11600
+g11-a2-gecis-kilitsiz-gocte-mahsup.json 2.5.0 mut 0: YENI — 8 anahtar: kontroller/K1/191 8000 → 12800; kontroller/K1/391 -25200 → -30000; kontroller/K2/191 8000 → 14800; kontroller/K2/391 -33200 → -40000; kontroller/K3/191 8000 → 12800; kontroller/K3/391 -25200 → -30000; kontroller/K4/191 ∅ → 800; kontroller/K4/391 -7200 → -8000
+sınıflar: {"D11-191-391": 40, "YENI": 80}
+# tests 1040
+# pass 1040
+# fail 0
+1040/1040 denetim geçti

@@ -1,0 +1,76 @@
+  ✓ ön koşul: hareketler açıldı {"cari":"aentry-f9bf5952-d178-4d2d-bd05-e592be33667a","cariGone":"aentry-2b4b19c2-cf3d-4949-8905-62b7aba212cc","stok":"smove-957f2eb0-a72c-40e5-aee9-3ae43f170116","taksit":"entry-62697126-542f-47f3-bd45-6a51761d0b4e","kasa":"cash-77038def-ccd5-4045-bb9a-8dd16db387c7","transferCash":"cash-50b5f2fd-cd81-49f5-bb12-fc6d72eeafb7","transferBank":"cash-27c5cc96-c1f2-49d4-b004-13e0f80c4be7"}
+
+■ D1 Cari hareketi düzelt (hof-accounts editEntry)
+  ✓ Cari: B (muhasebe2, öbür oturum) aynı hareketi düzeltti → 200 
+  ✓ Cari: B'nin düzeltmesi veri tabanında ({"amount":10,"note":"ilk not","updated_by":"B"})
+    (ön koşul: B'nin düzeltmesinden sonra canlı yenileme geldi; kart okumaları 4112 ms'de duruldu)
+  ✗ Cari: A'nın eskimiş formu 409 aldı (200 )
+  ✗ Cari: ileti formda: “”
+  ✗ Cari: form açık kaldı (kendiliğinden yeniden göndermedi; yazılan açıklama formda)
+  ✗ Cari: veri tabanında B'nin değeri duruyor, A'nın açıklaması yazılmadı ({"amount":100,"note":"A'nın notu","updated_by":"A"})
+  ✓ Cari: 409'dan sonra form kartı kendisi yeniden okudu (^\/api\/workspace\/accounts\/account-d55f55e9-6e11-4c56-91f9-b923b308e2d5(\?|$))
+  ✗ Cari: arkadaki kart B'nin değerine yenilendi: “18.10.2026 Tahsilat Nakit Makbuz 1 A'nın notu ₺100,00 ₺4.900,00 Borçlu Makbuz✎×”
+  ✗ adım yarıda kaldı: escClose: "Kaydedilmemiş Değişiklik" sorusu çıkmalıydı (Cari 409 sonrası form kapatılıyor (açıklama yazıldı))
+
+■ D2 Stok hareketi düzelt (hof-stock editMove)
+  ✓ Stok: B (muhasebe2, öbür oturum) aynı hareketi düzeltti → 200 
+  ✓ Stok: B'nin düzeltmesi veri tabanında ({"amount":10,"qty":1,"unit_price":10,"note":"ilk not","updated_by":"B"})
+    (ön koşul: B'nin düzeltmesinden sonra canlı yenileme geldi; kart okumaları 4107 ms'de duruldu)
+  ✗ Stok: A'nın eskimiş formu 409 aldı (200 )
+  ✗ Stok: ileti formda: “”
+  ✗ Stok: form açık kaldı (kendiliğinden yeniden göndermedi; yazılan açıklama formda)
+  ✗ Stok: veri tabanında B'nin değeri duruyor, A'nın açıklaması yazılmadı ({"amount":100,"qty":1,"unit_price":100,"note":"A'nın notu","updated_by":"A"})
+  ✓ Stok: 409'dan sonra form kartı kendisi yeniden okudu (^\/api\/workspace\/stock\/stock-ca0dad02-9c70-4c0e-8e7c-9e1b9e6df27a(\?|$))
+  ✗ Stok: arkadaki kart B'nin değerine yenilendi: “18.10.2026 Çıkış A'nın notu · Kasa’ya tahsil edildi · Ofis yöneticisi · düzeltildi 1 -1 ₺100,00 ₺100,00 ✎×”
+  ✗ adım yarıda kaldı: escClose: "Kaydedilmemiş Değişiklik" sorusu çıkmalıydı (Stok 409 sonrası form kapatılıyor (açıklama yazıldı))
+
+■ D3 Taksit hareketi düzelt (hof-plans editEntry)
+  ✓ Taksit: B (muhasebe2, öbür oturum) aynı hareketi düzeltti → 200 
+  ✓ Taksit: B'nin düzeltmesi veri tabanında ({"amount":10,"note":"ilk not","updated_by":"B"})
+    (ön koşul: B'nin düzeltmesinden sonra canlı yenileme geldi; kart okumaları 4117 ms'de duruldu)
+  ✗ Taksit: A'nın eskimiş formu 409 aldı (200 )
+  ✗ Taksit: ileti formda: “”
+  ✗ Taksit: form açık kaldı (kendiliğinden yeniden göndermedi; yazılan açıklama formda)
+  ✗ Taksit: veri tabanında B'nin değeri duruyor, A'nın açıklaması yazılmadı ({"amount":100,"note":"A'nın notu","updated_by":"A"})
+  ✓ Taksit: 409'dan sonra form kartı kendisi yeniden okudu (^\/api\/workspace\/plans\/plan-7c488871-efd7-4949-a397-aed0068af321(\?|$))
+  ✗ Taksit: arkadaki kart B'nin değerine yenilendi: “18.10.2026 Tahsilat Makbuz 3 A'nın notu · Ofis yöneticisi · düzeltildi ₺100,00 Makbuz✎×”
+  ✗ adım yarıda kaldı: escClose: "Kaydedilmemiş Değişiklik" sorusu çıkmalıydı (Taksit 409 sonrası form kapatılıyor (açıklama yazıldı))
+
+■ D4 Kasa hareketi düzelt (hof-workspace editCashEntry)
+  ✓ Kasa: B (muhasebe2, öbür oturum) aynı hareketi düzeltti → 200 
+  ✓ Kasa: B'nin düzeltmesi veri tabanında ({"amount":10,"description":"Kırtasiye","updated_by":"B"})
+    (ön koşul: B'nin düzeltmesinden sonra canlı yenileme geldi; kart okumaları 2513 ms'de duruldu)
+  ✗ Kasa: A'nın eskimiş formu 409 aldı (200 )
+  ✗ Kasa: ileti formda: “”
+  ✗ Kasa: form açık kaldı (kendiliğinden yeniden göndermedi; yazılan açıklama formda)
+  ✗ Kasa: veri tabanında B'nin değeri duruyor, A'nın açıklaması yazılmadı ({"amount":100,"description":"A'nın açıklaması","updated_by":"A"})
+  ✓ Kasa: 409'dan sonra form Kasa listesini kendisi yeniden okudu (^\/api\/workspace\/cash\?from=)
+  ✗ Kasa: arkadaki Kasa listesi B'nin değerine yenilendi: “18.10.2026 A'nın açıklaması Ödeme · Ofis yöneticisi ₺100,00 ₺4.900,00 ✎×”
+  ✗ adım yarıda kaldı: escClose: "Kaydedilmemiş Değişiklik" sorusu çıkmalıydı (Kasa 409 sonrası form kapatılıyor (açıklama yazıldı))
+
+■ D5 Kasa ↔ Banka transferi düzelt — B ÖBÜR bacaktan (banka tarafı) düzeltir
+  ✓ Transfer: B (muhasebe2, öbür oturum) aynı hareketi düzeltti → 200 
+  ✓ Transfer: B'nin düzeltmesi veri tabanında ({"amount":400,"description":"ATM'den çekildi","updated_by":"B"})
+    (ön koşul: B'nin düzeltmesinden sonra canlı yenileme geldi; kart okumaları 2510 ms'de duruldu)
+  ✗ Transfer: A'nın eskimiş formu 409 aldı (200 )
+  ✗ Transfer: ileti formda: “”
+  ✗ Transfer: form açık kaldı (kendiliğinden yeniden göndermedi; yazılan açıklama formda)
+  ✗ Transfer: veri tabanında B'nin değeri duruyor, A'nın açıklaması yazılmadı ({"amount":300,"description":"A'nın transfer açıklaması","updated_by":"A"})
+  ✓ Transfer: 409'dan sonra form Kasa listesini kendisi yeniden okudu (^\/api\/workspace\/cash\?from=)
+  ✗ Transfer: arkadaki Kasa listesi B'nin değerine yenilendi: “18.10.2026 A'nın transfer açıklaması Bankadan kasaya aktarım · Ofis yöneticisi ₺300,00 ₺5.200,00 ✎×”
+  ✗ adım yarıda kaldı: escClose: "Kaydedilmemiş Değişiklik" sorusu çıkmalıydı (Transfer 409 sonrası form kapatılıyor (açıklama yazıldı))
+
+■ D6 Silinmiş cari hareketi: 404 iletisi formda, kart yenilenir (satır gider), hiçbir şey yazılmaz
+  ✓ B hareketi sildi → 200
+    (ön koşul: silmeden sonra canlı yenileme geldi; kart okumaları 2510 ms'de duruldu)
+  ✓ 404 ve ileti formda: 404 “Hareket bulunamadı. Başka biri silmiş olabilir.”
+  ✓ 404'ten sonra form kartı kendisi yeniden okudu
+  ✓ veri tabanında hareket yok (yeniden yazılmadı)
+  ✓ arkadaki kart yenilendi: silinen satır listede yok
+
+■ D7 Mutabakat Testi ve Kasa
+  ✓ Mutabakat Testi ok ([])
+  ✗ Nakit Kasa 5.420,00 (5500)
+  ✓ sayfa hatası yok
+
+23 geçti, 31 kaldı

@@ -1,0 +1,197 @@
+{
+ "aciklama": "Stok modülü (faturasız) belgesiz gelir 600.90; dönemsel ağırlıklı ortalama, tahmini SMM.",
+ "ad": "s16-stok-modulu-kg2-kg11",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [
+  "KG2=B",
+  "KG11=B"
+ ],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "bil/aktif/I.A": 452000,
+   "bil/aktif/I.E": 144444,
+   "bil/aktif_toplam": 596444,
+   "bil/pasif/III.B": 80000,
+   "bil/pasif/V.F": 16444,
+   "bil/pasif_toplam": 596444,
+   "deg/toplam": 144444,
+   "gt/hesaplar/600.90": 90000,
+   "gt/hesaplar/610.90": 18000,
+   "gt/kalemler/A": 90000,
+   "gt/kalemler/B": 18000,
+   "gt/kalemler/D": 55556,
+   "gt/kalemler/DNK": 16444
+  },
+  "KG11=B": {
+   "bil/aktif/I.E": 200000,
+   "bil/kesin_degil": [
+    "SATISLARIN_MALIYETI_HESAPLANMADI",
+    "TAMAMLANMAMIS_ACILIS"
+   ],
+   "bil/pasif/V.F": 72000,
+   "gt/kalemler/D": 0,
+   "gt/kalemler/DNK": 72000
+  },
+  "KG2=B": {
+   "bil/aktif/I.H": 3000,
+   "bil/pasif/III.I": 15000,
+   "gt/kalemler/A": 75000,
+   "gt/kalemler/B": 15000,
+   "gt/kalemler/DNK": 4444
+  }
+ },
+ "kapsam": [
+  "S-02",
+  "S-03",
+  "S-04",
+  "S-05",
+  "S-06",
+  "KG-2",
+  "KG-11",
+  "§5"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "tarih": "2026-01-01",
+   "tur": "kasa_acilis",
+   "tutar": 500000
+  },
+  {
+   "karsi": "nakit",
+   "miktar": 10,
+   "tarih": "2026-01-05",
+   "tur": "stok_giris",
+   "tutar": 120000,
+   "urun": "U1"
+  },
+  {
+   "cari": "T1",
+   "karsi": "cari",
+   "miktar": 10,
+   "tarih": "2026-01-06",
+   "tur": "stok_giris",
+   "tutar": 100000,
+   "urun": "U1"
+  },
+  {
+   "karsi": "nakit",
+   "miktar": 5,
+   "tarih": "2026-01-10",
+   "tur": "stok_cikis_satis",
+   "tutar": 90000,
+   "urun": "U1"
+  },
+  {
+   "karsi": "nakit",
+   "miktar": 1,
+   "tarih": "2026-01-12",
+   "tur": "stok_musteri_iadesi",
+   "tutar": 18000,
+   "urun": "U1"
+  },
+  {
+   "cari": "T1",
+   "karsi": "cari",
+   "miktar": 2,
+   "tarih": "2026-01-15",
+   "tur": "stok_tedarikci_iadesi",
+   "tutar": 20000,
+   "urun": "U1"
+  },
+  {
+   "miktar": -1,
+   "tarih": "2026-01-20",
+   "tur": "stok_duzeltme",
+   "urun": "U1"
+  },
+  {
+   "ad": "gt",
+   "bas": "2026-01-01",
+   "rapor": "gelir_tablosu",
+   "son": "2026-01-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "bil",
+   "rapor": "bilanco",
+   "tarih": "2026-01-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "deg",
+   "rapor": "degerleme",
+   "tarih": "2026-01-31",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

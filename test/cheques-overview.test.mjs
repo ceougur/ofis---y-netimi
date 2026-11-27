@@ -290,7 +290,9 @@ describe("çek/senet: Cari, Taksit ve Kasa ile işlem bütünlüğü", () => {
   it("doğrulama: tutar, tarih, kişi, çift seri no, işlem tarihi; personel çek göremez", async () => {
     assert.equal((await admin.post("/api/workspace/cheques", { direction: "in", drawer: "X", amount: 0, dueDate: shift(3) })).status, 400);
     assert.equal((await admin.post("/api/workspace/cheques", { direction: "in", drawer: "X", amount: 10, dueDate: "2026-02-30" })).status, 400, "olmayan gün");
-    assert.equal((await admin.post("/api/workspace/cheques", { direction: "in", amount: 10, dueDate: shift(3) })).status, 400, "kimden alındığı yok");
+    // 2.5.0 Ç5-A (G3: KULLANICI S49 = A + BAŞ MİMAR KARARI 10.11 07:54 not (1)): cari de keşideci de yoksa REDDEDİLMEZ — formdan carisiz evrak (defter B 101 / A 649.90).
+    const free = await admin.post("/api/workspace/cheques", { direction: "in", amount: 10, dueDate: shift(3) });
+    assert.equal(free.status, 200, "carisiz evrak (S49) kabul");
     assert.equal((await admin.post("/api/workspace/cheques", { direction: "sideways", drawer: "X", amount: 10, dueDate: shift(3) })).status, 400);
     const dup = await admin.post("/api/workspace/cheques", { direction: "in", drawer: "Başka", amount: 10, dueDate: shift(3), serialNo: "A-100", bank: "Ziraat Meram" });
     assert.equal(dup.status, 409);
@@ -403,7 +405,9 @@ describe("ANLIK DURUM: karttaki rakamlar ekranlarla birebir aynı (rastgele 400 
       const list = (await admin.get("/api/workspace/accounts?status=all&limit=5000")).data.data;
       const stock = (await admin.get("/api/workspace/stock")).data.data;
       const portfolio = (await admin.get("/api/workspace/cheques?limit=5000")).data.data;
-      const today = new Date().toISOString().slice(0, 10);
+      // Program "bugün"ü yerel günle hesaplar (period.mjs today, plans.mjs isoDay); UTC günü İstanbul 00:00–03:00 arasında bir gün geride kalır (ders 13, 22).
+      // Her denetimde yeniden okunur: koşu gece yarısını geçse de beklenen gün programınkiyle aynı kalır.
+      const today = isoDay(new Date());
       const cashToday = cash.entries.filter(entry => entry.date <= today).reduce((sum, entry) => sum + (entry.kind === "in" ? entry.amount : -entry.amount), 0);
       near(view.cash.balance, cashToday, `${label}: Kasa (bugüne kadar)`);
       near(view.cash.allEntries, cash.totals.balance, `${label}: Kasa (tüm hareketler)`);
@@ -420,21 +424,23 @@ describe("ANLIK DURUM: karttaki rakamlar ekranlarla birebir aynı (rastgele 400 
       near(mizan.totals.closingCreditor, list.totals.creditor, `${label}: mizan borç`);
       for (const account of list.accounts) near(mizan.rows.find(row => row.id === account.id)?.closing ?? 0, account.balance, `${label}: ${account.name} mizan bakiyesi`);
       // Nakit akışı: çok uzun aralığın sonu = bugünkü kasa + ileri tarihli Kasa + açık taksitler + portföy − ödenecek (gecikmişler dahil).
-      const flow = (await admin.get("/api/workspace/overview/nakit-akisi?from=" + TODAY + "&to=2099-12-31&overdue=1")).data.data;
-      const openPlans = (await admin.get("/api/workspace/plans?status=active")).data.data;
-      const planRemaining = (openPlans.plans || []).reduce((sum, plan) => sum + Math.max(0, plan.totals?.remaining ?? 0), 0);
+      const flow = (await admin.get("/api/workspace/overview/nakit-akisi?from=" + today + "&to=2099-12-31&overdue=1")).data.data;
       // Nakit akışı tüm parayla (nakit + banka/POS) başlar; Kasa penceresi yalnız nakit (v2.0.17).
       // 2.1.0 temel sürüm (K10, plan §8.9 / karar 32, bilerek): başlangıç = Nakit Kasa + Gerçek Banka; hesaba atanmamış eski havale/POS (bu testte
       // banka hesabı yok: bugüne kadarki bütün banka tarafı) başlangıca girmez, ileri tarihli satırları beklenen hareket olarak kalır.
       const allMoney = (await admin.get("/api/workspace/cash?method=all")).data.data;
       const noncash = (await admin.get("/api/workspace/cash?method=noncash")).data.data;
       const unassignedToday = noncash.entries.filter(entry => entry.date <= TODAY).reduce((sum, entry) => sum + (entry.kind === "in" ? entry.amount : -entry.amount), 0);
-      // MM5 (2.4.3, bilerek güncellendi): faturasız cari alacağı da beklenen giriştir — her borçlu carinin bakiyesinin açık taksitlerini aşan kısmı
-      // (bağımsız formül: Σ max(0, bakiye − carinin açık taksit kalanı); bu testte fatura yok).
-      const planOf = new Map();
-      for (const plan of openPlans.plans || []) if (plan.accountId) planOf.set(plan.accountId, (planOf.get(plan.accountId) || 0) + Math.max(0, plan.totals?.remaining ?? 0));
-      const unbilled = list.accounts.reduce((sum, account) => sum + Math.max(0, Math.round(account.balance * 100) - Math.round((planOf.get(account.id) || 0) * 100)), 0) / 100;
-      near(flow.closing, allMoney.totals.balance - unassignedToday + planRemaining + unbilled + portfolio.summary.in.open.amount - portfolio.summary.out.open.amount, `${label}: nakit akışı sonu`);
+      // MM5 (2.4.3): faturasız cari alacağı da beklenen giriştir. 2.5.0 Ç5-B (bilerek güncellendi; kullanıcı kararları S1, S50 ve (5) — tek yükümlülük kuyruğu):
+      // borçlu carinin beklenen girişi BAKİYESİ kadardır (kalemleri: taksitler — kart seçilmeden alınan cari tahsilatı da taksiti kapatır (S50) —, vadeli / vadesiz
+      // borç (S1), faturasız kalan; toplamı bakiye). Önceki formül (Σ kartın kendi kalanı + Σ max(0, bakiye − kart kalanı)) cari tahsilatı taksiti kapatınca bakiyeden
+      // fazla giriş bekliyordu. Alacaklı carinin "Ödenecek Borç" kalemleri (vadesiz elle Alacak da, S1) beklenen çıkıştır ve en çok alacak bakiyesi kadardır (bağsız
+      // avans yükümlülük değildir, kalem olmaz).
+      const inflow = list.accounts.reduce((sum, account) => sum + Math.max(0, Math.round(account.balance * 100)), 0) / 100;
+      const outMax = list.accounts.reduce((sum, account) => sum + Math.max(0, -Math.round(account.balance * 100)), 0) / 100;
+      const accountOut = [...(flow.rows || []), ...(flow.overdue || [])].filter(row => row.source === "account" && row.direction === "out").reduce((sum, row) => sum + Math.round(row.amount * 100), 0) / 100;
+      assert.ok(accountOut <= outMax + 0.01, `${label}: carilerin Ödenecek Borç kalemleri (${accountOut}) ≤ alacaklı bakiyeleri (${outMax})`);
+      near(flow.closing + accountOut, allMoney.totals.balance - unassignedToday + inflow + portfolio.summary.in.open.amount - portfolio.summary.out.open.amount, `${label}: nakit akışı sonu`);
       near(flow.cashToday, cashToday, `${label}: nakit akışı başlangıcı = Nakit Kasa (bugüne kadar; banka hesabı yok, Gerçek Banka 0)`);
     };
     for (let step = 1; step <= 400; step += 1) {

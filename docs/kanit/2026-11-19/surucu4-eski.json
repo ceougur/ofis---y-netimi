@@ -1,0 +1,32 @@
+{
+  "ad": "surucu4-eski",
+  "komut": "node --disable-warning=ExperimentalWarning test/bagimsiz/muhasebe-surucu/kos.mjs --cikti /dev/shm/surucu4-afb4/eski --veri /dev/shm/surucu4-afb4/v-eski --program /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/surucu4-afb4/eski",
+  "commit": "362fbea975d1062a2b13ec5ff6868c904f279181",
+  "dal": "worktree-agent-afb4030486d151db9",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v653 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-19T23:21:48.442Z",
+  "sure_sn": 498.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 8130,
+    "gecen": 7226,
+    "basarisiz": 764,
+    "iptal": 0,
+    "atlanan": 140
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 764 başarısız, 0 iptal",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/surucu4-afb4/kanit/2026-11-19/surucu4-eski.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-afb4030486d151db9",
+  "ham_cikti_sha256": "38fc7380f90e0031c6a65b4ee01833e3e2c616b07b10175c8735c2f1e9a8f9b7",
+  "ham_cikti_bayt": 130200
+}

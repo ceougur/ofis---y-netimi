@@ -1,0 +1,192 @@
+TAP version 13
+# (node:15692) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.2.0 İz 2.9: görünen metinde "Kurumsal Kart" yok, "Kredi Kartı"
+    # Subtest: istemci kaynağı (client/assets/hof-*.js, admin.js): yorum dışında "kurumsal kart" geçmez
+    ok 1 - istemci kaynağı (client/assets/hof-*.js, admin.js): yorum dışında "kurumsal kart" geçmez
+      ---
+      duration_ms: 95.178411
+      type: 'test'
+      ...
+    # Subtest: sunucu kaynağı (server/**/*.mjs): yorum dışında "kurumsal kart" geçmez (hata ve açıklama metinleri, hesap türü adı, 309 adı)
+    ok 2 - sunucu kaynağı (server/**/*.mjs): yorum dışında "kurumsal kart" geçmez (hata ve açıklama metinleri, hesap türü adı, 309 adı)
+      ---
+      duration_ms: 91.768299
+      type: 'test'
+      ...
+    # Subtest: kullanım kılavuzu (docs/kilavuz/DestekOfis-Kullanim-Kilavuzu.html): "Kurumsal Kart" / "Kurumsal Kredi Kartı" yok
+    ok 3 - kullanım kılavuzu (docs/kilavuz/DestekOfis-Kullanim-Kilavuzu.html): "Kurumsal Kart" / "Kurumsal Kredi Kartı" yok
+      ---
+      duration_ms: 54.379073
+      type: 'test'
+      ...
+    # Subtest: çalışan sunucu: kullanıcıya dönen adlar ve hata metni
+        # Subtest: kart hesabının tür adı "Kredi Kartı"; kart yolunda kart seçilmeden ödeme → 400 "Kredi Kartı seçin"; 309 adı "Diğer Mali Borçlar (Kredi Kartları)"
+        ok 1 - kart hesabının tür adı "Kredi Kartı"; kart yolunda kart seçilmeden ödeme → 400 "Kredi Kartı seçin"; 309 adı "Diğer Mali Borçlar (Kredi Kartları)"
+          ---
+          duration_ms: 176.137817
+          type: 'test'
+          ...
+        1..1
+    ok 4 - çalışan sunucu: kullanıcıya dönen adlar ve hata metni
+      ---
+      duration_ms: 658.896383
+      type: 'suite'
+      ...
+    1..4
+ok 1 - 2.2.0 İz 2.9: görünen metinde "Kurumsal Kart" yok, "Kredi Kartı"
+  ---
+  duration_ms: 901.705822
+  type: 'suite'
+  ...
+# Subtest: ürün dosyalarında görünen eski e-posta ve site adresi kalmaz (istisnalar dışında)
+ok 2 - ürün dosyalarında görünen eski e-posta ve site adresi kalmaz (istisnalar dışında)
+  ---
+  duration_ms: 498.087532
+  type: 'test'
+  ...
+# Subtest: destek e-postası destek@destekofis.net; lisans adresi DEĞİŞMEDİ
+ok 3 - destek e-postası destek@destekofis.net; lisans adresi DEĞİŞMEDİ
+  ---
+  duration_ms: 5.658729
+  type: 'test'
+  ...
+# Subtest: kılavuz ad denetimi (bütün bölümler)
+    # Subtest: bütün bölümleri tarar (bölüm verilmezse)
+    ok 1 - bütün bölümleri tarar (bölüm verilmezse)
+      ---
+      duration_ms: 1.410808
+      type: 'test'
+      ...
+    # Subtest: ekrandaki ad 'ekranda'; ekranda olmayan ama kaynakta birebir geçen ad 7./8. dışında 'kaynakta'
+    ok 2 - ekrandaki ad 'ekranda'; ekranda olmayan ama kaynakta birebir geçen ad 7./8. dışında 'kaynakta'
+      ---
+      duration_ms: 0.314423
+      type: 'test'
+      ...
+    # Subtest: 7. ve 8. bölümde ekran zorunlu: kaynakta olsa da ekranda yoksa EKSİK
+    ok 3 - 7. ve 8. bölümde ekran zorunlu: kaynakta olsa da ekranda yoksa EKSİK
+      ---
+      duration_ms: 0.141062
+      type: 'test'
+      ...
+    # Subtest: eski / yorumdaki / hiç olmayan ad EKSİK (yorumlar ayıklanır, Inno Setup ';' yorumu dahil)
+    ok 4 - eski / yorumdaki / hiç olmayan ad EKSİK (yorumlar ayıklanır, Inno Setup ';' yorumu dahil)
+      ---
+      duration_ms: 5.211897
+      type: 'test'
+      ...
+    # Subtest: accept="image/*" yorum başlangıcı sayılmaz (arkasındaki kod silinmez); adresteki :// yorum değildir
+    ok 5 - accept="image/*" yorum başlangıcı sayılmaz (arkasındaki kod silinmez); adresteki :// yorum değildir
+      ---
+      duration_ms: 0.207683
+      type: 'test'
+      ...
+    # Subtest: yer tutuculu ad, büyük harfli başlık ve etiketle bölünmüş ad bulunur
+    ok 6 - yer tutuculu ad, büyük harfli başlık ve etiketle bölünmüş ad bulunur
+      ---
+      duration_ms: 0.151138
+      type: 'test'
+      ...
+    # Subtest: madde başı vurgusu ve program dışı ekran adı denetim dışında (ayrı listede)
+    ok 7 - madde başı vurgusu ve program dışı ekran adı denetim dışında (ayrı listede)
+      ---
+      duration_ms: 0.104772
+      type: 'test'
+      ...
+    1..7
+ok 4 - kılavuz ad denetimi (bütün bölümler)
+  ---
+  duration_ms: 8.888127
+  type: 'suite'
+  ...
+# Subtest: Kılavuz PDF sürümü (client/kilavuz)
+    # Subtest: PDF metni okunur (boş değil, bilinen başlık var)
+    ok 1 - PDF metni okunur (boş değil, bilinen başlık var)
+      ---
+      duration_ms: 329.732043
+      type: 'test'
+      ...
+    # Subtest: PDF kapağı ve dip notu = HTML sürümü = program sürümü
+    ok 2 - PDF kapağı ve dip notu = HTML sürümü = program sürümü
+      ---
+      duration_ms: 0.396704
+      type: 'test'
+      ...
+    1..2
+ok 5 - Kılavuz PDF sürümü (client/kilavuz)
+  ---
+  duration_ms: 331.14995
+  type: 'suite'
+  ...
+# Subtest: Kullanım kılavuzu sürümü
+    # Subtest: kapakta “Sürüm <program sürümü>” yazar
+    ok 1 - kapakta “Sürüm <program sürümü>” yazar
+      ---
+      duration_ms: 22.771901
+      type: 'test'
+      ...
+    # Subtest: dip notta “DestekOfis <program sürümü> · Kısa Kullanım Kılavuzu” yazar
+    ok 2 - dip notta “DestekOfis <program sürümü> · Kısa Kullanım Kılavuzu” yazar
+      ---
+      duration_ms: 0.302404
+      type: 'test'
+      ...
+    1..2
+ok 6 - Kullanım kılavuzu sürümü
+  ---
+  duration_ms: 24.141795
+  type: 'suite'
+  ...
+# Subtest: yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+    # Subtest: arayüz dosyalarında kurala uymayan ad yok
+    ok 1 - arayüz dosyalarında kurala uymayan ad yok
+      ---
+      duration_ms: 136.299643
+      type: 'test'
+      ...
+    # Subtest: hareket türü adları ve programın varsayılan adları kurala uyuyor
+    ok 2 - hareket türü adları ve programın varsayılan adları kurala uyuyor
+      ---
+      duration_ms: 7.433405
+      type: 'test'
+      ...
+    # Subtest: derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+    ok 3 - derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+      ---
+      duration_ms: 2.304719
+      type: 'test'
+      ...
+    # Subtest: Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+    ok 4 - Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+      ---
+      duration_ms: 10.68398
+      type: 'test'
+      ...
+    # Subtest: mobil görünümde (client/mobil) kurala uymayan ad yok
+    ok 5 - mobil görünümde (client/mobil) kurala uymayan ad yok
+      ---
+      duration_ms: 8.615219
+      type: 'test'
+      ...
+    # Subtest: rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+    ok 6 - rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+      ---
+      duration_ms: 53.554612
+      type: 'test'
+      ...
+    1..6
+ok 7 - yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+  ---
+  duration_ms: 220.588896
+  type: 'suite'
+  ...
+1..7
+# tests 23
+# suites 6
+# pass 23
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2263.229034

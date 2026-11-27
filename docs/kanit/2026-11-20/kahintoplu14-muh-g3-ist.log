@@ -1,0 +1,12 @@
+beklenen  s118-a1-s200-elle-once-sonra-fatura                     YENI         1
+beklenen  s119-a2-s210-s211-kart-kapanir                          YENI         1
+beklenen  s120-a3-s213-acik-faturalar-supheli                     YENI         1
+beklenen  s121-a5-s220-kart-kapat-onceden-gecikmis                YENI         1
+beklenen  s58-r9-kartli-fatura-sil-iptal                          A2-S210-S211 12
+senaryo   s118-a1-s200-elle-once-sonra-fatura                     YENI         1
+senaryo   s119-a2-s210-s211-kart-kapanir                          YENI         1
+senaryo   s120-a3-s213-acik-faturalar-supheli                     YENI         1
+senaryo   s121-a5-s220-kart-kapat-onceden-gecikmis                YENI         1
+senaryo   s58-r9-kartli-fatura-sil-iptal                          A2-S210-S211 7
+sınıflar: {"A2-S210-S211": 19, "YENI": 8}
+63204/63204 denetim geçti

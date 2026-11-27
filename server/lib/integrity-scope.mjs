@@ -32,7 +32,9 @@ import { collectionProblems } from "./bank/collections.mjs";
 import { doubtfulProblems, doubtfulSummary, doubtfulUsed } from "./bank/doubtful.mjs";
 import { BANK_SUBS, DOCUMENT_MAINS, DOCUMENT_SUB_NAMES, RECEIVED_MAINS, documentWanted } from "./cheque-gl.mjs";
 import { moneyAccount, partyBalances, subBalances } from "./general-ledger.mjs";
+import { oldReturnVatSql, ruleShiftOf } from "./ledger-rule-shift.mjs";
 import { toCents } from "./money.mjs";
+import { CLOSE_RULE_WAIVE, waivedOf, waivesRemaining } from "./accounts.mjs";
 
 const AUDITOR = { id: "integrity", role: "admin", permissions: [] };
 const MONEY_ACCOUNTS = new Set(["100", "102", "108", "309", "300"]);
@@ -45,20 +47,25 @@ const WAY_ACCOUNT = { cash: "100", bank: "102", card: "108", ccard: "309", loan:
 // Bankaya Tahsile Ver (cheque_collections, plan §3.14) 2.2.0 doğrulaması T1/D6'dan beri bu yolda: plan §3.11 cheque:collections "Her COMMIT"
 // (indeksli) — dokunulan evrakın 101.01/101.02 satırları ve tahsil kayıtları denetlenir (önceden her tahsile verme, geri alma ve tahsildeki
 // evrakın tahsili/karşılıksızı tam kapıya düşüyordu: 100.000 satırda ~1 sn).
-const FULL_TABLES = new Set(["pos_terminals", "pos_sales", "pos_items"]);
+// 2.5.0 Ç2: saklanan fiş defteri (ledger_vouchers / ledger_voucher_lines) — fiş seyrek yazılır (kapanış, açılış eşleştirme, ters kayıt), satırları herhangi bir hesaba
+// düşebilir: karar her zaman tam kapının (yevmiye dengesi, bütün beklenenler, kilit izi).
+const FULL_TABLES = new Set(["pos_terminals", "pos_sales", "pos_items", "ledger_vouchers", "ledger_voucher_lines"]);
 // Hesap kartında yevmiyeyi etkileyen alanlar (yol türetmesi ve alt hesap): değişirse karar tam kapının.
 const ACCOUNT_LEDGER_FIELDS = ["kind", "gl", "gl_sub", "currency"];
 // Kilit izinin (lib/integrity.mjs LOCK_SQL) satır alanları: kilitli dönemdeki satırda bunlardan biri değişirse, satır eklenir ya da silinirse iz değişir.
 const LOCK_FIELDS = {
   payments: { date: row => row.date, fields: ["amount", "date", "method", "fin_ref", "event_id"] },
-  cash_entries: { date: row => row.date, fields: ["kind", "amount", "date", "method", "fin_ref", "event_id", "tax_json"] },
-  account_entries: { date: row => row.date, fields: ["account_id", "kind", "amount", "date", "method", "fin_ref", "event_id", "fx_currency", "fx_minor", "fx_rate_e6", "fx_source"] },
-  stock_moves: { date: row => row.date, fields: ["item_id", "kind", "qty", "amount", "date", "pay", "method", "account_id", "fin_ref", "event_id", "unit_price", "is_opening"] },
-  plan_entries: { date: row => row.date, fields: ["plan_id", "kind", "amount", "date", "method", "fin_ref", "event_id"] },
+  // 2.5.0 Ç5-A tur 1e: is_opening (LOCK_SQL cash_opening_lock / account_opening_lock / cheques_opening_lock).
+  // 2.5.0 Ç5-A tur 1f (§16): transfer_id (cash_transfer_lock), source / source_id / doubtful_skip (account_source_lock), reason (stock_reason_lock),
+  // cheque_id / opening (plan_entries_bond_lock), gl_json / try_withheld / try_stoppage (invoices_gl_lock).
+  cash_entries: { date: row => row.date, fields: ["kind", "amount", "date", "method", "fin_ref", "event_id", "tax_json", "is_opening", "transfer_id"] },
+  account_entries: { date: row => row.date, fields: ["account_id", "kind", "amount", "date", "method", "fin_ref", "event_id", "fx_currency", "fx_minor", "fx_rate_e6", "fx_source", "is_opening", "source", "source_id", "doubtful_skip"] },
+  stock_moves: { date: row => row.date, fields: ["item_id", "kind", "qty", "amount", "date", "pay", "method", "account_id", "fin_ref", "event_id", "unit_price", "is_opening", "reason"] },
+  plan_entries: { date: row => row.date, fields: ["plan_id", "kind", "amount", "date", "method", "fin_ref", "event_id", "cheque_id", "opening"] },
   cheque_events: { date: row => row.date, fields: ["cheque_id", "kind", "amount", "date", "method", "fin_ref", "event_id"] },
-  invoices: { date: row => (row.status !== "draft" ? row.issue_date : null), fields: ["kind", "status", "account_id", "issue_date", "try_payable", "try_vat"] },
+  invoices: { date: row => (row.status !== "draft" ? row.issue_date : null), fields: ["kind", "status", "account_id", "issue_date", "try_payable", "try_vat", "gl_json", "try_withheld", "try_stoppage"] },
   // 2.2.0 İz 4.2: evrak türü (cheques_instrument_lock; senet 121/321, çek 101/103).
-  cheques: { date: row => row.issue_date, fields: ["direction", "amount", "issue_date", "deleted_at", "instrument"] },
+  cheques: { date: row => row.issue_date, fields: ["direction", "amount", "issue_date", "deleted_at", "instrument", "is_opening"] },
   fin_events: { date: row => row.date, fields: ["type", "date", "reversal_of", "bank_ref", "counter_ref", "amount_minor", "try_minor"] },
 };
 // Cari satırının kaynakları: '' (elle), fatura, çek/senet, stok, banka (POS kesintisi, Aşama 10). Kaynaklı satır kaynağına bağlıdır.
@@ -112,6 +119,9 @@ export function familyOf(code) {
   if (code.startsWith("invoice:")) return "invoice";
   if (code.startsWith("dates:format:")) return `rows:${code.slice(13)}`;
   if (code.startsWith("dates:future:") || code === "money:method" || code === "money:report" || code === "money:event" || code.startsWith("bank:event")) return null;
+  // 2.5.0 Ç5-K tur 2 (dar kontrol ORTA-1): "Kasa Açılışından Önce Tarihli Hareket" yalnız tam taramada üretilen UYARIDIR (lib/integrity.mjs notice), kapının denetimi
+  // değil — tabanda görünse de tam kapıyı tetiklemez (önceden "all": açılıştan sonraki ilk yazım tam kapıya düşüyordu; 105.000 satırda 13 ms → 1.221 ms).
+  if (code === "cash:before-opening") return null;
   // Aşama 3: açılış kuralı ve fiş dengesi hesap/olay bazında; süzgeç dokunulan hesap ve olaylarda kendisi denetler (eski sapmaya dokunan yazım
   // bulgu verir → tam kapı imzayla karar verir).
   if (code.startsWith("bank:opening") || code.startsWith("bank:voucher") || code.startsWith("bank:transfer") || code.startsWith("bank:carry") || code.startsWith("bank:ref")) return null;
@@ -158,8 +168,18 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
       const rowids = [...(capture.rows.get(table) || [])];
       const posts = new Map(rowids.length ? all(`SELECT rowid AS __rowid, * FROM ${table} WHERE rowid IN ${IN}`, json(rowids)).map(row => [row.__rowid, row]) : []);
       const pres = capture.before.get(table) || new Map();
+      // 2.5.0 İzleyen tur 3 (docs/erp/C7B-FATURA-TASARIM.md §21.1): SQLite silinen en büyük rowid'i sonraki INSERT'e yeniden verir (Düzenle faturanın stok hareketlerini silip yeniden yazar).
+      // Son hâli bu işlemde store ile EKLENMİŞ rowid'de (capture.inserted — lib/db.mjs afterScopedInsert'in kesin izi) önceki hâlin kimliği farklıysa eşleşme İKİ satırdır: silinen ve eklenen —
+      // başka rowid'e yazılan DELETE + INSERT ile aynı model (iki kimliğin varlıkları kapsamda; kilit denetimi iki tarafı da değişmiş sayar). Önceden "kimlik değişti" tam kapıya düşüyordu (100 bin
+      // satırda ~7 sn). EKLENMEMİŞ rowid'de kimlik değişimi (UPDATE … SET id; gözden geçirme D8) bugünkü gibi tam kapı; store dışı yazım süzgece hiç gelmez (integrity.mjs sayaçlar).
+      const inserted = capture.inserted?.get(table);
       const list = [];
-      for (const rowid of new Set([...posts.keys(), ...pres.keys()])) list.push({ pre: pres.get(rowid) || null, post: posts.get(rowid) || null });
+      for (const rowid of new Set([...posts.keys(), ...pres.keys()])) {
+        const pre = pres.get(rowid) || null;
+        const post = posts.get(rowid) || null;
+        if (pre && post && String(pre.id ?? "") !== String(post.id ?? "") && inserted?.has(rowid)) list.push({ pre, post: null }, { pre: null, post });
+        else list.push({ pre, post });
+      }
       s.rows.set(table, list);
       for (const { pre, post } of list) if (pre && post && String(pre.id ?? "") !== String(post.id ?? "")) s.reason ||= `${table}: kimlik değişti`;
       // Hesap kartının türü / para birimi / ana ve alt hesabı değişti: bağlı satırların yolu ve alt hesabı başka hesaba geçer (rota hareketli
@@ -337,6 +357,41 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
   }
 
   // ---------- Kilit: dokunulan satır kilit izine giriyor mu? (LOCK_SQL'in satır koşulları) ----------
+  // 2.5.0 Ç5-A tur 1f: evrak olguları (LOCK_SQL cheques_bounce_lock / cheques_free_lock). Yalnız ilgili satırda tek indeksli sorgu.
+  function chequeLockRelevant(table, pre, post, lock, inTrace) {
+    const lockedBounce = id => Boolean(id) && Boolean(store.get("SELECT 1 AS found FROM cheque_events WHERE cheque_id = ? AND kind = 'bounce' AND date <= ? LIMIT 1", String(id), lock));
+    const chequeOf = id => (id ? store.get("SELECT direction, issue_date AS issueDate FROM cheques WHERE id = ?", String(id)) : null);
+    if (table === "cheques") {
+      if ((inTrace(pre?.issue_date) || inTrace(post?.issue_date)) && differs(pre, post, ["account_id"])) return "kilitli evrağın carisi";
+      // Kilitli karşılıksızı olan evrak karşılıksız durumdadır: durumu karşılıksız OLMAYAN iki hâl arasındaki geçiş (bugünkü tahsil / ciro) sorgu gerektirmez.
+      const bounceSide = pre?.status === "bounced" || post?.status === "bounced";
+      if ((differs(pre, post, ["account_id"]) || (bounceSide && differs(pre, post, ["status"]))) && lockedBounce((post || pre).id)) return "kilitli karşılıksızı olan evrak";
+      return "";
+    }
+    if (table === "cheque_events") {
+      if (pre?.kind !== "bounce" && post?.kind !== "bounce") return "";
+      if (differs(pre, post, ["kind", "date", "created_at", "cheque_id"]) && (lockedBounce(pre?.cheque_id) || lockedBounce(post?.cheque_id))) return "kilitli karşılıksızı olan evrağın olayı";
+      return "";
+    }
+    if (table === "account_entries") {
+      if (pre?.source !== "cheque" && post?.source !== "cheque") return "";
+      if (!differs(pre, post, ["account_id", "kind", "source", "source_id"])) return "";
+      for (const row of [pre, post]) {
+        if (row?.source !== "cheque") continue;
+        const found = chequeOf(row.source_id);
+        if (!found || !inTrace(found.issueDate)) continue;
+        if (row.kind === (found.direction === "in" ? "credit" : "debt")) return "kilitli evrağın cari satırı";
+        if (row.kind === "debt" && found.direction === "in" && lockedBounce(row.source_id)) return "kilitli karşılıksızın cari satırı";
+      }
+      return "";
+    }
+    if (table === "plan_entries") {
+      if (!pre?.cheque_id && !post?.cheque_id) return "";
+      if (!differs(pre, post, ["cheque_id", "plan_id"])) return "";
+      for (const row of [pre, post]) if (row?.cheque_id && inTrace(chequeOf(row.cheque_id)?.issueDate)) return "kilitli evrağın taksit satırı";
+    }
+    return "";
+  }
   function lockRelevant(s, lock) {
     if (!lock) return "";
     const locked = value => Boolean(value) && day(value) <= lock;
@@ -348,16 +403,22 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
         if (rule && (inTrace(pre ? rule.date(pre) : null) || inTrace(post ? rule.date(post) : null)) && differs(pre, post, rule.fields)) return `${table} kilitli dönem`;
         if (table === "plans") {
           const plain = row => row && !row.deleted_at && Number(row.covers_balance) === 0 && row.registered_on && locked(row.registered_on);
-          const closedOn = row => (row.status === "closed" && !row.deleted_at ? [day(row.closed_at || row.updated_at), day(row.registered_on || row.created_at)].sort().at(-1) : "");
-          if ((plain(pre) || plain(post)) && differs(pre, post, ["total", "account_id", "registered_on", "covers_balance", "deleted_at"])) return "kart kilitli dönem";
-          if ((locked(pre && closedOn(pre)) || locked(post && closedOn(post))) && differs(pre, post, ["account_id", "total", "status", "closed_at", "updated_at", "registered_on", "created_at", "deleted_at"])) return "kapatılmış kart kilitli dönem";
+          // 2.5.0 Ç7b tur 3b (§17.1): yalnız kalanı düşülen (eski kural, close_rule '2.4.9') kartın kapanışı kilitli maddedir (689) — Borçta Kalsın kartının kapanışı defter olayı değil
+          // (lib/accounts.mjs waivesRemaining; satır ham — alan adı close_rule). Kural işareti alan listesinde: kapı dışı değişim kilitli dönemde reddedilir.
+          const closedOn = row => (row.status === "closed" && row.close_rule === CLOSE_RULE_WAIVE && !row.deleted_at ? [day(row.closed_at || row.updated_at), day(row.registered_on || row.created_at)].sort().at(-1) : "");
+          // 2.5.0 Ç5-A tur 1e: yükleme bağı (LOCK_SQL plans_import_lock).
+          if ((plain(pre) || plain(post)) && differs(pre, post, ["total", "account_id", "registered_on", "covers_balance", "deleted_at", "import_id"])) return "kart kilitli dönem";
+          // 2.5.0 Ç5-A tur 1f (§16): Kayıt Tarihi BOŞ kart — madde tarihi oluşturma günü (LOCK_SQL plans_unregistered_lock).
+          const unregistered = row => row && !row.deleted_at && Number(row.covers_balance) === 0 && !row.registered_on && locked(row.created_at);
+          if ((unregistered(pre) || unregistered(post)) && differs(pre, post, ["total", "account_id", "registered_on", "covers_balance", "deleted_at", "created_at"])) return "kart kilitli dönem (Kayıt Tarihi boş)";
+          if ((locked(pre && closedOn(pre)) || locked(post && closedOn(post))) && differs(pre, post, ["account_id", "total", "status", "closed_at", "updated_at", "registered_on", "created_at", "deleted_at", "close_rule"])) return "kapatılmış kart kilitli dönem";
           const id = (post || pre).id;
           if (differs(pre, post, ["account_id", "deleted_at"]) && store.get("SELECT 1 AS found FROM plan_entries WHERE plan_id = ? AND date <= ? LIMIT 1", id, lock)) return "kartın kilitli tahsilatı";
         }
         if (table === "plan_entries") {
           // Kapatılmış kartın vazgeçilen kalanı (689) kapanış gününde yazılır; karta sonradan gelen tahsilat kilitli tutarı değiştirir.
-          const plan = store.get("SELECT status, closed_at AS closedAt, updated_at AS updatedAt, registered_on AS registeredOn, created_at AS createdAt, deleted_at AS deletedAt FROM plans WHERE id = ?", (post || pre).plan_id);
-          if (plan && plan.status === "closed" && !plan.deletedAt && locked([day(plan.closedAt || plan.updatedAt), day(plan.registeredOn || plan.createdAt)].sort().at(-1))) return "kapatılmış kartın tahsilatı";
+          const plan = store.get("SELECT status, close_rule AS closeRule, closed_at AS closedAt, updated_at AS updatedAt, registered_on AS registeredOn, created_at AS createdAt, deleted_at AS deletedAt FROM plans WHERE id = ?", (post || pre).plan_id);
+          if (plan && waivesRemaining(plan) && !plan.deletedAt && locked([day(plan.closedAt || plan.updatedAt), day(plan.registeredOn || plan.createdAt)].sort().at(-1))) return "kapatılmış kartın tahsilatı";
         }
         if (table === "accounts" && differs(pre, post, ["type", "deleted_at"])) {
           const id = (post || pre).id;
@@ -370,10 +431,17 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
           );
           if (found) return "kilitli dönemde hareketi olan cari";
         }
+        // 2.5.0 Ç5-A tur 2 (dar kontrol 1f DÜŞÜK-4 / N7): "plan_imports" (yükleme damgası) dalı SİLİNDİ — tablo SCOPE_TABLES'ta değil (lib/db.mjs), süzgeç bu tablonun yazımını hiç
+        // görmez (ulaşılamayan dal). Program yükleme damgasını kart yüklenirken bir kez yazar; kapı dışı değişikliği taramadaki LOCK_SQL plans_import_lock bulur.
+        // 2.5.0 Ç5-A tur 1f — SINIF 2 (§16; LOCK_SQL cheques_bounce_lock / cheques_free_lock): kilitli evrağın carisi, kilitli karşılıksızı olan evrağın durumu ve karşılıksız
+        // olayları, kilitli evrağın "cariye işlenmemiş" olgusunu belirleyen alış / veriliş cari satırı ve evrakla taksit satırı. Kilitli evrağın bugünkü tahsili / cirosu girmez.
+        const cheque = chequeLockRelevant(table, pre, post, lock, inTrace);
+        if (cheque) return cheque;
         if (table === "bank_lines" && store.get("SELECT 1 AS found FROM fin_events WHERE id = ? AND date <= ?", (post || pre).event_id, lock)) return "kilitli banka fişi";
         // Tahsil kaydı (lib/integrity.mjs LOCK_SQL cheque_collections_given / _closed): verilme ve kapanış ayrı iz girdileri (plan §3.14, §5.5).
         if (table === "cheque_collections") {
-          if ((inTrace(pre?.given_date) || inTrace(post?.given_date)) && differs(pre, post, ["cheque_id", "bank_account_id", "given_date"])) return "tahsil kaydı kilitli dönem (verilme)";
+          // 2.5.0 Ç5-A tur 1f (§16): event_id (LOCK_SQL cheque_collections_event_lock — 101.01 / 101.02 tutarı).
+          if ((inTrace(pre?.given_date) || inTrace(post?.given_date)) && differs(pre, post, ["cheque_id", "bank_account_id", "given_date", "event_id"])) return "tahsil kaydı kilitli dönem (verilme)";
           const closedOn = row => (row && row.closed_date ? row.closed_date : null);
           if ((inTrace(closedOn(pre)) || inTrace(closedOn(post))) && differs(pre, post, ["status", "closed_date", "close_event_id"])) return "tahsil kaydı kilitli dönem (kapanış)";
         }
@@ -571,7 +639,7 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
     if (s.plans.size && has("plans")) {
       const list = json(s.plans);
       const orphanPlans = all(
-        `SELECT p.id, p.name, p.total, p.status, p.covers_balance AS coversBalance,
+        `SELECT p.id, p.name, p.total, p.status, p.close_rule AS closeRule, p.covers_balance AS coversBalance,
                 COALESCE((SELECT SUM(CASE WHEN e.kind = 'in' THEN e.amount ELSE -e.amount END) FROM plan_entries e WHERE e.plan_id = p.id), 0) AS paid
          FROM plans p LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL WHERE +p.deleted_at IS NULL AND a.id IS NULL AND p.id IN ${IN}`,
         list,
@@ -580,8 +648,8 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
         const balances = partyBalances(build({ plans: orphanPlans.map(plan => plan.id) }));
         for (const plan of orphanPlans) {
           const total = plan.coversBalance ? 0 : toCents(plan.total);
-          const left = toCents(plan.total) - toCents(plan.paid);
-          const want = total - toCents(plan.paid) - (plan.status === "closed" ? Math.max(0, left) : 0);
+          // 2.5.0 Ç7b tur 3b: düşülen kalan TEK yardımcıdan (lib/accounts.mjs waivedOf).
+          const want = total - toCents(plan.paid) - toCents(waivedOf(plan, plan.paid));
           const got = balances.get(`plan:${plan.id}`) || 0;
           if (got !== want) find("party:plans", `${plan.name}: defter ${got / 100} / kart ${want / 100}`);
         }
@@ -591,8 +659,10 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
         for (const plan of plans().list(AUDITOR, { status: "all", ids: [...s.plans] }).plans || []) {
           const row = raw.get(plan.id);
           if (!row) continue;
-          if (toCents(plan.totals.total) !== toCents(row.total) || toCents(plan.totals.paid) !== toCents(row.paid)) find("plans:totals", `${plan.refNo || plan.id} ${plan.name}`);
-          else if (plan.status !== "closed" && toCents(plan.totals.remaining) !== Math.max(0, toCents(row.total) - toCents(row.paid))) find("plans:totals", `${plan.refNo || plan.id} ${plan.name}: kalan`);
+          // S129 = A: listede totals.paid / remaining GÖSTERİLEN (kuyruk) sayıdır; kartın kendi hesabı ownPaid / ownRemaining — denetim onları satırlarla karşılaştırır.
+          const own = { paid: plan.totals.ownPaid ?? plan.totals.paid, remaining: plan.totals.ownRemaining ?? plan.totals.remaining };
+          if (toCents(plan.totals.total) !== toCents(row.total) || toCents(own.paid) !== toCents(row.paid)) find("plans:totals", `${plan.refNo || plan.id} ${plan.name}`);
+          else if (plan.status !== "closed" && toCents(own.remaining) !== Math.max(0, toCents(row.total) - toCents(row.paid))) find("plans:totals", `${plan.refNo || plan.id} ${plan.name}: kalan`);
         }
       }
       if (hasColumn("plan_items", "due_date") && hasColumn("plans", "registered_on")) {
@@ -606,9 +676,14 @@ export function createScopedGate({ store, ledger, accounts, plans, stock, money,
       const list = json(s.invoices);
       const c = column => `CAST(ROUND(${column} * 100) AS INTEGER)`;
       const fromLedger = build({ invoices: [...s.invoices] });
+      // 2.5.0 Ç7b tur 2c (B-9; KURAL GEÇİŞ GÜNÜ — lib/ledger-rule-shift.mjs): iade KDV'si türetmeyle (journal) ve beklenenle (routes/ledger.mjs expected) AYNI kuralla — KG-8 satıştan iade
+      // B 191, F-08 alıştan iade A 391; geçiş gününde / öncesinde ya da güncellemeden önce mahsup edilmiş (etkin) ayda eski yön (satıştan iade B 391, alıştan iade A 191).
+      const old = oldReturnVatSql(ruleShiftOf(store), "issue_date");
       const sums = store.get(
-        `SELECT COALESCE(SUM(CASE kind WHEN 'purchase' THEN ${c("try_vat")} WHEN 'purchase_return' THEN -${c("try_vat")} END), 0) AS v191,
-                COALESCE(SUM(CASE WHEN kind IN ('sale', 'smm') THEN -(${c("try_vat")} - ${c("try_withheld")}) WHEN kind = 'sale_return' THEN ${c("try_vat")} - ${c("try_withheld")} END), 0) AS v391,
+        `SELECT COALESCE(SUM(CASE WHEN kind = 'purchase' THEN ${c("try_vat")} WHEN kind = 'purchase_return' AND ${old} THEN -${c("try_vat")}
+                                  WHEN kind = 'sale_return' AND NOT ${old} THEN ${c("try_vat")} - ${c("try_withheld")} END), 0) AS v191,
+                COALESCE(SUM(CASE WHEN kind IN ('sale', 'smm') THEN -(${c("try_vat")} - ${c("try_withheld")}) WHEN kind = 'sale_return' AND ${old} THEN ${c("try_vat")} - ${c("try_withheld")}
+                                  WHEN kind = 'purchase_return' AND NOT ${old} THEN -${c("try_vat")} END), 0) AS v391,
                 COALESCE(SUM(CASE kind WHEN 'purchase' THEN -(${c("try_withheld")} + ${c("try_stoppage")}) WHEN 'purchase_return' THEN ${c("try_withheld")} + ${c("try_stoppage")} END), 0) AS v360,
                 COALESCE(SUM(CASE WHEN kind IN ('sale', 'smm') THEN ${c("try_stoppage")} END), 0) AS v193
          FROM invoices i WHERE +i.status = 'issued' AND EXISTS (SELECT 1 FROM accounts a WHERE a.id = i.account_id AND a.deleted_at IS NULL) AND i.id IN ${IN}`,

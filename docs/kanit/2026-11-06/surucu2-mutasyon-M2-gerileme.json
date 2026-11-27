@@ -1,0 +1,32 @@
+{
+  "ad": "surucu2-mutasyon-M2-gerileme",
+  "komut": "python3 -I test/bagimsiz/muhasebe-surucu/gerileme.py /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/surucu2-cikti/surucu2-eski-842e1d48 /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/surucu2-cikti/surucu2-mutasyon-M2",
+  "commit": "fb8be14310a4afaf9027a056b5985e08cd3e6d49",
+  "dal": "worktree-agent-a95435ad22c7ff7a7",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T03:57:08.748Z",
+  "sure_sn": 0.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 132,
+    "gecen": 130,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/surucu2-kanit/2026-11-06/surucu2-mutasyon-M2-gerileme.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a95435ad22c7ff7a7",
+  "ham_cikti_sha256": "7b194d214d1002ee6f77cadff311d147c301bb2c7ab44bbe4809ce8de88a0f5d",
+  "ham_cikti_bayt": 4920
+}

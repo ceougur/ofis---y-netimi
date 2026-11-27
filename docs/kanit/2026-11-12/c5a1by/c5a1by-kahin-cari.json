@@ -1,0 +1,158 @@
+{
+  "ad": "c5a1by-kahin-cari",
+  "komut": "npm run test:kahin-cari",
+  "commit": "a55e47e4e039c5a9879c5be6c4ba4e749743dfa6",
+  "dal": "sinama-c5a1b",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-12T04:11:41.377Z",
+  "sure_sn": 166.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 13220,
+    "gecen": 12979,
+    "basarisiz": 241,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 241 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:mizan:500: program \"tuttu\" · kâhin 0 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-A; liste program \"okunamadı\"))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:mizan:519: program \"tuttu\" · kâhin 0 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-A; liste program \"okunamadı\"))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k2:mizan:500: program \"tuttu\" · kâhin 0 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-A; liste program \"okunamadı\"))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k2:mizan:519: program \"tuttu\" · kâhin 0 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-A; liste program \"okunamadı\"))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k3:mizan:500: program \"tuttu\" · kâhin 0 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-A; liste program \"okunamadı\"))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k3:mizan:519: program \"tuttu\" · kâhin 0 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-A; liste program \"okunamadı\"))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k4:mizan:500: program \"tuttu\" · kâhin 0 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-A; liste program \"okunamadı\"))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k4:mizan:519: program \"tuttu\" · kâhin 0 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-A; liste program \"okunamadı\"))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k5:mizan:500: program \"tuttu\" · kâhin 0 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-A; liste program \"okunamadı\"))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k5:mizan:519: program \"tuttu\" · kâhin 0 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-A; liste program \"okunamadı\"))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k6:mizan:500: program \"tuttu\" · kâhin 0 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-A; liste program \"okunamadı\"))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k6:mizan:519: program \"tuttu\" · kâhin 0 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-A; liste program \"okunamadı\"))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:mizan:500: program \"tuttu\" · kâhin 0 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-A; liste program \"okunamadı\"))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:mizan:519: program \"tuttu\" · kâhin 0 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-A; liste program \"okunamadı\"))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k2:mizan:500: program \"tuttu\" · kâhin 0 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-A; liste program \"okunamadı\"))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k2:mizan:519: program \"tuttu\" · kâhin 0 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-A; liste program \"okunamadı\"))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k3:mizan:500: program \"tuttu\" · kâhin 0 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-A; liste program \"okunamadı\"))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k3:mizan:519: program \"tuttu\" · kâhin 0 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-A; liste program \"okunamadı\"))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:mizan:500: program \"tuttu\" · kâhin 0 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-A; liste program \"okunamadı\"))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:mizan:519: program \"tuttu\" · kâhin 0 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-A; liste program \"okunamadı\"))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k2:mizan:500: program \"tuttu\" · kâhin 0 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-A; liste program \"okunamadı\"))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k2:mizan:519: program \"tuttu\" · kâhin 0 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-A; liste program \"okunamadı\"))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k3:mizan:500: program \"tuttu\" · kâhin 0 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-A; liste program \"okunamadı\"))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k3:mizan:519: program \"tuttu\" · kâhin 0 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-A; liste program \"okunamadı\"))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k4:mizan:500: program \"tuttu\" · kâhin 0 (YAPIM AŞAMASI KAPANDI — listeden silin (Ç5-A; liste program \"okunamadı\"))",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../c5a1by-kanit/2026-11-12/c5a1by-kahin-cari.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-ya-ag",
+  "ham_cikti_sha256": "725c65e688ae868cdaa11160f44c1a1a2fea1e045e30411e3f713e503bbbbab8",
+  "ham_cikti_bayt": 98678
+}

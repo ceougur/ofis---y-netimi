@@ -1,0 +1,271 @@
+{
+ "name": "surum-2.4.9-s127",
+ "cut": "v2.4.9",
+ "commit": "ccf0b0cab9721f6d8ef737ca51809c960d32ba5f",
+ "now": "2026-11-10T12:00:00+03:00",
+ "lockedUntil": "2025-12-31",
+ "cards": [
+  {
+   "name": "Kilitli Kart",
+   "total": "2000",
+   "paid": "500",
+   "registered": "01.06.2025",
+   "day": "A",
+   "sinif": "iii"
+  },
+  {
+   "name": "Ters Kart",
+   "total": "3000",
+   "paid": "600",
+   "registered": "10.11.2025",
+   "moveTo": "2026-01-15",
+   "day": "A",
+   "sinif": "ters"
+  },
+  {
+   "name": "Ters Sıfır",
+   "total": "1000",
+   "paid": "0",
+   "registered": "10.11.2025",
+   "moveTo": "2026-01-20",
+   "day": "A",
+   "sinif": "ters-0"
+  },
+  {
+   "name": "Kart Bir",
+   "total": "6000",
+   "paid": "1500",
+   "registered": "01.10.2025",
+   "day": "B",
+   "sinif": "i"
+  },
+  {
+   "name": "Kart İki",
+   "total": "2400",
+   "paid": "0",
+   "registered": "01.10.2025",
+   "day": "B",
+   "sinif": "ii-0"
+  },
+  {
+   "name": "Açık Kart",
+   "total": "1800",
+   "paid": "300",
+   "registered": "01.03.2026",
+   "day": "B",
+   "sinif": "iv"
+  }
+ ],
+ "oncesi": {
+  "mizan": {
+   "100": 1080000,
+   "120": 1550000,
+   "500": -1010000,
+   "602": -1620000
+  },
+  "mizan2025": {
+   "100": 1000000,
+   "120": 1230000,
+   "500": -1190000,
+   "602": -1040000
+  },
+  "mizan2026": {
+   "100": 1080000,
+   "120": 1550000,
+   "500": -1010000,
+   "602": -1620000
+  },
+  "cari": {
+   "Müşteri Bir": 220000,
+   "Kilitli Kart": 150000,
+   "Ters Kart": 240000,
+   "Ters Sıfır": 100000,
+   "Kart Bir": 450000,
+   "Kart İki": 240000,
+   "Açık Kart": 150000
+  },
+  "yevmiye2025": [
+   [
+    "02.01.2025",
+    "Kasa açılışı",
+    "Açılış Bakiyesi",
+    "100",
+    "10.000,00 TL",
+    ""
+   ],
+   [
+    "02.01.2025",
+    "Kasa açılışı",
+    "Açılış Bakiyesi",
+    "500",
+    "",
+    "10.000,00 TL"
+   ],
+   [
+    "02.01.2025",
+    "Cari (borç yaz)",
+    "Açılış bakiyesi",
+    "120",
+    "3.000,00 TL",
+    ""
+   ],
+   [
+    "02.01.2025",
+    "Cari (borç yaz)",
+    "Açılış bakiyesi",
+    "500",
+    "",
+    "3.000,00 TL"
+   ],
+   [
+    "01.06.2025",
+    "Taksit kartı",
+    "Taksitli satış / hizmet",
+    "120",
+    "2.000,00 TL",
+    ""
+   ],
+   [
+    "01.06.2025",
+    "Taksit kartı",
+    "Taksitli satış / hizmet",
+    "602",
+    "",
+    "2.000,00 TL"
+   ],
+   [
+    "01.10.2025",
+    "Taksit kartı",
+    "Taksitli satış / hizmet",
+    "120",
+    "6.000,00 TL",
+    ""
+   ],
+   [
+    "01.10.2025",
+    "Taksit kartı",
+    "Taksitli satış / hizmet",
+    "602",
+    "",
+    "6.000,00 TL"
+   ],
+   [
+    "01.10.2025",
+    "Taksit kartı",
+    "Taksitli satış / hizmet",
+    "120",
+    "2.400,00 TL",
+    ""
+   ],
+   [
+    "01.10.2025",
+    "Taksit kartı",
+    "Taksitli satış / hizmet",
+    "602",
+    "",
+    "2.400,00 TL"
+   ],
+   [
+    "10.11.2025",
+    "Taksit açılışı (devir)",
+    "Excel'de ödenmiş (açılış)",
+    "500",
+    "333,33 TL",
+    ""
+   ],
+   [
+    "10.11.2025",
+    "Taksit açılışı (devir)",
+    "Excel'de ödenmiş (açılış)",
+    "120",
+    "",
+    "333,33 TL"
+   ],
+   [
+    "10.11.2025",
+    "Taksit açılışı (devir)",
+    "Excel'de ödenmiş (açılış)",
+    "500",
+    "166,67 TL",
+    ""
+   ],
+   [
+    "10.11.2025",
+    "Taksit açılışı (devir)",
+    "Excel'de ödenmiş (açılış)",
+    "120",
+    "",
+    "166,67 TL"
+   ],
+   [
+    "10.11.2025",
+    "Taksit açılışı (devir)",
+    "Excel'de ödenmiş (açılış)",
+    "500",
+    "500,00 TL",
+    ""
+   ],
+   [
+    "10.11.2025",
+    "Taksit açılışı (devir)",
+    "Excel'de ödenmiş (açılış)",
+    "120",
+    "",
+    "500,00 TL"
+   ],
+   [
+    "10.11.2025",
+    "Taksit açılışı (devir)",
+    "Excel'de ödenmiş (açılış)",
+    "500",
+    "100,00 TL",
+    ""
+   ],
+   [
+    "10.11.2025",
+    "Taksit açılışı (devir)",
+    "Excel'de ödenmiş (açılış)",
+    "120",
+    "",
+    "100,00 TL"
+   ]
+  ],
+  "mutabakat": {
+   "ok": true,
+   "failures": []
+  },
+  "lock": "2025-12-31"
+ },
+ "files": [
+  {
+   "path": "veri/destekofis.sqlite",
+   "sha256": "702f1b35ad5713bc6c89de8d7312db7f647432eeb7ceaa21ac870150f0d0044d",
+   "size": 1421312,
+   "mtimeMs": 1794417885885
+  },
+  {
+   "path": "veri/e-belge-kullanim.sqlite",
+   "sha256": "44fab50b70a7c6a4d32390f7c0f5534ec2682dad58d2f29813288da217a67ac6",
+   "size": 16384,
+   "mtimeMs": 1794417885085
+  },
+  {
+   "path": "veri/sirketler.json",
+   "sha256": "03d6e6e4d025bd3f5c5b4f3ccb57e68c743068b53a16a41ed2f79da5bb9efd7e",
+   "size": 196,
+   "mtimeMs": 1794417884607
+  },
+  {
+   "path": "veri/sirketler.yedek.json",
+   "sha256": "03d6e6e4d025bd3f5c5b4f3ccb57e68c743068b53a16a41ed2f79da5bb9efd7e",
+   "size": 196,
+   "mtimeMs": 1794417884607
+  },
+  {
+   "path": "veri/whatsapp-gonderim.sqlite",
+   "sha256": "2df909c66ef7990848de9f2553f927cf481d3691514f8c63b178b186aab91a5f",
+   "size": 196608,
+   "mtimeMs": 1794417885085
+  }
+ ]
+}

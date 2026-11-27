@@ -4,7 +4,8 @@
 // başlangıç kayıtları (cari, eski havale, nakit tahsilat) API'den girilir.
 // Kullanım: node docs/kilavuz/ekran-banka.mjs [çıktı klasörü] [yalnız-bunlar,virgülle]   (kılavuz görselleri yenilenirken; varsayılan docs/kilavuz/ekran)
 //          node docs/kilavuz/ekran-banka.mjs --denetim   (npm run test:kilavuz-metin; CI e2e işi): görseller ve metinler GEÇİCİ klasöre yazılır
-//          (docs/kilavuz/ekran'a dokunulmaz), sonra metin-denetle.mjs aynı metinlerle koşar; özet satırları ikisinin toplamıdır.
+//          (docs/kilavuz/ekran'a dokunulmaz), sonra metin-denetle.mjs aynı metinlerle kılavuzun BÜTÜN bölümlerini denetler (2.5.0 BS-5; sondaki
+//          gezinti öbür bölümlerin ekranlarını okur); özet satırları ikisinin toplamıdır.
 // EKRAN_METIN=<dosya.json> verilirse her ekranın görünen metni (düğme, sekme, alan, seçenek adları) o dosyaya yazılır: kılavuzdaki adlar
 // bu metinlerle birebir karşılaştırılır (docs/kilavuz/metin-denetle.mjs).
 // 2.4.9 B4: pencere kapatma test/e2e/esc-kapat.mjs escClose ile (2.4.3 "Kaydedilmemiş Değişiklik" sorusu "Kaydetmeden Kapat"la yanıtlanır); her
@@ -597,8 +598,10 @@ await step("rapor", async () => {
   check(guideReports.length >= 10, `kılavuzda Banka rapor adları okundu (${guideReports.length})`);
   const absent = guideReports.filter(name => !items.some(item => item.includes(name)));
   check(items.length > 0 && absent.length === 0, `kılavuzdaki her Banka rapor adı Banka grubunda (${guideReports.length} ad, ekranda ${items.length} rapor)${absent.length ? ` — ekranda YOK: ${absent.join(", ")}` : ""}`);
+  // 2.5.0 BS-5: Banka grubunda olup kılavuzda geçmeyen rapor artık denetimi düşürür (2.4.9'da bilgi satırıydı; "Tahsildeki Çek ve Senetler" ve
+  // "Banka ve POS Hareketleri" böyle eksik kalmıştı).
   const unlisted = items.filter(item => !guideReports.some(name => item.includes(name)));
-  console.log(`bilgi: Banka grubunda olup kılavuzda geçmeyen rapor: ${unlisted.length ? unlisted.join(", ") : "yok"}`);
+  check(unlisted.length === 0, `Banka grubundaki her rapor kılavuzda (${items.length} rapor)${unlisted.length ? ` — kılavuzda YOK: ${unlisted.join(", ")}` : ""}`);
   // Rapor grubu sırası kılavuzdaki "Cari · Kasa · …" listesiyle aynı.
   const order = tagged(kilavuzItem("Raporlar → Tüm Raporlar → Banka:"), "b").find(text => text.includes(" · "))?.split(" · ").map(text => text.trim()) || [];
   const groups = await page.$$eval(`${modal} .hof-rc-group`, nodes => nodes.map(node => node.querySelector("p")?.textContent.trim() || ""));
@@ -825,6 +828,56 @@ await step("yetkiler", async () => {
   await grab("yonetim-eksi-bakiye", "#adm-negative");
 });
 
+// 2.5.0 BS-5: kılavuzun BÜTÜN bölümleri denetlenir (metin-denetle.mjs). Öbür bölümlerin adları için Yönetim panelinin her sekmesi, ana ekran ve
+// Operasyon Merkezi'nin her penceresi (Cari, Stok, Fatura + Fatura Ayarları, Çek / Senet, Taksitler, Raporlar'ın her sekmesi, Personel Raporu)
+// açılıp görünen metni okunur; kayıt yapılmaz (kapatmada soru beklenmez). Burada okunamayan adlar metin-denetle'de program kaynağıyla aranır.
+await step("gezinti-yonetim", async () => {
+  if (!page.url().includes("/admin.html")) await page.goto(`${base}/admin.html`);
+  await page.waitForSelector(".adm-tabs [data-tab]", { timeout: 15000 });
+  const tabs = await page.$$eval(".adm-tabs [data-tab]", list => list.filter(node => node.offsetParent).map(node => node.dataset.tab));
+  check(tabs.length >= 8, `Yönetim panelinde sekmeler okundu (${tabs.join(", ")})`);
+  for (const id of tabs) {
+    await page.click(`.adm-tabs [data-tab="${id}"]`);
+    await page.waitForFunction(selected => document.querySelector(`.adm-tabs [data-tab="${selected}"]`)?.getAttribute("aria-selected") === "true", id, { timeout: 8000 });
+    await page.waitForTimeout(1200);
+    await grab(`gezinti-yonetim-${id}`, "body");
+  }
+});
+await step("gezinti-ana", async () => {
+  await page.goto(`${base}/`);
+  await page.waitForSelector("#hof-sidecard [data-action]", { timeout: 20000 });
+  await page.waitForTimeout(1500);
+  await quiet();
+  await grab("gezinti-ana-ekran", "body");
+  const open = async (action, ready) => {
+    await page.click(`#hof-sidecard [data-action="${action}"]`);
+    await page.waitForSelector(ready, { timeout: 15000 });
+    await page.waitForTimeout(1200);
+  };
+  for (const [action, ready] of [["accounts", modal], ["stock", modal], ["cheques", modal], ["plans", modal], ["reports", modal]]) {
+    await open(action, ready);
+    await grab(`gezinti-${action}`, modal);
+    await closeAll(`gezinti-${action}`, "soru-yok");
+  }
+  // Fatura: liste, sonra Fatura Ayarları (Firma Bilgisi, Defter Türü …); ayarlar formu değiştirilmeden kapatılır.
+  await open("invoices", `${modal} [data-act="settings"]`);
+  await grab("gezinti-fatura", modal);
+  await page.click(`${modal} [data-act="settings"]`);
+  await page.waitForSelector(`${modal} [data-book-type]`, { timeout: 15000 });
+  await page.waitForTimeout(800);
+  await grab("gezinti-fatura-ayarlari", modal);
+  await closeAll("gezinti-fatura", "soru-yok");
+  // Raporlar: her sekme (Cari Mizanı ve Ekstresi, Vade Takip, Nakit Akış, Çek / Senet, Tüm Raporlar, Tablo Raporları).
+  await open("analytics", `${modal} .hof-rep-tab[data-tab]`);
+  const repTabs = await page.$$eval(`${modal} .hof-rep-tab[data-tab]`, list => list.map(node => node.dataset.tab));
+  for (const id of repTabs) {
+    await page.click(`${modal} .hof-rep-tab[data-tab="${id}"]`);
+    await page.waitForTimeout(1500);
+    await grab(`gezinti-rapor-${id}`, modal);
+  }
+  await closeAll("gezinti-raporlar", "soru-yok");
+});
+
 if (process.env.EKRAN_METIN) { writeFileSync(process.env.EKRAN_METIN, JSON.stringify(texts, null, 1)); console.log("metinler:", process.env.EKRAN_METIN, Object.keys(texts).length, "ekran"); }
 for (const line of checks) console.log(line);
 console.log("sayfa hataları:", errors.length ? errors.join(" | ") : "yok");
@@ -845,9 +898,9 @@ if (DENETIM) {
   // Kılavuz ad denetimi aynı metinlerle (metin-denetle.mjs); özet satırı ikisinin toplamı (tools/kanit.mjs node:test biçimini okur).
   const result = denetle(texts);
   yazdir(result, { ozet: false });
-  console.log(`ekran-banka: ${ekranGecen} denetim geçti, ${ekranBasarisiz} başarısız · metin-denetle: ${result.checked.length}/${result.checked.length + result.missing.length} ad ekranda`);
-  console.log(`# tests ${ekranGecen + ekranBasarisiz + result.checked.length + result.missing.length}`);
-  console.log(`# pass ${ekranGecen + result.checked.length}`);
+  console.log(`ekran-banka: ${ekranGecen} denetim geçti, ${ekranBasarisiz} başarısız · metin-denetle (bütün bölümler): ${result.checked.length + result.source.length}/${result.checked.length + result.source.length + result.missing.length} ad (ekranda ${result.checked.length}, program kaynağında ${result.source.length})`);
+  console.log(`# tests ${ekranGecen + ekranBasarisiz + result.checked.length + result.source.length + result.missing.length}`);
+  console.log(`# pass ${ekranGecen + result.checked.length + result.source.length}`);
   console.log(`# fail ${ekranBasarisiz + result.missing.length}`);
   if (result.missing.length) process.exitCode = 1;
 } else {

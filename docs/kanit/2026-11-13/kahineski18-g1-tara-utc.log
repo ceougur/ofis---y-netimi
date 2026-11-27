@@ -1,0 +1,16 @@
+  (bilgi, --sert: alış dahil) c6-cari-vade-fifo.json: adım 11 f2 2026-05-15 < 2026-05-20 (f1)
+  (bilgi, --sert: alış dahil) c7-ks7-bagsiz-kapaticilar.json: adım 4 f2 2026-05-15 < 2026-05-20 (f1)
+  (bilgi, --sert: alış dahil) c8-ks8-iade-geri-odemesi.json: adım 16 as1 2026-05-10 < 2026-05-12 (fb2); adım 17 as2 2026-05-11 < 2026-05-12 (fb2)
+  (bilgi, --sert: alış dahil) d16-c5-s92-net-gorunum.json: adım 33 f10 2026-03-01 < 2026-03-10 (f2p); adım 34 af10 2026-03-05 < 2026-03-10 (f2p); adım 37 at1f 2026-03-01 < 2026-03-10 (f2p)
+  (bilgi, --sert: alış dahil) d17-c5-s93-verilen-avans.json: adım 12 af4 2026-06-01 < 2026-06-12 (af3); adım 17 af5 2026-06-06 < 2026-06-12 (af3)
+  (bilgi, --sert: alış dahil) d18-c5-s93-avans-ertesi-gun.json: adım 12 af4 2026-06-01 < 2026-06-12 (af3); adım 17 af5 2026-06-06 < 2026-06-12 (af3)
+  (bilgi, --sert: alış dahil) d22-c5-s96-avans-kalemi.json: adım 9 v3f 2026-06-01 < 2026-06-05 (v2f)
+  (bilgi, --sert: alış dahil) d23-c5-s96-avans-ertesi-gun.json: adım 9 v3f 2026-06-01 < 2026-06-05 (v2f)
+  (bilgi, --sert: alış dahil) d26-c5-bakim5-susan.json: adım 19 s13f 2026-03-05 < 2026-03-10 (s12f)
+  (bilgi, --sert: alış dahil) d33-c5-s102-s105-sinirlar.json: adım 35 t13bf 2026-03-01 < 2026-03-10 (t12bf); adım 40 t13cf 2026-03-01 < 2026-03-10 (t12bf); adım 44 t17a 2026-03-05 < 2026-03-10 (t12bf)
+  (bilgi, --sert: alış dahil) d9-c5-s68-borc-tarafi-vade.json: adım 23 af4 2026-05-01 < 2026-05-10 (af3)
+G1 TARAMASI (satış faturası + iade, senaryo içi tarih sırası): 100 senaryo ihlalsiz, 0 ihlalli; --sert ile yalnız alış yüzünden ihlalli 11
+# tests 100
+# pass 100
+# fail 0
+100/100 denetim geçti

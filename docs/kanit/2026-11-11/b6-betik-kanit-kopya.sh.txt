@@ -1,0 +1,24 @@
+#!/bin/bash
+# Birleşik tur 6 — kanıt dosyalarını depoya (docs/kanit/2026-11-11/b6-*) kopyalar.
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+W=/home/user/ofis---y-netimi/.claude/worktrees/agent-a115f88e3014ea777
+D=$W/docs/kanit/2026-11-11
+K=$S/birlesik6-kanit
+B=$S/birlesik6-b6
+mkdir -p "$D" || exit 1
+cp "$K"/2026-11-11/b6-* "$D"/ || exit 1
+for f in a1-uyari-eski a1-uyari-yeni a2-iz-eski a2-iz-yeni e3-atlatma-status f-eski-410 f-eski-kur f-eski-olcum f-yeni-arac-eski-veri f-yeni-kur f-yeni-olcum mutasyon-ab mutasyon-g; do
+  tr '\r' '\n' < "$K/$f.txt" > "$D/b6-$f.txt" || exit 1
+done
+cp "$B/a1-eski.txt" "$D/b6-a1-test-eski.txt" || exit 1
+cp "$B/b-eski.txt" "$D/b6-a2-test-eski.txt" || exit 1
+for f in eski-kasa-acilis-vergi-s94-250 eski-mutabakat-araci-uyari-250 eski-yapim-asamasi-kapisi; do cp "$B/$f.txt" "$D/b6-$f.txt" || exit 1; done
+cp "$B/g-run.txt" "$D/b6-g-koruma-fikstur.txt" || exit 1
+cp "$B/d-defter243-yeni.txt" "$D/b6-d-senaryo-defter-243-yeni.txt" || exit 1
+for f in e-uretici-1 e-uretici-2 e-uretici-2-bozma; do cp "$B/$f.txt" "$D/b6-$f.txt" || exit 1; done
+for f in mutasyon-b6.mjs yapim-boz.mjs komsu.mjs komsu.txt c-kos.sh e-kos.sh e2e-kos.sh komsu-kos.sh arama-kos.sh kanit-kopya.sh; do cp "$B/$f" "$D/b6-betik-$f.txt" || exit 1; done
+cp "$B/dk-betik/uyari.mjs" "$D/b6-betik-dk-uyari.mjs.txt" || exit 1
+cp "$B/dk-betik/iz.mjs" "$D/b6-betik-dk-iz.mjs.txt" || exit 1
+cp "$S/birlesik6-mut/test/e2e/b220-28-zorla.mjs" "$D/b6-betik-b220-28-zorla.mjs.txt" || exit 1
+ls "$D" | grep -c "^b6-"
+du -sh "$D"

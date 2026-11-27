@@ -1,0 +1,7 @@
+utc oz: [kanit] kahin-cari28-oz-utc: GEÇTİ · çıkış 0 · 9357/9357 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a3d1a1b +1 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4 == oz: çıkış 0 
+ist oz: [kanit] kahin-cari28-oz-ist: GEÇTİ · çıkış 0 · 9357/9357 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a3d1a1b +1 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4 == oz: çıkış 0 
+utc g3: [kanit] kahin-cari28-g3-utc: GEÇTİ · çıkış 0 · 670/670 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a3d1a1b +1 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4 == g3: çıkış 0 
+ist g3: [kanit] kahin-cari28-g3-ist: GEÇTİ · çıkış 0 · 670/670 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a3d1a1b +1 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4 == g3: çıkış 0 
+utc elle: [kanit] kahin-cari28-elle-fark-utc: GEÇTİ · çıkış 0 · 113/113 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a3d1a1b +1 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4 == elle-fark: çıkış 0 [kanit] kahin-cari28-elle-yeni-utc: GEÇTİ · çıkış 0 · 470/470 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a3d1a1b +1 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v
+ist elle: [kanit] kahin-cari28-elle-fark-ist: GEÇTİ · çıkış 0 · 113/113 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a3d1a1b +1 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4 == elle-fark: çıkış 0 [kanit] kahin-cari28-elle-yeni-ist: GEÇTİ · çıkış 0 · 470/470 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a3d1a1b +1 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v
+bitti 13:18:27

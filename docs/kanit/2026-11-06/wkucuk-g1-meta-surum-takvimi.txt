@@ -1,0 +1,25 @@
+2.5.0 G1 — Meta Graph API sürüm / kaldırma takvimi (okundu 06.11.2026 ~05:55 UTC; curl, ajan vekil sunucusu üzerinden; sayfa kopyası depoya KONMADI — plan 2.4.8 KAYNAKLAR kuralı)
+
+Kaynaklar:
+  https://developers.facebook.com/docs/graph-api/changelog/versions/   (sürüm tablosu)
+  https://developers.facebook.com/docs/graph-api/changelog/            (genel sayfa)
+  https://developers.facebook.com/docs/graph-api/changelog/version26.0/
+  https://developers.facebook.com/docs/graph-api/changelog/version27.0/ (HTTP 404 — henüz yayımlanmamış)
+  https://developers.facebook.com/docs/graph-api/guides/versioning/     (sürüm kuralı)
+
+Tablodaki değerler (Graph API, "Release Date" → "Expiration Date"):
+  v26.0  29.07.2026 → TBD (version26.0 sayfası: "Released July 29, 2026 | Available until TBD")
+  v25.0  18.02.2026 → 29.07.2028
+  v24.0  08.10.2025 → 18.02.2028
+  v23.0  29.05.2025 → 08.10.2027
+Genel sayfanın başlığı: "The latest Graph API version is: v27.0" — ama tabloda v27.0 yok, v27.0 değişiklik sayfası 404 (yayımlanma tarihi okunamadı — ders 4: "bilinmiyor").
+
+Sürüm kuralı (versioning sayfası, özet): her sürüm en az iki yıl çalışır; bir sürüm, kendisinden SONRAKİ sürümün çıkışından iki yıl sonra kullanılamaz.
+Ayrıca: bir uygulama, oluşturulduktan sonra ilk çağrısını yeni bir sürüm çıktıktan sonra yaparsa daha eski sürümleri çağıramaz
+("If you created your app after v2.0 but did not make any calls until v2.2, your app will not be able to make calls using v2.0 or to v2.1").
+
+Sonuç: v26.0'ın kalkışı en erken v27.0'ın çıkışından 2 yıl sonra (v27.0 bugün çıkmış sayılsa bile ≥ 06.11.2028); "kaldırılmadan en az 6 ay önce geç" kuralıyla
+geçiş en geç ~05.2028'e dek — 2.5.0'da GEÇİŞ GEREKMEZ. Programın sürümü tek sabitte (server/lib/whatsapp/meta-graph.mjs GRAPH_VERSION), kapıcının ayrı sabiti
+(bulut/kapi/wa-bagla.mjs WA_BAGLA_D0.graphSurum; ayrı dağıtım birimi) aynı değerde — koruma testi test/whatsapp-g1-graph-surum-250.test.mjs.
+İZLENECEK RİSK (D0'da denenmeli): Elle Bağla'da müşteri KENDİ Meta uygulamasını açar; v27.0 resmen yayımlandıktan sonra açılıp ilk çağrısını v26.0 ile yapan yeni
+uygulama, Meta'nın yukarıdaki kuralı gereği v26.0'ı çağıramayabilir (Meta çağrıyı reddeder mi, yükseltir mi — belgede yok).

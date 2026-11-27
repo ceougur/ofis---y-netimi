@@ -1,0 +1,53 @@
+TAP version 13
+# Subtest: 2.5.0 Ç4 Defter Türü
+    # Subtest: Şirket Verisini Sıfırla: Tüm Hareketleri Sil ve Tümünü Sıfırla ayarı KORUR; dönem kilidi (ledger.) kalkar
+    not ok 1 - Şirket Verisini Sıfırla: Tüm Hareketleri Sil ve Tümünü Sıfırla ayarı KORUR; dönem kilidi (ledger.) kalkar
+      ---
+      duration_ms: 707.628266
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c4-dusuk-yeni-a55fe1fe/test/defter-turu-c4.test.mjs:120:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        movements: sıfırlamadan sonra korunan accounting.* anahtarları
+        + actual - expected
+        
+          [
+            'accounting.bookType',
+        +   'accounting.deneme'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'accounting.bookType'
+      actual:
+        0: 'accounting.bookType'
+        1: 'accounting.deneme'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c4-dusuk-yeni-a55fe1fe/test/defter-turu-c4.test.mjs:142:18)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 3)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..1
+not ok 1 - 2.5.0 Ç4 Defter Türü
+  ---
+  duration_ms: 709.747854
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c4-dusuk-yeni-a55fe1fe/test/defter-turu-c4.test.mjs:48:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 1
+# suites 1
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1125.498009

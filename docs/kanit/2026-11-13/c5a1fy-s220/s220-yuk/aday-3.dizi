@@ -1,0 +1,13 @@
+      1 + div#hof-notices.hof-notices
+      4 + div#hof-search-panel.hof-search-panel
+      2 + div#hof-toasts.hof-toasts
+      1 + div.hof-modal-backdrop "Excel’den Yükle: Kolonları Eşle"
+      6 + div.hof-modal-backdrop "Raporlar"
+      1 + div.hof-modal-backdrop "Taksit Kartlarını Toplu Yükle"
+      1 + div.hof-modal-backdrop "Taksitler"
+      1 + div.hof-modal-backdrop "Veri okunuyor"
+      1 + div.hof-modal-backdrop "Verinizi tanıyoruz"
+      1 + div.hof-modal-backdrop "Yeni veri: baslangic.xlsx"
+      1 metin hof-notices: ₺ TAHSİLAT ALINMADI · VADESİ BUGÜN Müşteri 01 Tahsil Edilecek Fatura FIS2026000000001 · vade 13.11.2026 · ₺1.200,00 Tahsilat Gir Fatura Kartını Aç × 1/1
+      1 metin hof-toasts: "baslangic.xlsx" yüklendi: 1 kayıt. Tüm bilgisayarlar aynı veriyi görür.×
+      1 metin hof-toasts: taksit-odenen.xlsx okunuyor…×

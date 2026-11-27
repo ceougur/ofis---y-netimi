@@ -1,0 +1,8 @@
+naif-blok-yorum YAKALANDI fail=3
+yorum-ayiklanmaz YAKALANDI fail=2
+ekran-zorunlu-yok YAKALANDI fail=1
+iss-yorum-kalir YAKALANDI fail=1
+buyuk-harf-yok YAKALANDI fail=1
+etiket-ayiklanmaz YAKALANDI fail=1
+yer-tutucu-yok YAKALANDI fail=1
+yalniz-7-8 YAKALANDI fail=1

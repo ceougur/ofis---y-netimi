@@ -1,0 +1,15 @@
+  ✓ Tab ile gönder düğmesine gelindi
+  ✓ bildirim: "2 kart oluşturuldu. Yanlışsa Son Aktarımlar’dan geri alınır." (beklenen "2 kart oluşturuldu")
+  ✓ grup sayısı 1 (beklenen 1)
+  ✓ kartların grubu: Can Er Işık Servisi, Nur Ak Işık Servisi (beklenen Işık Servisi)
+
+■ 4. Çek / Senet → Excel: eşleme penceresinin metni
+  ✓ cheques: eşleme penceresi açıldı (cek.xlsx)
+  ✓ pencere metni yeni cümleyi içeriyor
+  ✓ eski metin ('birebir aynı olan tek cari') yok
+  ✓ Tab ile gönder düğmesine gelindi
+  ✓ bildirim: "1 evrak portföye alındı, 1 cariye bağlandı." (beklenen "1 evrak portföye alındı, 1 cariye bağlandı.")
+  ✓ Mutabakat Testi tutarlı
+  ✓ sayfada JavaScript hatası yok
+
+Senaryo S231 (grup adı Türkçe harf katlamalı; çek penceresi metni): 22 geçti, 0 kaldı. Ekranlar: ../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-izt4s/ekran/senaryo-s231-250

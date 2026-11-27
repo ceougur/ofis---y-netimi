@@ -1,0 +1,53 @@
+TAP version 13
+# (node:23038) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.1.0 Canlı Hata 2 — v2.0.26 verisinde yanlış büyümüş taksit kartlarının açılış onarımı
+    # Subtest: yanlış kartlar (C, B, J) doğru kalana iner; D, E, A dokunulmaz; kilitli dönemdeki kart (KILIT) değişmez
+    ok 1 - yanlış kartlar (C, B, J) doğru kalana iner; D, E, A dokunulmaz; kilitli dönemdeki kart (KILIT) değişmez
+      ---
+      duration_ms: 80.613754
+      type: 'test'
+      ...
+    # Subtest: her değişiklik audit'te: plan.repaired, previous (toplam, kalan, taksitler) ve yeni kalan
+    ok 2 - her değişiklik audit'te: plan.repaired, previous (toplam, kalan, taksitler) ve yeni kalan
+      ---
+      duration_ms: 0.486293
+      type: 'test'
+      ...
+    # Subtest: raporlar onarılan kartla: Alacak Yaşlandırma, ANLIK DURUM Geciken Alacak, Geciken Taksitler, cari kartı
+    ok 3 - raporlar onarılan kartla: Alacak Yaşlandırma, ANLIK DURUM Geciken Alacak, Geciken Taksitler, cari kartı
+      ---
+      duration_ms: 76.210281
+      type: 'test'
+      ...
+# (node:23038) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: ikinci açılışta hiçbir şey değişmez (idempotent); kilitli kart yine listede
+    ok 4 - ikinci açılışta hiçbir şey değişmez (idempotent); kilitli kart yine listede
+      ---
+      duration_ms: 265.012929
+      type: 'test'
+      ...
+    # Subtest: onarılan kartta yeni işlem doğru: C'nin iadesi iptal edilince kart faturanın açığına (500) döner
+    ok 5 - onarılan kartta yeni işlem doğru: C'nin iadesi iptal edilince kart faturanın açığına (500) döner
+      ---
+      duration_ms: 151.879102
+      type: 'test'
+      ...
+    1..5
+ok 1 - 2.1.0 Canlı Hata 2 — v2.0.26 verisinde yanlış büyümüş taksit kartlarının açılış onarımı
+  ---
+  duration_ms: 1559.788832
+  type: 'suite'
+  ...
+1..1
+# tests 5
+# suites 1
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1965.765529
+
+[kanit] c7b3-iade-210-onarim-yeni-Europe-Istanbul: GEÇTİ · çıkış 0 · 5/5 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 2dcc050 +1 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4

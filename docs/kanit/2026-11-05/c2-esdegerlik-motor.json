@@ -1,0 +1,32 @@
+{
+  "ad": "c2-esdegerlik-motor",
+  "komut": "node test/defter-esdegerlik-250.mjs karsilastir /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-is/dok-motor-eski.json /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-is/dok-motor-yeni.json",
+  "commit": "fb3eb17475207dda918ea86237a822cc67588e55",
+  "dal": "worktree-agent-addb60b4cac4f5935",
+  "kirli": 0,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T20:20:16.032Z",
+  "sure_sn": 0.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 14,
+    "gecen": 14,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/c2-esdegerlik-motor.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-addb60b4cac4f5935",
+  "ham_cikti_sha256": "5854210da65561f93e685a8591a3c36331139e5eecc3afe80e231244fed35877",
+  "ham_cikti_bayt": 1477
+}

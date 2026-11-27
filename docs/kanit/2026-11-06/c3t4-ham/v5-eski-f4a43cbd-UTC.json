@@ -1,0 +1,33 @@
+{
+ "kok": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t4-eski-f4a43cbd",
+ "a1": {
+  "no": 1,
+  "from": "",
+  "through": "2026-06-30",
+  "rule": "2.4.9",
+  "reason": "repair"
+ },
+ "ilerlet": 200,
+ "iz": "{\"through\":\"2026-09-30\",\"reason\":\"lock\"}",
+ "onkosul_devam_kosusu_tutuldu": true,
+ "b_kosular": [
+  "1:freeze:done:→2026-06-30:2.4.9:repair",
+  "2:freeze:pending:2026-06-30→2026-09-30:2.5.0:lock"
+ ],
+ "son_kosular": [
+  "1:freeze:done:→2026-06-30:2.4.9:repair",
+  "2:freeze:abandoned:2026-06-30→2026-09-30:2.5.0:lock",
+  "3:freeze:done:2026-06-30→2026-12-31:2.4.9:repair"
+ ],
+ "kurallar": {
+  "…-30.06": "2.4.9",
+  "30.06-30.09": "2.4.9",
+  "30.09-31.12": "2.4.9"
+ },
+ "beklenen": {
+  "…-30.06": "2.4.9",
+  "30.06-30.09": "2.5.0",
+  "30.09-31.12": "2.4.9"
+ },
+ "SONUC": "FARKLI"
+}

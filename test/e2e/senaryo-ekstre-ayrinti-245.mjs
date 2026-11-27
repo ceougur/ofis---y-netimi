@@ -3,6 +3,7 @@
 // kalem toplamı = fatura satırının borcu; ekrandaki PDF ve Excel bağlantılarından inen dosyalar ekranla aynı satır sayısı ve aynı Genel Toplam.
 // İşaret kaldırılınca bugünkü ekstre (6 kolon). Finans Raporları yetkisi olmayan kullanıcıda kartta düğme yok.
 // Eski kodda kırmızıdır (düğme yok): DEPO=<eski kopya> ile koşulur. SHOTS=<klasör> ekran görüntüleri. Çıkış: "N geçti, M kaldı".
+// 2.5.0 Ç5-B: bilgi notu metni bilerek güncellendi (kullanıcı kararları S2 "vadesi en önce gelen", (1) "kendi tarihinde").
 import { mkdirSync, mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -207,13 +208,13 @@ try {
   await page2.click(`${TOP} [data-entry="in"]`);
   await page2.waitForSelector(`${TOP} select[name="invoiceId"]`, { state: "visible" });
   await page2.waitForTimeout(150);
-  ok((await fifoOf()) === "Bu tahsilat carinin en eski açık borcundan başlayarak kapatır.", `Otomatik iken not: “${await fifoOf()}”`);
+  ok((await fifoOf()) === "Bu tahsilat carinin vadesi en önce gelen açık borcundan (fatura, taksit, borç kaydı) başlayarak kapatır; kendi tarihinde açık olan borçlara dağılır.", `Otomatik iken not: “${await fifoOf()}”`);
   const invoiceValue = await page2.$eval(`${TOP} select[name="invoiceId"]`, node => [...node.options].find(option => option.value)?.value || "");
   await page2.selectOption(`${TOP} select[name="invoiceId"]`, invoiceValue);
   ok(invoiceValue && (await fifoOf()) === "", "Kapatılacak Fatura seçilince not gizli");
   await page2.screenshot({ path: path.join(SHOTS, "04-tahsilat-fatura-secili.png") });
   await page2.selectOption(`${TOP} select[name="invoiceId"]`, "");
-  ok((await fifoOf()) === "Bu tahsilat carinin en eski açık borcundan başlayarak kapatır.", "Otomatik'e dönünce not yeniden görünür");
+  ok((await fifoOf()) === "Bu tahsilat carinin vadesi en önce gelen açık borcundan (fatura, taksit, borç kaydı) başlayarak kapatır; kendi tarihinde açık olan borçlara dağılır.", "Otomatik'e dönünce not yeniden görünür");
   await escClose(page2, { step: "tahsilat formu" });
   await page2.waitForSelector(`${TOP} [data-entry="out"]`, { state: "visible" });
   await page2.click(`${TOP} [data-entry="out"]`);
@@ -231,7 +232,7 @@ try {
   await page2.click(`${TOP} [data-entry="out"]`);
   await page2.waitForSelector(`${TOP} input[name="amount"]`, { state: "visible" });
   await page2.waitForTimeout(150);
-  ok((await fifoOf()) === "Bu ödeme carinin en eski açık borcundan başlayarak kapatır.", `tedarikçiye ödeme formunda not: “${await fifoOf()}”`);
+  ok((await fifoOf()) === "Bu ödeme carinin vadesi en önce gelen açık borcundan (fatura, taksit, borç kaydı) başlayarak kapatır; kendi tarihinde açık olan borçlara dağılır.", `tedarikçiye ödeme formunda not: “${await fifoOf()}”`);
   await escClose(page2, { step: "tedarikçi ödeme formu" });
   await page2.waitForSelector(`${TOP} [data-entry="in"]`, { state: "visible" });
   await page2.click(`${TOP} [data-entry="in"]`);
@@ -249,7 +250,7 @@ try {
   await page2.click(`${TOP} [data-entry="out"]`);
   await page2.waitForSelector(`${TOP} input[name="amount"]`, { state: "visible" });
   await page2.waitForTimeout(150);
-  ok((await fifoOf()) === "Bu ödeme carinin en eski açık borcundan başlayarak kapatır.", `alacaklı müşteriye ödeme formunda not: “${await fifoOf()}”`);
+  ok((await fifoOf()) === "Bu ödeme carinin vadesi en önce gelen açık borcundan (fatura, taksit, borç kaydı) başlayarak kapatır; kendi tarihinde açık olan borçlara dağılır.", `alacaklı müşteriye ödeme formunda not: “${await fifoOf()}”`);
   await escClose(page2, { step: "alacaklı müşteri ödeme formu" });
   await page2.waitForSelector(`${TOP} [data-entry="in"]`, { state: "visible" });
   await page2.click(`${TOP} [data-entry="in"]`);

@@ -684,7 +684,9 @@ describe("2.4.9 W-KÖK TUR 2 — bakım, kısa süreyle Süresi Doldu yazmadan �
   // Tur 2'nin bakıma eklediği BEKLEME (taze okuma) sırasında satırın durumu değişebilir: karar okumadan SONRA yeniden okunan satırlarla verilir. Eski kodda bakım Meta'yı
   // okumadığı için ön koşul kurulamaz (kapıda bekleyen okuma yok); dişi mutasyonla (okumadan önceki satırla karar) gösterilir.
   it("(e) taze okuma SÜRERKEN kişi iletiyi okur ('read' bildirimi): bakım kararı okumadan sonraki satırla verir — iş 'Okundu' kalır, Süresi Doldu / Teslim Edildi'ye düşmez", async () => {
-    const ctx = await startWa();
+    // 2.5.0 WhatsApp tur 3 (kırılgan TERS kalıp — taramada aynı kalıp, KAYIT 06.11 16:10 listesine EK): kapıda tutulan okuma 800 ms süre sınırındaydı — kapıda iken bildirim işlenmesi
+    // yüklü makinede bunu aşarsa okuma zaman aşımına düşer, hücrenin konusu (okumanın SONUCUYLA karar) kaybolurdu. Süre sınırı kapıdan uzun (60 sn).
+    const ctx = await startWa({ whatsappTimeoutMs: 60_000 });
     let release = () => {};
     try {
       setListedTtl(ctx.fake, 43_200);

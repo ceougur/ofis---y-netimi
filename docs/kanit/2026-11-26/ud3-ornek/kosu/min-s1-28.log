@@ -1,0 +1,40 @@
+küçüldü 76
+küçüldü 71
+küçüldü 64
+küçüldü 58
+küçüldü 51
+küçüldü 46
+küçüldü 40
+küçüldü 33
+küçüldü 31
+küçüldü 29
+küçüldü 27
+küçüldü 25
+küçüldü 23
+küçüldü 21
+küçüldü 20
+küçüldü 13
+küçüldü 12
+küçüldü 11
+EN KÜÇÜK 11 adım
+  {"id": "c-e", "islem": "cari_ac", "ad": "E", "isim": "Rastgele Epsilon 28", "tarih": "2026-03-01", "acilis": "3736,76", "acilisBeklenen": "2026-03-01"}
+  {"id": "s009", "islem": "tahsilat", "cari": "E", "tutar": "2516,50", "tarih": "2026-03-14"}
+  {"id": "s012", "islem": "tahsilat", "cari": "E", "tutar": "3434,29", "tarih": "2026-03-16"}
+  {"id": "s018", "islem": "fatura", "ad": "G4", "cari": "E", "tutar": "3000,00", "tarih": "2026-03-22"}
+  {"id": "s020", "islem": "fatura", "ad": "G5", "cari": "E", "tutar": "2842,44", "tarih": "2026-03-25"}
+  {"id": "s033", "islem": "fatura", "ad": "G7", "cari": "E", "tutar": "2466,53", "tarih": "2026-04-11"}
+  {"id": "s036", "islem": "stok_iade", "cari": "E", "tutar": "1372,46", "tarih": "2026-04-16"}
+  {"id": "s037", "islem": "tahsilat", "cari": "E", "tutar": "1861,54", "tarih": "2026-04-18"}
+  {"id": "s044", "islem": "odeme", "cari": "E", "tutar": "1372,46", "tarih": "2026-04-23"}
+  {"id": "s070", "islem": "stok_iade", "cari": "E", "tutar": "1350,84", "tarih": "2026-05-26"}
+  {"id": "s078", "islem": "tahsilat", "cari": "E", "tutar": "1721,17", "tarih": "2026-06-04", "vade": "2026-06-07"}
+  {"id": "k1", "islem": "kontrol"}
+  fark k1:fatura:G7:acik P= 95032 K= 116139 | SINIF DIŞI | C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme günü
+  fark k1:fatura:G7:gosterilen P= 95032 K= 116139 | 2.5.0 kararıyla değişen | §35 Y23-4: kartın almadığı faturanın gösterilen açığı = kendi açığı
+  fark k1:fatura:G7:liste:gosterilen P= 95032 K= 116139 | 2.5.0 kararıyla değişen | §35 Y23-4: kartın almadığı faturanın gösterilen açığı = kendi açığı
+  fark k1:projeksiyon:cari P= 1 K= 0 | 2.5.0 kararıyla değişen | KS10 madde 11: Nakit Akış Projeksiyonu cari vadeli kalemleri KATAR (2.4.5 BİLİNE
+  fark k1:projeksiyon:hareket:s044 P= {"amount": 21107, "date": "2026-04-23", "direction": "in"} K= "yok" | 2.5.0 kararıyla değişen | C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç'
+  fark k1:takvim:cariKalemSayisi P= 1 K= 0 | 2.5.0 kararıyla değişen | K6.3 takvimdeki cari kalemlerinin sayısı
+  fark k1:takvim:fatura:G7 P= {"amount": 95032, "direction": "in"} K= {"amount": 116139, "direction": "in"} | SINIF DIŞI | madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık)
+  fark k1:takvim:hareket:s044 P= {"amount": 21107, "cari": "E", "days": -68, "direction": "in", "dueDate": "2026-04-23", "label": "Tahsil Edilecek Borç", "person": "Rastgele Epsilon 2 K= "yok" | 2.5.0 kararıyla değişen | C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç'
+  fark k1:vadeTakip:hareket:s044 P= {"amount": 21107, "date": "2026-04-23", "direction": "in"} K= "yok" | 2.5.0 kararıyla değişen | C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç'

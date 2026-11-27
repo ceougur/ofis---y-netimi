@@ -1,0 +1,32 @@
+{
+  "ad": "watur2-son-Europe_Istanbul",
+  "komut": "node --test test/whatsapp-tur2-bildirim-yolu-250.test.mjs test/whatsapp-tur2-kvkk-250.test.mjs",
+  "commit": "6e73b850b56f763a8025a25d95f9adcbe37784c9",
+  "dal": "worktree-agent-a6d184d8909364925",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T13:58:54.305Z",
+  "sure_sn": 34.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 25,
+    "gecen": 25,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-kanit/2026-11-06/watur2-son-Europe_Istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a6d184d8909364925",
+  "ham_cikti_sha256": "0c47d202924fa6396d16bf57a4511c4c25ef39a827a01d5c0daa75bb71b2ee98",
+  "ham_cikti_bayt": 15245
+}

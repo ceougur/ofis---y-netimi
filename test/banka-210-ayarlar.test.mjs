@@ -65,7 +65,8 @@ describe("Aşama 3 — Banka Ayarları", () => {
     const wrong = labels.filter(label => titleCase(label) !== label);
     assert.deepEqual(wrong, [], "ayar adları ve seçenekleri başlık yazımıyla");
     const fixed = settings.sections.find(section => section.id === "gl").items.filter(item => item.type === "fixed").map(item => item.value);
-    assert.deepEqual(fixed.sort(), ["102", "108", "300", "309", "500"], "sabit eşlemeler görünür ama değiştirilemez");
+    // 2.5.0 Ç5-A (G3: B3 — açılış / Devir Kapanışı defterde 519; saklı satır kodu 500 değişmez): sabit eşleme 519 "Eşleştirilecek Açılış Bakiyeleri".
+    assert.deepEqual(fixed.sort(), ["102", "108", "300", "309", "519"], "sabit eşlemeler görünür ama değiştirilemez");
   });
 
   it("değiştir → okunur ve hesap kartına yansır; Varsayılanlara Dön (bölüm ve tümü); işlem geçmişi önceki/yeni", async () => {

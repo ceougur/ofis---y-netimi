@@ -1,0 +1,39 @@
+=== tur 1 · tur4 · kilitli · başta yük 1.09 1.13 1.56 · GEÇERLİ · 14:52:35
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h5-ag/kod-f73f4f5a · kip kilitli · yük (başta) 1.06 1.11 1.54 · TZ UTC
+  donma (bekleyen koşu): 10924.1 ms · kapsam 2026-06-30
+  kilitli Bilanço 2026-12-31: ilk 6198.8 · en iyi 5725.9 · ortanca 6006.3 · en kötü 6604.7 ms · olay döngüsü en çok 91.2 ms (n=5) · özet d0356b220ef92fc9 · {"kesinDegil":["smm-tahmini","kural-farki","kapanmamis-yil","bilgi-amacli"],"bilgi":null,"dnk":4776835620}
+  kilitli GT yıl 2026: ilk 4038.9 · en iyi 3279.3 · ortanca 3762.9 · en kötü 3881.4 ms · olay döngüsü en çok 20.4 ms (n=5) · özet 2ec6d301a3ec4f45 · {"kesinDegil":["smm-tahmini","kural-farki","bilgi-amacli"],"bilgi":null,"dnk":4776835620}
+  kilitli GT ilk yarı 2026: ilk 3671.3 · en iyi 3329.4 · ortanca 3436.9 · en kötü 3547.6 ms · olay döngüsü en çok 14.1 ms (n=5) · özet a0f76b4e866ca74f · {"kesinDegil":["smm-tahmini","kural-farki","bilgi-amacli"],"bilgi":null,"dnk":2811665034}
+  fiş 200 2026-07-01 no 1 · Yönetim önce 14 satır, dışlanan 7
+  fişten sonra Bilanço 2026-12-31: ilk 7444 · en iyi 6139.3 · ortanca 6360.1 · en kötü 6538 ms · olay döngüsü en çok 10.4 ms (n=5) · özet 1879b944acfa3141 · {"kesinDegil":["tamamlanmamis-acilis","smm-tahmini","kural-farki","kapanmamis-yil","bilgi-amacli"],"bilgi":null,"dnk":4776835620}
+  fişten sonra GT yıl 2026 (fiş içinde): ilk 5965.8 · en iyi 4920.1 · ortanca 5658.6 · en kötü 5775 ms · olay döngüsü en çok 15.6 ms (n=5) · özet 31396e2028f0ade4 · {"kesinDegil":["smm-tahmini","kural-farki","bilgi-amacli"],"bilgi":null,"dnk":4776835620}
+  fişten sonra GT ikinci yarı 2026 (fiş içinde): ilk 5716.9 · en iyi 5044.8 · ortanca 5824.9 · en kötü 6599.1 ms · olay döngüsü en çok 134 ms (n=5) · özet 2480bf49765c4777 · {"kesinDegil":["smm-tahmini","kural-farki","bilgi-amacli"],"bilgi":null,"dnk":1965170586}
+  fişten sonra GT ilk yarı 2026 (fiş dışında): ilk 3731.9 · en iyi 3529.4 · ortanca 3861.1 · en kötü 4532.6 ms · olay döngüsü en çok 50.8 ms (n=5) · özet a0f76b4e866ca74f · {"kesinDegil":["smm-tahmini","kural-farki","bilgi-amacli"],"bilgi":null,"dnk":2811665034}
+  bellek (rss) 635 MB · yük (sonda) 1.26 1.16 1.46
+çıkış 0 · sonda yük 1.26 1.16 1.46 · 14:57:12
+=== tur 2 · tur4 · kilitli · başta yük 1.30 1.29 1.33 · GEÇERLİ · 15:15:28
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h5-ag/kod-f73f4f5a · kip kilitli · yük (başta) 1.24 1.28 1.33 · TZ UTC
+  donma (bekleyen koşu): 10326.3 ms · kapsam 2026-06-30
+  kilitli Bilanço 2026-12-31: ilk 6108 · en iyi 5771.6 · ortanca 6001.2 · en kötü 6391.9 ms · olay döngüsü en çok 17.7 ms (n=5) · özet d0356b220ef92fc9 · {"kesinDegil":["smm-tahmini","kural-farki","kapanmamis-yil","bilgi-amacli"],"bilgi":null,"dnk":4776835620}
+  kilitli GT yıl 2026: ilk 3987.9 · en iyi 3305 · ortanca 3589.5 · en kötü 3926.7 ms · olay döngüsü en çok 13.8 ms (n=5) · özet 2ec6d301a3ec4f45 · {"kesinDegil":["smm-tahmini","kural-farki","bilgi-amacli"],"bilgi":null,"dnk":4776835620}
+  kilitli GT ilk yarı 2026: ilk 3627.8 · en iyi 3421.6 · ortanca 3473.3 · en kötü 3623 ms · olay döngüsü en çok 198.8 ms (n=5) · özet a0f76b4e866ca74f · {"kesinDegil":["smm-tahmini","kural-farki","bilgi-amacli"],"bilgi":null,"dnk":2811665034}
+  fiş 200 2026-07-01 no 1 · Yönetim önce 14 satır, dışlanan 7
+  fişten sonra Bilanço 2026-12-31: ilk 6021 · en iyi 5743 · ortanca 6116.3 · en kötü 6734 ms · olay döngüsü en çok 9.9 ms (n=5) · özet 1879b944acfa3141 · {"kesinDegil":["tamamlanmamis-acilis","smm-tahmini","kural-farki","kapanmamis-yil","bilgi-amacli"],"bilgi":null,"dnk":4776835620}
+  fişten sonra GT yıl 2026 (fiş içinde): ilk 5093 · en iyi 4875.4 · ortanca 4931.5 · en kötü 5091.6 ms · olay döngüsü en çok 14.8 ms (n=5) · özet 31396e2028f0ade4 · {"kesinDegil":["smm-tahmini","kural-farki","bilgi-amacli"],"bilgi":null,"dnk":4776835620}
+  fişten sonra GT ikinci yarı 2026 (fiş içinde): ilk 5150.2 · en iyi 4643.4 · ortanca 4961.8 · en kötü 5125.9 ms · olay döngüsü en çok 15.8 ms (n=5) · özet 2480bf49765c4777 · {"kesinDegil":["smm-tahmini","kural-farki","bilgi-amacli"],"bilgi":null,"dnk":1965170586}
+  fişten sonra GT ilk yarı 2026 (fiş dışında): ilk 3449.4 · en iyi 3250.9 · ortanca 3460.1 · en kötü 3590.3 ms · olay döngüsü en çok 10.9 ms (n=5) · özet a0f76b4e866ca74f · {"kesinDegil":["smm-tahmini","kural-farki","bilgi-amacli"],"bilgi":null,"dnk":2811665034}
+  bellek (rss) 717 MB · yük (sonda) 1.05 1.15 1.26
+çıkış 0 · sonda yük 1.05 1.15 1.26 · 15:19:49
+=== tur 3 · tur4 · kilitli · başta yük 0.32 0.73 1.05 · GEÇERLİ · 15:28:30
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h5-ag/kod-f73f4f5a · kip kilitli · yük (başta) 0.92 0.84 1.08 · TZ UTC
+  donma (bekleyen koşu): 8995.3 ms · kapsam 2026-06-30
+  kilitli Bilanço 2026-12-31: ilk 5799.6 · en iyi 5549.3 · ortanca 5777 · en kötü 6032.9 ms · olay döngüsü en çok 20 ms (n=5) · özet d0356b220ef92fc9 · {"kesinDegil":["smm-tahmini","kural-farki","kapanmamis-yil","bilgi-amacli"],"bilgi":null,"dnk":4776835620}
+  kilitli GT yıl 2026: ilk 3534.6 · en iyi 3304 · ortanca 3388.3 · en kötü 3745.2 ms · olay döngüsü en çok 8.9 ms (n=5) · özet 2ec6d301a3ec4f45 · {"kesinDegil":["smm-tahmini","kural-farki","bilgi-amacli"],"bilgi":null,"dnk":4776835620}
+  kilitli GT ilk yarı 2026: ilk 3508.8 · en iyi 3178 · ortanca 3344.7 · en kötü 3868.2 ms · olay döngüsü en çok 11.3 ms (n=5) · özet a0f76b4e866ca74f · {"kesinDegil":["smm-tahmini","kural-farki","bilgi-amacli"],"bilgi":null,"dnk":2811665034}
+  fiş 200 2026-07-01 no 1 · Yönetim önce 14 satır, dışlanan 7
+  fişten sonra Bilanço 2026-12-31: ilk 6188 · en iyi 6314.4 · ortanca 6553.4 · en kötü 6732.6 ms · olay döngüsü en çok 35.9 ms (n=5) · özet 1879b944acfa3141 · {"kesinDegil":["tamamlanmamis-acilis","smm-tahmini","kural-farki","kapanmamis-yil","bilgi-amacli"],"bilgi":null,"dnk":4776835620}
+  fişten sonra GT yıl 2026 (fiş içinde): ilk 5030 · en iyi 4719.6 · ortanca 4908.2 · en kötü 5236 ms · olay döngüsü en çok 10.8 ms (n=5) · özet 31396e2028f0ade4 · {"kesinDegil":["smm-tahmini","kural-farki","bilgi-amacli"],"bilgi":null,"dnk":4776835620}
+  fişten sonra GT ikinci yarı 2026 (fiş içinde): ilk 5567.8 · en iyi 4672.8 · ortanca 4905.5 · en kötü 5407.1 ms · olay döngüsü en çok 39.7 ms (n=5) · özet 2480bf49765c4777 · {"kesinDegil":["smm-tahmini","kural-farki","bilgi-amacli"],"bilgi":null,"dnk":1965170586}
+  fişten sonra GT ilk yarı 2026 (fiş dışında): ilk 3606.6 · en iyi 3347.4 · ortanca 3541.9 · en kötü 3967.2 ms · olay döngüsü en çok 16.4 ms (n=5) · özet a0f76b4e866ca74f · {"kesinDegil":["smm-tahmini","kural-farki","bilgi-amacli"],"bilgi":null,"dnk":2811665034}
+  bellek (rss) 729 MB · yük (sonda) 1.14 1.07 1.12
+çıkış 0 · sonda yük 1.14 1.07 1.12 · 15:32:50

@@ -1,0 +1,21 @@
+== E UTC 03:26 2.08 2.50 1.11 2/114 946
+[kanit] c5a1b-E-UTC: GEÇTİ · çıkış 0 · 67/67 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 86c0000 +21 izlenmeyen · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+== E Europe/Istanbul 03:27 2.08 2.46 1.13 1/115 1221
+[kanit] c5a1b-E-Europe-Istanbul: GEÇTİ · çıkış 0 · 67/67 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 86c0000 +1 değişmiş dosya +21 izlenmeyen · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+== mutasyon 03:27 1.84 2.38 1.13 1/115 1391
+[kanit] c5a1b-mutasyon: BAŞARISIZ (çıkış 1; 1 başarısız, 0 iptal) · çıkış 1 · 21/22 geçti, 1 başarısız, 0 iptal, 0 atlanan · commit 86c0000 +1 değişmiş dosya +21 izlenmeyen · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+== katlama eski kodda (c5a-taban) 03:28
+çıkış 1
+        001: Ç5-A katlaması — kural dışı fark
+# pass 0
+# fail 1
+== muhasebe sürücüsü rastgele-2 03:28
+çıkış 1
+# pass 260
+# fail 32
+# cancelled 0
+# skipped 2
+# todo 0
+Çıktı: /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-muh/cikti
+son-bitti 03:29
+cikis 0

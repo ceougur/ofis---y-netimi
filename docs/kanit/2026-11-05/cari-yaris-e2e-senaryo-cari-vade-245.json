@@ -1,0 +1,32 @@
+{
+  "ad": "cari-yaris-e2e-senaryo-cari-vade-245",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-cari-vade-245.mjs",
+  "commit": "855b06ea3435f5709729eec3f74295dae21172d1",
+  "dal": "worktree-agent-ae1bfe4ab0b1e8e53",
+  "kirli": 0,
+  "izlenmeyen": 16,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T22:31:54.360Z",
+  "sure_sn": 31.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 39,
+    "gecen": 39,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/cari-yaris-e2e-senaryo-cari-vade-245.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ae1bfe4ab0b1e8e53",
+  "ham_cikti_sha256": "d1abc83604ef2f09ba799548a1f91fa88028604fc486c5e6cc855ce602aae68c",
+  "ham_cikti_bayt": 4700
+}

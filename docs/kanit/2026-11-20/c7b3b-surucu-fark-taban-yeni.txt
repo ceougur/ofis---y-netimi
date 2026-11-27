@@ -1,0 +1,29 @@
+taban fark satırı 46 · yeni 68 · KALKAN 0 · YENİ 22
+KALKAN sınıfları Counter()
+YENİ sınıfları Counter({'SINIFLANMADI': 22})
+--- YENİ ---
+s40-s1-vadesiz-gecikmis [Europe/Istanbul] ADIM 18 taksit_kapat  {"ana":{"120":30000,"689":-30000},"cari":{"C2":30000}} → SINIFLANMADI
+s40-s1-vadesiz-gecikmis [UTC] ADIM 18 taksit_kapat  {"ana":{"120":30000,"689":-30000},"cari":{"C2":30000}} → SINIFLANMADI
+s60-r6-kart-kapat-borcta-kalir [Europe/Istanbul] ADIM 5 taksit_kapat  {"ana":{"120":5000,"689":-5000},"cari":{"C1":5000}} → SINIFLANMADI
+s60-r6-kart-kapat-borcta-kalir [Europe/Istanbul] ADIM 6 taksit_kapat  {"ana":{"120":5000,"689":-5000},"cari":{"C2":5000}} → SINIFLANMADI
+s60-r6-kart-kapat-borcta-kalir [Europe/Istanbul] g2 gecikmis:C2 program 5000 · kâhin 0 · bugün 0 → SINIFLANMADI
+s60-r6-kart-kapat-borcta-kalir [Europe/Istanbul] gt ana:689 program 0 · kâhin 5000 · bugün 10000 → SINIFLANMADI
+s60-r6-kart-kapat-borcta-kalir [Europe/Istanbul] mz ana:120 program 10000 · kâhin 5000 · bugün 0 → SINIFLANMADI
+s60-r6-kart-kapat-borcta-kalir [Europe/Istanbul] mz ana:689 program 0 · kâhin 5000 · bugün 10000 → SINIFLANMADI
+s60-r6-kart-kapat-borcta-kalir [Europe/Istanbul] mz cari:C2 program 5000 · kâhin 0 · bugün 0 → SINIFLANMADI
+s60-r6-kart-kapat-borcta-kalir [Europe/Istanbul] son ana:120 program 10000 · kâhin 5000 · bugün 0 → SINIFLANMADI
+s60-r6-kart-kapat-borcta-kalir [Europe/Istanbul] son ana:689 program 0 · kâhin 5000 · bugün 10000 → SINIFLANMADI
+s60-r6-kart-kapat-borcta-kalir [Europe/Istanbul] son cari:C2 program 5000 · kâhin 0 · bugün 0 → SINIFLANMADI
+s60-r6-kart-kapat-borcta-kalir [UTC] ADIM 5 taksit_kapat  {"ana":{"120":5000,"689":-5000},"cari":{"C1":5000}} → SINIFLANMADI
+s60-r6-kart-kapat-borcta-kalir [UTC] ADIM 6 taksit_kapat  {"ana":{"120":5000,"689":-5000},"cari":{"C2":5000}} → SINIFLANMADI
+s60-r6-kart-kapat-borcta-kalir [UTC] g2 gecikmis:C2 program 5000 · kâhin 0 · bugün 0 → SINIFLANMADI
+s60-r6-kart-kapat-borcta-kalir [UTC] gt ana:689 program 0 · kâhin 5000 · bugün 10000 → SINIFLANMADI
+s60-r6-kart-kapat-borcta-kalir [UTC] mz ana:120 program 10000 · kâhin 5000 · bugün 0 → SINIFLANMADI
+s60-r6-kart-kapat-borcta-kalir [UTC] mz ana:689 program 0 · kâhin 5000 · bugün 10000 → SINIFLANMADI
+s60-r6-kart-kapat-borcta-kalir [UTC] mz cari:C2 program 5000 · kâhin 0 · bugün 0 → SINIFLANMADI
+s60-r6-kart-kapat-borcta-kalir [UTC] son ana:120 program 10000 · kâhin 5000 · bugün 0 → SINIFLANMADI
+s60-r6-kart-kapat-borcta-kalir [UTC] son ana:689 program 0 · kâhin 5000 · bugün 10000 → SINIFLANMADI
+s60-r6-kart-kapat-borcta-kalir [UTC] son cari:C2 program 5000 · kâhin 0 · bugün 0 → SINIFLANMADI
+--- KALKAN ---
+taban bekleyen: {"2.5.1-Ç7b-B1 (F-06 finansman 780)": {"senaryo": 4, "denetim": 44, "senaryolar": ["rastgele-1", "rastgele-2", "rastgele-3", "s04-gider-yansitma-stopaj-devir"]}, "D2–D4": {"senaryo": 28, "denetim": 30, "senaryolar": ["rastgele-1", "rastgele-2", "rastgele-3", "s04-gider-yansitma-stopaj-devir", "s21-devir-ayni-adli-iki-cari", "s22-devir-temel", "s23-devir-pos-valor-kg6", "s24-devir-eksi-stok-kg9", "s25-devir-onceki-yil-kg12", "s26a-devir-borc-ve-alacaklari-aktar", "s26b-devir-sadece-bakiyeyi-aktar", "s27-devir-yoldaki-supheli-evrak-taksit", "s28-devri-yenile-kg7", "s29-devri-geri-al", "s31-esles
+yeni bekleyen: {"2.5.1-Ç7b-B1 (F-06 finansman 780)": {"senaryo": 4, "denetim": 44, "senaryolar": ["rastgele-1", "rastgele-2", "rastgele-3", "s04-gider-yansitma-stopaj-devir"]}, "D2–D4": {"senaryo": 28, "denetim": 30, "senaryolar": ["rastgele-1", "rastgele-2", "rastgele-3", "s04-gider-yansitma-stopaj-devir", "s21-devir-ayni-adli-iki-cari", "s22-devir-temel", "s23-devir-pos-valor-kg6", "s24-devir-eksi-stok-kg9", "s25-devir-onceki-yil-kg12", "s26a-devir-borc-ve-alacaklari-aktar", "s26b-devir-sadece-bakiyeyi-aktar", "s27-devir-yoldaki-supheli-evrak-taksit", "s28-devri-yenile-kg7", "s29-devri-geri-al", "s31-esles

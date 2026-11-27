@@ -1,0 +1,20 @@
+temel: 217 test, 0 kırmızı
+B07 R5 karar (5): fatura durumu net kuyruktan (karşı yönlü fatura kendiliğinden kapatır)   ÖLDÜ (1/217: test_s59_r5_ayni_kisi_alis_satis)
+B41 Y8 S15 B: tahsilatlı kartın faturası iptal edilemez                                    ÖLDÜ (2/217: test_s58_r9_kartli_fatura_sil_iptal, test_s69_s15_kartli_fatura_iptal)
+B41c Y9 S15: tahsilatlı kart iptalde kapanmaz, kalkar (raporda yok)                        ÖLDÜ (2/217: test_s58_r9_kartli_fatura_sil_iptal, test_s69_s15_kartli_fatura_iptal)
+B128 İ1 S200: kart önce faturaları alır (elle borçlar sonra)                               ÖLDÜ (3/217: test_A7_S120_elle_borclar, test_S200_elle_once_eksik_faturadan, test_s118_a1_s200_elle_once_sonra_fatura)
+B128b İ1 S200 B: kart elle borçların toplamına küçülür (faturalardan almaz)                ÖLDÜ (4/217: test_A7_S120_elle_borclar, test_S200_elle_once_eksik_faturadan, test_s118_a1_s200_elle_once_sonra_fatura, test_s119_a2_s210_s211_kart_kapanir)
+B128c İ1: eksik kısım faturalardan belge sırasıyla (M1e'nin S2'si yerine)                  ÖLDÜ (2/217: test_S200_elle_once_eksik_faturadan, test_s118_a1_s200_elle_once_sonra_fatura)
+B129 İ2 / İ3 S210 / S211 B: iptalde kart açık kalır, alttaki borç kadar küçülür (karar (4) R4) ÖLDÜ (4/217: test_S210_S211_kart_kapanir, test_S210_sinir_susar, test_s119_a2_s210_s211_kart_kapanir, test_s58_r9_kartli_fatura_sil_iptal)
+B129b İ3 S211 yok: yalnız tahsilatlı Mevcut Borç kartı kapanır                             ÖLDÜ (3/217: test_S210_S211_kart_kapanir, test_s119_a2_s210_s211_kart_kapanir, test_s58_r9_kartli_fatura_sil_iptal)
+B129c İ2: faturanın yalnız bir kısmını içine almış kart kapanmaz                           ÖLDÜ (1/217: test_s119_a2_s210_s211_kart_kapanir)
+B129d İ2 susması yok: Kartı Kapat'lı kart da kapanır                                       ÖLDÜ (1/217: test_S210_sinir_susar)
+B129e İ2 susması yok: şüpheli kayıtlı caride kart da kapanır                               ÖLDÜ (1/217: test_S210_sinir_susar)
+B129f İ2 susması yok: kapanmış karta sonradan tahsilat / Kartı Kapat                       ÖLDÜ (1/217: test_S210_sinir_susar)
+B130 İ4 S213 A: şüpheliye alınmış fatura Açık Faturalar'dan düşer                          ÖLDÜ (2/217: test_S213_acik_faturalar_supheli_ve_degersiz_susmasi, test_s120_a3_s213_acik_faturalar_supheli)
+B130b İ4 susması yok: Değersiz yazılmış şüpheli faturalı cari de karşılaştırılır           ÖLDÜ (1/217: test_S213_acik_faturalar_supheli_ve_degersiz_susmasi)
+B131 İ8 S220 B: önceden gecikmiş kalem de kapanış gününe çekilir                           ÖLDÜ (2/217: test_S220_kismen_odenmis_ve_ayni_gun_vadeli, test_s121_a5_s220_kart_kapat_onceden_gecikmis)
+B131b İ8 S205 B: vadesi gelmemiş kalemler de kendi vadesinde                               ÖLDÜ (3/217: test_s121_a5_s220_kart_kapat_onceden_gecikmis, test_s40_s1_vadesiz_gecikmis, test_s60_r6_kart_kapat_borcta_kalir)
+# tests 16
+# pass 16
+# fail 0

@@ -37,6 +37,14 @@ export function createPeriod({ store, now = systemClock }) {
     if (lock && date && date <= lock) throw new HttpError(409, `${what} ${dayText(date)} tarihli; ${dayText(lock)} ve öncesi kapatılmış (kilitli) dönemdir. Değişiklik için yönetici dönem kilidini açmalı.`, { code: "period-locked", lockedUntil: lock });
   }
   /**
+   * 2.5.0 Ç5-A tur 2 — S160 = A (kullanıcı 13.11.2026): kilitli dönemdeki bir TAHSİLATIN fatura bağını düşürecek işlem (fatura iptali / silinmesi) reddedilir; ileti kilitli
+   * tahsilatın tarihini söyler. `date`: faturaya bağlı en eski tahsilatın tarihi (yoksa boş). Kural carinin şüpheli durumuna bağlı DEĞİLDİR (karar metni).
+   */
+  function assertBondOpen(date, what = "Bu işlem") {
+    const lock = lockedUntil();
+    if (lock && date && date <= lock) throw new HttpError(409, `${what} faturaya bağlı ${dayText(date)} tarihli tahsilatın fatura bağını düşürür; ${dayText(lock)} ve öncesi kapatılmış (kilitli) dönemdir. Değişiklik için yönetici dönem kilidini açmalı.`, { code: "period-locked-bond", lockedUntil: lock, date });
+  }
+  /**
    * Hareket tarihi. body[field] hiç yoksa bugün; varsa geçerli, ileri tarihli olmayan ve kilitli dönem dışında olmalı.
    * @param {object} body  istek gövdesi
    * @param {{ field?: string, label?: string, fallback?: string }} options  fallback: alan yoksa kullanılacak tarih
@@ -67,12 +75,20 @@ export function createPeriod({ store, now = systemClock }) {
     if (from && date < from) throw new HttpError(400, `${label} (${dayText(date)}) işlem tarihinden (${dayText(from)}) önce olamaz.`, { code: "due-before-start" });
     return date;
   }
-  function setLock(value) {
+  /**
+   * Kilit tarihinin denetimi, YAZMADAN (boş = kilidi kaldır): geçersiz ya da gelecek tarih 400. setLock ve PUT period-lock aynı kural; uç bunu her şeyden önce çağırır
+   * (2.5.0 Ç3 tur 2: reddedilecek istek süren dondurmayı durdurmaz, POS ön adımını çalıştırmaz).
+   */
+  function checkLock(value) {
     const date = String(value ?? "").trim();
     if (date && !isIsoDate(date)) throw new HttpError(400, "Kilit tarihi geçerli bir tarih olmalı.");
     if (date && date > today()) throw new HttpError(400, "Gelecekteki bir dönem kilitlenemez.");
+    return date;
+  }
+  function setLock(value) {
+    const date = checkLock(value);
     store.setSetting(LOCK_KEY, date);
     return date;
   }
-  return { today, lockedUntil, assertOpen, restoreDate, movementDate, dueDate, setLock };
+  return { today, lockedUntil, assertOpen, assertBondOpen, restoreDate, movementDate, dueDate, checkLock, setLock };
 }

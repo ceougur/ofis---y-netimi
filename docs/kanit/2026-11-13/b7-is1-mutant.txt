@@ -1,0 +1,40 @@
+mutant Ma-sayi
+Ma-sayi çıkış 1 # tests 23 # pass 17 # fail 6 
+       not ok 1 - §16.1-1 (S1 / S1b): iki tarama arası sil + Silinenler'den geri yükle + dış yazım → alarm (2 → 3; açıklanamayan 1); sonra
+       not ok 2 - §16.1-4 (S9; §15'in BİLİNEN SINIR'ı kapanır): sil + dış yazım (sayı aynı 2 → 2) → alarm 'yeni hareket girdi'
+       not ok 5 - §16.1-14: kapının kabul ettiği kimlik değişimi (aynı İşlem No, aynı gün; önceki hâl önceki kümede) sessiz; dış yaz�
+       not ok 1 - §16.1-1 (S1 / S1b): iki tarama arası sil + Silinenler'den geri yükle + dış yazım → alarm (2 → 3; açıklanamayan 1); sonra
+       not ok 2 - §16.1-4 (S9; §15'in BİLİNEN SINIR'ı kapanır): sil + dış yazım (sayı aynı 2 → 2) → alarm 'yeni hareket girdi'
+       not ok 5 - §16.1-14: kapının kabul ettiği kimlik değişimi (aynı İşlem No, aynı gün; önceki hâl önceki kümede) sessiz; dış yaz�
+mutant Mb-dusmeyen
+Mb-dusmeyen çıkış 1 # tests 23 # pass 21 # fail 2 
+       not ok 4 - §16.1-13 (kimliği yeniden kullanılan satır): geri gelen, taranan, silinip taranan, sonra DIŞARIDAN aynı kimlikle yeniden eklen
+       not ok 4 - §16.1-13 (kimliği yeniden kullanılan satır): geri gelen, taranan, silinip taranan, sonra DIŞARIDAN aynı kimlikle yeniden eklen
+mutant Mc-sifirdan
+Mc-sifirdan çıkış 1 # tests 23 # pass 4 # fail 19 
+       not ok 1 - §16.1-1 (S1 / S1b): iki tarama arası sil + Silinenler'den geri yükle + dış yazım → alarm (2 → 3; açıklanamayan 1); sonra
+       not ok 2 - §16.1-4 (S9; §15'in BİLİNEN SINIR'ı kapanır): sil + dış yazım (sayı aynı 2 → 2) → alarm 'yeni hareket girdi'
+       not ok 3 - §16.1-3: yalnız meşru geri yükleme — iki tek satırlık geri yükleme (2 → 4) ve birden çok satır getiren taksit kartı (4
+       not ok 4 - §16.1-13 (kimliği yeniden kullanılan satır): geri gelen, taranan, silinip taranan, sonra DIŞARIDAN aynı kimlikle yeniden eklen
+       not ok 5 - §16.1-14: kapının kabul ettiği kimlik değişimi (aynı İşlem No, aynı gün; önceki hâl önceki kümede) sessiz; dış yaz�
+       not ok 1 - §16.1-1 (S1 / S1b): iki tarama arası sil + Silinenler'den geri yükle + dış yazım → alarm (2 → 3; açıklanamayan 1); sonra
+       not ok 2 - §16.1-4 (S9; §15'in BİLİNEN SINIR'ı kapanır): sil + dış yazım (sayı aynı 2 → 2) → alarm 'yeni hareket girdi'
+       not ok 3 - §16.1-3: yalnız meşru geri yükleme — iki tek satırlık geri yükleme (2 → 4) ve birden çok satır getiren taksit kartı (4
+       not ok 4 - §16.1-13 (kimliği yeniden kullanılan satır): geri gelen, taranan, silinip taranan, sonra DIŞARIDAN aynı kimlikle yeniden eklen
+       not ok 5 - §16.1-14: kapının kabul ettiği kimlik değişimi (aynı İşlem No, aynı gün; önceki hâl önceki kümede) sessiz; dış yaz�
+       not ok 1 - geri yükleme tarama sürerken, görüntüye girmeden: işaret ilerlemez; sonraki iki tarama sessiz, sayı +1
+       not ok 1 - dış yazım (açılış günü girilen Kasa hareketinin tarihi başka bağlantıdan açılış öncesine): Mutabakat Testi günlük
+       not ok 2 - azalma sessiz ve işaret onu izler: satır silinince (3 → 2) günlük yok; sonraki dış artış 2 → 3 diye bildirilir (iş par�
+       not ok 3 - geri yükleme sayılır, ama dış artışı ÖRTMEZ: aynı aralıkta 1 geri yükleme + 1 dış artış → 2 → 4, açıklanamayan
+       not ok 4 - üst kaydın geri yüklenmesi (silinmiş taksit kartı; nakit satırı yazılmaz, görünürlüğü döner) sayılır: 5 → 6 sessi
+       not ok 5 - iş parçacığı taraması sürerken kesinleşen geri yükleme yanlış alarm vermez (ön koşul zorla: geri yükleme taramanın an
+       not ok 6 - gün dönümü (sahte saat ertesi gün 00:30): tarama yeniden koşar, sayı aynı → sessiz; yeni günde dış artış bildirilir
+       not ok 7 - program yeniden açılınca: aynı artış İKİNCİ kez bildirilmez (açılış, Mutabakat Testi, iş parçacığı); açılıştan
+       not ok 8 - iki şirket + yedekten geri yükleme: 002'nin geri yüklemesi / dış artışı yalnız 002'de; 002 yedekten dönünce (sayı geri g
+mutant Md-from
+Md-from çıkış 1 # tests 23 # pass 21 # fail 2 
+       not ok 5 - §16.1-14: kapının kabul ettiği kimlik değişimi (aynı İşlem No, aynı gün; önceki hâl önceki kümede) sessiz; dış yaz�
+       not ok 5 - §16.1-14: kapının kabul ettiği kimlik değişimi (aynı İşlem No, aynı gün; önceki hâl önceki kümede) sessiz; dış yaz�
+mutant Me-yaris
+Me-yaris çıkış 0 # tests 23 # pass 23 # fail 0 
+BITTI

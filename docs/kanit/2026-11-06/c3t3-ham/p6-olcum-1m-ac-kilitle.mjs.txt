@@ -1,0 +1,157 @@
+#!/usr/bin/env node
+// DAR KONTROL Ç3 tur 1-2 — p6: 1.000.000 verisinde (programın kendi ürettiği; scratchpad/c3-olcum-veri/n-1000000, salt okunur kaynak; taze kopya) "Kilidi Aç → Yeniden Kilitle"
+// (programın kendi önerdiği yol: "Donmuş Dönemin Kaynağı Değişti … Kilidi Aç → Yeniden Kilitle"). Çekirdek kip (test/donmus-defter-kilit-ucu-olcum-250.mjs --sunucu cekirdek
+// ile aynı kurulum: gerçek routes/ledger.mjs uçları + gerçek yönlendirici + gerçek HTTP; createApp YOK — 1 M açılışı 22 dk, Ç3 dışı AH). İstemci 30 sn'de keser (sendApi).
+// Kullanım: flock <olcum.lock> node p6-olcum-1m-ac-kilitle.mjs <kod kökü> <veri klasörü> <çıktı.json>
+import { copyFileSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { createServer } from "node:http";
+import os from "node:os";
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+
+const [rootArg, veriArg, outArg] = process.argv.slice(2);
+const root = path.resolve(rootArg);
+const veri = path.resolve(veriArg);
+const output = path.resolve(outArg);
+const LOCK = "2025-12-31";
+const NOW = "2026-10-08T12:00:00+03:00";
+const CLIENT_LIMIT_MS = 30000;
+const imp = file => import(pathToFileURL(path.join(root, file)).href);
+const work = mkdtempSync(path.join(path.dirname(output), "p6-"));
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+const result = { kod: root, cpu: os.cpus().length, yuk: os.loadavg(), adimlar: [] };
+let last = performance.now();
+let windowMax = 0;
+const probe = setInterval(() => {
+  const at = performance.now();
+  windowMax = Math.max(windowMax, at - last - 5);
+  last = at;
+}, 5);
+let server = null;
+let db = null;
+let snapshots = null;
+try {
+  const { createClock } = await imp("server/lib/clock.mjs");
+  const { createStore, openDatabase } = await imp("server/lib/db.mjs");
+  const { createPeriod } = await imp("server/lib/period.mjs");
+  const { createRouter } = await imp("server/lib/router.mjs");
+  const { HttpError, send } = await imp("server/lib/http.mjs");
+  const { registerLedgerRoutes } = await imp("server/routes/ledger.mjs");
+  const file = path.join(work, "destekofis.sqlite");
+  copyFileSync(path.join(veri, "data", "destekofis.sqlite"), file);
+  db = openDatabase(file);
+  const store = createStore(db);
+  const now = createClock({ time: NOW, fixed: true });
+  const period = createPeriod({ store, now });
+  if (period.lockedUntil()) throw new Error("veride kilit var");
+  const router = createRouter();
+  const admin = { id: "olcum", display_name: "Ölçüm", role: "admin", permissions: ["system.manage", "overview.view"] };
+  let lockState = { lock: "", digest: "" };
+  const gate = { adoptLock: ({ lock = "", digest = null } = {}) => (lockState = { lock, digest: lock ? digest : "" }), lockPending: lock => lockState.lock === lock && lockState.digest === null };
+  const ledger = registerLedgerRoutes(router, { store, now, auth: { requirePermission: () => admin }, audit: () => {}, events: null, period, integrity: () => gate, money: null, config: { dbPath: file }, freezeBatchLines: 500 });
+  snapshots = ledger.snapshots;
+  server = createServer(async (req, res) => {
+    const url = new URL(req.url, "http://127.0.0.1");
+    try {
+      const matched = router.match(req.method, url.pathname);
+      if (!matched || matched.methodNotAllowed) throw new HttpError(404, "yok");
+      await matched.handler({ req, res, url, params: matched.params });
+    } catch (error) {
+      if (res.headersSent) return res.end();
+      if (error instanceof HttpError) return send(res, error.status, { ok: false, error: error.message, ...error.extra });
+      send(res, 500, { ok: false, error: String(error?.message || error) });
+    }
+  });
+  await new Promise(resolve => server.listen(0, "127.0.0.1", resolve));
+  const base = `http://127.0.0.1:${server.address().port}`;
+  const call = async (method, url, body) => {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), CLIENT_LIMIT_MS);
+    const started = performance.now();
+    try {
+      const response = await fetch(base + url, { method, headers: { "content-type": "application/json" }, body: body === undefined ? undefined : JSON.stringify(body), signal: controller.signal });
+      const data = await response.json();
+      const freeze = data?.data?.freeze ?? data?.freeze;
+      return { ms: Math.round(performance.now() - started), status: response.status, active: freeze?.active ?? null, code: data?.code ?? "", ileti: response.status === 200 ? "" : String(data?.error || ""), temizlik: freeze?.cleanup ?? null };
+    } catch (error) {
+      if (error?.name === "AbortError") return { ms: Math.round(performance.now() - started), status: 0, ileti: "Sunucu zamanında yanıt vermedi. (client-timeout)" };
+      throw error;
+    } finally {
+      clearTimeout(timer);
+    }
+  };
+  const idle = () => !snapshots.status().running && !ledger.freezeView().active;
+  const step = async (label, fn) => {
+    await sleep(200);
+    windowMax = 0;
+    const started = performance.now();
+    const value = await fn();
+    const row = { adim: label, ms: Math.round(performance.now() - started), olayDongusuEnCokMs: Math.round(windowMax), ...value, yuk: os.loadavg()[0] };
+    result.adimlar.push(row);
+    console.log(JSON.stringify(row));
+    return row;
+  };
+  const waitIdle = async () => {
+    for (let i = 0; i < 3600 && !idle(); i += 1) await sleep(250);
+    return { kapsam: snapshots.coverage(), donmusSatir: Number(store.get("SELECT COUNT(*) AS n FROM ledger_snapshots").n) };
+  };
+  // Ç3 tur 3 (ORTA-1; dar kontrol p6): yeni kodda "Yeniden Kilitle (hemen)" temizlik sürerken 5 sn bütçesinde 409 ledger-cleanup-running; temizlik arkada; bitince kilit 200.
+  const tally = () => {
+    const cover = snapshots.coverage();
+    const last = store.get("SELECT no, state_lines FROM ledger_snapshot_runs WHERE state = 'done' ORDER BY no DESC LIMIT 1");
+    return { kapsam: cover, gorunen: Number(store.get("SELECT COUNT(*) AS n FROM ledger_snapshots WHERE date <= ?", cover).n), kayitli: Number(last?.state_lines ?? 0) };
+  };
+  // Tablo doğrulamasının (YÜKSEK-1) parça sorgusu: 20.000 satırlık run_seq aralığı (ürünle aynı SQL) — parça başına en uzun süre (olay döngüsü bu kadar tutulur).
+  const verifyCost = () => {
+    const last = store.get("SELECT no FROM ledger_snapshot_runs WHERE state = 'done' AND kind = 'freeze' ORDER BY no DESC LIMIT 1");
+    const top = Number(store.get("SELECT MAX(run_seq) AS n FROM ledger_snapshots WHERE run = ?", last.no).n);
+    const sql = "SELECT COUNT(*) AS lines, COALESCE(SUM(debit_minor), 0) AS debit, COALESCE(SUM(credit_minor), 0) AS credit, COALESCE(SUM((CAST(account AS INTEGER) * (debit_minor - credit_minor)) % 1000000007), 0) AS weight FROM ledger_snapshots WHERE run = ? AND run_seq > ? AND run_seq <= ?";
+    let worst = 0;
+    let total = 0;
+    let lines = 0;
+    for (let low = 0; low < top; low += 20000) {
+      const at = performance.now();
+      lines += Number(store.get(sql, last.no, low, low + 20000).lines);
+      const took = performance.now() - at;
+      worst = Math.max(worst, took);
+      total += took;
+    }
+    return { dogrulamaParcaEnUzunMs: Math.round(worst), dogrulamaToplamMs: Math.round(total), parca: Math.ceil(top / 20000), satir: lines };
+  };
+  await step("kilit 31.12.2025", () => call("PUT", "/api/admin/period-lock", { lockedUntil: LOCK, force: true }));
+  await step("dondurmanın bitişi", async () => ({ ...(await waitIdle()), ...tally() }));
+  await step("tablo doğrulaması maliyeti (parça sorgusu)", async () => verifyCost());
+  await step("Kilidi Aç", () => call("PUT", "/api/admin/period-lock", { lockedUntil: "" }));
+  const again = await step("Yeniden Kilitle (hemen)", () => call("PUT", "/api/admin/period-lock", { lockedUntil: LOCK, force: true }));
+  if (again.status !== 200) {
+    await step("ilerleme görünümü (temizlik sürerken)", () => call("GET", "/api/workspace/ledger/lock"));
+    await step("temizliğin bitişi", async () => ({ ...(await waitIdle()), temizlik: snapshots.status().cleanup }));
+    await step("Yeniden Kilitle (temizlikten sonra)", () => call("PUT", "/api/admin/period-lock", { lockedUntil: LOCK, force: true }));
+  }
+  await step("dondurmanın bitişi", async () => ({ ...(await waitIdle()), ...tally() }));
+  const end = tally();
+  result.SONUC = end.kapsam === LOCK && end.gorunen === end.kayitli ? "TUTARLI" : `HATA: ${JSON.stringify(end)}`;
+} catch (error) {
+  result.hata = String(error?.stack || error);
+  console.log(result.hata);
+} finally {
+  clearInterval(probe);
+  try {
+    await new Promise(resolve => server?.close(resolve));
+  } catch {
+    // kapalı
+  }
+  try {
+    await snapshots?.close?.();
+  } catch {
+    // kapalı
+  }
+  try {
+    db?.close();
+  } catch {
+    // kapalı
+  }
+  rmSync(work, { recursive: true, force: true, maxRetries: 10, retryDelay: 200 });
+}
+result.yukSonra = os.loadavg();
+writeFileSync(output, JSON.stringify(result, null, 1));

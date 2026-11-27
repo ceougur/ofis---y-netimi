@@ -1,0 +1,199 @@
+TAP version 13
+# Subtest: Ç5-B son tur — S126 = A (açık borca eşit, içinde fatura da olan kart: ödeme fatura dahil eskiden yeniye)
+    # Subtest: karar örneği: F 600 + X 300, kart 900; karta 300 ödeme (Taksit Tahsilatı) ⇒ F açık 300, X Kalan 300; bakiye 600, kart kalanı 600
+    ok 1 - karar örneği: F 600 + X 300, kart 900; karta 300 ödeme (Taksit Tahsilatı) ⇒ F açık 300, X Kalan 300; bakiye 600, kart kalanı 600
+      ---
+      duration_ms: 16.782344
+      type: 'test'
+      ...
+    # Subtest: karta pay düşen BAĞSIZ tahsilat (kart seçilmeden; S50) da aynı sırayla: tahsilat 500 ⇒ F açık 100, X Kalan 300 (kâhin d37 L8 ile aynı sayılar)
+    ok 2 - karta pay düşen BAĞSIZ tahsilat (kart seçilmeden; S50) da aynı sırayla: tahsilat 500 ⇒ F açık 100, X Kalan 300 (kâhin d37 L8 ile aynı sayılar)
+      ---
+      duration_ms: 1.538163
+      type: 'test'
+      ...
+    # Subtest: iki ödeme üst üste (300 + 400) ⇒ F 0, X Kalan 200; kartı tamamen kapatan ödeme ⇒ F Ödendi, X Kalan 0, kalem yok
+    ok 3 - iki ödeme üst üste (300 + 400) ⇒ F 0, X Kalan 200; kartı tamamen kapatan ödeme ⇒ F Ödendi, X Kalan 0, kalem yok
+      ---
+      duration_ms: 1.0978
+      type: 'test'
+      ...
+    # Subtest: ödemenin silinmesi / geri yüklenmesi: ödemesiz hâl = silinmiş hâl; geri yüklenince yine F açık 300, X Kalan 300 (yazım sırası sonucu değiştirmez)
+    ok 4 - ödemenin silinmesi / geri yüklenmesi: ödemesiz hâl = silinmiş hâl; geri yüklenince yine F açık 300, X Kalan 300 (yazım sırası sonucu değiştirmez)
+      ---
+      duration_ms: 1.049229
+      type: 'test'
+      ...
+    # Subtest: elle borç faturadan ESKİ: X 300 (25.02) + F 600 (01.03), kart 900, karta 300 ⇒ X Kalan 0, F açık 600 (eskiden yeniye: önce X)
+    ok 5 - elle borç faturadan ESKİ: X 300 (25.02) + F 600 (01.03), kart 900, karta 300 ⇒ X Kalan 0, F açık 600 (eskiden yeniye: önce X)
+      ---
+      duration_ms: 0.410692
+      type: 'test'
+      ...
+    # Subtest: itirazsız okuma (kâhin Y10-3): içindekilerin HEPSİ elle borç — X 500 + Y 400, kart 900, ödeme 300 ⇒ X Kalan 200, Y Kalan 400
+    ok 6 - itirazsız okuma (kâhin Y10-3): içindekilerin HEPSİ elle borç — X 500 + Y 400, kart 900, ödeme 300 ⇒ X Kalan 200, Y Kalan 400
+      ---
+      duration_ms: 0.529789
+      type: 'test'
+      ...
+    # Subtest: itirazsız okuma (kâhin Y11-7): içinde YALNIZ faturalar — F1 400 (01.03) + F2 500 (05.03), kart 900, ödeme 300 ⇒ F1 açık 100, F2 açık 500
+    ok 7 - itirazsız okuma (kâhin Y11-7): içinde YALNIZ faturalar — F1 400 (01.03) + F2 500 (05.03), kart 900, ödeme 300 ⇒ F1 açık 100, F2 açık 500
+      ---
+      duration_ms: 0.442671
+      type: 'test'
+      ...
+    # Subtest: değişmezler ödemenin her tutarında (1 … 900): Σ fatura açığı + Σ elle Kalan = bakiye = kart kalanı; kalemler yalnız taksitler
+    ok 8 - değişmezler ödemenin her tutarında (1 … 900): Σ fatura açığı + Σ elle Kalan = bakiye = kart kalanı; kalemler yalnız taksitler
+      ---
+      duration_ms: 2.81814
+      type: 'test'
+      ...
+    1..8
+ok 1 - Ç5-B son tur — S126 = A (açık borca eşit, içinde fatura da olan kart: ödeme fatura dahil eskiden yeniye)
+  ---
+  duration_ms: 25.894468
+  type: 'suite'
+  ...
+# Subtest: Ç5-B son tur — S128 = A (kartın içinde fatura / elle borç dışında kalem: türüne bakılmadan eskiden yeniye)
+    # Subtest: karar örneği: 01.03 stok veresiye S 400 · 02.03 elle X 300 · 15.03 kart 700 · 10.04 karta 300 ⇒ S açığı 100, X Kalan 300; bakiye 400, kart kalanı 400
+    ok 1 - karar örneği: 01.03 stok veresiye S 400 · 02.03 elle X 300 · 15.03 kart 700 · 10.04 karta 300 ⇒ S açığı 100, X Kalan 300; bakiye 400, kart kalanı 400
+      ---
+      duration_ms: 0.840413
+      type: 'test'
+      ...
+    # Subtest: elle borç stok satışından ESKİ: X 300 (25.02) · S 400 (01.03) · kart 700 · karta 500 ⇒ X Kalan 0, S açığı 200
+    ok 2 - elle borç stok satışından ESKİ: X 300 (25.02) · S 400 (01.03) · kart 700 · karta 500 ⇒ X Kalan 0, S açığı 200
+      ---
+      duration_ms: 0.72832
+      type: 'test'
+      ...
+    # Subtest: karşılıksız kalemi: 01.03 karşılıksız çek B 400 · 02.03 elle X 300 · kart 700 · karta 300 ⇒ B açığı 100, X Kalan 300; bağsız tahsilatla (S50) da aynı
+    ok 3 - karşılıksız kalemi: 01.03 karşılıksız çek B 400 · 02.03 elle X 300 · kart 700 · karta 300 ⇒ B açığı 100, X Kalan 300; bağsız tahsilatla (S50) da aynı
+      ---
+      duration_ms: 2.127903
+      type: 'test'
+      ...
+    # Subtest: üç tür birlikte (fatura + stok + elle): F 200 (01.03) · S 300 (02.03) · X 200 (03.03), kart 700, karta 350 ⇒ F 0, S açığı 150, X Kalan 200
+    ok 4 - üç tür birlikte (fatura + stok + elle): F 200 (01.03) · S 300 (02.03) · X 200 (03.03), kart 700, karta 350 ⇒ F 0, S açığı 150, X Kalan 200
+      ---
+      duration_ms: 0.580065
+      type: 'test'
+      ...
+    1..4
+ok 2 - Ç5-B son tur — S128 = A (kartın içinde fatura / elle borç dışında kalem: türüne bakılmadan eskiden yeniye)
+  ---
+  duration_ms: 4.655774
+  type: 'suite'
+  ...
+# Subtest: Ç5-B son tur — S101 sınırı (tur 2b-2'nin dişsiz kalan mutantı): para dışı kapanış avans DEĞİLDİR
+    # Subtest: Borç 600 → kart 600 (2 × 300) → geriye tarihli Alacak 200 (karttan sonra yazıldı): eksik 200 son taksitten kırpılır [300, 100]; ilk taksit 'avansla ödenmiş' sayılmaz
+    ok 1 - Borç 600 → kart 600 (2 × 300) → geriye tarihli Alacak 200 (karttan sonra yazıldı): eksik 200 son taksitten kırpılır [300, 100]; ilk taksit 'avansla ödenmiş' sayılmaz
+      ---
+      duration_ms: 1.083582
+      type: 'test'
+      ...
+    1..1
+ok 3 - Ç5-B son tur — S101 sınırı (tur 2b-2'nin dişsiz kalan mutantı): para dışı kapanış avans DEĞİLDİR
+  ---
+  duration_ms: 1.212097
+  type: 'suite'
+  ...
+# Subtest: Ç5-B son tur — BİLİNEN SINIRLAR (S123 = S124 = S125 = C: kural YOK; bugünkü davranış sabitlenir, değişmezler korunur)
+    # Subtest: S123 (açık elle borçlar kart tutarından az: F 600 + X 300, kart 500): bugün kartta X 300 + F'nin 200'ü; karta 250 ⇒ X Kalan 50, F açık 600
+    ok 1 - S123 (açık elle borçlar kart tutarından az: F 600 + X 300, kart 500): bugün kartta X 300 + F'nin 200'ü; karta 250 ⇒ X Kalan 50, F açık 600
+      ---
+      duration_ms: 0.731929
+      type: 'test'
+      ...
+    # Subtest: S124 (karta eşit birden çok elle borç + daha eski elle borç: Z 300 + X 900 + Y 900, kart 900): bugün kartta Z 300 + X'in 600'ü; karta 400 ⇒ Z 0, X Kalan 800
+    ok 2 - S124 (karta eşit birden çok elle borç + daha eski elle borç: Z 300 + X 900 + Y 900, kart 900): bugün kartta Z 300 + X'in 600'ü; karta 400 ⇒ Z 0, X Kalan 800
+      ---
+      duration_ms: 0.413239
+      type: 'test'
+      ...
+    # Subtest: S125 (belge sırası ↔ vade sırası ters; S120 kolu: X 02.03 vade 30.03, Y 05.03 vade 10.03, F 600, kart 900): bugün vade sırası — kartta Y 700 + X'in 200'ü; karta 300 ⇒ Y Kalan 400, X 500
+    ok 3 - S125 (belge sırası ↔ vade sırası ters; S120 kolu: X 02.03 vade 30.03, Y 05.03 vade 10.03, F 600, kart 900): bugün vade sırası — kartta Y 700 + X'in 200'ü; karta 300 ⇒ Y Kalan 400, X 500
+      ---
+      duration_ms: 0.562268
+      type: 'test'
+      ...
+    # Subtest: S125 × S126 (açık borca eşit kartta vade ↔ belge sırası ters: X 02.03 vade 30.03 · F 04.03 vadesiz, kart 900, karta 300): bugün vade sırası — F açık 300, X Kalan 300 (kâhin d37 L13: susar)
+    ok 4 - S125 × S126 (açık borca eşit kartta vade ↔ belge sırası ters: X 02.03 vade 30.03 · F 04.03 vadesiz, kart 900, karta 300): bugün vade sırası — F açık 300, X Kalan 300 (kâhin d37 L13: susar)
+      ---
+      duration_ms: 0.486882
+      type: 'test'
+      ...
+    1..4
+ok 4 - Ç5-B son tur — BİLİNEN SINIRLAR (S123 = S124 = S125 = C: kural YOK; bugünkü davranış sabitlenir, değişmezler korunur)
+  ---
+  duration_ms: 2.371202
+  type: 'suite'
+  ...
+# Subtest: Ç5-B son tur — gerçek program: S126 / S128 örnekleri ekranların okuduğu uçlardan (cari kartı, fatura kartı, taksit kartı, Vade Takip, zil)
+    # Subtest: S126 = A: F 600 + X 300, kart 900 (3 × 300) — Taksit Tahsilatı 300 ⇒ F açık 300, X Kalan 300; sonra bağsız tahsilat 400 ⇒ F 0, X Kalan 200; silinince geri döner
+    ok 1 - S126 = A: F 600 + X 300, kart 900 (3 × 300) — Taksit Tahsilatı 300 ⇒ F açık 300, X Kalan 300; sonra bağsız tahsilat 400 ⇒ F 0, X Kalan 200; silinince geri döner
+      ---
+      duration_ms: 284.353741
+      type: 'test'
+      ...
+    # Subtest: S128 = A: stok veresiye S 400 · elle X 300 · kart 700 (2 × 350) · karta 300 ⇒ X Kalan 300 (S açığı 100 — kuyrukta); bakiye 400, kart kalanı 400, gecikmiş 50 her ekranda
+    ok 2 - S128 = A: stok veresiye S 400 · elle X 300 · kart 700 (2 × 350) · karta 300 ⇒ X Kalan 300 (S açığı 100 — kuyrukta); bakiye 400, kart kalanı 400, gecikmiş 50 her ekranda
+      ---
+      duration_ms: 112.022016
+      type: 'test'
+      ...
+    # Subtest: hız: kart tahsilatı yanıtından sonra kart okuması ve ilk zil okuması carinin kuyruğunu yeniden KURMAZ, bütün carilerin izini yeniden TARAMAZ (sayaçlar 1 / 0 / 0); yeni yazım belleği geçersiz kılar
+    not ok 3 - hız: kart tahsilatı yanıtından sonra kart okuması ve ilk zil okuması carinin kuyruğunu yeniden KURMAZ, bütün carilerin izini yeniden TARAMAZ (sayaçlar 1 / 0 / 0); yeni yazım belleği geçersiz kılar
+      ---
+      duration_ms: 82.487565
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bson-taban3/test/tyk-son-250.test.mjs:285:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        defter okuması: yazım yanıtı 1, kart okuması 0, zil 0
+        + actual - expected
+        
+          [
+            1,
+        +   1,
+        +   1
+        -   0,
+        -   0
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 1
+        1: 0
+        2: 0
+      actual:
+        0: 1
+        1: 1
+        2: 1
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bson-taban3/test/tyk-son-250.test.mjs:313:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 5 - Ç5-B son tur — gerçek program: S126 / S128 örnekleri ekranların okuduğu uçlardan (cari kartı, fatura kartı, taksit kartı, Vade Takip, zil)
+  ---
+  duration_ms: 1099.282036
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bson-taban3/test/tyk-son-250.test.mjs:204:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..5
+# tests 20
+# suites 5
+# pass 19
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1555.590864

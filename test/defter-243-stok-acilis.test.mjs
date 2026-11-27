@@ -1,4 +1,5 @@
 // 2.4.3 — Uzman mali müşavir MM4 (kullanıcı kararı 18.10.2026): stok açılışı (ürün kartındaki açılış miktarı ve Excel'den ürün yüklemedeki miktar)
+// 2.5.0 Ç5-A tur 1 — BEKLENTİ BİLEREK DEĞİŞTİ (G3: docs/erp/C5-ACILIS-TASARIM.md §2.2 / §11; KG-1, M-01 / M-04 / M-05 / M-07, B3): açılışların karşı hesabı 500 değil 519 "Eşleştirilecek Açılış Bakiyeleri" (banka fişinde saklı kod 500 kalır, türetmede 519). Tutarlar AYNI; yalnız hesap kodu.
 // Ana Defter'e B 153 / A 500 (miktar × birim fiyat) olarak girer; karşı hesap Kasa / banka / cari / taksit açılışlarıyla aynı (500). Mutabakat Testi
 // "Açılış Stoku ↔ Ana Defter" denetimi (stock:opening) bu kaydı da denetler. Eski kodda (78fdd05) kırmızı: 153 açılış kadar eksik.
 //
@@ -26,10 +27,10 @@ describe("2.4.3 MM4 — stok açılışı Ana Defter'de (B 153 / A 500)", () => 
     const p1 = await must("P1", api.post("/api/workspace/stock", { name: "P1 Ürün", unit: "Adet", unitPrice: "50", openingQty: "100", openingDate: "2026-09-01" }));
     const rows = await trialBalances(api);
     assert.equal(balance(rows, "153"), 5000);
-    assert.equal(balance(rows, "500"), -5000);
+    assert.equal(balance(rows, "519"), -5000);
     const journal = await must("yevmiye", api.get(`${RC}/yevmiye?from=2026-09-01&to=2026-09-30`));
     const lines = journal.rows.filter(row => row[1] === "Stok açılışı");
-    assert.deepEqual(lines.map(row => [row[0], row[3], row[4], row[5]]), [["01.09.2026", "153", "5.000,00 TL", ""], ["01.09.2026", "500", "", "5.000,00 TL"]]);
+    assert.deepEqual(lines.map(row => [row[0], row[3], row[4], row[5]]), [["01.09.2026", "153", "5.000,00 TL", ""], ["01.09.2026", "519", "", "5.000,00 TL"]]);
     assert.match(lines[0][2], /Açılış stoku: P1 Ürün/);
     const result = await integrityOk(api, "açılış sonrası");
     const check = result.checks.find(item => item.code === "stock:opening");
@@ -41,7 +42,7 @@ describe("2.4.3 MM4 — stok açılışı Ana Defter'de (B 153 / A 500)", () => 
     await must("P2 peşin ilk alım", api.post("/api/workspace/stock", { name: "P2 Ürün", unit: "Adet", unitPrice: "20", openingQty: "10", openingPay: "cash", openingDate: "2026-09-02", cashForce: true }));
     const rows = await trialBalances(api);
     assert.equal(balance(rows, "153"), 5200);
-    assert.equal(balance(rows, "500"), -5000);
+    assert.equal(balance(rows, "519"), -5000);
     assert.equal(balance(rows, "100"), -200);
     await integrityOk(api, "ilk alım");
   });
@@ -53,7 +54,7 @@ describe("2.4.3 MM4 — stok açılışı Ana Defter'de (B 153 / A 500)", () => 
     assert.equal(done.opening, 2);
     const rows = await trialBalances(api);
     assert.equal(balance(rows, "153"), 6150);
-    assert.equal(balance(rows, "500"), -5950);
+    assert.equal(balance(rows, "519"), -5950);
     await must("hizmet", api.post("/api/workspace/stock", { name: "Danışmanlık", kind: "service", unit: "Adet", unitPrice: "500", openingQty: "3" }));
     assert.equal(balance(await trialBalances(api), "153"), 6150, "hizmet kalemi açılış yazmaz");
     await integrityOk(api, "Excel");
@@ -67,13 +68,13 @@ describe("2.4.3 MM4 — stok açılışı Ana Defter'de (B 153 / A 500)", () => 
     await must("düzelt", api.put(`/api/workspace/stock/${p1.id}/moves/${move.id}`, { qty: "80", unitPrice: "50" }));
     let rows = await trialBalances(api);
     assert.equal(balance(rows, "153"), 5150);
-    assert.equal(balance(rows, "500"), -4950);
+    assert.equal(balance(rows, "519"), -4950);
     await integrityOk(api, "düzeltme");
     const removed = await api.del(`/api/workspace/stock/${p1.id}/moves/${move.id}`);
     assert.equal(removed.status, 200, JSON.stringify(removed.data));
     rows = await trialBalances(api);
     assert.equal(balance(rows, "153"), 1150);
-    assert.equal(balance(rows, "500"), -950);
+    assert.equal(balance(rows, "519"), -950);
     await integrityOk(api, "silme");
     const trash = await must("çöp", api.get("/api/admin/trash"));
     const entry = trash.find(item => item.kind === "stock-move" && item.ref === move.id);
@@ -81,7 +82,7 @@ describe("2.4.3 MM4 — stok açılışı Ana Defter'de (B 153 / A 500)", () => 
     await must("geri yükle", api.post("/api/admin/trash/restore", { id: entry.id }));
     rows = await trialBalances(api);
     assert.equal(balance(rows, "153"), 5150, "geri yüklenen açılış yine 153 / 500");
-    assert.equal(balance(rows, "500"), -4950);
+    assert.equal(balance(rows, "519"), -4950);
     await integrityOk(api, "geri yükleme");
   });
 
@@ -94,11 +95,11 @@ describe("2.4.3 MM4 — stok açılışı Ana Defter'de (B 153 / A 500)", () => 
     await must("peşine çevir", api.put(`/api/workspace/stock/${sugar.id}/moves/${move.id}`, { pay: "cash", method: "cash", qty: "2,5", unitPrice: "40", cashForce: true }));
     let rows = await trialBalances(api);
     assert.equal(balance(rows, "153"), 5150, "153 aynı (açılış yerine peşin alım)");
-    assert.equal(balance(rows, "500"), -4850, "500 açılış kadar azaldı");
+    assert.equal(balance(rows, "519"), -4850, "500 açılış kadar azaldı");
     assert.equal(balance(rows, "100"), -300);
     await must("geri yalnız miktara", api.put(`/api/workspace/stock/${sugar.id}/moves/${move.id}`, { pay: "none", qty: "2,5", unitPrice: "40" }));
     rows = await trialBalances(api);
-    assert.equal(balance(rows, "500"), -4950, "yeniden yalnız miktar: açılış geri geldi (göç v30 tanımı)");
+    assert.equal(balance(rows, "519"), -4950, "yeniden yalnız miktar: açılış geri geldi (göç v30 tanımı)");
     assert.equal(balance(rows, "153"), 5150);
     assert.equal(balance(rows, "100"), -200, "Şeker peşin alımı geri alındı (yalnız P2 ilk alımı kalır)");
     const tea = list.items.find(item => item.name === "Çay");

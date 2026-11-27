@@ -1,0 +1,5 @@
+G1 ÜRETİCİ: 120 senaryo (s1 + ux18 × tohum 1–30 × işlem 120/400); seriden numara alan adım 6924, alış faturası 872; dar ihlal 0 senaryo; --sert ihlal 0 adım; bütün tarihli adımlarda geri giden tarih 0
+# tests 120
+# pass 120
+# fail 0
+120/120 denetim geçti

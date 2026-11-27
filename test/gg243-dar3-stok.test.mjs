@@ -1,4 +1,5 @@
 // Dar kontrol 3 (2.4.3; bağımsız denetçi betiği dar3-243 t5-stok) — B-3 DÜŞÜK: stok açılış hareketi Düzenle ile peşine çevrilip (işaret düşer, alım olur)
+// 2.5.0 Ç5-A tur 1 — BEKLENTİ BİLEREK DEĞİŞTİ (G3: docs/erp/C5-ACILIS-TASARIM.md §2.2 / §11; KG-1, M-01 / M-04 / M-05 / M-07, B3): açılışların karşı hesabı 500 değil 519 "Eşleştirilecek Açılış Bakiyeleri" (banka fişinde saklı kod 500 kalır, türetmede 519). Tutarlar AYNI; yalnız hesap kodu.
 // sonra yeniden "yalnız miktar"a çevrilince is_opening geri gelmiyordu; açılış 153/500'den sessizce düşüyor, Mutabakat Testi görmüyordu. Karar: açılış
 // tanımı göç v30 ile AYNI (işaretli açılmış YA DA açıklaması programın açılış metni olan yalnız miktar girişi, faturasız, iadesiz).
 // KÂHİN (elle, programdan bağımsız): Vida açılışı 5 Adet × 12,345 TL = 61,725 → 61,73 TL (B 153 / A 500); peşine çevrilince B 153 / A 100 61,73;
@@ -27,13 +28,13 @@ describe("gg243 dar kontrol 3: stok açılışı Düzenle gidiş-dönüş (B-3)"
     const move = item.moves[0];
     assert.equal(move.note, "Açılış stoku");
     let rows = await trialBalances(api);
-    assert.deepEqual([balance(rows, "153"), balance(rows, "500"), balance(rows, "100")], [61.73, -61.73, 0]);
+    assert.deepEqual([balance(rows, "153"), balance(rows, "519"), balance(rows, "100")], [61.73, -61.73, 0]);
     await must("peşine çevir", api.put(`/api/workspace/stock/${item.id}/moves/${move.id}`, { kind: "in", qty: "5", unitPrice: "12,345", date: "2026-10-01", note: "Açılış stoku", pay: "cash", method: "cash", cashForce: true }));
     rows = await trialBalances(api);
-    assert.deepEqual([balance(rows, "153"), balance(rows, "500"), balance(rows, "100")], [61.73, 0, -61.73], "peşin: alım (B 153 / A 100)");
+    assert.deepEqual([balance(rows, "153"), balance(rows, "519"), balance(rows, "100")], [61.73, 0, -61.73], "peşin: alım (B 153 / A 100)");
     await must("yeniden yalnız miktar", api.put(`/api/workspace/stock/${item.id}/moves/${move.id}`, { kind: "in", qty: "5", unitPrice: "12,345", date: "2026-10-01", note: "Açılış stoku", pay: "none", cashForce: true }));
     rows = await trialBalances(api);
-    assert.deepEqual([balance(rows, "153"), balance(rows, "500"), balance(rows, "100")], [61.73, -61.73, 0], "yalnız miktar: yine açılış (göç v30 tanımı)");
+    assert.deepEqual([balance(rows, "153"), balance(rows, "519"), balance(rows, "100")], [61.73, -61.73, 0], "yalnız miktar: yine açılış (göç v30 tanımı)");
     assert.equal(ctx.server.app.store.get("SELECT is_opening AS o FROM stock_moves WHERE id = ?", move.id).o, 1);
     const result = await integrityOk(api, "gidiş-dönüş");
     assert.equal(result.checks.find(check => check.code === "stock:opening")?.ok, true);
@@ -49,7 +50,7 @@ describe("gg243 dar kontrol 3: stok açılışı Düzenle gidiş-dönüş (B-3)"
     await must("peşine çevir", api.put(`/api/workspace/stock/${pul.id}/moves/${move.id}`, { pay: "cash", method: "cash", qty: "7", unitPrice: "1,5", cashForce: true }));
     await must("yeniden yalnız miktar", api.put(`/api/workspace/stock/${pul.id}/moves/${move.id}`, { pay: "none", qty: "7", unitPrice: "1,5" }));
     const rows = await trialBalances(api);
-    assert.deepEqual([balance(rows, "153"), balance(rows, "500"), balance(rows, "100")], [72.23, -72.23, 0]);
+    assert.deepEqual([balance(rows, "153"), balance(rows, "519"), balance(rows, "100")], [72.23, -72.23, 0]);
     await integrityOk(api, "Excel gidiş-dönüş");
   });
 
@@ -57,12 +58,12 @@ describe("gg243 dar kontrol 3: stok açılışı Düzenle gidiş-dönüş (B-3)"
     const item = await must("Somun", api.post("/api/workspace/stock", { name: "Somun", unit: "Adet", unitPrice: "2" }));
     await must("giriş", api.post(`/api/workspace/stock/${item.id}/moves`, { kind: "in", qty: "10", unitPrice: "2", date: "2026-10-02", note: "Depo sayımı", pay: "none" }));
     let rows = await trialBalances(api);
-    assert.deepEqual([balance(rows, "153"), balance(rows, "500")], [72.23, -72.23], "yalnız miktar sıradan giriş deftere yazmaz");
+    assert.deepEqual([balance(rows, "153"), balance(rows, "519")], [72.23, -72.23], "yalnız miktar sıradan giriş deftere yazmaz");
     const vida = (await must("liste", api.get("/api/workspace/stock"))).items.find(row => row.name === "Vida");
     const move = (await must("Vida", api.get(`/api/workspace/stock/${vida.id}`))).moves[0];
     await must("açıklama değiş", api.put(`/api/workspace/stock/${vida.id}/moves/${move.id}`, { pay: "none", qty: "5", unitPrice: "12,345", note: "Dönem başı sayım" }));
     rows = await trialBalances(api);
-    assert.deepEqual([balance(rows, "153"), balance(rows, "500")], [72.23, -72.23], "işaretli açılış açıklaması değişse de açılış");
+    assert.deepEqual([balance(rows, "153"), balance(rows, "519")], [72.23, -72.23], "işaretli açılış açıklaması değişse de açılış");
     await integrityOk(api, "açıklama");
   });
 

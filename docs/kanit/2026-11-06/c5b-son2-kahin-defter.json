@@ -1,0 +1,88 @@
+{
+  "ad": "c5b-son2-kahin-defter",
+  "komut": "node --disable-warning=ExperimentalWarning test/bagimsiz/defter/kos.mjs",
+  "commit": "25c449d9cf51d43a46f03ea9cea2f4767378ecbd",
+  "dal": "worktree-agent-ae5136939616adbab",
+  "kirli": 40,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T19:20:20.595Z",
+  "sure_sn": 5.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "kahin-defter",
+    "toplam": 183,
+    "gecen": 172,
+    "basarisiz": 22,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 22 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "mizan K_EYLUL 500: program -69.000,00 · kâhin 0,00",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "mizan K_EYLUL 519: program 0,00 · kâhin -69.000,00",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "mizan K_EYLUL_MAHSUP 500: program -69.000,00 · kâhin 0,00",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "mizan K_EYLUL_MAHSUP 519: program 0,00 · kâhin -69.000,00",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "mizan K_EKIM_ONCE 500: program -69.000,00 · kâhin 0,00",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "mizan K_EKIM_ONCE 519: program 0,00 · kâhin -69.000,00",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "mizan K_GERI_ALINDI 500: program -69.000,00 · kâhin 0,00",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "mizan K_GERI_ALINDI 519: program 0,00 · kâhin -69.000,00",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "mizan K_SON 500: program -68.600,00 · kâhin 0,00",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "mizan K_SON 519: program 0,00 · kâhin -69.000,00",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "mizan K_SON 770: program 11.402,50 · kâhin 11.802,50",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-kanit/2026-11-06/c5b-son2-kahin-defter.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ae5136939616adbab",
+  "ham_cikti_sha256": "f1e2413e28e6acba619f7be711f41d3a3bafc2ddc3430b3c7633b11cbb84a352",
+  "ham_cikti_bayt": 4425
+}

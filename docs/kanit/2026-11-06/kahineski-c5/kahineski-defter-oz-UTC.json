@@ -1,0 +1,32 @@
+{
+  "ad": "kahineski-defter-oz-UTC",
+  "komut": "python3 -I test/bagimsiz/defter/oz-test.py",
+  "commit": "a22ebbf560d434d28fa56eb3d2a4a469b1ab5e4d",
+  "dal": "worktree-agent-a6cbbc7468dfd488a",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T12:05:34.270Z",
+  "sure_sn": 0.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 121,
+    "gecen": 121,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "kahineski-defter-oz-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a6cbbc7468dfd488a",
+  "ham_cikti_sha256": "bb5224f17e5853ad607e499f2495e002209e66d1b82e8947a5c28ca22d59bfdd",
+  "ham_cikti_bayt": 2866
+}

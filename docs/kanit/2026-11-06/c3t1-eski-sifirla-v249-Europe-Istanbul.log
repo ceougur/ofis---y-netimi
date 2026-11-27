@@ -1,0 +1,22 @@
+ok 1 - A (aynı gün): yeni kod 2026-12-31'e kadar dondurdu (2 satır)
+ok 2 - A (aynı gün): eski kod dosyayı göç ettirmedi (şema 47)
+ok 3 - A (aynı gün): ön koşul — eski kod donmuş satırları sildi, koşuyu bilmedi ([{"no":1,"kind":"freeze","state":"done","through":"2026-12-31"}])
+ok 4 - A (aynı gün): açılış onarımı eksik satırı gördü ({"action":"freeze","pending":true,"damaged":true})
+ok 5 - A (aynı gün): kilitli yılın Yevmiye Defteri = canlı (2 / 2 satır; [["05.05.2026","Kasa","Sıfırlamadan sonraki gerçek veri","100","7.777,00 TL",""],["05.05.2026","Kasa","Sıfırlamadan sonraki gerçek veri","649","","7.777,00 TL"]])
+ok 6 - A (aynı gün): Hesap Planı Mizanı Kasa 7.777 (["100","Kasa (Nakit)","0,00 TL","7.777,00 TL","0,00 TL","7.777,00 TL","Borç"] · 01.01.2026 – 31.12.2026 · Borç = Alacak · Mutabakat tutarlı)
+ok 7 - A (aynı gün): donmuş = canlı, kapsam = kilit
+ok 8 - A (aynı gün): yeniden donan dönem GAP_RULE (2.4.9; S13 = A)
+ok 9 - A (aynı gün): Mutabakat Testi tutarlı ([])
+ok 10 - B (ileri kilit): yeni kod 2026-06-30'e kadar dondurdu (2 satır)
+ok 11 - B (ileri kilit): eski kod dosyayı göç ettirmedi (şema 47)
+ok 12 - B (ileri kilit): ön koşul — eski kod donmuş satırları sildi, koşuyu bilmedi ([{"no":1,"kind":"freeze","state":"done","through":"2026-06-30"}])
+ok 13 - B (ileri kilit): açılış onarımı eksik satırı gördü ({"action":"freeze","pending":true,"damaged":true})
+ok 14 - B (ileri kilit): kilitli yılın Yevmiye Defteri = canlı (2 / 2 satır; [["05.05.2026","Kasa","Sıfırlamadan sonraki gerçek veri","100","7.777,00 TL",""],["05.05.2026","Kasa","Sıfırlamadan sonraki gerçek veri","649","","7.777,00 TL"]])
+ok 15 - B (ileri kilit): Hesap Planı Mizanı Kasa 7.777 (["100","Kasa (Nakit)","0,00 TL","7.777,00 TL","0,00 TL","7.777,00 TL","Borç"] · 01.01.2026 – 31.12.2026 · Borç = Alacak · Mutabakat tutarlı)
+ok 16 - B (ileri kilit): donmuş = canlı, kapsam = kilit
+ok 17 - B (ileri kilit): yeniden donan dönem GAP_RULE (2.4.9; S13 = A)
+ok 18 - B (ileri kilit): Mutabakat Testi tutarlı ([])
+
+# tests 18
+# pass 18
+# fail 0

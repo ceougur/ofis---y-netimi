@@ -1,0 +1,32 @@
+{
+  "ad": "d2t2-bakim-onkosul-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-name-pattern=bakımdaki şirketin arşivi test/devir-d2-bakim-250.test.mjs",
+  "commit": "5f7a596a37ccb4cd87c40ad5998313b9101183bc",
+  "dal": "worktree-agent-ab454f487823db74f",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T17:02:00.054Z",
+  "sure_sn": 3.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 1,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t2-kanit/yeni/2026-11-06/d2t2-bakim-onkosul-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ab454f487823db74f",
+  "ham_cikti_sha256": "d8cbc99ffc97b52af7878eb778cfd32afd23a257ec26172d36d69c09c8ee3858",
+  "ham_cikti_bayt": 1120
+}

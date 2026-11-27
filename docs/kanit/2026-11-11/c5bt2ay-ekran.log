@@ -1,0 +1,29 @@
+
+■ Kurulum (programın API'si): ürün + alım; stoktan veresiye satış + taksitlendir; taksitsiz Yeni Borç kartı
+  ✓ stoktan açılan kartın Kayıt Tarihi carinin Kayıt Tarihi (borçtan önce — Y-1 koşulu)
+
+■ E1 Taksitler: stoktan açılan kart 'Geciken' sekmesinde (Y-1; önceden 'Biten')
+  ✓ Geciken sekmesinde stok kartı (1 kart)
+  ✓ Biten sekmesinde değil
+
+■ E2 Kart penceresi: taksitler 500 / 500, 1. taksit Gecikti (Y-1)
+  ✓ iki taksit satırı (2)
+  ✓ kalanlar 500 / 500: ["₺500,00","₺500,00"]
+  ✓ 1. taksit Gecikti: “Gecikti”
+
+■ E3 Karttan Taksit Tahsilatı 200 (gerçek tıklama, insan hızı) → kart 300 / 500; kapatılıp yeniden açılınca aynı (O-2); veri tabanında 200
+  ✓ tahsilattan hemen sonra kart: ["₺300,00","₺500,00"]
+  ✓ veri tabanı: tahsilat {"amount":200,"date":"2026-10-20"}
+  ✓ yeniden açılınca aynı: [["₺300,00","Kısmen · Gecikti"],["₺500,00","Bekliyor"]]
+
+■ E4 Cari kartı Gecikmiş Borç (Y-1: 300 — 1. taksitin kalanı; önceden satışın tamamı)
+  ✓ ekranda: “₺300,00Gecikmiş Borç · 1 kalem”
+
+■ E5 Zil: stok kartının 1. taksiti; taksitsiz kartın 'Taksitlendirilmemiş Kalan' 1.000 (O-3)
+  ✓ zilde stok kartı: ["10 gün geciktiEkran Stok Müşteri1. taksit · vade 10.10.2026 · ₺300,00 (kalan)✕Tahsilat GirTaksit Kartı"]
+  ✓ zilde taksitsiz kart: ["20 gün geciktiEkran Taksitsiz MüşteriTaksitlendirilmemiş Kalan · vade 30.09.2026 · ₺1.000,00✕Tahsilat GirTaksit Kartı"]
+  ✓ cari B Gecikmiş Borç 1.000 (1000)
+  ✓ Vade Takip (gecikmiş) taksitsiz kart 1.000 (1000)
+  ✓ sayfa hatası yok
+
+SONUÇ: 15 geçti, 0 kaldı

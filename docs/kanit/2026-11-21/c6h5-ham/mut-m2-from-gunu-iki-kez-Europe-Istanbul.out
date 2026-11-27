@@ -1,0 +1,375 @@
+TAP version 13
+# (node:7815) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür)
+    # Subtest: bos: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    ok 1 - bos: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 650.446386
+      type: 'test'
+      ...
+# (node:7815) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:7815) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: satis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    ok 2 - satis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 1064.723673
+      type: 'test'
+      ...
+# (node:7815) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: alis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    ok 3 - alis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 480.475097
+      type: 'test'
+      ...
+# (node:7815) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:7815) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: kasa: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    ok 4 - kasa: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 893.694919
+      type: 'test'
+      ...
+# (node:7815) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:7815) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:7815) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: banka: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    ok 5 - banka: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 914.087334
+      type: 'test'
+      ...
+# (node:7815) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:7815) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: pos: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    ok 6 - pos: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 842.3073
+      type: 'test'
+      ...
+# (node:7815) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:7815) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:7815) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: cek-senet: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    ok 7 - cek-senet: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 818.801268
+      type: 'test'
+      ...
+# (node:7815) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: taksit: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    not ok 8 - taksit: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 457.949828
+      type: 'test'
+      location: '/dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:171:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        taksit fişten önce · [2025-01-01, 2025-12-31] split 2025-01-01: içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4)
+        + actual - expected
+        ... Skipped lines
+        
+          {
+            balances: [
+              {
+        +       account: '120',
+        +       differenceMinor: -120000,
+        +       frozenMinor: 240000,
+        +       liveMinor: 120000,
+        +       party: 'account-4dbf9668-164c-4a7c-a921-52eb6d2e01f3',
+        +       sub: '',
+        +       year: 2025
+        +     },
+        +     {
+                account: '600',
+                differenceMinor: -120000,
+                frozenMinor: 0,
+                liveMinor: -120000,
+                party: '',
+        ...
+                account: '602',
+        +       differenceMinor: 240000,
+        +       frozenMinor: -240000,
+        -       differenceMinor: 120000,
+        -       frozenMinor: -120000,
+                liveMinor: 0,
+                party: '',
+                sub: '',
+                year: 2025
+              }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        through: '2026-06-30'
+        balances:
+          0:
+            year: 2025
+            account: '600'
+            sub: '600.90'
+            party: ''
+            frozenMinor: 0
+            liveMinor: -120000
+            differenceMinor: -120000
+          1:
+            year: 2025
+            account: '602'
+            sub: ''
+            party: ''
+            frozenMinor: -120000
+            liveMinor: 0
+            differenceMinor: 120000
+      actual:
+        through: '2026-06-30'
+        balances:
+          0:
+            year: 2025
+            account: '120'
+            sub: ''
+            party: 'account-4dbf9668-164c-4a7c-a921-52eb6d2e01f3'
+            frozenMinor: 240000
+            liveMinor: 120000
+            differenceMinor: -120000
+          1:
+            year: 2025
+            account: '600'
+            sub: '600.90'
+            party: ''
+            frozenMinor: 0
+            liveMinor: -120000
+            differenceMinor: -120000
+          2:
+            year: 2025
+            account: '602'
+            sub: ''
+            party: ''
+            frozenMinor: -240000
+            liveMinor: 0
+            differenceMinor: 240000
+      operator: 'deepStrictEqual'
+      stack: |-
+        assertSame (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:118:12)
+        file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:173:9
+        withFixture (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:146:11)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:172:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+# (node:7815) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:7815) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: elle-borc-alacak: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    ok 9 - elle-borc-alacak: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 841.245787
+      type: 'test'
+      ...
+# (node:7815) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: acilis: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    ok 10 - acilis: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 425.958286
+      type: 'test'
+      ...
+# (node:7815) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:7815) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: stok: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    ok 11 - stok: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 851.763887
+      type: 'test'
+      ...
+# (node:7815) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:7815) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: supheli: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    ok 12 - supheli: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 869.591344
+      type: 'test'
+      ...
+# (node:7815) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: vergi: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+    ok 13 - vergi: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer
+      ---
+      duration_ms: 450.130316
+      type: 'test'
+      ...
+# (node:7815) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:7815) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: kasa: fişten sonra kilit 31.12.2025'e geri çekilir (KALAN ≠ 0) — yeni = tur 4
+    ok 14 - kasa: fişten sonra kilit 31.12.2025'e geri çekilir (KALAN ≠ 0) — yeni = tur 4
+      ---
+      duration_ms: 998.513026
+      type: 'test'
+      ...
+# (node:7815) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: taksit: fiş ters kaydedilir (20.10.2026) — fiş ile ters kayıt arası ve sonrası yeni = tur 4
+    not ok 15 - taksit: fiş ters kaydedilir (20.10.2026) — fiş ile ters kayıt arası ve sonrası yeni = tur 4
+      ---
+      duration_ms: 475.853595
+      type: 'test'
+      location: '/dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:198:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        taksit ters kayıt · [2025-01-01, 2025-12-31] split 2025-01-01: içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4)
+        + actual - expected
+        ... Skipped lines
+        
+          {
+            balances: [
+              {
+        +       account: '120',
+        +       differenceMinor: -120000,
+        +       frozenMinor: 240000,
+        +       liveMinor: 120000,
+        +       party: 'account-4dbf9668-164c-4a7c-a921-52eb6d2e01f3',
+        +       sub: '',
+        +       year: 2025
+        +     },
+        +     {
+                account: '600',
+                differenceMinor: -120000,
+                frozenMinor: 0,
+                liveMinor: -120000,
+                party: '',
+        ...
+                account: '602',
+        +       differenceMinor: 240000,
+        +       frozenMinor: -240000,
+        -       differenceMinor: 120000,
+        -       frozenMinor: -120000,
+                liveMinor: 0,
+                party: '',
+                sub: '',
+                year: 2025
+              }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        through: '2026-06-30'
+        balances:
+          0:
+            year: 2025
+            account: '600'
+            sub: '600.90'
+            party: ''
+            frozenMinor: 0
+            liveMinor: -120000
+            differenceMinor: -120000
+          1:
+            year: 2025
+            account: '602'
+            sub: ''
+            party: ''
+            frozenMinor: -120000
+            liveMinor: 0
+            differenceMinor: 120000
+      actual:
+        through: '2026-06-30'
+        balances:
+          0:
+            year: 2025
+            account: '120'
+            sub: ''
+            party: 'account-4dbf9668-164c-4a7c-a921-52eb6d2e01f3'
+            frozenMinor: 240000
+            liveMinor: 120000
+            differenceMinor: -120000
+          1:
+            year: 2025
+            account: '600'
+            sub: '600.90'
+            party: ''
+            frozenMinor: 0
+            liveMinor: -120000
+            differenceMinor: -120000
+          2:
+            year: 2025
+            account: '602'
+            sub: ''
+            party: ''
+            frozenMinor: -240000
+            liveMinor: 0
+            differenceMinor: 240000
+      operator: 'deepStrictEqual'
+      stack: |-
+        assertSame (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:118:12)
+        file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:204:7
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async withFixture (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:146:5)
+        async TestContext.<anonymous> (file:///dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:199:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: sınama boş geçmedi: fiş en az dört sınıfta yazıldı, KALAN yolu koştu
+    ok 16 - sınama boş geçmedi: fiş en az dört sınıfta yazıldı, KALAN yolu koştu
+      ---
+      duration_ms: 0.536767
+      type: 'test'
+      ...
+    # fiş yazılan sınıf 8 · KALAN yolunun koştuğu okuma 112
+    1..16
+not ok 1 - 2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür)
+  ---
+  duration_ms: 11039.3991
+  type: 'suite'
+  location: '/dev/shm/c6h5-mut/test/c6h-tek-okuma.test.mjs:168:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 Ç6-HESAP tur 5 — frozenSums ruleThrough sınırları
+    # Subtest: ruleThrough < through reddedilir; kapsam yokken outside boş
+    ok 1 - ruleThrough < through reddedilir; kapsam yokken outside boş
+      ---
+      duration_ms: 0.532485
+      type: 'test'
+      ...
+    1..1
+ok 2 - 2.5.0 Ç6-HESAP tur 5 — frozenSums ruleThrough sınırları
+  ---
+  duration_ms: 0.620521
+  type: 'suite'
+  ...
+1..2
+# tests 17
+# suites 2
+# pass 15
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11463.872688
+
+[kanit] başarısız testler (2):
+  ✖ 2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › taksit: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer [test/c6h-tek-okuma.test.mjs:171:5] — taksit fişten önce · [2025-01-01, 2025-12-31] split 2025-01-01: içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · ... Skipped lines
+  ✖ 2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › taksit: fiş ters kaydedilir (20.10.2026) — fiş ile ters kayıt arası ve sonrası yeni = tur 4 [test/c6h-tek-okuma.test.mjs:198:3] — taksit ters kayıt · [2025-01-01, 2025-12-31] split 2025-01-01: içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · ... Skipped lines
+
+[kanit] c6h5-mut-m2-from-gunu-iki-kez-Europe-Istanbul: BAŞARISIZ (çıkış 1; 2 başarısız, 0 iptal) · çıkış 1 · 15/17 geçti, 2 başarısız, 0 iptal, 0 atlanan · commit undefined · linux 6.18.44-fc-v726 x64 · Node v22.23.4

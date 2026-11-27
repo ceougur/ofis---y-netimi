@@ -18,6 +18,7 @@
 //   POST   /api/workspace/whatsapp/connection/self-test   Kendime Deneme Gönder { to } — yazılabilir lisans
 //   POST   /api/workspace/whatsapp/connection/embedded            2.4.8 W7 WhatsApp'ı Bağla: oturum aç → { session, url (kapi.<alan>/wa/bagla#o=…), seconds }
 //   POST   /api/workspace/whatsapp/connection/embedded/:session   oturumun sonucu: { state: waiting | error (message) | ready (connection) }
+//   GET    /api/workspace/whatsapp/app-webhook            2.5.0 WE Elle Bağla uygulama düzeyi webhook: { ready, callbackUrl, verifyToken, reason } (kurulum başına; gizli)
 // Yazma uçları salt okunur lisansta app.mjs'teki genel kapıda (license.assertWritable) 403 LICENSE_READ_ONLY alır; deneme ayrıca burada denetlenir.
 //
 // 2.4.8 W2 (plan §6 W2; lib/whatsapp/queue.mjs): gönderim çekirdeği — toplu gönderim (Ekstre + PDF / Ödeme Hatırlatma), yetki whatsapp.send.
@@ -31,15 +32,19 @@
 //   POST /api/workspace/whatsapp/batches/:id/pause | resume | cancel | retry-failed
 //   POST /api/workspace/whatsapp/jobs/:id/send-anyway        Sonucu Belirsiz → "Yine de Gönder" { confirm: true }
 //   GET  /api/workspace/whatsapp/stats?month=YYYY-MM         "Bu Ay Gönderilen İleti Sayısı" (Meta Kabul Etti / Teslim Edilen (Ücretli) / yaklaşık ücret)
+//   POST /api/workspace/whatsapp/kvkk-erase                  2.5.0 W-3 KVKK silme talebi { accountId, confirm: true } — system.manage (lib/whatsapp/saklama.mjs);
+//                                                           2.5.0 tur 2 S62 = A: salt okunur lisansta da açık (lib/license.mjs READ_ONLY_ALLOWED)
+//   GET  /api/workspace/whatsapp/kvkk-deleted?q=             2.5.0 tur 2 (W-3 dk ORTA-4): Silinenler'deki, WhatsApp kaydı olan cariler — system.manage
 // 2.4.8 W4 (gönderim ekranı, client/assets/hof-whatsapp-api.js):
 //   GET  /api/workspace/whatsapp/sending-status              cari ekranının WhatsApp penceresi hangi yolu açacak: bağlantı (sınanmış mı), şablonların son denetimi,
 //                                                           lisans, kişinin yetkisi, onay, süren gönderimler, bu ay sayısı. accounts.view (wa.me yolunun yetkisi) —
 //                                                           gizli değer YOK, Meta'ya istek YOK; yetkisiz kişi yalnız "yetkiniz yok" nedenini görür.
 // Onay ve salt okunur lisans SUNUCUDA da denetlenir (istemci atlatılsa da gönderim başlamaz).
+import path from "node:path";
 import { HttpError, isRemoteRequest, limited, ok, readJson, text } from "../lib/http.mjs";
 import { roundMoney } from "../lib/money.mjs";
 import { systemClock } from "../lib/clock.mjs";
-import { createWhatsappConnection } from "../lib/whatsapp/connection.mjs";
+import { createWhatsappConnection, summaryOf } from "../lib/whatsapp/connection.mjs";
 import { createEmbeddedSignup, requestOrigin } from "../lib/whatsapp/embedded.mjs";
 import { createWaQueue } from "../lib/whatsapp/queue.mjs";
 import { createReportHeader } from "../lib/report-header.mjs";
@@ -81,7 +86,7 @@ export function statementText({ office, account, lines, range, next, overdue }) 
   return out.join("\n");
 }
 
-export function registerWhatsappRoutes(router, { store, auth, audit, accounts = () => null, config = {}, license = null, now: clock = systemClock, whatsapp = null, companyId = "", events = null, log = console, mobileRemote = null, mobileSyncOf = () => null, writeLock = null }) {
+export function registerWhatsappRoutes(router, { store, auth, audit, accounts = () => null, config = {}, license = null, now: clock = systemClock, whatsapp = null, companyId = "", events = null, log = console, mobileRemote = null, mobileSyncOf = () => null, writeLock = null, companies = null, withCompanyDb = null }) {
   const today = () => {
     const d = clock();
     return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
@@ -189,12 +194,62 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
   // ---------- 2.4.8 W1: WhatsApp Business API bağlantısı ----------
   // onChange (W2/W9): ortak katmanın kaydı (tünel kuralı) — lib/whatsapp/hub.mjs. T2-3/4: durum bildirimi adresinin kaydı WABA düzeyinde, makine defterinde
   // (whatsapp.ledger; şirket dosyasının dışında — geri yükleme / sıfırlama bozmaz); publicUrl: Bağlantıyı Sına kanca adresini Meta'dakiyle karşılaştırır.
-  const connection = createWhatsappConnection({ store, config, audit, now: clock, onChange: summary => whatsapp?.registry?.set(companyId, summary), hooks: whatsapp?.ledger || null, publicUrl: () => mobileRemote?.publicUrl?.() || "" });
+  // 2.5.0 W-2 sharedWaba: aynı WABA bu bilgisayarda başka şirkette belirteçli bağlı mı (ortak kayıt; o zaman Bağlantıyı Kaldır Meta'daki ortak aboneliği silmez).
+  // Dar kontrol DÜŞÜK-2: yalnız VAR OLAN şirket sayılır — silinen şirketin özeti kayıtta kalır (silme kaydı düşürmez); sayılırsa son şirketin Kaldır'ı aboneliği hiç silemezdi.
+  // W TUR 2 (dar kontrol W1W2-T1 DÜŞÜK-2 → sakınca süzgeciyle ORTA; KVKK: W-2'nin amacı Meta'da iptal): karar ortak kaydın bellekteki özetinden DEĞİL, öbür şirketlerin GÜNCEL ayar
+  // satırından verilir. Kayıt yalnız bağlantı kaydedilince / şirket açılınca / açılışta yazılır; şirket yedekten GERİ YÜKLENİNCE (ya da dosyası başka yoldan değişince) eski kalır:
+  // "bağlı" görünen ama bağlı olmayan şirket aboneliği boşuna korur (Meta'da iptal edilmez, ileti bağlı olmayan şirketi gösterir), "bağlı değil" görünen ama bağlı olan şirketin
+  // aboneliği silinirdi (ters yön). Taranan: VAR OLAN şirketler (companies.list — silinen sayılmaz), bu şirketle aynı veri dosyasını göstermeyenler (aynı dosyanın bağlantısı bu
+  // şirketinkidir). Okunan özet ortak kayda da yazılır (kayıt tazelenir). Bir şirketin dosyası okunamazsa (kilitli / yok) onun için kayıttaki özet geçer — ders 4: okunamayan
+  // "bağlı değil" sayılmaz (abonelik korunur; iletide veri silme adımı var — ilke 4). Yalnız Bağlantıyı Kaldır'da çağrılır (şirket başına tek ayar satırı).
+  const exists = id => (companies?.get ? Boolean(companies.get(id)) : true);
+  const dataKeyOf = company => {
+    try {
+      return path.resolve(companies.dirsOf(company).dataDir).toUpperCase();
+    } catch {
+      return "";
+    }
+  };
+  // 2.5.0 WhatsApp tur 3 (BAŞ MİMAR KARARI 06.11 15:25 WT2-7): Meta aboneliği UYGULAMA başınadır (WT2-1: uygulama = bağlantı kipi) → yalnız AYNI KİPTE aynı WABA'ya bağlı öbür
+  // şirket "paylaşıyor" sayılır. Kip verilmezse (eski çağrı) her kip. Özetin kipi summaryOf'tan (kipi bilinmeyen eski kayıt Elle Bağla).
+  function sharedWaba(wabaId, mode = null) {
+    const waba = String(wabaId);
+    const kip = mode === null ? null : mode === "embedded" ? "embedded" : "manual";
+    const usesWaba = summary => Boolean(summary?.configured) && summary.wabaId === waba && (kip === null || summary.mode === kip);
+    if (!companies?.list || typeof withCompanyDb !== "function") {
+      return Object.entries(whatsapp?.registry?.snapshot?.() || {}).some(([id, item]) => id !== String(companyId) && usesWaba(item) && exists(id));
+    }
+    const self = companies.get?.(companyId);
+    const selfKey = self && companies.dirsOf ? dataKeyOf(self) : "";
+    for (const company of companies.list()) {
+      if (!company?.id || String(company.id) === String(companyId)) continue;
+      if (selfKey && dataKeyOf(company) === selfKey) continue;
+      let summary = null;
+      try {
+        const value = withCompanyDb(company, db => db.prepare("SELECT value FROM settings WHERE key = 'whatsapp.meta'").get()?.value ?? "");
+        if (value !== null && value !== undefined) {
+          summary = summaryOf(value);
+          whatsapp?.registry?.set?.(company.id, summary);
+        }
+      } catch {
+        summary = null;
+      }
+      if (usesWaba(summary ?? whatsapp?.registry?.get?.(company.id))) return true;
+    }
+    return false;
+  }
+  const connection = createWhatsappConnection({ store, config, audit, now: clock, onChange: summary => whatsapp?.registry?.set(companyId, summary), hooks: whatsapp?.ledger || null, publicUrl: () => mobileRemote?.publicUrl?.() || "", sharedWaba });
   const writable = () => !license || license.writable();
   const view = () => connection.view({ writable: writable() });
   router.get("/api/workspace/whatsapp/connection", async ({ req, res }) => {
     auth.requirePermission(req, "system.manage");
     ok(res, view());
+  });
+  // 2.5.0 W-1(a): bağlantının süresi doluyor / doldu bildirimi — yöneticiye (Yeniden Bağla'yı yapabilen) kullanıcı başına günde EN ÇOK BİR KEZ. İlk soran "göster"
+  // yanıtını alır, aynı gün sonrakiler almaz (sunucunun günü); uyarı yoksa { show: false }. Bağlantı yoksa da { show: false } (istemci her açılışta sorar).
+  router.post("/api/workspace/whatsapp/connection/expiry-notice", async ({ req, res }) => {
+    const user = auth.requirePermission(req, "system.manage");
+    ok(res, connection.expiryNotice(user));
   });
   router.put("/api/workspace/whatsapp/connection", async ({ req, res }) => {
     const user = auth.requirePermission(req, "system.manage");
@@ -203,10 +258,11 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
     connection.save(user, body);
     ok(res, view());
   });
+  // 2.5.0 W-2: Meta'daki abonelik de silinir; yerel kayıt her durumda silinir; bekleyen gönderimler "Durduruldu". Yanıt: bağlantı görünümü + removal (Meta sonucu).
   router.delete("/api/workspace/whatsapp/connection", async ({ req, res }) => {
     const user = auth.requirePermission(req, "system.manage");
-    connection.remove(user);
-    ok(res, view());
+    const removal = await connection.remove(user, { stopSending: () => queue?.stopForRemoval?.() || 0 });
+    ok(res, { ...view(), removal });
   });
   router.post("/api/workspace/whatsapp/connection/test", async ({ req, res }) => {
     const user = auth.requirePermission(req, "system.manage");
@@ -219,6 +275,21 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
     if (!writable()) throw new HttpError(403, "Program salt okunur çalışıyor; durum bildirimi adresi kaydedilemez.", { code: "LICENSE_READ_ONLY" });
     await connection.registerHook(user, mobileRemote?.publicUrl?.() || "");
     ok(res, view());
+  });
+  // 2.5.0 WE: Elle Bağla'nın uygulama düzeyi webhook bilgileri (Meta uygulama paneli → WhatsApp → Configure Webhooks: Callback URL + Verify token; lib/whatsapp/app-webhook.mjs).
+  // Kurulum başına tek çift (bütün şirketler aynı değerleri görür); GİZLİ — yalnız yönetici (system.manage), günlüğe / işlem geçmişine / hata iletisine yazılmaz.
+  router.get("/api/workspace/whatsapp/app-webhook", async ({ req, res }) => {
+    auth.requirePermission(req, "system.manage");
+    const failed = () => new HttpError(503, "Webhook bilgileri hazırlanamadı; programı yeniden başlatıp tekrar deneyin. Sürerse diskte boş yer olduğunu ve veri klasörüne yazılabildiğini denetleyin.", { code: "whatsapp-app-webhook" });
+    if (!whatsapp?.appWebhook) throw failed();
+    let info;
+    try {
+      // 2.5.0 WhatsApp tur 3 (BAŞ MİMAR KARARI 06.11 13:50 (1)): lisans durumu çifti üreten nesneye ulaşır — salt okunurda çift YOKSA üretilmez (var olan çift gösterilir).
+      info = whatsapp.appWebhook.reveal(mobileRemote?.publicUrl?.() || "", { writable: writable() });
+    } catch {
+      throw failed();
+    }
+    ok(res, info);
   });
   router.post("/api/workspace/whatsapp/connection/self-test", async ({ req, res }) => {
     // Bağlantı ekranının denemesi: yalnız yönetici (system.manage yalnız yönetici rolündedir ve yönetici her yetkiye — whatsapp.send dahil — sahiptir).
@@ -248,7 +319,7 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
     if (!writable()) throw new HttpError(403, "Program salt okunur çalışıyor; WhatsApp bağlanamaz.", { code: "LICENSE_READ_ONLY" });
     const result = await embedded.poll({ session: params.session, companyId });
     if (result.state !== "ready") return ok(res, { state: result.state, ...(result.message ? { message: result.message } : {}) });
-    connection.saveEmbedded(user, { token: result.token, wabaId: result.wabaId, phoneNumberId: result.phoneNumberId, olay: result.event, appId: result.appId });
+    connection.saveEmbedded(user, { token: result.token, wabaId: result.wabaId, phoneNumberId: result.phoneNumberId, olay: result.event, appId: result.appId, expiresIn: result.expiresIn, dataAccessExpiresAt: result.dataAccessExpiresAt });
     // Meta adımları (birlikte kullanımda eşitleme / değilse numara kaydı) ve Bağlantıyı Sına: hata bağlantıyı bozmaz, sonuç kartta.
     for (const step of [() => connection.embeddedSteps(user), () => connection.test(user)]) {
       try {
@@ -281,11 +352,13 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
       ? "Bu kurulumda WhatsApp Business API adresi tanımlı değil; Meta'ya bağlanılamaz."
       : !conn.tokenUsable
         ? "Kayıtlı erişim belirteci bu bilgisayarda açılamıyor; yönetici Yönetim → WhatsApp'ta belirteci yeniden girmeli."
-        : !conn.lastTest
-          ? "WhatsApp bağlantısı henüz sınanmadı; yönetici Yönetim → WhatsApp'ta Bağlantıyı Sına'ya basmalı."
-          : !tested
-            ? `WhatsApp bağlantısının son sınaması başarısız (${conn.lastTest.message || "neden bilinmiyor"}); yönetici Yönetim → WhatsApp'ta bilgileri düzeltip yeniden sınamalı.`
-            : "";
+        : conn.tokenExpiry?.state === "expired"
+          ? `${conn.tokenExpiry.expiredBy === "meta" ? "WhatsApp bağlantısının süresi doldu (Meta erişim belirtecini artık kabul etmiyor)" : "WhatsApp bağlantısının süresi doldu"}; yeni gönderim başlatılamaz. Yönetici Yönetim → WhatsApp'ta Yeniden Bağla ile bağlantıyı yenilemeli.`
+          : !conn.lastTest
+            ? "WhatsApp bağlantısı henüz sınanmadı; yönetici Yönetim → WhatsApp'ta Bağlantıyı Sına'ya basmalı."
+            : !tested
+              ? `WhatsApp bağlantısının son sınaması başarısız (${conn.lastTest.message || "neden bilinmiyor"}); yönetici Yönetim → WhatsApp'ta bilgileri düzeltip yeniden sınamalı.`
+              : "";
     const out = {
       ...base,
       mode: conn.mode,
@@ -383,6 +456,20 @@ export function registerWhatsappRoutes(router, { store, auth, audit, accounts = 
   router.get("/api/workspace/whatsapp/stats", async ({ req, res, url }) => {
     sendUser(req);
     ok(res, queue.monthStats(url.searchParams.get("month") || ""));
+  });
+  // 2.5.0 W-3 (KULLANICI KARARI S-W3 + S30–S32, S35–S38, S42; docs/erp/W3-SAKLAMA-TASARIM.md): KVKK silme talebi — carinin WhatsApp gönderim kayıtlarındaki ileti içeriği,
+  // telefon numarası ve PDF HEMEN silinir; tarih, dönem, cari kimliği, şablon ve sonuç anonim iz kalır. Yalnız yönetici (system.manage). { accountId, confirm: true }.
+  router.post("/api/workspace/whatsapp/kvkk-erase", async ({ req, res }) => {
+    const user = auth.requirePermission(req, "system.manage");
+    const body = await readJson(req, { limit: 4096 });
+    ok(res, queue.eraseAccount(user, body.accountId, body));
+  });
+  // 2.5.0 WhatsApp tur 2 — W-3 dk ORTA-4 (BAŞ MİMAR KARARI A): KVKK araması Silinenler'deki ama WhatsApp kaydı olan carileri de bulur (cari araması — routes/accounts.mjs —
+  // yalnız silinmemiş carileri döndürür; ona dokunulmaz). Yalnız yönetici (system.manage). Yanıt [{ id, name, refNo, deleted: true }] — telefon yok; silinmiş cari kartı AÇILMAZ,
+  // yalnız silme talebi (kvkk-erase) yapılır.
+  router.get("/api/workspace/whatsapp/kvkk-deleted", async ({ req, res, url }) => {
+    auth.requirePermission(req, "system.manage");
+    ok(res, queue.deletedErasable(text(url.searchParams.get("q")).slice(0, 120)));
   });
   return { connection, queue };
 }

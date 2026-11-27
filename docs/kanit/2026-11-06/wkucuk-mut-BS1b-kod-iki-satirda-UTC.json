@@ -1,0 +1,38 @@
+{
+  "ad": "wkucuk-mut-BS1b-kod-iki-satirda-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/whatsapp-bs1-hata-kodu-250.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T06:29:19.120Z",
+  "sure_sn": 2.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3,
+    "gecen": 2,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.0 BS-1 — Bildirim Yolu kaydedilemedi: Meta yalnız kod dönünce kod neden satırında › BS1-2 değişmez — Meta iletisi VARSA: neden satırı yalnız Türkçe (kod yok), kod Meta iletisi satırında (ileti '\\#100' taşımıyorsa)",
+      "konum": "test/whatsapp-bs1-hata-kodu-250.test.mjs:52:3",
+      "hata": "neden satırında kod yok: Bildirim Yolu kaydedilemedi — Meta bildirim adresi kaydını kabul etmedi (geçersiz değer) (Meta hata kodu 100). Kaydedilene dek teslim ve okundu bilgisi bu bilgisayara gelmez; program saatte bir kendiliğinden yeniden dener. (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "../wkucuk-kanit/2026-11-06/wkucuk-mut-BS1b-kod-iki-satirda-UTC.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wkucuk-mut-BS1b-kod-iki-satirda",
+  "ham_cikti_sha256": "900aad6fdd0cd1328e859cb818209cef1e68011abeaa64f3ab1d1b60e026e82c",
+  "ham_cikti_bayt": 2801
+}

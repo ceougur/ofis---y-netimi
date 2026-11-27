@@ -1,0 +1,73 @@
+{
+  "ad": "c7b3-c7b-tur3-kart-250-taban-UTC",
+  "komut": "node --test --test-reporter=tap test/c7b-tur3-kart-250.test.mjs",
+  "commit": "b85d9e27d841f7db99e7dacf21505364a156f3c7",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-20T06:36:29.190Z",
+  "sure_sn": 3.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 9,
+    "gecen": 1,
+    "basarisiz": 8,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 8 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Ç7b tur 3 — kart küçülmesi (karar (4)), S15, S206 / S210 / S211, S217 › (4) iade kartı vadesi EN ÖNCE gelen AÇIK taksitten küçültür; ödenmiş kısma dokunmaz",
+      "konum": "test/c7b-tur3-kart-250.test.mjs:52:3",
+      "hata": "06.11 kesilir (en önce gelen açık), 06.12 kalır · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç7b tur 3 — kart küçülmesi (karar (4)), S15, S206 / S210 / S211, S217 › (4) faturasız stok iadesi: satış kartı kuyrukta AÇIK kalan en önce gelen taksitten küçülür (iadenin kapattığı taksit kesilmez; S140 = A / S151 = B)",
+      "konum": "test/c7b-tur3-kart-250.test.mjs:69:3",
+      "hata": "küçülme kuyrukta açık kalan en önce gelen taksitten (01.07) · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç7b tur 3 — kart küçülmesi (karar (4)), S15, S206 / S210 / S211, S217 › S216 = C: iade iptal edilince kart bugünkü gibi SON taksitte büyür (takvim ilk hâline dönmez — BİLİNEN SINIR); bakiye ve kart toplamı geri gelir",
+      "konum": "test/c7b-tur3-kart-250.test.mjs:85:3",
+      "hata": "iade: karar (4) — 06.11 kesildi · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç7b tur 3 — kart küçülmesi (karar (4)), S15, S206 / S210 / S211, S217 › S15 = A: kendi kartında tahsilatı olan faturanın İptal Et'i kabul; kart kapanır, tahsilat avans; Sil bugünkü gibi 409",
+      "konum": "test/c7b-tur3-kart-250.test.mjs:117:3",
+      "hata": "İptal Et: {\"ok\":false,\"error\":\"Faturanın taksit kartında (“Tur3 Müşteri 6”) 1 tahsilat var; fatura iptal edilemez. Borcu düşürmek için iade faturası kesin.\",\"code\":\"plan-has-payments\",\"planId\":\"plan-98531699-bf8f-4735-80e2-2fcdd387ac5d\"} · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "Ç7b tur 3 — kart küçülmesi (karar (4)), S15, S206 / S210 / S211, S217 › S206 = A / S211 = A: faturayı içine almış Mevcut Borç kartı faturanın iptalinde kapanır",
+      "konum": "test/c7b-tur3-kart-250.test.mjs:147:3",
+      "hata": "S206: kart kapalı, tutar = tahsilat · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç7b tur 3 — kart küçülmesi (karar (4)), S15, S206 / S210 / S211, S217 › Kartı Kapat'la önceden kapatılmış tahsilatlı kendi kartın faturası iptal edilmez (kalan iki kez düşülmesin)",
+      "konum": "test/c7b-tur3-kart-250.test.mjs:167:3",
+      "hata": "S217 = A iletisi (beklenen , gelen Faturanın taksit kartında (“Tur3 Müşteri 8”) 1 tahsilat var; fatura iptal edilemez. Borcu düşürmek için iade faturası kesin.)"
+    },
+    {
+      "ad": "Ç7b tur 3 — kart küçülmesi (karar (4)), S15, S206 / S210 / S211, S217 › S206 / S211 ailesi: faturayı içine ALMAMIŞ Mevcut Borç kartı iptalde borçtan büyük kalırsa küçülür; kalanı 0'a inen kart kapanır (borçsuz açık kart kalmaz)",
+      "konum": "test/c7b-tur3-kart-250.test.mjs:182:3",
+      "hata": "kart 400 küçüldü (tutar 0) ve kapandı · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç7b tur 3 — kart küçülmesi (karar (4)), S15, S206 / S210 / S211, S217 › S210 = A: kartta başka borç da varsa faturanın iptalinde kart yine KAPANIR; elle borç kendi vadesiyle carinin borcuna döner",
+      "konum": "test/c7b-tur3-kart-250.test.mjs:198:3",
+      "hata": "S210: kart kapalı, tutar = tahsilat · + actual - expected · { (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../c7b3-d3/t1/2026-11-20/c7b3-c7b-tur3-kart-250-taban-UTC.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3-d2/taban-git",
+  "ham_cikti_sha256": "c2ce290cbcaa36ab4836959630c6ac580183cf96dc7c74258540c2335660e0f7",
+  "ham_cikti_bayt": 12686
+}

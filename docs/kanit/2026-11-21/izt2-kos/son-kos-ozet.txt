@@ -1,0 +1,17 @@
+UTC: # tests 2145 # pass 2145 # fail 0 # cancelled 0 # skipped 0 
+Europe/Istanbul: # tests 2145 # pass 2145 # fail 0 # cancelled 0 # skipped 0 
+cari UTC çıkış 0 00:32:00 ÖZET [2.5.0]: 101 senaryo, 22832 denetim, 0 fark (BULGU 0), 7 bilinen sınır (BILINEN.json; başarısız sayılmaz), 38 yapım aşaması (YAPIM-ASAMASI.json; paketlere göre: Ç7b 38; 38 denetim + 0 okuma hatası; geçti de başarısız da sayılmaz — yayın adayında liste BOŞ olmalı), 0 okum
+defter UTC çıkış 0 00:32:05   mutasyon 33 (D10 (B11 B): açılıştan önceye alınan düzeltme kabul): tam senaryoda YAKALANDI · bu koşuda yakalandı  ÖZET: 187 denetim, 0 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-defter-qhC6MV 
+cari Europe/Istanbul çıkış 0 00:39:05 ÖZET [2.5.0]: 101 senaryo, 22832 denetim, 0 fark (BULGU 0), 7 bilinen sınır (BILINEN.json; başarısız sayılmaz), 38 yapım aşaması (YAPIM-ASAMASI.json; paketlere göre: Ç7b 38; 38 denetim + 0 okuma hatası; geçti de başarısız da sayılmaz — yayın adayında liste BOŞ olmalı), 0 okum
+defter Europe/Istanbul çıkış 0 00:39:10   mutasyon 33 (D10 (B11 B): açılıştan önceye alınan düzeltme kabul): tam senaryoda YAKALANDI · bu koşuda yakalandı  ÖZET: 187 denetim, 0 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-defter-4kiuBi 
+yapim çıkış 0 00:46:08  YAPIM-ASAMASI.json YAZILDI (../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/izt2-a00/kos/yapim2.json): 38 kayıt (0 okuma hatası) — paketlere göre: Ç7b 38. Bu bir denetim sonucu DEĞİLDİR; liste varsayılan koşuyla denetlenir. ESKİ LİSTEYLE FARK: 
+senaryo-izt2-250 çıkış 0 · ✓ senaryo-izt2-250: 24 geçti, 0 kaldı
+senaryo-izt-250 çıkış 0 · ✓ senaryo-izt-250: 20 geçti, 0 kaldı
+senaryo-dkfix-250 çıkış 0 · ✓ senaryo-dkfix-250: 21 geçti, 0 kaldı
+senaryo-c7b-tur3-250 çıkış 0 · ✓ senaryo-c7b-tur3-250: 39 geçti, 0 kaldı
+senaryo-c7b-kabul-250 çıkış 0 · ✓ senaryo-c7b-kabul-250: 39 geçti, 0 kaldı
+senaryo-kart-iade-gecmis-250 çıkış 0 · SONUÇ: 8 geçti, 0 kaldı
+senaryo-iade-246 çıkış 0 · 26 geçti, 0 kaldı
+senaryo-224 çıkış 0 · 
+
+[exited with code 0]

@@ -1,0 +1,58 @@
+{
+  "ad": "c5a1by-aday-kahin-defter",
+  "komut": "npm run test:kahin-defter",
+  "commit": "69c2a3a0ce20b80b5c6246c0b171f481aec1b7d8",
+  "dal": "sinama-c5a1b-aday",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-12T04:26:22.983Z",
+  "sure_sn": 3.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "kahin-defter",
+    "toplam": 185,
+    "gecen": 180,
+    "basarisiz": 5,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 5 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "mizan K_SON 120: program 65.505,00 · kâhin 70.005,00",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "mizan K_SON 519: program -69.200,00 · kâhin -73.700,00",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "cari Ahmet Yılmaz: program 1.100,00 · kâhin 5.600,00",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "yaşlandırma TOPLAM: program 70.505,00 · kâhin 75.005,00",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "yaşlandırma Ahmet Yılmaz: program 1.100,00 · kâhin 5.600,00",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../c5a1by-aday-kanit/2026-11-12/c5a1by-aday-kahin-defter.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-ya-ag",
+  "ham_cikti_sha256": "b10d4b1d4961f30c755d947a86e854b6aa2c904186454f1cccc908e893806742",
+  "ham_cikti_bayt": 3157
+}

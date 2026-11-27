@@ -1,0 +1,32 @@
+{
+  "ad": "w3-ana-5620b55c-ustune",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/whatsapp-w3-saklama-250.test.mjs test/sema-kapisi-bs7.test.mjs test/whatsapp-we-webhook-bilgisi-250.test.mjs test/kanit-araci.test.mjs test/db-tx-kayip-250.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T10:52:51.948Z",
+  "sure_sn": 66.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 81,
+    "gecen": 81,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../w3-kanit/2026-11-06/w3-ana-5620b55c-ustune.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-ana-5620b55c",
+  "ham_cikti_sha256": "af7398c5535f2990501e0376006f1c69dc4035759f93b44087b3d2692f00b90e",
+  "ham_cikti_bayt": 29972
+}

@@ -1,0 +1,47 @@
+# Ç7b tur 2c — değişen / kırık komşu testleri (tek tek, sırayla)
+## k3-utc
+test/banka-210-gg2-hiz.test.mjs rc=1 # tests 5 # pass 4 # fail 1 # cancelled 0 # skipped 0 
+test/banka-210-goc-zinciri.test.mjs rc=0 # tests 17 # pass 17 # fail 0 # cancelled 0 # skipped 0 
+test/c7b-kilit-izi-250.test.mjs rc=0 # tests 1 # pass 1 # fail 0 # cancelled 0 # skipped 0 
+test/defter-kaynak-iz-250.test.mjs rc=1 # tests 2 # pass 1 # fail 1 # cancelled 0 # skipped 0 
+test/donmus-defter-250.test.mjs rc=1 # tests 13 # pass 12 # fail 1 # cancelled 0 # skipped 0 
+test/donmus-defter-bellek-250.test.mjs rc=1 # tests 5 # pass 4 # fail 1 # cancelled 0 # skipped 0 
+test/donmus-defter-kilit-ucu-250.test.mjs rc=0 # tests 9 # pass 9 # fail 0 # cancelled 0 # skipped 0 
+test/donmus-defter-tur1-250.test.mjs rc=1 # tests 12 # pass 4 # fail 8 # cancelled 0 # skipped 0 
+test/donmus-defter-tur3-250.test.mjs rc=1 # tests 11 # pass 8 # fail 3 # cancelled 0 # skipped 0 
+test/donmus-defter-tur4-250.test.mjs rc=1 # tests 13 # pass 2 # fail 11 # cancelled 0 # skipped 0 
+test/donmus-defter-yasam-250.test.mjs rc=1 # tests 7 # pass 5 # fail 2 # cancelled 0 # skipped 0 
+test/kural-farki-alarm-250.test.mjs rc=0 # tests 5 # pass 5 # fail 0 # cancelled 0 # skipped 0 
+test/kural-farki-duzeltme-250.test.mjs rc=0 # tests 8 # pass 8 # fail 0 # cancelled 0 # skipped 0 
+test/kural-farki-kapi-disi-250.test.mjs rc=0 # tests 18 # pass 18 # fail 0 # cancelled 0 # skipped 0 
+test/kural-farki-yil-250.test.mjs rc=0 # tests 10 # pass 10 # fail 0 # cancelled 0 # skipped 0 
+test/migrations.test.mjs rc=0 # tests 5 # pass 5 # fail 0 # cancelled 0 # skipped 0 
+test/sema-kapisi-bs7.test.mjs rc=0 # tests 4 # pass 4 # fail 0 # cancelled 0 # skipped 0 
+BITTI
+## k4-utc
+test/banka-210-gg2-hiz.test.mjs rc=0 # tests 5 # pass 5 # fail 0 # cancelled 0 # skipped 0 
+test/defter-kaynak-iz-250.test.mjs rc=0 # tests 2 # pass 2 # fail 0 # cancelled 0 # skipped 0 
+test/donmus-defter-250.test.mjs rc=0 # tests 13 # pass 13 # fail 0 # cancelled 0 # skipped 0 
+test/donmus-defter-bellek-250.test.mjs rc=0 # tests 5 # pass 5 # fail 0 # cancelled 0 # skipped 0 
+test/donmus-defter-tur1-250.test.mjs rc=1 # tests 12 # pass 10 # fail 2 # cancelled 0 # skipped 0 
+test/donmus-defter-tur3-250.test.mjs rc=1 # tests 11 # pass 10 # fail 1 # cancelled 0 # skipped 0 
+test/donmus-defter-tur4-250.test.mjs rc=0 # tests 13 # pass 13 # fail 0 # cancelled 0 # skipped 0 
+test/donmus-defter-yasam-250.test.mjs rc=0 # tests 7 # pass 7 # fail 0 # cancelled 0 # skipped 0 
+test/kural-farki-kapi-disi-250.test.mjs rc=0 # tests 18 # pass 18 # fail 0 # cancelled 0 # skipped 0 
+BITTI
+## k5-utc
+test/donmus-defter-tur1-250.test.mjs rc=0 # tests 12 # pass 12 # fail 0 # cancelled 0 # skipped 0 
+test/donmus-defter-tur3-250.test.mjs rc=0 # tests 11 # pass 11 # fail 0 # cancelled 0 # skipped 0 
+BITTI
+## k6-ist
+test/banka-210-gg2-hiz.test.mjs rc=0 # tests 5 # pass 5 # fail 0 # cancelled 0 # skipped 0 
+test/defter-kaynak-iz-250.test.mjs rc=0 # tests 2 # pass 2 # fail 0 # cancelled 0 # skipped 0 
+test/donmus-defter-250.test.mjs rc=0 # tests 13 # pass 13 # fail 0 # cancelled 0 # skipped 0 
+test/donmus-defter-bellek-250.test.mjs rc=0 # tests 5 # pass 5 # fail 0 # cancelled 0 # skipped 0 
+test/donmus-defter-tur1-250.test.mjs rc=0 # tests 12 # pass 12 # fail 0 # cancelled 0 # skipped 0 
+test/donmus-defter-tur3-250.test.mjs rc=0 # tests 11 # pass 11 # fail 0 # cancelled 0 # skipped 0 
+test/donmus-defter-tur4-250.test.mjs rc=0 # tests 13 # pass 13 # fail 0 # cancelled 0 # skipped 0 
+test/donmus-defter-yasam-250.test.mjs rc=0 # tests 7 # pass 7 # fail 0 # cancelled 0 # skipped 0 
+test/kural-farki-kapi-disi-250.test.mjs rc=0 # tests 18 # pass 18 # fail 0 # cancelled 0 # skipped 0 
+test/banka-210-gg-cari.test.mjs rc=0 # tests 3 # pass 3 # fail 0 # cancelled 0 # skipped 0 
+BITTI

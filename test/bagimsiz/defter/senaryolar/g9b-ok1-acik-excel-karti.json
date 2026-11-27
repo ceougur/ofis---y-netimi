@@ -1,0 +1,12 @@
+{
+  "aciklama": "2.5.0 Ç5 bakımı 3 ÖK-1 (BAŞ MİMAR KARARI 12.11.2026; senaryo ön koşulu, para kuralı değil) — ÇİĞNEYEN senaryo, yalnız oz-test.py (programla KOŞULMAZ: kâhin beklenen nedenle hata verir). M1'e Excel'den yüklenmiş ilk kart (EX1; T 900, P 300 → kalan 600) AÇIKKEN aynı cariye ikinci Excel kartı (EX2) yüklenemez; kâhin sayı üretmez.",
+  "simdi": "2026-09-30T17:00:00+03:00",
+  "bugun": "2026-09-30",
+  "beklenenHata": "ÖK-1",
+  "olaylar": [
+    { "id": "M1", "tur": "cari", "ad": "İki Kartlı Müşteri Ltd.", "tip": "customer" },
+    { "id": "EX1", "tur": "excel_taksit_karti", "tarih": "2026-09-10", "cari": "M1", "toplam": 900, "odenen": 300 },
+    { "id": "EX2", "tur": "excel_taksit_karti", "tarih": "2026-09-20", "cari": "M1", "toplam": 500, "odenen": 0, "not": "ÖK-1: EX1 açık (kalan 600) — yüklenemez" },
+    { "id": "K1", "tur": "kontrol", "tarih": "2026-09-30" }
+  ]
+}

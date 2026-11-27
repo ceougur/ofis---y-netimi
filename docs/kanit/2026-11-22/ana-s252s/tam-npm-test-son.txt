@@ -1,0 +1,40 @@
+# Subtest: ZIP yazma/okuma
+    # Subtest: yazdığını aynen okur (UTF-8 adlar, boş ve ikili dosyalar)
+    ok 1 - yazdığını aynen okur (UTF-8 adlar, boş ve ikili dosyalar)
+      ---
+      duration_ms: 3.250401
+      type: 'test'
+      ...
+    # Subtest: sistem unzip aracıyla uyumludur
+    ok 2 - sistem unzip aracıyla uyumludur
+      ---
+      duration_ms: 7.978449
+      type: 'test'
+      ...
+    # Subtest: zip-slip girişlerini reddeder
+    ok 3 - zip-slip girişlerini reddeder
+      ---
+      duration_ms: 0.908501
+      type: 'test'
+      ...
+    # Subtest: bozulmuş içeriği CRC ile yakalar
+    ok 4 - bozulmuş içeriği CRC ile yakalar
+      ---
+      duration_ms: 1.033866
+      type: 'test'
+      ...
+    1..4
+ok 1512 - ZIP yazma/okuma
+  ---
+  duration_ms: 14.38559
+  type: 'suite'
+  ...
+1..1512
+# tests 6106
+# suites 1445
+# pass 6106
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3860941.135499

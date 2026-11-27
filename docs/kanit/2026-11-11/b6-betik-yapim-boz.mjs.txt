@@ -1,0 +1,16 @@
+// Birleşik tur 6 E2 denemesi: depodaki YAPIM-ASAMASI listesinden "eski liste" türetir — (1) elle notlu (elle etiketli) bir kaydın program değeri değişir, (2) bir kayıt
+// silinir (yeniden üretimde "yeni" görünmeli), (3) olmayan bir kayıt eklenir ("kapanan" görünmeli). Kullanım: node yapim-boz.mjs <kaynak> <hedef>
+import { readFileSync, writeFileSync } from "node:fs";
+
+const [kaynak, hedef] = process.argv.slice(2);
+const liste = JSON.parse(readFileSync(kaynak, "utf8"));
+const kayitlar = liste.kayitlar;
+const elle = kayitlar.findIndex(k => k.not && k.paket !== "AYRIŞTIRILMADI" && typeof k.program === "number");
+if (elle < 0) throw new Error("elle notlu sayısal kayıt yok");
+const eskiProgram = kayitlar[elle].program;
+kayitlar[elle] = { ...kayitlar[elle], program: eskiProgram + 1000 };
+const silinen = kayitlar.findIndex((k, i) => i !== elle && !k.anahtar.startsWith("OKUMA HATASI"));
+const [sil] = kayitlar.splice(silinen, 1);
+kayitlar.push({ senaryo: kayitlar[0].senaryo, anahtar: "b6:olmayan:kayit", beklenen: 1, program: 2, sinif: "BULGU KULLANICI", kural: "deneme", paket: "Ç5-A" });
+writeFileSync(hedef, `${JSON.stringify(liste, null, 1)}\n`);
+console.log(JSON.stringify({ degistirilen: { senaryo: kayitlar[elle >= silinen ? elle - 1 : elle].senaryo, anahtar: kayitlar[elle >= silinen ? elle - 1 : elle].anahtar, paket: kayitlar[elle >= silinen ? elle - 1 : elle].paket, not: kayitlar[elle >= silinen ? elle - 1 : elle].not, eskiProgram, listedeki: eskiProgram + 1000 }, silinen: { senaryo: sil.senaryo, anahtar: sil.anahtar }, eklenen: { senaryo: kayitlar[0].senaryo, anahtar: "b6:olmayan:kayit" } }, null, 1));

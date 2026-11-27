@@ -554,6 +554,53 @@ def _i3():
     return out[:12]
 
 
+# ═════════════════════════════════════════ J — 2.5.0 bakımı S129 (README "2.5.0 bakımı — S129"; beklenenler ELLE — E42, kararın iki örneği)
+def _deger_farki(m, bek):
+    """İki tarafın da tek sayı olduğu (liste / biçim değil) farklı anahtarlar."""
+    mb, bb = m["beklenen"], bek["beklenen"]
+    return sorted(k for k in set(mb) & set(bb) if isinstance(mb[k], int) and isinstance(bb[k], int) and mb[k] != bb[k])
+
+
+@test("J1 S129 mutantları DEĞERLE yakalanır: 60 (göstergeler kartın kendi hesabından) ve 61 (sınır tek kuyruktan) E42'nin iki kanalında; 60 rastgelede akış beklentisince de")
+def _j1():
+    out = []
+    for k in S.ELLE:
+        if not k["ad"].startswith("E42-"):
+            continue
+        for p in (dict(kahin.ONERI), S.ESDEGER):
+            for n in (60, 61):
+                f = _deger_farki(S.model_kos(k["senaryo"], p, n), S.elle_beklenen(k, p))
+                if not f:
+                    out.append("%s [%s] mutant %d değerle yakalanmadı" % (k["ad"], kahin.birlesim_adi(p), n))
+                else:
+                    out.append("bilgi: %s mutant %d: %d değer farkı (ör. %s)" % (k["ad"], n, len(f), f[0]))
+    sen = rastgele_senaryolari()[0]
+    f = _deger_farki(S.model_kos(sen, dict(kahin.ONERI), 60), S.akis_beklenen(sen, dict(kahin.ONERI)))
+    out.append("bilgi: %s mutant 60: %d değer farkı (akış)" % (sen["ad"], len(f)) if f else "%s mutant 60 akışta değerle yakalanmadı" % sen["ad"])
+    return out
+
+
+# ═════════════════════════════════════════ K — 2.5.0 bakımı 2 (README "2.5.0 bakımı 2"; beklenenler ELLE — E05 / E41 / E43, kararların örnekleri)
+K_BEKLENEN = {51: ("E05-", "E41-", "E43-"), 62: ("E05-", "E41-", "E43-"), 63: ("E43-",)}
+
+
+@test("K1 bakım 2 mutantları DEĞERLE yakalanır: 51 (S154 A — Tahsil Edilen kart tutarını aşmaz) ve 62 (avanslı kartın Kalan'ı eksi) E05 / E41 / E43'te, 63 (S151 A / S158 B — "
+      "iade sayılır) E43'te; iki kanalda, öneri ve eşdeğer birleşimde")
+def _k1():
+    out = []
+    for n, onekler in sorted(K_BEKLENEN.items()):
+        for k in S.ELLE:
+            if not k["ad"].startswith(onekler):
+                continue
+            for p in (dict(kahin.ONERI), S.ESDEGER):
+                f = _deger_farki(S.model_kos(k["senaryo"], p, n), S.elle_beklenen(k, p))
+                if not f:
+                    out.append("%s [%s] mutant %d değerle yakalanmadı" % (k["ad"], kahin.birlesim_adi(p), n))
+                elif p == S.ESDEGER:
+                    out.append("bilgi: %s mutant %d: %d değer farkı (ör. %s)" % (k["ad"], n, len(f), f[0]))
+    return out
+
+
 # ═════════════════════════════════════════ G
 def _cli(*args):
     return subprocess.run([sys.executable, "-I", os.path.join(_BURASI, "kahin.py")] + list(args), capture_output=True, text=True, timeout=600)
@@ -667,9 +714,11 @@ def _h2():
             yol = os.path.join(klasor, ad)
             with open(yol, encoding="utf-8") as f:
                 s = json.load(f)
-            # KARARLAR.md C0/C10/C10b: 2.4.5 kararıyla geçersizler 2.4.4 kipinde, öbür /1 /2 iki kipte, /3 HER iki kural setiyle (2.4.6 + 2.4.5; mutant 99
-            # yalnız 2.4.5 kipinde anlamlı)
-            kipler = ["2.4.4"] if cm.gecersiz_245(s) else ([cm.VARSAYILAN_KURAL, "2.4.4"] if s["dil"] != cm.DIL else [cm.VARSAYILAN_KURAL, "2.4.5"])
+            # KARARLAR.md C0/C10/C10b: 2.4.5 kararıyla geçersizler 2.4.4 kipinde, öbür /1 /2 iki kipte; /3 dosyaları cari kâhininin KENDİ düzeniyle —
+            # KARARLAR.md "Eşleme notları (Ç5-A / Ç5-B kod ajanı için)": "mutasyon taraması /3 dosyalarında dört kip (2.5.0 + 2.4.9 + 2.4.6 + 2.4.5)" (S129 bakımı:
+            # önceki iki kipli liste [varsayılan + 2.4.5] cari kâhini 2.5.0'a geçince 2.4.6 / 2.4.9'a özgü mutantları göremiyordu — H2 bakımdan önce kırmızıydı)
+            kipler = ["2.4.4"] if cm.gecersiz_245(s) else ([cm.VARSAYILAN_KURAL, "2.4.4"] if s["dil"] != cm.DIL else
+                                                           [k for k in ("2.5.0", "2.4.9", "2.4.6", "2.4.5") if k in cm.KURALLAR])
             liste.append({"dosya": yol, "kipler": kipler})
     with tempfile.TemporaryDirectory() as d:
         yl = os.path.join(d, "liste.json")

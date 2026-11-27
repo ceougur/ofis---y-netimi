@@ -1,0 +1,247 @@
+// 2.5.0 Ç6-HESAP tur 3 — KALICI ESKİ SÜRÜM SINIF TESTİ fikstürü (ders 17, 53 (b); CLAUDE.md TEST VERİSİ): v2.4.9'un GERÇEK koduyla (git archive v2.4.9 = ccf0b0ca) programın KENDİ
+// API'sinden üretilir; kopyalama / elle SQL YOK. Her SINIF ayrı veri klasörü (şirket geneli hesaplar — 100, 600, 153 … — sınıflar arasında karışmasın): bos, satis-fatura, alis-fatura, kasa,
+// banka, pos, cek-senet, taksit, elle-borc-alacak, acilis, stok, supheli, vergi. Sınıf içinde EKSİK ve TAM kayıtlar ayrı carilerde / ürünlerde (eksik: açık / kısmi / iadeli / KDV'siz /
+// tahsil edilmemiş; tam: kapanmış). Her sınıfın iki kopyası: KİLİTSİZ ve KİLİTLİ (v2.4.9'un KENDİ dönem kilidi 30.06.2026 — 2.5.0 açılışta göç 47 ile 2.4.9 kurallı bekleyen dondurma koşusu
+// açar). Aynı süreçte v2.4.9'un o veriden KENDİ API'siyle okunan sayıları v249.json'a yazılır: t ∈ {31.12.2025, 30.06.2026, 20.10.2026} için Hesap Planı Mizanı (GET /api/workspace/ledger
+// ?to=t — hesap bakiyesi), yıl başından t'ye 6 / 7 hareketi (?from=Y-01-01&to=t), Kasa ve Banka (GET /api/workspace/cash?to=t&method=cash|bank — listenin son bakiyesi), stok değeri (Rapor Merkezi
+// stok-ozet "Dönem Sonu Değer"); bugün için Cari Listesi (tür + bakiye).
+//
+// NASIL YENİDEN ÜRETİLİR (yalnız eski kod değişirse ya da yeni sınıf eklenince; ders 23 / 25 — eski kod AYRI kopyada, benzersiz klasörde):
+//   mkdir -p <not defteri>/v249 && git archive v2.4.9 | tar -x -C <not defteri>/v249 && ln -s <depo>/node_modules <not defteri>/v249/node_modules
+//   cp test/fixtures/c6h-v249/uret.mjs.txt <not defteri>/uret.mjs
+//   HUKUK_LICENSE_URL=http://127.0.0.1:9 node <not defteri>/uret.mjs <not defteri>/v249 <not defteri>/cikti
+//   → <not defteri>/cikti/{*.sqlite.gz, *.sirketler.json, v249.json, uretim.json} test/fixtures/c6h-v249/'ye kopyalanır; beklenen-farklar.json test çıktısına göre (her fark bir
+//     KARAR NUMARASIYLA — açıklanamayan fark bulgudur) güncellenir.
+import { copyFileSync, cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import path from "node:path";
+import { DatabaseSync } from "node:sqlite";
+import { pathToFileURL } from "node:url";
+import { gzipSync } from "node:zlib";
+
+const [root, outDir] = process.argv.slice(2);
+if (process.env.HUKUK_LICENSE_URL !== "http://127.0.0.1:9") throw new Error("ders 30: HUKUK_LICENSE_URL=http://127.0.0.1:9");
+if (!root || !outDir) throw new Error("kullanım: node uret.mjs <v2.4.9 kökü> <çıktı klasörü>");
+const helpers = await import(pathToFileURL(path.join(root, "test/helpers.mjs")).href);
+const TODAY = "2026-10-20";
+const NOW = `${TODAY}T12:00:00+03:00`;
+const LOCK = "2026-06-30";
+const DATES = ["2025-12-31", "2026-06-30", TODAY];
+const minor = value => Math.round(Number(value) * 100);
+const tlMinor = text => {
+  const clean = String(text || "0").replace(/\s*TL$/, "").replace(/\./g, "").replace(",", ".").replace("−", "-");
+  return Math.round(Number(clean) * 100);
+};
+const unwrap = response => (response.data && typeof response.data === "object" && "ok" in response.data ? (response.data.ok ? response.data.data : response.data) : response.data);
+const work = path.join(outDir, "is");
+rmSync(work, { recursive: true, force: true });
+mkdirSync(work, { recursive: true });
+
+async function open(dir) {
+  const server = await helpers.startTestServer({ dataDir: path.join(dir, "data"), backupDir: path.join(dir, "backups"), now: { time: NOW, fixed: true }, env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" } });
+  const client = await helpers.loginAdmin(server);
+  return { server, client };
+}
+
+/** Sınıfın kayıtları (v2.4.9 API'si). api.must: 200 değilse durur; api.step: durumu günlüğe yazar. */
+const CLASSES = {
+  bos: async () => {},
+  "satis-fatura": async api => {
+    const item = await api.must("ürün P", "post", "/api/workspace/stock", { name: "Ürün P", unit: "Adet", unitPrice: "50", openingQty: "30", openingDate: "2025-01-10" });
+    const a = await api.account("SF Tam Peşin");
+    const b = await api.account("SF Eksik Açık");
+    const c = await api.account("SF İadeli");
+    const d = await api.account("SF KDV'siz");
+    const line = (qty, price, vatRate = 20) => [{ itemId: item.id, name: "", qty, unitPrice: price, discountRate: 0, vatRate }];
+    await api.must("satış A (peşin, tam)", "post", "/api/workspace/invoices", { kind: "sale", accountId: a.id, issueDate: "2025-05-04", lines: line(2, 100), payment: { cash: [{ amount: 240, method: "cash" }], cheques: [], endorse: [], rest: "open" }, force: true, cashForce: true });
+    await api.must("satış B (açık)", "post", "/api/workspace/invoices", { kind: "sale", accountId: b.id, issueDate: "2026-03-10", lines: line(3, 100), payment: { cash: [], cheques: [], endorse: [], rest: "open" }, force: true });
+    await api.must("B kısmi tahsilat", "post", `/api/workspace/accounts/${b.id}/entries`, { kind: "in", amount: "100", date: "2026-08-01", method: "cash", cashForce: true });
+    const sale = await api.must("satış C", "post", "/api/workspace/invoices", { kind: "sale", accountId: c.id, issueDate: "2026-04-01", lines: line(4, 100), payment: { cash: [], cheques: [], endorse: [], rest: "open" }, force: true });
+    const detail = await api.must("satış C ayrıntı", "get", `/api/workspace/invoices/${sale.id}`);
+    await api.must("satış iadesi C", "post", "/api/workspace/invoices", { kind: "sale_return", accountId: c.id, originalId: sale.id, issueDate: "2026-07-15", lines: [{ originLineId: detail.lines[0].id, qty: 1 }], payment: { cash: [], cheques: [], endorse: [], rest: "open" }, force: true });
+    await api.must("satış D (KDV'siz)", "post", "/api/workspace/invoices", { kind: "sale", accountId: d.id, issueDate: "2026-09-01", lines: line(1, 150, 0), payment: { cash: [], cheques: [], endorse: [], rest: "open" }, force: true });
+  },
+  "alis-fatura": async api => {
+    const item = await api.must("ürün Q", "post", "/api/workspace/stock", { name: "Ürün Q", unit: "Adet", unitPrice: "60" });
+    const s1 = await api.account("AF Tam Ödenmiş", "supplier");
+    const s2 = await api.account("AF Eksik Açık", "supplier");
+    const s3 = await api.account("AF İadeli", "supplier");
+    const line = (qty, price) => [{ itemId: item.id, name: "", qty, unitPrice: price, discountRate: 0, vatRate: 20 }];
+    await api.must("alış S1", "post", "/api/workspace/invoices", { kind: "purchase", accountId: s1.id, number: "AF-1", issueDate: "2025-03-05", lines: line(10, 60), payment: { cash: [], cheques: [], endorse: [], rest: "open" }, force: true });
+    await api.must("S1 ödeme", "post", `/api/workspace/accounts/${s1.id}/entries`, { kind: "out", amount: "720", date: "2025-04-01", method: "cash", cashForce: true });
+    await api.must("alış S2 (açık)", "post", "/api/workspace/invoices", { kind: "purchase", accountId: s2.id, number: "AF-2", issueDate: "2026-02-01", lines: line(5, 70), payment: { cash: [], cheques: [], endorse: [], rest: "open" }, force: true });
+    const buy = await api.must("alış S3", "post", "/api/workspace/invoices", { kind: "purchase", accountId: s3.id, number: "AF-3", issueDate: "2026-05-01", lines: line(8, 65), payment: { cash: [], cheques: [], endorse: [], rest: "open" }, force: true });
+    const detail = await api.must("alış S3 ayrıntı", "get", `/api/workspace/invoices/${buy.id}`);
+    await api.must("alış iadesi S3", "post", "/api/workspace/invoices", { kind: "purchase_return", accountId: s3.id, originalId: buy.id, number: "AFI-1", issueDate: "2026-08-10", lines: [{ originLineId: detail.lines[0].id, qty: 2 }], payment: { cash: [], cheques: [], endorse: [], rest: "open" }, force: true });
+  },
+  kasa: async api => {
+    await api.must("Kasa açılışı", "post", "/api/workspace/cash/opening", { amount: "5000", date: "2025-01-02" });
+    await api.must("Kasa girişi 2025", "post", "/api/workspace/cash", { kind: "in", amount: "1000", description: "Danışmanlık", date: "2025-06-01" });
+    await api.must("Kasa çıkışı 2026 (kilitli dönem)", "post", "/api/workspace/cash", { kind: "out", amount: "300", description: "Kırtasiye", date: "2026-02-15" });
+    await api.must("Kasa çıkışı 2026 (açık dönem)", "post", "/api/workspace/cash", { kind: "out", amount: "150", description: "Yemek", date: "2026-09-01" });
+  },
+  banka: async api => {
+    const bank = await api.must("banka hesabı", "post", "/api/workspace/bank/accounts", { bankName: "Ziraat Bankası", name: "Ana TL Hesabı", kind: "demand", currency: "TRY", opening: { date: "2025-01-02", amount: "25000", confirmed: true } });
+    await api.must("banka masrafı", "post", "/api/workspace/bank/vouchers", { type: "fee", accountId: bank.id, date: "2026-03-01", amount: "120", feeType: "eft" });
+    const cust = await api.account("BN Havaleli Müşteri");
+    await api.must("BN borç", "post", `/api/workspace/accounts/${cust.id}/entries`, { kind: "debt", amount: "1000", date: "2026-07-01", note: "Hizmet" });
+    await api.must("BN havale tahsilat (kısmi)", "post", `/api/workspace/accounts/${cust.id}/entries`, { kind: "in", amount: "500", date: "2026-08-01", method: "bank", bankAccountId: bank.id });
+  },
+  pos: async api => {
+    const cust = await api.account("POS Müşterisi");
+    await api.must("POS borç", "post", `/api/workspace/accounts/${cust.id}/entries`, { kind: "debt", amount: "1000", date: "2026-01-10", note: "Satış" });
+    await api.must("POS tahsilat 1 (kilitli dönem)", "post", `/api/workspace/accounts/${cust.id}/entries`, { kind: "in", amount: "400", date: "2026-02-01", method: "card" });
+    await api.must("POS tahsilat 2 (açık dönem, kapatır)", "post", `/api/workspace/accounts/${cust.id}/entries`, { kind: "in", amount: "600", date: "2026-07-05", method: "card" });
+  },
+  "cek-senet": async api => {
+    const cust = await api.account("ÇS Müşterisi");
+    await api.must("ÇS borç", "post", `/api/workspace/accounts/${cust.id}/entries`, { kind: "debt", amount: "3000", date: "2025-11-01", note: "Mal" });
+    const c1 = await api.must("çek 1 (tahsil edilecek)", "post", "/api/workspace/cheques", { direction: "in", instrument: "cheque", accountId: cust.id, amount: 1000, issueDate: "2025-11-05", dueDate: "2026-01-05", serialNo: "C6H3-C1", bank: "Ziraat" });
+    await api.must("çek 1 tahsil", "post", `/api/workspace/cheques/${c1.id}/actions`, { action: "collect", date: "2026-01-05", method: "cash" });
+    await api.must("çek 2 (portföyde)", "post", "/api/workspace/cheques", { direction: "in", instrument: "cheque", accountId: cust.id, amount: 1000, issueDate: "2025-11-05", dueDate: "2026-12-01", serialNo: "C6H3-C2", bank: "Ziraat" });
+    await api.must("senet (portföyde)", "post", "/api/workspace/cheques", { direction: "in", instrument: "note", accountId: cust.id, amount: 500, issueDate: "2026-02-01", dueDate: "2026-09-01", serialNo: "C6H3-S1" });
+  },
+  taksit: async api => {
+    const cust = await api.account("TK Taksitli Müşteri");
+    const plan = await api.must("cari kartı (3 taksit)", "post", "/api/workspace/plans", { accountId: cust.id, name: cust.name, total: "1200", mode: "auto", count: 3, everyMonths: "1", firstDue: "2026-02-15", date: "2026-01-15" });
+    await api.must("kart tahsilatı (kısmi)", "post", `/api/workspace/plans/${plan.id}/entries`, { kind: "in", amount: "400", date: "2026-02-15", method: "cash", cashForce: true });
+    const loose = await api.must("carisiz kart", "post", "/api/workspace/plans", { name: "TK Carisiz Kart", total: "900", date: "2026-01-20" });
+    await api.must("carisiz kart tahsilatı (tam)", "post", `/api/workspace/plans/${loose.id}/entries`, { kind: "in", amount: "900", date: "2026-03-01", method: "cash", cashForce: true });
+  },
+  "elle-borc-alacak": async api => {
+    const e1 = await api.account("EB Müşteri");
+    const e2 = await api.account("EB Tedarikçi", "supplier");
+    await api.must("E1 borç", "post", `/api/workspace/accounts/${e1.id}/entries`, { kind: "debt", amount: "800", date: "2025-10-01", note: "Kira" });
+    await api.must("E1 alacak", "post", `/api/workspace/accounts/${e1.id}/entries`, { kind: "credit", amount: "200", date: "2026-03-01", note: "İndirim" });
+    await api.must("E2 alacak (borcumuz)", "post", `/api/workspace/accounts/${e2.id}/entries`, { kind: "credit", amount: "500", date: "2026-04-01", note: "Hizmet alımı" });
+    await api.must("E2 ödeme (kısmi)", "post", `/api/workspace/accounts/${e2.id}/entries`, { kind: "out", amount: "200", date: "2026-08-01", method: "cash", cashForce: true });
+    // Ters bakiyeler (Bilanço brütleştirmesi — v2.4.9 Cari Listesi'nin alacaklı müşterisi / borçlu tedarikçisi).
+    const e3 = await api.account("EB Avanslı Müşteri");
+    const e4 = await api.account("EB Avans Verilen Tedarikçi", "supplier");
+    await api.must("E3 avans tahsilatı (borçsuz)", "post", `/api/workspace/accounts/${e3.id}/entries`, { kind: "in", amount: "300", date: "2026-02-01", method: "cash", cashForce: true, note: "Avans" });
+    await api.must("E4 avans ödemesi (borçsuz)", "post", `/api/workspace/accounts/${e4.id}/entries`, { kind: "out", amount: "250", date: "2026-07-10", method: "cash", cashForce: true, note: "Avans" });
+  },
+  acilis: async api => {
+    const o1 = await api.account("AÇ Açılışlı Müşteri");
+    await api.must("cari açılış bakiyesi (açıklamalı elle borç)", "post", `/api/workspace/accounts/${o1.id}/entries`, { kind: "debt", amount: "1500", date: "2025-01-02", note: "Açılış bakiyesi" });
+    await api.must("açılış stoku", "post", "/api/workspace/stock", { name: "AÇ Ürün", unit: "Adet", unitPrice: "40", openingQty: "10", openingDate: "2025-01-02" });
+    await api.must("Kasa açılışı", "post", "/api/workspace/cash/opening", { amount: "2000", date: "2025-01-02" });
+    await api.must("banka açılışı", "post", "/api/workspace/bank/accounts", { bankName: "Garanti BBVA", name: "Açılış Hesabı", kind: "demand", currency: "TRY", opening: { date: "2025-01-02", amount: "3000", confirmed: true } });
+  },
+  stok: async api => {
+    const item = await api.must("ürün R", "post", "/api/workspace/stock", { name: "Ürün R", unit: "Adet", unitPrice: "30", salePrice: "50" });
+    const cust = await api.account("ST Müşteri");
+    const supp = await api.account("ST Tedarikçi", "supplier");
+    const move = (label, body) => api.must(label, "post", `/api/workspace/stock/${item.id}/moves`, body);
+    await move("peşin alış 20 × 30", { kind: "in", qty: "20", unitPrice: "30", pay: "cash", date: "2025-02-01", cashForce: true });
+    await move("parasız giriş 10 × 36", { kind: "in", qty: "10", unitPrice: "36", pay: "none", date: "2025-06-01" });
+    await move("açık hesap alış 6 × 33", { kind: "in", qty: "6", unitPrice: "33", pay: "account", accountId: supp.id, date: "2025-09-01" });
+    await move("fire çıkışı 5", { kind: "out", qty: "5", unitPrice: "30", pay: "none", date: "2026-01-15" });
+    await move("açık hesap satış 8 × 50", { kind: "out", qty: "8", unitPrice: "50", pay: "account", accountId: cust.id, date: "2026-03-01" });
+    await move("müşteri iadesi 2", { kind: "in", reason: "return", qty: "2", unitPrice: "50", pay: "account", accountId: cust.id, date: "2026-04-01" });
+    await move("tedarikçiye iade 3", { kind: "out", reason: "preturn", qty: "3", unitPrice: "33", pay: "account", accountId: supp.id, date: "2026-05-01" });
+    await move("peşin satış 4 × 55 (açık dönem)", { kind: "out", qty: "4", unitPrice: "55", pay: "cash", date: "2026-08-01", cashForce: true });
+  },
+  supheli: async api => {
+    const d1 = await api.account("ŞA Şüpheli Müşteri");
+    await api.must("ŞA borç", "post", `/api/workspace/accounts/${d1.id}/entries`, { kind: "debt", amount: "2000", date: "2025-09-01", note: "Mal" });
+    await api.must("şüpheli alacağa al", "post", `/api/workspace/accounts/${d1.id}/doubtful`, { amount: "2000", date: "2026-02-01", reason: "other" });
+    await api.must("ŞA kısmi tahsilat", "post", `/api/workspace/accounts/${d1.id}/entries`, { kind: "in", amount: "500", date: "2026-08-01", method: "cash", cashForce: true });
+  },
+  vergi: async api => {
+    const item = await api.must("hizmet", "post", "/api/workspace/stock", { kind: "service", name: "VG Hizmet", unit: "Adet", salePrice: "1000" });
+    const cust = await api.account("VG Müşteri");
+    await api.must("KDV'li hizmet satışı", "post", "/api/workspace/invoices", { kind: "sale", accountId: cust.id, issueDate: "2026-01-10", lines: [{ itemId: item.id, name: "", qty: 1, unitPrice: 1000, discountRate: 0, vatRate: 20 }], payment: { cash: [], cheques: [], endorse: [], rest: "open" }, force: true });
+    await api.must("Vergi Ödemesi KDV (gecikme zammıyla)", "post", "/api/workspace/tax/payments", { way: "cash", taxType: "kdv", amount: "150", lateAmount: "5", date: "2026-02-20", exceedOk: true, cashForce: true });
+    await api.must("Vergi Ödemesi Diğer (bakiyeyi aşar)", "post", "/api/workspace/tax/payments", { way: "cash", taxType: "other", amount: "100", date: "2026-08-20", exceedOk: true, cashForce: true });
+  },
+};
+
+async function readFacts(client) {
+  const get = async url => {
+    const res = await client.get(url);
+    if (res.status !== 200) throw new Error(`${url}: ${res.status} ${JSON.stringify(res.data).slice(0, 300)}`);
+    return unwrap(res);
+  };
+  const out = { tarihler: {}, cariler: [] };
+  for (const date of DATES) {
+    const year = date.slice(0, 4);
+    const cum = await get(`/api/workspace/ledger?to=${date}`);
+    const per = await get(`/api/workspace/ledger?from=${year}-01-01&to=${date}`);
+    // Kasa / Banka t günü sonu: ekranın hareket listesinin son satırının bakiyesi (totals / byMethod bütün zamanlarındır — t'den bağımsız).
+    const cash = await get(`/api/workspace/cash?to=${date}&method=cash`);
+    const bank = await get(`/api/workspace/cash?to=${date}&method=bank`);
+    const stock = await get(`/api/workspace/report-center/stok-ozet?from=${year}-01-01&to=${date}`);
+    const mizan = {};
+    for (const row of cum.trial.accounts) if (minor(row.balance) !== 0) mizan[row.code] = minor(row.balance);
+    const donem = {};
+    for (const row of per.trial.accounts) if (/^[67]/.test(row.code) && minor(row.debit) - minor(row.credit) !== 0) donem[row.code] = minor(row.debit) - minor(row.credit);
+    out.tarihler[date] = {
+      mizan,
+      donem,
+      kasa: minor(cash.entries.at(-1)?.balance ?? 0),
+      banka: minor(bank.entries.at(-1)?.balance ?? 0),
+      stok: tlMinor((stock.summary || []).find(row => row[0] === "Dönem Sonu Değer")?.[1]),
+      mutabakat: cum.reconciliation?.ok ?? null,
+    };
+  }
+  const accounts = await get("/api/workspace/accounts?status=all&limit=5000");
+  out.cariler = accounts.accounts.map(row => ({ ad: row.name, tur: row.type, bakiye: minor(row.balance) })).sort((a, b) => a.ad.localeCompare(b.ad, "tr"));
+  return out;
+}
+
+function packDir(dir, name) {
+  const file = path.join(dir, "data", "destekofis.sqlite");
+  const db = new DatabaseSync(file);
+  db.exec("PRAGMA wal_checkpoint(TRUNCATE)");
+  db.close();
+  for (const extra of ["-wal", "-shm"]) if (existsSync(file + extra)) rmSync(file + extra);
+  writeFileSync(path.join(outDir, `${name}.sqlite.gz`), gzipSync(readFileSync(file), { level: 9 }));
+  copyFileSync(path.join(dir, "data", "sirketler.json"), path.join(outDir, `${name}.sirketler.json`));
+}
+
+const facts = {};
+const log = {};
+for (const [name, fill] of Object.entries(CLASSES)) {
+  const steps = (log[name] = {});
+  const dir = path.join(work, `${name}-kilitsiz`);
+  let { server, client } = await open(dir);
+  let accountNo = 0;
+  const api = {
+    async must(label, method, url, body) {
+      const res = method === "get" ? await client.get(url) : await client[method](url, body);
+      steps[label] = res.status === 200 ? 200 : `${res.status} ${JSON.stringify(res.data).slice(0, 300)}`;
+      if (res.status !== 200) throw new Error(`${name} · ${label}: ${steps[label]}`);
+      return unwrap(res);
+    },
+    account(label, type = "customer") {
+      accountNo += 1;
+      return this.must(`cari ${label}`, "post", "/api/workspace/accounts", { name: label, type, registeredOn: "2025-01-01", phone: `0500 300 ${String(10 + accountNo).padStart(2, "0")} 00`, force: true });
+    },
+  };
+  try {
+    await api.must("kurulum", "post", "/api/workspace/bank/setup/dismiss", {});
+    await fill(api);
+    facts[name] = { kilitsiz: await readFacts(client) };
+  } finally {
+    await server.close();
+  }
+  packDir(dir, `${name}-kilitsiz`);
+  const locked = path.join(work, `${name}-kilitli`);
+  cpSync(dir, locked, { recursive: true });
+  ({ server, client } = await open(locked));
+  try {
+    const res = await client.put("/api/admin/period-lock", { lockedUntil: LOCK });
+    steps["dönem kilidi 30.06.2026"] = res.status === 200 ? 200 : `${res.status} ${JSON.stringify(res.data).slice(0, 300)}`;
+    if (res.status !== 200) throw new Error(`${name}: kilit ${steps["dönem kilidi 30.06.2026"]}`);
+    facts[name].kilitli = await readFacts(client);
+  } finally {
+    await server.close();
+  }
+  packDir(locked, `${name}-kilitli`);
+  console.log(`${name}: tamam`);
+}
+const kod = "v2.4.9 (ccf0b0ca)";
+writeFileSync(path.join(outDir, "v249.json"), `${JSON.stringify({ kod, node: process.version, now: NOW, today: TODAY, lock: LOCK, dates: DATES, siniflar: facts }, null, 1)}\n`);
+writeFileSync(path.join(outDir, "uretim.json"), `${JSON.stringify({ kod, node: process.version, log }, null, 1)}\n`);
+rmSync(work, { recursive: true, force: true });
+console.log("bitti");

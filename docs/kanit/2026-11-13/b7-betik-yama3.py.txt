@@ -1,0 +1,94 @@
+import sys
+root = sys.argv[1]
+def patch(rel, pairs):
+    p = root + '/' + rel
+    t = open(p, encoding='utf-8').read()
+    for old, new in pairs:
+        assert t.count(old) == 1, (rel, old[:90], t.count(old))
+        t = t.replace(old, new)
+    open(p, 'w', encoding='utf-8').write(t)
+
+COMMENT = ("    // Birleşik tur 7 (DK-B6 DÜŞÜK-4 + kullanıcı notu 12.11 12:54): tarih süzgecine YAZARKEN her geçerli ara değerde (yıl 0002, 0020, 0202, 2026) liste yeniden yüklenip\n"
+           "    // çubuk yeniden kuruluyordu — kutu yeni düğüm olunca imleç ilk bölüme düşüyor, sonraki tuşlar yanlış bölüme gidiyordu (\"0002-06-07\" / boş). Odak tarih kutularındayken\n"
+           "    // (ya da arka plan yenilemesinde henüz uygulanmamış yazım varken) iki kutu yerinde kalır, çevresi yeni çizimden gelir (HOF.swapKeeping; birleşik tur 6'nın POS kalıbı).\n")
+
+SKIP=([
+    ("""      if (view.mode === "list") renderList();
+    } catch (error) {
+      if (quiet) throw error;
+      if (!load.current()) return;
+      if (more && view.list) return HOF.toastError(error);
+      view.list = null;
+      view.listError = error.message;""",
+     """      if (view.mode === "list") renderList({ background: quiet });
+    } catch (error) {
+      if (quiet) throw error;
+      if (!load.current()) return;
+      if (more && view.list) return HOF.toastError(error);
+      view.list = null;
+      view.listError = error.message;"""),
+    ("""  function renderList() {
+    const root = body();
+    if (!root) return;
+    const data = view.list;
+    const sum = data?.summary;""",
+     """  function renderList({ background = false } = {}) {
+    const root = body();
+    if (!root) return;
+    const data = view.list;
+    const sum = data?.summary;"""),
+    ("""    HOF.swap(root, `<div class="hof-plan-head">
+        <div class="hof-plan-title"><small>Alınan evrak portföye girer""",
+     COMMENT + """    HOF.swapKeeping(root, `<div class="hof-plan-head">
+        <div class="hof-plan-title"><small>Alınan evrak portföye girer"""),
+    ("""        <label class="hof-rep-date"><span>Vade Başı</span><input type="date" data-filter="from" value="${esc(view.from)}"></label>
+        <label class="hof-rep-date"><span>Vade Sonu</span><input type="date" data-filter="to" value="${esc(view.to)}"></label>""",
+     """        <span data-list-dates style="display: contents"><label class="hof-rep-date"><span>Vade Başı</span><input type="date" data-filter="from" value="${esc(view.from)}"></label>
+        <label class="hof-rep-date"><span>Vade Sonu</span><input type="date" data-filter="to" value="${esc(view.to)}"></label></span>"""),
+    ("""data-act="more">Daha Fazla Göster</button>` : ""}</p>` : HOF.listPending(view.listError)}`);
+  }""",
+     """data-act="more">Daha Fazla Göster</button>` : ""}</p>` : HOF.listPending(view.listError)}`, "[data-list-dates]", { pending: background });
+  }"""),
+])
+
+patch('client/assets/hof-invoices.js', [
+    ("""      view.list = more && view.list ? { ...data, invoices: [...view.list.invoices, ...data.invoices] } : data;
+      if (view.mode === "list") renderList();""",
+     """      view.list = more && view.list ? { ...data, invoices: [...view.list.invoices, ...data.invoices] } : data;
+      if (view.mode === "list") renderList({ background: quiet });"""),
+    ("""  function renderList() {
+    const root = body();
+    if (!root) return;
+    const data = view.list;
+    const t = data?.totals;""",
+     """  function renderList({ background = false } = {}) {
+    const root = body();
+    if (!root) return;
+    const data = view.list;
+    const t = data?.totals;"""),
+    ("""        <label class="hof-rep-date"><span>Başlangıç</span><input type="date" data-filter="from" value="${esc(view.from)}"></label>
+        <label class="hof-rep-date"><span>Bitiş</span><input type="date" data-filter="to" value="${esc(view.to)}"></label>
+        <select data-filter="pay\"""",
+     """        <span data-list-dates style="display: contents"><label class="hof-rep-date"><span>Başlangıç</span><input type="date" data-filter="from" value="${esc(view.from)}"></label>
+        <label class="hof-rep-date"><span>Bitiş</span><input type="date" data-filter="to" value="${esc(view.to)}"></label></span>
+        <select data-filter="pay\""""),
+    ("""    HOF.swap(
+      root,
+      `<div class="hof-plan-head">
+        <div class="hof-plan-title"><small>${edoc() ? "Satış, alış""",
+     COMMENT + """    HOF.swapKeeping(
+      root,
+      `<div class="hof-plan-head">
+        <div class="hof-plan-title"><small>${edoc() ? "Satış, alış"""),
+    ("""          : HOF.listPending(view.listError)
+      }`,
+    );
+  }""",
+     """          : HOF.listPending(view.listError)
+      }`,
+      "[data-list-dates]",
+      { pending: background },
+    );
+  }"""),
+])
+print("tamam")

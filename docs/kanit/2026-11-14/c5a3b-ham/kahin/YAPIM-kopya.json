@@ -1,0 +1,327 @@
+{
+ "aciklama": "Cari kâhini ↔ program YAPIM AŞAMASI listesi (S100 = A, KULLANICI KARARI 10.11.2026 17:54 UTC; docs/2.5.0-IS-LISTESI.md D). Ç5 paket paket ana dala girerken bugünkü farklar kararı / bekleyen paketiyle sabitlenir; kâhinin beklentisi DEĞİŞMEZ. Listede OLMAYAN fark, değeri DEĞİŞEN fark ve KAPANDIĞI hâlde listede duran kayıt kırmızıdır (liste yalnız küçülür). Yayın adayında liste BOŞ olmalı (tools/release.mjs). BİLİNEN.json'dan (kullanıcının ERTELEDİĞİ farklar) AYRIDIR.",
+ "kural": "2.5.0",
+ "uretim": "node test/bagimsiz/cari/kos.mjs --yapim-asamasi-yaz (varsayılan koşu: bütün elle senaryolar + rastgele tohum 1–2 × 60 işlem)",
+ "paketler": [
+  "Ç5-A",
+  "Ç5-B tur 2",
+  "Ç5-C",
+  "eşleme",
+  "AYRIŞTIRILMADI"
+ ],
+ "kayitlar": [
+  {
+   "senaryo": "d42-c5-s140-s151-satis-karti-iade",
+   "anahtar": "k1:cari:T6:gecikmis",
+   "beklenen": 0,
+   "program": 20000,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A)",
+   "paket": "Ç5-B tur 2"
+  },
+  {
+   "senaryo": "d42-c5-s140-s151-satis-karti-iade",
+   "anahtar": "k1:kart:KT1:toplam",
+   "beklenen": 100000,
+   "program": 70000,
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "B1.3 kart tutarı = tablodaki kalan",
+   "paket": "Ç5-B tur 2",
+   "not": "birleşik tur 8 (Ç5-B'nin son küçük turu): S151 = B / S158 = A / S140 = A — iadeli kartta 'Tahsil Edilen' / 'Ödenen' / kart toplamı / gecikmiş (ana oturum 13.11 ön kontrol; KAYIT)."
+  },
+  {
+   "senaryo": "d42-c5-s140-s151-satis-karti-iade",
+   "anahtar": "k1:kart:KT3:taksit2:odenen",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · SINIF DIŞI",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat · §26 Y15-7 S151 B: faturasız stok iadesinin kapattığı kısım 'Tahsil Edilen' / 'Ödenen' sayılmaz (Kalan aynen)",
+   "paket": "Ç5-B tur 2",
+   "not": "birleşik tur 8 (Ç5-B'nin son küçük turu): S151 = B / S158 = A / S140 = A — iadeli kartta 'Tahsil Edilen' / 'Ödenen' / kart toplamı / gecikmiş (ana oturum 13.11 ön kontrol; KAYIT)."
+  },
+  {
+   "senaryo": "d42-c5-s140-s151-satis-karti-iade",
+   "anahtar": "k1:kart:KT3:toplam",
+   "beklenen": 100000,
+   "program": 50000,
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "B1.3 kart tutarı = tablodaki kalan",
+   "paket": "Ç5-B tur 2",
+   "not": "birleşik tur 8 (Ç5-B'nin son küçük turu): S151 = B / S158 = A / S140 = A — iadeli kartta 'Tahsil Edilen' / 'Ödenen' / kart toplamı / gecikmiş (ana oturum 13.11 ön kontrol; KAYIT)."
+  },
+  {
+   "senaryo": "d42-c5-s140-s151-satis-karti-iade",
+   "anahtar": "k1:kart:KT4:toplam",
+   "beklenen": 100000,
+   "program": 30000,
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "B1.3 kart tutarı = tablodaki kalan",
+   "paket": "Ç5-B tur 2",
+   "not": "birleşik tur 8 (Ç5-B'nin son küçük turu): S151 = B / S158 = A / S140 = A — iadeli kartta 'Tahsil Edilen' / 'Ödenen' / kart toplamı / gecikmiş (ana oturum 13.11 ön kontrol; KAYIT)."
+  },
+  {
+   "senaryo": "d42-c5-s140-s151-satis-karti-iade",
+   "anahtar": "k1:kart:KT6:toplam",
+   "beklenen": 100000,
+   "program": 60000,
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "B1.3 kart tutarı = tablodaki kalan",
+   "paket": "Ç5-B tur 2",
+   "not": "birleşik tur 8 (Ç5-B'nin son küçük turu): S151 = B / S158 = A / S140 = A — iadeli kartta 'Tahsil Edilen' / 'Ödenen' / kart toplamı / gecikmiş (ana oturum 13.11 ön kontrol; KAYIT)."
+  },
+  {
+   "senaryo": "d42-c5-s140-s151-satis-karti-iade",
+   "anahtar": "k1:kart:KT7:taksit3:odenen",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · SINIF DIŞI",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat · §27 Y16-8 S158 A: iade / Değersiz tahsilat değildir (her kartta) — kapattıkları kısım 'Tahsil Edilen' / 'Ödenen' sayılmaz (Kalan aynen)",
+   "paket": "Ç5-B tur 2",
+   "not": "birleşik tur 8 (Ç5-B'nin son küçük turu): S151 = B / S158 = A / S140 = A — iadeli kartta 'Tahsil Edilen' / 'Ödenen' / kart toplamı / gecikmiş (ana oturum 13.11 ön kontrol; KAYIT)."
+  },
+  {
+   "senaryo": "d42-c5-s140-s151-satis-karti-iade",
+   "anahtar": "k1:kart:KT7:toplam",
+   "beklenen": 90000,
+   "program": 60000,
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "B1.3 kart tutarı = tablodaki kalan",
+   "paket": "Ç5-B tur 2",
+   "not": "birleşik tur 8 (Ç5-B'nin son küçük turu): S151 = B / S158 = A / S140 = A — iadeli kartta 'Tahsil Edilen' / 'Ödenen' / kart toplamı / gecikmiş (ana oturum 13.11 ön kontrol; KAYIT)."
+  },
+  {
+   "senaryo": "d42-c5-s140-s151-satis-karti-iade",
+   "anahtar": "k1:kart:KT8:toplam",
+   "beklenen": 100000,
+   "program": 70000,
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "B1.3 kart tutarı = tablodaki kalan",
+   "paket": "Ç5-B tur 2",
+   "not": "birleşik tur 8 (Ç5-B'nin son küçük turu): S151 = B / S158 = A / S140 = A — iadeli kartta 'Tahsil Edilen' / 'Ödenen' / kart toplamı / gecikmiş (ana oturum 13.11 ön kontrol; KAYIT)."
+  },
+  {
+   "senaryo": "d42-c5-s140-s151-satis-karti-iade",
+   "anahtar": "k1:takvim:cariToplam:T6",
+   "beklenen": 0,
+   "program": 20000,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "K6.5 (1) + KS8.1 + KS10: carinin takvim kalemlerinin işaretli toplamı — aynı borç kartla bir kez (pencere içi; Σ bütün kalemler = bakiye)",
+   "paket": "Ç5-B tur 2",
+   "not": "birleşik tur 8 (Ç5-B'nin son küçük turu): S151 = B / S158 = A / S140 = A — iadeli kartta 'Tahsil Edilen' / 'Ödenen' / kart toplamı / gecikmiş (ana oturum 13.11 ön kontrol; KAYIT)."
+  },
+  {
+   "senaryo": "d43-c5-bilinen-sinir-sus15",
+   "anahtar": "adim:u1k:durum",
+   "beklenen": "ok",
+   "program": "ret",
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "adım kabul edilir",
+   "paket": "eşleme",
+   "not": "kâhin dili ↔ koşucu: karttan kalanı AŞAN tahsilat adımı — program yalnız 'Fazlasını Avans Yaz' seçeneğiyle kabul ediyor (S118 = B), kâhinin adımında ve koşucuda seçenek yok; adım reddedilince sonraki sayılar ayrışıyor. Ürün hatası değil (ana oturum 13.11 ön kontrol; KAYIT). Sıradaki cari kâhini bakımı (S154 = B, S159) + koşucu eşlemesi."
+  },
+  {
+   "senaryo": "d43-c5-bilinen-sinir-sus15",
+   "anahtar": "adim:u2k:durum",
+   "beklenen": "ok",
+   "program": "ret",
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "adım kabul edilir",
+   "paket": "eşleme",
+   "not": "kâhin dili ↔ koşucu: karttan kalanı AŞAN tahsilat adımı — program yalnız 'Fazlasını Avans Yaz' seçeneğiyle kabul ediyor (S118 = B), kâhinin adımında ve koşucuda seçenek yok; adım reddedilince sonraki sayılar ayrışıyor. Ürün hatası değil (ana oturum 13.11 ön kontrol; KAYIT). Sıradaki cari kâhini bakımı (S154 = B, S159) + koşucu eşlemesi."
+  },
+  {
+   "senaryo": "d43-c5-bilinen-sinir-sus15",
+   "anahtar": "k1:cari:U1:acikEsitBakiye",
+   "beklenen": false,
+   "program": true,
+   "sinif": "BULGU BAŞ MİMAR · SINIF DIŞI",
+   "kural": "KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa)",
+   "paket": "eşleme",
+   "not": "kâhin dili ↔ koşucu: karttan kalanı AŞAN tahsilat adımı — program yalnız 'Fazlasını Avans Yaz' seçeneğiyle kabul ediyor (S118 = B), kâhinin adımında ve koşucuda seçenek yok; adım reddedilince sonraki sayılar ayrışıyor. Ürün hatası değil (ana oturum 13.11 ön kontrol; KAYIT). Sıradaki cari kâhini bakımı (S154 = B, S159) + koşucu eşlemesi."
+  },
+  {
+   "senaryo": "d43-c5-bilinen-sinir-sus15",
+   "anahtar": "k1:cari:U1:acikToplam",
+   "beklenen": 0,
+   "program": 100000,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "KS8.1: carinin açık kalemlerinin işaretli toplamı",
+   "paket": "eşleme",
+   "not": "kâhin dili ↔ koşucu: karttan kalanı AŞAN tahsilat adımı — program yalnız 'Fazlasını Avans Yaz' seçeneğiyle kabul ediyor (S118 = B), kâhinin adımında ve koşucuda seçenek yok; adım reddedilince sonraki sayılar ayrışıyor. Ürün hatası değil (ana oturum 13.11 ön kontrol; KAYIT). Sıradaki cari kâhini bakımı (S154 = B, S159) + koşucu eşlemesi."
+  },
+  {
+   "senaryo": "d43-c5-bilinen-sinir-sus15",
+   "anahtar": "k1:cari:U1:bakiye",
+   "beklenen": -10000,
+   "program": 100000,
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "B1.1/B2.7 bakiye = borçlar − alacaklar",
+   "paket": "eşleme",
+   "not": "kâhin dili ↔ koşucu: karttan kalanı AŞAN tahsilat adımı — program yalnız 'Fazlasını Avans Yaz' seçeneğiyle kabul ediyor (S118 = B), kâhinin adımında ve koşucuda seçenek yok; adım reddedilince sonraki sayılar ayrışıyor. Ürün hatası değil (ana oturum 13.11 ön kontrol; KAYIT). Sıradaki cari kâhini bakımı (S154 = B, S159) + koşucu eşlemesi."
+  },
+  {
+   "senaryo": "d43-c5-bilinen-sinir-sus15",
+   "anahtar": "k1:cari:U1:gecikmis",
+   "beklenen": 0,
+   "program": 100000,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A)",
+   "paket": "Ç5-B tur 2"
+  },
+  {
+   "senaryo": "d43-c5-bilinen-sinir-sus15",
+   "anahtar": "k1:cari:U2:bakiye",
+   "beklenen": 40000,
+   "program": 100000,
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "B1.1/B2.7 bakiye = borçlar − alacaklar",
+   "paket": "eşleme",
+   "not": "kâhin dili ↔ koşucu: karttan kalanı AŞAN tahsilat adımı — program yalnız 'Fazlasını Avans Yaz' seçeneğiyle kabul ediyor (S118 = B), kâhinin adımında ve koşucuda seçenek yok; adım reddedilince sonraki sayılar ayrışıyor. Ürün hatası değil (ana oturum 13.11 ön kontrol; KAYIT). Sıradaki cari kâhini bakımı (S154 = B, S159) + koşucu eşlemesi."
+  },
+  {
+   "senaryo": "d43-c5-bilinen-sinir-sus15",
+   "anahtar": "k1:cari:U2:gecikmis",
+   "beklenen": 40000,
+   "program": 80000,
+   "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen",
+   "kural": "C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vadesiz kalem belge günü (S1 A)",
+   "paket": "Ç5-B tur 2"
+  },
+  {
+   "senaryo": "d43-c5-bilinen-sinir-sus15",
+   "anahtar": "k1:hareket:u1x:kalan",
+   "beklenen": 0,
+   "program": 100000,
+   "sinif": "İNCELE YAYGIN · SINIF DIŞI",
+   "kural": "C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta)",
+   "paket": "eşleme",
+   "not": "kâhin dili ↔ koşucu: karttan kalanı AŞAN tahsilat adımı — program yalnız 'Fazlasını Avans Yaz' seçeneğiyle kabul ediyor (S118 = B), kâhinin adımında ve koşucuda seçenek yok; adım reddedilince sonraki sayılar ayrışıyor. Ürün hatası değil (ana oturum 13.11 ön kontrol; KAYIT). Sıradaki cari kâhini bakımı (S154 = B, S159) + koşucu eşlemesi."
+  },
+  {
+   "senaryo": "d43-c5-bilinen-sinir-sus15",
+   "anahtar": "k1:hareket:u2x:kalan",
+   "beklenen": 0,
+   "program": 40000,
+   "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen",
+   "kural": "C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta)",
+   "paket": "eşleme",
+   "not": "kâhin dili ↔ koşucu: karttan kalanı AŞAN tahsilat adımı — program yalnız 'Fazlasını Avans Yaz' seçeneğiyle kabul ediyor (S118 = B), kâhinin adımında ve koşucuda seçenek yok; adım reddedilince sonraki sayılar ayrışıyor. Ürün hatası değil (ana oturum 13.11 ön kontrol; KAYIT). Sıradaki cari kâhini bakımı (S154 = B, S159) + koşucu eşlemesi."
+  },
+  {
+   "senaryo": "d43-c5-bilinen-sinir-sus15",
+   "anahtar": "k1:kart:KU1:kalan",
+   "beklenen": 0,
+   "program": 100000,
+   "sinif": "İNCELE YAYGIN · 2.5.0 kararıyla değişen",
+   "kural": "C13.4",
+   "paket": "eşleme",
+   "not": "kâhin dili ↔ koşucu: karttan kalanı AŞAN tahsilat adımı — program yalnız 'Fazlasını Avans Yaz' seçeneğiyle kabul ediyor (S118 = B), kâhinin adımında ve koşucuda seçenek yok; adım reddedilince sonraki sayılar ayrışıyor. Ürün hatası değil (ana oturum 13.11 ön kontrol; KAYIT). Sıradaki cari kâhini bakımı (S154 = B, S159) + koşucu eşlemesi."
+  },
+  {
+   "senaryo": "d43-c5-bilinen-sinir-sus15",
+   "anahtar": "k1:kart:KU1:taksit1:odenen",
+   "beklenen": 50000,
+   "program": 0,
+   "sinif": "İNCELE YAYGIN · SINIF DIŞI",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
+   "paket": "eşleme",
+   "not": "kâhin dili ↔ koşucu: karttan kalanı AŞAN tahsilat adımı — program yalnız 'Fazlasını Avans Yaz' seçeneğiyle kabul ediyor (S118 = B), kâhinin adımında ve koşucuda seçenek yok; adım reddedilince sonraki sayılar ayrışıyor. Ürün hatası değil (ana oturum 13.11 ön kontrol; KAYIT). Sıradaki cari kâhini bakımı (S154 = B, S159) + koşucu eşlemesi."
+  },
+  {
+   "senaryo": "d43-c5-bilinen-sinir-sus15",
+   "anahtar": "k1:kart:KU1:taksit2:odenen",
+   "beklenen": 50000,
+   "program": 0,
+   "sinif": "İNCELE YAYGIN · SINIF DIŞI",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
+   "paket": "eşleme",
+   "not": "kâhin dili ↔ koşucu: karttan kalanı AŞAN tahsilat adımı — program yalnız 'Fazlasını Avans Yaz' seçeneğiyle kabul ediyor (S118 = B), kâhinin adımında ve koşucuda seçenek yok; adım reddedilince sonraki sayılar ayrışıyor. Ürün hatası değil (ana oturum 13.11 ön kontrol; KAYIT). Sıradaki cari kâhini bakımı (S154 = B, S159) + koşucu eşlemesi."
+  },
+  {
+   "senaryo": "d43-c5-bilinen-sinir-sus15",
+   "anahtar": "k1:kart:KU2:kalan",
+   "beklenen": 0,
+   "program": 40000,
+   "sinif": "İNCELE YAYGIN · 2.5.0 kararıyla değişen",
+   "kural": "C13.4",
+   "paket": "eşleme",
+   "not": "kâhin dili ↔ koşucu: karttan kalanı AŞAN tahsilat adımı — program yalnız 'Fazlasını Avans Yaz' seçeneğiyle kabul ediyor (S118 = B), kâhinin adımında ve koşucuda seçenek yok; adım reddedilince sonraki sayılar ayrışıyor. Ürün hatası değil (ana oturum 13.11 ön kontrol; KAYIT). Sıradaki cari kâhini bakımı (S154 = B, S159) + koşucu eşlemesi."
+  },
+  {
+   "senaryo": "d43-c5-bilinen-sinir-sus15",
+   "anahtar": "k1:kart:KU2:taksit1:odenen",
+   "beklenen": 20000,
+   "program": 0,
+   "sinif": "İNCELE YAYGIN · SINIF DIŞI",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
+   "paket": "eşleme",
+   "not": "kâhin dili ↔ koşucu: karttan kalanı AŞAN tahsilat adımı — program yalnız 'Fazlasını Avans Yaz' seçeneğiyle kabul ediyor (S118 = B), kâhinin adımında ve koşucuda seçenek yok; adım reddedilince sonraki sayılar ayrışıyor. Ürün hatası değil (ana oturum 13.11 ön kontrol; KAYIT). Sıradaki cari kâhini bakımı (S154 = B, S159) + koşucu eşlemesi."
+  },
+  {
+   "senaryo": "d43-c5-bilinen-sinir-sus15",
+   "anahtar": "k1:kart:KU2:taksit2:odenen",
+   "beklenen": 20000,
+   "program": 0,
+   "sinif": "İNCELE YAYGIN · SINIF DIŞI",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat",
+   "paket": "eşleme",
+   "not": "kâhin dili ↔ koşucu: karttan kalanı AŞAN tahsilat adımı — program yalnız 'Fazlasını Avans Yaz' seçeneğiyle kabul ediyor (S118 = B), kâhinin adımında ve koşucuda seçenek yok; adım reddedilince sonraki sayılar ayrışıyor. Ürün hatası değil (ana oturum 13.11 ön kontrol; KAYIT). Sıradaki cari kâhini bakımı (S154 = B, S159) + koşucu eşlemesi."
+  },
+  {
+   "senaryo": "d43-c5-bilinen-sinir-sus15",
+   "anahtar": "k1:kasa",
+   "beklenen": 170000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · SINIF DIŞI",
+   "kural": "B1.2 Kasa değişmez / tahsilatlar Kasa'da",
+   "paket": "eşleme",
+   "not": "kâhin dili ↔ koşucu: karttan kalanı AŞAN tahsilat adımı — program yalnız 'Fazlasını Avans Yaz' seçeneğiyle kabul ediyor (S118 = B), kâhinin adımında ve koşucuda seçenek yok; adım reddedilince sonraki sayılar ayrışıyor. Ürün hatası değil (ana oturum 13.11 ön kontrol; KAYIT). Sıradaki cari kâhini bakımı (S154 = B, S159) + koşucu eşlemesi."
+  },
+  {
+   "senaryo": "d43-c5-bilinen-sinir-sus15",
+   "anahtar": "k1:kasaRapor:giris",
+   "beklenen": 170000,
+   "program": 0,
+   "sinif": "BULGU KULLANICI · SINIF DIŞI",
+   "kural": "B4 MM6 Nakit Akışı Kasa = Kasa raporu (yalnız nakit, bütün kaynaklar)",
+   "paket": "eşleme",
+   "not": "kâhin dili ↔ koşucu: karttan kalanı AŞAN tahsilat adımı — program yalnız 'Fazlasını Avans Yaz' seçeneğiyle kabul ediyor (S118 = B), kâhinin adımında ve koşucuda seçenek yok; adım reddedilince sonraki sayılar ayrışıyor. Ürün hatası değil (ana oturum 13.11 ön kontrol; KAYIT). Sıradaki cari kâhini bakımı (S154 = B, S159) + koşucu eşlemesi."
+  },
+  {
+   "senaryo": "d43-c5-bilinen-sinir-sus15",
+   "anahtar": "k1:takvim:fatura:U2F",
+   "beklenen": {
+    "amount": 40000,
+    "direction": "in"
+   },
+   "program": {
+    "amount": 60000,
+    "direction": "in"
+   },
+   "sinif": "İNCELE YAYGIN · 2.5.0 kararıyla değişen",
+   "kural": "madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık)",
+   "paket": "eşleme",
+   "not": "kâhin dili ↔ koşucu: karttan kalanı AŞAN tahsilat adımı — program yalnız 'Fazlasını Avans Yaz' seçeneğiyle kabul ediyor (S118 = B), kâhinin adımında ve koşucuda seçenek yok; adım reddedilince sonraki sayılar ayrışıyor. Ürün hatası değil (ana oturum 13.11 ön kontrol; KAYIT). Sıradaki cari kâhini bakımı (S154 = B, S159) + koşucu eşlemesi."
+  },
+  {
+   "senaryo": "d44-c5-s155-s158",
+   "anahtar": "k1:kart:KY4:taksit3:odenen",
+   "beklenen": 0,
+   "program": "okunamadı",
+   "sinif": "BULGU KULLANICI · SINIF DIŞI",
+   "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat · §27 Y16-8 S158 A: iade / Değersiz tahsilat değildir (her kartta) — kapattıkları kısım 'Tahsil Edilen' / 'Ödenen' sayılmaz (Kalan aynen)",
+   "paket": "Ç5-B tur 2",
+   "not": "birleşik tur 8 (Ç5-B'nin son küçük turu): S151 = B / S158 = A / S140 = A — iadeli kartta 'Tahsil Edilen' / 'Ödenen' / kart toplamı / gecikmiş (ana oturum 13.11 ön kontrol; KAYIT)."
+  },
+  {
+   "senaryo": "d44-c5-s155-s158",
+   "anahtar": "k1:kart:KY4:toplam",
+   "beklenen": 90000,
+   "program": 60000,
+   "sinif": "BULGU PLAN · SINIF DIŞI",
+   "kural": "B1.3 kart tutarı = tablodaki kalan",
+   "paket": "Ç5-B tur 2",
+   "not": "birleşik tur 8 (Ç5-B'nin son küçük turu): S151 = B / S158 = A / S140 = A — iadeli kartta 'Tahsil Edilen' / 'Ödenen' / kart toplamı / gecikmiş (ana oturum 13.11 ön kontrol; KAYIT)."
+  }
+ ]
+}

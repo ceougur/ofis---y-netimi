@@ -1,0 +1,128 @@
+{
+  "ad": "d2-eski-son-b18ba7a6-Europe-Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/devir-d2-bakim-250.test.mjs test/devir-d2-arsiv-250.test.mjs test/devir-d2-yedek-250.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T11:55:24.353Z",
+  "sure_sn": 77,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 20,
+    "gecen": 1,
+    "basarisiz": 19,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 19 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "D2 arşiv kayıt defteri ve salt okunur açma › kayıt defteri: arşiv sirketler.json + ikinci kopya + ortak katman kopyasında ve arşiv klasöründe; ad / kod değişince korunur; şirket sınırına sayılmaz; aynı yıl ve geçersiz yıl reddedilir",
+      "konum": "test/devir-d2-arsiv-250.test.mjs:66:3",
+      "hata": "sirketler.json: 001 arşiv kaydı · + actual - expected · + undefined"
+    },
+    {
+      "ad": "D2 arşiv kayıt defteri ve salt okunur açma › diskten yeniden kurma: kayıt defteri tamamen kaybolunca ve eski sürüm alanı düşürünce arşivler tanınır (özet arşiv klasöründen); yarım devirde (çalışma dosyasında devir yok) TANINMAZ, sahipsiz listesine girer",
+      "konum": "test/devir-d2-arsiv-250.test.mjs:99:3",
+      "hata": "001 arşivi diskten tanındı, özeti arşiv klasöründen · + actual - expected · + [] (beklenen , gelen )"
+    },
+    {
+      "ad": "D2 arşiv kayıt defteri ve salt okunur açma › salt okunur açma (002 ve 001): arşivde HER yazma ucu 403 archive-read-only, GET'ler 5xx vermez, arşiv dosyası bayt bayt aynı; canlı şirket yazmaya devam eder; arşiv kapanınca canlı şirketin WhatsApp kuyruğu işçiden çıkmaz",
+      "konum": "test/devir-d2-arsiv-250.test.mjs:165:3",
+      "hata": "arşive yazma 403 olmalı (gelen 200 ) · 200 !== 403 (beklenen 403, gelen 200)"
+    },
+    {
+      "ad": "D2 arşiv kayıt defteri ve salt okunur açma › bütünlük: değişmiş arşiv (son şema) uyarıyla salt okunur açılır, değişmiş + eski şema 409 archive-changed (göç edilmez), dosyası silinmiş arşiv 503 archive-missing; liste durumları",
+      "konum": "test/devir-d2-arsiv-250.test.mjs:217:3",
+      "hata": "The expression evaluated to a falsy value: · assert.ok(child)"
+    },
+    {
+      "ad": "D2 arşiv kayıt defteri ve salt okunur açma › arşivin göçü: GERÇEK v2.0.26 koduyla üretilmiş eski şemalı arşiv ilk açılışta son şemaya taşınır (göç öncesi kopya kalır, kayıt özeti güncellenir, veri aynı); iki eşzamanlı istek tek göç; daha yeni şemalı arşiv göç edilmez, salt okunur açılır",
+      "konum": "test/devir-d2-arsiv-250.test.mjs:255:3",
+      "hata": "arşiv son şemaya taşındı · 19 !== 47 (beklenen 47, gelen 19)"
+    },
+    {
+      "ad": "D2 arşiv kayıt defteri ve salt okunur açma › şirket kapanınca (geri yükleme / silme / Ayır yolu) o şirketin arşiv örnekleri de kapanır; öbür şirketinki açık kalır",
+      "konum": "test/devir-d2-arsiv-250.test.mjs:344:3",
+      "hata": "Expected values to be strictly equal: · 0 !== 2 (beklenen 2, gelen 0)"
+    },
+    {
+      "ad": "D2 bakım kipi (G1.1) › tarama tam: kaynaktaki her router.post/put/patch/delete kaydı çözüldü; HUB_ONLY ifadesi sunucudakiyle aynı",
+      "konum": "test/devir-d2-bakim-250.test.mjs:80:3",
+      "hata": "HUB_ONLY ifadesi sunucudakiyle aynı değil (yardımcıyı güncelleyin) (beklenen true, gelen false)"
+    },
+    {
+      "ad": "D2 bakım kipi (G1.1) › sözleşme sabitleri: test yardımcısının yerel değerleri programınkiyle aynı (işaret anahtarları, dosya adları)",
+      "konum": "test/devir-d2-bakim-250.test.mjs:89:3",
+      "hata": "Cannot find module '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2-eski-b18ba7a6/server/lib/devir/archives.mjs' imported from /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2-eski-b18ba7a6/test/devir-d2-bakim-250.test.mjs"
+    },
+    {
+      "ad": "D2 bakım kipi (G1.1) › 001 bakımda: şirket yazma uçlarının HEPSİ 503, ortak katmanın şirket / yedek / güncelleme / devir yazmaları 503, giriş çalışır; GET'ler 001'in verisini değiştirmez (GET'te yazan yol dahil); kip kalkınca yazılır",
+      "konum": "test/devir-d2-bakim-250.test.mjs:100:3",
+      "hata": "Cannot read properties of undefined (reading 'enter')"
+    },
+    {
+      "ad": "D2 bakım kipi (G1.1) › 002 bakımda: 002 yazmaları 503, 001 yazar; 002 bağlantısı query_only (bakımda açılan örnek dahil); GET'ler 002'yi değiştirmez; ortak katmanın şirket / yedek yazmaları 503",
+      "konum": "test/devir-d2-bakim-250.test.mjs:144:3",
+      "hata": "Cannot read properties of undefined (reading 'enter')"
+    },
+    {
+      "ad": "D2 bakım kipi (G1.1) › arka plan yazıcıları bakımdaki şirkette durur, öbür şirkette sürer (canWriteInBackground, WhatsApp işçisi, otomatik yedek)",
+      "konum": "test/devir-d2-bakim-250.test.mjs:176:3",
+      "hata": "Cannot read properties of undefined (reading 'enter')"
+    },
+    {
+      "ad": "D2 bakım kipi (G1.1) › güncelleme tutması (uygulama): kip açılırken update:hold istenir, kapanınca bırakılır; güncelleme geçişteyse kip açılmaz; güncelleyici yoksa sürer; ulaşılamazsa açılmaz",
+      "konum": "test/devir-d2-bakim-250.test.mjs:205:3",
+      "hata": "Cannot read properties of undefined (reading 'enter')"
+    },
+    {
+      "ad": "D2 bakım kipi (G1.1) › güncelleme orkestratörü: tutma varken kendiliğinden kurmaz, Şimdi Güncelle reddedilir; indirme sürerken tutma gelirse eski sürüm durdurulmaz; geçiş adımında tutma 'switching' döner; tutma kalkınca / süresi dolunca kurar",
+      "konum": "test/devir-d2-bakim-250.test.mjs:238:3",
+      "hata": "Bilinmeyen güncelleme işlemi."
+    },
+    {
+      "ad": "D2 bakım kipi (G1.1) › yarıda kesilme: bakım kipi açıkken süreç ölür → açılışta kip YOK (canlı veri aynı), önceki çalışmanın izi lastAborted'da, işaret dosyası silinir, geçici tetikleyici kalmaz",
+      "konum": "test/devir-d2-bakim-250.test.mjs:313:3",
+      "hata": "işçi erken çıktı (1): file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2-eski-b18ba7a6/test/fixtures/devir-d2-bakim-isci.mjs:11 · for (const id of String(ids || \"\").split(\",\").filter(Boolean)) entered.push(await app.maintenance.enter(id, { reason: \"devir\", runId: `isci-${id}`, label: id })); · ^"
+    },
+    {
+      "ad": "D2 kalıcı devir yedeği ve geri yüklemenin arşiv denetimi › devir yedeği: veri tabanı + arşiv + belgeler + mesaj arşivi + gizli anahtar, her dosyanın özeti bildirgede; doğrulama değişen / eksik / fazla dosyayı bulur; liste ucu",
+      "konum": "test/devir-d2-yedek-250.test.mjs:58:3",
+      "hata": "server.app.backups.createDevirBackupFor is not a function"
+    },
+    {
+      "ad": "D2 kalıcı devir yedeği ve geri yüklemenin arşiv denetimi › budanmaz: devir yedeği alındıktan sonra 35 rutin + 40 güvenlik yedeği (gerçek createBackup + pruneBackups; zaman damgaları sahte, 35 gün) ve zamanlayıcı turu — rutin 30, güvenlik 30 kalır, devir yedeği eksiksiz; ad değişince yedek klasörüyle taşınır",
+      "konum": "test/devir-d2-yedek-250.test.mjs:88:3",
+      "hata": "server.app.backups.createDevirBackupFor is not a function"
+    },
+    {
+      "ad": "D2 kalıcı devir yedeği ve geri yüklemenin arşiv denetimi › Yedekten Geri Yükle (002, hemen): devir ÖNCESİ yedek 409 devir-oncesi-yedek; devir sonrası yedek geri yüklenir; devir geri alınınca devir SONRASI yedek 409 devir-sonrasi-yedek; aynı yıl başka devir çalışması 409; bakımdaki şirkete 503",
+      "konum": "test/devir-d2-yedek-250.test.mjs:122:3",
+      "hata": "{\"ok\":true,\"data\":{\"restored\":true,\"company\":\"002 · Yedek İkinci\",\"name\":\"destekofis-002-2026-11-06T11-56-38-213Z-manuel.sqlite\",\"safety\":\"destekofis-002-2026-11-06T11-56-38-559Z-geri-yukleme-oncesi-002.sqlite\"}} · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "D2 kalıcı devir yedeği ve geri yüklemenin arşiv denetimi › Şirket Verisini Sıfırla (Tümünü Sıfırla) devir işaretini (devir.years) korur: arşiv kayıtlı kalır, sıfırlamadan sonra alınan yedek geri yüklenebilir, sıfırlama öncesi yedeği yine denetlenir",
+      "konum": "test/devir-d2-yedek-250.test.mjs:157:3",
+      "hata": "sıfırlamadan sonra çalışma dosyası devrini bilir · + actual - expected · + [] (beklenen , gelen )"
+    },
+    {
+      "ad": "D2 kalıcı devir yedeği ve geri yüklemenin arşiv denetimi › Yedekten Geri Yükle (001, yeniden açılışta): devir öncesi yedek hazırlanmaz (409); devirden ÖNCE hazırlanıp devirden SONRA uygulanacak geri yükleme açılışta uygulanmaz, veri aynı kalır, neden Yedekler'de görünür",
+      "konum": "test/devir-d2-yedek-250.test.mjs:174:3",
+      "hata": "devirden sonra aynı yedek artık hazırlanmaz · 200 !== 409 (beklenen 409, gelen 200)"
+    }
+  ],
+  "ham_cikti": "../d2-calisma/kanit/2026-11-06/d2-eski-son-b18ba7a6-Europe-Istanbul.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2-eski-b18ba7a6",
+  "ham_cikti_sha256": "9e764ba491e15316bba6a777abbc521d5dee4b2791416e68e9bed70131b2bc0c",
+  "ham_cikti_bayt": 29185
+}

@@ -1,0 +1,35 @@
+başta 0.37 0.60 0.84 3/115 9737 15:02:16
+yapım listesi yazımı çıkış 0 · kayıt 0 · fark:  1 file changed, 1 insertion(+), 617 deletions(-)
+tam npm test çıkış 1 16:11:07
+kâhin cari UTC çıkış 0
+kâhin cari Europe/Istanbul çıkış 0
+kâhin defter çıkış 0
+A bitti 1.08 1.02 1.01 1/114 22604 16:28:23
+B başta 0.43 0.84 0.95 2/119 22883 16:29:21
+e2e senaryo-izt4-250 çıkış 0 · ✓ senaryo-izt4-250: 21 geçti, 0 kaldı
+e2e senaryo-s223-250 çıkış 0 · Senaryo S223 (Türkçe harf katlamalı kişi adı): 26 geçti, 0 kaldı. Ekranla
+e2e senaryo-s231-250 çıkış 0 · Senaryo S231 (grup adı Türkçe harf katlamalı; çek penceresi metni): 22 geç
+e2e senaryo-izt3-250 çıkış 0 · ✓ senaryo-izt3-250: 18 geçti, 0 kaldı
+e2e senaryo-izt2-250 çıkış 0 · ✓ senaryo-izt2-250: 24 geçti, 0 kaldı
+e2e senaryo-izt-250 çıkış 0 · ✓ senaryo-izt-250: 20 geçti, 0 kaldı
+e2e senaryo-dkfix-250 çıkış 0 · ✓ senaryo-dkfix-250: 21 geçti, 0 kaldı
+e2e senaryo-banka-210b çıkış 0 · ✓ senaryo-banka-210b: 90 geçti, 0 kaldı · ekran görüntüleri /dev/shm/izt
+e2e senaryo-banka-210-eski-satir çıkış 0 · ✓ senaryo-banka-210-eski-satir: 29 geçti, 0 kaldı · ekran görüntüleri /d
+e2e senaryo-pos-220 çıkış 0 · ✓ senaryo-pos-220: 113 geçti, 0 kaldı · ekran görüntüleri /dev/shm/izt4-
+e2e senaryo-entegrator-240 çıkış 0 · ✓ senaryo-entegrator-240: 81 geçti, 0 kaldı
+e2e senaryo-fatura-243 çıkış 0 · 61 geçti, 0 kaldı
+e2e senaryo-kdv-donemi-250 çıkış 0 · ✓ senaryo-kdv-donemi-250: 22 geçti, 0 kaldı
+e2e senaryo-c7b-kabul-250 çıkış 0 · ✓ senaryo-c7b-kabul-250: 39 geçti, 0 kaldı
+e2e senaryo-c7b-tur3-250 çıkış 0 · ✓ senaryo-c7b-tur3-250: 39 geçti, 0 kaldı
+e2e gg244-esmm-gonder çıkış 0 · 66 geçti, 0 kaldı
+e2e gg244-numara-tarih-onay çıkış 0 · ✓ gg244-numara-tarih-onay: 40 geçti, 0 kaldı
+e2e uiux-b-243 çıkış 0 · ✓ uiux-b-243: 58 geçti, 0 kaldı
+e2e senaryo-213 çıkış 0 · 64 / 64 kontrol geçti.
+e2e senaryo-215 çıkış 0 · 73 / 73 kontrol geçti.
+e2e senaryo-216 çıkış 0 · 54 / 54 kontrol geçti.
+e2e senaryo-217 çıkış 0 · 65 / 65 kontrol geçti.
+e2e senaryo-224 çıkış 0 · 
+e2e senaryo-iade-246 çıkış 0 · 26 geçti, 0 kaldı
+e2e senaryo-kart-iade-gecmis-250 çıkış 0 · SONUÇ: 8 geçti, 0 kaldı
+e2e banka-210-kart-onbellek-yaris çıkış 0 · ✓ banka-210-kart-onbellek-yaris: 49 geçti, 0 kaldı
+bitti 1.42 1.23 1.02 1/114 25726 16:59:59

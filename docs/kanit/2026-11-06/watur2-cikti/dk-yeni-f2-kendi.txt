@@ -1,0 +1,11 @@
+LIST=kendi · 001 kip=manual, 002 kip=embedded
+[1] 001 kaydetti → Meta: A=vIb_XP… B=YOK · defter geçerli yol=1b200f……(karma) durum=active
+[1] 001 işi: accepted
+[2] 002 kaydetti → Meta: A=vIb_XP… B=yAu2xT… · defter geçerli yol=b91c48……(karma) durum=active
+[3] A'nın adresine 001 teslimi: 200; B'nin adresine (tanınmayan) bildirim: 200; 001 işi: delivered
+[4] 001 Bağlantıyı Sına: 200; Meta istekleri: ["GET subscribed_apps [A]"]; Meta: A=vIb_XP… B=yAu2xT… · defter geçerli yol=b91c48……(karma) durum=active; 001 kartı kanca durumu={"state":"active","at":"2026-11-03T06:00:00.000Z","registeredAt":"2026-11-03T06:00:00.000Z","error":""}
+[4] Sına sonrası A'nın Meta'daki adresine 001 teslimi: 200; B'nin Meta'daki adresine bildirim: 200; 001 işi: delivered
+[4c] 002 yeniden kaydetti → Meta: A=vIb_XP… B=EgNNNb… · defter geçerli yol=0cd595……(karma) durum=active; B'nin Meta'daki adresine bildirim: 200
+[5] uygulama düzeyi adrese 001 teslimi: 200; 001 işi 2: delivered; adres denetimi Meta istekleri: ["GET subscribed_apps [A]","POST subscribed_apps [A]"]; Meta: A=v-C6kb… B=EgNNNb… · defter geçerli yol=316f88……(karma) durum=active
+[5] denetimden sonra B'nin Meta'daki adresine bildirim: 200
+[sayılar] defter kanca olayı=10; 001 işi 1 defterde teslim=1

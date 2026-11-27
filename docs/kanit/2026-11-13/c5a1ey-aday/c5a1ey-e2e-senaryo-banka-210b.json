@@ -1,0 +1,32 @@
+{
+  "ad": "c5a1ey-e2e-senaryo-banka-210b",
+  "komut": "npm run test:senaryo-banka-210b",
+  "commit": "fe2bca235bc864589310175885dd734187d0c18c",
+  "dal": "sinama-c5a1e",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-12T23:36:42.530Z",
+  "sure_sn": 89.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 90,
+    "gecen": 90,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../c5a1ey-kanit/2026-11-12/c5a1ey-e2e-senaryo-banka-210b.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-ya-ag",
+  "ham_cikti_sha256": "191bbc2574c7f1ed86e5457e64cf9c02f7d3d57892163e66d9157f8b75669ecc",
+  "ham_cikti_bayt": 8964
+}

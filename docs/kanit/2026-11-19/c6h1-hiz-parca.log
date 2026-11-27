@@ -1,0 +1,22 @@
+kilit ('2026-06-30',)
+yük 0.76 1.19 2.17 · kapsam 2026-06-30
+  build (canlı türetme): 2114 ms
+  book 2026 (live verildi): 239 ms
+  ruleDiff (live verildi): 2753 ms
+  değerleme girdisi (2 sorgu): 408 ms
+  Gelir Tablosu hesabı (incomeStatement): 101 ms
+  → madde 31140, fark 23771, dnk 5124820044
+  build (canlı türetme): 2305 ms
+  book 2026 (live verildi): 236 ms
+  ruleDiff (live verildi): 2726 ms
+  değerleme girdisi (2 sorgu): 356 ms
+  Gelir Tablosu hesabı (incomeStatement): 72 ms
+  → madde 31140, fark 23771, dnk 5124820044
+  build (canlı türetme): 1947 ms
+  book 2026 (live verildi): 227 ms
+  ruleDiff (live verildi): 2782 ms
+  değerleme girdisi (2 sorgu): 341 ms
+  Gelir Tablosu hesabı (incomeStatement): 59 ms
+  → madde 31140, fark 23771, dnk 5124820044
+yük 0.83 1.18 2.15
+çıkış 0

@@ -4,6 +4,7 @@
 import assert from "node:assert/strict";
 import { after, before, describe, test } from "node:test";
 import { ADMIN_PASSWORD, createUser, loginAdmin, startTestServer } from "./helpers.mjs";
+import { isoDay } from "../server/lib/plans.mjs";
 
 const data = response => (response.data && typeof response.data === "object" && "ok" in response.data ? response.data.data : response.data);
 const names = async (client, company) => {
@@ -39,7 +40,8 @@ describe("2.0.21 · aynı hesap iki pencerede: kayıt sayfanın şirketine yazı
     assert.deepEqual(await names(windowA, "sirket-001"), ["Bir Carisi"]);
     assert.deepEqual(await names(windowB, second.id), ["Eski Yol Kaydı", "İki Carisi"]);
     // Kasa ve okuma da aynı: A 001'in Kasa'sına yazar.
-    const today = new Date().toISOString().slice(0, 10);
+    // Program "bugün"ü yerel günle hesaplar (period.mjs today, plans.mjs isoDay); UTC günü yerel günden ayrışınca (İstanbul 00:00–03:00) yanlış gün olur (ders 13, 22).
+    const today = isoDay(new Date());
     assert.equal((await windowA.post("/api/workspace/cash?hofCompany=sirket-001", { kind: "in", amount: 100, date: today, description: "001 nakit" })).status, 200);
     assert.equal(data(await windowA.get("/api/workspace/cash?hofCompany=sirket-001")).totals.balance, 100);
     assert.equal(data(await windowB.get(`/api/workspace/cash?hofCompany=${second.id}`)).totals.balance, 0);

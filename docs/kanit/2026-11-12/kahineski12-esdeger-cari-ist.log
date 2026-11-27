@@ -1,0 +1,16 @@
+ÜRETİCİ: 20/20 aynı dizi (tur s1 + ux18, tohum 1–10 × 120 işlem)
+ADIMLAR: eski kopyadaki 91 elle senaryonun 0'inin adımları değişti: yok · yeni elle senaryo: d38-c5-s128-ozge-kalemli-kart
+EŞDEĞERLİK (2.4.9 / 2.4.6 / 2.4.5 / --legacy; eski kopyanın 91 elle + yeni kopyanın yeni 1 elle + 20 rastgele senaryo × 4 kip): 448/448 bayt bayt aynı
+G3 (kural 2.5.0; 112 senaryo — eski kopyanın 91 elle senaryosu + yeni elle + 20 rastgele): eski 48286 denetim · yeni 48488 denetim · değişen / kalkan / yeni toplam 202 · BEKLENMEYEN 0 · yalnız etiketi değişen 0
+  S128-alan      yeni       202
+      örn. d37-c5-s126-faturali-kart k1:cari:L14:acikEsitBakiye: "(denetim yok)" → false
+      örn. d37-c5-s126-faturali-kart k1:cari:L14:acikToplam: "(denetim yok)" → 30000
+      örn. d37-c5-s126-faturali-kart k1:cari:L14:gecikmis: "(denetim yok)" → 5000
+      örn. d37-c5-s126-faturali-kart k1:hareket:l14x:beklenen: "(denetim yok)" → ""
+G3 senaryo senaryo (sınıf/tür: adet; listede olmayan senaryoda fark 0):
+  d37-c5-s126-faturali-kart                S128-alan/yeni 13
+  d38-c5-s128-ozge-kalemli-kart            S128-alan/yeni 189
+# tests 560
+# pass 560
+# fail 0
+560/560 denetim geçti

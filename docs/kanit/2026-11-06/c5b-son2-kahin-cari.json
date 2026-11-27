@@ -1,0 +1,158 @@
+{
+  "ad": "c5b-son2-kahin-cari",
+  "komut": "node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs --cikti /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-kahin-cari-son2",
+  "commit": "25c449d9cf51d43a46f03ea9cea2f4767378ecbd",
+  "dal": "worktree-agent-ae5136939616adbab",
+  "kirli": 40,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T19:17:40.122Z",
+  "sure_sn": 160.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 10112,
+    "gecen": 9577,
+    "basarisiz": 535,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 535 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "[BULGU KULLANICI] k1:mizan:500: program \"okunamadı\" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:mizan:519: program \"okunamadı\" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k2:mizan:500: program \"okunamadı\" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k2:mizan:519: program \"okunamadı\" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k3:mizan:500: program \"okunamadı\" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k3:mizan:519: program \"okunamadı\" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k4:mizan:500: program \"okunamadı\" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k4:mizan:519: program \"okunamadı\" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k5:mizan:500: program \"okunamadı\" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k5:mizan:519: program \"okunamadı\" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k6:mizan:500: program \"okunamadı\" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k6:mizan:519: program \"okunamadı\" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:mizan:500: program \"okunamadı\" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:mizan:519: program \"okunamadı\" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k2:mizan:500: program \"okunamadı\" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k2:mizan:519: program \"okunamadı\" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k3:mizan:500: program \"okunamadı\" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k3:mizan:519: program \"okunamadı\" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:mizan:500: program \"okunamadı\" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:mizan:519: program \"okunamadı\" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k2:mizan:500: program \"okunamadı\" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k2:mizan:519: program \"okunamadı\" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k3:mizan:500: program \"okunamadı\" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k3:mizan:519: program \"okunamadı\" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k4:mizan:500: program \"okunamadı\" · kâhin 0 (C13.1 / C13.2 açılış karşılığı 519 (30.10 açılış düzeni; KG-5 A); 500 yalnız eşleştirme fişiyle; C13.3 carisiz evrak 649 (S49 A))",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-kanit/2026-11-06/c5b-son2-kahin-cari.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ae5136939616adbab",
+  "ham_cikti_sha256": "7b071f68e33e48323fa6d55070df6b8c97db09e8afa0825b66a488806429baf2",
+  "ham_cikti_bayt": 167893
+}

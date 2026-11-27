@@ -1,0 +1,32 @@
+{
+  "ad": "kahin-muhasebe-anaoturum-mutasyon",
+  "komut": "python3 test/bagimsiz/muhasebe/mutasyon.py",
+  "commit": "5e37f0ee4b8d2270e115a757d9cb80aff88e7c1f",
+  "dal": "claude/epic-thompson-w0lc2l",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T18:18:06.838Z",
+  "sure_sn": 182.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 57,
+    "gecen": 57,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/kahin-muhasebe-anaoturum-mutasyon.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "cf41b8a0fefaa795eaace58749c3abc831f62c8c58c3f3096ab39f376ff5c3dd",
+  "ham_cikti_bayt": 10187
+}

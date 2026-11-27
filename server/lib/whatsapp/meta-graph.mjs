@@ -242,11 +242,28 @@ export function graphBaseOk(baseUrl) {
 }
 
 /**
- * createMetaGraph({ baseUrl, fetchImpl, openToken, timeoutMs }) → { phoneNumbers, phoneLimit, templates, sendTemplate, request }.
+ * createMetaGraph({ baseUrl, fetchImpl, openToken, timeoutMs, onMetaError }) → { phoneNumbers, phoneLimit, templates, sendTemplate, request }.
  * openToken: () => belirteç (açık metin) — her istekte bir kez çağrılır; boş dönerse istek yapılmaz.
+ * onMetaError (2.5.0 W-1(a)): Meta'nın YANIT VERDİĞİ hata (reason "meta"; ör. 190 süresi dolmuş belirteç) fırlatılmadan hemen önce bir kez çağrılır — bağlantı
+ * "Süresi Doldu"yu buradan öğrenir. onMetaOk: Meta isteği kabul etti (2xx, hata gövdesi yok) — belirteç çalışıyor. Kancaların kendi hatası isteğin sonucunu değiştirmez.
  */
-export function createMetaGraph({ baseUrl = "", fetchImpl = (...args) => globalThis.fetch(...args), openToken = () => "", timeoutMs = TIMEOUT_MS } = {}) {
+export function createMetaGraph({ baseUrl = "", fetchImpl = (...args) => globalThis.fetch(...args), openToken = () => "", timeoutMs = TIMEOUT_MS, onMetaError = null, onMetaOk = null } = {}) {
   const base = String(baseUrl || "").replace(/\/+$/, "");
+  const noteMeta = error => {
+    try {
+      onMetaError?.(error);
+    } catch {
+      // kanca düşse de Meta'nın hatası olduğu gibi çağırana gider
+    }
+    return error;
+  };
+  const noteOk = () => {
+    try {
+      onMetaOk?.();
+    } catch {
+      // kanca düşse de yanıt olduğu gibi çağırana gider
+    }
+  };
 
   // op (2.4.9 W-4): isteğin türü — yalnız hata 100'ün başlığını seçer (metaTitle); hata sınıfını değiştirmez.
   async function request(method, parts, { query = {}, body = null, form = null, fresh = false, op = "" } = {}) {
@@ -311,22 +328,25 @@ export function createMetaGraph({ baseUrl = "", fetchImpl = (...args) => globalT
       const known = classifyMetaCode(failure.code);
       const details = clip(redact(failure.error_data?.details || failure.message || "", token), 200);
       const subcode = Number.isFinite(Number(failure.error_subcode)) ? Number(failure.error_subcode) : null;
-      throw new MetaGraphError({
-        code: Number.isFinite(Number(failure.code)) ? Number(failure.code) : null,
-        subcode,
-        httpStatus: status,
-        title: metaTitle(failure.code, { op, subcode, hint: redact(`${failure.message || ""} ${failure.error_data?.details || ""}`, token) }),
-        details,
-        fbtraceId: clip(failure.fbtrace_id, 60),
-        retry: known.retry,
-        kind: known.kind,
-        reason: "meta",
-      });
+      throw noteMeta(
+        new MetaGraphError({
+          code: Number.isFinite(Number(failure.code)) ? Number(failure.code) : null,
+          subcode,
+          httpStatus: status,
+          title: metaTitle(failure.code, { op, subcode, hint: redact(`${failure.message || ""} ${failure.error_data?.details || ""}`, token) }),
+          details,
+          fbtraceId: clip(failure.fbtrace_id, 60),
+          retry: known.retry,
+          kind: known.kind,
+          reason: "meta",
+        }),
+      );
     }
     if (status < 200 || status >= 300 || !json || typeof json !== "object") {
       // Gövdesiz ya da JSON olmayan yanıt (vekil hata sayfası, 5xx): Meta işledi mi bilinmez.
       throw new MetaGraphError({ title: `Meta'dan okunamayan yanıt geldi (HTTP ${status}); sonuç bilinmiyor.`, httpStatus: status, reason: "http", kind: "network", retry: status >= 500 || !status ? "unknown" : "never" });
     }
+    noteOk();
     return json;
   }
 
@@ -400,6 +420,15 @@ export function createMetaGraph({ baseUrl = "", fetchImpl = (...args) => globalT
     subscribedApps: async wabaId => {
       const json = await request("GET", [wabaId, "subscribed_apps"], { op: "lookup" });
       return (Array.isArray(json.data) ? json.data : []).map(item => ({ appId: String(item?.whatsapp_business_api_data?.id || ""), overrideUri: typeof item?.override_callback_uri === "string" ? item.override_callback_uri : "" }));
+    },
+    // 2.5.0 W-2: Bağlantıyı Kaldır — uygulamanın bu WABA'ya aboneliği Meta'da silinir: DELETE /<WABA_ID>/subscribed_apps → { success: true } (Meta belgesi
+    // developers.facebook.com/docs/whatsapp/embedded-signup/webhooks "Unsubscribe from webhooks", 05.11.2026 okundu). Alternatif adres de abonelikle gider.
+    // Belirtecin kendisini uygulama tarafından iptal eden bir uç belgede YOK (facebook-login-for-business: işletme entegrasyonu sistem kullanıcısı belirtecini
+    // müşteri Business Settings → Integrations → Connected apps'ten kaldırır) — program yalnız aboneliği siler. success true değilse sonuç bilinmiyor sayılır.
+    unsubscribeApp: async wabaId => {
+      const json = await request("DELETE", [wabaId, "subscribed_apps"], { op: "unsubscribe" });
+      if (json.success === true || json.success === "true") return true;
+      throw new MetaGraphError({ title: "Meta abonelik silme isteğine beklenen yanıtı vermedi; aboneliğin silinip silinmediği bilinmiyor.", httpStatus: 200, reason: "body", kind: "network", retry: "unknown" });
     },
     // ---------- 2.4.8 W7: "WhatsApp'ı Bağla" sonrası Meta adımları (plan §2.8; D0 — META_D0_W7) ----------
     // Birlikte kullanım DEĞİLSE numara Cloud API'ye kaydedilir (iki adımlı doğrulama PIN'i programca üretilir).
@@ -616,7 +645,7 @@ export function createMetaTemplates(options = {}) {
     if (failure && typeof failure === "object") {
       const known = classifyMetaCode(failure.code);
       const subcode = Number.isFinite(Number(failure.error_subcode)) ? Number(failure.error_subcode) : null;
-      throw new MetaGraphError({
+      const error = new MetaGraphError({
         code: Number.isFinite(Number(failure.code)) ? Number(failure.code) : null,
         subcode,
         httpStatus: status,
@@ -627,6 +656,13 @@ export function createMetaTemplates(options = {}) {
         kind: known.kind,
         reason: "meta",
       });
+      // 2.5.0 W-1(a): yükleme adımının Meta hatası da bağlantıya bildirilir (createMetaGraph onMetaError ile aynı kanca).
+      try {
+        options.onMetaError?.(error);
+      } catch {
+        // kanca düşse de hata olduğu gibi gider
+      }
+      throw error;
     }
     if (status < 200 || status >= 300 || !json || typeof json !== "object") throw new MetaGraphError({ title: `Meta'dan okunamayan yanıt geldi (HTTP ${status}); sonuç bilinmiyor.`, httpStatus: status, reason: "http", kind: "network", retry: status >= 500 || !status ? "unknown" : "never" });
     return json;

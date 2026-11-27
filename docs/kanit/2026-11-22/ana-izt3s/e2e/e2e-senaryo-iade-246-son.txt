@@ -1,0 +1,25 @@
+  ✓ veri tabanı: {"id":"smove-4d781c60-3185-4aa9-8e2e-398e944381ed","kind":"out","reason":"preturn","pay":"account","qty":2,"amount":200,"accountId":"account-e082d043-e8e2-4aad-81e9-cba7bf614fef","note":"kusurlu parti"}
+  ✓ tedarikçide Borç satırı: {"kind":"debt","amount":200,"note":"Alış iadesi: Cam Panel E246 2 Adet × 100,00 TL · kusurlu parti"}
+  ✓ stok 2 azaldı
+  ✓ alış faturası P: 500 → 300 açık (bağsız ödeme, en eski)
+  ✓ ürün kartının hareketlerinde “Tedarikçiye İade”
+
+■ S2 Tedarikçi kartı → Tahsilat → Geri Ödenen İade
+  ✓ Kapatılacak Fatura seçenekleri: [["","Otomatik (Vadesi En Önce Gelen)"],["smove-4d781c60-3185-4aa9-8e2e-398e944381ed","İade Geri Ödemesi · Alış İadesi (Faturasız) · Cam Panel E246 · 22.11.2026 · ₺200,00 · kalan ₺200,00"]]
+  ✓ veri tabanı: {"kind":"in","amount":200,"refundOf":"smove-4d781c60-3185-4aa9-8e2e-398e944381ed","invoiceId":""}
+  ✓ iade geri ödendi: P 500 açık
+
+■ S3 Müşteri kartı → Ödeme → Geri Ödenen İade (DB1)
+  ✓ müşteriye Ödeme'de Kapatılacak Fatura: Otomatik + iade (["","smove-b2833f4a-c840-4898-a0fb-0bd35576e634"])
+  ✓ Tab ile Kapatılacak Fatura
+  ✓ Kapatılacak Fatura klavyeyle: İade Geri Ödemesi (faturasız Satış İadesi)
+  ✓ veri tabanı: {"kind":"out","amount":300,"refundOf":"smove-b2833f4a-c840-4898-a0fb-0bd35576e634","invoiceId":""}
+  ✓ B 500 açık (DB1 öncesi 200)
+  ✓ hareketlerde “İadeye Bağlı” etiketi
+  ✓ takvim / zil: [["account",300],["invoice",500]]
+
+■ S4 bakiye
+  ✓ müşteri 800 (800), tedarikçi -500 (−500)
+  ✓ sayfa hatası yok: 
+
+26 geçti, 0 kaldı

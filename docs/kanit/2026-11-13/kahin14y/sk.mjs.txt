@@ -1,0 +1,51 @@
+// Ana oturum — cari kâhini bakımı 14'ün dört sorusunda (SK-27, SK-28 a / b, SK-29) PROGRAMIN bugünkü sayıları (gerçek program; dar kontrolün koşum aracıyla).
+// Kullanım (dar kontrol klasöründen göreli içe aktarma yüzünden): cd <dk-c5bkap-x7> && ROOT=<kod> node <bu dosya>
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+const K = await import(pathToFileURL(path.join(process.cwd(), "betik/k.mjs")).href);
+const { boot, day, tum, integrity, print } = K;
+const out = {};
+const kisa = v => ({ bakiye: v.bakiye, gecikmisKart: v.gecikmisKart, gecikmisListe: v.gecikmisListe, vadeGecikmis: v.vadeGecikmis, zilGecikmis: v.zilGecikmis, vadeTakip: v.vade, zil: v.zil, kalan: v.kalan, kartlar: v.kartlar.map(k => ({ items: k.items, own: k.own, paid: k.paid, overdue: k.overdue })), sigma: v.sigmaTutuyor });
+const SEC = process.argv[2] ? new Set(process.argv[2].split(",")) : null;
+const scen = async (name, build) => {
+  if (SEC && !SEC.has(name)) return;
+  const h = await boot({ now: { time: "2026-10-20T12:00:00+03:00", fixed: false } });
+  const tick = () => h.server.clock.advance({ seconds: 37 });
+  try {
+    const a = await h.account(name);
+    const extra = await build(h, a, tick);
+    const v = await tum(h, a, extra || {});
+    out[name] = { ...kisa(v), mutabakat: (await integrity(h)).ok };
+  } catch (e) { out[name] = { HATA: String(e.message).slice(0, 500) }; } finally { await h.server.close(); }
+};
+const doubt = (h, a, amount, date) => h.must("şüpheliye al", h.api.post(`/api/workspace/accounts/${a.id}/doubtful`, { amount: String(amount), date, reason: "lawsuit", note: "dava" }));
+// SK-29 (kararın örneği biçiminde): F 200 (vade −150) · Borç 1.000 (vade −140) · Borç 500 (vade −130) · Şüpheli 900 → bakiye 1.700. Gecikmiş: görünen kalemlerden 800 mü, defter kuyruğundan 1.700 mü?
+await scen("SK29", async (h, a, tick) => {
+  await h.sale(a, day(-150), 200, day(-150)); tick();
+  await h.entry(a, { kind: "debt", amount: "1000", date: day(-145), dueDate: day(-140), note: "B1000" }); tick();
+  await h.entry(a, { kind: "debt", amount: "500", date: day(-135), dueDate: day(-130), note: "B500" }); tick();
+  await doubt(h, a, 900, day(-30));
+});
+// SK-27: Borç X 400 · kart 400 (2 × 200; vadeler −170 / −140) · fatura F 600 (−160) · Şüpheli 300 → bakiye 1.000. A: taksit 1 yok, F 500, taksit 2 200 · B: F 300, taksitler 200 / 200.
+await scen("SK27", async (h, a, tick) => {
+  await h.entry(a, { kind: "debt", amount: "400", date: day(-200), note: "X400" }); tick();
+  const plan = await h.cardOpen(a, 400, 2, { registeredOn: day(-185), firstDue: day(-170) }); tick();
+  await h.sale(a, day(-160), 600, day(-160)); tick();
+  await doubt(h, a, 300, day(-150));
+  return { plans: [plan.plan?.id || plan.id] };
+});
+// SK-28 (a): Borç X 600 (−140; vade −111) · Şüpheli 400 (−136) · fatura F 300 (−133; vade −133) → bakiye 900. O1 (kontrol anı): F yok, X 500 · O2 (şüphelinin günü): X 200, F 300.
+await scen("SK28a", async (h, a, tick) => {
+  await h.entry(a, { kind: "debt", amount: "600", date: day(-140), dueDate: day(-111), note: "X600" }); tick();
+  await doubt(h, a, 400, day(-136)); tick();
+  await h.sale(a, day(-133), 300, day(-133));
+});
+// SK-28 (b): F 800 (−150) · Borç X 500 (−140) · Şüpheli 900 (−130) · F'ye BAĞLI tahsilat 300 → bakiye 1.000. A: X 400 · B: X 100.
+await scen("SK28b", async (h, a, tick) => {
+  const f = await h.sale(a, day(-150), 800, day(-150)); tick();
+  await h.entry(a, { kind: "debt", amount: "500", date: day(-140), dueDate: day(-140), note: "X500" }); tick();
+  await doubt(h, a, 900, day(-130)); tick();
+  await h.entry(a, { kind: "in", amount: "300", date: day(-120), invoiceId: f });
+  return { invoices: [f] };
+});
+print(out);

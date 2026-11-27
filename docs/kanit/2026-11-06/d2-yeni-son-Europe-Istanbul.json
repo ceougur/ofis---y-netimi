@@ -1,0 +1,32 @@
+{
+  "ad": "d2-yeni-son-Europe-Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/devir-d2-bakim-250.test.mjs test/devir-d2-arsiv-250.test.mjs test/devir-d2-yedek-250.test.mjs",
+  "commit": "33e5b5785c6e628d4e013d391f3e9fa1f702d036",
+  "dal": "worktree-agent-ab27a0002c2919cb2",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T11:52:40.793Z",
+  "sure_sn": 27.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 20,
+    "gecen": 20,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2-calisma/kanit/2026-11-06/d2-yeni-son-Europe-Istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ab27a0002c2919cb2",
+  "ham_cikti_sha256": "d5fba0470a648554a3f75a2d2fb99df1041bdb00ab8204cd0b76dbc504d1a421",
+  "ham_cikti_bayt": 10640
+}

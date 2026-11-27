@@ -220,7 +220,7 @@ describe("2.1.0 Rapor Merkezi BANKALI veriyle: bütün para raporları × bütü
     // 15) 70: Ayşe'nin mevcut borcunun 150'si 3 taksitli karta; 60 gün önce 100 nakit.
     const firstDue = ago(40);
     const cover = await must("mevcut borç kartı", api.post("/api/workspace/plans", { name: accName.A, registeredOn: ago(70), total: "150", accountId: ids.A, mode: "auto", count: "3", firstDue, coversBalance: true }));
-    E.plans.push({ acc: "A", total: 150, items: [0, 1, 2].map(i => ({ due: addMonths(firstDue, i), amount: 50 })) });
+    E.plans.push({ acc: "A", total: 150, cover: true, items: [0, 1, 2].map(i => ({ due: addMonths(firstDue, i), amount: 50 })) });
     await must("kart tahsilatı", api.post(`/api/workspace/plans/${cover.id}/entries`, { kind: "in", amount: "100", date: ago(60), method: "cash" }));
     E.cash.push({ d: ago(60), amt: 100 });
     E.cari.push({ d: ago(60), acc: "A", debit: 0, credit: 100, tag: "plan" });
@@ -285,6 +285,8 @@ describe("2.1.0 Rapor Merkezi BANKALI veriyle: bütün para raporları × bütü
   // ---------- Bağımsız beklenen hesaplar ----------
   const balanceOf = (acc, range) => sum(E.cari.filter(r => r.acc === acc && (!range?.to || r.d <= range.to)), r => r.debit - r.credit);
   const allBalance = acc => balanceOf(acc, null);
+  // S229 = A (20.11.2026): "Carinin Mevcut Borcu" kartının aldığı ve henüz ödenmemiş kısım (kartın kalanı) Açık Faturalar'da faturadan düşer — o kısım kartın taksitlerinde.
+  const coverLeft = acc => sum(E.plans.filter(p => p.cover && p.acc === acc), p => sum(p.items, it => it.remaining));
   const live = () => E.inv.filter(r => !r.cancelled);
   const KEYS = ["A", "B", "C", "S", "D", "X"];
   const movement = (list, range) => ({
@@ -471,7 +473,9 @@ describe("2.1.0 Rapor Merkezi BANKALI veriyle: bütün para raporları × bütü
       assert.equal(signed("102"), toEnd(E.bank), "102 Bankalar = açılışlar + bağlı hareketler (transfer net 0)");
       // 120 + 320 (cari) toplamı = carilerin net bakiyesi; 500 = −açılışlar (banka hesapları + 2.2.0 İz 1.3: Kasa açılışı).
       const openings = r2(sum(E.bank.filter(r => r.adjust && (!range?.to || r.d <= range.to)), r => r.amt) + sum(E.cash.filter(r => r.opening && (!range?.to || r.d <= range.to)), r => r.amt));
-      assert.equal(signed("500"), r2(0 - openings) || 0, "500 Açılış = banka açılışları + Kasa açılışı");
+      // 2.5.0 Ç5-A (G3: KG-1, M-01 / M-04 — açılışların karşı hesabı 519; 500 Sermaye boş): 519 = banka açılışları + Kasa açılışı.
+      assert.equal(signed("519"), r2(0 - openings) || 0, "519 Açılış = banka açılışları + Kasa açılışı");
+      assert.equal(signed("500") || 0, 0, "500 Sermaye boş (yalnız Açılış Eşleştirme Fişi)");
     },
     yevmiye(data, c, range) {
       const b = col(data, "Borç");
@@ -614,7 +618,7 @@ describe("2.1.0 Rapor Merkezi BANKALI veriyle: bütün para raporları × bütü
     "acik-faturalar"(data, c) {
       const filter = key => !c.account || c.account === key;
       // Taksitli fatura (Bora) taksit kartında izlenir; peşin ödenmiş ve iade edilmiş faturalar açık değildir.
-      assert.equal(summaryOf(data, "Açık Alacak"), sum(["A", "C", "D"].filter(filter), k => Math.max(0, allBalance(k))), "açık alacak");
+      assert.equal(summaryOf(data, "Açık Alacak"), sum(["A", "C", "D"].filter(filter), k => r2(Math.max(0, allBalance(k)) - coverLeft(k))), "açık alacak (Mevcut Borç kartının kalanı düşülmüş — S229 = A)");
       assert.equal(summaryOf(data, "Açık Borç"), sum(["S", "X"].filter(filter), k => Math.max(0, -allBalance(k))), "açık borç");
       for (const row of data.rows) if (c.account) assert.equal(row[col(data, "Cari")], accName[c.account], "cari süzgeci");
     },

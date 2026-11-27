@@ -1,0 +1,10 @@
+#!/bin/bash
+# t3hiz: ÖZEL ölçüm kilidi BİR kez (tek seferlik bekler) → (1) temiz veride Mutabakat Testi / Yevmiye bütün zaman ayrıştırması (ana · Ç7a a3 · tur 3 s1 · uç; iki tur), (2) kilitli kip önce / sonra (hiz3).
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad; A=$S/t3hiz-a
+exec 9>"$S/olcum.lock"; flock -x -w 3600 9 || { echo "KİLİT ALINAMADI — ÖLÇÜLEMEDİ"; exit 3; }
+export KILIT_ALINDI=1
+echo "kilit $(date -u +%H:%M:%S) · yük $(cut -d' ' -f1-3 /proc/loadavg)"
+bash $A/ayristir.sh $A/mt-d2.txt d2 kilitsiz 5 mtest,yevall ana a3 s1 uc2 ana a3 s1 uc2
+echo "ayrıştırma bitti $(date -u +%H:%M:%S)"
+bash $A/hiz3.sh kilitli uc2 5
+echo "bitti $(date -u +%H:%M:%S) · yük $(cut -d' ' -f1-3 /proc/loadavg)"

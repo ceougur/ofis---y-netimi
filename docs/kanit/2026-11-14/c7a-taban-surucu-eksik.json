@@ -1,0 +1,32 @@
+{
+  "ad": "c7a-taban-surucu-eksik",
+  "komut": "node test/bagimsiz/muhasebe-surucu/kos.mjs --senaryo s103-s79-olagan-bag-cari,s104-s80-formdaki-pesin-cari,s106-s83-alis-formundaki-pesin-odeme-cari,s107-s84-formdaki-pesin-bagi,s109-s85-geri-yuklenmis-cari-tutar,s17-cari-duzeltme-kg16,s30-kilit-kural-farki-kg15,s71-s20-yedekten-eski-veri-kasa,s76-s26-geri-yuklenen-kasa-tutar-duzelt,s79-s40-geri-yuklenen-kasa-tutar-disi-alan,s80-s44-geri-yuklenen-kasa-fatura-bagi,s81-s44-geri-yuklenen-kasa-taksit-normal-cari,s82-s45-bagli-geri-yuklenen-kayit-cari,s83-s47-b6-acilis-olabilir-bekleyis,s87-s51-geri-alinan-acilis,s89-s53-kilitsiz-gecmis-yil,s90-s53-kilitli-gecmis-yil,s92-b11-kasa-acilis-oncesi-duzeltme,s94-s54-ayni-duzeltmede-bag-cari,s95-s55-bag-hedefi-sonra,s96-s56-s44-normal-cari-siniri,s97-s57-olagan-bagli-kayit-cari,s98-s65-acilis-ortada --program /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-k4/taban-kod --cikti /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-k4/surucu-taban-eksik",
+  "commit": "87c7dd12ff987444d90469324627f2c64e61d939",
+  "dal": "worktree-agent-a2a0272debd031466",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v470 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-14T06:22:40.286Z",
+  "sure_sn": 41.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2064,
+    "gecen": 1776,
+    "basarisiz": 288,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 288 başarısız, 0 iptal",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-k4/kanit/2026-11-14/c7a-taban-surucu-eksik.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a2a0272debd031466",
+  "ham_cikti_sha256": "cc3007ba7a0e4d4fd15598713fa78211499a0591bc32910516ae5807b7a2503d",
+  "ham_cikti_bayt": 44060
+}

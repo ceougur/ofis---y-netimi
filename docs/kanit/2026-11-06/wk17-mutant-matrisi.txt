@@ -1,0 +1,42 @@
+komut: TZ=UTC python3 -I /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wk17-calisma/araclar/mutant_matrisi.py /home/user/ofis---y-netimi/.claude/worktrees/agent-af5d3ff11385d060f/test/bagimsiz/whatsapp-248/kahin
+commit: bb920588 (+ çalışma ağacı)
+zaman: 2026-11-06T08:46:51Z
+---
+senaryo 18; mutant 35
+M236: değerle 3 ['S16-02-', 'S34-01-', 'S34-02-'] | istisnayla 0 []
+M237: değerle 2 ['S34-01-', 'S34-02-'] | istisnayla 0 []
+M238: değerle 5 ['S30-01-', 'S30-02-', 'S30-03-', 'S35-01-', 'S35-02-'] | istisnayla 0 []
+M239: değerle 5 ['S30-01-', 'S30-02-', 'S30-03-', 'S35-01-', 'S35-02-'] | istisnayla 0 []
+M240: değerle 1 ['S30-03-'] | istisnayla 0 []
+M241: değerle 4 ['S30-01-', 'S30-03-', 'S36-01-', 'S36-02-'] | istisnayla 0 []
+M242: değerle 2 ['S36-01-', 'S36-02-'] | istisnayla 0 []
+M243: değerle 2 ['S37-01-', 'S37-02-'] | istisnayla 0 []
+M244: değerle 2 ['S37-01-', 'S37-02-'] | istisnayla 0 []
+M245: değerle 2 ['S38-01-', 'S38-02-'] | istisnayla 0 []
+M246: değerle 1 ['S38-01-'] | istisnayla 0 []
+M247: değerle 1 ['S33-01-'] | istisnayla 0 []
+M248: değerle 2 ['S41-01-', 'S41-02-'] | istisnayla 0 []
+M249: değerle 1 ['S41-01-'] | istisnayla 0 []
+M250: değerle 2 ['S33-02-', 'S41-02-'] | istisnayla 0 []
+M200: değerle 2 ['S16-02-', 'S34-01-'] | istisnayla 0 []
+M24: değerle 2 ['S33-01-', 'S41-01-'] | istisnayla 0 []
+M102: değerle 2 ['S36-01-', 'S36-02-'] | istisnayla 0 []
+M114: değerle 1 ['S35-02-'] | istisnayla 0 []
+M198: değerle 1 ['S34-02-'] | istisnayla 0 []
+M218: değerle 1 ['S37-01-'] | istisnayla 0 []
+M225: değerle 5 ['S30-01-', 'S30-02-', 'S30-03-', 'S35-01-', 'S35-02-'] | istisnayla 0 []
+M226: değerle 6 ['S30-01-', 'S30-02-', 'S30-03-', 'S35-02-', 'S36-01-', 'S36-02-'] | istisnayla 0 []
+M227: değerle 2 ['S30-01-', 'S35-01-'] | istisnayla 0 []
+M228: değerle 5 ['S30-01-', 'S30-02-', 'S30-03-', 'S35-01-', 'S35-02-'] | istisnayla 0 []
+M229: değerle 1 ['S30-03-'] | istisnayla 0 []
+M230: değerle 2 ['S30-01-', 'S36-01-'] | istisnayla 0 []
+M231: değerle 2 ['S30-01-', 'S36-01-'] | istisnayla 0 []
+M232: değerle 2 ['S38-01-', 'S38-02-'] | istisnayla 0 []
+M233: değerle 1 ['S38-01-'] | istisnayla 0 []
+M234: değerle 2 ['S38-01-', 'S38-02-'] | istisnayla 0 []
+M235: değerle 2 ['S30-01-', 'S36-01-'] | istisnayla 0 []
+M215: değerle 8 ['S30-01-', 'S30-02-', 'S30-03-', 'S35-02-', 'S36-01-', 'S36-02-', 'S38-01-', 'S38-02-'] | istisnayla 0 []
+M219: değerle 8 ['S30-01-', 'S30-02-', 'S35-01-', 'S35-02-', 'S36-01-', 'S36-02-', 'S37-01-', 'S38-02-'] | istisnayla 0 []
+M221: değerle 3 ['S35-01-', 'S38-01-', 'S38-02-'] | istisnayla 0 []
+DEĞERLE YAKALANMAYAN YENİ MUTANT: YOK
+--- çıkış 0

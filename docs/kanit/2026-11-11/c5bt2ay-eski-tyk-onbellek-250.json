@@ -1,0 +1,38 @@
+{
+  "ad": "c5bt2ay-eski-tyk-onbellek-250",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/tyk-onbellek-250.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v338 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-11T00:29:50.157Z",
+  "sure_sn": 9.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 5,
+    "gecen": 4,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.0 Ç5-B tur 2a — TYK önbelleği (Y-3): iz bütün girdileri kapsar, izi değişmeyen yazımda önbellek korunur › cariye dokunmayan yazım (stok girişi, oturum açma, cari notu, Kasa ayarı) bütün carileri yeniden kurmaz; cari yazımı yalnız o cariyi",
+      "konum": "test/tyk-onbellek-250.test.mjs:66:3",
+      "hata": "stok girişi (cari / para yok): bütün carilerin defteri kurulmaz · 1 !== 0 (beklenen 0, gelen 1)"
+    }
+  ],
+  "ham_cikti": "../c5bt2ay-kanit/2026-11-11/c5bt2ay-eski-tyk-onbellek-250.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2ay-eski",
+  "ham_cikti_sha256": "987504a42b60d33223c5ee54172441eda6c2add354bfafbd4b3a2390dd711854",
+  "ham_cikti_bayt": 5057
+}

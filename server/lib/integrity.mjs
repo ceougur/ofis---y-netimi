@@ -26,16 +26,23 @@
 // tam denetim reddederse işlem 500 "gate-equivalence" ile kırılır. Tam tarama (açılış, Mutabakat Testi, 15 dakikada bir) değişmedi.
 import { createHash } from "node:crypto";
 import { HttpError } from "./http.mjs";
+import { eachRow } from "./lean-rows.mjs";
+import { boundedDetail } from "./log-detail.mjs";
 import { UNASSIGNED_SUBS, partyBalances, subBalances } from "./general-ledger.mjs";
 import { byEntity, createBankChecks } from "./bank/checks.mjs";
 import { collectionProblems } from "./bank/collections.mjs";
 import { doubtfulProblems, doubtfulSummary, doubtfulUsed } from "./bank/doubtful.mjs";
+import { voucherProblems } from "./ledger-vouchers.mjs";
 import { BANK_SUBS, DOCUMENT_MAINS, DOCUMENT_SUB_NAMES, RECEIVED_MAINS, documentGl, documentWanted } from "./cheque-gl.mjs";
 import { compareVersions } from "./semver.mjs";
 import { CHEQUE_BOND_BAD, createScopedGate, familyOf } from "./integrity-scope.mjs";
 import { runScanWorker } from "./integrity-scan-runner.mjs";
+import { cashBeforeOpening, cashExplained, cashRestoreMark } from "./cash-opening.mjs";
+import { ledgerBalanceOf, openingCounterpart, openingMatchState, openingReviewDrift, unlockedPastYears } from "./ledger-opening.mjs";
 import { systemClock } from "./clock.mjs";
+import { RULE_SHIFT_KEY } from "./ledger-rule-shift.mjs";
 import { roundMoney, toCents } from "./money.mjs";
+import { closeDaySql, waivedOf, waivesSql } from "./accounts.mjs";
 
 const CHEQUE_BOND_SQL = `SELECT ev.id FROM cheque_events ev JOIN cheques c ON c.id = ev.cheque_id LEFT JOIN invoices i ON i.id = ev.invoice_id WHERE ${CHEQUE_BOND_BAD} LIMIT 5`;
 const AMOUNT_COLUMNS = [
@@ -71,10 +78,20 @@ export class GateEquivalenceError extends HttpError {
   }
 }
 
+// Birleşik tur 8 (S145 = A, S155 = A — KULLANICI KARARI 13.11 08:35 AYNEN: "Şüpheli Alacak kuralının ölçüsü TOPLAM borçtur: bir kayıt … ancak 'kayıttan sonra carinin borcu açık
+// şüpheli tutarın altına düşüyorsa' reddedilir … anlaşılır ileti bu kurala göre yazılır"): yalnız ret nedeni şüpheli kuralıysa (doubtful:balance) ileti anlaşılır cümle; KURAL,
+// durum kodu (409 ledger-integrity) ve kapının öbür nedenlerdeki genel iletisi AYNEN.
+const doubtfulText = failures => {
+  if (!failures.length || !failures.every(item => item.code === "doubtful:balance")) return "";
+  const party = failures[0].figures?.[0];
+  if (!party) return "";
+  return `Bu kayıt carinin borcunu açık şüpheli tutarın altına düşürür (borç ${money((party.balanceMinor || 0) / 100)}, açık şüpheli ${money((party.openMinor || 0) / 100)}); kaydı şüpheliye alma tarihinden sonraya girin ya da önce şüpheli kaydını düzeltin.`;
+};
+
 export class IntegrityError extends HttpError {
   constructor(failures) {
     const first = failures[0];
-    super(409, `İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (${first.name}${first.difference ? `: ${money(first.difference)} fark` : ""}). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.`, { code: "ledger-integrity", failures });
+    super(409, doubtfulText(failures) || `İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (${first.name}${first.difference ? `: ${money(first.difference)} fark` : ""}). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.`, { code: "ledger-integrity", failures });
     this.failures = failures;
   }
 }
@@ -112,6 +129,12 @@ const TABLE_LABEL = {
   fin_events: "Finansal İşlemler",
 };
 const labelOf = table => TABLE_LABEL[table] || table;
+// 2.5.0 Ç3: LOCK_SQL tanımının sürümü — en yeni girdinin "since"i (test/donmus-defter-250.test.mjs denetler). Donmuş defter koşusu kaynak izini bu tanımla saklar
+// (ledger_snapshot_runs.digest_version); tanım büyüyünce bu sürüm yükselir, eski koşunun izi kendi sürümüyle karşılaştırılır (lockDigestOf version).
+// 2.5.0 Ç7b (B-7): "2.5.1" — kalem istisna kodu girdisi (invoice_lines_export_lock); 2.5.0'ın koşuları kendi tanımıyla karşılaştırılır.
+// 2.5.0 Ç7b tur 2d (tur 2c kararı (2)): "2.5.2" — kural geçiş günü ve eski KDV mahsubunun kural sürümü (rule_shift_lock, vat_offsets_rule_lock); 2.5.1 ve öncesinin koşuları kendi tanımıyla.
+// 2.5.0 Ç7b tur 2e (B-12): aynı sürüme faturanın KDV İndirim Dönemi (invoices_vat_period_lock) — 2.5.2 yayımlanmadığından numara değişmez.
+export const LOCK_SQL_VERSION = "2.5.2";
 // Kapanmış dönemin parmak izi: kilit tarihi ve öncesindeki her para satırı (tutar, yön, yol, tarih, cari/kalem bağı) ve
 // o dönemde cariye borç yazan kartlar. Kilit altındaki tek bir satır değişirse, silinirse ya da eklenirse iz değişir.
 const LOCK_SQL = {
@@ -153,14 +176,17 @@ const LOCK_SQL = {
   // 2.0.13 öncesi kapatılmışta son güncelleme günü; Kayıt Tarihi'nden önce değil — aynı ifade). Kartın yeniden açılması, silinmesi,
   // tutarı, carisi (ve carinin türü) ya da sonradan gelen tahsilatı kilitli mizanı değiştirir. Kart güncellenirken eski kartın
   // kapanış günü yazılır (plans.mjs FREEZE_CLOSE); gün aynı kaldığı için iz değişmez.
+  // 2.5.0 Ç7b tur 3b (karar (6) "Borçta Kalsın"; docs/erp/C7B-FATURA-TASARIM.md §17.1): YALNIZ kalanı düşülen (eski kural, göç 53 '2.4.9') kart — Borçta Kalsın kartının kapanışı
+  // defter olayı değildir (689 yok), kilide girmez. Göç 53'ten sonra v2.4.9 verisinde bütün kapalı kartlar '2.4.9' → satırlar AYNEN (eski koşuların izi değişmez). Kural işaretinin
+  // kendisi ayrıca plans_close_rule_lock'ta.
   plans_close_lock: {
-    requires: ["plans", "plan_entries", "accounts"],
+    requires: ["plans", "plan_entries", "accounts", "plans.close_rule"],
     sql: `SELECT * FROM (
             SELECT p.id, p.account_id, COALESCE(a.type, '') AS party, p.total,
                    MAX(COALESCE(p.closed_at, substr(p.updated_at, 1, 10)), COALESCE(NULLIF(p.registered_on, ''), substr(p.created_at, 1, 10))) AS closed_on,
                    ROUND(p.total - COALESCE((SELECT SUM(CASE WHEN e.kind = 'in' THEN e.amount ELSE -e.amount END) FROM plan_entries e WHERE e.plan_id = p.id), 0), 2) AS waived
             FROM plans p LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL
-            WHERE p.deleted_at IS NULL AND p.status = 'closed')
+            WHERE p.deleted_at IS NULL AND ${waivesSql("p")})
           WHERE closed_on <= ?1 ORDER BY id`,
   },
   // v2.1.0 (v20, §5.5): banka girdileri. Eski veride satır üretmezler (yeni kolonlar boş, yeni tablolar boş): göçten sonra kilit izi
@@ -214,6 +240,112 @@ const LOCK_SQL = {
   // MM4: açılış stoku (B 153 / A 500) değeri miktar × birim fiyattır; kapanmış dönemdeki açılışın birim fiyatı ya da işareti değişirse mizan kayar.
   stock_opening_lock: { requires: ["stock_moves.is_opening"], since: "2.4.3", sql: "SELECT id, qty, unit_price, is_opening FROM stock_moves WHERE is_opening = 1 AND date <= ?1 ORDER BY id" },
   cash_tax_lock: { requires: ["cash_entries.tax_json"], since: "2.4.3", sql: "SELECT id, tax_json FROM cash_entries WHERE tax_json <> '' AND date <= ?1 ORDER BY id" },
+  // 2.5.0 Ç2: saklanan fiş defteri — kapanmış dönemdeki fişin her satırı (hesap, alt hesap, cari, tutar) ve fişin türü / sınıfı / ters kayıt bağı. Fiş tetikleyiciyle
+  // değiştirilemez; bu girdi kilitli tarihe eklenen (kilit değişmeden) ya da store dışından silinen fişi yakalar. Fişi olmayan veride satır üretmez (iz 2.4.9 ile birebir).
+  ledger_vouchers_lock: {
+    requires: ["ledger_vouchers", "ledger_voucher_lines"],
+    since: "2.5.0",
+    sql: `SELECT v.id, v.year, v.no, v.date, v.type, v.journal_class, COALESCE(v.reversal_of, '') AS reversal_of, v.total_minor, l.seq, l.account, l.sub, l.party, l.debit_minor, l.credit_minor
+          FROM ledger_vouchers v JOIN ledger_voucher_lines l ON l.voucher_id = v.id WHERE v.date <= ?1 ORDER BY v.id, l.seq`,
+  },
+  // 2.5.0 Ç5-A tur 1e (dar kontrol G-1; docs/erp/C5-ACILIS-TASARIM.md §15): Ç5-A'nın açılışı İŞARETTEN tanıyan türetmesinin girdileri — kilitli dönemdeki açılış işaretli Kasa
+  // satırı, açılış işaretli cari satırı, açılış evrakı ve Kayıt Tarihi kilitte olan YÜKLENMİŞ kartın yükleme bağı / yükleme damgası (KG-5). Kapıdan geçen hiçbir yol kilitli satırda bu
+  // alanları değiştirmez (yalnız göçler ve INSERT'ler yazar; kilitli tarihe INSERT / DELETE zaten izde); kapı dışı değişiklik (eski sürüm, elle) böylece kilitli kaynak değişikliği gibi
+  // bulunur (period-lock, ledger:snapshot "Donmuş Dönemin Kaynağı Değişti"). Satır KİMLİKLERİYLE (sayı / toplam değil): hesap dağılımını değiştiren yer değiştirme de izi değiştirir.
+  // KG-16 durumu (opening_review) İZE GİRMEZ (K8-2: kilitli satırda kapıdan geçerek değişir) — onun kapı dışı değişikliği "opening:review" denetimiyle bulunur (lib/ledger-opening.mjs).
+  // Süzgeç (lib/integrity-scope.mjs LOCK_FIELDS) aynı alanları bilir. İşaretsiz / yüklenmemiş veride satır üretmez.
+  cash_opening_lock: { requires: ["cash_entries.is_opening"], since: "2.5.0", sql: "SELECT id FROM cash_entries WHERE is_opening = 1 AND date <= ?1 ORDER BY id" },
+  account_opening_lock: { requires: ["account_entries.is_opening"], since: "2.5.0", sql: "SELECT id FROM account_entries WHERE is_opening = 1 AND date <= ?1 ORDER BY id" },
+  cheques_opening_lock: { requires: ["cheques.is_opening"], since: "2.5.0", sql: "SELECT id FROM cheques WHERE is_opening = 1 AND issue_date <= ?1 ORDER BY id" },
+  plans_import_lock: {
+    requires: ["plans.import_id", "plan_imports"],
+    since: "2.5.0",
+    sql: `SELECT p.id, p.import_id, COALESCE((SELECT x.created_at FROM plan_imports x WHERE x.id = p.import_id), '') AS imported FROM plans p
+          WHERE p.deleted_at IS NULL AND p.covers_balance = 0 AND p.registered_on <> '' AND p.registered_on <= ?1 AND p.import_id <> '' ORDER BY p.id`,
+  },
+  // 2.5.0 Ç5-A tur 1f (dar kontrol G-1'; S146 = A; docs/erp/C5-ACILIS-TASARIM.md §16): Ana Defter türetmesinin (routes/ledger.mjs rows) okuduğu, kilitli tarihli satırda kapıdan
+  // geçen HİÇBİR yolun yazmadığı alanlar (yalnız INSERT ya da kilitte 409 — §16.2 tablosu, betikle) — kapı dışı değişiklikleri (eski sürüm, dış araç, elle) böylece period-lock +
+  // ledger:snapshot ("Donmuş Dönemin Kaynağı Değişti") olarak bulunur. Satır KİMLİKLERİYLE; bağ / işaret alanı boş / 0 olan satır girmez (boş → dolu yeni satır olarak görünür).
+  // Kasa ↔ Banka transferinin bağı (transfer ↔ 649 / 770; ikizin banka bacağı).
+  cash_transfer_lock: { requires: ["cash_entries.transfer_id"], since: "2.5.0", sql: "SELECT id, transfer_id FROM cash_entries WHERE transfer_id <> '' AND date <= ?1 ORDER BY id" },
+  // Cari satırının kaynağı ve kaynak kimliği (çek / fatura / stok / banka: madde türü, evrağın yönü ve türü, stok hareketinin nedeni) ve şüpheli alacakta "Normal Cariye İşlendi" işareti (120 ↔ 128).
+  // Tek tarama (hız, §16.8): üç alan bir girdide. doubtful_skip 2.3.0'dan beri var; alanı olmayan eski şemada girdi atlanır (araçlar / göç testleri — üretimde şema güncel).
+  account_source_lock: {
+    requires: ["account_entries.source", "account_entries.source_id", "account_entries.doubtful_skip"],
+    since: "2.5.0",
+    sql: "SELECT id, source, source_id, doubtful_skip FROM account_entries WHERE (source <> '' OR source_id <> '' OR doubtful_skip <> 0) AND date <= ?1 ORDER BY id",
+  },
+  // Taksit satırının evrak bağı (101 / 121 ↔ para hesabı; evrağın "cariye işlenmemiş" sayılması) ve açılış alanı (B 519 ↔ para; yüklenen kartın T − P'si).
+  plan_entries_bond_lock: { requires: ["plan_entries.cheque_id", "plan_entries.opening"], since: "2.5.0", sql: "SELECT id, cheque_id, opening FROM plan_entries WHERE (cheque_id <> '' OR opening <> 0) AND date <= ?1 ORDER BY id" },
+  // Stok hareketinin nedeni (peşin ve cari satış / iade / alış iadesi: 600 ↔ 610 ↔ 153).
+  stock_reason_lock: { requires: ["stock_moves.reason"], since: "2.5.0", sql: "SELECT id, reason FROM stock_moves WHERE reason <> '' AND date <= ?1 ORDER BY id" },
+  // Kesilmiş faturanın muhasebe kırılımı (matrah hesapları) ve tevkifat / stopaj tutarları (391 / 360, 193 / 360).
+  invoices_gl_lock: {
+    requires: ["invoices.gl_json", "invoices.try_withheld", "invoices.try_stoppage"],
+    since: "2.5.0",
+    sql: "SELECT id, gl_json, try_withheld, try_stoppage FROM invoices WHERE status <> 'draft' AND issue_date <= ?1 ORDER BY id",
+  },
+  // 2.5.0 Ç7b (B-7 — BAŞ MİMAR KARARI 19.11 04:35; KG-24 = A, B-3 = A; docs/erp/C7B-FATURA-TASARIM.md §11.5): ihracat istisna kodlu kalemin 601 payı (routes/ledger.mjs rows exportJson)
+  // kesilmiş satış / SMM faturasının kalemlerinden okunur — kalemin hesabı, istisna kodu ve neti. Yalnız ihracat (301 / 302) kalemi OLAN faturanın kalemleri satır üretir (ihracatsız veride
+  // satır yok; bir kaleme ihracat kodu yazılırsa fatura izde belirir). Sürüme bağlı (since "2.5.1" — kilit izi TANIMININ sürümü, program sürümü değil): bu tanımdan önce kaydedilmiş
+  // donmuş defter koşusunun kaynak izi kendi sürümüyle (girdi atlanarak) karşılaştırılır → var olan kilitler güncellemede yanlış "değişti" alarmı vermez.
+  invoice_lines_export_lock: {
+    requires: ["invoices", "invoice_lines.exemption_code", "invoice_lines.gl_account", "invoice_lines.net"],
+    since: "2.5.1",
+    sql: `SELECT l.id, l.invoice_id, l.gl_account, l.exemption_code, l.net FROM invoices i JOIN invoice_lines l ON l.invoice_id = i.id
+          WHERE i.status <> 'draft' AND i.kind IN ('sale', 'smm') AND i.issue_date <= ?1
+            AND EXISTS (SELECT 1 FROM invoice_lines x WHERE x.invoice_id = i.id AND x.exemption_code IN ('301', '302'))
+          ORDER BY l.invoice_id, l.id`,
+  },
+  // 2.5.0 Ç7b tur 2d (tur 2c kararı (2) — BAŞ MİMAR KARARI 19.11 06:39; B-6 / B-8 = A; lib/ledger-rule-shift.mjs; docs/erp/C7B-FATURA-TASARIM.md §13, §14.6): kural geçiş günü (göç 51'in
+  // 'ledger.ruleShiftThrough' ayarı — tarihi ≤ geçiş günü olan kayıt tahsilatı / iade KDV'si eski yönde) ve güncellemeden önce yazılmış KDV mahsubunun işareti (rule_version '2.4.9' — etkin eski
+  // mahsubun ayında iade KDV'si eski yönde). İkisini de yalnız göç 51 yazar (Sıfırla siler, kilidi de kaldırır): program yolundan kilitli dönemde değişmez. Satır yalnız işaret VARSA (kilitsiz
+  // geçişsiz dosyada ve güncel kuralla yazılmış mahsupta satır yok). Sürüme bağlı (since "2.5.2"): önceki tanımla kaydedilmiş koşu kendi sürümüyle — yanlış alarm yok.
+  rule_shift_lock: { requires: ["settings"], since: "2.5.2", sql: `SELECT key, value FROM settings WHERE key = '${RULE_SHIFT_KEY}' AND value <> '' AND ?1 <> ''` },
+  vat_offsets_rule_lock: { requires: ["vat_offsets.rule_version"], since: "2.5.2", sql: "SELECT id, rule_version FROM vat_offsets WHERE rule_version <> '' AND date <= ?1 ORDER BY id" },
+  // 2.5.0 Ç7b tur 2e (B-12 = A — BAŞ MİMAR KARARI 19.11 09:29; KG-7; docs/erp/C7B-FATURA-TASARIM.md §15.2): alış faturasının "KDV İndirim Dönemi" (göç 52) — kilitli faturanın KDV'si
+  // dönem ayının mahsubuna girer (routes/tax.mjs figureTable; açık ay kilitli belgeye bağlı). Program yolundan kilitli belgede değişmez (Düzenle 409); kapı dışı değişiklik izde görünür.
+  // Yalnız DOLU dönemli faturalar satır üretir (dönemsiz veride iz aynı). Aynı tanım sürümü (2.5.2 yayımlanmadı): önceki tanımla kaydedilmiş koşu kendi sürümüyle — yanlış alarm yok.
+  // 2.5.0 Ç7b tur 3b (§17.1): Kartı Kapat kuralının kart başına işareti (göç 53) — yalnız eski kurallı (işaretli) kartlar satır üretir; kapı dışı '2.4.9' ↔ '' değişimi kilitli dönemde izi
+  // değiştirir. Sürüme bağlı (since "2.5.2"; tanım sürümü AYNI — 2.5.2 yayımlanmadı): önceki tanımla kaydedilmiş koşu kendi sürümüyle.
+  plans_close_rule_lock: { requires: ["plans.close_rule"], since: "2.5.2", sql: `SELECT p.id, p.close_rule FROM plans p WHERE p.close_rule <> '' AND ${closeDaySql("p")} <= ?1 ORDER BY p.id` },
+  invoices_vat_period_lock: { requires: ["invoices.vat_period"], since: "2.5.2", sql: "SELECT id, vat_period FROM invoices WHERE status <> 'draft' AND vat_period <> '' AND issue_date <= ?1 ORDER BY id" },
+  // Bankaya Tahsile Ver kaydının işlem başlığı (101.01 / 101.02 maddesinin tutarı).
+  cheque_collections_event_lock: { requires: ["cheque_collections.event_id"], since: "2.5.0", sql: "SELECT id, event_id FROM cheque_collections WHERE given_date <= ?1 ORDER BY id" },
+  // Kayıt Tarihi BOŞ kartın oluşturma anı (madde tarihi = oluşturma günü; yukarıdaki plans girdisi yalnız dolu Kayıt Tarihli kartları kapsar). API boş Kayıt Tarihi yazmaz,
+  // göç 9 boşları doldurur: normal veride satır üretmez.
+  plans_unregistered_lock: {
+    requires: ["plans"],
+    since: "2.5.0",
+    sql: "SELECT id, total, account_id, created_at FROM plans WHERE deleted_at IS NULL AND covers_balance = 0 AND registered_on = '' AND substr(created_at, 1, 10) <= ?1 ORDER BY id",
+  },
+  // 2.5.0 Ç5-A tur 1f — SINIF 2 (§16.2; kilitli satırda kapıdan geçerek değişebilen alanların yanlış alarmsız alt kümesi / türetilen olgusu):
+  // Kapanmış dönemde KARŞILIKSIZ olayı olan evrak: durumu, türetmenin seçtiği karşılıksız günü (routes/ledger.mjs bouncedOn: en son oluşturulan karşılıksız olayı) ve carinin karşılıksız
+  // borç satırı var mı (hasDebt) — cariye işlenmemiş evrakın karşılıksız maddesi bunlardan doğar. Karşılıksız son durumdur, kilitli karşılıksızın geri alınması 409: bu evrakta durumu
+  // değiştiren meşru yol yok. Öbür evrakın durumu (bugünkü tahsil / ciro / karşılıksız) girmez.
+  cheques_bounce_lock: {
+    requires: ["cheques", "cheque_events", "account_entries", "accounts"],
+    since: "2.5.0",
+    sql: `SELECT c.id, c.status,
+                 COALESCE((SELECT ev.date FROM cheque_events ev WHERE ev.cheque_id = c.id AND ev.kind = 'bounce' ORDER BY ev.created_at DESC LIMIT 1), '') AS bounced_on,
+                 EXISTS (SELECT 1 FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL
+                         WHERE e.source = 'cheque' AND e.source_id = c.id AND e.account_id = c.account_id AND e.kind = 'debt') AS has_debt
+          FROM cheques c WHERE c.id IN (SELECT cheque_id FROM cheque_events WHERE kind = 'bounce' AND date <= ?1) ORDER BY c.id`,
+  },
+  // Kapanmış dönemde alınmış / verilmiş evraktan türetmenin "cariye işlenmemiş" saydıkları (routes/ledger.mjs ile AYNI koşul: canlı taksit kartında evrakla satırı yok, canlı
+  // carisinde alış / veriliş satırı yok). Evrağın carisi (cheques.account_id) yalnız bu olgu üzerinden kilitli maddeyi belirler; carisiz evrakın karşılıksızında cari seçimi (meşru)
+  // olguyu DEĞİŞTİRMEZ (seçilen carinin alış satırı yoktur), carili evrağın carisinin dışarıdan silinmesi ya da başka cariye geçmesi değiştirir (çift / eksik madde).
+  cheques_free_lock: {
+    requires: ["cheques", "plan_entries.cheque_id", "plans", "account_entries", "accounts"],
+    since: "2.5.0",
+    sql: `SELECT c.id FROM cheques c
+          WHERE c.issue_date <= ?1 AND c.deleted_at IS NULL
+            AND NOT EXISTS (SELECT 1 FROM plan_entries pe JOIN plans p ON p.id = pe.plan_id AND p.deleted_at IS NULL WHERE pe.cheque_id = c.id)
+            AND NOT EXISTS (SELECT 1 FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL
+                            WHERE e.source = 'cheque' AND e.source_id = c.id AND e.account_id = c.account_id
+                              AND e.kind = CASE WHEN c.direction = 'in' THEN 'credit' ELSE 'debt' END)
+          ORDER BY c.id`,
+  },
 };
 
 /**
@@ -222,8 +354,40 @@ const LOCK_SQL = {
  * version (2.2.0 İz 4.2): o sürümün iz tanımı — girdinin "since" sürümü daha yeniyse atlanır (eski sürümün kaydettiği izle karşılaştırma;
  * çalışma anındaki kapı her zaman güncel tanımı kullanır: iz açılışta ölçülür, saklanmaz).
  */
+// 2.5.0 Ç5-A tur 1f (hız; ders 47, 53; docs/erp/C5-ACILIS-TASARIM.md §16.8): aynı veri durumunda iz yeniden hesaplanmaz — Mutabakat Testi aynı izi iki kez ister (taramanın
+// period-lock denetimi ve donmuş defterin kaynak izi; ikincisi `version: LOCK_SQL_VERSION` ile = güncel tanım). Veri durumu: bu bağlantının total_changes()'ı (kendi yazımları, işlem
+// içindekiler dahil), öbür bağlantıların kesinleşmiş yazımları (PRAGMA data_version) ve şema (PRAGMA schema_version); biri değişmişse yeniden hesaplanır. AÇIK İŞLEMDE önbellek ne
+// okunur ne yazılır (COMMIT kapısı: işlem geri alınırsa total_changes geri dönmez, işlem içindeki iz geri alınan veriye ait kalırdı). Okunamazsa (sahte depo) önbellek yok.
+const digestMemo = new WeakMap();
+function dataStamp(store) {
+  if (store.db?.isTransaction !== false) return "";
+  try {
+    return `${store.get("SELECT total_changes() AS n").n}|${store.get("PRAGMA data_version").data_version}|${store.get("PRAGMA schema_version").schema_version}`;
+  } catch {
+    return "";
+  }
+}
 export function lockDigestOf(store, lock, { version = "" } = {}) {
   if (!lock) return "";
+  // Güncel tanım ("" ya da LOCK_SQL_VERSION ve sonrası) aynı anahtar: hiçbir girdi atlanmaz.
+  const effective = version && compareVersions(version, LOCK_SQL_VERSION) < 0 ? version : LOCK_SQL_VERSION;
+  const stamp = store && typeof store === "object" ? dataStamp(store) : "";
+  const key = `${lock}|${effective}|${stamp}`;
+  if (stamp) {
+    const kept = digestMemo.get(store);
+    if (kept?.has(key)) return kept.get(key);
+  }
+  const digest = computeLockDigest(store, lock, version);
+  if (stamp) {
+    // total_changes / data_version okuması hesaplama sırasında değişmez (yalnız okuma); en çok birkaç anahtar tutulur (kilit / tanım çiftleri).
+    const kept = digestMemo.get(store) || new Map();
+    if (kept.size >= 8) kept.clear();
+    kept.set(key, digest);
+    digestMemo.set(store, kept);
+  }
+  return digest;
+}
+function computeLockDigest(store, lock, version) {
   const tables = new Set(store.all("SELECT name FROM sqlite_master WHERE type = 'table'").map(row => row.name));
   const columns = new Map();
   const has = requirement => {
@@ -238,12 +402,22 @@ export function lockDigestOf(store, lock, { version = "" } = {}) {
     const { requires, sql, since = "" } = typeof entry === "string" ? { requires: [name], sql: entry } : entry;
     if (version && since && compareVersions(since, version) > 0) continue;
     if (!requires.every(has)) continue;
-    for (const row of store.all(sql, lock)) hash.update(`${name}|${Object.values(row).join("|")}\n`);
+    // 2.5.0 Ç3 tamamlama (ders 47; lib/lean-rows.mjs): kilitli dönemin bütün kaynak satırları dizi kurulmadan, birer birer — iz aynı (aynı satırlar, aynı sıra, aynı değerler).
+    for (const row of eachRow(store, sql, [lock])) hash.update(`${name}|${Object.values(row).join("|")}\n`);
   }
   return hash.digest("hex");
 }
 
-export function createIntegrity({ store, ledger, accounts = () => null, stock = () => null, plans = () => null, period = () => null, money = () => null, pos = () => null, events = null, strict = false, verify = false, partyRows = 2000, dbPath = "", log = null, newId = () => `int-${crypto.randomUUID()}`, now = systemClock }) {
+/**
+ * Birleşik tur 7: uyarı kimlik kümesini (kod → Map(kimlik → örnek)) sonuca SAYILMAYAN alan olarak bağlar — Mutabakat Testi yanıtına / JSON'a girmez; iş parçacığı
+ * taraması kümeyi iletisinde ayrıca taşır (lib/integrity-scan-worker.mjs) ve ana iş parçacığı yeniden bağlar.
+ */
+export function withNoticeKeys(result, keys) {
+  if (result && typeof result === "object") Object.defineProperty(result, "noticeKeys", { value: keys instanceof Map ? keys : new Map(), enumerable: false, configurable: true });
+  return result;
+}
+
+export function createIntegrity({ store, ledger, accounts = () => null, stock = () => null, plans = () => null, period = () => null, money = () => null, pos = () => null, events = null, strict = false, verify = false, partyRows = 2000, dbPath = "", log = null, newId = () => `int-${crypto.randomUUID()}`, now = systemClock, canWrite = () => true }) {
   const has = table => Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = ?", table));
   // v2.1.0 (§3.11): banka çekirdeğinin denetimleri (lib/bank/checks.mjs) — olay bazlı (COMMIT'te dokunulan olaylar) ve tam tarama.
   let bankChecks = null;
@@ -305,6 +479,7 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
 
   function run({ events: touched = null, includeHidden = false } = {}) {
     const started = performance.now();
+    const noticeKeys = new Map(); // uyarı kodu → Map(kimlik → örnek) (birleşik tur 7; withNoticeKeys)
     // Bölüm süreleri (v2.1.0, §3.11 kapı ölçümü; tools/kapi-olcum.mjs): stats() ile okunur, sonuca ve API'ye girmez.
     const timings = {};
     let lapAt = started;
@@ -375,13 +550,13 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
       if (has("plans")) {
         const wrong = [];
         for (const plan of store.all(
-          `SELECT p.id, p.name, p.total, p.status, p.covers_balance AS coversBalance,
+          `SELECT p.id, p.name, p.total, p.status, p.close_rule AS closeRule, p.covers_balance AS coversBalance,
                   COALESCE((SELECT SUM(CASE WHEN e.kind = 'in' THEN e.amount ELSE -e.amount END) FROM plan_entries e WHERE e.plan_id = p.id), 0) AS paid
            FROM plans p LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL WHERE p.deleted_at IS NULL AND a.id IS NULL`,
         )) {
           const total = plan.coversBalance ? 0 : toCents(plan.total);
-          const left = toCents(plan.total) - toCents(plan.paid);
-          const want = total - toCents(plan.paid) - (plan.status === "closed" ? Math.max(0, left) : 0);
+          // 2.5.0 Ç7b tur 3b: düşülen kalan TEK yardımcıdan (lib/accounts.mjs waivedOf).
+          const want = total - toCents(plan.paid) - toCents(waivedOf(plan, plan.paid));
           const got = parties.get(`plan:${plan.id}`) || 0;
           if (got !== want) wrong.push(`${plan.name}: defter ${got / 100} / kart ${want / 100}`);
         }
@@ -391,12 +566,17 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
       // Eleştirmen E2 (15.10.2026): kayıt tarihinden ÖNCE tarihli (geriye tarihli) tahsilat şüpheliden düşmez (K3) → carinin normal alacağı (120 =
         // kart − açık şüpheli) eksiye düşebilir; bu kural dışıdır ve burada KIRMIZI görünür (düzeltme: kaydı Şüpheliden Çıkar ya da tutarını düzelt).
         const negatives = [];
+        const figures = [];
         for (const row of store.all("SELECT DISTINCT d.account_id AS party, COALESCE(a.name, '') AS name FROM doubtful_receivables d LEFT JOIN accounts a ON a.id = d.account_id WHERE d.status = 'open' AND a.deleted_at IS NULL")) {
           const open = doubtfulSummary(store, row.party).openMinor;
           const normal = (parties.get(row.party) || 0) - open;
-          if (open > 0 && normal < 0) negatives.push(`${row.name || row.party}: 120 = ${(normal / 100).toFixed(2)} (açık şüpheli ${(open / 100).toFixed(2)}; geriye tarihli tahsilat/alacak kaydın tarihinden önce)`);
+          if (open > 0 && normal < 0) {
+            negatives.push(`${row.name || row.party}: 120 = ${(normal / 100).toFixed(2)} (açık şüpheli ${(open / 100).toFixed(2)}; geriye tarihli tahsilat/alacak kaydın tarihinden önce)`);
+            // Birleşik tur 8 (S155 = A): reddin anlaşılır iletisi için carinin borcu ve açık şüpheli tutarı (kuruş; yalnız ihlal varsa).
+            if (figures.length < 5) figures.push({ party: row.party, balanceMinor: normal + open, openMinor: open });
+          }
         }
-        checks.push({ code: "doubtful:balance", name: "Şüpheli Alacak — Carinin Normal Alacağı Eksi Değil (120 = kart − açık şüpheli ≥ 0)", ok: negatives.length === 0, count: negatives.length, sample: negatives.slice(0, 5) });
+        checks.push({ code: "doubtful:balance", name: "Şüpheli Alacak — Carinin Normal Alacağı Eksi Değil (120 = kart − açık şüpheli ≥ 0)", ok: negatives.length === 0, count: negatives.length, sample: negatives.slice(0, 5), ...(figures.length ? { figures } : {}) });
       }
       lap("parties");
     }
@@ -406,6 +586,19 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
       const problems = doubtfulProblems(store);
       checks.push({ code: "doubtful:records", name: "Şüpheli Alacak Kayıtları (kayıt = başlık = karşılık = değersiz satırı)", ok: problems.length === 0, count: problems.length, sample: problems.slice(0, 5).map(item => item.sample) });
       lap("doubtful");
+    }
+    // 2.5.0 Ç3 (lib/ledger-snapshots.mjs checks): donmuş defter ("ledger:snapshot") ve Kural Değişikliği Farkı ("ledger:rule-diff", uyarı). YALNIZ tam taramada (açılış, Mutabakat
+    // Testi, arka plan taraması, Defter Mutabakatı) — COMMIT kapısında yok: kural yalnız sürümle değişir, kilitli dönemin kaynağını COMMIT'te kilit izi korur. Sağlıklıyken
+    // görünmez (kilitli şirketin denetim listesi 2.4.9 ile aynı).
+    if (!touched && lastEntries && service?.snapshots?.checks) {
+      checks.push(...service.snapshots.checks({ entries: lastEntries, includeHidden }));
+      lap("snapshots");
+    }
+    // 2.5.0 Ç2 (lib/ledger-vouchers.mjs): saklanan fiş defterinin yapısı — yalnız fiş varsa görünür (fişsiz veride denetim listesi 2.4.9 ile aynı kalır).
+    if (has("ledger_vouchers") && store.get("SELECT 1 AS found FROM ledger_vouchers LIMIT 1")) {
+      const problems = voucherProblems(store);
+      checks.push({ code: "ledger:vouchers", name: "Fiş Defteri (her fiş dengeli, satırları tam, hesapları planda, ters kaydı asıl fişin aynası)", ok: problems.length === 0, count: problems.length, sample: problems.slice(0, 5) });
+      lap("vouchers");
     }
     // Taksit alt defteri: Taksitler ekranının her kart için gösterdiği toplam ve tahsilat = kartın satırları.
     if (plans()?.list && has("plans")) {
@@ -417,8 +610,10 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
       for (const plan of plans().list(AUDITOR, { status: "all" }).plans || []) {
         const row = raw.get(plan.id);
         if (!row) continue;
-        if (toCents(plan.totals.total) !== toCents(row.total) || toCents(plan.totals.paid) !== toCents(row.paid)) wrong.push(`${plan.refNo || plan.id} ${plan.name}: ekran ${plan.totals.total}/${plan.totals.paid} · satır ${row.total}/${row.paid}`);
-        else if (plan.status !== "closed" && toCents(plan.totals.remaining) !== Math.max(0, toCents(row.total) - toCents(row.paid))) wrong.push(`${plan.refNo || plan.id} ${plan.name}: kalan ${plan.totals.remaining}`);
+        // S129 = A: listede totals.paid / remaining GÖSTERİLEN (kuyruk) sayıdır; kartın kendi hesabı ownPaid / ownRemaining — denetim onları satırlarla karşılaştırır.
+        const own = { paid: plan.totals.ownPaid ?? plan.totals.paid, remaining: plan.totals.ownRemaining ?? plan.totals.remaining };
+        if (toCents(plan.totals.total) !== toCents(row.total) || toCents(own.paid) !== toCents(row.paid)) wrong.push(`${plan.refNo || plan.id} ${plan.name}: ekran ${plan.totals.total}/${own.paid} · satır ${row.total}/${row.paid}`);
+        else if (plan.status !== "closed" && toCents(own.remaining) !== Math.max(0, toCents(row.total) - toCents(row.paid))) wrong.push(`${plan.refNo || plan.id} ${plan.name}: kalan ${own.remaining}`);
       }
       checks.push({ code: "plans:totals", name: "Taksit kartları (tutar, tahsilat, kalan)", ok: wrong.length === 0, count: wrong.length, sample: wrong.slice(0, 5) });
       lap("plans");
@@ -450,13 +645,49 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
         if (!entry.id.startsWith("stock-open:")) continue;
         seen.add(entry.id);
         const value = want.get(entry.id);
+        // 2.5.0 Ç5-A (M-07; C5-ACILIS-TASARIM §2.8): karşı hesap 519 (2.4.9: 500).
         const debit = entry.lines.filter(line => line.account === "153").reduce((sum, line) => sum + line.debit - line.credit, 0);
-        const credit = entry.lines.filter(line => line.account === "500").reduce((sum, line) => sum + line.credit - line.debit, 0);
-        const other = entry.lines.some(line => line.account !== "153" && line.account !== "500");
-        if (value === undefined || debit !== value || credit !== value || other) wrong.push(`${entry.id}: defter 153 ${debit / 100} / 500 ${credit / 100} · hareket ${value === undefined ? "yok" : value / 100}`);
+        const credit = entry.lines.filter(line => line.account === "519").reduce((sum, line) => sum + line.credit - line.debit, 0);
+        const other = entry.lines.some(line => line.account !== "153" && line.account !== "519");
+        if (value === undefined || debit !== value || credit !== value || other) wrong.push(`${entry.id}: defter 153 ${debit / 100} / 519 ${credit / 100} · hareket ${value === undefined ? "yok" : value / 100}`);
       }
       for (const [id, value] of want) if (value && !seen.has(id)) wrong.push(`${id}: hareket ${value / 100} · defterde yok`);
-      checks.push({ code: "stock:opening", name: "Açılış Stoku ↔ Ana Defter (B 153 / A 500)", ok: wrong.length === 0, count: wrong.length, sample: wrong.slice(0, 5) });
+      checks.push({ code: "stock:opening", name: "Açılış Stoku ↔ Ana Defter (B 153 / A 519)", ok: wrong.length === 0, count: wrong.length, sample: wrong.slice(0, 5) });
+    }
+    // 2.5.0 Ç5-A (C5-ACILIS-TASARIM §2.8; BAŞ MİMAR KARARI B2): "Açılış Karşılığı" — 519 = −(Σ modül açılışları) + fiş satırlarının 519'u, 500 = fiş satırlarının 500'ü; ikinci
+    // yükleyici modüllerin kendi tablolarından (lib/ledger-opening.mjs openingCounterpart; journal() okunmaz). `expected()`'e GİRMEZ (K6 fiş koruması ve Kural Farkı fişi — §3.4).
+    // YALNIZ tam taramada (açılış, Mutabakat Testi, arka plan taraması, Defter Mutabakatı); COMMIT kapısında yok. Kullanılmayan veride (açılışsız, fişsiz) denetim listede yok.
+    if (lastEntries && !touched) {
+      const want = openingCounterpart(store);
+      const got = { 519: ledgerBalanceOf(lastEntries, "519"), 500: ledgerBalanceOf(lastEntries, "500") };
+      if (want[519] || want[500] || got[519] || got[500]) {
+        for (const code of ["519", "500"]) {
+          const difference = got[code] - want[code];
+          checks.push({ code: `opening:${code}`, name: `Açılış Karşılığı (${code} ${code === "519" ? "Eşleştirilecek Açılış Bakiyeleri = Kasa, cari, banka, stok, taksit ve evrak açılışları + fişler" : "Sermaye = fişler"})`, ok: difference === 0, count: difference === 0 ? 0 : 1, difference: roundMoney(difference / 100), ledger: roundMoney(got[code] / 100), subledger: roundMoney(want[code] / 100), ...(code === "519" ? { parts: want.parts } : {}) });
+        }
+      }
+      // Ç5-A tur 2c İş 1 (C5-ACILIS-TASARIM §2.7, §17.10): Açılış Eşleştirme Fişi'nden SONRA açık dönemde açılış silinir / değişir de 519 fişlerin yönünün tersine geçerse ENGELLENMEZ —
+      // BİLGİ satırı (ok, info; sapma / uyarı değil, zil / tarama günlüğü üretmez — "ledger:unlocked-years" kalıbı). Eşleştirme fişi yoksa satır yok (tek LIMIT 1 sorgusu).
+      const match = openingMatchState(store, lastEntries);
+      if (match?.inverse) {
+        const side = minor => `${(Math.abs(minor) / 100).toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${minor > 0 ? "borç" : "alacak"}`;
+        checks.push({ code: "opening:519-inverse", name: "Eşleştirilecek Açılış Bakiyeleri (519) Eşleştirme Fişlerinin Tersine Geçti", ok: true, count: 0, info: true, ledger: roundMoney(match.total / 100), matched: roundMoney(match.matched / 100), hint: `Açılış Eşleştirme fişlerinden sonra bir açılış silindi ya da değişti: 519 bakiyesi ${side(match.total)} (eşleştirme fişleri ${side(match.matched)}). Fazla eşleştirilen tutar için Açılış Eşleştirme fişini ters kaydedip yeniden yazın.` });
+      }
+      // S53 = A (C5-ACILIS-TASARIM §3.5; K8-4 "yalnız bilgi"): kilitsiz geçmiş yıl yeni kuralla hesaplandı — BİLGİ satırı: ok true (sapma da uyarı da değil; Mutabakat Testi'nin
+      // sonucunu, "N denetim tamam"ı bozmaz, zil / tarama günlüğü üretmez — notice DEĞİL). Defter Mutabakatı'nda adıyla ve önerisiyle görünür ("Tutarlı"). Tur 2'nin ekranı
+      // (ya da rapor merkezinde ayrı bir "Bilgi" durumu) bu satırı `info` alanıyla ayırabilir.
+      const years = unlockedPastYears(lastEntries, { lock: period()?.lockedUntil?.() || "", today: period()?.today?.() || now.today() });
+      if (years.length) {
+        checks.push({ code: "ledger:unlocked-years", name: `Kilitlenmemiş Geçmiş Yıl (${years.join(", ")}) Yeni Kuralla Hesaplandı — Beyan Edildiyse Yılı Kilitleyin`, ok: true, count: 0, info: true, years, hint: `Dönem kilidi konmamış geçmiş yıl (${years.join(", ")}) 2.5.0'ın açılış kurallarıyla hesaplandı (açılış karşı hesabı 519, açılış çekleri ve Excel taksit kartları gelir / gider değil). O yılın beyannamesi verildiyse Yönetim → Dönem Kilidi ile yılı kilitleyin; kilitli dönemin defteri değişmez.` });
+      }
+    }
+    // 2.5.0 Ç5-A tur 1e (dar kontrol G-1; C5-ACILIS-TASARIM §15.2 (2)): KG-16 durumu kapının yazdığıyla aynı — kapı dışı (elle, dış araçla) değiştirilen "Açılış Olabilir" durumu
+    // defteri 519 ↔ 602 / 770 sessizce kaydırır (kilitli dönemde Kural Farkı'na da karışır). YALNIZ tam taramada; yalnız bozukken görünür (sağlıklı şirketin denetim listesi değişmez).
+    if (!touched) {
+      const review = openingReviewDrift(store);
+      if (review?.count) {
+        checks.push({ code: "opening:review", name: "Açılış Olabilir Kararları (kapının yazdığıyla aynı)", ok: false, count: review.count, sample: review.sample, hint: `${review.count} cari hareketinin Açılış Olabilir durumu programın dışından (elle ya da dış bir araçla) değişmiş. Cariler → Açılış Olabilir Kayıtlar'da bu satırlara yeniden karar verin (Açılış ya da Açılış Değil).` });
+      }
     }
     // Kuruş ve işaret: 12,345 TL ya da −5 TL gibi tutar yok.
     for (const [table, column, where] of AMOUNT_COLUMNS) {
@@ -612,6 +843,24 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
       checks.push({ code: "dates:due-before-start", name: "Kayıt Tarihi'nden önceki taksit vadesi", ok: count === 0, count, sample: early.map(row => `${row.name}: vade ${row.due} < kayıt ${row.start}`) });
       lap("dates");
     }
+    // 2.5.0 Ç5-K (S20 = A; lib/cash-opening.mjs): Kasa açılışından önce tarihli nakit hareketi — geri yüklenen yedek, eski sürüm verisi ya da Silinenler'den aynen
+    // gelen satır (yeni hareket COMMIT'te 409 cash-before-opening). Düzey UYARI, YALNIZ tam taramada (açılış, Mutabakat Testi, arka plan taraması, Defter Mutabakatı;
+    // COMMIT kapısında yok — geri yükleme ve tarihi değişmeyen düzeltme engellenmez). Açılış ya da böyle satır yoksa denetim listede yok (liste 2.4.9 ile aynı).
+    // 2.5.0 Ç5-K tur 2 (dar kontrol ORTA-1; BAŞ MİMAR 10.11 — S20 = A "Mutabakat Testi uyarı verir"): bu denetim SAPMA DEĞİL UYARIDIR — notice: true. Sonuçta
+    // görünür (ok false, failures içinde; gizlenmez), ama sapma sayılmaz: Yönetim › Sistem'de sarı + hint ("N denetim tamam" bozulmaz), Defter Mutabakatı'nda durum
+    // "Uyarı" (Sonuç bu satır yüzünden "Fark Var" olmaz), kapının tabanına / alanına girmez (integrity-scope familyOf → null), tarama "yeni sapma" kaydı ve zili
+    // üretmez (settleScan), açılış "sapma var" günlüğü yazmaz (start). Birleşik tur 6 (DK-D2T3 ORTA-1): sayının Silinenler geri yüklemeleriyle açıklanamayan ARTIŞI
+    // (kapının görmediği yazım — yeni satırı S12 reddettiği için elle / dış araçla) taramada günlük + zil olur (noticeGrowth); uyarı yine uyarıdır.
+    if (!touched && has("cash_entries")) {
+      const early = cashBeforeOpening(store, money());
+      if (early?.rows.length) {
+        // Birleşik tur 7 (DK-B6 ORTA-1): uyarının KİMLİK kümesi (noticeGrowth) — sonuca sayılmayan alan olarak (JSON'a / API'ye girmez).
+        noticeKeys.set("cash:before-opening", new Map(early.rows.map(item => [item.key, item.sample])));
+        const opening = early.opening.split("-").reverse().join(".");
+        checks.push({ code: "cash:before-opening", name: "Kasa Açılışından Önce Tarihli Hareket", ok: false, count: early.rows.length, severity: "warning", notice: true, opening: early.opening, hint: `Bu nakit hareketleri Kasa açılışından (${opening}) önce tarihli (geri yüklenen yedek, eski sürüm verisi ya da Silinenler'den geri gelen kayıt). Tarihi değişmeden düzeltilebilir; açılıştan önceye yeni hareket girilemez. Hareketler açılışın içinde değilse yönetici Kasa → Açılış Bakiyesi'nin tarihini öne alır; uyarı kalkar.`, sample: early.rows.slice(0, 5).map(item => item.sample), items: early.rows.slice(0, 100).map(({ source, id, date }) => ({ source, id, date })) });
+      }
+      lap("cash-opening");
+    }
     // v2.1.0 (§3.11): banka çekirdeğinin denetimleri. Olay bazlılar (bank:event, money:report) COMMIT'te yalnız dokunulan olaylara
     // (scoped: kapı tabanı değil, "eski olmayan her sapma engeller" kuralı); tam taramada (açılış, Mutabakat Testi, 15 dakikalık tarama)
     // bütün veriye uygulanır. money:event yalnız tam taramada (COMMIT'teki karşılığı store'daki K6 denetimi).
@@ -687,7 +936,7 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
     const failures = checks.filter(item => !item.ok);
     const total = performance.now() - started;
     lastRun = { scoped: Boolean(touched), ms: total, sections: timings, drift };
-    return { ok: failures.length === 0, checks, failures, durationMs: Math.round(total) };
+    return withNoticeKeys({ ok: failures.length === 0, checks, failures, durationMs: Math.round(total) }, noticeKeys);
   }
   let lastRun = null;
   let lastGate = null;
@@ -764,14 +1013,24 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
   // Sapmanın kimliği: hangi denetim, ne kadar/kaç satır. Aynı sapma sürüyorsa işlem engellenmez; yenisi ya da büyüyeni engellenir.
   // gateCount (G4): eski sürümden kalan satırları taşıyan denetimlerde kapının saydığı (yeni) satırlar; sonuçta count hepsidir.
   const signature = item => `${item.code}|${roundMoney(item.difference || 0)}|${item.gateCount ?? item.count ?? 0}`;
+  // Sapma kümesi (taban, açılış günlüğü, taramanın "yeni sapma"sı, zil): uyarı (notice; Ç5-K tur 2) ve 2.5.0 Ç5-A tur 1d'den "Kural Değişikliği Farkı" (ledger:rule-diff)
+  // DIŞINDA. Kural farkı UYARIDIR, sapma değil (C3 §8; BAŞ MİMAR KARARI 12.11): kural sürümle değişir; kilitli veride açılışın bekleyen dondurması bitince (taban dondurmadan
+  // ÖNCE alınır) ilk tarama onu "kapının görmediği yeni sapma" sayıyordu. Denetim satırı (Mutabakat Testi, Defter Mutabakatı, Kural Değişikliği Farkı raporu) aynen kalır;
+  // kilitli dönemin kapı dışı değişikliği kendi denetimleriyle (period-lock, ledger:snapshot) sapma olarak bulunur. docs/erp/C5-ACILIS-TASARIM.md §14.
+  const driftsOf = failures => failures.filter(item => !item.notice && item.code !== "ledger:rule-diff");
   let baseline = new Set();
   let pending = null;
   let pendingDecision = null;
+  // 2.5.0 Ç2 tur 3: günlük ayrıntısı hiçbir zaman kesilmiş JSON olmaz (lib/log-detail.mjs). Liste sınırı YOK (Infinity): ≤ 20.000 karakterde çıktı JSON.stringify ile bayt bayt
+  // aynı (eski kayıtlarla "taban değişti mi" karşılaştırması aynı kalır); aşan ayrıntı (ör. eski sürümden uzun bozuk tarih) kesilmek yerine listeleri kısaltılmış geçerli JSON.
+  const detailOf = failures => boundedDetail(failures, { maxList: Infinity, maxChars: 20_000 });
   const write = (action, tables, failures) => {
+    // BS-7: yeni şemalı (yalnız görüntülenen) şirkette günlük de yazılmaz (açılış tabanı, Mutabakat Testi).
+    if (!canWrite()) return;
     try {
       store.run(
         "INSERT INTO integrity_log (id, at, action, tables, summary, detail_json) VALUES (?, ?, ?, ?, ?, ?)",
-        newId(), now().toISOString(), action, [...tables].join(","), failures.map(item => item.name).join("; ").slice(0, 500), JSON.stringify(failures).slice(0, 20000),
+        newId(), now().toISOString(), action, [...tables].join(","), failures.map(item => item.name).join("; ").slice(0, 500), detailOf(failures),
       );
     } catch {
       // Günlük yazılamasa da (eski şema) işlem kararı değişmez.
@@ -789,19 +1048,23 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
     legacyMethod = measureLegacyMethod();
     measureLegacyBank();
     const result = run();
-    baseline = new Set(result.failures.map(signature));
+    // 2.5.0 Ç5-K tur 2: uyarı (notice) sapma değildir — taban, açılış günlüğü ve sunucu günlüğü yalnız sapmaları taşır (Ç5-A tur 1d: kural farkı da — driftsOf).
+    const drifts = driftsOf(result.failures);
+    baseline = new Set(drifts.map(signature));
     baselineFamilies = familiesOf(baseline);
     legacyRows = measureLegacyRows(baseline);
     legacyCheques = new Set(drift);
     distrust = new Set();
     known = new Set(baseline);
+    // Birleşik tur 6 (DK-D2T3 ORTA-1): uyarının açılıştaki sayısı (ilk görünüş sessiz; yeniden başlatmada önceki artış yeniden bildirilmez).
+    noticeMark = { counts: noticeCounts(result), keys: noticeKeySets(result), restored: cashRestoreMark(store) };
     const lock = period()?.lockedUntil?.() || "";
     lockState = { lock, digest: lockDigest(lock) };
     syncCounters();
-    if (result.failures.length) {
-      log?.warn?.(`Mutabakat: güncelleme öncesinden kalan ${result.failures.length} sapma var (${result.failures.map(item => item.name).join("; ")}). Yeni işlemler bu sapmayı büyütemez.`);
+    if (drifts.length) {
+      log?.warn?.(`Mutabakat: güncelleme öncesinden kalan ${drifts.length} sapma var (${drifts.map(item => item.name).join("; ")}). Yeni işlemler bu sapmayı büyütemez.`);
       const last = has("integrity_log") ? store.get("SELECT detail_json AS detail FROM integrity_log WHERE action = 'baseline' ORDER BY at DESC LIMIT 1") : null;
-      if (last?.detail !== JSON.stringify(result.failures).slice(0, 20000)) write("baseline", [], result.failures);
+      if (last?.detail !== detailOf(drifts)) write("baseline", [], drifts);
     }
     const remove = store.addCommitGuard({
       check({ tables, events: touched, scope: capture }) {
@@ -845,7 +1108,10 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
         const lockStarted = performance.now();
         const digest = lock ? lockDigest(lock) : "";
         const lockMs = performance.now() - lockStarted;
-        if (lock && lock === lockState.lock && digest !== lockState.digest) fresh.push({ code: "period-lock", name: `Kapanmış dönem (${lock} ve öncesi) değişemez`, ok: false, count: 1 });
+        if (lock && lock === lockState.lock && lockState.digest !== null && digest !== lockState.digest) fresh.push({ code: "period-lock", name: `Kapanmış dönem (${lock} ve öncesi) değişemez`, ok: false, count: 1 });
+        // 2.5.0 Ç3: kilit yeni kondu, izi (dondurmanın anlık görüntüsünden) henüz gelmedi — kilitli döneme dokunan yazım reddedilir (karşılaştıracak iz yok); başka nedenle tam
+        // kapıya düşen işlemin ölçtüğü iz benimsenir (aşağıda pendingLock).
+        if (lock && lock === lockState.lock && lockState.digest === null && String(decision.full || "").startsWith("kilit (")) fresh.push({ code: "period-lock", name: `Kapanmış dönem (${lock} ve öncesi) değişemez (dönem kilidi yeni kondu)`, ok: false, count: 1 });
         pendingLock = { lock, digest };
         lastGate = { path: "full", reason: decision.full || (decision.findings.length ? `bulgu: ${[...new Set(decision.findings.map(item => item.code))].join(", ")}` : "doğrulama"), ms: performance.now() - gateStarted, runMs, lockMs, sections: { ...(lastRun?.sections || {}), lock: lockMs, scoped: decision.ms || 0 }, events: touched?.size || 0, tables: [...tables], rejected: fresh.length > 0, scope: decision.scope };
         // Testler (gateVerify): süzgeç temiz dediyse tam kapı da kabul etmeli (yoksa süzgeç eksik: eşdeğerlik ihlali).
@@ -900,28 +1166,98 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
   // önceki taramalarda görülen sapma imzaları (COMMIT tabanından bağımsız; olay bazlı denetimlerin taban olmaması tarama sonucunu değiştirmez).
   let known = new Set();
   let lastScan = null;
+  // ---------- Uyarının sayısı (2.5.0 birleşik tur 6; DK-D2T3 ORTA-1 — BAŞ MİMAR 11.11, kullanıcı onaylı) → kimlik kümesi (birleşik tur 7) ----------
+  // Uyarı (notice; bugün yalnız "Kasa Açılışından Önce Tarihli Hareket") sapma değildir, ama tarama kapının GÖRMEDİĞİ yazımı yakalamak içindir: açılıştan sonraki bir
+  // nakit hareketinin tarihi dışarıdan (elle / dış araçla) açılış öncesine alınınca uyarı 2 → 3 olur, Kasa'da o tutar iki kez sayılır. Kural: tarama uyarının önceki
+  // sayısını tutar (açılışta ölçülür — ilk görünüş sessiz; program yeniden açılınca önceki artış yeniden bildirilmez); kapının bu arada kabul ettiği Silinenler geri
+  // yüklemelerinin kattığı satırlar (lib/cash-opening.mjs cashRestoreMark) açıklanmış sayılır; açıklanamayan ARTIŞ günlüğe ("scan") ve zile yazılır; azalma sessiz.
+  // Sunum (sarı uyarı, Defter Mutabakatı'nda "Tutarlı", ilk yazımın süzgeçli yolu) değişmez: uyarı tabana / kapı alanına girmez.
+  // Birleşik tur 7 (DK-B6 ORTA-1; BAŞ MİMAR 12.11 12:52 — docs/devir/D2-ALTYAPI-TASARIM.md §16): SAYI yerine KİMLİK kümesi. Sayıyla iki tarama arasında sil + geri yükle +
+  // dış yazım (2 → 1 → 2 → 3) açıklanmış sayılıyordu (geri yükleme hak ekliyor, silme düşürmüyordu) ve sil + dış yazım (sayı aynı) görünmüyordu. Artık alarm = önceki
+  // kümede olmayan ve işaretten SONRA açıklanmamış (Silinenler geri yüklemesi; kapının kabul ettiği kimlik değişimi — önceki kimliği önceki kümedeyse ya da kendisi
+  // açıklanmışsa) her yeni kimlik; iletide açıklanamayan kimlik sayısı (DÜŞÜK-1).
+  let noticeMark = null; // { counts: Map(kod → sayı), keys: Map(kod → Set(kimlik)), restored }
+  const noticeCounts = result => new Map((result?.failures || []).filter(item => item.notice).map(item => [item.code, Number(item.count) || 0]));
+  const noticeKeySets = result => new Map([...(result?.noticeKeys || [])].map(([code, keys]) => [code, new Set(keys.keys())]));
+  const NO_KEYS = new Set();
+  const NOTICE_GROWTH = {
+    "cash:before-opening": (previous, count, unexplained) =>
+      count > previous
+        ? `Kasa açılışından önce tarihli hareket uyarısı arttı (${previous} → ${count} hareket; kapının görmediği yazım: ${unexplained} hareket)`
+        : `Kasa açılışından önce tarihli hareket uyarısına yeni hareket girdi (${previous} → ${count} hareket; kapının görmediği yazım: ${unexplained} hareket)`,
+  };
+  // restoredAt: taramanın anlık görüntüsünden önce okunan açıklama sıra numarası. İş parçacığı taraması sürerken bir açıklama kaydı (geri yükleme / kimlik değişimi)
+  // kesinleştiyse (sıra değişti) bu tarama uyarıyı karşılaştırmaz (anlık görüntünün onu içerip içermediği bilinmez — yanlış alarm olurdu); işaret değişmez, sonraki tarama
+  // karşılaştırır (o kayıt işaretten sonradır → açıklanmış).
+  function noticeGrowth(result, restoredAt) {
+    const counts = noticeCounts(result);
+    const keys = noticeKeySets(result);
+    if (!noticeMark) {
+      noticeMark = { counts, keys, restored: restoredAt };
+      return [];
+    }
+    if (restoredAt !== cashRestoreMark(store)) return [];
+    const explained = cashExplained(store);
+    const since = noticeMark.restored;
+    const out = [];
+    for (const item of result.failures.filter(entry => entry.notice)) {
+      const previous = noticeMark.counts.get(item.code) ?? 0;
+      const count = Number(item.count) || 0;
+      const now = keys.get(item.code);
+      let unexplained = count - previous; // kimliksiz uyarı (bugün yok): sayıyla
+      let sample = item.sample || [];
+      if (now) {
+        const prior = noticeMark.keys.get(item.code) || NO_KEYS;
+        const own = item.code === "cash:before-opening";
+        // İşaretten sonraki açıklama: geri yükleme (from '') ya da yerine geçtiği kimlik önceki kümede / kendisi açıklanmış kimlik değişimi.
+        const cleared = (key, depth = 0) => {
+          const entry = own ? explained.get(key) : null;
+          if (!entry || entry.seq <= since || depth > 16) return false;
+          return !entry.from || prior.has(entry.from) || cleared(entry.from, depth + 1);
+        };
+        const fresh = [...now].filter(key => !prior.has(key) && !cleared(key));
+        unexplained = fresh.length;
+        const samples = result.noticeKeys.get(item.code);
+        sample = fresh.slice(0, 5).map(key => samples.get(key) || key);
+      }
+      if (unexplained > 0) {
+        const name = NOTICE_GROWTH[item.code]?.(previous, count, unexplained) || `${item.name}: uyarıya kapının görmediği yazımla ${unexplained} kayıt girdi (${previous} → ${count})`;
+        out.push({ code: item.code, name, ok: false, notice: true, severity: "warning", count, previous, unexplained, sample });
+      }
+    }
+    noticeMark = { counts, keys, restored: restoredAt };
+    return out;
+  }
   // Tarama sonucunun işlenmesi (iki yol ortak): kilit izi, yeni sapmanın günlüğü ve zili.
-  function settleScan(result, lock, digest, via) {
+  function settleScan(result, lock, digest, via, restoredAt = cashRestoreMark(store)) {
     // Kilit izi (gözden geçirme D8; plan §3.11/4 "sha256 tam taramaya kalır"): süzgeç kilit izini yalnız kilide giren bir dokunuşta, tam kapı
     // yalnız kendi yolunda hesaplar; kapının görmediği (store dışı, eski sürüm, elle) kilitli dönem değişikliği taramada görünür. Taban
     // değişmez: 2.0.26'daki gibi sonraki tam kapı yolu "Kapanmış dönem" 409'u verir (yeniden başlatmaya ya da kilit değişimine kadar).
+    // 2.5.0 Ç3: kilidin izi bekliyorsa (yeni kilit) taramanın anlık görüntüsündeki iz benimsenir.
+    if (lock && lock === lockState.lock && lockState.digest === null && digest) lockState = { lock, digest };
     if (lock && lock === lockState.lock && lockState.digest && digest !== lockState.digest) {
       const item = { code: "period-lock", name: `Kapanmış dönem (${lock} ve öncesi) kapının görmediği bir yolla değişti`, ok: false, count: 1 };
       result.checks.push(item);
       result.failures.push(item);
       result.ok = false;
     }
-    const current = new Set(result.failures.map(signature));
-    const findings = result.failures.filter(item => !known.has(signature(item)));
+    // 2.5.0 Ç5-K tur 2: uyarı (notice; "Kasa Açılışından Önce Tarihli Hareket") yeni sapma sayılmaz. Birleşik tur 6 (DK-D2T3 ORTA-1): uyarının AÇIKLANAMAYAN artışı
+    // (noticeGrowth) günlüğe ve zile "uyarı arttı (kapının görmediği yazım)" diye yazılır; azalma ve ilk görünüş sessiz.
+    // Ç5-A tur 1d: kural farkı (ledger:rule-diff) da yeni sapma sayılmaz (driftsOf).
+    const drifts = driftsOf(result.failures);
+    const current = new Set(drifts.map(signature));
+    const fresh = drifts.filter(item => !known.has(signature(item)));
     known = current;
+    const grown = noticeGrowth(result, restoredAt);
+    const findings = [...fresh, ...grown];
     if (findings.length) {
       write("scan", [], findings);
-      const names = findings.map(item => item.name).join("; ");
-      (strict ? log?.error : log?.warn)?.call(log, `Mutabakat taraması: kapının görmediği ${findings.length} yeni sapma (${names}).`);
+      if (fresh.length) (strict ? log?.error : log?.warn)?.call(log, `Mutabakat taraması: kapının görmediği ${fresh.length} yeni sapma (${fresh.map(item => item.name).join("; ")}).`);
+      for (const item of grown) log?.warn?.(`Mutabakat taraması: ${item.name}. Elle ya da dış bir araçla veri düzenlenmiş olabilir; Mutabakat Testi'ndeki uyarının satırlarına bakın.`);
       try {
         // Zil yalnız yöneticilere (sapmanın adı ve tutarı yönetim bilgisidir).
         const admins = has("users") ? store.all("SELECT id FROM users WHERE role = 'admin' AND active = 1").map(row => row.id) : [];
-        events?.publish?.("integrity.alert", { at: now().toISOString(), findings: findings.map(item => ({ code: item.code, name: item.name, count: item.count ?? 0, difference: item.difference ?? 0 })) }, { users: admins });
+        events?.publish?.("integrity.alert", { at: now().toISOString(), findings: findings.map(item => ({ code: item.code, name: item.name, count: item.count ?? 0, difference: item.difference ?? 0, ...(item.notice ? { notice: true, previous: item.previous, unexplained: item.unexplained } : {}) })) }, { users: admins });
       } catch {
         // zil yayımlanamasa da kayıt yazıldı
       }
@@ -973,12 +1309,14 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
       scanStats.skipped += 1;
       return { skipped: "unchanged" };
     }
+    // Birleşik tur 6: iş parçacığının anlık görüntüsü bundan SONRA alınır — bu ana kadar kesinleşen geri yüklemeler görüntüdedir (noticeGrowth).
+    const restoredAt = cashRestoreMark(store);
     backgroundScan = runScanWorker({ dbPath, time: now().toISOString(), legacy: exportLegacy(), partyRows });
     try {
       const outcome = await backgroundScan;
       scanStats.runs += 1;
       scanFingerprint = fingerprint;
-      return settleScan(outcome.result, outcome.lock, outcome.digest, "worker");
+      return settleScan(withNoticeKeys(outcome.result, outcome.noticeKeys), outcome.lock, outcome.digest, "worker", restoredAt);
     } catch (error) {
       scanStats.failed += 1;
       log?.warn?.(`Mutabakat taraması arka planda çalışmadı (${error.message}); bir sonraki zamanda yeniden denenecek.`);
@@ -988,10 +1326,24 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
     }
   }
 
+  /**
+   * 2.5.0 Ç3 (routes/ledger.mjs PUT period-lock, lib/ledger-snapshots.mjs): kilit değişince kapının kilit izi tam tarama koşmadan güncellenir. digest null = "bekliyor" (ilk ölçen
+   * benimser; kilitli döneme dokunan yazım reddedilir). Aynı kilit için daha önce benimsenmiş iz başkaysa (kapının görmediği değişiklik) Mutabakat Günlüğü'ne yazılır.
+   */
+  function adoptLock({ lock = "", digest = null } = {}) {
+    if (digest !== null && lock && lock === lockState.lock && lockState.digest && lockState.digest !== digest) {
+      const item = { code: "period-lock", name: `Kapanmış dönem (${lock} ve öncesi) dondurma sırasında kapının görmediği bir yolla değişti`, ok: false, count: 1 };
+      write("scan", [], [item]);
+      log?.warn?.(`Mutabakat: ${item.name}.`);
+    }
+    lockState = { lock, digest: lock ? digest : "" };
+  }
   return {
     run,
     start,
     scan,
+    adoptLock,
+    lockPending: lock => lockState.lock === lock && lockState.digest === null,
     scanInBackground,
     importLegacy,
     get scanStats() {

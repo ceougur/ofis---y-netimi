@@ -1,0 +1,32 @@
+{
+  "ad": "kahin3-pos-tatil-eski-uretici-kirmizi",
+  "komut": "python3 /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin3-ara/pos_tatil_kirmizi.py test/bagimsiz/muhasebe /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin3-eski-71ee26f/test/bagimsiz/muhasebe",
+  "commit": "71ee26f68973720102d3221b25d69af048748293",
+  "dal": "worktree-agent-a99413a50237f8d87",
+  "kirli": 4,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T04:14:04.332Z",
+  "sure_sn": 0.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3,
+    "gecen": 0,
+    "basarisiz": 3,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 3 başarısız, 0 iptal",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin3-kanit/2026-11-06/kahin3-pos-tatil-eski-uretici-kirmizi.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a99413a50237f8d87",
+  "ham_cikti_sha256": "659acb36b7e8e856bfa9b27fd8a28f35875a9fee1d44f825a77156abf3229209",
+  "ham_cikti_bayt": 293
+}

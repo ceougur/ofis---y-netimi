@@ -1,0 +1,38 @@
+{
+  "ad": "kahin12b-testler-Europe-Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/yapim-asamasi-kapisi.test.mjs test/kanit-araci.test.mjs",
+  "commit": "61526fa80bac687c09b515de31d34e1c02ad2745",
+  "dal": "claude/epic-thompson-w0lc2l",
+  "kirli": 64,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-12T09:38:41.309Z",
+  "sure_sn": 4.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 61,
+    "gecen": 60,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "tools/release.mjs YAPIM AŞAMASI kapısı › depodaki liste doluysa (ya da okunamıyorsa) paket aracı anahtarı okumadan reddeder ve listeyi söyler; boşsa liste iletisi yok",
+      "konum": "test/yapim-asamasi-kapisi.test.mjs:133:3",
+      "hata": "iletide yok: YAPIM AŞAMASI listesi çalışma ağacında commit'tekinden FARKLI (commit'te 722, çalışma ağacında 757 kayıt) — değişiklik git'ten gizlenmiş olabilir (update-index --skip-worktree / --assume-unchanged); paket commit'in listesiyle denetlenir · ✗ Doğrulanmamış commit'ten imzalı paket üretilmez: · - git durumu okunamadı (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin12b-kanit/2026-11-12/kahin12b-testler-Europe-Istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "aa5e929bc0f2226130935216843bccd64069819a2bec980456a1bbe91d22ca8e",
+  "ham_cikti_bayt": 20041
+}

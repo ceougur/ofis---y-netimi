@@ -1,0 +1,32 @@
+{
+  "ad": "c5bdy-yeni-ist",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=2 test/mutabakat-yil-donumu.test.mjs test/tyk-250.test.mjs test/tyk-kilit-taksitli-250.test.mjs test/kasa-acilis-once-250.test.mjs test/tyk-api-250.test.mjs test/tyk-goc-249-250.test.mjs",
+  "commit": "2bc7a78c090e04983b5ee6ca89addabd2078c979",
+  "dal": "c5b-birlesim",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v338 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-10T13:25:01.546Z",
+  "sure_sn": 44.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 97,
+    "gecen": 97,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../c5bdy-kanit/2026-11-10/c5bdy-yeni-ist.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5b-birlesim-ag",
+  "ham_cikti_sha256": "76802dc1145a6d2318bb128a2d6b87da14be692bfaac0fc90300ac4d0f5f1b92",
+  "ham_cikti_bayt": 40118
+}

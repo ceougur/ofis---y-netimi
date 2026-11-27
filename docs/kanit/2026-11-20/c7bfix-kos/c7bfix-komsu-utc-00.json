@@ -1,0 +1,32 @@
+{
+  "ad": "c7bfix-komsu-utc-00",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/accounts-stock.test.mjs test/acilis-519-250.test.mjs test/acilis-duzeni-v249-250.test.mjs test/acilis-sinir-250.test.mjs test/asama0-226.test.mjs test/banka-210-altin.test.mjs test/banka-210-ariza.test.mjs test/banka-210-asama78-modul.test.mjs test/banka-210-dun-bugun.test.mjs test/banka-210-eslesmis.test.mjs test/banka-210-gg-olay.test.mjs test/banka-210-gg-turler.test.mjs test/banka-210-gg2-bag.test.mjs test/banka-210-gg3-bag.test.mjs test/banka-210-gg3-eski-satir.test.mjs test/banka-210-kapi-kapsam.test.mjs test/banka-210-kapi-plan.test.mjs test/banka-210-kapi.test.mjs test/banka-210-kurumsal-kart.test.mjs test/banka-210-post.test.mjs test/banka-210-raporlar.test.mjs test/banka-210-saat.test.mjs test/banka-210-sira.test.mjs test/banka-210-tek-kaynak.test.mjs test/banka-210-yargic.test.mjs test/banka-210-yetki-matrisi.test.mjs test/banka-220-pos-moduller.test.mjs test/banka-220-senet-121.test.mjs test/banka-220-tahsile-ver-dogrulama.test.mjs test/banka-220-tahsile-ver-tur2.test.mjs test/banka-220-tahsile-ver.test.mjs test/banka-230-k8-cek.test.mjs test/banka-230-k8-taksit.test.mjs test/birlesik-tur1-yaris-250.test.mjs test/birlesik-tur2-yaris-250.test.mjs test/birlesik-tur3-yaris-250.test.mjs test/birlesik-tur4-degisiklik-yok-250.test.mjs test/bs3-silinmis-kayit-250.test.mjs test/bulgu-223.test.mjs test/c1-tur1-249.test.mjs test/c7b-degismez-250.test.mjs test/c7b-eski-surum-sinif-250.test.mjs test/c7b-gecis-gunu-250.test.mjs test/c7b-goc52-kilit-izi-250.test.mjs test/c7b-kart-kapat-onay-250.test.mjs test/c7b-kdv-donemi-250.test.mjs test/c7b-kdv-ozeti-donem-250.test.mjs test/c7b-kdv-s4-250.test.mjs test/c7b-kilit-izi-250.test.mjs test/c7b-kitap-turetme-250.test.mjs test/c7b-sifirla-kdv-mahsup-250.test.mjs test/c7b-tur3-eski-surum-250.test.mjs test/c7b-tur3-hiz-250.test.mjs test/c7b-tur3-kart-250.test.mjs test/c7b-tur3b-borcta-kalsin-250.test.mjs test/c7b-tur3b-eski-surum-250.test.mjs test/c7bfix-kart-kapat-kuyruk-250.test.mjs test/c7bt-ayni-adli-excel-karti-250.test.mjs test/cari-243.test.mjs test/cari-hareket-249.test.mjs test/cari-vade-245.test.mjs test/cek-istek-kimligi-247.test.mjs test/cheques-overview.test.mjs test/defter-213.test.mjs test/defter-243-raporlar.test.mjs test/defter-kaynak-iz-250.test.mjs test/donem-213.test.mjs test/donmus-defter-250.test.mjs test/donmus-defter-yasam-250.test.mjs test/duzeltmeler-211.test.mjs test/duzeltmeler-212.test.mjs test/ekstre-ayrinti-245.test.mjs test/ertelenen-224.test.mjs test/fatura-217.test.mjs test/fatura-durum-222.test.mjs test/guvenilirlik-221-tatbikat.test.mjs",
+  "commit": "849a7c4cc4083ae7842d0233867bea030628b1b6",
+  "dal": "worktree-agent-aa660861cba7cd284",
+  "kirli": 0,
+  "izlenmeyen": 16,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-21T00:04:29.964Z",
+  "sure_sn": 383.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 900,
+    "gecen": 900,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7bfix-a66/kanit/2026-11-21/c7bfix-komsu-utc-00.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa660861cba7cd284",
+  "ham_cikti_sha256": "53aa9dda6fa9c2dd6d1b821224b787e5c9f0660ee8db3dbad93e56e2c4fb4da6",
+  "ham_cikti_bayt": 340040
+}

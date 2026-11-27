@@ -1,0 +1,99 @@
+// Ç7b TUR 2f — kabul E HIZ (ders 47, 53 (a)): Ç7b'nin değiştirdiği her okuma / yazım yolu, temiz 100 bin satırlık verinin TAZE kopyasında; en iyi + ortanca + olay döngüsü en çok.
+// Kalıp: ana oturumun c5a2-olcum/olc-c5a2.mjs'i; devam ajanının kopyası (KDV Mahsup yazımı + Geri Al, Alacak Yaz eklendi). Kullanım: node olc-c7b.mjs <kod kökü> <veri kopyası> [tekrar=5]  (özel ölçüm kilidiyle; kilitli kipte kopya önceden kilit.py ile)
+import { readFileSync } from "node:fs";
+import path from "node:path";
+import { monitorEventLoopDelay } from "node:perf_hooks";
+import { pathToFileURL } from "node:url";
+
+process.env.HUKUK_LICENSE_URL ||= "http://127.0.0.1:9";
+const [root, dir, repeatText = "5"] = process.argv.slice(2);
+const repeat = Number(repeatText) || 5;
+const load = () => readFileSync("/proc/loadavg", "utf8").trim().split(" ").slice(0, 3).join(" ");
+const { createApp } = await import(pathToFileURL(path.join(root, "server", "app.mjs")).href);
+const { createClient } = await import(pathToFileURL(path.join(root, "test", "helpers.mjs")).href);
+const PASS = "Kapi-Olcum-2026!";
+const t0 = performance.now();
+const app = createApp({
+  dataDir: path.join(dir, "data"), backupDir: path.join(dir, "backups"), logLevel: "silent", scheduleBackups: false,
+  env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: "0123456789abcdef0123456789abcdef" },
+  startLicenseTimers: false, integrityScan: false, analysisWorker: false, now: "2026-10-08T12:00:00+03:00", moneyStrict: false,
+});
+const { port } = await app.listen(0, "127.0.0.1");
+const r = v => Math.round(v * 10) / 10;
+console.log(`kod ${root} · yük (başta) ${load()} · TZ ${process.env.TZ || "(yerel)"}`);
+console.log(`  AÇILIŞ (göç dahil): durum 200 · en iyi ${r(performance.now() - t0)} ms · ortanca ${r(performance.now() - t0)} ms · olay döngüsü en çok 0 ms (n=1)`);
+{
+  const st = app.ledger.snapshots.state();
+  if (st.pending) {
+    const d0 = performance.now();
+    await app.ledger.snapshots.runPending();
+    const ms = performance.now() - d0;
+    console.log(`  DONMA (bekleyen koşu): durum 200 · en iyi ${r(ms)} ms · ortanca ${r(ms)} ms · olay döngüsü en çok 0 ms (n=1)`);
+    console.log(`donma kapsamı ${app.ledger.snapshots.state().coverage} (kural ${st.pending.rule}, ${st.pending.through})`);
+  } else console.log(`donma: bekleyen koşu yok (kapsam ${st.coverage || "—"})`);
+}
+const client = createClient(`http://127.0.0.1:${port}`);
+if ((await client.login("admin", PASS)).status !== 200) throw new Error("giriş");
+const store = app.store;
+const acc = store.get("SELECT a.id FROM accounts a WHERE a.deleted_at IS NULL AND a.type = 'customer' ORDER BY (SELECT COUNT(*) FROM account_entries e WHERE e.account_id = a.id) DESC LIMIT 1").id;
+const supplier = store.get("SELECT a.id FROM accounts a WHERE a.deleted_at IS NULL AND a.type = 'supplier' ORDER BY (SELECT COUNT(*) FROM account_entries e WHERE e.account_id = a.id) DESC LIMIT 1").id;
+const plans = store.all("SELECT id FROM plans WHERE deleted_at IS NULL AND status = 'active' AND NOT covers_balance ORDER BY rowid DESC LIMIT 20").map(row => row.id);
+const h = monitorEventLoopDelay({ resolution: 5 });
+h.enable();
+const results = new Map();
+const govde = new Map();
+const timed = async (label, call) => {
+  h.reset();
+  const s = performance.now();
+  const res = await call();
+  const ms = performance.now() - s;
+  if (!results.has(label)) results.set(label, { ms: [], loop: [], status: new Set() });
+  const row = results.get(label);
+  row.ms.push(ms); row.loop.push(h.max / 1e6); row.status.add(res.status);
+  if (res.status !== 200 && !govde.has(label)) govde.set(label, JSON.stringify(res.data ?? res.body ?? "").slice(0, 200));
+  return res;
+};
+const idOf = res => res.data?.data?.id || res.data?.id || res.data?.data?.plan?.id || res.data?.plan?.id;
+const RANGE = "from=2026-01-01&to=2026-12-31";
+for (let i = 0; i < repeat; i += 1) {
+  await timed("Mizan + mutabakat (GET ledger)", () => client.get("/api/workspace/ledger"));
+  await timed("Yevmiye Defteri (rapor, yıl)", () => client.get(`/api/workspace/report-center/yevmiye?${RANGE}`));
+  await timed("Yevmiye Defteri bütün zaman (rapor)", () => client.get("/api/workspace/report-center/yevmiye?from=2000-01-01&to=2099-12-31"));
+  await timed("Hesap Planı Mizanı (rapor)", () => client.get(`/api/workspace/report-center/hesap-mizani?${RANGE}`));
+  await timed("Alt Hesap Mizanı (rapor)", () => client.get(`/api/workspace/report-center/alt-hesap-mizani?${RANGE}`));
+  await timed("Defter Mutabakatı (rapor)", () => client.get("/api/workspace/report-center/defter-mutabakati"));
+  await timed("Mutabakat Testi (GET ledger/integrity)", () => client.get("/api/workspace/ledger/integrity"));
+  await timed("KDV Özeti (rapor, yıl)", () => client.get(`/api/workspace/report-center/kdv-ozeti?${RANGE}`));
+  await timed("KDV Mahsup ön izleme (Eylül)", () => client.get("/api/workspace/tax/vat-offset?month=2026-09"));
+  await timed("KDV Mahsup listesi", () => client.get("/api/workspace/tax/vat-offset"));
+  await timed("Kural Farkı Düzeltme ön izlemesi", () => client.get("/api/admin/ledger/rule-diff-correction"));
+  const sale = await timed("YAZIM satış faturası (açık hesap)", () => client.post("/api/workspace/invoices", { scenario: "service_sale", accountId: acc, issueDate: "2026-10-08", lines: [{ name: "Ölçüm Hizmeti", qty: 2, unitPrice: 100, vatRate: 20 }], payment: { rest: "open" } }));
+  const saleId = idOf(sale);
+  const buy = await timed("YAZIM alış faturası (gider)", () => client.post("/api/workspace/invoices", { kind: "purchase", scenario: "expense_purchase", accountId: supplier, issueDate: "2026-10-08", number: `OLC-${i}-${Date.now()}`, lines: [{ name: "Kırtasiye", qty: 1, unitPrice: 100, vatRate: 20, expenseCode: "office" }], payment: { rest: "open" } }));
+  if (saleId) {
+    const line = (await client.get(`/api/workspace/invoices/${saleId}`)).data;
+    const lineId = (line?.data || line)?.lines?.[0]?.id;
+    await timed("YAZIM satıştan iade", () => client.post("/api/workspace/invoices", { kind: "sale_return", accountId: acc, originalId: saleId, issueDate: "2026-10-08", lines: [{ originLineId: lineId, qty: 1 }], payment: { cash: [] }, force: true }));
+  }
+  await timed("YAZIM Kasa + (carisiz)", () => client.post("/api/workspace/cash", { kind: "in", amount: "10", method: "cash", date: "2026-10-08", description: `Ölçüm ${i}` }));
+  {
+    const vo = await timed("YAZIM KDV Mahsup fişi (Eylül)", () => client.post("/api/workspace/tax/vat-offset", { month: "2026-09", note: `ölçüm ${i}` }));
+    const voId = vo.data?.data?.offset?.id || vo.data?.offset?.id;
+    if (voId) await timed("YAZIM KDV Mahsup Geri Al", () => client.post(`/api/workspace/tax/vat-offset/${voId}/reverse`, {}));
+  }
+  await timed("YAZIM Alacak Yaz", () => client.post(`/api/workspace/accounts/${acc}/entries`, { kind: "credit", amount: "10", note: `ölçüm alacak ${i}`, date: "2026-10-08" }));
+  await timed("YAZIM Borç Yaz", () => client.post(`/api/workspace/accounts/${acc}/entries`, { kind: "debt", amount: "10", note: `ölçüm ${i}`, date: "2026-10-08" }));
+  await timed("YAZIM taksit kartı (Yeni Borç)", () => client.post("/api/workspace/plans", { accountId: acc, name: `Ölçüm Kartı ${i}`, total: "300", registeredOn: "2026-10-08", mode: "auto", count: 3, firstDue: "2026-11-08" }));
+  const planId = plans[i];
+  if (planId) {
+    const remaining = Number(((await client.get(`/api/workspace/plans/${planId}`)).data?.data || {}).totals?.remaining ?? 0);
+    await timed("YAZIM Kartı Kapat", () => client.put(`/api/workspace/plans/${planId}`, { status: "closed", closeRemaining: remaining }));
+  }
+  const buyId = idOf(buy);
+  if (buyId) await timed("YAZIM fatura iptali (alış)", () => client.post(`/api/workspace/invoices/${buyId}/cancel`, { reason: "ölçüm", cashForce: true, negativeOk: true, payments: "drop", refund: "none" }));
+}
+const median = list => [...list].sort((a, b) => a - b)[Math.floor(list.length / 2)];
+for (const [label, row] of results) console.log(`  ${label}: durum ${[...row.status].join("/")} · en iyi ${r(Math.min(...row.ms))} ms · ortanca ${r(median(row.ms))} ms · olay döngüsü en çok ${r(Math.max(...row.loop))} ms (n=${row.ms.length})`);
+for (const [label, body] of govde) console.log(`gövde (200 değil) ${label}: ${body}`);
+console.log(`yük (sonda) ${load()}`);
+await app.close();

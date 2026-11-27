@@ -33,6 +33,14 @@ export const ROLE_GL = Object.freeze({
   tax_payable: ["360"],
   late_charge: ["689"],
 });
+/** Açılış ve Devir Kapanışı satırlarının rolleri (2.5.0 Ç5-A). */
+export const OPENING_ROLES = Object.freeze(new Set(["opening", "closing"]));
+/**
+ * Satırın DEFTERDEKİ hesabı (2.5.0 Ç5-A; BAŞ MİMAR KARARI B3; C5-ACILIS-TASARIM §2.2): açılış / Devir Kapanışı satırının saklı kodu "500" KALIR (beyaz liste ROLE_GL, kilit izi
+ * bank_lines_lock ve 2.4.9'un kapısı onu bilir; göç YOK) — türetme ve bütün görünümler (yevmiye, İşlem Kartı, Banka Ayarları) 519 "Eşleştirilecek Açılış Bakiyeleri" okur.
+ * TEK dönüşüm yeri: lib/general-ledger.mjs journal(), lib/bank/movements.mjs İşlem Kartı, lib/integrity.mjs "Açılış Karşılığı". Öbür satırlar saklı koduyla.
+ */
+export const effectiveGl = line => (OPENING_ROLES.has(line?.role) && String(line?.gl) === "500" ? "519" : String(line?.gl ?? ""));
 /** Yalnız belirli işlem türlerinde yazılabilen roller (MM3): Vergi Ödemesi ve ters kaydı. */
 export const ROLE_TYPES = Object.freeze({ tax_payable: new Set(["tax_payment", "reversal"]), late_charge: new Set(["tax_payment", "reversal"]) });
 /** Satır rolü bu THP koduna (ve verilirse bu işlem türünde) yazılabilir mi? 360 yasak listededir; yalnız tax_payable rolüyle (Vergi Ödemesi) açılır. */

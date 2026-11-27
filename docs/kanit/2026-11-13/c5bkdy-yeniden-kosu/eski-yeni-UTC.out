@@ -1,0 +1,1614 @@
+TAP version 13
+# Subtest: http.sendBody ≡ http.send (başlıklar ve baytlar)
+    # Subtest: aynı nesnenin JSON metni Buffer olarak verilince durum, başlıklar ve gövde baytları send ile aynı
+    not ok 1 - aynı nesnenin JSON metni Buffer olarak verilince durum, başlıklar ve gövde baytları send ile aynı
+      ---
+      duration_ms: 1.764214
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/takvim-govde-250.test.mjs:30:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        hazır gövde gönderen yardımcı var
+        + actual - expected
+        
+        + 'undefined'
+        - 'function'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'function'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/takvim-govde-250.test.mjs:33:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:466:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:435:3)
+        node:internal/per_context/primordials:466:9
+        Array.map (<anonymous>)
+      ...
+    # Subtest: başlıklar gönderilmişse ikisi de dokunmaz
+    not ok 2 - başlıklar gönderilmişse ikisi de dokunmaz
+      ---
+      duration_ms: 0.219832
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/takvim-govde-250.test.mjs:41:3'
+      failureType: 'testCodeFailure'
+      error: 'http.sendBody is not a function'
+      code: 'ERR_TEST_FAILURE'
+      name: 'TypeError'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/takvim-govde-250.test.mjs:44:10)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..2
+not ok 1 - http.sendBody ≡ http.send (başlıklar ve baytlar)
+  ---
+  duration_ms: 3.169735
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/takvim-govde-250.test.mjs:22:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Takvim / zil yanıtının gövdesi: ılık çağrıda yeniden üretilmez, baytlar aynı, bayatlamaz, yetkiyi aşmaz (gerçek program)
+    # Subtest: ilk çağrı gövdeyi üretir; ILIK çağrılar yeniden ÜRETMEZ ve baytlar birebir aynıdır; gövde düz JSON'dur (ok + data; kalemler, sürüm)
+    not ok 1 - ilk çağrı gövdeyi üretir; ILIK çağrılar yeniden ÜRETMEZ ve baytlar birebir aynıdır; gövde düz JSON'dur (ok + data; kalemler, sürüm)
+      ---
+      duration_ms: 21.735672
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/takvim-govde-250.test.mjs:88:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        ılık çağrılarda gövde yeniden üretilmedi (hız düzeltmesinin dişi — önceki kodda her çağrıda üretilir)
+        
+        3 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 3
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/takvim-govde-250.test.mjs:94:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: ekranın gerçek çağrısı (since = elindeki sürüm): içerik aynıysa büyük gövde gönderilmez — davranış aynen
+    ok 2 - ekranın gerçek çağrısı (since = elindeki sürüm): içerik aynıysa büyük gövde gönderilmez — davranış aynen
+      ---
+      duration_ms: 9.231026
+      type: 'test'
+      ...
+    # Subtest: veri değişince gövde YENİLENİR (bayat yanıt yok): yeni vadeli borç hemen yanıtta, sürüm değişir; tahsilatla kalem tutarı düşer
+    not ok 3 - veri değişince gövde YENİLENİR (bayat yanıt yok): yeni vadeli borç hemen yanıtta, sürüm değişir; tahsilatla kalem tutarı düşer
+      ---
+      duration_ms: 28.885351
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/takvim-govde-250.test.mjs:118:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        2 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 2
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/takvim-govde-250.test.mjs:127:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: yetkisi dar kişi başkasının gövdesini ALMAZ: Fatura görme yetkisi kaldırılan kişinin yanıtında fatura kalemi yok; yöneticinin yanıtı aynı kalır
+    not ok 4 - yetkisi dar kişi başkasının gövdesini ALMAZ: Fatura görme yetkisi kaldırılan kişinin yanıtında fatura kalemi yok; yöneticinin yanıtı aynı kalır
+      ---
+      duration_ms: 141.169864
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/takvim-govde-250.test.mjs:135:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        2 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 2
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/takvim-govde-250.test.mjs:152:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: saklanandan (3) çok görünürlük çeşidi istenirse de her biri KENDİ gövdesini alır (bellek sınırı yanlış gövde verdirmez)
+    ok 5 - saklanandan (3) çok görünürlük çeşidi istenirse de her biri KENDİ gövdesini alır (bellek sınırı yanlış gövde verdirmez)
+      ---
+      duration_ms: 518.09572
+      type: 'test'
+      ...
+    1..5
+not ok 2 - Takvim / zil yanıtının gövdesi: ılık çağrıda yeniden üretilmez, baytlar aynı, bayatlamaz, yetkiyi aşmaz (gerçek program)
+  ---
+  duration_ms: 1530.551798
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/takvim-govde-250.test.mjs:51:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Tek carinin kuyruğunda çek / senet bağlarının anı: carinin KENDİ evrak satırlarından sürülen sorgu ≡ önceki sorgu (kilit açık; gerçek program)
+    # Subtest: evrakı faturaya bağlı (düzeltmeyle bağı değişmiş, ciro edilmiş, bağsız) cariler: programın tek cari sorgusu, carinin HER defter satırı için önceki sorguyla aynı anı verir
+    not ok 1 - evrakı faturaya bağlı (düzeltmeyle bağı değişmiş, ciro edilmiş, bağsız) cariler: programın tek cari sorgusu, carinin HER defter satırı için önceki sorguyla aynı anı verir
+      ---
+      duration_ms: 617.729977
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/takvim-govde-250.test.mjs:229:3'
+      failureType: 'testCodeFailure'
+      error: 'tek cari sorgusu carinin kendi evrak satırlarından sürülüyor (hız düzeltmesinin dişi)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: |-
+        SELECT ev.effects_json AS effects, ev.created_at AS created,
+                   (SELECT MAX(a.created_at) FROM audit_events a WHERE a.entity_id = ev.cheque_id AND a.type = 'cheque.updated' AND json_extract(a.payload_json, '$.invoiceId') IS NOT NULL) AS changed
+                 FROM cheque_events ev JOIN cheques c ON c.id = ev.cheque_id
+                 WHERE ev.kind IN ('receive', 'issue') AND ev.invoice_id <> '' AND (c.account_id = ? OR c.endorse_account_id = ? OR ev.account_id = ?)
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/takvim-govde-250.test.mjs:277:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 3 - Tek carinin kuyruğunda çek / senet bağlarının anı: carinin KENDİ evrak satırlarından sürülen sorgu ≡ önceki sorgu (kilit açık; gerçek program)
+  ---
+  duration_ms: 982.752865
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/takvim-govde-250.test.mjs:182:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Ç5-B kapanış — ORTA-1 (S110 = A): satışla açılan kart kendi satışını HER KOŞULDA tanır (adımlı saat — gerçek kurulum)
+    # Subtest: değişmeden: kart satışın 1.000'ini taşır, elle Borç 500 kendi vadesiyle (+30) AYRI kalem; gecikmiş yalnız 1. taksit 500
+    ok 1 - değişmeden: kart satışın 1.000'ini taşır, elle Borç 500 kendi vadesiyle (+30) AYRI kalem; gecikmiş yalnız 1. taksit 500
+      ---
+      duration_ms: 135.957664
+      type: 'test'
+      ...
+    # Subtest: Tutarı Düzenle (azalt 1.000 → 800): kart yine KENDİ satışını taşır — Borç 500 takvimde vadesiyle durur; gecikmiş 700 (1. taksit 500 + satışın kart dışı 200'ü), 1.200 DEĞİL
+    not ok 2 - Tutarı Düzenle (azalt 1.000 → 800): kart yine KENDİ satışını taşır — Borç 500 takvimde vadesiyle durur; gecikmiş 700 (1. taksit 500 + satışın kart dışı 200'ü), 1.200 DEĞİL
+      ---
+      duration_ms: 109.602492
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-250.test.mjs:123:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Vade Takip: elle Borç 500 kendi vadesinde AYRI
+        + actual - expected
+        
+          [
+        +   'account:700@2026-09-05',
+        -   'account:200@2026-09-05',
+        -   'account:500@2026-11-19',
+            'plan:300@2026-10-30',
+            'plan:500@2026-09-30'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'account:200@2026-09-05'
+        1: 'account:500@2026-11-19'
+        2: 'plan:300@2026-10-30'
+        3: 'plan:500@2026-09-30'
+      actual:
+        0: 'account:700@2026-09-05'
+        1: 'plan:300@2026-10-30'
+        2: 'plan:500@2026-09-30'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-250.test.mjs:129:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Tutarı Düzenle (artır 1.000 → 1.200): Mevcut Borç kartı büyütülemez (409 cover-grow) — hiçbir sayı değişmez
+    ok 3 - Tutarı Düzenle (artır 1.000 → 1.200): Mevcut Borç kartı büyütülemez (409 cover-grow) — hiçbir sayı değişmez
+      ---
+      duration_ms: 88.793439
+      type: 'test'
+      ...
+    # Subtest: faturasız stok iadesi 300 (kart küçülmez): kart kendi satışını taşır, Borç 500 ayrı; iade bağsız ödemedir — vadesi en önce gelen 1. taksiti 200'e indirir (S50); gecikmiş 200
+    ok 4 - faturasız stok iadesi 300 (kart küçülmez): kart kendi satışını taşır, Borç 500 ayrı; iade bağsız ödemedir — vadesi en önce gelen 1. taksiti 200'e indirir (S50); gecikmiş 200
+      ---
+      duration_ms: 75.171687
+      type: 'test'
+      ...
+    # Subtest: faturasız stok iadesi 800 (bakiye 700 < kart → kart 700'e küçülür): kart yine kendi satışını taşır, Borç 500 vadesiyle AYRI; iade vade sırasıyla satışın kart dışı 300'ünü + 1. taksiti kapatır
+    not ok 5 - faturasız stok iadesi 800 (bakiye 700 < kart → kart 700'e küçülür): kart yine kendi satışını taşır, Borç 500 vadesiyle AYRI; iade vade sırasıyla satışın kart dışı 300'ünü + 1. taksiti kapatır
+      ---
+      duration_ms: 76.718654
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-250.test.mjs:151:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Borç 500 kendi vadesinde AYRI kalem
+        + actual - expected
+        
+          [
+        -   'account:500@2026-11-19',
+            'plan:200@2026-10-30',
+        +   'plan:500@2026-09-30'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'account:500@2026-11-19'
+        1: 'plan:200@2026-10-30'
+      actual:
+        0: 'plan:200@2026-10-30'
+        1: 'plan:500@2026-09-30'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-250.test.mjs:158:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: satış + VADESİZ elle borç (v2.4.9 fikstürü N): kart satışı taşır; vadesiz Borç 500 kayıt gününde vadeli (S1) — gecikmiş 1.000
+    ok 6 - satış + VADESİZ elle borç (v2.4.9 fikstürü N): kart satışı taşır; vadesiz Borç 500 kayıt gününde vadeli (S1) — gecikmiş 1.000
+      ---
+      duration_ms: 70.855028
+      type: 'test'
+      ...
+    # Subtest: iki satış kartı: ikinci satışın kartı ikinci satışı, tutarı düzenlenen birinci kart birinci satışı taşır; Borç 500 ayrı
+    not ok 7 - iki satış kartı: ikinci satışın kartı ikinci satışı, tutarı düzenlenen birinci kart birinci satışı taşır; Borç 500 ayrı
+      ---
+      duration_ms: 108.338688
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-250.test.mjs:168:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+        +   'account:700@2026-09-05',
+        -   'account:200@2026-09-05',
+        -   'account:500@2026-11-19',
+            'plan:300@2026-10-10',
+            'plan:300@2026-10-30',
+            'plan:300@2026-11-10',
+            'plan:500@2026-09-30'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'account:200@2026-09-05'
+        1: 'account:500@2026-11-19'
+        2: 'plan:300@2026-10-10'
+        3: 'plan:300@2026-10-30'
+        4: 'plan:300@2026-11-10'
+        5: 'plan:500@2026-09-30'
+      actual:
+        0: 'account:700@2026-09-05'
+        1: 'plan:300@2026-10-10'
+        2: 'plan:300@2026-10-30'
+        3: 'plan:300@2026-11-10'
+        4: 'plan:500@2026-09-30'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-250.test.mjs:175:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: kaynak KALICI: kartın açılış izinde satışın kimliği yazılı; program yeniden açılınca (bellek boş) sayılar aynı
+    not ok 8 - kaynak KALICI: kartın açılış izinde satışın kimliği yazılı; program yeniden açılınca (bellek boş) sayılar aynı
+      ---
+      duration_ms: 564.809359
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-250.test.mjs:181:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kartın açılış izinde satışın stok hareketi
+        + actual - expected
+        
+        + undefined
+        - 'smove-92d12d83-4c6c-4639-b491-4622cd842b0d'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'smove-92d12d83-4c6c-4639-b491-4622cd842b0d'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-250.test.mjs:191:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..8
+not ok 4 - Ç5-B kapanış — ORTA-1 (S110 = A): satışla açılan kart kendi satışını HER KOŞULDA tanır (adımlı saat — gerçek kurulum)
+  ---
+  duration_ms: 1831.391821
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-250.test.mjs:108:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Ç5-B kapanış — S133 = C (BİLİNEN SINIR): ELLE açılan kartta tanıma AYNEN — sonuç kayıt sırasına bağlı (sayılar sabit)
+    # Subtest: C1 — stok satışı en son kaydedilen borç ve tutarı karta eşit: kart satışı taşır ⇒ gecikmiş 0 (X vadesi +30)
+    ok 1 - C1 — stok satışı en son kaydedilen borç ve tutarı karta eşit: kart satışı taşır ⇒ gecikmiş 0 (X vadesi +30)
+      ---
+      duration_ms: 154.997221
+      type: 'test'
+      ...
+    # Subtest: C1b — kayıt sırası ters (önce stok satışı, sonra X): kart tutarı eşit TEK elle borcu (X) taşır ⇒ satış 500 kendi gününde açık, gecikmiş 500
+    ok 2 - C1b — kayıt sırası ters (önce stok satışı, sonra X): kart tutarı eşit TEK elle borcu (X) taşır ⇒ satış 500 kendi gününde açık, gecikmiş 500
+      ---
+      duration_ms: 84.756523
+      type: 'test'
+      ...
+    # Subtest: elle kartın açılış izinde satış kimliği YOK (çıkarım yapılmaz) — toplu kartlarda alan boş yazılır
+    not ok 3 - elle kartın açılış izinde satış kimliği YOK (çıkarım yapılmaz) — toplu kartlarda alan boş yazılır
+      ---
+      duration_ms: 32.746822
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-250.test.mjs:233:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        tek cari yolu: kaynak yok
+        
+        undefined !== ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-250.test.mjs:239:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 5 - Ç5-B kapanış — S133 = C (BİLİNEN SINIR): ELLE açılan kartta tanıma AYNEN — sonuç kayıt sırasına bağlı (sayılar sabit)
+  ---
+  duration_ms: 634.750382
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-250.test.mjs:208:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Ç5-B kapanış — ORTA-1 eski veri: kartın kaynağı açılış izinden ÇIKARILIR (2.4.9'a kadar izde satış kimliği yok) — koşulların her biri
+    # Subtest: A — eski biçim satış kartı: hemen önceki iz aynı kullanıcının, aynı cariye, veresiye, kartın AÇILIŞ tutarında stok satışı ⇒ kaynak o satış (tutar sonradan 800 olsa da)
+    not ok 1 - A — eski biçim satış kartı: hemen önceki iz aynı kullanıcının, aynı cariye, veresiye, kartın AÇILIŞ tutarında stok satışı ⇒ kaynak o satış (tutar sonradan 800 olsa da)
+      ---
+      duration_ms: 1.106447
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-250.test.mjs:306:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + undefined
+        - 'smove-567d826f-80db-4c9d-9c35-40e46408e9a3'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'smove-567d826f-80db-4c9d-9c35-40e46408e9a3'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-250.test.mjs:308:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: B — hemen önceki satış BAŞKA cariye ⇒ kaynak yok
+    not ok 2 - B — hemen önceki satış BAŞKA cariye ⇒ kaynak yok
+      ---
+      duration_ms: 0.469098
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-250.test.mjs:312:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        undefined !== ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-250.test.mjs:312:71)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: C — hemen önceki satışın tutarı kartın açılış tutarından FARKLI ⇒ kaynak yok
+    not ok 3 - C — hemen önceki satışın tutarı kartın açılış tutarından FARKLI ⇒ kaynak yok
+      ---
+      duration_ms: 0.395879
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-250.test.mjs:313:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        undefined !== ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-250.test.mjs:313:99)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: D — eski biçim toplu kart, hemen önceki iz aynı cariye aynı tutarda veresiye satış ⇒ kaynak o satış (kart o satışı taksitlendirmiştir)
+    not ok 4 - D — eski biçim toplu kart, hemen önceki iz aynı cariye aynı tutarda veresiye satış ⇒ kaynak o satış (kart o satışı taksitlendirmiştir)
+      ---
+      duration_ms: 0.44572
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-250.test.mjs:314:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + undefined
+        - 'smove-8ceb4252-c0ca-48d7-8760-7c848364e5de'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'smove-8ceb4252-c0ca-48d7-8760-7c848364e5de'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-250.test.mjs:314:157)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: E — BUGÜNKÜ biçim (izde alan boş yazılı): çıkarım yapılmaz ⇒ kaynak yok
+    not ok 5 - E — BUGÜNKÜ biçim (izde alan boş yazılı): çıkarım yapılmaz ⇒ kaynak yok
+      ---
+      duration_ms: 0.407547
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-250.test.mjs:315:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        undefined !== ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-250.test.mjs:317:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: F — hemen önceki satışı BAŞKA kullanıcı yazmış ⇒ kaynak yok
+    not ok 6 - F — hemen önceki satışı BAŞKA kullanıcı yazmış ⇒ kaynak yok
+      ---
+      duration_ms: 0.270903
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-250.test.mjs:319:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        undefined !== ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-250.test.mjs:319:82)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: G — hemen önceki satış PEŞİN (cariye yazılmamış) ⇒ kaynak yok
+    not ok 7 - G — hemen önceki satış PEŞİN (cariye yazılmamış) ⇒ kaynak yok
+      ---
+      duration_ms: 0.273774
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-250.test.mjs:320:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        undefined !== ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-250.test.mjs:320:84)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: toplu yol (bütün carilerin kartları) tek cari yoluyla AYNI kaynağı verir
+    ok 8 - toplu yol (bütün carilerin kartları) tek cari yoluyla AYNI kaynağı verir
+      ---
+      duration_ms: 0.975751
+      type: 'test'
+      ...
+    1..8
+not ok 6 - Ç5-B kapanış — ORTA-1 eski veri: kartın kaynağı açılış izinden ÇIKARILIR (2.4.9'a kadar izde satış kimliği yok) — koşulların her biri
+  ---
+  duration_ms: 1017.480974
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-250.test.mjs:243:1'
+  failureType: 'subtestsFailed'
+  error: '7 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Ç5-B kapanış — ORTA-1 saf kuyruk: kaynağı bilinen kart (coverSale) ↔ kaynağı bilinmeyen kart (eski tanıma AYNEN)
+    # Subtest: kaynağı bilinen kart: tutar EŞİT DEĞİL, kayıt anı FARKLI, araya daha yeni bir borç yazılmış — kart yine o satışı taşır
+    not ok 1 - kaynağı bilinen kart: tutar EŞİT DEĞİL, kayıt anı FARKLI, araya daha yeni bir borç yazılmış — kart yine o satışı taşır
+      ---
+      duration_ms: 1.10703
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-250.test.mjs:341:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + 'S120'
+        - 'S110-satis'
+             ^
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'S110-satis'
+      actual: 'S120'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-250.test.mjs:345:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:466:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:435:3)
+        node:internal/per_context/primordials:466:9
+        Array.map (<anonymous>)
+      ...
+    # Subtest: kaynak satış defterde yoksa (silinmiş) kart kaynağı bilinmeyen kart gibi davranır — eski tanıma
+    ok 2 - kaynak satış defterde yoksa (silinmiş) kart kaynağı bilinmeyen kart gibi davranır — eski tanıma
+      ---
+      duration_ms: 0.370793
+      type: 'test'
+      ...
+    # Subtest: kaynağı bilinen kartın kimliği stok İADESİ satırını göstermez (yalnız borç yönlü satış satırı)
+    ok 3 - kaynağı bilinen kartın kimliği stok İADESİ satırını göstermez (yalnız borç yönlü satış satırı)
+      ---
+      duration_ms: 0.419484
+      type: 'test'
+      ...
+    # Subtest: K5 dişi — kaynağı bilinmeyen (elle) kart: en son kaydedilen stok satışının tutarı karta EŞİT DEĞİLSE kartın satışı sayılmaz (tutarı eşit tek elle borç taşınır)
+    ok 4 - K5 dişi — kaynağı bilinmeyen (elle) kart: en son kaydedilen stok satışının tutarı karta EŞİT DEĞİLSE kartın satışı sayılmaz (tutarı eşit tek elle borç taşınır)
+      ---
+      duration_ms: 0.267714
+      type: 'test'
+      ...
+    # Subtest: K6 dişi — kaynağı bilinmeyen kart: en son kaydedilen borç stoktan ALIŞ İADESİ ise (tutarı karta eşit olsa da) kartın satışı sayılmaz
+    ok 5 - K6 dişi — kaynağı bilinmeyen kart: en son kaydedilen borç stoktan ALIŞ İADESİ ise (tutarı karta eşit olsa da) kartın satışı sayılmaz
+      ---
+      duration_ms: 0.301149
+      type: 'test'
+      ...
+    # Subtest: K24 dişi — kaynağı bilinmeyen eski kart faturalı iadeyle küçülmüş: tanıma kartın AÇILIŞ tutarıyla (bugünkü tutar + iade kesintisi) — lib/accounts.mjs coverGross
+    ok 6 - K24 dişi — kaynağı bilinmeyen eski kart faturalı iadeyle küçülmüş: tanıma kartın AÇILIŞ tutarıyla (bugünkü tutar + iade kesintisi) — lib/accounts.mjs coverGross
+      ---
+      duration_ms: 0.468749
+      type: 'test'
+      ...
+    # Subtest: K25 dişi — S95 = A × faturasız stok iadesi (bağsız ödemedir — 2.4.5 KS7 a): Borç 200 + Alacak 150 netleştikten SONRAKİ gün stok iadesi 300 ⇒ iade Borç'u kapatır, Alacak 150 yeniden açık, artan 100 avans
+    ok 7 - K25 dişi — S95 = A × faturasız stok iadesi (bağsız ödemedir — 2.4.5 KS7 a): Borç 200 + Alacak 150 netleştikten SONRAKİ gün stok iadesi 300 ⇒ iade Borç'u kapatır, Alacak 150 yeniden açık, artan 100 avans
+      ---
+      duration_ms: 0.431787
+      type: 'test'
+      ...
+    1..7
+not ok 7 - Ç5-B kapanış — ORTA-1 saf kuyruk: kaynağı bilinen kart (coverSale) ↔ kaynağı bilinmeyen kart (eski tanıma AYNEN)
+  ---
+  duration_ms: 3.70245
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-250.test.mjs:340:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Ç5-B kapanış — ORTA-2 gerçek program: geriye tarihli Alacak + kart tahsilatı — kalemler toplamı = bakiye, Gecikmiş Borç bakiyeyi aşmaz (saf kuyruk: test/tyk-kapanis-sigma-250)
+    # Subtest: dar kontrolün kayıt sırası: stok satışı 810 → Mevcut Borç kartı 810 (Kayıt Tarihi eski) → Alacak 250 (−230) → kart tahsilatı 490 (−217) → fatura 960 → Borç 360 → tahsilat 450 ⇒ bakiye 940 = Σ kalem = Gecikmiş Borç
+    not ok 1 - dar kontrolün kayıt sırası: stok satışı 810 → Mevcut Borç kartı 810 (Kayıt Tarihi eski) → Alacak 250 (−230) → kart tahsilatı 490 (−217) → fatura 960 → Borç 360 → tahsilat 450 ⇒ bakiye 940 = Σ kalem = Gecikmiş Borç
+      ---
+      duration_ms: 281.853295
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-250.test.mjs:405:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        bakiye = kalemler toplamı = Gecikmiş Borç (cari kartı = liste)
+        + actual - expected
+        
+          [
+            940,
+        +   960,
+        +   960,
+        +   960
+        -   940,
+        -   940,
+        -   940
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 940
+        1: 940
+        2: 940
+        3: 940
+      actual:
+        0: 940
+        1: 960
+        2: 960
+        3: 960
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-250.test.mjs:418:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 8 - Ç5-B kapanış — ORTA-2 gerçek program: geriye tarihli Alacak + kart tahsilatı — kalemler toplamı = bakiye, Gecikmiş Borç bakiyeyi aşmaz (saf kuyruk: test/tyk-kapanis-sigma-250)
+  ---
+  duration_ms: 705.525276
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-250.test.mjs:399:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Ç5-B kapanış — S129 = A: kartın gösterilen Tahsil Edilen / Kalan / Ödenen'i tek kuyruktan; sınır kartın kendi kalanından (S118 = B)
+    # Subtest: karar örneği 1 — kart 900 (3 × 300), karta BAĞLANMADAN 500 tahsilat: Tahsil Edilen 500 · Kalan 400; satırlar Ödenen 300 / 200 / 0; kartın kendi hesabı 0 / 900 ayrı alanlarda
+    not ok 1 - karar örneği 1 — kart 900 (3 × 300), karta BAĞLANMADAN 500 tahsilat: Tahsil Edilen 500 · Kalan 400; satırlar Ödenen 300 / 200 / 0; kartın kendi hesabı 0 / 900 ayrı alanlarda
+      ---
+      duration_ms: 50.158314
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-250.test.mjs:450:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kart penceresi göstergeleri
+        + actual - expected
+        
+          [
+            900,
+        +   0,
+        +   900
+        -   500,
+        -   400
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 900
+        1: 500
+        2: 400
+      actual:
+        0: 900
+        1: 0
+        2: 900
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-250.test.mjs:455:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: karar örneği 2 — kart 600 (2 × 300), bağlanmadan 800 tahsilat: Kalan 0 · Tamamlandı, Tahsil Edilen 600; cari 200 alacaklı
+    not ok 2 - karar örneği 2 — kart 600 (2 × 300), bağlanmadan 800 tahsilat: Kalan 0 · Tamamlandı, Tahsil Edilen 600; cari 200 alacaklı
+      ---
+      duration_ms: 42.806015
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-250.test.mjs:493:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+        +   0,
+            600,
+        -   0,
+            'done',
+            [
+              [
+        -       300,
+                0,
+        +       0
+              ],
+              [
+        -       300,
+                0,
+        +       0
+              ]
+            ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 600
+        1: 0
+        2: 'done'
+        3:
+          0:
+            0: 300
+            1: 0
+          1:
+            0: 300
+            1: 0
+      actual:
+        0: 0
+        1: 600
+        2: 'done'
+        3:
+          0:
+            0: 0
+            1: 0
+          1:
+            0: 0
+            1: 0
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-250.test.mjs:498:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: karta kendi tahsilatı + bağsız tahsilat birlikte: kart 900, karta 300 (1. taksit) + bağsız 200 ⇒ Tahsil Edilen 500 · Kalan 400; kartın kendi hesabı 300 / 600
+    not ok 3 - karta kendi tahsilatı + bağsız tahsilat birlikte: kart 900, karta 300 (1. taksit) + bağsız 200 ⇒ Tahsil Edilen 500 · Kalan 400; kartın kendi hesabı 300 / 600
+      ---
+      duration_ms: 83.96999
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-250.test.mjs:505:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+        -   500,
+        -   400,
+            300,
+            600,
+        +   undefined,
+        +   undefined
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 500
+        1: 400
+        2: 300
+        3: 600
+      actual:
+        0: 300
+        1: 600
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-250.test.mjs:512:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: kapatılmış kart: gösterim BUGÜNKÜ gibi (kural yazılmadı) — Tahsil Edilen 300, Kalan 600 kartın kendi hesabından
+    not ok 4 - kapatılmış kart: gösterim BUGÜNKÜ gibi (kural yazılmadı) — Tahsil Edilen 300, Kalan 600 kartın kendi hesabından
+      ---
+      duration_ms: 86.3782
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-250.test.mjs:541:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            'closed',
+            300,
+            600,
+        +   undefined,
+        +   undefined,
+        -   300,
+        -   600,
+            [
+              300,
+              0,
+              0
+            ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'closed'
+        1: 300
+        2: 600
+        3: 300
+        4: 600
+        5:
+          0: 300
+          1: 0
+          2: 0
+      actual:
+        0: 'closed'
+        1: 300
+        2: 600
+        5:
+          0: 300
+          1: 0
+          2: 0
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-250.test.mjs:548:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Mevcut Borç kartının taksitlere BÖLÜNMEMİŞ kısmı bugünkü gösteriminde (karar yok): Borç 1.000, kart 1.000 (taksit 300 + 300), bağsız tahsilat 200 ⇒ Kalan 1.000, Tahsil Edilen 0
+    not ok 5 - Mevcut Borç kartının taksitlere BÖLÜNMEMİŞ kısmı bugünkü gösteriminde (karar yok): Borç 1.000, kart 1.000 (taksit 300 + 300), bağsız tahsilat 200 ⇒ Kalan 1.000, Tahsil Edilen 0
+      ---
+      duration_ms: 89.90487
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-250.test.mjs:551:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        ... Skipped lines
+        
+          [
+            1000,
+            0,
+            1000,
+            [
+        ...
+            ],
+        +   undefined
+        -   1000
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 1000
+        1: 0
+        2: 1000
+        3:
+          0:
+            0: 0
+            1: 300
+          1:
+            0: 0
+            1: 300
+        4: 1000
+      actual:
+        0: 1000
+        1: 0
+        2: 1000
+        3:
+          0:
+            0: 0
+            1: 300
+          1:
+            0: 0
+            1: 300
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-250.test.mjs:560:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: elle Alacak'la NETLEŞME tahsilat değildir (karar yok — gösterim bugünkü gibi; kâhin d19 N4): Açılış 900 → Mevcut Borç kartı 900 (3 × 300) → Alacak 200 ⇒ Tahsil Edilen 0 · Kalan 900, satırların Ödenen'i 0
+    ok 6 - elle Alacak'la NETLEŞME tahsilat değildir (karar yok — gösterim bugünkü gibi; kâhin d19 N4): Açılış 900 → Mevcut Borç kartı 900 (3 × 300) → Alacak 200 ⇒ Tahsil Edilen 0 · Kalan 900, satırların Ödenen'i 0
+      ---
+      duration_ms: 65.689727
+      type: 'test'
+      ...
+    # Subtest: kartın KENDİ fazla tahsilatı (K8 'Fazlasını Avans Yaz') bugünkü gibi: kart 1.000 ödendi + 100 avans ⇒ Tahsil Edilen 1.100 · Kalan 0 · fazla 100
+    not ok 7 - kartın KENDİ fazla tahsilatı (K8 'Fazlasını Avans Yaz') bugünkü gibi: kart 1.000 ödendi + 100 avans ⇒ Tahsil Edilen 1.100 · Kalan 0 · fazla 100
+      ---
+      duration_ms: 109.036127
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-250.test.mjs:579:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            1100,
+            0,
+            100,
+        +   undefined,
+        -   1100,
+            'done',
+            [
+              [
+                1000,
+                0
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 1100
+        1: 0
+        2: 100
+        3: 1100
+        4: 'done'
+        5:
+          0:
+            0: 1000
+            1: 0
+      actual:
+        0: 1100
+        1: 0
+        2: 100
+        4: 'done'
+        5:
+          0:
+            0: 1000
+            1: 0
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-250.test.mjs:585:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: carisiz kart (kuyruk yok): gösterilen sayı kartın kendi hesabı — alanlar aynı
+    not ok 8 - carisiz kart (kuyruk yok): gösterilen sayı kartın kendi hesabı — alanlar aynı
+      ---
+      duration_ms: 48.320068
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-250.test.mjs:589:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            250,
+            350,
+        +   undefined,
+        +   undefined,
+        -   250,
+        -   350,
+            [
+              [
+                250,
+        +       undefined
+        -       250
+              ],
+              [
+                0,
+        +       undefined
+        -       0
+              ]
+            ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 250
+        1: 350
+        2: 250
+        3: 350
+        4:
+          0:
+            0: 250
+            1: 250
+          1:
+            0: 0
+            1: 0
+      actual:
+        0: 250
+        1: 350
+        4:
+          0:
+            0: 250
+          1:
+            0: 0
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-250.test.mjs:593:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..8
+not ok 9 - Ç5-B kapanış — S129 = A: kartın gösterilen Tahsil Edilen / Kalan / Ödenen'i tek kuyruktan; sınır kartın kendi kalanından (S118 = B)
+  ---
+  duration_ms: 1009.686844
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-250.test.mjs:430:1'
+  failureType: 'subtestsFailed'
+  error: '7 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Ç5-B kapanış — DÜŞÜK-2 saf kuyruk dişleri
+    # Subtest: K3 dişi — S101: aynı para iki kartta 'avansla ödenmiş' sayılmaz (önceki kartın saydığı kısım düşülür); para dışı kapanan kısım kırpılır
+    not ok 1 - K3 dişi — S101: aynı para iki kartta 'avansla ödenmiş' sayılmaz (önceki kartın saydığı kısım düşülür); para dışı kapanan kısım kırpılır
+      ---
+      duration_ms: 36.014731
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-dis-250.test.mjs:36:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        C2'nin 'Tahsil Edilen'i 100 (300 DEĞİL)
+        
+        NaN !== 100
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 100
+      actual: NaN
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-dis-250.test.mjs:43:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:466:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:435:3)
+        node:internal/per_context/primordials:466:9
+        Array.map (<anonymous>)
+      ...
+    # Subtest: K35 dişi — S105: tedarikçi — 01.03 Ödeme 300 · 05.03 FATURALI Alış İadesi 200 · 10.03 alış 250 ⇒ alış önce iade alacağını kapatır: iade 0, avans 250
+    ok 2 - K35 dişi — S105: tedarikçi — 01.03 Ödeme 300 · 05.03 FATURALI Alış İadesi 200 · 10.03 alış 250 ⇒ alış önce iade alacağını kapatır: iade 0, avans 250
+      ---
+      duration_ms: 5.011037
+      type: 'test'
+      ...
+    1..2
+not ok 10 - Ç5-B kapanış — DÜŞÜK-2 saf kuyruk dişleri
+  ---
+  duration_ms: 42.156972
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-dis-250.test.mjs:35:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Ç5-B kapanış — DÜŞÜK-2 gerçek program dişleri (K8, K22)
+    # Subtest: K8 dişi — S135 = C: F 600 + elle X 300 + ayrıca TAKSİTLİ fatura B 300; Mevcut Borç kartı 900; karta 300 ⇒ başka kartın açık taksitleri 'bütün açık borca' sayılır: X Kalan 0, F açık 600
+    ok 1 - K8 dişi — S135 = C: F 600 + elle X 300 + ayrıca TAKSİTLİ fatura B 300; Mevcut Borç kartı 900; karta 300 ⇒ başka kartın açık taksitleri 'bütün açık borca' sayılır: X Kalan 0, F açık 600
+      ---
+      duration_ms: 188.618054
+      type: 'test'
+      ...
+    # Subtest: K22 dişi — Tablodan Aktar'ın açtığı Mevcut Borç kartı (aktarım kimlikli) kararların dışında: kart ekranı (tek cari yolu) = liste (bütün cariler yolu) — eski kural (vade sırası)
+    ok 2 - K22 dişi — Tablodan Aktar'ın açtığı Mevcut Borç kartı (aktarım kimlikli) kararların dışında: kart ekranı (tek cari yolu) = liste (bütün cariler yolu) — eski kural (vade sırası)
+      ---
+      duration_ms: 115.760906
+      type: 'test'
+      ...
+    1..2
+ok 11 - Ç5-B kapanış — DÜŞÜK-2 gerçek program dişleri (K8, K22)
+  ---
+  duration_ms: 882.630148
+  type: 'suite'
+  ...
+# Subtest: Ç5-B kapanış — DÜŞÜK-2 K28 dişi (S96 = A): bankadan POS Komisyon Tahsili ile verilen avans takvimde / zilde / Vade Takip'te AYRI KALEM
+    # Subtest: ödeme kuruluşu POS'u (komisyon %2,5 + KDV): satış 10.000 → valörden ÖNCE tam iade → 12.10'da komisyon (250 + KDV 50) bankadan tahsil edilir: sağlayıcı carisine verilen 300, komisyon faturası gelene kadar 'Tahsil Edilecek' kalemidir
+    ok 1 - ödeme kuruluşu POS'u (komisyon %2,5 + KDV): satış 10.000 → valörden ÖNCE tam iade → 12.10'da komisyon (250 + KDV 50) bankadan tahsil edilir: sağlayıcı carisine verilen 300, komisyon faturası gelene kadar 'Tahsil Edilecek' kalemidir
+      ---
+      duration_ms: 691.767051
+      type: 'test'
+      ...
+    1..1
+ok 12 - Ç5-B kapanış — DÜŞÜK-2 K28 dişi (S96 = A): bankadan POS Komisyon Tahsili ile verilen avans takvimde / zilde / Vade Takip'te AYRI KALEM
+  ---
+  duration_ms: 692.185297
+  type: 'suite'
+  ...
+# \# ORTA-2 değişmezi: {"cari":509,"derin":0,"guvenli":0,"enCok":0} (derin = 12 geçişi aşan; guvenli = güvenli kapanış uygulanan)
+# Subtest: Ç5-B kapanış — ORTA-2: ön ödeme ölçümü yakınsayana kadar sürer; yakınsamazsa güvenli kapanış — kalemler toplamı = bakiye
+    # Subtest: dar kontrolün örneği (ölçüm geçiş başına 20 TL ilerler; 12 geçiş yetmiyordu): Σ kalem = bakiye 940, Gecikmiş Borç 940 (960 DEĞİL), fatura açığı 940, kart Bitti
+    not ok 1 - dar kontrolün örneği (ölçüm geçiş başına 20 TL ilerler; 12 geçiş yetmiyordu): Σ kalem = bakiye 940, Gecikmiş Borç 940 (960 DEĞİL), fatura açığı 940, kart Bitti
+      ---
+      duration_ms: 10.270417
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-sigma-250.test.mjs:43:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        örnek: Σ kalem 960 ≠ bakiye 940
+        
+        96000 !== 94000
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 94000
+      actual: 96000
+      operator: 'strictEqual'
+      stack: |-
+        assertInvariant (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-sigma-250.test.mjs:18:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-sigma-250.test.mjs:46:5)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:466:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:435:3)
+        node:internal/per_context/primordials:466:9
+      ...
+    # Subtest: güvenli kapanış — ölçüm geçiş başına 1 KURUŞ ilerliyor (sınırda yakınsamaz): kart tahsilatının var olmayan taksite yazdığı pay avans olur; Σ kalem = bakiye, gecikmiş ≤ bakiye
+    not ok 2 - güvenli kapanış — ölçüm geçiş başına 1 KURUŞ ilerliyor (sınırda yakınsamaz): kart tahsilatının var olmayan taksite yazdığı pay avans olur; Σ kalem = bakiye, gecikmiş ≤ bakiye
+      ---
+      duration_ms: 2.471392
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-sigma-250.test.mjs:52:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        1 kuruş adım: Σ kalem 960 ≠ bakiye 959.99
+        
+        96000 !== 95999
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 95999
+      actual: 96000
+      operator: 'strictEqual'
+      stack: |-
+        assertInvariant (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-sigma-250.test.mjs:18:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-sigma-250.test.mjs:56:5)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: güvenli kapanış kilit ölçümlü yolda da (karar (3): kilitli dönemde bağlı ödeme varken son geçiş ayrı kurulur)
+    not ok 3 - güvenli kapanış kilit ölçümlü yolda da (karar (3): kilitli dönemde bağlı ödeme varken son geçiş ayrı kurulur)
+      ---
+      duration_ms: 2.921647
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-sigma-250.test.mjs:67:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kilitli yol: Σ kalem 960 ≠ bakiye 959.99
+        
+        96000 !== 95999
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 95999
+      actual: 96000
+      operator: 'strictEqual'
+      stack: |-
+        assertInvariant (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-sigma-250.test.mjs:18:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-sigma-250.test.mjs:72:5)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: geçiş sınırı carinin büyüklüğüne bağlı: iş bütçesi (geçiş × satır) sabit — küçük caride 400, çok satırlı caride en az 12
+    not ok 4 - geçiş sınırı carinin büyüklüğüne bağlı: iş bütçesi (geçiş × satır) sabit — küçük caride 400, çok satırlı caride en az 12
+      ---
+      duration_ms: 0.146768
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-sigma-250.test.mjs:76:3'
+      failureType: 'testCodeFailure'
+      error: 'queue.prepaidPassLimit is not a function'
+      code: 'ERR_TEST_FAILURE'
+      name: 'TypeError'
+      stack: |-
+        file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-sigma-250.test.mjs:77:85
+        Array.map (<anonymous>)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-sigma-250.test.mjs:77:66)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: çok satırlı caride (sınır 12) yakınsamayan ölçüm: güvenli kapanış — Σ kalem = bakiye
+    not ok 5 - çok satırlı caride (sınır 12) yakınsamayan ölçüm: güvenli kapanış — Σ kalem = bakiye
+      ---
+      duration_ms: 711.232395
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-sigma-250.test.mjs:79:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        çok satırlı: Σ kalem 960 ≠ bakiye 940
+        
+        96000 !== 94000
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 94000
+      actual: 96000
+      operator: 'strictEqual'
+      stack: |-
+        assertInvariant (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-sigma-250.test.mjs:18:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-sigma-250.test.mjs:85:5)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: yakınsayan caride güvenli kapanış ÇALIŞMAZ: S101 karar örneği (1.000 avans → 600 veresiye satış 2 taksit → Taksit Tahsilatı 300 → Borç 500) ⇒ takvim boş, müşteri 200 alacaklı
+    not ok 6 - yakınsayan caride güvenli kapanış ÇALIŞMAZ: S101 karar örneği (1.000 avans → 600 veresiye satış 2 taksit → Taksit Tahsilatı 300 → Borç 500) ⇒ takvim boş, müşteri 200 alacaklı
+      ---
+      duration_ms: 1.803096
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-sigma-250.test.mjs:88:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + undefined
+        - true
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-sigma-250.test.mjs:102:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..6
+not ok 13 - Ç5-B kapanış — ORTA-2: ön ödeme ölçümü yakınsayana kadar sürer; yakınsamazsa güvenli kapanış — kalemler toplamı = bakiye
+  ---
+  duration_ms: 729.917449
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-sigma-250.test.mjs:42:1'
+  failureType: 'subtestsFailed'
+  error: '6 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Ç5-B kapanış — ORTA-2 değişmez: geriye tarihli üretici, 80 tohum × 250 cari (20.000 cari)
+    # Subtest: tohum 5000–5009: 10 × 250 cari — Σ kalem = bakiye, 0 ≤ gecikmiş ≤ bakiye, kalem kalanı ≤ tutarı
+    not ok 1 - tohum 5000–5009: 10 × 250 cari — Σ kalem = bakiye, 0 ≤ gecikmiş ≤ bakiye, kalem kalanı ≤ tutarı
+      ---
+      duration_ms: 54.023668
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-sigma-250.test.mjs:163:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        tohum 5000 cari 105: Σ kalem 365.96 ≠ bakiye 341.2
+        
+        36596 !== 34120
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 34120
+      actual: 36596
+      operator: 'strictEqual'
+      stack: |-
+        assertInvariant (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-sigma-250.test.mjs:18:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-sigma-250.test.mjs:169:11)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:466:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:435:3)
+        node:internal/per_context/primordials:466:9
+      ...
+    # Subtest: tohum 5010–5019: 10 × 250 cari — Σ kalem = bakiye, 0 ≤ gecikmiş ≤ bakiye, kalem kalanı ≤ tutarı
+    not ok 2 - tohum 5010–5019: 10 × 250 cari — Σ kalem = bakiye, 0 ≤ gecikmiş ≤ bakiye, kalem kalanı ≤ tutarı
+      ---
+      duration_ms: 4.156845
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-sigma-250.test.mjs:163:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        tohum 5010 cari 8: Σ kalem -920 ≠ bakiye -930
+        
+        -92000 !== -93000
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: -93000
+      actual: -92000
+      operator: 'strictEqual'
+      stack: |-
+        assertInvariant (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-sigma-250.test.mjs:18:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-sigma-250.test.mjs:169:11)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tohum 5020–5029: 10 × 250 cari — Σ kalem = bakiye, 0 ≤ gecikmiş ≤ bakiye, kalem kalanı ≤ tutarı
+    not ok 3 - tohum 5020–5029: 10 × 250 cari — Σ kalem = bakiye, 0 ≤ gecikmiş ≤ bakiye, kalem kalanı ≤ tutarı
+      ---
+      duration_ms: 24.31575
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-sigma-250.test.mjs:163:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        tohum 5020 cari 55: Σ kalem 0 ≠ bakiye -60
+        
+        0 !== -6000
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: -6000
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        assertInvariant (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-sigma-250.test.mjs:18:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-sigma-250.test.mjs:169:11)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tohum 5030–5039: 10 × 250 cari — Σ kalem = bakiye, 0 ≤ gecikmiş ≤ bakiye, kalem kalanı ≤ tutarı
+    not ok 4 - tohum 5030–5039: 10 × 250 cari — Σ kalem = bakiye, 0 ≤ gecikmiş ≤ bakiye, kalem kalanı ≤ tutarı
+      ---
+      duration_ms: 21.597709
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-sigma-250.test.mjs:163:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        tohum 5030 cari 28: Σ kalem 200 ≠ bakiye 180
+        
+        20000 !== 18000
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 18000
+      actual: 20000
+      operator: 'strictEqual'
+      stack: |-
+        assertInvariant (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-sigma-250.test.mjs:18:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-sigma-250.test.mjs:169:11)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tohum 5040–5049: 10 × 250 cari — Σ kalem = bakiye, 0 ≤ gecikmiş ≤ bakiye, kalem kalanı ≤ tutarı
+    not ok 5 - tohum 5040–5049: 10 × 250 cari — Σ kalem = bakiye, 0 ≤ gecikmiş ≤ bakiye, kalem kalanı ≤ tutarı
+      ---
+      duration_ms: 30.205463
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-sigma-250.test.mjs:163:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        tohum 5040 cari 46: Σ kalem -670 ≠ bakiye -720
+        
+        -67000 !== -72000
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: -72000
+      actual: -67000
+      operator: 'strictEqual'
+      stack: |-
+        assertInvariant (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-sigma-250.test.mjs:18:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-sigma-250.test.mjs:169:11)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tohum 5050–5059: 10 × 250 cari — Σ kalem = bakiye, 0 ≤ gecikmiş ≤ bakiye, kalem kalanı ≤ tutarı
+    not ok 6 - tohum 5050–5059: 10 × 250 cari — Σ kalem = bakiye, 0 ≤ gecikmiş ≤ bakiye, kalem kalanı ≤ tutarı
+      ---
+      duration_ms: 69.743354
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-sigma-250.test.mjs:163:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        tohum 5050 cari 222: Σ kalem 0 ≠ bakiye -10.29
+        
+        0 !== -1029
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: -1029
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        assertInvariant (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-sigma-250.test.mjs:18:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-sigma-250.test.mjs:169:11)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tohum 5060–5069: 10 × 250 cari — Σ kalem = bakiye, 0 ≤ gecikmiş ≤ bakiye, kalem kalanı ≤ tutarı
+    not ok 7 - tohum 5060–5069: 10 × 250 cari — Σ kalem = bakiye, 0 ≤ gecikmiş ≤ bakiye, kalem kalanı ≤ tutarı
+      ---
+      duration_ms: 4.304684
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-sigma-250.test.mjs:163:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        tohum 5060 cari 6: Σ kalem -161.16 ≠ bakiye -179.25
+        
+        -16116 !== -17925
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: -17925
+      actual: -16116
+      operator: 'strictEqual'
+      stack: |-
+        assertInvariant (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-sigma-250.test.mjs:18:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-sigma-250.test.mjs:169:11)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tohum 5070–5079: 10 × 250 cari — Σ kalem = bakiye, 0 ≤ gecikmiş ≤ bakiye, kalem kalanı ≤ tutarı
+    not ok 8 - tohum 5070–5079: 10 × 250 cari — Σ kalem = bakiye, 0 ≤ gecikmiş ≤ bakiye, kalem kalanı ≤ tutarı
+      ---
+      duration_ms: 11.740736
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-sigma-250.test.mjs:163:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        tohum 5070 cari 39: Σ kalem 0 ≠ bakiye -20
+        
+        0 !== -2000
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: -2000
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        assertInvariant (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-sigma-250.test.mjs:18:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-sigma-250.test.mjs:169:11)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: üretici sınıfı gördü: 12 geçişten sonra yakınsayan ve sınırda yakınsamayan (güvenli kapanış) cariler üretildi
+    not ok 9 - üretici sınıfı gördü: 12 geçişten sonra yakınsayan ve sınırda yakınsamayan (güvenli kapanış) cariler üretildi
+      ---
+      duration_ms: 1.775531
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-sigma-250.test.mjs:178:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        509 !== 20000
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 20000
+      actual: 509
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-sigma-250.test.mjs:180:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..9
+not ok 14 - Ç5-B kapanış — ORTA-2 değişmez: geriye tarihli üretici, 80 tohum × 250 cari (20.000 cari)
+  ---
+  duration_ms: 222.563739
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkdy-eski/test/tyk-kapanis-sigma-250.test.mjs:111:1'
+  failureType: 'subtestsFailed'
+  error: '9 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..14
+# tests 63
+# suites 14
+# pass 20
+# fail 43
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6083.353018

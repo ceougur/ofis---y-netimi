@@ -1,0 +1,32 @@
+{
+  "ad": "bs5-pdf-denetle",
+  "komut": "node docs/kilavuz/pdf-denetle.mjs",
+  "commit": "77dd1a50f18b625997d67653b6c083f2c39e17fe",
+  "dal": "worktree-agent-a9ee578441215b6a8",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T08:31:00.223Z",
+  "sure_sn": 12.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 39,
+    "gecen": 39,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bs5-kanit/2026-11-06/bs5-pdf-denetle.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a9ee578441215b6a8",
+  "ham_cikti_sha256": "1190d58282756174af07ca8282e44356b26d807b8ebeb9a2dc347f6c610fdf33",
+  "ham_cikti_bayt": 2210
+}

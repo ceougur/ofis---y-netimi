@@ -1,0 +1,60 @@
+TAP version 13
+# (node:22516) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# info DestekOfis servis yöneticisi http://127.0.0.1:41467
+# info Uygulama başlatılıyor (app/9.0.0, iç port 35699)
+# info Yeni sürüm bulundu: 9.0.1 (kurulu 9.0.0)
+# info 9.0.1 sürümü indiriliyor (7508 KB)…
+# info Uygulama hazır: DestekOfis 9.0.0
+# info Uygulama başlatılıyor (app/9.0.1, iç port 42207)
+# error Yeni sürüm açılırken kapandı (kod 3, sinyal -).
+# error 9.0.1 sürümü doğrulanamadı: Yeni sürüm zamanında başlatılamadı veya açılırken kapandı.
+# info Veritabanı güncelleme öncesi yedeğe döndürüldü: destekofis-001-2026-11-05T17-22-19-878Z-guncelleme-oncesi-9-0-0.sqlite
+# info Uygulama başlatılıyor (app/9.0.0, iç port 34239)
+# error 9.0.1 kurulamadı; 9.0.0 sürümüne dönüldü. Bu sürüm bir daha kendiliğinden denenmeyecek.
+# info Uygulama hazır: DestekOfis 9.0.0
+# Subtest: otomatik güncelleme akışı
+    # Subtest: yeni sürüm açılamazsa 001 dışındaki şirketler de güncelleme öncesi yedeğe döner (BS-7)
+    not ok 1 - yeni sürüm açılamazsa 001 dışındaki şirketler de güncelleme öncesi yedeğe döner (BS-7)
+      ---
+      duration_ms: 2546.372586
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bs7-ccf0b0ca/eski-ccf0b0ca/test/update-flow.test.mjs:195:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        002 de güncelleme öncesi hâline dönmeli (yeni şemada kalmamalı)
+        
+        99 !== 45
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 45
+      actual: 99
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bs7-ccf0b0ca/eski-ccf0b0ca/test/update-flow.test.mjs:247:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 2)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..1
+not ok 1 - otomatik güncelleme akışı
+  ---
+  duration_ms: 2548.1749
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bs7-ccf0b0ca/eski-ccf0b0ca/test/update-flow.test.mjs:100:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 1
+# suites 1
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3082.967008

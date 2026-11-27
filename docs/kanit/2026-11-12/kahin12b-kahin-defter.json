@@ -1,0 +1,32 @@
+{
+  "ad": "kahin12b-kahin-defter",
+  "komut": "npm run test:kahin-defter",
+  "commit": "61526fa80bac687c09b515de31d34e1c02ad2745",
+  "dal": "claude/epic-thompson-w0lc2l",
+  "kirli": 64,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-12T09:33:09.177Z",
+  "sure_sn": 4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "kahin-defter",
+    "toplam": 176,
+    "gecen": 176,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin12b-kanit/2026-11-12/kahin12b-kahin-defter.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "5c896820829333028894c0a9d5ed2c572836e3b1a08900dc6439d3e33f241f14",
+  "ham_cikti_bayt": 1621
+}

@@ -1,0 +1,167 @@
+TAP version 13
+# (node:1499) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Ç7b P7 (S219 = A) — Excel taksit yüklemesinde aynı adlı iki kişi
+    # Subtest: (1) iki ayrı cari aynı ad + farklı telefon: satır sırası iki yönde, her kişiye kendi kartı ve borcu
+    ok 1 - (1) iki ayrı cari aynı ad + farklı telefon: satır sırası iki yönde, her kişiye kendi kartı ve borcu
+      ---
+      duration_ms: 316.797515
+      type: 'test'
+      ...
+    # Subtest: (2) aynı Excel ikinci kez: yeni kart 0, yeni cari 0, defter 120 değişmez; küçük harfle yazılmış ad da aynı kişi (yalnız ASCII harfler katlanır; I/ı ayrımı BİLİNEN SINIR)
+    ok 2 - (2) aynı Excel ikinci kez: yeni kart 0, yeni cari 0, defter 120 değişmez; küçük harfle yazılmış ad da aynı kişi (yalnız ASCII harfler katlanır; I/ı ayrımı BİLİNEN SINIR)
+      ---
+      duration_ms: 24.355515
+      type: 'test'
+      ...
+    # Subtest: (3) telefonsuz satır + aynı adlı iki (telefonlu) kişi: kişi kesin değil → atlanır, yeni neden; kart / cari / borç açılmaz
+    ok 3 - (3) telefonsuz satır + aynı adlı iki (telefonlu) kişi: kişi kesin değil → atlanır, yeni neden; kart / cari / borç açılmaz
+      ---
+      duration_ms: 23.01662
+      type: 'test'
+      ...
+    # Subtest: (4) telefonlu satır + aynı adlı TELEFONSUZ carinin kartı: kişi kesin değil → atlanır (çift borç yok)
+    ok 4 - (4) telefonlu satır + aynı adlı TELEFONSUZ carinin kartı: kişi kesin değil → atlanır (çift borç yok)
+      ---
+      duration_ms: 93.082279
+      type: 'test'
+      ...
+    # Subtest: (5) aynı dosyada aynı kişi iki satır: ikinci satır atlanır; telefonu farklı üçüncü kişi yeni carisiyle açılır
+    ok 5 - (5) aynı dosyada aynı kişi iki satır: ikinci satır atlanır; telefonu farklı üçüncü kişi yeni carisiyle açılır
+      ---
+      duration_ms: 55.715382
+      type: 'test'
+      ...
+    # Subtest: (6) grup: telefonsuz satır yalnız aynı gruptaki telefonsuz cariyi bulur; başka gruptaki aynı adlı kart denetime girmez
+    ok 6 - (6) grup: telefonsuz satır yalnız aynı gruptaki telefonsuz cariyi bulur; başka gruptaki aynı adlı kart denetime girmez
+      ---
+      duration_ms: 60.973591
+      type: 'test'
+      ...
+    # Subtest: (7) telefonsuz satır + aynı adlı tek telefonsuz cari (aynı grup, kartsız) ve telefonlu başka kişinin kartı: kişi kesin → kendi carisiyle açılır
+    ok 7 - (7) telefonsuz satır + aynı adlı tek telefonsuz cari (aynı grup, kartsız) ve telefonlu başka kişinin kartı: kişi kesin → kendi carisiyle açılır
+      ---
+      duration_ms: 112.439767
+      type: 'test'
+      ...
+    # Subtest: (9) Geri Al: yalnız bu yüklemenin açtığı kart ve cari kalkar; önceden var olan aynı adlı carinin kartı ve borcu kalır
+    ok 8 - (9) Geri Al: yalnız bu yüklemenin açtığı kart ve cari kalkar; önceden var olan aynı adlı carinin kartı ve borcu kalır
+      ---
+      duration_ms: 171.572139
+      type: 'test'
+      ...
+    # Subtest: (10) kilitli dönem: aynı adlı ikinci kişinin satırı KİLİT nedeniyle atlanır, cari açılmaz; yükleme durmaz
+    ok 9 - (10) kilitli dönem: aynı adlı ikinci kişinin satırı KİLİT nedeniyle atlanır, cari açılmaz; yükleme durmaz
+      ---
+      duration_ms: 429.921088
+      type: 'test'
+      ...
+    # Subtest: (8) carisiz eski kart: kartın kendi telefonu aynıysa aynı kişi (atlanır), 7+ hane ve farklıysa başka kişi (açılır)
+    ok 10 - (8) carisiz eski kart: kartın kendi telefonu aynıysa aynı kişi (atlanır), 7+ hane ve farklıysa başka kişi (açılır)
+      ---
+      duration_ms: 62.811747
+      type: 'test'
+      ...
+    1..10
+ok 1 - Ç7b P7 (S219 = A) — Excel taksit yüklemesinde aynı adlı iki kişi
+  ---
+  duration_ms: 2062.703846
+  type: 'suite'
+  ...
+# (node:1500) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: taksit motoru (saf)
+    # Subtest: toplamı eşit taksitlere böler; kuruş farkı son taksitte, her ay aynı gün
+    ok 1 - toplamı eşit taksitlere böler; kuruş farkı son taksitte, her ay aynı gün
+      ---
+      duration_ms: 2.111065
+      type: 'test'
+      ...
+    # Subtest: tahsilatlar en eski taksite sayılır; taksite bağlı tahsilat önce o taksite; iade en yeni taksitten düşer
+    ok 2 - tahsilatlar en eski taksite sayılır; taksite bağlı tahsilat önce o taksite; iade en yeni taksitten düşer
+      ---
+      duration_ms: 2.482253
+      type: 'test'
+      ...
+    # Subtest: Excel başlıklarını ve tarihleri tanır
+    ok 3 - Excel başlıklarını ve tarihleri tanır
+      ---
+      duration_ms: 8.142755
+      type: 'test'
+      ...
+    # Subtest: tutarı yazıyla yazar
+    ok 4 - tutarı yazıyla yazar
+      ---
+      duration_ms: 0.368512
+      type: 'test'
+      ...
+    1..4
+ok 2 - taksit motoru (saf)
+  ---
+  duration_ms: 14.505039
+  type: 'suite'
+  ...
+# Subtest: taksit modülü API (v2.0.4)
+    # Subtest: gruplar: grup ve alt grup açılır, ad çakışması reddedilir, kart varken silinmez
+    ok 1 - gruplar: grup ve alt grup açılır, ad çakışması reddedilir, kart varken silinmez
+      ---
+      duration_ms: 52.516111
+      type: 'test'
+      ...
+    # Subtest: kart açılır (taksit sorulmadan), sonra otomatik dağıtılır; tahsilat kalanı düşürür ve Kasa'ya iner
+    ok 2 - kart açılır (taksit sorulmadan), sonra otomatik dağıtılır; tahsilat kalanı düşürür ve Kasa'ya iner
+      ---
+      duration_ms: 291.118344
+      type: 'test'
+      ...
+    # Subtest: gecikmiş taksit tahsilat takvimine ve bildirimlere düşer; kart kapatılınca düşmez
+    ok 3 - gecikmiş taksit tahsilat takvimine ve bildirimlere düşer; kart kapatılınca düşmez
+      ---
+      duration_ms: 69.209316
+      type: 'test'
+      ...
+    # Subtest: ekstre ve makbuz PDF üretilir
+    ok 4 - ekstre ve makbuz PDF üretilir
+      ---
+      duration_ms: 81.210584
+      type: 'test'
+      ...
+    # Subtest: hareket silinip geri yüklenir; kart silinip geri yüklenir; Kasa yeniden hesaplanır
+    ok 5 - hareket silinip geri yüklenir; kart silinip geri yüklenir; Kasa yeniden hesaplanır
+      ---
+      duration_ms: 154.552959
+      type: 'test'
+      ...
+    # Subtest: Excel'den ilk yükleme: başlıklar eşlenir, gruplar tanımlanır, taksitler dağıtılır, çiftler atlanır
+    ok 6 - Excel'den ilk yükleme: başlıklar eşlenir, gruplar tanımlanır, taksitler dağıtılır, çiftler atlanır
+      ---
+      duration_ms: 98.53285
+      type: 'test'
+      ...
+    # Subtest: Sıra No: Excel'deki S.N kolonu kartın numarası olur; liste numaraya göre sıralanır, numarayla aranır; PDF süzgeçle iner
+    ok 7 - Sıra No: Excel'deki S.N kolonu kartın numarası olur; liste numaraya göre sıralanır, numarayla aranır; PDF süzgeçle iner
+      ---
+      duration_ms: 131.93301
+      type: 'test'
+      ...
+    # Subtest: kayıt tarihi: programda açılan kartta bugün, elle değişir; Excel'deki kolondan okunur; listede sıralanır (v2.0.6)
+    ok 8 - kayıt tarihi: programda açılan kartta bugün, elle değişir; Excel'deki kolondan okunur; listede sıralanır (v2.0.6)
+      ---
+      duration_ms: 177.410709
+      type: 'test'
+      ...
+    1..8
+ok 3 - taksit modülü API (v2.0.4)
+  ---
+  duration_ms: 1889.79993
+  type: 'suite'
+  ...
+1..3
+# tests 22
+# suites 3
+# pass 22
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2674.408383

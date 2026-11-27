@@ -1,0 +1,26 @@
+Ç3 TUR 4 — KANIT (06.11.2026; tasarım notu docs/erp/C3-DONDURMA-TASARIM.md §20)
+Taban f4a43cbd · ürün + test 16959ab7 · her koşu tools/kanit.mjs kos (json = özet + çıkış kodu + commit, log = ham çıktı).
+
+YENİ KOD 16959ab7
+  c3t4-komsu-UTC            G2 komşuları 132 dosya (c3t4-ham/komsu-birlesik.txt = test/ taraması komsu-grep.txt ∪ tur 3 listesi), TZ=UTC: 1501/1501 (yeni test 13/13 dahil)
+  c3t4-donmus-Europe-Istanbul  donmuş defter + fiş defteri + dönem kilidi + mutabakat + kaynak tarayan genel testler (c3t4-ham/istanbul-liste.txt, 20 dosya): 204/204
+  c3t4-e2e-*                senaryo-donem-kilidi-ilerleme-250 39/39, senaryo-duzeltme-kilidi-tur3-250 110/110, senaryo-defter-243 24/24, senaryo-222 60/60
+  c3t4-mutasyon             test/donmus-defter-250-mutasyon.mjs, kopya git archive 16959ab7: taban 67 + e2e 39; 79/79 mutant beklenen nedenle (401–404, 901, 902 bu tur)
+  c3t4-ham/dk/              dar kontrolün betikleri (kopyaları *.mjs.txt): s46-plan.mjs tam/kapanis/aynigun × bileşim s46 / SIRA=u3 × iki TZ → 12/12 S46A_uyuyor true;
+                            y1-yollar.mjs Y1–Y7 iki TZ tutarlı; y3-409.mjs C1–C4 iki TZ tutarlı (kos-dk.out.txt)
+ESKİ KOD f4a43cbd (git worktree ayrı kopya; yalnız yeni test dosyası kopyalandı — ders 23, 51)
+  c3t4-kirmizi-eski-f4a43cbd-UTC / -Europe-Istanbul   4/13, aynı 9 kırmızı, BEKLENEN NEDENLE (tablo §20): V1 s46 / X1 "(…, 30.06] 2.4.9 kuralıyla dondu (S46 = A: 2.5.0)";
+     V2 s46 / X2 "(30.06, 31.12] 2.5.0 kuralıyla dondu (S46 = A: 2.4.9)"; V3 s46 / V3 u3 "planın dondurması durduruldu ya da baştan başladı"; V4 s46 "temizlik istendi: 409";
+     W1 "(30.06, 31.12] 2.5.0 kuralıyla dondu (S13 = A: 2.4.9)"; D2 ön koşul (verify kancası yok — kanıt değil). Yeşil: V1/V2/V4 u3 (gerileme denetimi), D1 (dişi mutant 901).
+KAPSAM DIŞI KUŞKU (BAŞ MİMAR KARARI GEREKİYOR B4-2)
+  c3t4-ham/v5-ilerletme-devami.mjs.txt → v5-yeni-UTC.json (16959ab7) ve v5-eski-f4a43cbd-UTC.json: ikisi de "FARKLI" ((30.06, 30.09] 2.4.9; beklenen 2.5.0) — önceden var.
+ÖLÇÜM (ders 47, 52)
+  c3t4-ham/olcum-1m-*.json  flock -x olcum.lock; programın kendi 1.000.000 verisi (veri-kur-1m.sh.txt, kapi-olcum-yama.diff.txt = tools/kapi-olcum.mjs'den yalnız ROOT + legacyCasePayments /
+                            legacyTableTransfer; veri-1m-kur.log.txt); /proc/loadavg başta / adımda / sonda; yük > 2 → GEÇERSİZ.
+                            1: yük 5,42 → GEÇERSİZ (kilit 5.029 ms, dondurma ~93 sn, döngü en çok 172 ms, TUTARLI 2.741.312)
+                            2: yük 6,81 → GEÇERSİZ (kilit 5.041 ms, dondurma ~124 sn, döngü en çok 338 ms, TUTARLI)
+                            Boş makinede (yük ≤ 2) ölçüm DOĞRULANMADI — başka ajanların kilitsiz yükü sürdü; son adayda yinelenir.
+YENİDEN KOŞU (ana oturum)
+  HUKUK_LICENSE_URL=http://127.0.0.1:9 TZ=UTC node --test --test-concurrency=1 test/donmus-defter-tur4-250.test.mjs        → 13/13 (TZ=Europe/Istanbul aynı)
+  eski kod: git worktree add --detach <kopya> f4a43cbd; cp test/donmus-defter-tur4-250.test.mjs <kopya>/test/; aynı komut      → 4/13 (9 kırmızı, yukarıdaki nedenler)
+  node test/donmus-defter-250-mutasyon.mjs --kopya <git archive kopyası> --yalniz 401,402,403,404,901,902                       → 6/6

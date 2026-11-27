@@ -1,0 +1,31 @@
+eski senaryo 342, yeni dosyada 353; eski sıra korunuyor: True
+DEĞİŞTİ S23-05-yeniden-basmada-suphesiz-tutar-yok-iki-okuma-ileti-gitmez: alanlar ['elle', 'beklenen', 'aciklama', 'kaynak']
+    beklenen [0].sonuc.isler.T1/NZ.atlanma_nedeni: {"secenek": ["gecikmis_borc_yok", "supheli_alacak"], "susuyor": "S23 yeniden basmasında şüphesiz tutar yok: S16 'yoksa elenir'in anı karar m → "gecikmis_borc_yok"
+    beklenen [0].sonuc.yeniden.Y2.elenen.secenek: [{}, {"NZ": "gecikmis_borc_yok"}] → "<YOK>"
+    beklenen [0].sonuc.yeniden.Y2.elenen.susuyor: "S23 yeniden basmasında şüphesiz tutar yok: S16 'yoksa elenir'in anı karar metninde yok — bekleyen iş elle sayılıp gönderim anında 'Gecikmiş → "<YOK>"
+    beklenen [0].sonuc.yeniden.Y2.elle_sayilan: {"secenek": [["NZ"], []], "susuyor": "S23 yeniden basmasında şüphesiz tutar yok: S16 'yoksa elenir'in anı karar metninde yok — bekleyen iş e → ["NZ"]
+    elle [0].yollar.isler.T1/NZ.atlanma_nedeni: {"secenek": ["gecikmis_borc_yok", "supheli_alacak"], "susuyor": "S23 yeniden basmasında şüphesiz tutar yok: S16 'yoksa elenir'in anı karar m → "gecikmis_borc_yok"
+    elle [0].yollar.yeniden.Y2.elenen.secenek: [{}, {"NZ": "gecikmis_borc_yok"}] → "<YOK>"
+    elle [0].yollar.yeniden.Y2.elenen.susuyor: "S23 yeniden basmasında şüphesiz tutar yok: S16 'yoksa elenir'in anı karar metninde yok — bekleyen iş elle sayılıp gönderim anında 'Gecikmiş → "<YOK>"
+    elle [0].yollar.yeniden.Y2.elle_sayilan: {"secenek": [["NZ"], []], "susuyor": "S23 yeniden basmasında şüphesiz tutar yok: S16 'yoksa elenir'in anı karar metninde yok — bekleyen iş e → ["NZ"]
+DEĞİŞTİ SW3-05-silme-talebinden-once-alinan-yedek-geri-yuklenir-icerik-susuyor-r3-kesin: alanlar ['elle', 'beklenen', 'aciklama', 'kaynak']
+    beklenen [0].sonuc.isler.T1/A.degiskenler: {"plan_susuyor": "silme talebinden ÖNCE alınmış yedek geri yüklenince silinen içerik / telefon / PDF'in geri gelip gelmediği (talebin yenide → null
+    beklenen [0].sonuc.isler.T1/A.dosya_adi: {"plan_susuyor": "silme talebinden ÖNCE alınmış yedek geri yüklenince silinen içerik / telefon / PDF'in geri gelip gelmediği (talebin yenide → null
+    beklenen [0].sonuc.isler.T1/A.icerik_silindi: {"plan_susuyor": "silme talebinden ÖNCE alınmış yedek geri yüklenince silinen içerik / telefon / PDF'in geri gelip gelmediği (talebin yenide → true
+    beklenen [0].sonuc.isler.T1/A.pdf: {"plan_susuyor": "silme talebinden ÖNCE alınmış yedek geri yüklenince silinen içerik / telefon / PDF'in geri gelip gelmediği (talebin yenide → null
+    beklenen [0].sonuc.isler.T1/A.telefon: {"plan_susuyor": "silme talebinden ÖNCE alınmış yedek geri yüklenince silinen içerik / telefon / PDF'in geri gelip gelmediği (talebin yenide → null
+    beklenen [0].sonuc.kontroller.K2.icerik.T1/A.degiskenler: {"plan_susuyor": "silme talebinden ÖNCE alınmış yedek geri yüklenince silinen içerik / telefon / PDF'in geri gelip gelmediği (talebin yenide → null
+    beklenen [0].sonuc.kontroller.K2.icerik.T1/A.dosya_adi: {"plan_susuyor": "silme talebinden ÖNCE alınmış yedek geri yüklenince silinen içerik / telefon / PDF'in geri gelip gelmediği (talebin yenide → null
+    beklenen [0].sonuc.kontroller.K2.icerik.T1/A.icerik_silindi: {"plan_susuyor": "silme talebinden ÖNCE alınmış yedek geri yüklenince silinen içerik / telefon / PDF'in geri gelip gelmediği (talebin yenide → true
+    beklenen [0].sonuc.kontroller.K2.icerik.T1/A.pdf: {"plan_susuyor": "silme talebinden ÖNCE alınmış yedek geri yüklenince silinen içerik / telefon / PDF'in geri gelip gelmediği (talebin yenide → null
+    beklenen [0].sonuc.kontroller.K2.icerik.T1/A.telefon: {"plan_susuyor": "silme talebinden ÖNCE alınmış yedek geri yüklenince silinen içerik / telefon / PDF'in geri gelip gelmediği (talebin yenide → null
+    beklenen [0].sonuc.kontroller.K3.icerik.T1/A.degiskenler: {"plan_susuyor": "silme talebinden ÖNCE alınmış yedek geri yüklenince silinen içerik / telefon / PDF'in geri gelip gelmediği (talebin yenide → null
+    beklenen [0].sonuc.kontroller.K3.icerik.T1/A.dosya_adi: {"plan_susuyor": "silme talebinden ÖNCE alınmış yedek geri yüklenince silinen içerik / telefon / PDF'in geri gelip gelmediği (talebin yenide → null
+    elle [0].yollar.kontroller.K2.icerik.T1/A.degiskenler: {"plan_susuyor": "silme talebinden ÖNCE alınmış yedek geri yüklenince silinen içerik / telefon / PDF'in geri gelip gelmediği (talebin yenide → null
+    elle [0].yollar.kontroller.K2.icerik.T1/A.dosya_adi: {"plan_susuyor": "silme talebinden ÖNCE alınmış yedek geri yüklenince silinen içerik / telefon / PDF'in geri gelip gelmediği (talebin yenide → null
+    elle [0].yollar.kontroller.K2.icerik.T1/A.icerik_silindi: {"plan_susuyor": "silme talebinden ÖNCE alınmış yedek geri yüklenince silinen içerik / telefon / PDF'in geri gelip gelmediği (talebin yenide → true
+    elle [0].yollar.kontroller.K2.icerik.T1/A.pdf: {"plan_susuyor": "silme talebinden ÖNCE alınmış yedek geri yüklenince silinen içerik / telefon / PDF'in geri gelip gelmediği (talebin yenide → null
+    elle [0].yollar.kontroller.K2.icerik.T1/A.telefon: {"plan_susuyor": "silme talebinden ÖNCE alınmış yedek geri yüklenince silinen içerik / telefon / PDF'in geri gelip gelmediği (talebin yenide → null
+üst alanlardan değişen: ['kararlar']
+    kararlara eklenen: ['S29', 'S30', 'S31', 'S32']; değişen eski karar: []
+# eski senaryolar: AYNI 340, DEĞİŞEN 2

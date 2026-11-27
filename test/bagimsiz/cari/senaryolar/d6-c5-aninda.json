@@ -1,0 +1,28 @@
+{
+ "dil": "destekofis-cari/3",
+ "ad": "d6-c5-aninda",
+ "aciklama": "2.5.0 C13.4 ((1) A 'Ödeme Günündeki Borcu Kapatsın' + (2) A 'bağ hedefini her durumda kapatır'): A: Borç 1.000 (01.05, vade 31.07); bağsız 1.000 (10.05) o gün açık tek borcu kapatır; SONRA doğan daha erken vadeli Borç 500 (20.05, vade 25.05) ve fatura 400 (22.05) açık kalır — ödeme onlara KAYMAZ, kapanmış Borç yeniden açılmaz (HAVUZ: fatura 0, Borç 500 0, Borç 1.000 → 900). Faturaya bağlı 300 (25.05) yalnız faturayı kapatır → 100. C (bağlar önce): fatura 500 (01.05) · bağsız 500 (05.05) · Borç 300 (06.05, vade 01.07) · Borç 300 (08.05, vade 09.05) · faturaya bağlı 500 (10.05): bağ faturayı kapatır, bağsız 500 o gün açık borç bulamaz (avans) → 06.05 Borç'u (300) ve 08.05 Borç'un 200'ünü kapatır → 0 / 100 ('ilk gelen kazanır' okumasında 100 / 0).",
+ "dayanak": "KARARLAR.md §13 C13.4 (3)(4)",
+ "bugun": "2026-06-15",
+ "adimlar": [
+  {"id": "ca", "islem": "cari_ac", "ad": "A", "isim": "Anı Anında", "tarih": "2026-04-01"},
+  {"id": "cc", "islem": "cari_ac", "ad": "C", "isim": "Can Bağ", "tarih": "2026-04-01"},
+  {"id": "f3", "islem": "fatura", "ad": "F3", "cari": "C", "tutar": "500", "tarih": "2026-05-01"},
+  {"id": "b1", "islem": "borc", "cari": "A", "tutar": "1000", "tarih": "2026-05-01", "vade": "2026-07-31"},
+  {"id": "tc1", "islem": "tahsilat", "cari": "C", "tutar": "500", "tarih": "2026-05-05"},
+  {"id": "bc", "islem": "borc", "cari": "C", "tutar": "300", "tarih": "2026-05-06", "vade": "2026-07-01"},
+  {"id": "bd", "islem": "borc", "cari": "C", "tutar": "300", "tarih": "2026-05-08", "vade": "2026-05-09"},
+  {"id": "t1", "islem": "tahsilat", "cari": "A", "tutar": "1000", "tarih": "2026-05-10"},
+  {"id": "tc2", "islem": "tahsilat", "cari": "C", "tutar": "500", "tarih": "2026-05-10", "fatura": "F3"},
+  {"id": "b2", "islem": "borc", "cari": "A", "tutar": "500", "tarih": "2026-05-20", "vade": "2026-05-25"},
+  {"id": "f1", "islem": "fatura", "ad": "F1", "cari": "A", "tutar": "400", "tarih": "2026-05-22"},
+  {"id": "k1", "islem": "kontrol"},
+  {"id": "t2", "islem": "tahsilat", "cari": "A", "tutar": "300", "tarih": "2026-05-25", "fatura": "F1"},
+  {"id": "k2", "islem": "kontrol"}
+ ],
+ "elleBeklenen": {
+  "k1:hareket:b1:kalan": 0, "k1:hareket:b2:kalan": 50000, "k1:fatura:F1:acik": 40000,
+  "k1:fatura:F3:acik": 0, "k1:hareket:bc:kalan": 0, "k1:hareket:bd:kalan": 10000,
+  "k2:hareket:b1:kalan": 0, "k2:hareket:b2:kalan": 50000, "k2:fatura:F1:acik": 10000
+ }
+}

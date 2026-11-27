@@ -1,0 +1,43 @@
+{
+  "ad": "c4-mutasyon-m3",
+  "komut": "node --disable-warning=ExperimentalWarning --test /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c4-mutasyon-m3/test/defter-turu-c4.test.mjs",
+  "commit": "0fc8add42d85e8e89a816374ef0844fd01a29a3a",
+  "dal": "worktree-agent-a1a42f4d745a759a0",
+  "kirli": 6,
+  "izlenmeyen": 11,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T20:04:56.719Z",
+  "sure_sn": 6.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 7,
+    "gecen": 5,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.0 Ç4 Defter Türü › varsayılan Seçilmedi; seçenekler yazım düzeninde; Kişi Türü / VKN uzunluğundan tür uydurulmaz; kaydedilir ve yeniden okunur",
+      "konum": "test/defter-turu-c4.test.mjs:49:3",
+      "hata": "tüzel kişiden tür uydurulmamalı · 'balance' !== 'unset' (beklenen unset, gelen balance)"
+    },
+    {
+      "ad": "2.5.0 Ç4 Defter Türü › iki şirket ayrı ayar; yedek → değiştir → geri yükle: 002 hemen, 001 yeniden açılışta geri gelir; öbür şirket etkilenmez",
+      "konum": "test/defter-turu-c4.test.mjs:140:3",
+      "hata": "002'nin geri yüklenmesi 001'e dokunmadı · 'balance' !== 'unset' (beklenen unset, gelen balance)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-05/c4-mutasyon-m3.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a1a42f4d745a759a0",
+  "ham_cikti_sha256": "520a6d20e04885bd931237814f10b73579d6497e03a9e1ebff0113412b500e34",
+  "ham_cikti_bayt": 4465
+}

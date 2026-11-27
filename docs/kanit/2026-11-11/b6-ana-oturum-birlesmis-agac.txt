@@ -1,0 +1,25 @@
+başladı 08:36:01 yük 0.25 1.10 2.15 2/121 23344
+liste üretimi çıkış 0
+  liste mutasyonu 2 (alt dizgi (joker) eşleşmesi): YAKALANDI
+  liste mutasyonu 3 (program değeri karşılaştırılmaz): YAKALANDI
+  liste mutasyonu 4 (kapanan kayıt denetlenmez): YAKALANDI
+  liste mutasyonu 5 (kâhin beklentisi karşılaştırılmaz): YAKALANDI
+  yapım aşaması listesi mutasyonu 1 (senaryo adı yok sayılır): YAKALANDI
+  yapım aşaması listesi mutasyonu 2 (alt dizgi (joker) eşleşmesi): YAKALANDI
+  yapım aşaması listesi mutasyonu 3 (program değeri karşılaştırılmaz): YAKALANDI
+  yapım aşaması listesi mutasyonu 4 (kapanan kayıt denetlenmez): YAKALANDI
+  yapım aşaması listesi mutasyonu 5 (kâhin beklentisi karşılaştırılmaz): YAKALANDI
+
+YAPIM-ASAMASI.json YAZILDI (test/bagimsiz/cari/YAPIM-ASAMASI.json): 598 kayıt (7 okuma hatası) — paketlere göre: Ç5-A 228, Ç5-B tur 2 363, eşleme 7. Bu bir denetim sonucu DEĞİLDİR; liste varsayılan koşuyla denetlenir.
+ESKİ LİSTEYLE FARK: yeni 0, kapanan 0, değeri değişen 0 (eski liste 598 kayıt → yeni 598)
+liste farkı: önceki 598 → yeni 598 · kapanan 0 · yeni 0 · değeri değişen 0 · etiketi / notu değişen 0 · paketler {'Ç5-A': 228, 'Ç5-B tur 2': 363, 'eşleme': 7}
+kahin-cari UTC çıkış 0
+ÖZET [2.5.0]: 81 senaryo, 13581 denetim, 0 fark (BULGU 0), 7 bilinen sınır (BILINEN.json; başarısız sayılmaz), 598 yapım aşaması (YAPIM-ASAMASI.json; paketlere göre: eşleme 7, Ç5-A 228, Ç5-B tur 2 363; 591 denetim + 7 okuma hatası; geçti de başarısız da sayılmaz — yayın adayı
+12990/12990 denetim geçti (7 bilinen sınır dahil) (598 yapım aşaması ayrı sayıldı — 591 denetim + 7 okuma hatası; geçti sayılmadı)
+kahin-cari Europe/Istanbul çıkış 0
+ÖZET [2.5.0]: 81 senaryo, 13581 denetim, 0 fark (BULGU 0), 7 bilinen sınır (BILINEN.json; başarısız sayılmaz), 598 yapım aşaması (YAPIM-ASAMASI.json; paketlere göre: eşleme 7, Ç5-A 228, Ç5-B tur 2 363; 591 denetim + 7 okuma hatası; geçti de başarısız da sayılmaz — yayın adayı
+12990/12990 denetim geçti (7 bilinen sınır dahil) (598 yapım aşaması ayrı sayıldı — 591 denetim + 7 okuma hatası; geçti sayılmadı)
+kahin-defter çıkış 0 [kanit] b6b-kahin-defter: GEÇTİ · çıkış 0 · 176/176 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 4d5ea01 +185 değişmiş do
+turun testleri UTC çıkış 0 [kanit] b6b-testler-UTC: GEÇTİ · çıkış 0 · 167/167 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 4d5ea01 +185 değişmiş dos
+turun testleri Europe/Istanbul çıkış 0 [kanit] b6b-testler-Europe-Istanbul: GEÇTİ · çıkış 0 · 167/167 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 4d5ea01 +185 de�
+bitti 08:48:50 yük 3.22 2.03 1.96 2/145 30200

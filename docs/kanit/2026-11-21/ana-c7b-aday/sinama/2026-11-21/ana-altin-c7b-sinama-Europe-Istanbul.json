@@ -1,0 +1,38 @@
+{
+  "ad": "ana-altin-c7b-sinama-Europe-Istanbul",
+  "komut": "node --test test/banka-210-altin.test.mjs",
+  "commit": "ccd00100064df798a95ee19d4a5abb9b7ef3cb43",
+  "dal": "c7b-sinama",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-21T05:25:25.628Z",
+  "sure_sn": 22.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 6,
+    "gecen": 5,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "altın test: v2.0.26 ile bu dal aynı veride aynı Kasa, Banka ve POS, ANLIK DURUM, Ana Defter ve raporları gösterir › v2.0.26'nın kendi koduyla üretilen veri (mutabakat motoru: 120 güne yayılmış 260 rastgele işlem, dönem kilidi, iade/iptal)",
+      "konum": "test/banka-210-altin.test.mjs:520:3",
+      "hata": "3 fark: · motor · 001 · admin · json /api/workspace/overview: Expected values to be strictly deep-equal: · + actual - expected"
+    }
+  ],
+  "ham_cikti": "../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-sinama/kanit/2026-11-21/ana-altin-c7b-sinama-Europe-Istanbul.log",
+  "klasor": "/dev/shm/c7b-sinama",
+  "ham_cikti_sha256": "449ac90c2fb80d61f7a5d6c2415cf0b551a786a0d9920d1c6971fd6d45dcf304",
+  "ham_cikti_bayt": 7317
+}

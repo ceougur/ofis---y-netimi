@@ -1,0 +1,13 @@
+#!/bin/bash
+# Birleşik tur 6 — C1 / C2 zorlama betiği: 4 kip × (yeni, eski) × (yarış 10 deneme, kontrol 3 deneme). Yük koşusu: flock -s (ders 52) — çağıran sarar.
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+W=/home/user/ofis---y-netimi/.claude/worktrees/agent-a115f88e3014ea777
+export PLAYWRIGHT_BROWSERS_PATH=$S/pw-1194 HUKUK_LICENSE_URL=http://127.0.0.1:9 KANIT_DIR=$S/birlesik6-kanit
+cd "$W" || exit 1
+for kip in banka-tarih pos-tarih rapor-tarih gelen-tarih; do
+  node tools/kanit.mjs kos "b6-c-$kip-yeni" -- node --disable-warning=ExperimentalWarning test/e2e/suzgec-cubugu-yaris.mjs --kip "$kip" --deneme 10
+  DEPO=$S/birlesik6-eski node tools/kanit.mjs kos "b6-c-$kip-eski" -- node --disable-warning=ExperimentalWarning test/e2e/suzgec-cubugu-yaris.mjs --kip "$kip" --deneme 10
+  node tools/kanit.mjs kos "b6-c-$kip-kontrol-yeni" -- node --disable-warning=ExperimentalWarning test/e2e/suzgec-cubugu-yaris.mjs --kip "$kip" --deneme 3 --kontrol
+  DEPO=$S/birlesik6-eski node tools/kanit.mjs kos "b6-c-$kip-kontrol-eski" -- node --disable-warning=ExperimentalWarning test/e2e/suzgec-cubugu-yaris.mjs --kip "$kip" --deneme 3 --kontrol
+done
+echo BITTI

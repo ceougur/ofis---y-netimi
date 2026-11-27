@@ -1,0 +1,10 @@
+
+> destekofis@2.4.9 test:kahin-maliyet
+> python3 -I test/bagimsiz/maliyet/kos.py --katman api
+
+uyarlayıcı (uyarlayici.mjs): node /home/user/ofis---y-netimi/.claude/worktrees/agent-a2ba3cc62b2d80923/test/bagimsiz/maliyet/uyarlayici.mjs
+kabul: /home/user/ofis---y-netimi/.claude/worktrees/agent-a2ba3cc62b2d80923/test/bagimsiz/maliyet/kabul.json — 366 senaryo gönderiliyor (katman api; 25 senaryo seçilmedi)
+program: destekofis-api-ekran sürüm 2.4.9 commit 6ab19f011e8f5904fae7a13e0289e975f6a7394f
+41306/41306 denetim geçti
+
+[kanit] kahin-maliyet: GEÇTİ · çıkış 0 · 41306/41306 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 6ab19f0 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · Node v22.23.4

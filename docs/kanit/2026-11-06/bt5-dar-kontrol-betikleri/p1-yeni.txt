@@ -1,0 +1,77 @@
+OK   [kart taze] ad — 200  ; db {"name":"DK Kart 3 Yeni","phone":"0532 000 00 00","note":"ilk not","refNo":"1","registeredOn":"2026-09-01","groupId":"group-e9df87a1-2af0-4cb1-aece-5cda70e418b4","subgroupId":null,"total":1000,"accountId":"ilk","caseKey":"","status":"active"}; geçmiş 0→1
+OK   [kart taze] ad yalnız büyük harf — 200  ; db {"name":"DK KART 5","phone":"0532 000 00 00","note":"ilk not","refNo":"2","registeredOn":"2026-09-01","groupId":"group-e9df87a1-2af0-4cb1-aece-5cda70e418b4","subgroupId":null,"total":1000,"accountId":"ilk","caseKey":"","status":"active"}; geçmiş 0→1
+OK   [kart taze] telefon — 200  ; db {"name":"DK Kart 7","phone":"0533 111 22 33","note":"ilk not","refNo":"3","registeredOn":"2026-09-01","groupId":"group-e9df87a1-2af0-4cb1-aece-5cda70e418b4","subgroupId":null,"total":1000,"accountId":"ilk","caseKey":"","status":"active"}; geçmiş 0→1
+OK   [kart taze] telefon boşalt — 200  ; db {"name":"DK Kart 9","phone":"","note":"ilk not","refNo":"4","registeredOn":"2026-09-01","groupId":"group-e9df87a1-2af0-4cb1-aece-5cda70e418b4","subgroupId":null,"total":1000,"accountId":"ilk","caseKey":"","status":"active"}; geçmiş 0→1
+OK   [kart taze] not — 200  ; db {"name":"DK Kart 11","phone":"0532 000 00 00","note":"yeni not","refNo":"5","registeredOn":"2026-09-01","groupId":"group-e9df87a1-2af0-4cb1-aece-5cda70e418b4","subgroupId":null,"total":1000,"accountId":"ilk","caseKey":"","status":"active"}; geçmiş 0→1
+OK   [kart taze] not boşalt — 200  ; db {"name":"DK Kart 13","phone":"0532 000 00 00","note":"","refNo":"6","registeredOn":"2026-09-01","groupId":"group-e9df87a1-2af0-4cb1-aece-5cda70e418b4","subgroupId":null,"total":1000,"accountId":"ilk","caseKey":"","status":"active"}; geçmiş 0→1
+OK   [kart taze] Sıra No — 200  ; db {"name":"DK Kart 15","phone":"0532 000 00 00","note":"ilk not","refNo":"77","registeredOn":"2026-09-01","groupId":"group-e9df87a1-2af0-4cb1-aece-5cda70e418b4","subgroupId":null,"total":1000,"accountId":"ilk","caseKey":"","status":"active"}; geçmiş 0→1
+OK   [kart taze] Kayıt Tarihi — 200  ; db {"name":"DK Kart 17","phone":"0532 000 00 00","note":"ilk not","refNo":"78","registeredOn":"2026-08-15","groupId":"group-e9df87a1-2af0-4cb1-aece-5cda70e418b4","subgroupId":null,"total":1000,"accountId":"ilk","caseKey":"","status":"active"}; geçmiş 0→1
+OK   [kart taze] grup değiştir — 200  ; db {"name":"DK Kart 19","phone":"0532 000 00 00","note":"ilk not","refNo":"79","registeredOn":"2026-09-01","groupId":"group-fc20e31f-170b-4115-b57a-4e8c3e38eb0a","subgroupId":null,"total":1000,"accountId":"ilk","caseKey":"","status":"active"}; geçmiş 0→1
+OK   [kart taze] grup kaldır — 200  ; db {"name":"DK Kart 21","phone":"0532 000 00 00","note":"ilk not","refNo":"80","registeredOn":"2026-09-01","groupId":null,"subgroupId":null,"total":1000,"accountId":"ilk","caseKey":"","status":"active"}; geçmiş 0→1
+OK   [kart taze] alt grup ekle — 200  ; db {"name":"DK Kart 23","phone":"0532 000 00 00","note":"ilk not","refNo":"81","registeredOn":"2026-09-01","groupId":"group-e9df87a1-2af0-4cb1-aece-5cda70e418b4","subgroupId":"group-b1d06786-0dd8-421c-85f4-6c010be28c5b","total":1000,"accountId":"ilk","caseKey":"","status":"active"}; geçmiş 0→1
+OK   [kart taze] yeni grup adıyla — 200  ; db {"name":"DK Kart 25","phone":"0532 000 00 00","note":"ilk not","refNo":"82","registeredOn":"2026-09-01","groupId":"group-34352923-901a-4b47-adba-91902760f7d7","subgroupId":null,"total":1000,"accountId":"ilk","caseKey":"","status":"active"}; geçmiş 0→1
+OK   [kart taze] toplam 1 kuruş — 200  ; db {"name":"DK Kart 28","phone":"0532 000 00 00","note":"ilk not","refNo":"83","registeredOn":"2026-09-01","groupId":"group-e9df87a1-2af0-4cb1-aece-5cda70e418b4","subgroupId":null,"total":1000.01,"accountId":"ilk","caseKey":"","status":"active"}; geçmiş 0→1
+OK   [kart taze] toplam — 200  ; db {"name":"DK Kart 30","phone":"0532 000 00 00","note":"ilk not","refNo":"84","registeredOn":"2026-09-01","groupId":"group-e9df87a1-2af0-4cb1-aece-5cda70e418b4","subgroupId":null,"total":1200,"accountId":"ilk","caseKey":"","status":"active"}; geçmiş 0→1
+OK   [kart taze] cari değiştir — 200  ; db {"name":"DK Kart 32","phone":"0532 000 00 00","note":"ilk not","refNo":"85","registeredOn":"2026-09-01","groupId":"group-e9df87a1-2af0-4cb1-aece-5cda70e418b4","subgroupId":null,"total":1000,"accountId":"acc2","caseKey":"","status":"active"}; geçmiş 0→1
+OK   [kart taze] kayıt bağı (başka oturum) — 200  ; db {"name":"DK Kart 34","phone":"0532 000 00 00","note":"ilk not","refNo":"86","registeredOn":"2026-09-01","groupId":"group-e9df87a1-2af0-4cb1-aece-5cda70e418b4","subgroupId":null,"total":1000,"accountId":"ilk","caseKey":"dk-kayit-1","status":"active"}; geçmiş 0→1
+OK   [kart taze] Kartı Kapat (yalnız status) — 200  ; db {"name":"DK Kart 36","phone":"0532 000 00 00","note":"ilk not","refNo":"87","registeredOn":"2026-09-01","groupId":"group-e9df87a1-2af0-4cb1-aece-5cda70e418b4","subgroupId":null,"total":1000,"accountId":"ilk","caseKey":"","status":"closed"}; geçmiş 0→1
+OK   [kart eskimiş] ad — 409 plan-stale; sürüm B'ninki
+OK   [kart eskimiş] ad yalnız büyük harf — 409 plan-stale; sürüm B'ninki
+OK   [kart eskimiş] telefon — 409 plan-stale; sürüm B'ninki
+OK   [kart eskimiş] telefon boşalt — 409 plan-stale; sürüm B'ninki
+OK   [kart eskimiş] not — 409 plan-stale; sürüm B'ninki
+OK   [kart eskimiş] not boşalt — 409 plan-stale; sürüm B'ninki
+OK   [kart eskimiş] Sıra No — 409 plan-stale; sürüm B'ninki
+OK   [kart eskimiş] Kayıt Tarihi — 409 plan-stale; sürüm B'ninki
+OK   [kart eskimiş] grup değiştir — 409 plan-stale; sürüm B'ninki
+OK   [kart eskimiş] grup kaldır — 409 plan-stale; sürüm B'ninki
+OK   [kart eskimiş] alt grup ekle — 409 plan-stale; sürüm B'ninki
+OK   [kart eskimiş] yeni grup adıyla — 409 plan-stale; sürüm B'ninki
+OK   [kart eskimiş] cari değiştir — 409 plan-stale; sürüm B'ninki
+OK   [kart eskimiş] kayıt bağı (başka oturum) — 409 plan-stale; sürüm B'ninki
+OK   [taksit taze] vade — 200 ; db {"dueDate":"2026-11-05","amount":500,"note":"","updatedAt":"2026-10-08T09:00:02.551Z"}; geçmiş 0→1
+OK   [taksit taze] tutar 1 kuruş — 200 ; db {"dueDate":"2026-11-01","amount":500.01,"note":"","updatedAt":"2026-10-08T09:00:02.604Z"}; geçmiş 0→1
+OK   [taksit taze] açıklama — 200 ; db {"dueDate":"2026-11-01","amount":500,"note":"taksit notu","updatedAt":"2026-10-08T09:00:02.655Z"}; geçmiş 0→1
+OK   [taksit taze] açıklama yalnız büyük harf — 200 ; db {"dueDate":"2026-11-01","amount":500,"note":"ABC","updatedAt":"2026-10-08T09:00:02.717Z"}; geçmiş 1→2
+OK   [taksit eskimiş] vade — 409 plan-item-stale gövde {"dueDate":"2026-11-05"}
+OK   [taksit eskimiş] tutar 1 kuruş — 409 plan-item-stale gövde {"amount":"400,01"}
+OK   [taksit eskimiş] açıklama — 409 plan-item-stale gövde {"note":"taksit notu"}
+OK   [stok taze] tür hizmet — 200  ; db {"kind":"service","code":"DK-82","name":"DK Ürün 81","unit":"Adet","category":"Gıda","minQty":0,"unitPrice":10,"salePrice":15,"vatRate":20,"note":"ürün notu"}; geçmiş 0→1
+OK   [stok taze] Stok Kodu — 200  ; db {"kind":"product","code":"DKX-85","name":"DK Ürün 83","unit":"Adet","category":"Gıda","minQty":3,"unitPrice":10,"salePrice":15,"vatRate":20,"note":"ürün notu"}; geçmiş 0→1
+OK   [stok taze] Stok Kodu yalnız büyük harf — 200  ; db {"kind":"product","code":"DKK-80","name":"DK Ürün 86","unit":"Adet","category":"Gıda","minQty":3,"unitPrice":10,"salePrice":15,"vatRate":20,"note":"ürün notu"}; geçmiş 0→1
+OK   [stok taze] Stok Kodu boşalt — 200  ; db {"kind":"product","code":"","name":"DK Ürün 88","unit":"Adet","category":"Gıda","minQty":3,"unitPrice":10,"salePrice":15,"vatRate":20,"note":"ürün notu"}; geçmiş 0→1
+OK   [stok taze] ad — 200  ; db {"kind":"product","code":"DK-91","name":"DK Ürün 90 Yeni","unit":"Adet","category":"Gıda","minQty":3,"unitPrice":10,"salePrice":15,"vatRate":20,"note":"ürün notu"}; geçmiş 0→1
+OK   [stok taze] ad yalnız büyük harf — 200  ; db {"kind":"product","code":"DK-93","name":"DK ÜRÜN 92","unit":"Adet","category":"Gıda","minQty":3,"unitPrice":10,"salePrice":15,"vatRate":20,"note":"ürün notu"}; geçmiş 0→1
+OK   [stok taze] birim — 200  ; db {"kind":"product","code":"DK-95","name":"DK Ürün 94","unit":"Kg","category":"Gıda","minQty":3,"unitPrice":10,"salePrice":15,"vatRate":20,"note":"ürün notu"}; geçmiş 0→1
+OK   [stok taze] kategori — 200  ; db {"kind":"product","code":"DK-97","name":"DK Ürün 96","unit":"Adet","category":"Temizlik","minQty":3,"unitPrice":10,"salePrice":15,"vatRate":20,"note":"ürün notu"}; geçmiş 0→1
+OK   [stok taze] kategori boşalt — 200  ; db {"kind":"product","code":"DK-99","name":"DK Ürün 98","unit":"Adet","category":"","minQty":3,"unitPrice":10,"salePrice":15,"vatRate":20,"note":"ürün notu"}; geçmiş 0→1
+OK   [stok taze] kritik seviye — 200  ; db {"kind":"product","code":"DK-101","name":"DK Ürün 100","unit":"Adet","category":"Gıda","minQty":5,"unitPrice":10,"salePrice":15,"vatRate":20,"note":"ürün notu"}; geçmiş 0→1
+OK   [stok taze] kritik seviye boşalt — 200  ; db {"kind":"product","code":"DK-103","name":"DK Ürün 102","unit":"Adet","category":"Gıda","minQty":0,"unitPrice":10,"salePrice":15,"vatRate":20,"note":"ürün notu"}; geçmiş 0→1
+OK   [stok taze] Alış Fiyatı 0,0001 — 200  ; db {"kind":"product","code":"DK-105","name":"DK Ürün 104","unit":"Adet","category":"Gıda","minQty":3,"unitPrice":10.0001,"salePrice":15,"vatRate":20,"note":"ürün notu"}; geçmiş 0→1
+OK   [stok taze] Satış Fiyatı — 200  ; db {"kind":"product","code":"DK-107","name":"DK Ürün 106","unit":"Adet","category":"Gıda","minQty":3,"unitPrice":10,"salePrice":16,"vatRate":20,"note":"ürün notu"}; geçmiş 0→1
+OK   [stok taze] KDV oranı 10 — 200  ; db {"kind":"product","code":"DK-109","name":"DK Ürün 108","unit":"Adet","category":"Gıda","minQty":3,"unitPrice":10,"salePrice":15,"vatRate":10,"note":"ürün notu"}; geçmiş 0→1
+OK   [stok taze] KDV oranı boşalt — 200  ; db {"kind":"product","code":"DK-111","name":"DK Ürün 110","unit":"Adet","category":"Gıda","minQty":3,"unitPrice":10,"salePrice":15,"vatRate":null,"note":"ürün notu"}; geçmiş 0→1
+OK   [stok taze] KDV oranı 0 — 200  ; db {"kind":"product","code":"DK-113","name":"DK Ürün 112","unit":"Adet","category":"Gıda","minQty":3,"unitPrice":10,"salePrice":15,"vatRate":0,"note":"ürün notu"}; geçmiş 0→1
+OK   [stok taze] not — 200  ; db {"kind":"product","code":"DK-115","name":"DK Ürün 114","unit":"Adet","category":"Gıda","minQty":3,"unitPrice":10,"salePrice":15,"vatRate":20,"note":"yeni ürün notu"}; geçmiş 0→1
+OK   [stok eskimiş] tür hizmet — 409 stock-item-stale
+OK   [stok eskimiş] Stok Kodu — 409 stock-item-stale
+OK   [stok eskimiş] Stok Kodu boşalt — 409 stock-item-stale
+OK   [stok eskimiş] ad — 409 stock-item-stale
+OK   [stok eskimiş] ad yalnız büyük harf — 409 stock-item-stale
+OK   [stok eskimiş] birim — 409 stock-item-stale
+OK   [stok eskimiş] kategori — 409 stock-item-stale
+OK   [stok eskimiş] kategori boşalt — 409 stock-item-stale
+OK   [stok eskimiş] kritik seviye — 409 stock-item-stale
+OK   [stok eskimiş] kritik seviye boşalt — 409 stock-item-stale
+OK   [stok eskimiş] Alış Fiyatı 0,0001 — 409 stock-item-stale
+OK   [stok eskimiş] KDV oranı 10 — 409 stock-item-stale
+OK   [stok eskimiş] KDV oranı boşalt — 409 stock-item-stale
+OK   [stok eskimiş] KDV oranı 0 — 409 stock-item-stale
+OK   [stok eskimiş] not — 409 stock-item-stale
+OK   [biçim (eskimiş form, içerik aynı)] kart: ad sonunda boşluk — 200 ; yazım yok; db ad "DK Kart 148" tutar 1000
+OK   [biçim (eskimiş form, içerik aynı)] kart: tutar '1.000,00' — 200 ; yazım yok; db ad "DK Kart 150" tutar 1000
+OK   [biçim (eskimiş form, içerik aynı)] stok: KDV '%20' — 200 ; yazım yok; db {"unit":"Adet","vatRate":20,"unitPrice":10}
+OK   [biçim (eskimiş form, içerik aynı)] stok: birim 'adet' — 200 ; yazım yok; db {"unit":"Adet","vatRate":20,"unitPrice":10}
+OK   [biçim (eskimiş form, içerik aynı)] stok: Alış Fiyatı '10,00' — 200 ; yazım yok; db {"unit":"Adet","vatRate":20,"unitPrice":10}
+
+=== P1: 75 hücre, 75 OK, 0 HATA

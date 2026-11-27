@@ -1,0 +1,176 @@
+nproc 4 · başta /proc/loadavg 0.40 0.70 0.94 2/121 1306 · Mem:              15           0          10           0           4          15
+=== olc.mjs · onceki (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/yay-onceki) · /proc/loadavg 0.36 0.69 0.94 1/118 1339
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/yay-onceki · yük (başta) 0.36 0.69 0.94
+(node:1341) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+açılış 9225 ms
+veri: 1484 cari, 102820 cari satırı, 34026 fatura, 13992 kart; en kalabalık cari 129 satır
+SOĞUK GET accounts (bütün cariler; liste + gecikmiş): durum 200, ilk 657 ms, medyan 657 ms, olay döngüsü en çok 643 ms, yanıt 1080654 bayt
+GET accounts/:id (en kalabalık cari kartı): durum 200, ilk 214 ms, medyan 204 ms, olay döngüsü en çok 211 ms, yanıt 125869 bayt
+ILIK GET accounts (bütün cariler): durum 200, ilk 649 ms, medyan 657 ms, olay döngüsü en çok 679 ms, yanıt 1080654 bayt
+GET overview (Anlık Durum): durum 200, ilk 5394 ms, medyan 79 ms, olay döngüsü en çok 5394 ms, yanıt 1641 bayt
+GET overview/vade-takip (Vade Takip): durum 200, ilk 1136 ms, medyan 1170 ms, olay döngüsü en çok 1279 ms, yanıt 1882972 bayt
+GET dues (zil / takvim): durum 200, ilk 1429 ms, medyan 391 ms, olay döngüsü en çok 1283 ms, yanıt 16141480 bayt
+GET invoices (fatura listesi): durum 200, ilk 570 ms, medyan 546 ms, olay döngüsü en çok 568 ms, yanıt 69432 bayt
+  (yazım Borç Yaz 6249 ms — kapı dahil, TYK hesaplamaz)
+YAZIMDAN SONRA GET accounts (bütün cariler) #1: durum 200, ilk 670 ms, medyan 670 ms, olay döngüsü en çok 0 ms, yanıt 1080654 bayt
+  (yazım Borç Yaz 6226 ms — kapı dahil, TYK hesaplamaz)
+YAZIMDAN SONRA GET accounts (bütün cariler) #2: durum 200, ilk 677 ms, medyan 677 ms, olay döngüsü en çok 666 ms, yanıt 1080654 bayt
+  (yazım Borç Yaz 5811 ms — kapı dahil, TYK hesaplamaz)
+YAZIMDAN SONRA GET accounts (bütün cariler) #3: durum 200, ilk 635 ms, medyan 635 ms, olay döngüsü en çok 0 ms, yanıt 1080654 bayt
+POST whatsapp/targets all (önizleme alıcıları; yalnız okuma): durum 200, ilk 2786 ms, medyan 2833 ms, olay döngüsü en çok 2865 ms, yanıt 574244 bayt
+GET plans (Taksitler listesi, aktif): durum 200, ilk 707 ms, medyan 707 ms, olay döngüsü en çok 662 ms, yanıt 4879405 bayt
+POST tahsilat (tek kayıt, en kalabalık cari) #1: durum 200, ilk 6133 ms, medyan 6133 ms, olay döngüsü en çok 6132 ms, yanıt 126713 bayt
+YAZIMDAN SONRA GET dues #1: durum 200, ilk 4320 ms, medyan 4320 ms, olay döngüsü en çok 6 ms, yanıt 16141480 bayt
+YAZIMDAN SONRA GET vade-takip #1: durum 200, ilk 1096 ms, medyan 1096 ms, olay döngüsü en çok 1079 ms, yanıt 1882972 bayt
+YAZIMDAN SONRA GET plans #1: durum 200, ilk 735 ms, medyan 735 ms, olay döngüsü en çok 659 ms, yanıt 4879405 bayt
+POST tahsilat (tek kayıt, en kalabalık cari) #2: durum 200, ilk 6288 ms, medyan 6288 ms, olay döngüsü en çok 6283 ms, yanıt 127501 bayt
+YAZIMDAN SONRA GET dues #2: durum 200, ilk 4464 ms, medyan 4464 ms, olay döngüsü en çok 4333 ms, yanıt 16141480 bayt
+YAZIMDAN SONRA GET vade-takip #2: durum 200, ilk 1089 ms, medyan 1089 ms, olay döngüsü en çok 1072 ms, yanıt 1882972 bayt
+YAZIMDAN SONRA GET plans #2: durum 200, ilk 687 ms, medyan 687 ms, olay döngüsü en çok 643 ms, yanıt 4879405 bayt
+POST tahsilat (tek kayıt, en kalabalık cari) #3: durum 200, ilk 6266 ms, medyan 6266 ms, olay döngüsü en çok 6262 ms, yanıt 128289 bayt
+YAZIMDAN SONRA GET dues #3: durum 200, ilk 4515 ms, medyan 4515 ms, olay döngüsü en çok 4379 ms, yanıt 16141480 bayt
+YAZIMDAN SONRA GET vade-takip #3: durum 200, ilk 1190 ms, medyan 1190 ms, olay döngüsü en çok 1173 ms, yanıt 1882972 bayt
+YAZIMDAN SONRA GET plans #3: durum 200, ilk 683 ms, medyan 683 ms, olay döngüsü en çok 636 ms, yanıt 4879405 bayt
+yük (sonda) 0.92 0.80 0.95
+çıkış 0 · /proc/loadavg 0.92 0.80 0.95 1/118 1603
+=== olc2.mjs · onceki (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/yay-onceki) · /proc/loadavg 0.84 0.78 0.95 1/117 1610
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/yay-onceki · yük (başta) 0.84 0.78 0.95
+(node:1612) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+SOĞUK GET accounts: durum 200, 655 ms, olay döngüsü en çok 641 ms · yük 0.87 0.79 0.95
+ILIK GET accounts: durum 200, 658 ms, olay döngüsü en çok 643 ms · yük 0.87 0.79 0.95
+  yazım: stok girişi (cari / para yok) #1: durum 200, 18 ms, olay döngüsü en çok 16 ms · yük 0.87 0.79 0.95
+CARİYE DOKUNMAYAN YAZIMDAN SONRA GET accounts #1: durum 200, 680 ms, olay döngüsü en çok 0 ms · yük 0.87 0.79 0.95
+  ardından GET dues #1: durum 200, 4595 ms, olay döngüsü en çok 4442 ms · yük 0.88 0.79 0.95
+  yazım: stok girişi (cari / para yok) #2: durum 200, 10 ms, olay döngüsü en çok 7 ms · yük 0.88 0.79 0.95
+CARİYE DOKUNMAYAN YAZIMDAN SONRA GET accounts #2: durum 200, 701 ms, olay döngüsü en çok 0 ms · yük 0.88 0.79 0.95
+  ardından GET dues #2: durum 200, 351 ms, olay döngüsü en çok 204 ms · yük 0.88 0.79 0.95
+  yazım: stok girişi (cari / para yok) #3: durum 200, 10 ms, olay döngüsü en çok 7 ms · yük 0.88 0.79 0.95
+CARİYE DOKUNMAYAN YAZIMDAN SONRA GET accounts #3: durum 200, 677 ms, olay döngüsü en çok 0 ms · yük 0.88 0.79 0.95
+  ardından GET dues #3: durum 200, 355 ms, olay döngüsü en çok 213 ms · yük 0.88 0.79 0.95
+  yazım: yeni oturum (giriş) #1: durum 200, 47 ms, olay döngüsü en çok 45 ms · yük 0.88 0.79 0.95
+GİRİŞTEN SONRA GET accounts #1: durum 200, 760 ms, olay döngüsü en çok 0 ms · yük 0.88 0.79 0.95
+  yazım: yeni oturum (giriş) #2: durum 200, 52 ms, olay döngüsü en çok 50 ms · yük 0.88 0.79 0.95
+GİRİŞTEN SONRA GET accounts #2: durum 200, 647 ms, olay döngüsü en çok 0 ms · yük 1.21 0.86 0.97
+  yazım: yeni oturum (giriş) #3: durum 200, 45 ms, olay döngüsü en çok 44 ms · yük 1.21 0.86 0.97
+GİRİŞTEN SONRA GET accounts #3: durum 200, 687 ms, olay döngüsü en çok 0 ms · yük 1.21 0.86 0.97
+yük (sonda) 1.21 0.86 0.97
+çıkış 0 · /proc/loadavg 1.21 0.86 0.97 1/118 1639
+=== olc.mjs · eski (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2ay-eski) · /proc/loadavg 1.11 0.85 0.96 1/118 1646
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2ay-eski · yük (başta) 1.11 0.85 0.96
+(node:1648) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+açılış 15442 ms
+veri: 1484 cari, 102820 cari satırı, 34026 fatura, 13992 kart; en kalabalık cari 129 satır
+SOĞUK GET accounts (bütün cariler; liste + gecikmiş): durum 200, ilk 6946 ms, medyan 6946 ms, olay döngüsü en çok 6929 ms, yanıt 1192532 bayt
+GET accounts/:id (en kalabalık cari kartı): durum 200, ilk 232 ms, medyan 232 ms, olay döngüsü en çok 228 ms, yanıt 126006 bayt
+ILIK GET accounts (bütün cariler): durum 200, ilk 750 ms, medyan 709 ms, olay döngüsü en çok 738 ms, yanıt 1192532 bayt
+GET overview (Anlık Durum): durum 200, ilk 2337 ms, medyan 127 ms, olay döngüsü en çok 2336 ms, yanıt 1642 bayt
+GET overview/vade-takip (Vade Takip): durum 200, ilk 1425 ms, medyan 1425 ms, olay döngüsü en çok 1529 ms, yanıt 2134734 bayt
+GET dues (zil / takvim): durum 200, ilk 1839 ms, medyan 548 ms, olay döngüsü en çok 1661 ms, yanıt 20037370 bayt
+GET invoices (fatura listesi): durum 200, ilk 553 ms, medyan 522 ms, olay döngüsü en çok 551 ms, yanıt 69431 bayt
+  (yazım Borç Yaz 6359 ms — kapı dahil, TYK hesaplamaz)
+YAZIMDAN SONRA GET accounts (bütün cariler) #1: durum 200, ilk 1280 ms, medyan 1280 ms, olay döngüsü en çok 0 ms, yanıt 1192532 bayt
+  (yazım Borç Yaz 6120 ms — kapı dahil, TYK hesaplamaz)
+YAZIMDAN SONRA GET accounts (bütün cariler) #2: durum 200, ilk 1292 ms, medyan 1292 ms, olay döngüsü en çok 1281 ms, yanıt 1192532 bayt
+  (yazım Borç Yaz 6170 ms — kapı dahil, TYK hesaplamaz)
+YAZIMDAN SONRA GET accounts (bütün cariler) #3: durum 200, ilk 1240 ms, medyan 1240 ms, olay döngüsü en çok 0 ms, yanıt 1192532 bayt
+POST whatsapp/targets all (önizleme alıcıları; yalnız okuma): durum 200, ilk 2468 ms, medyan 8508 ms, olay döngüsü en çok 8607 ms, yanıt 574244 bayt
+GET plans (Taksitler listesi, aktif): durum 200, ilk 6942 ms, medyan 729 ms, olay döngüsü en çok 6900 ms, yanıt 4218577 bayt
+POST tahsilat (tek kayıt, en kalabalık cari) #1: durum 200, ilk 5938 ms, medyan 5938 ms, olay döngüsü en çok 5935 ms, yanıt 126850 bayt
+YAZIMDAN SONRA GET dues #1: durum 200, ilk 2337 ms, medyan 2337 ms, olay döngüsü en çok 10 ms, yanıt 20039032 bayt
+YAZIMDAN SONRA GET vade-takip #1: durum 200, ilk 1434 ms, medyan 1434 ms, olay döngüsü en çok 1411 ms, yanıt 2134734 bayt
+YAZIMDAN SONRA GET plans #1: durum 200, ilk 733 ms, medyan 733 ms, olay döngüsü en çok 695 ms, yanıt 4218577 bayt
+POST tahsilat (tek kayıt, en kalabalık cari) #2: durum 200, ilk 6436 ms, medyan 6436 ms, olay döngüsü en çok 6430 ms, yanıt 127638 bayt
+YAZIMDAN SONRA GET dues #2: durum 200, ilk 2333 ms, medyan 2333 ms, olay döngüsü en çok 2164 ms, yanıt 20039032 bayt
+YAZIMDAN SONRA GET vade-takip #2: durum 200, ilk 1346 ms, medyan 1346 ms, olay döngüsü en çok 1317 ms, yanıt 2134734 bayt
+YAZIMDAN SONRA GET plans #2: durum 200, ilk 742 ms, medyan 742 ms, olay döngüsü en çok 696 ms, yanıt 4218577 bayt
+POST tahsilat (tek kayıt, en kalabalık cari) #3: durum 200, ilk 6162 ms, medyan 6162 ms, olay döngüsü en çok 6161 ms, yanıt 128426 bayt
+YAZIMDAN SONRA GET dues #3: durum 200, ilk 2397 ms, medyan 2397 ms, olay döngüsü en çok 8 ms, yanıt 20039032 bayt
+YAZIMDAN SONRA GET vade-takip #3: durum 200, ilk 1404 ms, medyan 1404 ms, olay döngüsü en çok 1378 ms, yanıt 2134734 bayt
+YAZIMDAN SONRA GET plans #3: durum 200, ilk 725 ms, medyan 725 ms, olay döngüsü en çok 685 ms, yanıt 4218577 bayt
+yük (sonda) 1.05 0.93 0.99
+çıkış 0 · /proc/loadavg 1.05 0.93 0.99 1/118 1738
+=== olc2.mjs · eski (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2ay-eski) · /proc/loadavg 0.96 0.91 0.98 1/112 1745
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2ay-eski · yük (başta) 0.96 0.91 0.98
+(node:1747) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+SOĞUK GET accounts: durum 200, 7048 ms, olay döngüsü en çok 7030 ms · yük 0.98 0.92 0.98
+ILIK GET accounts: durum 200, 727 ms, olay döngüsü en çok 712 ms · yük 0.98 0.92 0.98
+  yazım: stok girişi (cari / para yok) #1: durum 200, 29 ms, olay döngüsü en çok 26 ms · yük 0.98 0.92 0.98
+CARİYE DOKUNMAYAN YAZIMDAN SONRA GET accounts #1: durum 200, 6910 ms, olay döngüsü en çok 0 ms · yük 0.98 0.92 0.98
+  ardından GET dues #1: durum 200, 1802 ms, olay döngüsü en çok 1588 ms · yük 0.98 0.92 0.98
+  yazım: stok girişi (cari / para yok) #2: durum 200, 16 ms, olay döngüsü en çok 13 ms · yük 0.98 0.92 0.98
+CARİYE DOKUNMAYAN YAZIMDAN SONRA GET accounts #2: durum 200, 6954 ms, olay döngüsü en çok 5 ms · yük 0.98 0.92 0.98
+  ardından GET dues #2: durum 200, 465 ms, olay döngüsü en çok 277 ms · yük 0.98 0.92 0.98
+  yazım: stok girişi (cari / para yok) #3: durum 200, 16 ms, olay döngüsü en çok 13 ms · yük 0.98 0.92 0.98
+CARİYE DOKUNMAYAN YAZIMDAN SONRA GET accounts #3: durum 200, 6727 ms, olay döngüsü en çok 0 ms · yük 0.98 0.93 0.98
+  ardından GET dues #3: durum 200, 446 ms, olay döngüsü en çok 272 ms · yük 0.98 0.93 0.98
+  yazım: yeni oturum (giriş) #1: durum 200, 62 ms, olay döngüsü en çok 59 ms · yük 0.98 0.93 0.98
+GİRİŞTEN SONRA GET accounts #1: durum 200, 7131 ms, olay döngüsü en çok 0 ms · yük 0.99 0.93 0.99
+  yazım: yeni oturum (giriş) #2: durum 200, 176 ms, olay döngüsü en çok 174 ms · yük 0.99 0.93 0.99
+GİRİŞTEN SONRA GET accounts #2: durum 200, 6842 ms, olay döngüsü en çok 0 ms · yük 0.99 0.93 0.99
+  yazım: yeni oturum (giriş) #3: durum 200, 47 ms, olay döngüsü en çok 45 ms · yük 0.99 0.93 0.99
+GİRİŞTEN SONRA GET accounts #3: durum 200, 6958 ms, olay döngüsü en çok 0 ms · yük 0.99 0.93 0.99
+yük (sonda) 0.99 0.93 0.99
+çıkış 0 · /proc/loadavg 0.99 0.93 0.99 1/116 1799
+=== olc.mjs · yeni (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-ya-ag) · /proc/loadavg 0.91 0.92 0.98 1/116 1807
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-ya-ag · yük (başta) 0.91 0.92 0.98
+(node:1809) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+açılış 18278 ms
+veri: 1484 cari, 102820 cari satırı, 34026 fatura, 13992 kart; en kalabalık cari 129 satır
+SOĞUK GET accounts (bütün cariler; liste + gecikmiş): durum 200, ilk 1648 ms, medyan 1648 ms, olay döngüsü en çok 1629 ms, yanıt 1192532 bayt
+GET accounts/:id (en kalabalık cari kartı): durum 200, ilk 233 ms, medyan 212 ms, olay döngüsü en çok 230 ms, yanıt 126006 bayt
+ILIK GET accounts (bütün cariler): durum 200, ilk 721 ms, medyan 681 ms, olay döngüsü en çok 667 ms, yanıt 1192532 bayt
+GET overview (Anlık Durum): durum 200, ilk 2257 ms, medyan 127 ms, olay döngüsü en çok 2254 ms, yanıt 1642 bayt
+GET overview/vade-takip (Vade Takip): durum 200, ilk 1574 ms, medyan 1442 ms, olay döngüsü en çok 1417 ms, yanıt 2134734 bayt
+GET dues (zil / takvim): durum 200, ilk 1766 ms, medyan 442 ms, olay döngüsü en çok 1532 ms, yanıt 20037449 bayt
+GET invoices (fatura listesi): durum 200, ilk 561 ms, medyan 524 ms, olay döngüsü en çok 559 ms, yanıt 69431 bayt
+  (yazım Borç Yaz 6312 ms — kapı dahil, TYK hesaplamaz)
+YAZIMDAN SONRA GET accounts (bütün cariler) #1: durum 200, ilk 1739 ms, medyan 1739 ms, olay döngüsü en çok 1723 ms, yanıt 1192532 bayt
+  (yazım Borç Yaz 6157 ms — kapı dahil, TYK hesaplamaz)
+YAZIMDAN SONRA GET accounts (bütün cariler) #2: durum 200, ilk 1768 ms, medyan 1768 ms, olay döngüsü en çok 0 ms, yanıt 1192532 bayt
+  (yazım Borç Yaz 6071 ms — kapı dahil, TYK hesaplamaz)
+YAZIMDAN SONRA GET accounts (bütün cariler) #3: durum 200, ilk 1723 ms, medyan 1723 ms, olay döngüsü en çok 0 ms, yanıt 1192532 bayt
+POST whatsapp/targets all (önizleme alıcıları; yalnız okuma): durum 200, ilk 2508 ms, medyan 3359 ms, olay döngüsü en çok 3481 ms, yanıt 574244 bayt
+GET plans (Taksitler listesi, aktif): durum 200, ilk 1592 ms, medyan 781 ms, olay döngüsü en çok 1553 ms, yanıt 4218576 bayt
+POST tahsilat (tek kayıt, en kalabalık cari) #1: durum 200, ilk 6132 ms, medyan 6132 ms, olay döngüsü en çok 6128 ms, yanıt 126850 bayt
+YAZIMDAN SONRA GET dues #1: durum 200, ilk 2775 ms, medyan 2775 ms, olay döngüsü en çok 2605 ms, yanıt 20039111 bayt
+YAZIMDAN SONRA GET vade-takip #1: durum 200, ilk 1394 ms, medyan 1394 ms, olay döngüsü en çok 1375 ms, yanıt 2134734 bayt
+YAZIMDAN SONRA GET plans #1: durum 200, ilk 706 ms, medyan 706 ms, olay döngüsü en çok 669 ms, yanıt 4218576 bayt
+POST tahsilat (tek kayıt, en kalabalık cari) #2: durum 200, ilk 6238 ms, medyan 6238 ms, olay döngüsü en çok 6237 ms, yanıt 127638 bayt
+YAZIMDAN SONRA GET dues #2: durum 200, ilk 2860 ms, medyan 2860 ms, olay döngüsü en çok 9 ms, yanıt 20039111 bayt
+YAZIMDAN SONRA GET vade-takip #2: durum 200, ilk 1380 ms, medyan 1380 ms, olay döngüsü en çok 1362 ms, yanıt 2134734 bayt
+YAZIMDAN SONRA GET plans #2: durum 200, ilk 665 ms, medyan 665 ms, olay döngüsü en çok 616 ms, yanıt 4218576 bayt
+POST tahsilat (tek kayıt, en kalabalık cari) #3: durum 200, ilk 6260 ms, medyan 6260 ms, olay döngüsü en çok 6258 ms, yanıt 128426 bayt
+YAZIMDAN SONRA GET dues #3: durum 200, ilk 2755 ms, medyan 2755 ms, olay döngüsü en çok 8 ms, yanıt 20039111 bayt
+YAZIMDAN SONRA GET vade-takip #3: durum 200, ilk 1356 ms, medyan 1356 ms, olay döngüsü en çok 1341 ms, yanıt 2134734 bayt
+YAZIMDAN SONRA GET plans #3: durum 200, ilk 694 ms, medyan 694 ms, olay döngüsü en çok 646 ms, yanıt 4218576 bayt
+yük (sonda) 0.99 0.95 0.99
+çıkış 0 · /proc/loadavg 0.99 0.95 0.99 1/113 1896
+=== olc2.mjs · yeni (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-ya-ag) · /proc/loadavg 0.99 0.95 0.99 1/113 1903
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-ya-ag · yük (başta) 0.99 0.95 0.99
+(node:1905) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+SOĞUK GET accounts: durum 200, 1663 ms, olay döngüsü en çok 1645 ms · yük 0.99 0.95 0.99
+ILIK GET accounts: durum 200, 702 ms, olay döngüsü en çok 688 ms · yük 0.99 0.95 0.99
+  yazım: stok girişi (cari / para yok) #1: durum 200, 34 ms, olay döngüsü en çok 31 ms · yük 0.99 0.95 0.99
+CARİYE DOKUNMAYAN YAZIMDAN SONRA GET accounts #1: durum 200, 1656 ms, olay döngüsü en çok 0 ms · yük 0.99 0.95 0.99
+  ardından GET dues #1: durum 200, 1957 ms, olay döngüsü en çok 1719 ms · yük 0.99 0.95 1.00
+  yazım: stok girişi (cari / para yok) #2: durum 200, 20 ms, olay döngüsü en çok 10 ms · yük 0.99 0.95 1.00
+CARİYE DOKUNMAYAN YAZIMDAN SONRA GET accounts #2: durum 200, 1571 ms, olay döngüsü en çok 1556 ms · yük 0.99 0.95 1.00
+  ardından GET dues #2: durum 200, 461 ms, olay döngüsü en çok 273 ms · yük 0.99 0.95 1.00
+  yazım: stok girişi (cari / para yok) #3: durum 200, 15 ms, olay döngüsü en çok 7 ms · yük 0.99 0.95 1.00
+CARİYE DOKUNMAYAN YAZIMDAN SONRA GET accounts #3: durum 200, 1652 ms, olay döngüsü en çok 1642 ms · yük 0.99 0.95 1.00
+  ardından GET dues #3: durum 200, 467 ms, olay döngüsü en çok 273 ms · yük 0.99 0.95 1.00
+  yazım: yeni oturum (giriş) #1: durum 200, 55 ms, olay döngüsü en çok 53 ms · yük 0.99 0.95 1.00
+GİRİŞTEN SONRA GET accounts #1: durum 200, 1728 ms, olay döngüsü en çok 0 ms · yük 0.99 0.95 1.00
+  yazım: yeni oturum (giriş) #2: durum 200, 45 ms, olay döngüsü en çok 44 ms · yük 0.99 0.95 1.00
+GİRİŞTEN SONRA GET accounts #2: durum 200, 1659 ms, olay döngüsü en çok 0 ms · yük 0.99 0.95 1.00
+  yazım: yeni oturum (giriş) #3: durum 200, 46 ms, olay döngüsü en çok 44 ms · yük 0.99 0.95 1.00
+GİRİŞTEN SONRA GET accounts #3: durum 200, 1581 ms, olay döngüsü en çok 0 ms · yük 0.99 0.95 1.00
+yük (sonda) 1.00 0.95 1.00
+çıkış 0 · /proc/loadavg 1.00 0.95 1.00 1/116 1935
+sonda /proc/loadavg 1.00 0.95 1.00 1/116 1937

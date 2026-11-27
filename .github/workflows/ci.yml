@@ -17,6 +17,8 @@ on:
       - "docs/2.4.7-IS-LISTESI.md"
       - "docs/2.4.8-IS-LISTESI.md"
       - "docs/2.4.9-IS-LISTESI.md"
+      - "docs/2.5.0-IS-LISTESI.md"
+      - "docs/2.5.0-IS-LISTESI-KAYIT.md"
       - "docs/devir/**"
       - "docs/erp/**"
       - "docs/fatura/**"
@@ -59,7 +61,9 @@ jobs:
 
   e2e:
     name: Uçtan uca (Chromium)
-    runs-on: ubuntu-latest
+    # ubuntu-24.04'e sabit (19.11.2026): GitHub'ın ubuntu-latest'i Ubuntu 26.04'e geçti; Playwright 1.56 orada chromium kuramıyor
+    # ('Playwright does not support chromium on ubuntu26.04-x64' — CI #1082). release.yml / windows.yml zaten ubuntu-24.04.
+    runs-on: ubuntu-24.04
     env:
       KANIT_DIR: kanit-cikti
     steps:
@@ -83,6 +87,10 @@ jobs:
       - run: node tools/kanit.mjs kos kahin-ebelge-model python3 test/bagimsiz/ebelge/test_model.py
       - run: node tools/kanit.mjs kos kahin-ebelge-mutasyon python3 test/bagimsiz/ebelge/mutasyon.py
       - run: node tools/kanit.mjs kos kahin-ebelge-senaryo npm run test:kahin-ebelge -- --senaryo test/bagimsiz/ebelge/senaryolar --ux15 acik
+      # 2.5.0 K: bağımsız muhasebe çekirdeği + devir kâhini (kodu görmeden kural kitabından yazıldı): model birim testi (74) + mutasyon (57). Programla
+      # karşılaştırma test/bagimsiz/muhasebe-surucu/ (sürücü) — Ç / D işleri yazıldıkça ayrı adım olarak eklenir.
+      - run: node tools/kanit.mjs kos kahin-muhasebe-model python3 test/bagimsiz/muhasebe/test_model.py
+      - run: node tools/kanit.mjs kos kahin-muhasebe-mutasyon python3 test/bagimsiz/muhasebe/mutasyon.py
       # Bağımsız maliyet kâhini (2.4.6 madde 0c / 6; kodu görmeden FORMÜL TABLOSU'ndan yazıldı): Maliyet Hesap Kartı API katmanı, 366 senaryo
       # (kabul.json tohum 1–3); yerelde ~140 sn, tarayıcı kullanmaz. Arayüz katmanının 25 senaryosu bu adımda koşmaz (aday kapısında elle).
       - run: node tools/kanit.mjs kos kahin-maliyet npm run test:kahin-maliyet
@@ -120,6 +128,10 @@ jobs:
       - run: node tools/kanit.mjs kos e2e-senaryo-iz32-230 npm run test:senaryo-iz32-230
       # 2.4.9 P1: müşteride POS tahsilatı 0 / 1 / 2 kredi kartıyla (kart seçicisi yalnız "Kredi Kartına İade" kutusuyla); tedarikçi kart ödemesi / iadesi, POS iadesi.
       - run: node tools/kanit.mjs kos e2e-senaryo-pos-kart-249 npm run test:senaryo-pos-kart-249
+      # 2.5.0 BS-2 (b): kayıt kartının İşlem Geçmişi'nde kayda bağlı carinin "Kredi Kartına İade" satırı ekranda "(Kredi Kartına İade)" yazar (POS değil).
+      - run: node tools/kanit.mjs kos e2e-senaryo-kart-iade-gecmis-250 npm run test:senaryo-kart-iade-gecmis-250
+      # 2.5.0 Ç5-B tur 2a: stoktan veresiye satış → taksitlendir (kartın Kayıt Tarihi borçtan önce) kart / Taksitler sekmesi / cari kartı / zil; karttan tahsilat sonrası kart = yeniden açılan (O-2); taksitsiz kartın kalanı (O-3).
+      - run: node tools/kanit.mjs kos e2e-senaryo-tyk-tur2a-250 npm run test:senaryo-tyk-tur2a-250
       - run: node tools/kanit.mjs kos e2e-senaryo-supheli-230 npm run test:senaryo-supheli-230
       - run: node tools/kanit.mjs kos e2e-senaryo-iz5-230 npm run test:senaryo-iz5-230
       - run: node tools/kanit.mjs kos e2e-senaryo-entegrator-240 npm run test:senaryo-entegrator-240
@@ -143,6 +155,44 @@ jobs:
       - run: node tools/kanit.mjs kos e2e-senaryo-mobil-tunel-247 npm run test:senaryo-mobil-tunel-247
       # 2.4.8 M4/M5: iPhone Safari yalnız yönlendirir (kod tüketilmez), simgede Karekodu Okut (sahte kamera) → eşleme; başka ofis karekodu; Son Özeti Göster formun üstünde
       - run: node tools/kanit.mjs kos e2e-senaryo-mobil-iphone-248 npm run test:senaryo-mobil-iphone-248
+      # 2.5.0 Ç4: Fatura Ayarları → Firma Bilgisi'nde Defter Türü (varsayılan Seçilmedi, klavyeyle seç, kaydet, sayfa yenile → korunur; muhasebe değiştirir, avukat görmez).
+      - run: node tools/kanit.mjs kos e2e-senaryo-defter-turu-250 npm run test:senaryo-defter-turu-250
+      # 2.5.0 BİRLEŞİK TUR 2: dört düzeltme formu (cari, stok, taksit, Kasa / transfer) açıldığı andaki sürümü gönderir; arada başka kullanıcı düzeltince 409 formda, veri ezilmez.
+      - run: node tools/kanit.mjs kos e2e-senaryo-duzeltme-kilidi-250 npm run test:senaryo-duzeltme-kilidi-250
+      # 2.5.0 BİRLEŞİK TUR 3: Kasa Açılış Bakiyesi, taksit düzelt, taksit kartı ve stok kartı formları da açıldığı andaki sürümü gönderir; eksi stok onayından sonraki 409'da kart yenilenir.
+      - run: node tools/kanit.mjs kos e2e-senaryo-duzeltme-kilidi-tur3-250 npm run test:senaryo-duzeltme-kilidi-tur3-250
+      # 2.5.0 Ç7b tur 2f: v2.4.9'da kilitlenmiş veri güncellenince Kural Farkı Düzeltme penceresi ve fişi, KDV Mahsup, defter raporları ekrandan (beklenenler elle).
+      - run: node tools/kanit.mjs kos e2e-senaryo-c7b-kabul-250 npm run test:senaryo-c7b-kabul-250
+      # 2.5.0 Ç7b tur 2d: alış faturasında 'KDV İndirim Dönemi' (fatura ayı + 12 ay), tarih değişince seçim; satış formunda alan yok.
+      - run: node tools/kanit.mjs kos e2e-senaryo-kdv-donemi-250 npm run test:senaryo-kdv-donemi-250
+      # 2.5.0 Ç7b tur 3: taksitli fatura / iade İptal Et (karta alınan tahsilat carinin avansı olur, kart kapanır), Kartı Kapat'la kapalı kartta İptal Et reddi, Yeniden Aç.
+      - run: node tools/kanit.mjs kos e2e-senaryo-c7b-tur3-250 npm run test:senaryo-c7b-tur3-250
+      # 2.5.0 Ç7b taksit küçük turu (S219 = A): Excel'den taksit yüklemesinde aynı adlı iki kişi — iki kart, iki borç (eski kodda ikinci satır atlanıyordu).
+      - run: node tools/kanit.mjs kos e2e-senaryo-c7bt-ayni-ad-250 npm run test:senaryo-c7bt-ayni-ad-250
+      # 2.5.0 Ç7b DK + S229 ALTIN birleşik küçük tur: S234 = A (Borçta Kalsın ile kapatılmış kart iadeyle küçülür, Kalan 300), S235 = B (Düzenle onayı kartın yeniden açılacağını / kaldırılacağını söyler).
+      - run: node tools/kanit.mjs kos e2e-senaryo-dkfix-250 npm run test:senaryo-dkfix-250
+      # 2.5.0 izleyen küçük tur: P-2 (iade fazlası carinin avansı), S238 = A (iade iptali aynı taksite), S234-c (Düzenle ile azaltma kartı küçültür), BULGU-1 (iki kartlı caride gecikmiş), BULGU-2 (taksitli faturanın Düzenle formu 'Taksitli' açılır, kart kalır).
+      - run: node tools/kanit.mjs kos e2e-senaryo-izt-250 npm run test:senaryo-izt-250
+      # 2.5.0 izleyen tur 2: S241 = A (Düzenle ile kartın kalanından fazla azaltma — fazlası avans, kart ve kuyruk aynı), kart kapsam seçimi tek yardımcıda (S110 / S120 / S243), iade Düzenle'si kayıtlı taksitlere, faturasız stok iadesi.
+      - run: node tools/kanit.mjs kos e2e-senaryo-izt2-250 npm run test:senaryo-izt2-250
+      - run: node tools/kanit.mjs kos e2e-senaryo-izt3-250 npm run test:senaryo-izt3-250
+      # 2.5.0 S223 + S231: içe aktarmada (cari Excel, taksit Excel, Tablodan Aktar, çek / senet) kişi ve grup adı Türkçe büyük / küçük harf katlamasıyla eşleşir — çift cari / çift grup açılmaz; çek eşleme penceresinin yeni metni.
+      - run: node tools/kanit.mjs kos e2e-senaryo-s223-250 npm run test:senaryo-s223-250
+      - run: node tools/kanit.mjs kos e2e-senaryo-s231-250 npm run test:senaryo-s231-250
+      # 2.5.0 izleyen tur 4 (S255 = A): Mevcut Borç kartının içine aldığı faturaya bağlı tahsilat önce faturanın gösterilen açığını kapatır, fazlası kartın taksitlerine — kart penceresi, Taksitler, cari kartı aynı sayı.
+      - run: node tools/kanit.mjs kos e2e-senaryo-izt4-250 npm run test:senaryo-izt4-250
+      # 2.5.0 Ç3 tur 2: Dönem Kilidi kartı — kilit yanıtı dondurmayı en çok 5 sn bekler; uzun dondurmada kart ilerlemeyi yazar ve yoklar, bitince / düşünce durur.
+      - run: node tools/kanit.mjs kos e2e-senaryo-donem-kilidi-ilerleme-250 npm run test:senaryo-donem-kilidi-ilerleme-250
+      # 2.5.0 Ç5-K tur 2: "Kasa Açılışından Önce Tarihli Hareket" uyarıdır — Yönetim › Sistem sarı + ne yapılacağı ("N denetim tamam" bozulmaz), Defter Mutabakatı "Uyarı"
+      # (Sonuç Tutarlı); gerçek sapmayla birlikteyken sapma yine kırmızı / Fark Var.
+      - run: node tools/kanit.mjs kos e2e-senaryo-kasa-acilis-uyari-250 npm run test:senaryo-kasa-acilis-uyari-250
+      # 2.5.0 Ç5-A tur 2: Açılış Düzeni — Yönetim satırı ve Kural Farkı Düzeltme Fişi penceresi; Açılış Olabilir Kayıtlar ekranı + zil; Açılış Eşleştirme Fişi ekranı.
+      - run: node tools/kanit.mjs kos e2e-senaryo-acilis-duzeni-250 npm run test:senaryo-acilis-duzeni-250
+      - run: node tools/kanit.mjs kos e2e-senaryo-acilis-olabilir-250 npm run test:senaryo-acilis-olabilir-250
+      - run: node tools/kanit.mjs kos e2e-senaryo-acilis-eslestirme-250 npm run test:senaryo-acilis-eslestirme-250
+      # 2.5.0 Ç5-A tur 3: şüpheli ↔ kuyruk (faturaya bağlı tahsilat, etiket); Ç7a: kart faizi (+ Kart Faizi, Kredi Kartı alanı).
+      - run: node tools/kanit.mjs kos e2e-senaryo-supheli-kuyruk-250 npm run test:senaryo-supheli-kuyruk-250
+      - run: node tools/kanit.mjs kos e2e-senaryo-kart-faizi-250 npm run test:senaryo-kart-faizi-250
       # 2.4.8 W1: Yönetim → WhatsApp (Elle Bağla, Bağlantıyı Sına, Kendime Deneme Gönder); Meta yerine yerel sahte Graph sunucusu.
       - run: node tools/kanit.mjs kos e2e-senaryo-whatsapp-ayar-248 npm run test:senaryo-whatsapp-ayar-248
       # 2.4.8 W3: WhatsApp penceresinin (wa.me) ekstre PDF'i seçilen döneme uyar; WhatsApp Mesajı İstemiyor (cari formu, kart, pencere).
@@ -151,6 +201,8 @@ jobs:
       - run: node tools/kanit.mjs kos e2e-senaryo-whatsapp-sablon-248 npm run test:senaryo-whatsapp-sablon-248
       # 2.4.8 W4: gönderim ekranı (Otomatik Gönder / WhatsApp Web ile Gönder) — iş akışı: önizleme, onay, toplu iş, kanca, Bu Ay, R3, yetkisiz, salt okunur.
       - run: node tools/kanit.mjs kos e2e-senaryo-whatsapp-gonder-248 npm run test:senaryo-whatsapp-gonder-248
+      # 2.5.0 W-3: KVKK silme talebi ekrandan (cari kartı + Yönetim → WhatsApp), 1 yıl saklama.
+      - run: node tools/kanit.mjs kos e2e-senaryo-whatsapp-kvkk-250 npm run test:senaryo-whatsapp-kvkk-250
       - run: node tools/kanit.mjs kos e2e-senaryo-kayit-bag-31e npm run test:senaryo-kayit-bag-31e
       - run: node tools/kanit.mjs kos e2e-senaryo-pil-karti-245 npm run test:senaryo-pil-karti-245
       - run: node tools/kanit.mjs kos e2e-senaryo-serit-sira-245 npm run test:senaryo-serit-sira-245
@@ -171,6 +223,8 @@ jobs:
       - run: node tools/kanit.mjs kos e2e-guncelleme-gercek npm run test:guncelleme-gercek
       - run: node tools/kanit.mjs kos e2e-hiz-243-arka-plan npm run test:hiz-243-arka-plan
       - run: node tools/kanit.mjs kos e2e-fatura-243-daha-fazla-yaris npm run test:fatura-243-daha-fazla-yaris
+      - run: node tools/kanit.mjs kos e2e-suzgec-cubugu-yaris npm run test:suzgec-cubugu-yaris
+      - run: node tools/kanit.mjs kos e2e-suzgec-tarih-yazim npm run test:suzgec-tarih-yazim
       - run: node tools/kanit.mjs kos e2e-fatura-243-duzen-kaymasi npm run test:fatura-243-duzen-kaymasi
       - run: node tools/kanit.mjs kos e2e-gg243-arka-plan-yazma npm run test:gg243-arka-plan-yazma
       - run: node tools/kanit.mjs kos e2e-gg243-odak-dugme npm run test:gg243-odak-dugme
@@ -188,6 +242,7 @@ jobs:
       - run: node tools/kanit.mjs kos e2e-uiux-244-ux9-ux10 npm run test:uiux-244-ux9-ux10
       - run: node tools/kanit.mjs kos e2e-uiux-ui11-244 npm run test:uiux-ui11-244
       - run: node tools/kanit.mjs kos e2e-sirket-canli-yetki-244 npm run test:sirket-canli-yetki-244
+      - run: node tools/kanit.mjs kos e2e-sema-kapisi-bs7 npm run test:sema-kapisi-bs7
       - run: node tools/kanit.mjs kos e2e-baslarken-244 npm run test:baslarken-244
       - uses: actions/upload-artifact@v4
         if: always()
@@ -226,7 +281,7 @@ jobs:
           NEEDS_JSON: ${{ toJSON(needs) }}
         run: >-
           node tools/kanit.mjs kapi kanit --commit "$GITHUB_SHA"
-          --beklenen kahin-defter,kahin-cari,kahin-tutar,kahin-maliyet,kahin-ebelge-model,kahin-ebelge-mutasyon,kahin-ebelge-senaryo,npm-test-ubuntu-latest-node22,npm-test-ubuntu-latest-node24,npm-test-windows-latest-node22,npm-test-windows-latest-node24,e2e-e2e,e2e-senaryo-219,e2e-senaryo-220,e2e-senaryo-220-yedek,e2e-senaryo-221,e2e-senaryo-222,e2e-senaryo-223,e2e-senaryo-224,e2e-senaryo-225,e2e-senaryo-225-uyari,e2e-senaryo-yedeksiz-sil-249,e2e-senaryo-226,e2e-senaryo-iz1-sayfa,e2e-senaryo-iz1-kasa-acilis,e2e-senaryo-banka-210,e2e-senaryo-banka-210b,e2e-senaryo-banka-210-temel,e2e-senaryo-banka-210-eski-satir,e2e-senaryo-banka-220,e2e-senaryo-pos-220,e2e-kilavuz-metin,e2e-senaryo-tahsile-ver-220,e2e-senaryo-k8-230,e2e-senaryo-iz32-230,e2e-senaryo-pos-kart-249,e2e-banka-210-saat,e2e-banka-210-kart-onbellek,e2e-banka-210-daha-fazla,e2e-banka-230-hareket-yaris,e2e-acilis-yanit-yaris,e2e-banka-210-ekran-aciklama,e2e-guncelleme-gercek,e2e-senaryo-supheli-230,e2e-senaryo-iz5-230,e2e-senaryo-entegrator-240,e2e-senaryo-ebelge-242,e2e-senaryo-ebelge-243,e2e-senaryo-form-izolasyon-243,e2e-senaryo-fatura-243,e2e-senaryo-cari-243,e2e-senaryo-banka-rapor-243,e2e-hiz-243-arka-plan,e2e-fatura-243-daha-fazla-yaris,e2e-fatura-243-duzen-kaymasi,e2e-gg243-arka-plan-yazma,e2e-gg243-odak-dugme,e2e-gg243-kopyala,e2e-gg243-odak-kalem-sil,e2e-gg243-tumunu-gonder,e2e-gg243-odak-silme-diger,e2e-gg243-banka-kart-aciklama,e2e-gg243-dar2-ekran,e2e-uiux-a-243,e2e-senaryo-defter-243,e2e-uiux-b-243,e2e-sirket-canli-yetki-244,e2e-senaryo-personel-244,e2e-senaryo-portal-244,e2e-baslarken-244,e2e-senaryo-kayit-tahsilat-244,e2e-senaryo-cari-vade-245,e2e-senaryo-kayit-bag-31e,e2e-senaryo-pil-karti-245,e2e-senaryo-serit-sira-245,e2e-senaryo-ekstre-ayrinti-245,e2e-senaryo-ekstre-ayrinti-247,e2e-senaryo-iade-246,e2e-senaryo-netten-brute-244,e2e-gg244-secilenleri-gonder,e2e-gg244-esmm-gonder,e2e-uiux-244-ux9-ux10,e2e-senaryo-ux18-244,e2e-uiux-ui11-244,e2e-gg244-numara-tarih-onay,e2e-senaryo-maliyet-246,e2e-senaryo-mobil-247,e2e-senaryo-mobil-eslesme-247,e2e-senaryo-mobil-ozet-247,e2e-senaryo-mobil-yazma-247,kahin-mobil-yazma,e2e-senaryo-mobil-tunel-247,e2e-senaryo-whatsapp-ayar-248,e2e-senaryo-whatsapp-donem-248,e2e-senaryo-whatsapp-sablon-248,e2e-senaryo-whatsapp-gonder-248,e2e-senaryo-mobil-iphone-248
+          --beklenen kahin-defter,kahin-cari,kahin-tutar,kahin-maliyet,kahin-ebelge-model,kahin-ebelge-mutasyon,kahin-ebelge-senaryo,kahin-muhasebe-model,kahin-muhasebe-mutasyon,npm-test-ubuntu-latest-node22,npm-test-ubuntu-latest-node24,npm-test-windows-latest-node22,npm-test-windows-latest-node24,e2e-e2e,e2e-senaryo-219,e2e-senaryo-220,e2e-senaryo-220-yedek,e2e-senaryo-221,e2e-senaryo-222,e2e-senaryo-223,e2e-senaryo-224,e2e-senaryo-225,e2e-senaryo-225-uyari,e2e-senaryo-yedeksiz-sil-249,e2e-senaryo-226,e2e-senaryo-iz1-sayfa,e2e-senaryo-iz1-kasa-acilis,e2e-senaryo-banka-210,e2e-senaryo-banka-210b,e2e-senaryo-banka-210-temel,e2e-senaryo-banka-210-eski-satir,e2e-senaryo-banka-220,e2e-senaryo-pos-220,e2e-kilavuz-metin,e2e-senaryo-tahsile-ver-220,e2e-senaryo-k8-230,e2e-senaryo-iz32-230,e2e-senaryo-pos-kart-249,e2e-senaryo-kart-iade-gecmis-250,e2e-senaryo-tyk-tur2a-250,e2e-banka-210-saat,e2e-banka-210-kart-onbellek,e2e-banka-210-daha-fazla,e2e-banka-230-hareket-yaris,e2e-acilis-yanit-yaris,e2e-banka-210-ekran-aciklama,e2e-guncelleme-gercek,e2e-senaryo-supheli-230,e2e-senaryo-iz5-230,e2e-senaryo-entegrator-240,e2e-senaryo-ebelge-242,e2e-senaryo-ebelge-243,e2e-senaryo-form-izolasyon-243,e2e-senaryo-fatura-243,e2e-senaryo-cari-243,e2e-senaryo-banka-rapor-243,e2e-hiz-243-arka-plan,e2e-fatura-243-daha-fazla-yaris,e2e-suzgec-cubugu-yaris,e2e-suzgec-tarih-yazim,e2e-fatura-243-duzen-kaymasi,e2e-gg243-arka-plan-yazma,e2e-gg243-odak-dugme,e2e-gg243-kopyala,e2e-gg243-odak-kalem-sil,e2e-gg243-tumunu-gonder,e2e-gg243-odak-silme-diger,e2e-gg243-banka-kart-aciklama,e2e-gg243-dar2-ekran,e2e-uiux-a-243,e2e-senaryo-defter-243,e2e-uiux-b-243,e2e-sirket-canli-yetki-244,e2e-sema-kapisi-bs7,e2e-senaryo-personel-244,e2e-senaryo-portal-244,e2e-baslarken-244,e2e-senaryo-kayit-tahsilat-244,e2e-senaryo-cari-vade-245,e2e-senaryo-kayit-bag-31e,e2e-senaryo-pil-karti-245,e2e-senaryo-serit-sira-245,e2e-senaryo-ekstre-ayrinti-245,e2e-senaryo-ekstre-ayrinti-247,e2e-senaryo-iade-246,e2e-senaryo-netten-brute-244,e2e-gg244-secilenleri-gonder,e2e-gg244-esmm-gonder,e2e-uiux-244-ux9-ux10,e2e-senaryo-ux18-244,e2e-uiux-ui11-244,e2e-gg244-numara-tarih-onay,e2e-senaryo-maliyet-246,e2e-senaryo-mobil-247,e2e-senaryo-mobil-eslesme-247,e2e-senaryo-mobil-ozet-247,e2e-senaryo-mobil-yazma-247,kahin-mobil-yazma,e2e-senaryo-mobil-tunel-247,e2e-senaryo-whatsapp-ayar-248,e2e-senaryo-whatsapp-donem-248,e2e-senaryo-whatsapp-sablon-248,e2e-senaryo-whatsapp-gonder-248,e2e-senaryo-whatsapp-kvkk-250,e2e-senaryo-mobil-iphone-248,e2e-senaryo-defter-turu-250,e2e-senaryo-duzeltme-kilidi-250,e2e-senaryo-duzeltme-kilidi-tur3-250,e2e-senaryo-c7b-kabul-250,e2e-senaryo-kdv-donemi-250,e2e-senaryo-c7b-tur3-250,e2e-senaryo-c7bt-ayni-ad-250,e2e-senaryo-dkfix-250,e2e-senaryo-izt-250,e2e-senaryo-izt2-250,e2e-senaryo-izt3-250,e2e-senaryo-s223-250,e2e-senaryo-s231-250,e2e-senaryo-izt4-250,e2e-senaryo-donem-kilidi-ilerleme-250,e2e-senaryo-kasa-acilis-uyari-250,e2e-senaryo-acilis-duzeni-250,e2e-senaryo-acilis-olabilir-250,e2e-senaryo-acilis-eslestirme-250,e2e-senaryo-supheli-kuyruk-250,e2e-senaryo-kart-faizi-250
           --ayni-sayi npm-test-
           --atlanan-yok npm-test-
 

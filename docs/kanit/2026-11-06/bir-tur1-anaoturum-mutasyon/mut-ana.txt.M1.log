@@ -1,0 +1,51 @@
+    not ok 1 - Kasa Engelle: yöneticinin 100 → 650 düzeltmesi yoldayken muhasebe aynı hareketi 100 → 10 yapar → 409 cash-blocked (güncel satırla), Kasa 590 kalır
+      error: |-
+        cari: yöneticinin düzeltmesi güncel satırla engellenmeli (409 cash-blocked) — yanıt 200  | cari: Kasa -50 (beklenen 590; Engelle politikasında eksiye düşmez) | cari: hareket 650 (beklenen öbür kullanıcının 10'u)
+        + actual - expected
+        + [
+        +   'cari: yöneticinin düzeltmesi güncel satırla engellenmeli (409 cash-blocked) — yanıt 200 ',
+        +   'cari: Kasa -50 (beklenen 590; Engelle politikasında eksiye düşmez)',
+        +   "cari: hareket 650 (beklenen öbür kullanıcının 10'u)"
+        + ]
+        - []
+        0: 'cari: yöneticinin düzeltmesi güncel satırla engellenmeli (409 cash-blocked) — yanıt 200 '
+        1: 'cari: Kasa -50 (beklenen 590; Engelle politikasında eksiye düşmez)'
+        2: "cari: hareket 650 (beklenen öbür kullanıcının 10'u)"
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur1-ana/mut-is/M1/test/birlesik-tur1-yaris-250.test.mjs:200:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+    not ok 2 - Kasa Uyar: aynı yarışta soru GÜNCEL satırla sorulur (409 cash-negative); "Yine de Kaydet" (cashForce) yazar, Kasa −50, Değişiklik Geçmişi'nin önceki tutarı 10
+      error: |-
+        cari: soru sorulmalı (409 cash-negative) — yanıt 200  | cari: Değişiklik Geçmişi önceki tutar 650 (beklenen 10)
+        + actual - expected
+        + [
+        +   'cari: soru sorulmalı (409 cash-negative) — yanıt 200 ',
+        +   'cari: Değişiklik Geçmişi önceki tutar 650 (beklenen 10)'
+        + ]
+        - []
+        0: 'cari: soru sorulmalı (409 cash-negative) — yanıt 200 '
+        1: 'cari: Değişiklik Geçmişi önceki tutar 650 (beklenen 10)'
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur1-ana/mut-is/M1/test/birlesik-tur1-yaris-250.test.mjs:230:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+    not ok 5 - kayıp güncelleme: gövdede yalnız tutar varken arada öbür kullanıcının açıklama düzeltmesi KORUNUR; Değişiklik Geçmişi'nin önceki hâli güncel satır
+      error: |-
+        cari: açıklama “ilk not” (beklenen öbür kullanıcının “muhasebenin notu”su — bayat satır gövdeyle birleşip sildi) | cari: Değişiklik Geçmişi önceki açıklama “ilk not” (beklenen güncel satırın “muhasebenin notu”su)
+        + actual - expected
+        + [
+        +   'cari: açıklama “ilk not” (beklenen öbür kullanıcının “muhasebenin notu”su — bayat satır gövdeyle birleşip sildi)',
+        +   'cari: Değişiklik Geçmişi önceki açıklama “ilk not” (beklenen güncel satırın “muhasebenin notu”su)'
+        + ]
+        - []
+        0: 'cari: açıklama “ilk not” (beklenen öbür kullanıcının “muhasebenin notu”su — bayat satır gövdeyle birleşip sildi)'
+        1: 'cari: Değişiklik Geçmişi önceki açıklama “ilk not” (beklenen güncel satırın “muhasebenin notu”su)'
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur1-ana/mut-is/M1/test/birlesik-tur1-yaris-250.test.mjs:321:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+not ok 1 - 2.5.0 BİRLEŞİK TUR 1 YB-1 — eşzamanlı düzeltmede korumalar işlemin içindeki GÜNCEL satırla (dört uç)
+  error: '3 subtests failed'

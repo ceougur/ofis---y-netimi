@@ -1,0 +1,38 @@
+{
+  "ad": "db-acilis-kurtarma-eski-899fdbce-200",
+  "komut": "node --test --test-concurrency=1 /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/db-acilis-a4c3/betik/yineleme.test.mjs",
+  "commit": "edfc20e36e90a1432ed015fe37968aafff095690",
+  "dal": "worktree-agent-aa4c32f640b15a6cf",
+  "kirli": 0,
+  "izlenmeyen": 9,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T23:19:44.813Z",
+  "sure_sn": 105.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 0,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "kurtarma (SIGKILL + iki süreç aynı anda openDatabase) × 200 (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/db-acilis-a4c3/eski/server/lib/db.mjs)",
+      "konum": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/db-acilis-a4c3/betik/yineleme.test.mjs:27:3",
+      "hata": "192 açılış düştü / 400 (yineleme 192 / 200; errcode {\"5\":1,\"261\":191}) · 192 !== 0 (beklenen 0, gelen 192)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-05/db-acilis-kurtarma-eski-899fdbce-200.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa4c32f640b15a6cf",
+  "ham_cikti_sha256": "1e5332ae2d9f4430319e9acf761b8f293ee3571d63e977a28086305dafbb5965",
+  "ham_cikti_bayt": 1477
+}

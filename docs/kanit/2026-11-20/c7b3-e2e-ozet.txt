@@ -1,0 +1,8 @@
+başta 07:13:01 · 3.70 4.79 3.96 8/182 24869 · yeni 99f93bca · TZ Europe/Istanbul
+senaryo-c7b-tur3-250 yeni Europe/Istanbul çıkış 0 · ✓ senaryo-c7b-tur3-250: 32 geçti, 0 kaldı
+senaryo-c7b-tur3-250 taban Europe/Istanbul çıkış 1 · ✗ senaryo-c7b-tur3-250: 16 geçti, 14 kaldı
+BİTTİ 07:20:13 · 2.88 3.60 3.77 10/242 29056
+başta 07:20:13 · 2.88 3.60 3.77 4/241 29059 · yeni 99f93bca · TZ UTC
+senaryo-c7b-tur3-250 yeni UTC çıkış 0 · ✓ senaryo-c7b-tur3-250: 32 geçti, 0 kaldı
+senaryo-c7b-tur3-250 taban UTC çıkış 1 · ✗ senaryo-c7b-tur3-250: 16 geçti, 14 kaldı
+BİTTİ 07:27:21 · 4.43 3.61 3.64 10/291 1233

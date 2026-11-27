@@ -1,0 +1,73 @@
+{
+  "ad": "tarih-anaoturum-eski-92153571-zorla-gmt-14-yilsonu-rapor-220",
+  "komut": "node --disable-warning=ExperimentalWarning --import /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/tarih-ana-kos/saat-on-yukle.mjs --test --test-concurrency=1 test/rapor-220.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T23:19:50.759Z",
+  "sure_sn": 1.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 9,
+    "gecen": 2,
+    "basarisiz": 2,
+    "iptal": 5,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 5 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Kullanıcının senaryosu: 10 müşteri × 10.000, ilk taksitler ödenmiş › programda tahsil: Cari Listesi 100.000 / 10.000 / 90.000; TOPLAM satırları; Taksit Kartları ve Mizan aynı",
+      "konum": "test/rapor-220.test.mjs:97:3",
+      "hata": "Expected values to be strictly equal: · 400 !== 200 (beklenen 200, gelen 400)"
+    },
+    {
+      "ad": "Kullanıcının senaryosu: 10 müşteri × 10.000, ilk taksitler ödenmiş › Excel'den yüklenen 'Ödenen' (açılış): Cari Bazında Tahsilat ve Taksit Tahsilatları toplamına dahil",
+      "konum": "test/rapor-220.test.mjs:128:3",
+      "hata": "programda alınan 10 × 1.000 · 0 !== 10000 (beklenen 10000, gelen 0)"
+    },
+    {
+      "ad": "Bütün raporlar: TOPLAM = satırların toplamı; PDF ve Excel aynı satırı taşır › her raporda TOPLAM (varsa) satır toplamına eşit; ekran = PDF = Excel",
+      "konum": "test/rapor-220.test.mjs:180:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "Bütün raporlar: TOPLAM = satırların toplamı; PDF ve Excel aynı satırı taşır › Tüm Zamanlar: çek portföyü ve taksit vadelerinde ileri vadeler de gelir; Aylık Kasa ilk hareketten başlar",
+      "konum": "test/rapor-220.test.mjs:222:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "Bütün raporlar: TOPLAM = satırların toplamı; PDF ve Excel aynı satırı taşır › yön karışık raporlarda (çek portföyü, açık faturalar) TOPLAM yalnız tek yön süzülünce; stokta farklı birim toplanmaz",
+      "konum": "test/rapor-220.test.mjs:231:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "Bütün raporlar: TOPLAM = satırların toplamı; PDF ve Excel aynı satırı taşır › katalog: dönemli raporlar Bu Yıl ile açılır (vade listesi Bu Ay, Ba-Bs Geçen Ay kalır)",
+      "konum": "test/rapor-220.test.mjs:243:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "Bütün raporlar: TOPLAM = satırların toplamı; PDF ve Excel aynı satırı taşır › Raporlar → Cari Ekstre (Mizan) PDF ve Excel'inde TOPLAM; Excel'de süzgeç dışında",
+      "konum": "test/rapor-220.test.mjs:251:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "Bütün raporlar: TOPLAM = satırların toplamı; PDF ve Excel aynı satırı taşır",
+      "konum": "test/rapor-220.test.mjs:152:1",
+      "hata": "Expected values to be strictly equal: · 400 !== 200 (beklenen 200, gelen 400)"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/ofis---y-netimi/docs/kanit/2026-11-05/tarih-anaoturum-eski-92153571-zorla-gmt-14-yilsonu-rapor-220.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/tarih-ana-kos/eski-92153571",
+  "ham_cikti_sha256": "6ba9a5d6f64d97f1368a4960478a76cd2aa17a4e0dfb0f36e46986251aea7676",
+  "ham_cikti_bayt": 7788
+}

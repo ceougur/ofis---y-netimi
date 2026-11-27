@@ -1,0 +1,11 @@
+2.5.0 Ç5-B kapanış düzeltmesi (6b/6): mutasyon listesinde iki enjeksiyon metni güncel koda uyarlandı — tam koşu 163 / 163
+
+Tam mutasyon koşusunun ilk turu 161 öldü + 2 "enjekte edilemedi" verdi: M07 ve S101-d'nin aradığı
+satırlar madde 1 / 2 ile değişmişti (coverEvent imzası; ön ödeme döngüsünün başlığı). Metinler güncel
+satırlara uyarlandı. S101-d ("ön ödemeli geçiş tek kez") güvenli kapanıştan (ORTA-2) beri
+test/tyk-250'de yaşıyor — kalemler toplamı tek geçişte de bakiyeyi tutuyor; "kararlı olana dek" dişi
+test/tyk-kapanis-sigma-250'de (yakınsayan örnek kararlı bitmeli) → mutantın test listesine eklendi.
+İkinci tam koşu: 163 / 163 öldü.
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01EhegDvmPQ9hx2ibfitm6og

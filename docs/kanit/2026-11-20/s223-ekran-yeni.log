@@ -1,0 +1,42 @@
+(node:10780) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+■ Kurulum: yönetici girer, başlangıç tablosu yüklenir
+
+■ 1. Cariler → Excel: üç cari (Türkçe harfli adlar)
+  ✓ accounts: eşleme penceresi açıldı (cariler.xlsx)
+  ✓ Tab ile gönder düğmesine gelindi
+  ✓ bildirim: "3 cari açıldı." (beklenen "3 cari açıldı")
+  ✓ cari sayısı 3 (beklenen 3)
+
+■ 2. Cariler → Excel: aynı kişiler BÜYÜK HARFLE + telefonu farklı HASAN IŞIK
+  ✓ accounts: eşleme penceresi açıldı (cariler-buyuk.xlsx)
+  ✓ Tab ile gönder düğmesine gelindi
+  ✓ bildirim: "1 cari açıldı. 2 satır atlandı (Bu cari zaten var)." (beklenen "1 cari açıldı. 2 satır atlandı (Bu cari zaten var).")
+  ✓ cari sayısı 4 (beklenen 4; yalnız telefonu farklı kişi yeni cari)
+
+■ 3. Taksitler → Excel: HASAN IŞIK (büyük harf) → kart var olan Hasan Işık'a
+  ✓ plans: eşleme penceresi açıldı (taksit-buyuk.xlsx)
+  ✓ Tab ile gönder düğmesine gelindi
+  ✓ bildirim: "1 kart oluşturuldu. Yanlışsa Son Aktarımlar’dan geri alınır." (beklenen "1 kart oluşturuldu", atlanan yok)
+  ✓ Hasan Işık'ın kartları [3000] (beklenen [3000])
+  ✓ cari sayısı 4 (beklenen 4; yeni cari açılmadı)
+  ✓ Hasan Işık bakiyesi 3000 (beklenen 3.000)
+  ✓ defter 120 +3000 (beklenen +3.000)
+
+■ 4. Taksitler → Excel: Hasan Işık + HASAN IŞIK ikinci kez → çift kart / borç yok
+  ✓ plans: eşleme penceresi açıldı (taksit-yine.xlsx)
+  ✓ Tab ile gönder düğmesine gelindi
+  ✓ bildirim: "0 kart oluşturuldu. 2 satır atlandı (Aynı adla açık kart var)." (beklenen 0 kart, 2 satır atlandı — Aynı adla açık kart var)
+  ✓ kart ve cari sayısı değişmedi
+  ✓ defter 120 değişmedi
+
+■ 5. Çek / Senet → Excel: AHU ÖZTÜRK (büyük harf) → Ahu Öztürk'e bağlanır
+  ✓ cheques: eşleme penceresi açıldı (cek.xlsx)
+  ✓ Tab ile gönder düğmesine gelindi
+  ✓ bildirim: "2 evrak portföye alındı, 1 cariye bağlandı." (beklenen "2 evrak portföye alındı, 1 cariye bağlandı.")
+  ✓ E2E-S223-1 çekinin carisi Ahu Öztürk (beklenen Ahu Öztürk)
+  ✓ Mutabakat Testi tutarlı
+  ✓ sayfada JavaScript hatası yok
+
+Senaryo S223 (Türkçe harf katlamalı kişi adı): 26 geçti, 0 kaldı. Ekranlar: ../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s223-k1/ekran-yeni

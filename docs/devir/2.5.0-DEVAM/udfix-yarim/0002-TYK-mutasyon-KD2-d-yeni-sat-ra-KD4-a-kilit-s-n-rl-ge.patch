@@ -1,0 +1,34 @@
+From 0b530461393a3e61aaa2a0378ff9b0184e0effa9 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Mon, 23 Nov 2026 00:41:44 +0000
+Subject: [PATCH 2/5] =?UTF-8?q?TYK=20mutasyon:=20KD2-d=20yeni=20sat=C4=B1r?=
+ =?UTF-8?q?a,=20KD4-a=20(kilit=20s=C4=B1n=C4=B1rl=C4=B1=20ge=C3=A7i=C5=9Ft?=
+ =?UTF-8?q?e=20=C3=B6l=C3=A7=C3=BCm=20yinelenmez)=20eklendi?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01EhegDvmPQ9hx2ibfitm6og
+---
+ test/tyk-mutasyon-250.mjs | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/test/tyk-mutasyon-250.mjs b/test/tyk-mutasyon-250.mjs
+index aafe24bb..e45ed4bc 100644
+--- a/test/tyk-mutasyon-250.mjs
++++ b/test/tyk-mutasyon-250.mjs
+@@ -175,7 +175,9 @@ const API_MUTANTS = [
+   ["KD2-a", "ORTA-2 geri — ön ödeme geçiş sınırı sabit 12 (carinin büyüklüğüne bağlı değil)", "server/lib/obligation-queue.mjs", "export const prepaidPassLimit = lineCount => Math.max(PREPAID_MIN_PASSES, Math.min(PREPAID_MAX_PASSES, Math.floor(PREPAID_WORK_BUDGET / Math.max(1, lineCount))));", "export const prepaidPassLimit = () => PREPAID_MIN_PASSES;", ["test/tyk-kapanis-sigma-250.test.mjs"]],
+   ["KD2-b", "ORTA-2 — yakınsamayan ölçümde son geçiş yok (bayat durum döner; taban davranışı)", "server/lib/obligation-queue.mjs", "  if (!stable) state = queueOnce(input, mode, null, { pieces, forced, prepaid, settle: true });\n", "\n", ["test/tyk-kapanis-sigma-250.test.mjs"]],
+   ["KD2-c", "ORTA-2 — son ölçüm uygulanır ama güvenli kapanış yok", "server/lib/obligation-queue.mjs", "  if (!stable) state = queueOnce(input, mode, null, { pieces, forced, prepaid, settle: true });", "  if (!stable) state = queueOnce(input, mode, null, { pieces, forced, prepaid, settle: false });", ["test/tyk-kapanis-sigma-250.test.mjs"]],
+-  ["KD2-d", "ORTA-2 — kilit ölçümlü yolda güvenli kapanış yok", "server/lib/obligation-queue.mjs", "return tagged(queueOnce(input, mode, caps, { pieces, forced, prepaid, settle: !stable }));", "return tagged(queueOnce(input, mode, caps, { pieces, forced, prepaid, settle: false }));", ["test/tyk-kapanis-sigma-250.test.mjs"]],
++  ["KD2-d", "ORTA-2 — kilit ölçümlü yolda güvenli kapanış yok", "server/lib/obligation-queue.mjs", "if (!stable) return tagged(queueOnce(input, mode, caps, { pieces, forced, prepaid, settle: true }));", "if (!stable) return tagged(queueOnce(input, mode, caps, { pieces, forced, prepaid, settle: false }));", ["test/tyk-kapanis-sigma-250.test.mjs"]],
++  // 2.5.0 UD düzeltmesi (mutabakat tohum 2 / 3 / 7): kilit sınırlı geçişte S101 ölçümü yinelenmez (taban davranışı — kalemler bakiyeyi kart tutarı kadar aşar).
++  ["KD4-a", "UD — kilit sınırlı geçişte ön ödeme ölçümü yinelenmez (taban)", "server/lib/obligation-queue.mjs", "    let cappedStable = false;\n    for (let round = 0; round < limit; round += 1) {", "    let cappedStable = true;\n    for (let round = 0; round < 0; round += 1) {", ["test/tyk-kilit-olcum-250.test.mjs"]],
+   ["KD2-e", "ORTA-2 — güvenli kapanışın serbest bıraktığı para dağıtılmaz (açık avans + açık borç birlikte; gecikmiş bakiyeyi aşar)", "server/lib/obligation-queue.mjs", "    schedule(item);\n  };", "  };", ["test/tyk-kapanis-sigma-250.test.mjs"]],
+   ["KD2-f", "ORTA-2 — geri alınan pay kadar taksit kırpılmaz (taksitin ödeneni şişer)", "server/lib/obligation-queue.mjs", "        inst.amount -= amount;\n        excess -= amount;\n        freed += amount;", "        excess -= amount;\n        freed += amount;", ["test/tyk-kapanis-sigma-250.test.mjs"]],
+   ["KD2-g", "ORTA-2 — geri alma en ESKİ taksitten (en son taksitten değil)", "server/lib/obligation-queue.mjs", "    for (const inst of [...card.installments].sort(s2).reverse()) {\n      for (let i = inst.closures.length - 1; i >= 0 && excess > 0; i -= 1) {", "    for (const inst of [...card.installments].sort(s2)) {\n      for (let i = inst.closures.length - 1; i >= 0 && excess > 0; i -= 1) {", ["test/tyk-kapanis-sigma-250.test.mjs"]],
+-- 
+2.43.0
+

@@ -1,0 +1,32 @@
+{
+  "ad": "c5by-tek-ana-kasa-acilis-once-250",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/kasa-acilis-once-250.test.mjs",
+  "commit": "7f8b89348282ed7960de8ffbfcbbf79c308d20bd",
+  "dal": "claude/epic-thompson-w0lc2l",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v338 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-10T12:44:35.514Z",
+  "sure_sn": 7.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 41,
+    "gecen": 41,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5by-kanit/2026-11-10/c5by-tek-ana-kasa-acilis-once-250.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "8ddf7fa43401a4cfe24b1dea43a5311ef42e93c50bef41758b2a1d875a0551e4",
+  "ham_cikti_bayt": 17602
+}

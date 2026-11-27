@@ -1,0 +1,68 @@
+nproc 4 · başta /proc/loadavg 0.67 1.60 2.28 2/129 28308 · Mem:              15           0          13           0           2          14
+=== olc2.mjs eski (soğuk ilk liste, ılık, cariye dokunmayan yazım / oturum sonrası) · /proc/loadavg 0.67 1.60 2.28 1/126 28367
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2a-eski · yük (başta) 0.67 1.60 2.28
+(node:28369) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+SOĞUK GET accounts: durum 200, 7999 ms, olay döngüsü en çok 7982 ms · yük 1.00 1.59 2.26
+ILIK GET accounts: durum 200, 820 ms, olay döngüsü en çok 806 ms · yük 1.00 1.59 2.26
+  yazım: stok girişi (cari / para yok) #1: durum 200, 30 ms, olay döngüsü en çok 24 ms · yük 1.00 1.59 2.26
+CARİYE DOKUNMAYAN YAZIMDAN SONRA GET accounts #1: durum 200, 7776 ms, olay döngüsü en çok 7764 ms · yük 1.00 1.58 2.25
+  ardından GET dues #1: durum 200, 2212 ms, olay döngüsü en çok 1920 ms · yük 1.00 1.57 2.24
+  yazım: stok girişi (cari / para yok) #2: durum 200, 11 ms, olay döngüsü en çok 8 ms · yük 1.00 1.57 2.24
+CARİYE DOKUNMAYAN YAZIMDAN SONRA GET accounts #2: durum 200, 7810 ms, olay döngüsü en çok 0 ms · yük 1.00 1.56 2.24
+  ardından GET dues #2: durum 200, 545 ms, olay döngüsü en çok 296 ms · yük 1.00 1.56 2.24
+  yazım: stok girişi (cari / para yok) #3: durum 200, 16 ms, olay döngüsü en çok 13 ms · yük 1.00 1.56 2.24
+CARİYE DOKUNMAYAN YAZIMDAN SONRA GET accounts #3: durum 200, 7766 ms, olay döngüsü en çok 0 ms · yük 1.08 1.56 2.23
+  ardından GET dues #3: durum 200, 531 ms, olay döngüsü en çok 290 ms · yük 1.08 1.56 2.23
+  yazım: yeni oturum (giriş) #1: durum 200, 54 ms, olay döngüsü en çok 52 ms · yük 1.08 1.56 2.23
+GİRİŞTEN SONRA GET accounts #1: durum 200, 7453 ms, olay döngüsü en çok 0 ms · yük 1.06 1.54 2.21
+  yazım: yeni oturum (giriş) #2: durum 200, 194 ms, olay döngüsü en çok 193 ms · yük 1.06 1.54 2.21
+GİRİŞTEN SONRA GET accounts #2: durum 200, 7473 ms, olay döngüsü en çok 0 ms · yük 1.06 1.53 2.21
+  yazım: yeni oturum (giriş) #3: durum 200, 55 ms, olay döngüsü en çok 54 ms · yük 1.06 1.53 2.21
+GİRİŞTEN SONRA GET accounts #3: durum 200, 7450 ms, olay döngüsü en çok 0 ms · yük 1.05 1.51 2.19
+  yazım: en kalabalık cariye Borç Yaz #1: durum 200, 6604 ms, olay döngüsü en çok 6598 ms · yük 1.04 1.50 2.19
+CARİ YAZIMINDAN SONRA GET accounts #1: durum 200, 1351 ms, olay döngüsü en çok 1340 ms · yük 1.04 1.50 2.19
+  ardından GET dues #1: durum 200, 1895 ms, olay döngüsü en çok 1679 ms · yük 1.04 1.49 2.18
+  yazım: en kalabalık cariye Borç Yaz #2: durum 200, 6723 ms, olay döngüsü en çok 6719 ms · yük 1.04 1.49 2.17
+CARİ YAZIMINDAN SONRA GET accounts #2: durum 200, 1409 ms, olay döngüsü en çok 0 ms · yük 1.04 1.49 2.17
+  ardından GET dues #2: durum 200, 1810 ms, olay döngüsü en çok 1625 ms · yük 1.04 1.49 2.17
+  yazım: en kalabalık cariye Borç Yaz #3: durum 200, 6781 ms, olay döngüsü en çok 6778 ms · yük 1.03 1.47 2.16
+CARİ YAZIMINDAN SONRA GET accounts #3: durum 200, 1390 ms, olay döngüsü en çok 0 ms · yük 1.03 1.47 2.16
+  ardından GET dues #3: durum 200, 1860 ms, olay döngüsü en çok 1679 ms · yük 1.03 1.47 2.16
+tek cari kartı (en kalabalık): durum 200, 242 ms, olay döngüsü en çok 233 ms · yük 1.35 1.53 2.18
+yük (sonda) 1.35 1.53 2.18
+çıkış 0 · /proc/loadavg 1.35 1.53 2.18 1/126 28824
+=== olc2.mjs yeni (soğuk ilk liste, ılık, cariye dokunmayan yazım / oturum sonrası) · /proc/loadavg 1.35 1.53 2.18 1/126 28829
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-ad0fa5bd8c34963f1 · yük (başta) 1.35 1.53 2.18
+(node:28831) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+SOĞUK GET accounts: durum 200, 1756 ms, olay döngüsü en çok 1740 ms · yük 1.45 1.54 2.17
+ILIK GET accounts: durum 200, 697 ms, olay döngüsü en çok 684 ms · yük 1.45 1.54 2.17
+  yazım: stok girişi (cari / para yok) #1: durum 200, 19 ms, olay döngüsü en çok 16 ms · yük 1.45 1.54 2.17
+CARİYE DOKUNMAYAN YAZIMDAN SONRA GET accounts #1: durum 200, 1714 ms, olay döngüsü en çok 0 ms · yük 1.45 1.54 2.17
+  ardından GET dues #1: durum 200, 1953 ms, olay döngüsü en çok 1765 ms · yük 1.42 1.53 2.16
+  yazım: stok girişi (cari / para yok) #2: durum 200, 22 ms, olay döngüsü en çok 13 ms · yük 1.42 1.53 2.16
+CARİYE DOKUNMAYAN YAZIMDAN SONRA GET accounts #2: durum 200, 1606 ms, olay döngüsü en çok 1595 ms · yük 1.42 1.53 2.16
+  ardından GET dues #2: durum 200, 533 ms, olay döngüsü en çok 349 ms · yük 1.42 1.53 2.16
+  yazım: stok girişi (cari / para yok) #3: durum 200, 17 ms, olay döngüsü en çok 8 ms · yük 1.42 1.53 2.16
+CARİYE DOKUNMAYAN YAZIMDAN SONRA GET accounts #3: durum 200, 1793 ms, olay döngüsü en çok 1783 ms · yük 1.38 1.52 2.16
+  ardından GET dues #3: durum 200, 463 ms, olay döngüsü en çok 284 ms · yük 1.38 1.52 2.16
+  yazım: yeni oturum (giriş) #1: durum 200, 53 ms, olay döngüsü en çok 51 ms · yük 1.38 1.52 2.16
+GİRİŞTEN SONRA GET accounts #1: durum 200, 1642 ms, olay döngüsü en çok 0 ms · yük 1.38 1.52 2.16
+  yazım: yeni oturum (giriş) #2: durum 200, 45 ms, olay döngüsü en çok 44 ms · yük 1.38 1.52 2.16
+GİRİŞTEN SONRA GET accounts #2: durum 200, 1599 ms, olay döngüsü en çok 0 ms · yük 1.38 1.52 2.16
+  yazım: yeni oturum (giriş) #3: durum 200, 46 ms, olay döngüsü en çok 44 ms · yük 1.38 1.52 2.16
+GİRİŞTEN SONRA GET accounts #3: durum 200, 1610 ms, olay döngüsü en çok 0 ms · yük 1.35 1.52 2.15
+  yazım: en kalabalık cariye Borç Yaz #1: durum 200, 6493 ms, olay döngüsü en çok 6493 ms · yük 1.40 1.52 2.15
+CARİ YAZIMINDAN SONRA GET accounts #1: durum 200, 1780 ms, olay döngüsü en çok 0 ms · yük 1.40 1.52 2.15
+  ardından GET dues #1: durum 200, 1918 ms, olay döngüsü en çok 1747 ms · yük 1.37 1.51 2.14
+  yazım: en kalabalık cariye Borç Yaz #2: durum 200, 6433 ms, olay döngüsü en çok 6430 ms · yük 1.34 1.51 2.14
+CARİ YAZIMINDAN SONRA GET accounts #2: durum 200, 1770 ms, olay döngüsü en çok 0 ms · yük 1.34 1.51 2.14
+  ardından GET dues #2: durum 200, 1802 ms, olay döngüsü en çok 1635 ms · yük 1.31 1.50 2.13
+  yazım: en kalabalık cariye Borç Yaz #3: durum 200, 6775 ms, olay döngüsü en çok 6774 ms · yük 1.29 1.49 2.12
+CARİ YAZIMINDAN SONRA GET accounts #3: durum 200, 1740 ms, olay döngüsü en çok 0 ms · yük 1.29 1.49 2.12
+  ardından GET dues #3: durum 200, 1944 ms, olay döngüsü en çok 1725 ms · yük 1.27 1.48 2.12
+tek cari kartı (en kalabalık): durum 200, 241 ms, olay döngüsü en çok 232 ms · yük 1.27 1.48 2.12
+yük (sonda) 1.27 1.48 2.12
+çıkış 0 · /proc/loadavg 1.27 1.48 2.12 1/130 28949
+sonda /proc/loadavg 1.27 1.48 2.12 1/130 28950

@@ -1,0 +1,22 @@
+senaryo.json: yeni cari 'Excel Kart Müşterisi Ltd.' cari 450000 · yaşlandırma 450000
+  m14 değerle, 10 fark:
+    /kontroller/K_EKIM_ONCE/500: taban None → mutant -6900000
+    /kontroller/K_EKIM_ONCE/519: taban -6900000 → mutant None
+    /kontroller/K_EYLUL/500: taban None → mutant -6900000
+    /kontroller/K_EYLUL/519: taban -6900000 → mutant None
+    /kontroller/K_EYLUL_MAHSUP/500: taban None → mutant -6900000
+    /kontroller/K_EYLUL_MAHSUP/519: taban -6900000 → mutant None
+    /kontroller/K_GERI_ALINDI/500: taban None → mutant -6900000
+    /kontroller/K_GERI_ALINDI/519: taban -6900000 → mutant None
+    /kontroller/K_SON/500: taban None → mutant -7670000
+    /kontroller/K_SON/519: taban -7370000 → mutant 300000
+  m21 değerle, 2 fark:
+    /kontroller/K_SON/519: taban -7370000 → mutant -6770000
+    /kontroller/K_SON/600: taban -6730000 → mutant -7330000
+senaryolar/g4-yeni-kayitlar.json: yeni cari 'Elle Excel Müşterisi Ltd.' cari 60000 · yaşlandırma 60000
+  m14 değerle, 2 fark:
+    /kontroller/K1/500: taban None → mutant -910000
+    /kontroller/K1/519: taban -850000 → mutant 60000
+  m21 değerle, 2 fark:
+    /kontroller/K1/519: taban -850000 → mutant -760000
+    /kontroller/K1/600: taban None → mutant -90000

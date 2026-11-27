@@ -1,0 +1,9 @@
+# elle: 53 senaryo × 256 birleşim denetlendi
+# rastgele tohum 1: 2570 olay (adım), 10 birleşim: model = akış beklentisi
+# rastgele tohum 2: 2563 olay (adım), 10 birleşim: model = akış beklentisi
+# rastgele tohum 3: 2589 olay (adım), 10 birleşim: model = akış beklentisi
+# kabul.json yazılmadı (yalnız denetim)
+
+real	0m47.598s
+user	0m46.894s
+sys	0m0.177s

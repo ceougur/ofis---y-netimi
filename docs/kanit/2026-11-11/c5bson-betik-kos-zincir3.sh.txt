@@ -1,0 +1,28 @@
+#!/bin/bash
+# Ç5-B SON TUR — zincir 3 (son kod; worktree): mutasyon (kendi kopyasında) → mutabakat varsayılanı → ekran senaryoları (k8-230, tyk-tur2a ve taksit ekranına dokunanlar).
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+W=/home/user/ofis---y-netimi/.claude/worktrees/agent-ac2cc1e4fd632460d
+export HUKUK_LICENSE_URL=http://127.0.0.1:9 KANIT_DIR=$S/c5bson-kanit PLAYWRIGHT_BROWSERS_PATH=$S/pw-1194
+cd "$W" || exit 1
+L="flock -s -n $S/olcum.lock"
+run() { # ad, TZ, komut…
+  local ad=$1 tz=$2; shift 2
+  echo "--- $ad · yük $(cat /proc/loadavg | cut -d' ' -f1-3) · $(date -u +%H:%M)"
+  TZ=$tz $L node tools/kanit.mjs kos "$ad" --sure 100 -- "$@" > $S/c5bson-cikti/$ad.out 2>&1
+  echo "== $ad cikis=$? · $(grep -E '^# (tests|pass|fail|cancelled|skipped)' $S/c5bson-cikti/$ad.out | tr '\n' ' ') $(tail -1 $S/c5bson-cikti/$ad.out | cut -c1-220)"
+}
+N="node --disable-warning=ExperimentalWarning"
+PART=${1:-hepsi}
+if [ "$PART" = hepsi ] || [ "$PART" = mutasyon ]; then
+  run c5bson-mutasyon UTC $N test/tyk-mutasyon-250.mjs --klasor $S/c5bson-mut
+  grep -E "YAŞADI|ENJEKTE|TABAN" $S/c5bson-cikti/c5bson-mutasyon.out | cut -c1-220
+fi
+if [ "$PART" = hepsi ] || [ "$PART" = mutabakat ]; then
+  run c5bson-mutabakat UTC npm run test:mutabakat
+fi
+if [ "$PART" = hepsi ] || [ "$PART" = e2e ]; then
+  for f in senaryo-k8-230 senaryo-tyk-tur2a-250 senaryo-cari-243 senaryo-pil-karti-245 senaryo-ekstre-ayrinti-247 senaryo-224 senaryo-226 senaryo-222 senaryo-220 senaryo-219 senaryo-216 senaryo-215 senaryo-214 senaryo-212 senaryo-210 senaryo-supheli-230 senaryo-duzeltme-kilidi-250 senaryo-duzeltme-kilidi-tur3-250 senaryo-form-izolasyon-243 senaryo-kayit-tahsilat-244 senaryo-tablodan-aktar senaryo-banka-210 senaryo-banka-210b senaryo-pos-220 senaryo-iz1-sayfa senaryo-211 gg243-odak-dugme banka-210-planli-yaris uiux-a-243 uiux-ui11-244 ui-ux-217; do
+    run c5bson-e2e-$f UTC $N test/e2e/$f.mjs
+  done
+fi
+echo "ZİNCİR 3 ($PART) BİTTİ $(date -u +%H:%M)"

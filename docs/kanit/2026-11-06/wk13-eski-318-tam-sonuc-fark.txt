@@ -1,0 +1,3 @@
+üst alan 'kararlar' eklenen anahtarlar: ['NB5', 'S16', 'S17']
+üst alan 'kararlar' değişen eski anahtarlar: []
+eski senaryo: 318; bayt bayt aynı: 318; değişen: 0

@@ -1,0 +1,224 @@
+...........F..........................................................................FFFF.........................FFFFF.........F........
+======================================================================
+FAIL: test_senaryo_ve_beklenen_dosyalari_guncel (__main__.Dosyalar.test_senaryo_ve_beklenen_dosyalari_guncel)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa1d453c9cc7bfb3b/test/bagimsiz/muhasebe/test_model.py", line 725, in test_senaryo_ve_beklenen_dosyalari_guncel
+    self.assertEqual(UB.main(denetle=True), 0, "python3 test/bagimsiz/muhasebe/uret_beklenen.py ile yeniden yazın")
+                     ~~~~~~~^^^^^^^^^^^^^^
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa1d453c9cc7bfb3b/test/bagimsiz/muhasebe/uret_beklenen.py", line 54, in main
+    for yol, icerik in ((os.path.join(SEN, s["ad"] + ".json"), metin(s)), (os.path.join(BEK, s["ad"] + ".json"), metin(beklenen(s)))):
+                                                                                                                       ~~~~~~~~^^^
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa1d453c9cc7bfb3b/test/bagimsiz/muhasebe/uret_beklenen.py", line 41, in beklenen
+    r = M.kos(s, M.Kurallar.etiketten(et))
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa1d453c9cc7bfb3b/test/bagimsiz/muhasebe/model.py", line 3384, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa1d453c9cc7bfb3b/test/bagimsiz/muhasebe/model.py", line 2319, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa1d453c9cc7bfb3b/test/bagimsiz/muhasebe/model.py", line 2336, in uygula
+    return self.rapor(o)
+           ~~~~~~~~~~^^^
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa1d453c9cc7bfb3b/test/bagimsiz/muhasebe/model.py", line 2618, in rapor
+    x = {anahtar(*k) if len(k) == 2 else k[0]: v for k, v in d.moduller(o.get("tarih")).items()}
+                                                             ~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa1d453c9cc7bfb3b/test/bagimsiz/muhasebe/model.py", line 1754, in moduller
+    g = self.gecis()
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa1d453c9cc7bfb3b/test/bagimsiz/muhasebe/model.py", line 1659, in gecis
+    self._g, self._m, self._kq = Gecis(self, s14=plan).kos(), None, {}
+                                 ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa1d453c9cc7bfb3b/test/bagimsiz/muhasebe/model.py", line 464, in kos
+    getattr(self, "_" + k.tur)(k)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa1d453c9cc7bfb3b/test/bagimsiz/muhasebe/model.py", line 679, in _tahsilat
+    valor = pos_etkin_valor(v.get("valor") or k.tarih, tatil=self.kural != "2.4.9")
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa1d453c9cc7bfb3b/test/bagimsiz/muhasebe/model.py", line 198, in pos_etkin_valor
+    raise AssertionError(f"senaryo hatası: POS valörü {valor} belirsiz güne ({s}: yarım gün / doğrulanmamış dinî bayram) değiyor — "
+                         "kâhin susar (README bakım 4 Y21)")
+AssertionError: senaryo hatası: POS valörü 2026-10-28 belirsiz güne (2026-10-28: yarım gün / doğrulanmamış dinî bayram) değiyor — kâhin susar (README bakım 4 Y21)
+
+======================================================================
+FAIL: test_s74_s25_ab_kismi_ve_fazla (__main__.ElleSenaryolar.test_s74_s25_ab_kismi_ve_fazla)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa1d453c9cc7bfb3b/test/bagimsiz/muhasebe/test_model.py", line 512, in test
+    self.assertEqual(gercek, bek, f"{s['ad']} [{et}] {yol}")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['SUPHELI_NORMAL_ASIM'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'SUPHELI_NORMAL_ASIM'
+
+- ['SUPHELI_NORMAL_ASIM']
++ [] : s74-s25-ab-kismi-ve-fazla [A] redler
+
+======================================================================
+FAIL: test_s75_s25_c_nakit_havale_pos (__main__.ElleSenaryolar.test_s75_s25_c_nakit_havale_pos)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa1d453c9cc7bfb3b/test/bagimsiz/muhasebe/test_model.py", line 512, in test
+    self.assertEqual(gercek, bek, f"{s['ad']} [{et}] {yol}")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['SUPHELI_NORMAL_ASIM', 'SUPHELI_NORMAL_ASIM', 'SUPHELI_NORMAL_ASIM'] != []
+
+First list contains 3 additional elements.
+First extra element 0:
+'SUPHELI_NORMAL_ASIM'
+
+- ['SUPHELI_NORMAL_ASIM', 'SUPHELI_NORMAL_ASIM', 'SUPHELI_NORMAL_ASIM']
++ [] : s75-s25-c-nakit-havale-pos [A] redler
+
+======================================================================
+FAIL: test_s76_s26_geri_yuklenen_kasa_tutar_duzelt (__main__.ElleSenaryolar.test_s76_s26_geri_yuklenen_kasa_tutar_duzelt)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa1d453c9cc7bfb3b/test/bagimsiz/muhasebe/test_model.py", line 512, in test
+    self.assertEqual(gercek, bek, f"{s['ad']} [{et}] {yol}")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['KAS[49 chars]ONCE', 'KASA_ACILIS_ONCE', 'KASA_ACILIS_ONCE',[15 chars]NCE'] != ['KAS[49 chars]ONCE']
+
+First list contains 3 additional elements.
+First extra element 3:
+'KASA_ACILIS_ONCE'
+
++ ['KASA_ACILIS_ONCE', 'KASA_ACILIS_ONCE', 'KASA_ACILIS_ONCE']
+- ['KASA_ACILIS_ONCE',
+-  'KASA_ACILIS_ONCE',
+-  'KASA_ACILIS_ONCE',
+-  'KASA_ACILIS_ONCE',
+-  'KASA_ACILIS_ONCE',
+-  'KASA_ACILIS_ONCE'] : s76-s26-geri-yuklenen-kasa-tutar-duzelt [A] redler
+
+======================================================================
+FAIL: test_s77_s27_pos_valor_yarim_gun (__main__.ElleSenaryolar.test_s77_s27_pos_valor_yarim_gun)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa1d453c9cc7bfb3b/test/bagimsiz/muhasebe/test_model.py", line 509, in test
+    r = M.kos(x, M.Kurallar.etiketten(et))
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa1d453c9cc7bfb3b/test/bagimsiz/muhasebe/model.py", line 3384, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa1d453c9cc7bfb3b/test/bagimsiz/muhasebe/model.py", line 2319, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa1d453c9cc7bfb3b/test/bagimsiz/muhasebe/model.py", line 2336, in uygula
+    return self.rapor(o)
+           ~~~~~~~~~~^^^
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa1d453c9cc7bfb3b/test/bagimsiz/muhasebe/model.py", line 2618, in rapor
+    x = {anahtar(*k) if len(k) == 2 else k[0]: v for k, v in d.moduller(o.get("tarih")).items()}
+                                                             ~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa1d453c9cc7bfb3b/test/bagimsiz/muhasebe/model.py", line 1754, in moduller
+    g = self.gecis()
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa1d453c9cc7bfb3b/test/bagimsiz/muhasebe/model.py", line 1659, in gecis
+    self._g, self._m, self._kq = Gecis(self, s14=plan).kos(), None, {}
+                                 ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa1d453c9cc7bfb3b/test/bagimsiz/muhasebe/model.py", line 464, in kos
+    getattr(self, "_" + k.tur)(k)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa1d453c9cc7bfb3b/test/bagimsiz/muhasebe/model.py", line 679, in _tahsilat
+    valor = pos_etkin_valor(v.get("valor") or k.tarih, tatil=self.kural != "2.4.9")
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa1d453c9cc7bfb3b/test/bagimsiz/muhasebe/model.py", line 198, in pos_etkin_valor
+    raise AssertionError(f"senaryo hatası: POS valörü {valor} belirsiz güne ({s}: yarım gün / doğrulanmamış dinî bayram) değiyor — "
+                         "kâhin susar (README bakım 4 Y21)")
+AssertionError: senaryo hatası: POS valörü 2026-10-28 belirsiz güne (2026-10-28: yarım gün / doğrulanmamış dinî bayram) değiyor — kâhin susar (README bakım 4 Y21)
+
+======================================================================
+FAIL: test_S21_belirsiz_valor_kahin_susar (__main__.OlayMaddeleri.test_S21_belirsiz_valor_kahin_susar)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa1d453c9cc7bfb3b/test/bagimsiz/muhasebe/test_model.py", line 431, in test_S21_belirsiz_valor_kahin_susar
+    r = M.kos(senaryo([o("tahsilat", "2026-10-27", cari="C1", yol="pos", pos="POS1", tutar=1000, valor="2026-10-28"),
+                       E.R("m", "moduller", tarih="2026-10-28")]))
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa1d453c9cc7bfb3b/test/bagimsiz/muhasebe/model.py", line 3384, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa1d453c9cc7bfb3b/test/bagimsiz/muhasebe/model.py", line 2319, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa1d453c9cc7bfb3b/test/bagimsiz/muhasebe/model.py", line 2336, in uygula
+    return self.rapor(o)
+           ~~~~~~~~~~^^^
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa1d453c9cc7bfb3b/test/bagimsiz/muhasebe/model.py", line 2618, in rapor
+    x = {anahtar(*k) if len(k) == 2 else k[0]: v for k, v in d.moduller(o.get("tarih")).items()}
+                                                             ~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa1d453c9cc7bfb3b/test/bagimsiz/muhasebe/model.py", line 1754, in moduller
+    g = self.gecis()
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa1d453c9cc7bfb3b/test/bagimsiz/muhasebe/model.py", line 1659, in gecis
+    self._g, self._m, self._kq = Gecis(self, s14=plan).kos(), None, {}
+                                 ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa1d453c9cc7bfb3b/test/bagimsiz/muhasebe/model.py", line 464, in kos
+    getattr(self, "_" + k.tur)(k)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa1d453c9cc7bfb3b/test/bagimsiz/muhasebe/model.py", line 679, in _tahsilat
+    valor = pos_etkin_valor(v.get("valor") or k.tarih, tatil=self.kural != "2.4.9")
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa1d453c9cc7bfb3b/test/bagimsiz/muhasebe/model.py", line 198, in pos_etkin_valor
+    raise AssertionError(f"senaryo hatası: POS valörü {valor} belirsiz güne ({s}: yarım gün / doğrulanmamış dinî bayram) değiyor — "
+                         "kâhin susar (README bakım 4 Y21)")
+AssertionError: senaryo hatası: POS valörü 2026-10-28 belirsiz güne (2026-10-28: yarım gün / doğrulanmamış dinî bayram) değiyor — kâhin susar (README bakım 4 Y21)
+
+======================================================================
+FAIL: test_S21_tatil_takvimi (__main__.OlayMaddeleri.test_S21_tatil_takvimi)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa1d453c9cc7bfb3b/test/bagimsiz/muhasebe/test_model.py", line 415, in test_S21_tatil_takvimi
+    self.assertEqual([M.tatil_turu(x) for x in ("2026-04-23", "2026-10-28", "2026-05-27", "2026-04-24", "2028-04-23", "2028-06-01", "2027-10-28",
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                                "2028-10-28")],
+                                                ^^^^^^^^^^^^^^^
+                     ["tam", "yarim", "belirsiz", None, "tam", "belirsiz", "yarim", "belirsiz"])
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['tam', 'belirsiz', 'belirsiz', None, 'tam', 'belirsiz', 'belirsiz', 'belirsiz'] != ['tam', 'yarim', 'belirsiz', None, 'tam', 'belirsiz', 'yarim', 'belirsiz']
+
+First differing element 1:
+'belirsiz'
+'yarim'
+
+- ['tam', 'belirsiz', 'belirsiz', None, 'tam', 'belirsiz', 'belirsiz', 'belirsiz']
++ ['tam', 'yarim', 'belirsiz', None, 'tam', 'belirsiz', 'yarim', 'belirsiz']
+
+======================================================================
+FAIL: test_S25_a_kismi_once_supheli (__main__.OlayMaddeleri.test_S25_a_kismi_once_supheli)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa1d453c9cc7bfb3b/test/bagimsiz/muhasebe/test_model.py", line 355, in test_S25_a_kismi_once_supheli
+    self.assertNotIn("kahin_susuyor", g)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'kahin_susuyor' unexpectedly found in {'cari': 'C3', 'tarih': '2026-06-01', 'gecikmis': 4000, 'supheli': 10000, 'detay': [{'kalem': 'fatura:F5', 'vade': '2026-04-15', 'kalan': 4000}], 'kahin_susuyor': [{'kaynak': 'P3', 'neden': 'S14_KISMI', 'tutar': 6000}]}
+
+======================================================================
+FAIL: test_S25_kart_kahin_susar (__main__.OlayMaddeleri.test_S25_kart_kahin_susar)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa1d453c9cc7bfb3b/test/bagimsiz/muhasebe/test_model.py", line 366, in test_S25_kart_kahin_susar
+    with self.assertRaises(AssertionError):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: AssertionError not raised
+
+======================================================================
+FAIL: test_S26_tutar_disi_alan_kahin_susar (__main__.OlayMaddeleri.test_S26_tutar_disi_alan_kahin_susar)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa1d453c9cc7bfb3b/test/bagimsiz/muhasebe/test_model.py", line 381, in test_S26_tutar_disi_alan_kahin_susar
+    with self.assertRaises(AssertionError, msg=str(dg)):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: AssertionError not raised : {'cari': 'C3'}
+
+======================================================================
+FAIL: test_pos_valoru_belirsiz_gune_dusmez (__main__.SenaryoHijyeni.test_pos_valoru_belirsiz_gune_dusmez)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa1d453c9cc7bfb3b/test/bagimsiz/muhasebe/test_model.py", line 714, in test_pos_valoru_belirsiz_gune_dusmez
+    self.assertTrue(U.valor_kesin(x["tarih"], dt.date.fromisoformat(x["valor"])), f"{s['ad']} {x.get('id')} {x['valor']}")
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : s77-s27-pos-valor-yarim-gun P1 2026-10-28
+
+----------------------------------------------------------------------
+Ran 138 tests in 24.107s
+
+FAILED (failures=11)
+# tests 138
+# pass 127
+# fail 11
+# skipped 0

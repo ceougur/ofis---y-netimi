@@ -1,0 +1,35 @@
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bson-taban · yük 1.99 1.84 1.87 · kart plan-aa6e56f8-791a-4203-b94c-c119ff3f32de · carisinin satırı 100
+tur 1 · yük 1.91 1.83 1.87
+  YAZIM kart tahsilatı: 200 · 430.4 ms
+  kart GET (yazımdan hemen sonra): 200 · 168 ms
+    carinin defteri (accounts.detail withRemaining:false): 19.3 ms
+    tek cari kuyruğu (obligationsFor): 142.5 ms
+    bütün cariler önbelleği yenileme (allObligations: iz taraması + artımlı): 1130.6 ms
+    bütün cariler önbelleği (ılık): 0.1 ms
+    parmak izi plans.fingerprint: 9.1 ms
+    parmak izi invoices.fingerprint: 41.1 ms
+    parmak izi cheques.fingerprint: 4.5 ms
+    parmak izi accounts.dueFingerprint: 54.6 ms
+    plans.dueItems: 545.9 ms
+    invoices.dueItems: 652.6 ms
+    accounts.dueItems: 142.1 ms
+  zil / takvim (iç adımlardan sonra): 200 · 2233 ms
+  zil / takvim (ılık): 200 · 757.3 ms
+tur 2 · yük 1.92 1.83 1.87
+  YAZIM kart tahsilatı: 200 · 339.3 ms
+  kart GET (yazımdan hemen sonra): 200 · 161.3 ms
+    carinin defteri (accounts.detail withRemaining:false): 21.7 ms
+    tek cari kuyruğu (obligationsFor): 153.9 ms
+    bütün cariler önbelleği yenileme (allObligations: iz taraması + artımlı): 1037.1 ms
+    bütün cariler önbelleği (ılık): 0.1 ms
+    parmak izi plans.fingerprint: 8.3 ms
+    parmak izi invoices.fingerprint: 33.4 ms
+    parmak izi cheques.fingerprint: 4.1 ms
+    parmak izi accounts.dueFingerprint: 54.9 ms
+    plans.dueItems: 576.6 ms
+    invoices.dueItems: 574.3 ms
+    accounts.dueItems: 128.5 ms
+  zil / takvim (iç adımlardan sonra): 200 · 2238.8 ms
+  zil / takvim (ılık): 200 · 501.9 ms
+yük (sonda) 2.97 2.05 1.94
+iz taraması (iki tur toplamı, ms): entries 1256 · moves 88 · invoices 497 · plans 127 · planEntries 124 · planItems 265 · cheques 1274 · offsets 1 · doubtful 0

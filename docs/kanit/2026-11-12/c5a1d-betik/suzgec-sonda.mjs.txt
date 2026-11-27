@@ -1,0 +1,27 @@
+// Ç5-A tur 1d İş F sondası (profil): kilitli 100 bin verisinde süzgeçli build({ cheques: [tek evrak] }) ve build({ parties: [tek cari] }) — çağrı başına süre.
+// Kullanım: node [--cpu-prof] suzgec-sonda.mjs <kod kökü> <veri kopyası> [n=200]
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+
+process.env.HUKUK_LICENSE_URL ||= "http://127.0.0.1:9";
+const [root, dir, nText = "200"] = process.argv.slice(2);
+const { createApp } = await import(pathToFileURL(path.join(root, "server", "app.mjs")).href);
+const app = createApp({
+  dataDir: path.join(dir, "data"), backupDir: path.join(dir, "backups"), logLevel: "silent", scheduleBackups: false,
+  env: { HUKUK_ADMIN_PASSWORD: "Kapi-Olcum-2026!", HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: "0123456789abcdef0123456789abcdef" },
+  startLicenseTimers: false, integrityScan: false, analysisWorker: false, now: "2026-10-08T12:00:00+03:00", moneyStrict: false,
+});
+await app.listen(0, "127.0.0.1");
+if (app.ledger.snapshots.state().pending) await app.ledger.snapshots.runPending();
+const store = app.store;
+const cheque = store.get("SELECT id FROM cheques WHERE direction = 'in' AND account_id IS NOT NULL AND account_id <> '' ORDER BY rowid DESC LIMIT 1").id;
+const party = store.get("SELECT a.id FROM accounts a WHERE a.deleted_at IS NULL AND a.type = 'customer' ORDER BY (SELECT COUNT(*) FROM account_entries e WHERE e.account_id = a.id) ASC LIMIT 1").id;
+const n = Number(nText) || 200;
+for (const [label, filter] of [["build({ cheques: [1] })", { cheques: [cheque] }], ["build({ parties: [1 hafif cari] })", { parties: [party] }]]) {
+  for (let i = 0; i < 5; i += 1) app.ledger.build(filter);
+  const s = performance.now();
+  let count = 0;
+  for (let i = 0; i < n; i += 1) count += app.ledger.build(filter).length;
+  console.log(`${label}: ${Math.round(((performance.now() - s) / n) * 100) / 100} ms / çağrı · ${count / n} madde`);
+}
+await app.close();

@@ -1,0 +1,18 @@
+import { readFileSync } from "node:fs";
+const root = process.argv[2];
+const { buildObligations } = await import(root + "/server/lib/obligation-queue.mjs");
+const raw = JSON.parse(readFileSync(root + "/test/fixtures/tyk-kilit-tohum6-250.json", "utf8"));
+const m = r => new Map(r);
+const input = { lines: raw.lines, invoices: raw.invoices, schedules: m(raw.schedules), links: m(raw.links), chequeEvents: m(raw.chequeEvents), reversals: m(raw.reversals), linkMoments: m(raw.linkMoments), linkTimes: m(raw.linkTimes), dueDates: m(raw.dueDates), promises: m(raw.promises), offsets: raw.offsets, doubtfulRecords: raw.doubtfulRecords, today: raw.today };
+const { lockAtOf } = await import(root + "/server/lib/obligation-queue.mjs");
+input.lockAt = lockAtOf(raw.lock);
+console.log(Object.keys(raw));
+const id = "invoice-77b1d5e1-0ed6-4cab-a379-39c8e43f694f";
+const r = buildObligations(input);
+const f = buildObligations({ ...input, lockAt: undefined });
+const sig = r => Math.round(r.items.reduce((s, i) => s + (i.side === "receivable" ? i.remaining : -i.remaining), 0) * 100) / 100;
+const bal = Math.round(input.lines.reduce((s, l) => s + l.debit - l.credit, 0) * 100) / 100;
+console.log("kilitli: açık", r.invoices.get(id).open, "Σ", sig(r), "bakiye", bal, "geçiş", JSON.stringify(r.prepaidPasses));
+console.log("kilitsiz: açık", f.invoices.get(id).open, "Σ", sig(f));
+console.log("kalemler kilitli", JSON.stringify(r.items.map(i => [i.key, i.remaining])));
+console.log("kalemler kilitsiz", JSON.stringify(f.items.map(i => [i.key, i.remaining])));

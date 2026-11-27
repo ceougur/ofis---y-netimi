@@ -1,0 +1,25 @@
+d35-c5-s120-elle-borclar.json: 16 elle beklenti değişti
+    değer                  k1:cari:H8:gecikmis: "(yok)" → 65000
+    değer                  k1:fatura:H8F:acik: "(yok)" → 60000
+    değer                  k1:fatura:H8F:gosterilen: "(yok)" → 40000
+    değer                  k1:fatura:H8F:kartta: "(yok)" → 20000
+    değer                  k1:fatura:H8F:liste:gosterilen: "(yok)" → 40000
+    değer                  k1:fatura:H8F:liste:taksitte: "(yok)" → false
+    değer                  k1:fatura:H8F:taksitte: "(yok)" → false
+    değer                  k1:hareket:h8x:kalan: "(yok)" → 30000
+    değer                  k1:kart:KH8:kalan: "(yok)" → 50000
+    değer                  k1:takvim:hareket:h8x: "(yok)" → "yok"
+    elleYok kalktı         k1:cari:H8:gecikmis: "yok" → ""
+    elleYok kalktı         k1:fatura:H8F:acik: "yok" → ""
+    elleYok kalktı         k1:hareket:h8x:kalan: "yok" → ""
+    elleYok kalktı         k1:kart:KH8:kalan: "yok" → ""
+    elleYok kalktı         k1:takvim:hareket:h8x: "yok" → ""
+    elleBelirsiz kalktı    ["cari H8 tanımsız", "SK-20", "BİLİNEN SINIR", "S123 = C"]: "" → ""
+d36-c5-s122-kart-odemesi.json: 2 elle beklenti değişti
+    elleBelirsiz kalktı    ["cari J14 tanımsız", "SK-20", "BİLİNEN SINIR", "S123 = C"]: "" → ""
+    elleBelirsiz eklendi   ["cari J14 tanımsız", "S200", "SK-23", "S125 = C"]: "" → ""
+yeni elle senaryo: d52-c5-s229-s230-gosterilen-acik.json
+# tests 105
+# pass 105
+# fail 0
+105/105 denetim geçti

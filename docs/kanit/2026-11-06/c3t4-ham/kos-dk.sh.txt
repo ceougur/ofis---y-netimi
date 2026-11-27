@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# Ç3 tur 4 — dar kontrolün kendi betikleri (kopyaları c3t4-betik/dk/) yeni kodda: s46-plan.mjs (tam / kapanis / aynigun; bileşim s46 ve SIRA=u3), y1-yollar.mjs, y3-409.mjs — iki TZ.
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+B=$S/c3t4-betik/dk
+K=$S/c3t4-kanit/dk
+ROOT=${ROOT:-/home/user/ofis---y-netimi/.claude/worktrees/agent-a8eba3f64140fc5f1}
+ETIKET=${ETIKET:-yeni}
+mkdir -p "$K" || exit 1
+cd "$B" || exit 1
+export NODE_NO_WARNINGS=1 HUKUK_LICENSE_URL=http://127.0.0.1:9
+for tz in UTC Europe/Istanbul; do
+  t=${tz//\//-}
+  for k in tam kapanis aynigun; do
+    TZ=$tz flock -s "$S/olcum.lock" timeout 300 node s46-plan.mjs "$ROOT" "$k" > "$K/s46-$k-$ETIKET-$t.json" 2>&1; echo "s46 $k $tz cikis=$?"
+    SIRA=u3 TZ=$tz flock -s "$S/olcum.lock" timeout 300 node s46-plan.mjs "$ROOT" "$k" > "$K/s46u3-$k-$ETIKET-$t.json" 2>&1; echo "s46u3 $k $tz cikis=$?"
+  done
+  TZ=$tz flock -s "$S/olcum.lock" timeout 900 node y1-yollar.mjs "$ROOT" > "$K/y1-$ETIKET-$t.json" 2> "$K/y1-$ETIKET-$t.err"; echo "y1 $tz cikis=$?"
+  TZ=$tz flock -s "$S/olcum.lock" timeout 900 node y3-409.mjs "$ROOT" > "$K/y3-$ETIKET-$t.json" 2> "$K/y3-$ETIKET-$t.err"; echo "y3 $tz cikis=$?"
+done

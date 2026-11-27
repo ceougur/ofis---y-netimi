@@ -101,6 +101,8 @@
       state = { ...state, settings: { ...state.settings, sheetUrl: legacySheet } };
     }
     HOF.applyClientState(state);
+    // 2.5.0 BS-7: bu şirketin verisi programın daha yeni bir sürümüyle açılmışsa şirket yalnız görüntülenir (şerit: hof-license.js).
+    HOF.schemaGate = state.schemaGate || null;
 
     const importFlag = `hof-notes-imported:${state.instanceId}`;
     if (!localGet(importFlag)) {

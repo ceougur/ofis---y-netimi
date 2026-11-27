@@ -1,0 +1,9 @@
+kip odak; kod bu ağaç; tarayıcı 153.0.8010.12; hazırlık: 5 hareket; aranacak İşlem No'lar BNK-2026-000005, BNK-2026-000004, BNK-2026-000003
+· deneme 1: ön koşul OLUŞMADI (yeniden çizim görülmedi) — sayılmadı
+· deneme 2: ön koşul OLUŞMADI (yeniden çizim görülmedi) — sayılmadı
+· deneme 3: ön koşul OLUŞMADI (yeniden çizim görülmedi) — sayılmadı
+· deneme 4: ön koşul OLUŞMADI (yeniden çizim görülmedi) — sayılmadı
+· deneme 5: ön koşul OLUŞMADI (yeniden çizim görülmedi) — sayılmadı
+✗ ön koşul hiçbir denemede oluşmadı — sonuç geçersiz (ders 20)
+
+BAŞARISIZ: 0 denetim geçti, 1 başarısız. (kip odak; ön koşul 0/5 denemede oluştu; 5 sayılmadı)

@@ -1,0 +1,38 @@
+{
+  "ad": "s231-cekmetin-taban",
+  "komut": "node --test test/s231-cek-pencere-metni-250.test.mjs",
+  "commit": "b169e1973b2859a1b8437044c016d94e88844cab",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-21T02:05:22.059Z",
+  "sure_sn": 0.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 0,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "S231 — Çek / Senet eşleme penceresinin metni › yeni cümle var (cümle düzeni), eski 'birebir aynı olan tek cari' yok",
+      "konum": "test/s231-cek-pencere-metni-250.test.mjs:12:3",
+      "hata": "metin: intro: `${preview.rows} satır bulundu. Program başlıkları tanıdı; yanlışsa değiştirin. Keşideci adı birebir aynı olan tek cari varsa evrak o cariye bağlanır.`, (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s231-a5ab/2026-11-21/s231-cekmetin-taban.log",
+  "klasor": "/dev/shm/s231-a5ab/eski",
+  "ham_cikti_sha256": "8c97cb173be8f19adf0d0e2f13bb8c5e07eb1c24e6c4b786eb4abfbabe6895f5",
+  "ham_cikti_bayt": 1742
+}

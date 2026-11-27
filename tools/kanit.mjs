@@ -26,9 +26,11 @@ import { gzipSync } from "node:zlib";
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const GZIP_OVER = 1024 * 1024;
 
+// Birleşik tur 7 (DK-B6 DÜŞÜK-3): yerine koyma nesneleri (`git replace`) okunmaz — `git replace <dolu listenin blob'u> <boş liste>` + skip-worktree ile commit'teki
+// YAPIM AŞAMASI listesi boş görünüp çalışma ağacı temiz kalıyordu (yayın kapısı geçiyordu). Kapı her zaman commit'in GERÇEK nesnelerini okur.
 const gitIn = cwd => (...args) => {
   try {
-    return execFileSync("git", args, { cwd, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim();
+    return execFileSync("git", ["--no-replace-objects", ...args], { cwd, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim();
   } catch {
     return null;
   }
@@ -303,7 +305,7 @@ const CI_WORKFLOW = ".github/workflows/ci.yml";
 // Yalnız belge (kullanıcı kararı 13.10.2026: "sadece doküman/plan değiştiğinde CI testleri koşmasın, sadece gerçek kod değiştiğinde çalışsın").
 // ci.yml'deki push "paths-ignore" listesiyle AYNI olmalı (test/kanit-araci.test.mjs denetler). Yalnız hiçbir testin ya da aracın okumadığı
 // belgeler: plan/kanıt/kılavuz belgelerini testler okuduğu için onlar listede YOK. PR koşusu (master'a) her zaman tamdır.
-export const BELGE_YOLLARI = ["CLAUDE.md", "docs/GECMIS-KARARLAR.md", "docs/DURUM-VE-DEVAM.md", "docs/2.3.0-IS-LISTESI.md", "docs/2.4.3-IS-LISTESI.md", "docs/2.4.4-IS-LISTESI.md", "docs/2.4.5-IS-LISTESI.md", "docs/2.4.6-IS-LISTESI.md", "docs/2.4.7-IS-LISTESI.md", "docs/2.4.8-IS-LISTESI.md", "docs/2.4.9-IS-LISTESI.md", "docs/devir/**", "docs/erp/**", "docs/fatura/**", "docs/pazarlama/**"];
+export const BELGE_YOLLARI = ["CLAUDE.md", "docs/GECMIS-KARARLAR.md", "docs/DURUM-VE-DEVAM.md", "docs/2.3.0-IS-LISTESI.md", "docs/2.4.3-IS-LISTESI.md", "docs/2.4.4-IS-LISTESI.md", "docs/2.4.5-IS-LISTESI.md", "docs/2.4.6-IS-LISTESI.md", "docs/2.4.7-IS-LISTESI.md", "docs/2.4.8-IS-LISTESI.md", "docs/2.4.9-IS-LISTESI.md", "docs/2.5.0-IS-LISTESI.md", "docs/2.5.0-IS-LISTESI-KAYIT.md", "docs/devir/**", "docs/erp/**", "docs/fatura/**", "docs/pazarlama/**"];
 export const yalnizBelge = files => files.length > 0 && files.every(file => BELGE_YOLLARI.some(pattern => (pattern.endsWith("/**") ? file.startsWith(pattern.slice(0, -2)) : file === pattern)));
 const changedFiles = (gitFn, sha) => {
   const out = gitFn("diff-tree", "--no-commit-id", "--name-only", "-r", "--root", sha);
@@ -507,6 +509,57 @@ export function releaseGate({ gitFn = gitIn(ROOT), ciFn = ciState } = {}) {
   const ci = ciFn(head, { gitFn });
   if (ci.result !== "YEŞİL") problems.push(`CI ${ci.result}${ci.reason ? `: ${ci.reason}` : ""} (${String(head).slice(0, 7)})`);
   return { ok: problems.length === 0, problems, ci };
+}
+
+// YAPIM AŞAMASI kapısı (S100 = A, KULLANICI KARARI 10.11.2026 17:54 UTC; docs/2.5.0-IS-LISTESI.md D): cari kâhini ↔ program adımının YAPIM AŞAMASI listesi
+// (test/bagimsiz/cari/YAPIM-ASAMASI.json) yayın adayında BOŞ olmak zorunda — dolu listeyle imzalı paket üretilmez. Okunamayan / bozuk / "kayitlar" dizisi olmayan
+// dosya BOŞ SAYILMAZ (ders 4). Atlatma seçeneği yoktur; `yol` yalnız testler içindir (tools/release.mjs varsayılanla çağırır).
+export const YAPIM_ASAMASI_YOLU = path.join(ROOT, "test", "bagimsiz", "cari", "YAPIM-ASAMASI.json");
+// Birleşik tur 6 (dar kontrol DK-D2T3 DOĞRULANMADI → denendi, ATLATILABİLİYORDU): `git update-index --skip-worktree test/bagimsiz/cari/YAPIM-ASAMASI.json` + listeyi
+// çalışma ağacında boşaltmak → `git status --porcelain` dosyayı göstermiyor (temiz ağaç denetimi geçer), kapı çalışma ağacındaki BOŞ listeyi okuyup geçiyordu; commit'teki
+// liste dolu. Artık varsayılan yolda (deponun listesi) liste commit'ten de (git show HEAD:<yol>) okunur: commit'teki liste boş değilse ya da çalışma ağacındakiyle aynı
+// değilse (JSON olarak; CRLF / LF farkı sayılmaz — ders 27) ret; commit'ten okunamıyorsa da ret (okunamayan boş sayılmaz). `yol` verilirse (testler) yalnız o dosya;
+// `commit: true` + `gitFn` + `kok` (deponun kökü) yalnız testler içindir (tools/release.mjs varsayılanla çağırır).
+function yapimListesi(metin, ad) {
+  let ham;
+  try {
+    ham = JSON.parse(metin);
+  } catch (error) {
+    return { hata: `YAPIM AŞAMASI listesi okunamadı (${ad}: ${error.code || error.message}) — okunamayan liste boş sayılmaz` };
+  }
+  if (!ham || !Array.isArray(ham.kayitlar)) return { hata: `YAPIM AŞAMASI listesinde "kayitlar" dizisi yok (${ad}) — boş sayılmaz` };
+  return { ham };
+}
+export function yapimAsamasiGate(yol = YAPIM_ASAMASI_YOLU, { gitFn = gitIn(ROOT), commit = yol === YAPIM_ASAMASI_YOLU, kok = ROOT } = {}) {
+  let metin;
+  try {
+    metin = readFileSync(yol, "utf8");
+  } catch (error) {
+    return { ok: false, problems: [`YAPIM AŞAMASI listesi okunamadı (${path.basename(yol)}: ${error.code || error.message}) — okunamayan liste boş sayılmaz`], sayi: null, paketler: {} };
+  }
+  const agac = yapimListesi(metin, path.basename(yol));
+  if (agac.hata) return { ok: false, problems: [agac.hata], sayi: null, paketler: {} };
+  const ham = agac.ham;
+  const problems = [];
+  if (commit) {
+    const rel = path.relative(kok, yol).split(path.sep).join("/");
+    // Birleşik tur 7 (DK-B6 DÜŞÜK-3): verilen gitFn ne olursa olsun yerine koyma nesnesi okunmaz (gitIn de aynı bayrakla çağırır).
+    const kayitli = gitFn("--no-replace-objects", "show", `HEAD:${rel}`);
+    const commitListesi = kayitli === null ? { hata: `YAPIM AŞAMASI listesi commit'ten okunamadı (git show HEAD:${rel}) — okunamayan liste boş sayılmaz` } : yapimListesi(kayitli, `HEAD:${rel}`);
+    if (commitListesi.hata) problems.push(commitListesi.hata);
+    else {
+      if (JSON.stringify(commitListesi.ham) !== JSON.stringify(ham)) problems.push(`YAPIM AŞAMASI listesi çalışma ağacında commit'tekinden FARKLI (commit'te ${commitListesi.ham.kayitlar.length}, çalışma ağacında ${ham.kayitlar.length} kayıt) — değişiklik git'ten gizlenmiş olabilir (update-index --skip-worktree / --assume-unchanged); paket commit'in listesiyle denetlenir`);
+      if (commitListesi.ham.kayitlar.length && !ham.kayitlar.length) problems.push(`YAPIM AŞAMASI listesi commit'te boş değil: ${commitListesi.ham.kayitlar.length} kayıt — cari kâhini ↔ program farkları kapanmadan yayın adayı olmaz (S100; ${rel})`);
+    }
+  }
+  const paketler = {};
+  for (const k of ham.kayitlar) paketler[k?.paket ?? "paketsiz"] = (paketler[k?.paket ?? "paketsiz"] || 0) + 1;
+  const n = ham.kayitlar.length;
+  if (n) {
+    const dagilim = Object.entries(paketler).sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)).map(([p, s]) => `${p} ${s}`).join(", ");
+    problems.unshift(`YAPIM AŞAMASI listesi boş değil: ${n} kayıt (paketlere göre: ${dagilim}) — cari kâhini ↔ program farkları kapanmadan yayın adayı olmaz (S100; test/bagimsiz/cari/YAPIM-ASAMASI.json)`);
+  }
+  return { ok: problems.length === 0, problems, sayi: n, paketler };
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

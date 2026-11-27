@@ -1,0 +1,22 @@
+// SINIF 3: VACUUM INTO (yedek) metin birincil anahtarlı tablonun rowid'ini (aynı tarihli satır sırası) korur mu? Silinmiş satırlarla boşluklu tablo.
+import { DatabaseSync } from "node:sqlite";
+import { rmSync } from "node:fs";
+const a = process.argv[2];
+const b = `${a}.vac`;
+rmSync(a, { force: true });
+rmSync(b, { force: true });
+const db = new DatabaseSync(a);
+db.exec("CREATE TABLE t (id TEXT PRIMARY KEY, date TEXT, n INTEGER)");
+for (let i = 0; i < 200; i += 1) db.prepare("INSERT INTO t (id, date, n) VALUES (?, '2026-10-01', ?)").run(`z${(997 * i) % 1009}`, i);
+db.exec("DELETE FROM t WHERE n % 3 = 0");
+const before = db.prepare("SELECT id, rowid AS r FROM t ORDER BY id").all();
+db.exec(`VACUUM INTO '${b}'`);
+db.close();
+const v = new DatabaseSync(b);
+const after = v.prepare("SELECT id, rowid AS r FROM t ORDER BY id").all();
+v.close();
+const same = before.every((row, i) => row.r === after[i].r);
+const order = JSON.stringify(before.slice().sort((x, y) => x.r - y.r).map(x => x.id)) === JSON.stringify(after.slice().sort((x, y) => x.r - y.r).map(x => x.id));
+console.log(JSON.stringify({ rows: before.length, rowidAynı: same, sıraAynı: order, örnek: [before[0], after[0]] }));
+rmSync(a, { force: true });
+rmSync(b, { force: true });

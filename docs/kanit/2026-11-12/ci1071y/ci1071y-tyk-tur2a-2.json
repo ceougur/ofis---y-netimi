@@ -1,0 +1,32 @@
+{
+  "ad": "ci1071y-tyk-tur2a-2",
+  "komut": "npm run test:senaryo-tyk-tur2a-250",
+  "commit": "3cf5fd07c449cbbe62bccf96c87f8658659f0bfa",
+  "dal": "claude/epic-thompson-w0lc2l",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-12T17:53:25.645Z",
+  "sure_sn": 34.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 40,
+    "gecen": 40,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ci1071y/2026-11-12/ci1071y-tyk-tur2a-2.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "5a6545ab68ef2a87bd9a8afc9bc758011d89e400ae39fc9e9e2fbd988a7b233a",
+  "ham_cikti_bayt": 5335
+}

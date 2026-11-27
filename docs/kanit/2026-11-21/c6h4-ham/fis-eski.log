@@ -1,0 +1,44 @@
+=== eski (sıra 1) · başta yük 2.29 4.04 3.62 · 13:38:23
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h4-ag/eski · yük 1.91 3.81 3.56 · TZ UTC
+donma 9305.1 ms · kapsam 2026-06-30
+  once · Bilanço 2026-12-31: Kesin Değil smm-tahmini,kural-farki,kapanmamis-yil,bilgi-amacli · kural-farki ayrıntı 23 satır · bilgi null
+  once · Bilanço 2026-06-30: Kesin Değil smm-tahmini,kural-farki,kapanmamis-yil,bilgi-amacli · kural-farki ayrıntı 23 satır · bilgi null
+  once · Bilanço 2026-07-01: Kesin Değil smm-tahmini,kural-farki,kapanmamis-yil,bilgi-amacli · kural-farki ayrıntı 23 satır · bilgi null
+  once · Gelir Tablosu yıl 2026: Kesin Değil smm-tahmini,kural-farki,bilgi-amacli · kural-farki ayrıntı 2 satır · bilgi null
+  once · Gelir Tablosu 2026 H1: Kesin Değil smm-tahmini,kural-farki,bilgi-amacli · kural-farki ayrıntı 2 satır · bilgi null
+  once · Gelir Tablosu 2025: Kesin Değil smm-tahmini,kural-farki,eksi-stok,bilgi-amacli · kural-farki ayrıntı 2 satır · bilgi null
+Yönetim: 59800 madde · 14 satır · pasif false  · dışlanan 7
+fiş 200 1
+Yönetim fişten sonra: 0 satır · rule-diff-nothing
+  sonra · Bilanço 2026-12-31: Kesin Değil tamamlanmamis-acilis,smm-tahmini,kural-farki,kapanmamis-yil,bilgi-amacli · kural-farki ayrıntı 23 satır · bilgi null
+  sonra · Bilanço 2026-06-30: Kesin Değil smm-tahmini,kural-farki,kapanmamis-yil,bilgi-amacli · kural-farki ayrıntı 23 satır · bilgi null
+  sonra · Bilanço 2026-07-01: Kesin Değil tamamlanmamis-acilis,smm-tahmini,kural-farki,kapanmamis-yil,bilgi-amacli · kural-farki ayrıntı 23 satır · bilgi null
+  sonra · Gelir Tablosu yıl 2026: Kesin Değil smm-tahmini,kural-farki,bilgi-amacli · kural-farki ayrıntı 2 satır · bilgi null
+  sonra · Gelir Tablosu 2026 H1: Kesin Değil smm-tahmini,kural-farki,bilgi-amacli · kural-farki ayrıntı 2 satır · bilgi null
+  sonra · Gelir Tablosu 2025: Kesin Değil smm-tahmini,kural-farki,eksi-stok,bilgi-amacli · kural-farki ayrıntı 2 satır · bilgi null
+  süre (fişten sonra) Bilanço 2026-12-31: ilk 5531.7 · en iyi 5512.6 · ortanca 5740.9 · en kötü 6104.6 ms · olay döngüsü en çok 98.1 ms (n=5)
+  süre (fişten sonra) Gelir Tablosu yıl 2026: ilk 3500.6 · en iyi 3204.4 · ortanca 3360.9 · en kötü 3574.4 ms · olay döngüsü en çok 10.6 ms (n=5)
+yük (sonda) 1.21 2.85 3.23
+çıkış 0 · sonda yük 1.21 2.85 3.23 · 13:41:12
+=== eski (sıra 4) · başta yük 1.10 1.72 2.59 · 13:47:19
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h4-ag/eski · yük 1.07 1.66 2.54 · TZ UTC
+donma 9888.9 ms · kapsam 2026-06-30
+  once · Bilanço 2026-12-31: Kesin Değil smm-tahmini,kural-farki,kapanmamis-yil,bilgi-amacli · kural-farki ayrıntı 23 satır · bilgi null
+  once · Bilanço 2026-06-30: Kesin Değil smm-tahmini,kural-farki,kapanmamis-yil,bilgi-amacli · kural-farki ayrıntı 23 satır · bilgi null
+  once · Bilanço 2026-07-01: Kesin Değil smm-tahmini,kural-farki,kapanmamis-yil,bilgi-amacli · kural-farki ayrıntı 23 satır · bilgi null
+  once · Gelir Tablosu yıl 2026: Kesin Değil smm-tahmini,kural-farki,bilgi-amacli · kural-farki ayrıntı 2 satır · bilgi null
+  once · Gelir Tablosu 2026 H1: Kesin Değil smm-tahmini,kural-farki,bilgi-amacli · kural-farki ayrıntı 2 satır · bilgi null
+  once · Gelir Tablosu 2025: Kesin Değil smm-tahmini,kural-farki,eksi-stok,bilgi-amacli · kural-farki ayrıntı 2 satır · bilgi null
+Yönetim: 59800 madde · 14 satır · pasif false  · dışlanan 7
+fiş 200 1
+Yönetim fişten sonra: 0 satır · rule-diff-nothing
+  sonra · Bilanço 2026-12-31: Kesin Değil tamamlanmamis-acilis,smm-tahmini,kural-farki,kapanmamis-yil,bilgi-amacli · kural-farki ayrıntı 23 satır · bilgi null
+  sonra · Bilanço 2026-06-30: Kesin Değil smm-tahmini,kural-farki,kapanmamis-yil,bilgi-amacli · kural-farki ayrıntı 23 satır · bilgi null
+  sonra · Bilanço 2026-07-01: Kesin Değil tamamlanmamis-acilis,smm-tahmini,kural-farki,kapanmamis-yil,bilgi-amacli · kural-farki ayrıntı 23 satır · bilgi null
+  sonra · Gelir Tablosu yıl 2026: Kesin Değil smm-tahmini,kural-farki,bilgi-amacli · kural-farki ayrıntı 2 satır · bilgi null
+  sonra · Gelir Tablosu 2026 H1: Kesin Değil smm-tahmini,kural-farki,bilgi-amacli · kural-farki ayrıntı 2 satır · bilgi null
+  sonra · Gelir Tablosu 2025: Kesin Değil smm-tahmini,kural-farki,eksi-stok,bilgi-amacli · kural-farki ayrıntı 2 satır · bilgi null
+  süre (fişten sonra) Bilanço 2026-12-31: ilk 5601.4 · en iyi 5319 · ortanca 5585.2 · en kötü 5789.9 ms · olay döngüsü en çok 140.8 ms (n=5)
+  süre (fişten sonra) Gelir Tablosu yıl 2026: ilk 3192.7 · en iyi 3201.8 · ortanca 3263.8 · en kötü 3373 ms · olay döngüsü en çok 10.1 ms (n=5)
+yük (sonda) 1.20 1.50 2.35
+çıkış 0 · sonda yük 1.20 1.50 2.35 · 13:50:12

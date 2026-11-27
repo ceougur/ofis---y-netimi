@@ -1,0 +1,46 @@
+  s103-s79-olagan-bag-cari [Europe/Istanbul] OLAY #21 duzenle (api_yok) → P: taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+  s103-s79-olagan-bag-cari [Europe/Istanbul] OLAY #25 duzenle (api_yok) → P: taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+  s103-s79-olagan-bag-cari [UTC] OLAY #21 duzenle (api_yok) → P: taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+  s103-s79-olagan-bag-cari [UTC] OLAY #25 duzenle (api_yok) → P: taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+  s14-kdv-mahsup-360 [Europe/Istanbul] OLAY #18 gecikme_zammi (api_yok) → P: gecikme zammı (V-03) tek başına girilemiyor: Vergi Ödemesi'nde vergi tutarı sıfırdan büyük olmalı (gecikme zammı yalnız vergiyle birlikte)
+  s14-kdv-mahsup-360 [UTC] OLAY #18 gecikme_zammi (api_yok) → P: gecikme zammı (V-03) tek başına girilemiyor: Vergi Ödemesi'nde vergi tutarı sıfırdan büyük olmalı (gecikme zammı yalnız vergiyle birlikte)
+  s81-s44-geri-yuklenen-kasa-taksit-normal-cari [Europe/Istanbul] OLAY #31 duzenle (api_yok) → P: taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+  s81-s44-geri-yuklenen-kasa-taksit-normal-cari [Europe/Istanbul] OLAY #32 duzenle (api_yok) → P: taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+  s81-s44-geri-yuklenen-kasa-taksit-normal-cari [Europe/Istanbul] OLAY #36 duzenle (api_yok) → P: taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+  s81-s44-geri-yuklenen-kasa-taksit-normal-cari [UTC] OLAY #31 duzenle (api_yok) → P: taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+  s81-s44-geri-yuklenen-kasa-taksit-normal-cari [UTC] OLAY #32 duzenle (api_yok) → P: taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+  s81-s44-geri-yuklenen-kasa-taksit-normal-cari [UTC] OLAY #36 duzenle (api_yok) → P: taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+  s82-s45-bagli-geri-yuklenen-kayit-cari [Europe/Istanbul] OLAY #30 duzenle (api_yok) → P: taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+  s82-s45-bagli-geri-yuklenen-kayit-cari [Europe/Istanbul] RED #36 duzenle: kâhin kabul · program ekran plan-entry-no-party → P
+  s82-s45-bagli-geri-yuklenen-kayit-cari [UTC] OLAY #30 duzenle (api_yok) → P: taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+  s82-s45-bagli-geri-yuklenen-kayit-cari [UTC] RED #36 duzenle: kâhin kabul · program ekran plan-entry-no-party → P
+  s87-s51-geri-alinan-acilis [Europe/Istanbul] RED #21 acilis_onayla: kâhin kabul · program ekran opening-review-missing → OLCULEMEDI
+  s87-s51-geri-alinan-acilis [Europe/Istanbul] RED #22 acilis_onayla: kâhin kabul · program ekran opening-review-missing → OLCULEMEDI
+  s87-s51-geri-alinan-acilis [UTC] RED #21 acilis_onayla: kâhin kabul · program ekran opening-review-missing → OLCULEMEDI
+  s87-s51-geri-alinan-acilis [UTC] RED #22 acilis_onayla: kâhin kabul · program ekran opening-review-missing → OLCULEMEDI
+  s91-b5-kg5-yukleme-yerel-gunu [Europe/Istanbul] g1b gecikmis:C1 program 0 · kâhin 500 · bugün — → P
+  s91-b5-kg5-yukleme-yerel-gunu [Europe/Istanbul] kt1 kart:TE1 program Açık 2026-04-01 700/700 · kâhin Açık 2026-04-01 1000/500; 2026-05-01 1000/1000 · bugün — → P
+  s91-b5-kg5-yukleme-yerel-gunu [Europe/Istanbul] mz2 ana:120 program 1200 · kâhin 3200 · bugün 3200 → P
+  s91-b5-kg5-yukleme-yerel-gunu [Europe/Istanbul] mz2 ana:519 program -1200 · kâhin -3200 · bugün -3200 → P
+  s91-b5-kg5-yukleme-yerel-gunu [Europe/Istanbul] mz2 cari:C1 program 0 · kâhin 2000 · bugün 2000 → P
+  s91-b5-kg5-yukleme-yerel-gunu [Europe/Istanbul] son ana:120 program 700 · kâhin 2700 · bugün 2700 → P
+  s91-b5-kg5-yukleme-yerel-gunu [Europe/Istanbul] son ana:519 program -1200 · kâhin -3200 · bugün -3200 → P
+  s91-b5-kg5-yukleme-yerel-gunu [Europe/Istanbul] son cari:C1 program -500 · kâhin 1500 · bugün 1500 → P
+  s91-b5-kg5-yukleme-yerel-gunu [UTC] g1b gecikmis:C1 program 0 · kâhin 500 · bugün — → P
+  s91-b5-kg5-yukleme-yerel-gunu [UTC] kt1 kart:TE1 program Açık 2026-04-01 700/700 · kâhin Açık 2026-04-01 1000/500; 2026-05-01 1000/1000 · bugün — → P
+  s91-b5-kg5-yukleme-yerel-gunu [UTC] mz1 ana:120 program 1200 · kâhin 500 · bugün 500 → R
+  s91-b5-kg5-yukleme-yerel-gunu [UTC] mz1 ana:519 program -1200 · kâhin -500 · bugün -500 → R
+  s91-b5-kg5-yukleme-yerel-gunu [UTC] mz2 ana:120 program 1200 · kâhin 3200 · bugün 3200 → P
+  s91-b5-kg5-yukleme-yerel-gunu [UTC] mz2 ana:519 program -1200 · kâhin -3200 · bugün -3200 → P
+  s91-b5-kg5-yukleme-yerel-gunu [UTC] mz2 cari:C1 program 0 · kâhin 2000 · bugün 2000 → P
+  s91-b5-kg5-yukleme-yerel-gunu [UTC] son ana:120 program 700 · kâhin 2700 · bugün 2700 → P
+  s91-b5-kg5-yukleme-yerel-gunu [UTC] son ana:519 program -1200 · kâhin -3200 · bugün -3200 → P
+  s91-b5-kg5-yukleme-yerel-gunu [UTC] son cari:C1 program -500 · kâhin 1500 · bugün 1500 → P
+  s92-b11-kasa-acilis-oncesi-duzeltme [Europe/Istanbul] RED #4 duzenle: kâhin KASA_ACILIS_ONCE · program kabul → OLCULEMEDI
+  s92-b11-kasa-acilis-oncesi-duzeltme [Europe/Istanbul] RED #6 duzenle: kâhin KASA_ACILIS_ONCE · program kabul → OLCULEMEDI
+  s92-b11-kasa-acilis-oncesi-duzeltme [Europe/Istanbul] RED #9 duzenle: kâhin KASA_ACILIS_ONCE · program kabul → OLCULEMEDI
+  s92-b11-kasa-acilis-oncesi-duzeltme [UTC] RED #4 duzenle: kâhin KASA_ACILIS_ONCE · program kabul → OLCULEMEDI
+  s92-b11-kasa-acilis-oncesi-duzeltme [UTC] RED #6 duzenle: kâhin KASA_ACILIS_ONCE · program kabul → OLCULEMEDI
+  s92-b11-kasa-acilis-oncesi-duzeltme [UTC] RED #9 duzenle: kâhin KASA_ACILIS_ONCE · program kabul → OLCULEMEDI
+  s94-s54-ayni-duzeltmede-bag-cari [Europe/Istanbul] OLAY #13 duzenle (api_yok) → P: taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)
+  s94-s54-ayni-duzeltmede-bag-cari [UTC] OLAY #13 duzenle (api_yok) → P: taksit kartı bağı programda tek kayıt düzeltmesi olarak yok (S44 = A / S79 = A — bağ düzeltmesi kabul)

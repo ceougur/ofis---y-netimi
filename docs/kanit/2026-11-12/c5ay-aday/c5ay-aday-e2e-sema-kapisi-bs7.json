@@ -1,0 +1,32 @@
+{
+  "ad": "c5ay-aday-e2e-sema-kapisi-bs7",
+  "komut": "npm run test:sema-kapisi-bs7",
+  "commit": "ea04863c9d87c3003baa9076a9d828b492ddc465",
+  "dal": "sinama-c5a-aday2",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-12T18:57:59.114Z",
+  "sure_sn": 4.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 12,
+    "gecen": 12,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../c5ay-aday-kanit/2026-11-12/c5ay-aday-e2e-sema-kapisi-bs7.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-ya-ag",
+  "ham_cikti_sha256": "4c73d16dc9d71232c46afbc0ad09c9804d59a2c4d140d5f1bf2f04529c346751",
+  "ham_cikti_bayt": 1271
+}

@@ -1,0 +1,21 @@
+#!/bin/bash
+# Ana oturum: BİRLEŞİK TUR 7 HIZ KABUL (ders 53 (a)) — özel kilitle çağrılır (flock -x -n olcum.lock). Taban (kendi kopyam) ↔ ADAY (sınama ağacı), iki kip, iki tur,
+# her ölçüm taze veri kopyasında; ölçüm başında yük > 2 ise satır GEÇERSİZ. Ölçüm betiği birleşik tur 7 ajanının betiğinin kopyası (okundu; ana oturum KENDİ koşuyor).
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+export HUKUK_LICENSE_URL=http://127.0.0.1:9
+mkdir -p $S/b7y-hiz || exit 1
+cp $S/b7-is/betik/olcum-b7.mjs $S/b7y-hiz/olcum-b7.mjs || exit 1
+OUT=$S/b7y-hiz/hiz.txt
+echo "HIZ KABUL birleşik tur 7 (ana oturum) · nproc $(nproc) · başta $(cat /proc/loadavg) · $(date -u +%H:%M:%S) · aday $(git -C $S/d2t3-ya-ag rev-parse --short HEAD)" > $OUT
+for tur in 1 2; do
+  for kip in acilissiz acilisli; do
+    for kod in taban:$S/b7y-eski aday:$S/d2t3-ya-ag; do
+      rm -rf /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-hiz-kopya && cp -a $S/ana-kabul/temiz-100k $S/b7y-hiz-kopya || exit 1
+      sync; l0=$(cut -d' ' -f1 /proc/loadavg)
+      echo "=== tur $tur · $kip · ${kod%%:*} · başta $(cat /proc/loadavg) $(awk -v l=$l0 'BEGIN{print (l>2)?"· GEÇERSİZ (yük > 2)":""}')" >> $OUT
+      timeout -k 5 1500 node --disable-warning=ExperimentalWarning $S/b7y-hiz/olcum-b7.mjs ${kod#*:} $S/b7y-hiz-kopya $kip 5 >> $OUT 2>&1; echo "çıkış $? · sonda $(cat /proc/loadavg)" >> $OUT
+    done
+  done
+done
+rm -rf /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-hiz-kopya
+echo "bitti $(date -u +%H:%M:%S)" >> $OUT

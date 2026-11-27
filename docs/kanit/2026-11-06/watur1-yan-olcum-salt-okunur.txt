@@ -1,0 +1,8 @@
+[A etkinleştirilmemiş] lisans: none writable=false
+[A etkinleştirilmemiş] PUT /api/admin/office → 200  ()
+[A etkinleştirilmemiş] GET app-webhook #1 → 200 ready=true belirteç VAR; 001 satırı önce: YOK, sonra: VAR (updated_at 2026-11-06T10:43:00.298Z)
+[A etkinleştirilmemiş] GET app-webhook #2 → 200; satır aynı: true; değer aynı: true
+[B süresi dolmuş (31 gün)] lisans: verify writable=false
+[B süresi dolmuş (31 gün)] PUT /api/admin/office → 200  ()
+[B süresi dolmuş (31 gün)] GET app-webhook #1 → 200 ready=true belirteç VAR; 001 satırı önce: YOK, sonra: VAR (updated_at 2026-11-06T10:43:02.012Z)
+[B süresi dolmuş (31 gün)] GET app-webhook #2 → 200; satır aynı: true; değer aynı: true

@@ -1,0 +1,20 @@
+--- tools/kapi-olcum.mjs	2026-11-06 14:28:30.263071766 +0000
++++ /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t4-betik/kapi-olcum-yama.mjs	2026-11-06 14:46:47.735137003 +0000
+@@ -24,7 +24,7 @@
+ import { DatabaseSync } from "node:sqlite";
+ import { fileURLToPath, pathToFileURL } from "node:url";
+ 
+-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
++const ROOT = "/home/user/ofis---y-netimi/.claude/worktrees/agent-a8eba3f64140fc5f1";
+ const argv = process.argv.slice(2);
+ const opt = (name, fallback) => {
+   const at = argv.indexOf(`--${name}`);
+@@ -78,6 +78,8 @@
+     analysisWorker: false,
+     now: NOW,
+     moneyStrict: false,
++    legacyCasePayments: true,
++    legacyTableTransfer: true,
+     ...extra,
+   };
+ }

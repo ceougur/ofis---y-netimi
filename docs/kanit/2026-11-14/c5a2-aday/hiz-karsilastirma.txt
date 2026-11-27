@@ -1,0 +1,54 @@
+##### kilitsiz
+1 dosya · yol | taban en iyi | aday en iyi | oran | taban ortanca (ort.) | aday ortanca (ort.) | oran | olay döngüsü en çok taban / aday | hüküm
+AÇILIŞ (göç dahil) | 16001 | 18047 | 1.13 | 16021 | 18399 | 1.15 | 0 / 0 | KÖTÜ
+Mizan + mutabakat (GET ledger) | 2215 | 2088 | 0.94 | 2428 | 2488 | 1.02 | 2489 / 2762 | tamam
+Yevmiye Defteri (rapor) | 1595 | 1409 | 0.88 | 1675 | 1707 | 1.02 | 1686 / 1804 | tamam
+Hesap Planı Mizanı (rapor) | 2155 | 2150 | 1.00 | 2371 | 2382 | 1.00 | 0 / 0 | tamam
+Alt Hesap Mizanı (rapor) | 313 | 314 | 1.00 | 354 | 356 | 1.00 | 0 / 349 | tamam
+Defter Mutabakatı (rapor) | 8163 | 8050 | 0.99 | 8450 | 8564 | 1.01 | 0 / 0 | tamam
+Mutabakat Testi (GET ledger/integrity) | 5113 | 5030 | 0.98 | 5340 | 5434 | 1.02 | 0 / 5419 | tamam
+Yevmiye Defteri bütün zaman (rapor) | 2121 | 2075 | 0.98 | 2236 | 2206 | 0.99 | 2223 / 0 | tamam
+YAZIM Borç Yaz | 223 | 202 | 0.91 | 238 | 234 | 0.98 | 256 / 0 | tamam
+YAZIM evrak (alınan çek, carili) | 41 | 36 | 0.88 | 42 | 41 | 0.97 | 42 / 39 | tamam
+YAZIM fatura (satış, açık hesap) | 145 | 148 | 1.02 | 148 | 152 | 1.02 | 0 / 0 | tamam
+YAZIM fatura iptali | 76 | 65 | 0.86 | 79 | 82 | 1.03 | 0 / 80 | tamam
+cari kartı | 179 | 155 | 0.86 | 183 | 191 | 1.04 | 0 / 186 | tamam
+Açılış Olabilir listesi (sayfasız) | 51 | 51 | 0.99 | 56 | 57 | 1.01 | 56 / 61 | tamam
+Açılış Olabilir listesi sayfalı (yeni; tab | 55 | 79 | 1.43 | 59 | 91 | 1.55 | 0 / 0 | KÖTÜ
+Zil sayısı (yeni; tabanda tam liste) | 52 | 25 | 0.48 | 57 | 30 | 0.53 | 0 / 34 | tamam
+Kural Farkı Düzeltme ön izlemesi (yeni; ta | 2 | 1 | 0.87 | 2 | 2 | 1.30 | 0 / 0 | küçük (<20 ms) DURUM {200, 404}
+Açılış Eşleştirme GET (yeni; tabanda 404) | 1 | 1421 | 1421.40 | 1 | 1499 | 1199.52 | 0 / 0 | KÖTÜ DURUM {200, 404}
+Açılış Eşleştirme ön izleme (yeni; tabanda | 1 | 1417 | 1417.00 | 2 | 1500 | 999.83 | 0 / 1539 | KÖTÜ DURUM {200, 404}
+KÖTÜLEŞEN YOL SAYISI 4
+##### kilitli
+1 dosya · yol | taban en iyi | aday en iyi | oran | taban ortanca (ort.) | aday ortanca (ort.) | oran | olay döngüsü en çok taban / aday | hüküm
+AÇILIŞ (göç dahil) | 18091 | 17041 | 0.94 | 18406 | 17967 | 0.98 | 0 / 0 | tamam
+DONMA (bekleyen koşu) | 6455 | 6329 | 0.98 | 6637 | 6366 | 0.96 | 0 / 0 | tamam
+Mizan + mutabakat (GET ledger) | 2267 | 2150 | 0.95 | 2363 | 2402 | 1.02 | 2879 / 2882 | tamam
+Yevmiye Defteri (rapor) | 1614 | 1672 | 1.04 | 1778 | 1808 | 1.02 | 0 / 0 | tamam
+Hesap Planı Mizanı (rapor) | 2136 | 2148 | 1.01 | 2335 | 2371 | 1.02 | 0 / 0 | tamam
+Alt Hesap Mizanı (rapor) | 310 | 312 | 1.00 | 347 | 362 | 1.04 | 365 / 358 | tamam
+Defter Mutabakatı (rapor) | 11818 | 11989 | 1.01 | 12453 | 13028 | 1.05 | 0 / 0 | tamam
+Mutabakat Testi (GET ledger/integrity) | 7186 | 7113 | 0.99 | 7428 | 7603 | 1.02 | 0 / 7785 | tamam
+Yevmiye Defteri bütün zaman (rapor) | 3106 | 3143 | 1.01 | 3313 | 3243 | 0.98 | 3567 / 0 | tamam
+YAZIM Borç Yaz | 188 | 203 | 1.08 | 225 | 232 | 1.03 | 0 / 0 | tamam
+YAZIM evrak (alınan çek, carili) | 36 | 38 | 1.06 | 43 | 44 | 1.01 | 43 / 46 | tamam
+YAZIM fatura (satış, açık hesap) | 130 | 133 | 1.02 | 149 | 154 | 1.03 | 0 / 0 | tamam
+YAZIM fatura iptali | 66 | 70 | 1.06 | 78 | 81 | 1.04 | 0 / 0 | tamam
+cari kartı | 147 | 150 | 1.02 | 177 | 173 | 0.98 | 0 / 0 | tamam
+Açılış Olabilir listesi (sayfasız) | 50 | 50 | 1.01 | 56 | 55 | 0.99 | 0 / 58 | tamam
+Açılış Olabilir listesi sayfalı (yeni; tab | 52 | 83 | 1.59 | 59 | 91 | 1.55 | 0 / 0 | KÖTÜ
+Zil sayısı (yeni; tabanda tam liste) | 50 | 27 | 0.53 | 56 | 29 | 0.53 | 0 / 0 | tamam
+Kural Farkı Düzeltme ön izlemesi (yeni; ta | 1 | 3312 | 2760.33 | 2 | 3687 | 2457.83 | 0 / 0 | KÖTÜ DURUM {200, 404}
+Açılış Eşleştirme GET (yeni; tabanda 404) | 1 | 2554 | 2837.44 | 1 | 2701 | 2455.41 | 0 / 2905 | KÖTÜ DURUM {200, 404}
+Açılış Eşleştirme ön izleme (yeni; tabanda | 1 | 2511 | 2510.90 | 1 | 2702 | 1929.93 | 0 / 2722 | KÖTÜ DURUM {409, 404}
+KÖTÜLEŞEN YOL SAYISI 4
+##### açılış ayrımı
+AÇILIŞ AYRIMI (ana oturum) · kilitsiz veri · 04:14:57 · taban 40d9dd18 · aday c27df7b7 · başta 1.30 1.14 1.12
+  taban: ilk açılış 18010 ms (şema 50) · ikinci 17691 ms · üçüncü 18055 ms · yük 1.52 1.23 1.15
+  aday: ilk açılış 16304 ms (şema 50) · ikinci 16344 ms · üçüncü 15657 ms · yük 1.68 1.31 1.18
+  taban: ilk açılış 18718 ms (şema 50) · ikinci 17345 ms · üçüncü 18566 ms · yük 1.63 1.38 1.21
+  aday: ilk açılış 17370 ms (şema 50) · ikinci 16119 ms · üçüncü 16326 ms · yük 1.27 1.32 1.20
+  taban: ilk açılış 16123 ms (şema 50) · ikinci 15601 ms · üçüncü 15260 ms · yük 1.12 1.27 1.18
+  aday: ilk açılış 17380 ms (şema 50) · ikinci 17514 ms · üçüncü 17594 ms · yük 1.10 1.23 1.18
+bitti 04:20:09

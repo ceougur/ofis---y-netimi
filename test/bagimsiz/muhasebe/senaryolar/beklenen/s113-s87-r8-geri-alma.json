@@ -1,0 +1,124 @@
+{
+ "ad": "s113-s87-r8-geri-alma",
+ "dallar": {
+  "A": {
+   "acilis_olabilir": [],
+   "degismezler": {
+    "canli": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
+     "kdv_mahsup": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": [],
+     "s127_tek_yazim": [],
+     "tahmini_aylik_toplam": [],
+     "tyk": []
+    }
+   },
+   "devirler": [],
+   "raporlar": {
+    "mu": [],
+    "mz0": {
+     "ana": {
+      "100": {
+       "alacak": 0,
+       "bakiye": 2000,
+       "borc": 2000,
+       "devir": 0
+      },
+      "649": {
+       "alacak": 2000,
+       "bakiye": -2000,
+       "borc": 0,
+       "devir": 0
+      }
+     },
+     "bas": "2026-01-01",
+     "satirlar": {
+      "100": {
+       "alacak": 0,
+       "bakiye": 2000,
+       "borc": 2000,
+       "devir": 0
+      },
+      "649.90": {
+       "alacak": 2000,
+       "bakiye": -2000,
+       "borc": 0,
+       "devir": 0
+      }
+     },
+     "son": "2026-01-31",
+     "toplam": {
+      "alacak": 2000,
+      "bakiye": 0,
+      "borc": 2000,
+      "devir": 0
+     }
+    },
+    "mz1": {
+     "ana": {
+      "100": {
+       "alacak": 0,
+       "bakiye": 12000,
+       "borc": 12000,
+       "devir": 0
+      },
+      "519": {
+       "alacak": 10000,
+       "bakiye": -10000,
+       "borc": 0,
+       "devir": 0
+      },
+      "649": {
+       "alacak": 2000,
+       "bakiye": -2000,
+       "borc": 0,
+       "devir": 0
+      }
+     },
+     "bas": "2026-01-01",
+     "satirlar": {
+      "100": {
+       "alacak": 0,
+       "bakiye": 12000,
+       "borc": 12000,
+       "devir": 0
+      },
+      "519": {
+       "alacak": 10000,
+       "bakiye": -10000,
+       "borc": 0,
+       "devir": 0
+      },
+      "649.90": {
+       "alacak": 2000,
+       "bakiye": -2000,
+       "borc": 0,
+       "devir": 0
+      }
+     },
+     "son": "2026-01-31",
+     "toplam": {
+      "alacak": 12000,
+      "bakiye": 0,
+      "borc": 12000,
+      "devir": 0
+     }
+    }
+   },
+   "redler": [
+    {
+     "kod": "KASA_ACILIS_SONRA",
+     "neden": "geri alınan Kasa açılışından önce Kasa hareketi var (S87 A)",
+     "olay": 4,
+     "tur": "geri_yukle"
+    }
+   ]
+  }
+ },
+ "dil": "muhasebe-kahin/1"
+}

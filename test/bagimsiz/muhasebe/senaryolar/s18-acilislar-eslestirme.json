@@ -1,0 +1,248 @@
+{
+ "aciklama": "Bütün modül açılışları G'ye (evrak 602/770'e değil); açılış eşleştirme fişi G'yi kapatır, ters bakiyeye geçiremez.",
+ "ad": "s18-acilislar-eslestirme",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "bil/aktif/I.A": 580000,
+   "bil/aktif/I.C": 175000,
+   "bil/aktif/I.E": 16667,
+   "bil/aktif_toplam": 771667,
+   "bil/kesin_degil": [
+    "SATISLARIN_MALIYETI_TAHMINI"
+   ],
+   "bil/pasif/III.A": 230000,
+   "bil/pasif/III.B": 80000,
+   "bil/pasif/V.A": 400000,
+   "bil/pasif/V.D": 61667,
+   "bil0/detay/I.E/153 (Tahmini Değerleme)": 16667,
+   "bil0/pasif/V.G": 461667,
+   "redler": [
+    "KASA_ACILIS_TEKRAR",
+    "ESLESTIRME_TERS",
+    "ESLESTIRME_TERS"
+   ]
+  }
+ },
+ "kapsam": [
+  "M-01",
+  "M-02",
+  "M-03",
+  "M-04",
+  "M-05",
+  "M-06",
+  "M-07",
+  "M-08",
+  "M-09",
+  "M-11",
+  "G-1"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "tarih": "2026-01-01",
+   "tur": "kasa_acilis",
+   "tutar": 100000
+  },
+  {
+   "banka": "B1",
+   "tarih": "2026-01-01",
+   "tur": "banka_acilis",
+   "tutar": 500000
+  },
+  {
+   "kart": "KK1",
+   "tarih": "2026-01-01",
+   "tur": "kart_acilis",
+   "tutar": 30000
+  },
+  {
+   "kredi": "KR1",
+   "tarih": "2026-01-01",
+   "tur": "kredi_acilis",
+   "tutar": 200000
+  },
+  {
+   "cari": "C1",
+   "tarih": "2026-01-01",
+   "tur": "cari_acilis",
+   "tutar": 150000,
+   "yon": "borc"
+  },
+  {
+   "cari": "T1",
+   "tarih": "2026-01-01",
+   "tur": "cari_acilis",
+   "tutar": 80000,
+   "yon": "alacak"
+  },
+  {
+   "kalemler": [
+    {
+     "birim_maliyet": "10000/3",
+     "miktar": 2,
+     "urun": "U1"
+    },
+    {
+     "birim_maliyet": 2500,
+     "miktar": 4,
+     "urun": "U2"
+    }
+   ],
+   "tarih": "2026-01-01",
+   "tur": "stok_acilis"
+  },
+  {
+   "cari": "C1",
+   "durum": "portfoy",
+   "evrak": "CK9",
+   "evrak_turu": "cek",
+   "tarih": "2026-01-01",
+   "tur": "evrak_acilis",
+   "tutar": 40000,
+   "yon": "alinan"
+  },
+  {
+   "banka": "B1",
+   "cari": "C1",
+   "durum": "tahsilde",
+   "evrak": "SN9",
+   "evrak_turu": "senet",
+   "tarih": "2026-01-01",
+   "tur": "evrak_acilis",
+   "tutar": 25000,
+   "yon": "alinan"
+  },
+  {
+   "banka": "B1",
+   "cari": "T1",
+   "evrak": "VC9",
+   "evrak_turu": "cek",
+   "tarih": "2026-01-01",
+   "tur": "evrak_acilis",
+   "tutar": 60000,
+   "yon": "verilen"
+  },
+  {
+   "tarih": "2026-01-01",
+   "tur": "kasa_acilis",
+   "tutar": 1
+  },
+  {
+   "ad": "bil0",
+   "rapor": "bilanco",
+   "tarih": "2026-01-01",
+   "tur": "rapor"
+  },
+  {
+   "satirlar": [
+    {
+     "alacak": 500000,
+     "hesap": "500"
+    }
+   ],
+   "tarih": "2026-01-01",
+   "tur": "acilis_eslestir"
+  },
+  {
+   "satirlar": [
+    {
+     "alacak": 400000,
+     "hesap": "500"
+    },
+    {
+     "alacak": 61667,
+     "hesap": "570"
+    }
+   ],
+   "tarih": "2026-01-01",
+   "tur": "acilis_eslestir"
+  },
+  {
+   "satirlar": [
+    {
+     "alacak": 1,
+     "hesap": "500"
+    }
+   ],
+   "tarih": "2026-01-01",
+   "tur": "acilis_eslestir"
+  },
+  {
+   "ad": "bil",
+   "rapor": "bilanco",
+   "tarih": "2026-01-01",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

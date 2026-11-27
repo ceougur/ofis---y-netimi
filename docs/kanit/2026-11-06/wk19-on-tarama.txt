@@ -1,0 +1,17 @@
+senaryo 374
+atlandi_gec_teslim 1
+    ('S35-01-talep-aninda-kapanir-ayni-donem-yeni-gonderim-gider-meta-bekletti-gec-teslim', 'T3/D', 'silme_talebi')
+atlandi_silinmis_medyali 6
+    ('S30-01-talep-duraklatildi-meta-bekletti-zincir-gonderilmez-belirsiz-iz-eler', 'T1/E', 'silme_talebi')
+    ('S30-01-talep-duraklatildi-meta-bekletti-zincir-gonderilmez-belirsiz-iz-eler', 'T3/D', 'silme_talebi')
+    ('S35-01-talep-aninda-kapanir-ayni-donem-yeni-gonderim-gider-meta-bekletti-gec-teslim', 'T3/D', 'silme_talebi')
+    ('S42-03-gonderiliyor-talep-yeniden-gonderim-gerektiren-yanit-atlandi-kesin-olumsuz-basarisiz', 'T1/G', 'silme_talebi')
+    ('S42-03-gonderiliyor-talep-yeniden-gonderim-gerektiren-yanit-atlandi-kesin-olumsuz-basarisiz', 'T2/M', 'silme_talebi')
+    ('S42-03-gonderiliyor-talep-yeniden-gonderim-gerektiren-yanit-atlandi-kesin-olumsuz-basarisiz', 'T5/S', 'silme_talebi')
+kvkk_salt_okunurda 1
+    S30-02-talep-sinir-lisans-gonderilmez-belirsiz-hatirlatma-ayni-gun-elenir-ertesi-gun-gider
+ortak_waba_senaryo 2
+    J1-03-silinmis-sirket-gec-bildirim
+    SIRKET-01-ayni-waba
+yeniden_dene_silinmis_telsiz 1
+    ('S37-01-talep-sonrasi-hatirlatma-yeniden-dene-ve-yine-de-gonder-karttan-gider', 'T1/RT', 'hatirlatma', 'Başarısız')

@@ -1,0 +1,39 @@
+s43-s4-mahsuptan-sonra-ters [TZ=UTC]: 17 olay · yapıldı 13 · red 0 · api_yok 1 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 50 ms
+    s43-s4-mahsuptan-sonra-ters [UTC] öz denetim TAMAM · AYNI 18 · U 8 · P 8 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · red farkı 0 · adım farkı 1 (sınıfsız 0)  (2 sn + 0 sn)
+s53-kasa-acilis-duzelt-fatura-sil-geri-yukle [TZ=UTC]: 32 olay · yapıldı 21 · red 2 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 30 ms
+    s53-kasa-acilis-duzelt-fatura-sil-geri-yukle [UTC] öz denetim TAMAM · AYNI 23 · U 6 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s57-r4-kart-kucultme [TZ=UTC]: 35 olay · yapıldı 24 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 37 ms
+    s57-r4-kart-kucultme [UTC] öz denetim TAMAM · AYNI 14 · U 9 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s58-r9-kartli-fatura-sil-iptal [TZ=UTC]: 30 olay · yapıldı 17 · red 2 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 37 ms
+    s58-r9-kartli-fatura-sil-iptal [UTC] öz denetim TAMAM · AYNI 15 · U 4 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+rastgele-2 [TZ=UTC]: 1123 olay · yapıldı 1108 · red 0 · api_yok 4 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 105 ms
+    rastgele-2 [UTC] öz denetim TAMAM · AYNI 198 · U 78 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · red farkı 0 · adım farkı 16 (sınıfsız 0)  (46 sn + 8 sn)
+
+AYNI 268 · U 105 · P 12 · K 1 · R 1 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · red farkı 0 · uygulanamayan olay 0 · sınıfsız adım farkı 0 · değişmez 0 · öz denetim bozuk 0 · koşu hatası 0
+Ölçüm (olay döngüsü en çok, ms): rastgele-2 [UTC] 105 (koşu 46 sn; GET ledger ort 11 / en çok 51 ms) · s43-s4-mahsuptan-sonra-ters [UTC] 50 (koşu 2 sn; GET ledger ort 4 / en çok 7 ms) · s57-r4-kart-kucultme [UTC] 37 (koşu 2 sn; GET ledger ort 5 / en çok 13 ms) · s58-r9-kartli-fatura-sil-iptal [UTC] 37 (koşu 2 sn; GET ledger ort 4 / en çok 10 ms) · s53-kasa-acilis-duzelt-fatura-sil-geri-yukle [UTC] 30 (koşu 2 sn; GET ledger ort 3 / en çok 5 ms)
+BEKLEYEN KURAL FARKLARI (kimlik: senaryo / denetim [UTC]): ATANMAMIŞ-ALT-90 (KG-4 602.90 / 770.90, K-01 649.90, K-02 770.90, M14 770.90) 1/30 · D2–D4 1/1 · Ç5-ACILIS-519 4/48 · Ç5-B1 (ortak açık kalem görünümü) 2/2 · Ç5-B1 3/17 · Ç5-KARSILIKSIZ-ACILIS-CEKI 1/18 · Ç7b-(4) 2/9 · Ç7b-F06 1/24 · Ç7b-KG2 1/24 · Ç7b-KG24 1/24 · Ç7b-KG8 (P2) 1/18
+U etiketleri: C5-ACILIS-519 42 · C1-ALT-90 30 · KG2-H03 24 · KG24-IHRACAT 24 · F06-GIDER-TURU 24 · C5-EVRAK-KARSILIKSIZ 18 · KG8-IADE-KDV 18 · C5-EVRAK-ACILIS 12
+
+FARKLAR (14; ilk 200):
+  rastgele-2 [UTC] OLAY #224 kart_faiz (api_yok) → P: kart faizi (D-07): kart hesabına faiz / masraf fişi girilemiyor — faiz 400 Garanti BBVA · Şirket Kartı (Kredi Kartı): faiz gideri Vadesiz, Ticari ya da Diğer TL
+  rastgele-2 [UTC] OLAY #345 kart_faiz (api_yok) → P: kart faizi (D-07): kart hesabına faiz / masraf fişi girilemiyor — faiz 400 Garanti BBVA · Şirket Kartı (Kredi Kartı): faiz gideri Vadesiz, Ticari ya da Diğer TL
+  rastgele-2 [UTC] OLAY #498 kart_faiz (api_yok) → P: kart faizi (D-07): kart hesabına faiz / masraf fişi girilemiyor — faiz 400 Garanti BBVA · Şirket Kartı (Kredi Kartı): faiz gideri Vadesiz, Ticari ya da Diğer TL
+  rastgele-2 [UTC] OLAY #769 kart_faiz (api_yok) → P: kart faizi (D-07): kart hesabına faiz / masraf fişi girilemiyor — faiz 400 Garanti BBVA · Şirket Kartı (Kredi Kartı): faiz gideri Vadesiz, Ticari ya da Diğer TL
+  s43-s4-mahsuptan-sonra-ters [UTC] OLAY #10 duzenle (api_yok) → K: düzenle: KDV 12000 / matrah 50000: standart oran (0, 1, 10, 20) tutmuyor — KDV tutarı matrah değişmeden standart oran dışına (program yalnız %0, %1, %10, %20)
+  s43-s4-mahsuptan-sonra-ters [UTC] bil ana:191 program -2000 · kâhin 0 · bugün 0 → P
+  s43-s4-mahsuptan-sonra-ters [UTC] bil ana:360 program -12000 · kâhin -14000 · bugün -14000 → P
+  s43-s4-mahsuptan-sonra-ters [UTC] bil2 ana:191 program -2000 · kâhin 0 · bugün 0 → P
+  s43-s4-mahsuptan-sonra-ters [UTC] bil2 ana:360 program -12000 · kâhin -14000 · bugün -14000 → P
+  s43-s4-mahsuptan-sonra-ters [UTC] mz ana:191 program -2000 · kâhin 0 · bugün 0 → P
+  s43-s4-mahsuptan-sonra-ters [UTC] mz ana:360 program -12000 · kâhin -14000 · bugün -14000 → P
+  s43-s4-mahsuptan-sonra-ters [UTC] son ana:191 program -2000 · kâhin 0 · bugün 0 → P
+  s43-s4-mahsuptan-sonra-ters [UTC] son ana:360 program -12000 · kâhin -14000 · bugün -14000 → P
+  s58-r9-kartli-fatura-sil-iptal [UTC] RED #11 iptal: kâhin kabul · program 409 plan-has-payments → R
+
+# tests 387
+# pass 373
+# fail 14
+# cancelled 0
+# skipped 0
+# todo 0
+Çıktı: /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/surucu2-anaoturum

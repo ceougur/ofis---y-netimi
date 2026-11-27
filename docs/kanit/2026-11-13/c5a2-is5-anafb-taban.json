@@ -1,0 +1,65 @@
+(node:18705) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:18705) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{
+ "kurulum": {
+  "A": {
+   "supheliyeAlma": "200",
+   "fatura": "200",
+   "tahsilat": "200",
+   "bagli": true
+  },
+  "B": {
+   "supheliyeAlma": "-",
+   "fatura": "200",
+   "tahsilat": "200",
+   "bagli": true
+  },
+  "C": {
+   "supheliyeAlma": "200",
+   "fatura": "200",
+   "tahsilat": "200",
+   "bagli": true
+  }
+ },
+ "kilit": "200",
+ "kilittenSonraTarama": [],
+ "A (açık şüpheli VAR)": {
+  "iptal": "200",
+  "bagKaldiMi": false,
+  "kilitliDonemDefterFarki": [
+   "+2026-10-09|128|cari|B0|A10000",
+   "-2026-10-09|120|cari|B0|A10000"
+  ],
+  "tarama": [],
+  "gunlukArtisi": 0,
+  "once": {
+   "bakiye": 1200,
+   "supheli": "(alan yok)"
+  },
+  "sonra": {
+   "bakiye": 900,
+   "supheli": "(alan yok)"
+  }
+ },
+ "B (şüpheli YOK)": {
+  "iptal": "200",
+  "bagKaldiMi": false,
+  "kilitliDonemDefterFarki": [],
+  "tarama": [],
+  "gunlukArtisi": 0,
+  "once": {
+   "bakiye": 1200,
+   "supheli": "(alan yok)"
+  },
+  "sonra": {
+   "bakiye": 900,
+   "supheli": "(alan yok)"
+  }
+ },
+ "C (kilitli tahsilatın bağını DOĞRUDAN kaldır)": {
+  "duzenle": "409 Bu cari hareketi 09.10.2026 tarihli; 10.10.2026 ve öncesi kapatılmış (kilitli) dönemdir. Değişiklik için yönetici dönem kilidini açmalı.",
+  "kilitliDonemDefterFarki": []
+ }
+}

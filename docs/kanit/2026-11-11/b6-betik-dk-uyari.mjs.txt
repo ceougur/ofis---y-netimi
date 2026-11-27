@@ -1,0 +1,123 @@
+// DAR KONTROL D2t3/Ç5-Kt2 (aa47) — A / UYARI: eski sürüm (v2.4.9 GERÇEK kodu) verisi, kapı dışı yazımla sayının artması, iki şirket, yedekten geri yükleme.
+// Kullanım: DEPO=<programın kopyası> V249=<v2.4.9 kopyası> node uyari.mjs   (çıktı: JSON gözlem)
+import { cpSync, mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import path from "node:path";
+import { DatabaseSync } from "node:sqlite";
+import { pathToFileURL } from "node:url";
+
+process.env.HUKUK_LICENSE_URL = "http://127.0.0.1:9";
+const DEPO = path.resolve(process.env.DEPO);
+const V249 = path.resolve(process.env.V249);
+const NOW = "2026-03-20T12:00:00";
+const OPEN = "2026-03-10";
+const EARLY = "2026-03-05";
+const AFTER = "2026-03-11";
+const NAME = "Kasa Açılışından Önce Tarihli Hareket";
+const unwrap = r => ({ status: r.status, data: r.data && typeof r.data === "object" && r.data.ok === true ? r.data.data : r.data });
+const must = async (label, p) => {
+  const r = unwrap(await p);
+  if (r.status !== 200) throw new Error(`${label}: ${r.status} ${JSON.stringify(r.data).slice(0, 300)}`);
+  return r.data;
+};
+const capture = () => {
+  const lines = [];
+  return { lines, log: { debug() {}, info() {}, warn: (...a) => lines.push(`warn: ${a.join(" ")}`), error: (...a) => lines.push(`error: ${a.join(" ")}`) } };
+};
+const idOf = d => d?.id || d?.entry?.id || "";
+const out = { depo: DEPO };
+
+// 1) v2.4.9'un GERÇEK koduyla veri: Kasa açılışı 10.03, sonra açılıştan ÖNCE tarihli Kasa Giriş + cari nakit tahsilat (2.4.9'da S12 yok).
+const root = mkdtempSync(path.join(tmpdir(), "dkd2t3-uyari-"));
+const dataDir = path.join(root, "data");
+const backupDir = path.join(root, "backups");
+{
+  const { startTestServer, ADMIN_PASSWORD } = await import(pathToFileURL(path.join(V249, "test", "helpers.mjs")).href);
+  const s = await startTestServer({ dataDir, backupDir, now: { time: NOW, fixed: true } });
+  const c = s.client();
+  await c.login("admin", ADMIN_PASSWORD);
+  await c.post("/api/workspace/bank/setup/dismiss", {});
+  await must("249 açılış", c.post("/api/workspace/cash/opening", { amount: "5.000", date: OPEN }));
+  const early = unwrap(await c.post("/api/workspace/cash", { kind: "in", amount: "100", date: EARLY, description: "2.4.9 açılış öncesi", method: "cash" }));
+  const cari = idOf(await must("249 cari", c.post("/api/workspace/accounts", { name: "Eski Müşteri", type: "customer", registeredOn: "2026-01-01", similarOk: true, force: true })));
+  const tah = unwrap(await c.post(`/api/workspace/accounts/${cari}/entries`, { kind: "in", amount: "40", date: "2026-03-06", method: "cash", note: "nakit", cashForce: true, similarOk: true, force: true }));
+  out.v249 = { kasaGirisAcilisOncesi: early.status, cariTahsilatAcilisOncesi: tah.status, kasaSatir: s.app.store.get("SELECT COUNT(*) AS n FROM cash_entries").n };
+  await s.app.close();
+}
+
+// 2) Aynı veri DEPO koduyla açılır.
+const { startTestServer, ADMIN_PASSWORD } = await import(pathToFileURL(path.join(DEPO, "test", "helpers.mjs")).href);
+const first = capture();
+const s = await startTestServer({ dataDir, backupDir, now: { time: NOW, fixed: true }, gateVerify: false, moneyStrict: false, log: first.log });
+const alerts = [];
+s.app.events.tap((name, payload) => {
+  if (name === "integrity.alert") alerts.push(payload.findings.map(f => `${f.code}:${f.count}`));
+});
+const api = s.client();
+await api.login("admin", ADMIN_PASSWORD);
+const integ = async (q = "") => must("Mutabakat Testi", api.get(`/api/workspace/ledger/integrity${q}`));
+const notice = r => (r.checks || []).find(x => x.code === "cash:before-opening");
+const drifts = r => (r.failures || []).filter(x => !x.notice).map(x => `${x.code}${x.count ? `:${x.count}` : ""}`);
+const scans = () => s.app.store.all("SELECT action, summary FROM integrity_log WHERE action IN ('scan','baseline') ORDER BY at").map(r => `${r.action}: ${r.summary.slice(0, 160)}`);
+let r = await integ();
+out.acilis = { gunluk: first.lines.filter(l => /Mutabakat|sapma/.test(l)), mutabakatGunlugu: scans(), uyari: notice(r)?.count ?? null, uyariNotice: notice(r)?.notice ?? null, sapmalar: drifts(r), ok: r.ok };
+const rep = await must("Defter Mutabakatı", api.get("/api/workspace/report-center/defter-mutabakati"));
+out.acilis.rapor = { sonuc: (rep.summary || []).find(p => p[0] === "Sonuç")?.[1], satir: (rep.rows || []).find(x => String(x[1]) === NAME)?.slice(-2), yoneticiye: /yöneticiye bildirin/.test(rep.subtitle) };
+await must("açılış sonrası Kasa Giriş", api.post("/api/workspace/cash", { kind: "in", amount: "1", date: AFTER, description: "sonra", method: "cash" }));
+out.acilis.ilkYazimKapisi = s.app.integrity.stats().gate.path;
+// S12 yeni hareketi reddediyor mu (kontrol)
+out.s12 = unwrap(await api.post("/api/workspace/cash", { kind: "in", amount: "1", date: EARLY, description: "yeni açılış öncesi", method: "cash" })).status;
+
+// 3) KAPI DIŞI yazım (başka bağlantı: elle düzenleme / harici araç): açılış günü girilmiş Kasa Giriş'in tarihi satırda VE işlem başlığında açılıştan önceye alınır.
+//    Satır ile başlık tutarlı → yalnız "Kasa Açılışından Önce Tarihli Hareket" sayısı artar (o günün nakdi iki kez sayılır).
+const day = idOf(await must("açılış günü Kasa Giriş", api.post("/api/workspace/cash", { kind: "in", amount: "250", date: OPEN, description: "açılış günü", method: "cash" })));
+r = await integ();
+const before = { uyari: notice(r)?.count, sapmalar: drifts(r), gunluk: scans().length, zil: alerts.length };
+{
+  const file = s.app.store.get("PRAGMA database_list").file;
+  const other = new DatabaseSync(file);
+  other.exec("PRAGMA busy_timeout = 5000");
+  const ev = other.prepare("SELECT event_id AS e FROM cash_entries WHERE id = ?").get(day).e;
+  other.prepare("UPDATE cash_entries SET date = ? WHERE id = ?").run("2026-03-08", day);
+  other.prepare("UPDATE fin_events SET date = ? WHERE id = ?").run("2026-03-08", ev);
+  other.close();
+}
+r = await integ(); // Mutabakat Testi = tam tarama (scan)
+const bg = await s.app.integrity.scanInBackground();
+const kasa = await must("Kasa", api.get("/api/workspace/cash"));
+out.kapiDisi = {
+  once: before,
+  sonra: { uyari: notice(r)?.count, sapmalar: drifts(r), yeniTaramaGunlugu: scans().slice(before.gunluk), zil: alerts.slice(before.zil), isParcacigi: bg?.findings?.map(x => x.code) ?? bg },
+  kasaBakiye: kasa.totals?.balance,
+  sunucuGunlugu: first.lines.filter(l => /yeni sapma/.test(l)),
+};
+
+// 4) İKİ ŞİRKET: 002 temiz; 001 uyarısı 002'ye geçmez. 002'de Silinenler'den geri gelen açılış öncesi satır → yedek → geri yükleme.
+const second = (await must("002", api.post("/api/companies", { name: "Uyari İkinci" }))).company;
+const q = `?hofCompany=${second.id}`;
+await api.post(`/api/workspace/bank/setup/dismiss${q}`, {});
+r = await integ(q);
+out.ikiSirket = { s002Uyari: notice(r)?.count ?? null, s002Sapma: drifts(r) };
+const e1 = idOf(await must("002 Kasa Giriş 05.03", api.post(`/api/workspace/cash${q}`, { kind: "in", amount: "70", date: EARLY, description: "002 eski", method: "cash" })));
+await must("002 sil", api.del(`/api/workspace/cash/${e1}${q}`));
+await must("002 açılış", api.post(`/api/workspace/cash/opening${q}`, { amount: "1.000", date: OPEN }));
+const trash = await must("002 Silinenler", api.get(`/api/admin/trash${q}`));
+const item = (Array.isArray(trash) ? trash : trash.items || []).find(x => x.ref === e1);
+await must("002 geri al", api.post(`/api/admin/trash/restore${q}`, { id: item?.id }));
+r = await integ(q);
+out.ikiSirket.s002GeriAlinca = notice(r)?.count ?? null;
+r = await integ();
+out.ikiSirket.s001 = notice(r)?.count ?? null;
+const lines0 = first.lines.length;
+const alerts0 = alerts.length;
+const bk = await must("002 yedek", api.post("/api/admin/backups", { scope: "one", companyId: second.id }));
+const name = bk.backups?.[0]?.name;
+await must("002 açılış sonrası giriş", api.post(`/api/workspace/cash${q}`, { kind: "in", amount: "3", date: AFTER, description: "yedekten sonra", method: "cash" }));
+await must("002 yedekten geri yükle", api.post("/api/admin/backups/restore", { name, company: second.id, confirm: second.code, password: ADMIN_PASSWORD }));
+r = await integ(q);
+const store002 = s.app.appFor ? null : null;
+out.geriYukleme = { s002Uyari: notice(r)?.count ?? null, s002Sapma: drifts(r), yeniGunluk: first.lines.slice(lines0).filter(l => /Mutabakat|sapma/.test(l)), yeniZil: alerts.slice(alerts0) };
+await api.post(`/api/workspace/cash${q}`, { kind: "in", amount: "2", date: AFTER, description: "geri yüklemeden sonra", method: "cash" });
+await s.close();
+rmSync(root, { recursive: true, force: true });
+console.log(JSON.stringify(out, null, 1));

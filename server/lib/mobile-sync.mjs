@@ -50,6 +50,9 @@ export function yazmaTuru(method, pathname) {
   // özeti değiştirmez → yüklemez (her biri tam yükleme doğurup kapıcının günlük sınırını dolduruyordu). Lisans belirteci yenilendiyse zamanlayıcı turu yalnız
   // kapıcı kaydını gönderir (turAt). Şirket ERİŞİMİ, şirket oluşturma/silme/sıfırlama/ayırma ve lisans etkinleştirme güvenlik olarak kalır.
   if (pathname === "/api/companies/select" || /^\/api\/license\/(check|contact)$/.test(pathname)) return null;
+  // 2.5.0 W-1(a) dar kontrol ORTA-1 (B5 ailesi): WhatsApp bağlantı süresi bildirimini SORMAK (ana ekran her açılışta; yalnız kullanıcının "bugün gösterildi" işareti
+  // yazılır) telefonun gördüğü veriyi değiştirmez → yüklemez. Yoksa her açılış bir tam özet yüklemesi doğurur, kapıcının günlük sınırı dolardı.
+  if (pathname === "/api/workspace/whatsapp/connection/expiry-notice") return null;
   if (/^\/api\/(admin\/(users|roles|mobile)|companies|license)(\/|$)/.test(pathname) || pathname === "/api/mobil/eslesme") return "guvenlik";
   return "veri";
 }

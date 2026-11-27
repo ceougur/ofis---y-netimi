@@ -1,0 +1,32 @@
+{
+  "ad": "c3t3a-e2e-senaryo-donem-kilidi-ilerleme-250",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-donem-kilidi-ilerleme-250.mjs",
+  "commit": "218083460a0b2ddc530f51122f56cbed6649d6a1",
+  "dal": "c3t3-birlesim",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T12:34:54.157Z",
+  "sure_sn": 55.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 39,
+    "gecen": 39,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../c3t3a-kanit/2026-11-06/c3t3a-e2e-senaryo-donem-kilidi-ilerleme-250.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t3-birlesim-ag",
+  "ham_cikti_sha256": "a3a6e5fdfa8c2a5cf3ba3947e05ea0f0850c0c0b5768f87179c5578c99f064fb",
+  "ham_cikti_bayt": 3858
+}

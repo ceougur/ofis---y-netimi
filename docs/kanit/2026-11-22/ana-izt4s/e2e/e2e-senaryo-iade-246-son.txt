@@ -1,0 +1,15 @@
+
+■ S3 Müşteri kartı → Ödeme → Geri Ödenen İade (DB1)
+  ✓ müşteriye Ödeme'de Kapatılacak Fatura: Otomatik + iade (["","smove-c195560b-d1fc-491c-ae7c-10a8702d78a5"])
+  ✓ Tab ile Kapatılacak Fatura
+  ✓ Kapatılacak Fatura klavyeyle: İade Geri Ödemesi (faturasız Satış İadesi)
+  ✓ veri tabanı: {"kind":"out","amount":300,"refundOf":"smove-c195560b-d1fc-491c-ae7c-10a8702d78a5","invoiceId":""}
+  ✓ B 500 açık (DB1 öncesi 200)
+  ✓ hareketlerde “İadeye Bağlı” etiketi
+  ✓ takvim / zil: [["account",300],["invoice",500]]
+
+■ S4 bakiye
+  ✓ müşteri 800 (800), tedarikçi -500 (−500)
+  ✓ sayfa hatası yok: 
+
+26 geçti, 0 kaldı

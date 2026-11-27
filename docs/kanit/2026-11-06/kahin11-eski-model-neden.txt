@@ -1,0 +1,59 @@
+# 1. bölüm: eski modelde ilk susma
+s106-s83-alis-formundaki-pesin-odeme-cari: SUSAR — senaryo hatası: alış faturası formundaki peşin ödemenin (fatura_odemesi) carisi düzeltildi — S80 'alınan peşin tahsilat' der, ödeme yönü karar metninde yok; kâhin susar (
+s107-s84-formdaki-pesin-bagi: SUSAR — senaryo hatası: formdaki peşin ödemenin (fatura_odemesi) bağı düzeltildi — faturanın düzenlenmesidir (F-14), kararların konusu değil (README bakım 7 V3 (e); bakım 10 KULL
+s108-s85-normal-cari-tutar-tarih: susma YOK
+s109-s85-geri-yuklenmis-cari-tutar: susma YOK
+
+# 2. bölüm: susan düzeltmeler atlanarak koşulunca farklı elle değerler
+
+s106-s83-alis-formundaki-pesin-odeme-cari: atlanan (susan) düzeltme 8
+   atlandı: ('O1', {'cari': 'T2'}, 'senaryo hatası: alış faturası formundaki peşin ödemenin (fatura_odemes')
+   atlandı: ('O1', {'cari': 'T2', 'tutar': 250}, 'senaryo hatası: alış faturası formundaki peşin ödemenin (fatura_odemes')
+   atlandı: ('O1', {'cari': 'T2', 'fatura': 'A3'}, 'senaryo hatası: alış faturası formundaki peşin ödemenin (fatura_odemes')
+   atlandı: ('O1', {'cari': 'T2', 'fatura': None}, 'senaryo hatası: alış faturası formundaki peşin ödemenin (fatura_odemes')
+   atlandı: ('O1', {'cari': 'T2', 'tarih': '2026-01-12'}, 'senaryo hatası: alış faturası formundaki peşin ödemenin (fatura_odemes')
+   atlandı: ('O2', {'cari': 'T2'}, 'senaryo hatası: alış faturası formundaki peşin ödemenin (fatura_odemes')
+   atlandı: ('O2', {'cari': 'T2', 'aciklama': 'Yanlış cari'}, 'senaryo hatası: alış faturası formundaki peşin ödemenin (fatura_odemes')
+   atlandı: ('O2', {'cari': 'T2', 'tarih': '2026-01-09'}, 'senaryo hatası: alış faturası formundaki peşin ödemenin (fatura_odemes')
+   FARK redler: beklenen ['FATURA_DUZENLENMELI', 'FATURA_DUZENLENMELI', 'FATURA_DUZENLENMELI', 'FATURA_DUZENLENMELI', 'FATURA_DUZENLENMELI', 'FATURA_DUZENLENMELI', 'FATURA_DUZENLENMELI', 'KASA_ACILIS_ONCE', 'FATURA_DUZENLENMELI'] · eski model ['KASA_ACILIS_ONCE']
+   1 anahtar farklı / 15; düzeltme öncesi raporlarda fark 0
+   değişmezler tuttu: True
+
+s107-s84-formdaki-pesin-bagi: atlanan (susan) düzeltme 2
+   atlandı: ('P2', {'fatura': 'F4'}, 'senaryo hatası: formdaki peşin ödemenin (fatura_odemesi) bağı düzeltil')
+   atlandı: ('P2', {'fatura': None}, 'senaryo hatası: formdaki peşin ödemenin (fatura_odemesi) bağı düzeltil')
+   FARK redler: beklenen ['FATURA_DUZENLENMELI', 'FATURA_DUZENLENMELI', 'FATURA_DUZENLENMELI', 'FATURA_DUZENLENMELI', 'FATURA_DUZENLENMELI', 'FATURA_DUZENLENMELI', 'FATURA_DUZENLENMELI', 'FATURA_DUZENLENMELI', 'KASA_ACILIS_ONCE', 'FATURA_DUZENLENMELI', 'FATURA_DUZENLENMELI', 'FATURA_DUZENLENMELI'] · eski model ['KASA_ACILIS_ONCE']
+   FARK mz1/satirlar/120|C1/bakiye: beklenen 1800 · eski model 1850
+   FARK mz1/satirlar/102.B1/bakiye: beklenen 300 · eski model 250
+   FARK g1/gecikmis: beklenen 1700 · eski model 1850
+   FARK ak1: beklenen [{'k': 'fatura:F4', 'tur': 'fatura', 'kalan': 400, 'vade': '2026-01-15', 'tarih': '2026-01-07'}, {'k': 'fatura:F1', 'tur': 'fatura', 'kalan': 700, 'vade': '2026-01-31', 'tarih': '2026-01-05'}, {'k': 'fatura:F2', 'tur': 'fatura', 'kalan': 600, 'vade': '2026-01-31', 'tarih': '2026-01-06'}, {'k': 'kart:TK1', 'tur': 'taksit', 'kalan': 100, 'vade': '2026-02-10', 'tarih': '2026-01-07'}] · eski model [{'k': 'fatura:F4', 'tur': 'fatura', 'kalan': 50, 'vade': '2026-01-15', 'tarih': '2026-01-07'}, {'k': 'fatura:F1', 'tur': 'fatura', 'kalan': 1000, 'vade': '2026-01-31', 'tarih': '2026-01-05'}, {'k': 'fatura:F2', 'tur': 'fatura', 'kalan': 800, 'vade': '2026-01-31', 'tarih': '2026-01-06'}]
+   FARK mz2/satirlar/120|C1/bakiye: beklenen 1750 · eski model 1800
+   FARK mz2/satirlar/102.B1/bakiye: beklenen 300 · eski model 250
+   FARK g2/gecikmis: beklenen 1650 · eski model 1700
+   FARK ak2: beklenen [{'k': 'fatura:F4', 'tur': 'fatura', 'kalan': 400, 'vade': '2026-01-15', 'tarih': '2026-01-07'}, {'k': 'fatura:F1', 'tur': 'fatura', 'kalan': 700, 'vade': '2026-01-31', 'tarih': '2026-01-05'}, {'k': 'fatura:F2', 'tur': 'fatura', 'kalan': 550, 'vade': '2026-01-31', 'tarih': '2026-01-06'}, {'k': 'kart:TK1', 'tur': 'taksit', 'kalan': 100, 'vade': '2026-02-10', 'tarih': '2026-01-07'}] · eski model [{'k': 'fatura:F4', 'tur': 'fatura', 'kalan': 400, 'vade': '2026-01-15', 'tarih': '2026-01-07'}, {'k': 'fatura:F1', 'tur': 'fatura', 'kalan': 750, 'vade': '2026-01-31', 'tarih': '2026-01-05'}, {'k': 'fatura:F2', 'tur': 'fatura', 'kalan': 550, 'vade': '2026-01-31', 'tarih': '2026-01-06'}, {'k': 'kart:TK1', 'tur': 'taksit', 'kalan': 100, 'vade': '2026-02-10', 'tarih': '2026-01-07'}]
+   FARK mu: beklenen [{'kod': 'KASA_ACILIS_ONCESI_HAREKET', 'kaynak': 'P2', 'tarih': '2026-01-06', 'acilis': '2026-01-08'}] · eski model []
+   10 anahtar farklı / 21; düzeltme öncesi raporlarda fark 0
+   değişmezler tuttu: True
+
+s108-s85-normal-cari-tutar-tarih: atlanan (susan) düzeltme 0
+   FARK redler: beklenen ['SUPHELI_NORMAL_ASIM', 'SUPHELI_NORMAL_ASIM', 'SUPHELI_NORMAL_ASIM'] · eski model []
+   FARK mza/satirlar/120|C2/bakiye: beklenen 50 · eski model -1
+   FARK mza/satirlar/102.B1/bakiye: beklenen 1000 · eski model 1051
+   FARK mzb/satirlar/120|C3/bakiye: beklenen 500 · eski model 200
+   FARK mzb/satirlar/102.B1/bakiye: beklenen 1000 · eski model 1300
+   FARK mzc/satirlar/120|C3/bakiye: beklenen 200 · eski model 500
+   FARK mzc/satirlar/102.B1/bakiye: beklenen 1300 · eski model 1000
+   7 anahtar farklı / 31; düzeltme öncesi raporlarda fark 0
+   değişmezler tuttu: True
+
+s109-s85-geri-yuklenmis-cari-tutar: atlanan (susan) düzeltme 0
+   FARK redler: beklenen ['SUPHELI_NORMAL_ASIM', 'SUPHELI_NORMAL_ASIM', 'SUPHELI_NORMAL_ASIM', 'SUPHELI_NORMAL_ASIM'] · eski model []
+   FARK mz1/satirlar/120|C2/bakiye: beklenen 80 · eski model -1
+   FARK mz1/satirlar/120|C3/bakiye: beklenen 80 · eski model -10
+   FARK mz1/satirlar/120|C1/bakiye: beklenen 330 · eski model 420
+   FARK mz1/satirlar/100/bakiye: beklenen 1190 · eski model 1271
+   FARK mz2/satirlar/120|C3/bakiye: beklenen 0 · eski model -95
+   FARK mz2/satirlar/120|C1/bakiye: beklenen 405 · eski model 500
+   FARK g1/gecikmis: beklenen 405 · eski model 500
+   8 anahtar farklı / 23; düzeltme öncesi raporlarda fark 0
+   değişmezler tuttu: True

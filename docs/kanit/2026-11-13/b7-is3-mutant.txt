@@ -1,0 +1,17 @@
+mutant M3a-tarihten
+M3a-tarihten çıkış 1 # tests 6 # pass 2 # fail 4 
+       not ok 1 - ekran (API) satırı: tarih söz günü, durum ve gün sayısı karar tablosundaki gibi; zil / takvim kalemi aynı (ufuktakiler)
+       not ok 2 - Excel (Gün, Durum) ve PDF (Durum metni) ekranla aynı
+       not ok 1 - her seçenekte: toplam alanı = satırlardan = girdilerden beklenen (gecikmiş tahsilat ve ödeme)
+       not ok 2 - cari düzeyi (Cari Listesi 'Gecikmiş', Anlık Durum): 'Tüm Açık' Gecikmiş Tahsilat − kapsam farkı = Σ cari gecikmiş; kapsa
+mutant M3b-dengeleme
+M3b-dengeleme çıkış 1 # tests 6 # pass 4 # fail 2 
+       not ok 1 - adım adım: şüpheli 900 (üç kaleme yayılır); kısmen tahsil 300; kısmen Değersiz 200; ikinci şüpheli kaydı 300; ilk kayd
+       not ok 1 - kart 600 (2 taksit, ilki gecikmiş) + elle Borç 200; şüpheli 500 → iki ekranda kalan 300, aynı kalemler; faturasız dengeleme 
+mutant M3c-taksit
+M3c-taksit çıkış 1 # tests 6 # pass 5 # fail 1 
+       not ok 1 - kart 600 (2 taksit, ilki gecikmiş) + elle Borç 200; şüpheli 500 → iki ekranda kalan 300, aynı kalemler; faturasız dengeleme 
+mutant M3d-fatura
+M3d-fatura çıkış 1 # tests 6 # pass 5 # fail 1 
+       not ok 1 - adım adım: şüpheli 900 (üç kaleme yayılır); kısmen tahsil 300; kısmen Değersiz 200; ikinci şüpheli kaydı 300; ilk kayd
+BITTI

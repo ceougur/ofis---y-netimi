@@ -1,0 +1,21 @@
+# B3 T1 ölçüm: [[1,1664,122880,14287,0],[2,47,241664,24337,0],[3,45,356352,30307,0],[4,0,475136,40357,0],[5,93,593920,50407,0],[6,50,708608,56377,0],[7,41,827392,66427,0],[8,0,946176,76477,0],[9,103,1060864,82447,0],[10,45,1179648,92497,0]]
+# B3 tur süresi: ileti 200 · 5964 ms (başlangıçtan 5964 ms)
+# B3 tur süresi: ileti 400 · 2584 ms (başlangıçtan 8548 ms)
+# B3 tur süresi: ileti 600 · 2500 ms (başlangıçtan 11048 ms)
+# B3 sıçrama: ileti 700 sonrası gerçek saat +61000 ms
+# B3 tur süresi: ileti 800 · 2421 ms (başlangıçtan 13469 ms)
+# B3 tur süresi: ileti 1000 · 2511 ms (başlangıçtan 15980 ms)
+# B3 tur süresi: ileti 1200 · 2495 ms (başlangıçtan 18475 ms)
+# B3 tur süresi: ileti 1400 · 2466 ms (başlangıçtan 20941 ms)
+# B3 sıçrama: ileti 1500 sonrası gerçek saat +61000 ms
+# B3 tur süresi: ileti 1600 · 2546 ms (başlangıçtan 23487 ms)
+# B3 tur süresi: ileti 1800 · 2619 ms (başlangıçtan 26106 ms)
+# B3 tur süresi: ileti 2000 · 7124 ms (başlangıçtan 33230 ms)
+# tests 1
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+AssertionError [ERR_ASSERTION]: tur başına sayfa artışı geçmişle büyüyor (tur 2–10: 47, 45, 0, 93, 50, 41, 0, 103, 45)
+[zorla] /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b3-ana/eski-200398f4/test/whatsapp-b3-buyume-249.test.mjs · sıçrama turları [4,8] (iş 100) · ara bakımlı tur [] · artışı 0 tur [4,8] · ön koşul BEKLENDİĞİ GİBİ · test KIRMIZI (çıkış 1)

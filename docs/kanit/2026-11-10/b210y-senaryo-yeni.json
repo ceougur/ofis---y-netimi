@@ -1,0 +1,32 @@
+{
+  "ad": "b210y-senaryo-yeni",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-banka-210.mjs",
+  "commit": "28a253d57d26ceaafe2e39df1e59a0dbca7a50f7",
+  "dal": "b210-birlesim",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v338 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-10T13:34:45.299Z",
+  "sure_sn": 303.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 427,
+    "gecen": 427,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../b210y-kanit/2026-11-10/b210y-senaryo-yeni.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b210-birlesim-ag",
+  "ham_cikti_sha256": "b48c796b3bb512eb891f14f82ce7ba849414c2decf2926fa3fd4df550c815299",
+  "ham_cikti_bayt": 48057
+}

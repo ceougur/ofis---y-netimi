@@ -1,0 +1,32 @@
+{
+  "ad": "bir-tur1-anaoturum-e2e-banka-210b",
+  "komut": "npm run test:senaryo-banka-210b",
+  "commit": "8eab4e561b0e14a664aea89377d6a7d63c71a88d",
+  "dal": "claude/epic-thompson-w0lc2l",
+  "kirli": 0,
+  "izlenmeyen": 6,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T00:42:00.686Z",
+  "sure_sn": 98.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 90,
+    "gecen": 90,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-06/bir-tur1-anaoturum-e2e-banka-210b.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "8877ba89b8b2616f371c7a8f218e544bf28a682df0c49bc32dee33a18f612511",
+  "ham_cikti_bayt": 8907
+}

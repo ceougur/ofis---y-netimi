@@ -1,0 +1,692 @@
+TAP version 13
+# Subtest: Doğrulama Kapısı — beklenen liste ↔ CI adımları
+    # Subtest: ci.yml'de koşan her kanıt kaydı kapının --beklenen listesinde, listede koşmayan ad yok
+    ok 1 - ci.yml'de koşan her kanıt kaydı kapının --beklenen listesinde, listede koşmayan ad yok
+      ---
+      duration_ms: 1.791173
+      type: 'test'
+      ...
+    # Subtest: yayın iş akışı CI'nin koştuğu her arayüz senaryosunu koşar
+    ok 2 - yayın iş akışı CI'nin koştuğu her arayüz senaryosunu koşar
+      ---
+      duration_ms: 1.131965
+      type: 'test'
+      ...
+    1..2
+ok 1 - Doğrulama Kapısı — beklenen liste ↔ CI adımları
+  ---
+  duration_ms: 3.754598
+  type: 'suite'
+  ...
+# Subtest: Bağımsız kâhinler iş akışında koşar
+    # Subtest: her test:kahin-* betiği ci.yml ya da uzun-dogrulama.yml'de kanit.mjs kos ile koşar ve kapı listesinde
+    ok 1 - her test:kahin-* betiği ci.yml ya da uzun-dogrulama.yml'de kanit.mjs kos ile koşar ve kapı listesinde
+      ---
+      duration_ms: 1.068818
+      type: 'test'
+      ...
+    1..1
+ok 2 - Bağımsız kâhinler iş akışında koşar
+  ---
+  duration_ms: 1.217893
+  type: 'suite'
+  ...
+# Subtest: Uzun Doğrulama Kapısı — beklenen liste ↔ matris
+    # Subtest: mutabakat ve güvenilirlik matrislerinin her kaydı kapıda bekleniyor, fazlası yok; plan alt sınırı karşılanıyor
+    ok 1 - mutabakat ve güvenilirlik matrislerinin her kaydı kapıda bekleniyor, fazlası yok; plan alt sınırı karşılanıyor
+      ---
+      duration_ms: 6.957253
+      type: 'test'
+      ...
+    1..1
+ok 3 - Uzun Doğrulama Kapısı — beklenen liste ↔ matris
+  ---
+  duration_ms: 7.06818
+  type: 'suite'
+  ...
+# Subtest: 2.4.3 MM5–MM9 — rapor düzeltmeleri
+    # Subtest: MM5: Alacak Yaşlandırma faturasız borcu hareket tarihiyle yaşlandırır; carinin dilimleri = borç bakiyesi; toplam 10.700 (kâhin)
+    ok 1 - MM5: Alacak Yaşlandırma faturasız borcu hareket tarihiyle yaşlandırır; carinin dilimleri = borç bakiyesi; toplam 10.700 (kâhin)
+      ---
+      duration_ms: 79.180462
+      type: 'test'
+      ...
+    # Subtest: MM5: Nakit Akışı gecikmiş girişlerde faturasız cari alacağı (bugünden önceki parçalar) görünür; taksit ve fatura kalemi değişmez
+    ok 2 - MM5: Nakit Akışı gecikmiş girişlerde faturasız cari alacağı (bugünden önceki parçalar) görünür; taksit ve fatura kalemi değişmez
+      ---
+      duration_ms: 34.787197
+      type: 'test'
+      ...
+    # Subtest: MM6: Banka Nakit Akış Raporu Çek Hesabı bağlı verilen çeki vadesinde çıkış sayar (hesapsız çek girmez); her dönem seçeneği
+    ok 3 - MM6: Banka Nakit Akış Raporu Çek Hesabı bağlı verilen çeki vadesinde çıkış sayar (hesapsız çek girmez); her dönem seçeneği
+      ---
+      duration_ms: 73.775244
+      type: 'test'
+      ...
+    # Subtest: MM7: Stok Durumu, Kategoriye Göre ve Stok Hareket Özeti aynı gün aynı değer (eksi stok eksi değer: 5.000 − 400 = 4.600); süzgeçler
+    ok 4 - MM7: Stok Durumu, Kategoriye Göre ve Stok Hareket Özeti aynı gün aynı değer (eksi stok eksi değer: 5.000 − 400 = 4.600); süzgeçler
+      ---
+      duration_ms: 137.42389
+      type: 'test'
+      ...
+    # Subtest: MM8: Yevmiye Defteri özetinde Madde = farklı madde sayısı (tam sayı), Satır = satır sayısı; boş dönem 0
+    ok 5 - MM8: Yevmiye Defteri özetinde Madde = farklı madde sayısı (tam sayı), Satır = satır sayısı; boş dönem 0
+      ---
+      duration_ms: 43.364949
+      type: 'test'
+      ...
+    # Subtest: MM9: Cari Listesi özeti — Toplam Borç / Toplam Alacak, Müşteri Alacakları ve Tedarikçi Borçları ayrı, net açık adla; her süzgeç
+    ok 6 - MM9: Cari Listesi özeti — Toplam Borç / Toplam Alacak, Müşteri Alacakları ve Tedarikçi Borçları ayrı, net açık adla; her süzgeç
+      ---
+      duration_ms: 355.268253
+      type: 'test'
+      ...
+    # Subtest: Mutabakat Testi temiz
+    ok 7 - Mutabakat Testi temiz
+      ---
+      duration_ms: 19.334708
+      type: 'test'
+      ...
+    1..7
+ok 4 - 2.4.3 MM5–MM9 — rapor düzeltmeleri
+  ---
+  duration_ms: 1698.959488
+  type: 'suite'
+  ...
+# Subtest: kanıt aracı: özet satırları
+    # Subtest: node:test TAP ve spec biçimleri; son özet alınır
+    ok 1 - node:test TAP ve spec biçimleri; son özet alınır
+      ---
+      duration_ms: 2.161392
+      type: 'test'
+      ...
+    # Subtest: projedeki arayüz senaryosu biçimleri
+    ok 2 - projedeki arayüz senaryosu biçimleri
+      ---
+      duration_ms: 3.840686
+      type: 'test'
+      ...
+    # Subtest: mutabakat ve güvenilirlik koşucuları; yarıda kalan tohum iptal sayılır
+    ok 3 - mutabakat ve güvenilirlik koşucuları; yarıda kalan tohum iptal sayılır
+      ---
+      duration_ms: 1.148268
+      type: 'test'
+      ...
+    # Subtest: defter kâhini (test:kahin-defter): fark, atlanan/reddedilen olay ve yakalanmayan mutasyon başarısız sayılır
+    ok 4 - defter kâhini (test:kahin-defter): fark, atlanan/reddedilen olay ve yakalanmayan mutasyon başarısız sayılır
+      ---
+      duration_ms: 0.455311
+      type: 'test'
+      ...
+    # Subtest: tanınmayan ya da boş çıktı özet sayılmaz
+    ok 5 - tanınmayan ya da boş çıktı özet sayılmaz
+      ---
+      duration_ms: 0.194909
+      type: 'test'
+      ...
+    1..5
+ok 5 - kanıt aracı: özet satırları
+  ---
+  duration_ms: 10.575612
+  type: 'suite'
+  ...
+# Subtest: kanıt aracı: hüküm
+    # Subtest: GEÇTİ yalnız çıkış 0 + özet temiz + en az bir test
+    ok 1 - GEÇTİ yalnız çıkış 0 + özet temiz + en az bir test
+      ---
+      duration_ms: 0.133434
+      type: 'test'
+      ...
+    # Subtest: çıkış kodu ile özet çelişirse ÇELİŞKİ (geçmedi)
+    ok 2 - çıkış kodu ile özet çelişirse ÇELİŞKİ (geçmedi)
+      ---
+      duration_ms: 0.271074
+      type: 'test'
+      ...
+    # Subtest: başarısız, yarıda, başlatılamayan
+    ok 3 - başarısız, yarıda, başlatılamayan
+      ---
+      duration_ms: 0.239037
+      type: 'test'
+      ...
+    1..3
+ok 6 - kanıt aracı: hüküm
+  ---
+  duration_ms: 0.822715
+  type: 'suite'
+  ...
+# Subtest: kanıt aracı: komut kabuksuz çalışır (Windows'ta argüman bölünmez)
+    # Subtest: Linux/macOS: komut olduğu gibi
+    ok 1 - Linux/macOS: komut olduğu gibi
+      ---
+      duration_ms: 0.282924
+      type: 'test'
+      ...
+    # Subtest: Windows: node → bu Node; npm/npx → bu Node'un npm-cli.js/npx-cli.js'i; .cmd/.bat reddedilir
+    ok 2 - Windows: node → bu Node; npm/npx → bu Node'un npm-cli.js/npx-cli.js'i; .cmd/.bat reddedilir
+      ---
+      duration_ms: 0.993374
+      type: 'test'
+      ...
+    # Subtest: gerçek: bu platformda npm aracın içinden çalışır (çıkış 0; özet olmadığı için BELİRSİZ)
+    ok 3 - gerçek: bu platformda npm aracın içinden çalışır (çıkış 0; özet olmadığı için BELİRSİZ)
+      ---
+      duration_ms: 191.302131
+      type: 'test'
+      ...
+    1..3
+ok 7 - kanıt aracı: komut kabuksuz çalışır (Windows'ta argüman bölünmez)
+  ---
+  duration_ms: 192.827254
+  type: 'suite'
+  ...
+# Subtest: kanıt aracı: gerçek koşu kaydı
+    # Subtest: alt klasörlü ad: klasör yoksa açılır, kayıt ve ham çıktı alt klasöre yazılır
+    ok 1 - alt klasörlü ad: klasör yoksa açılır, kayıt ve ham çıktı alt klasöre yazılır
+      ---
+      duration_ms: 132.869829
+      type: 'test'
+      ...
+    # Subtest: geçen komut: çıkış 0, kayıt GEÇTİ, ham çıktı ve sha256 yazılır
+    ok 2 - geçen komut: çıkış 0, kayıt GEÇTİ, ham çıktı ve sha256 yazılır
+      ---
+      duration_ms: 147.513136
+      type: 'test'
+      ...
+    # Subtest: özetinde başarısız olan ama 0 ile çıkan komut GEÇMEZ (çelişki), araç 1 döner
+    ok 3 - özetinde başarısız olan ama 0 ile çıkan komut GEÇMEZ (çelişki), araç 1 döner
+      ---
+      duration_ms: 139.652897
+      type: 'test'
+      ...
+    # Subtest: özetsiz 0 çıkış BELİRSİZ; 3 ile çıkan komut BAŞARISIZ ve gerçek kodu kaydedilir
+    ok 4 - özetsiz 0 çıkış BELİRSİZ; 3 ile çıkan komut BAŞARISIZ ve gerçek kodu kaydedilir
+      ---
+      duration_ms: 247.182816
+      type: 'test'
+      ...
+    # Subtest: kapı kanıt klasöründeki kayıt olmayan JSON'u (kâhin fark/ham çıktısı) yok sayar, çökmez (Uzun Doğrulama 19.10.2026)
+    ok 5 - kapı kanıt klasöründeki kayıt olmayan JSON'u (kâhin fark/ham çıktısı) yok sayar, çökmez (Uzun Doğrulama 19.10.2026)
+      ---
+      duration_ms: 188.894357
+      type: 'test'
+      ...
+    1..5
+ok 8 - kanıt aracı: gerçek koşu kaydı
+  ---
+  duration_ms: 856.439451
+  type: 'suite'
+  ...
+# Subtest: yalnız belge değişen commit (ci.yml paths-ignore, kullanıcı kararı 13.10.2026)
+    # Subtest: yalnız CLAUDE.md değişen commit: hüküm koşusu olan ata commit'ten (YEŞİL)
+    ok 1 - yalnız CLAUDE.md değişen commit: hüküm koşusu olan ata commit'ten (YEŞİL)
+      ---
+      duration_ms: 1.255571
+      type: 'test'
+      ...
+    # Subtest: ata commit kırmızıysa yalnız belge commit'i de KIRMIZI
+    ok 2 - ata commit kırmızıysa yalnız belge commit'i de KIRMIZI
+      ---
+      duration_ms: 0.23661
+      type: 'test'
+      ...
+    # Subtest: kod değişen commit'in koşusu yoksa ata kullanılmaz (BELİRSİZ)
+    ok 3 - kod değişen commit'in koşusu yoksa ata kullanılmaz (BELİRSİZ)
+      ---
+      duration_ms: 0.105898
+      type: 'test'
+      ...
+    # Subtest: testlerin okuduğu plan/kanıt belgesi yalnız belge sayılmaz
+    ok 4 - testlerin okuduğu plan/kanıt belgesi yalnız belge sayılmaz
+      ---
+      duration_ms: 0.103027
+      type: 'test'
+      ...
+    # Subtest: ci.yml push paths-ignore listesi BELGE_YOLLARI ile aynı; pull_request süzgeçsiz
+    ok 5 - ci.yml push paths-ignore listesi BELGE_YOLLARI ile aynı; pull_request süzgeçsiz
+      ---
+      duration_ms: 0.533454
+      type: 'test'
+      ...
+    1..5
+ok 9 - yalnız belge değişen commit (ci.yml paths-ignore, kullanıcı kararı 13.10.2026)
+  ---
+  duration_ms: 3.214532
+  type: 'suite'
+  ...
+# Subtest: doğrulama kapısı: CI okuma (yalnız ci.yml, kapı işi şart)
+    # Subtest: bütün işler başarılı ve kapı işi var → YEŞİL
+    ok 1 - bütün işler başarılı ve kapı işi var → YEŞİL
+      ---
+      duration_ms: 0.290847
+      type: 'test'
+      ...
+    # Subtest: Windows işi kırmızı → KIRMIZI (Linux yeşili yetmez)
+    ok 2 - Windows işi kırmızı → KIRMIZI (Linux yeşili yetmez)
+      ---
+      duration_ms: 0.332435
+      type: 'test'
+      ...
+    # Subtest: atlanan iş yeşil sayılmaz
+    ok 3 - atlanan iş yeşil sayılmaz
+      ---
+      duration_ms: 0.202649
+      type: 'test'
+      ...
+    # Subtest: kapı işi olmayan (eski) commit YEŞİL değil
+    ok 4 - kapı işi olmayan (eski) commit YEŞİL değil
+      ---
+      duration_ms: 0.124432
+      type: 'test'
+      ...
+    # Subtest: koşu sürüyorsa, listedeki işler yeşil olsa da BEKLİYOR
+    ok 5 - koşu sürüyorsa, listedeki işler yeşil olsa da BEKLİYOR
+      ---
+      duration_ms: 0.097826
+      type: 'test'
+      ...
+    # Subtest: aynı commit'in ikinci koşusu kırmızıysa YEŞİL değil
+    ok 6 - aynı commit'in ikinci koşusu kırmızıysa YEŞİL değil
+      ---
+      duration_ms: 0.149785
+      type: 'test'
+      ...
+    # Subtest: başka iş akışlarının koşuları (ör. yayın) hükme girmez
+    ok 7 - başka iş akışlarının koşuları (ör. yayın) hükme girmez
+      ---
+      duration_ms: 0.13034
+      type: 'test'
+      ...
+    # Subtest: GitHub okunamazsa ya da koşu yoksa BELİRSİZ (asla YEŞİL değil)
+    ok 8 - GitHub okunamazsa ya da koşu yoksa BELİRSİZ (asla YEŞİL değil)
+      ---
+      duration_ms: 0.123786
+      type: 'test'
+      ...
+    1..8
+ok 10 - doğrulama kapısı: CI okuma (yalnız ci.yml, kapı işi şart)
+  ---
+  duration_ms: 1.689977
+  type: 'suite'
+  ...
+# Subtest: doğrulama kapısı: CI'deki kapı işinin hükmü
+    # Subtest: dört platform + e2e, aynı sayı, bu commit → geçer
+    ok 1 - dört platform + e2e, aynı sayı, bu commit → geçer
+      ---
+      duration_ms: 0.446259
+      type: 'test'
+      ...
+    # Subtest: Windows kaydı yoksa geçmez
+    ok 2 - Windows kaydı yoksa geçmez
+      ---
+      duration_ms: 0.100974
+      type: 'test'
+      ...
+    # Subtest: çelişkili kayıt (çıkış 0, özette başarısız) geçmez
+    ok 3 - çelişkili kayıt (çıkış 0, özette başarısız) geçmez
+      ---
+      duration_ms: 0.190359
+      type: 'test'
+      ...
+    # Subtest: Windows Linux'tan az test koştuysa geçmez
+    ok 4 - Windows Linux'tan az test koştuysa geçmez
+      ---
+      duration_ms: 0.148556
+      type: 'test'
+      ...
+    # Subtest: atlanan test varsa geçmez (o platformda doğrulanmadı)
+    ok 5 - atlanan test varsa geçmez (o platformda doğrulanmadı)
+      ---
+      duration_ms: 0.147128
+      type: 'test'
+      ...
+    # Subtest: başka commit'te ya da değişmiş ağaçta koşan kayıt geçmez
+    ok 6 - başka commit'te ya da değişmiş ağaçta koşan kayıt geçmez
+      ---
+      duration_ms: 0.159596
+      type: 'test'
+      ...
+    # Subtest: işin kendisi kırmızıysa (needs) kayıtlar temiz olsa da geçmez
+    ok 7 - işin kendisi kırmızıysa (needs) kayıtlar temiz olsa da geçmez
+      ---
+      duration_ms: 0.072013
+      type: 'test'
+      ...
+    # Subtest: aynı adla iki kayıt (biri eski) geçmez
+    ok 8 - aynı adla iki kayıt (biri eski) geçmez
+      ---
+      duration_ms: 0.072622
+      type: 'test'
+      ...
+    1..8
+ok 11 - doğrulama kapısı: CI'deki kapı işinin hükmü
+  ---
+  duration_ms: 1.497955
+  type: 'suite'
+  ...
+# Subtest: doğrulama kapısı: Stop kancası ve imzalı paket kapısı
+    # Subtest: her şey yeşilse kanca durdurmaz
+    ok 1 - her şey yeşilse kanca durdurmaz
+      ---
+      duration_ms: 0.426793
+      type: 'test'
+      ...
+    # Subtest: CI sürerken/kırmızıyken kanca yanıtı BİR KEZ durdurur ve gerçek durumu verir
+    ok 2 - CI sürerken/kırmızıyken kanca yanıtı BİR KEZ durdurur ve gerçek durumu verir
+      ---
+      duration_ms: 0.343499
+      type: 'test'
+      ...
+    # Subtest: CI yeşil ama gönderilmemiş commit ya da değişmiş dosya varsa kanca durdurur
+    ok 3 - CI yeşil ama gönderilmemiş commit ya da değişmiş dosya varsa kanca durdurur
+      ---
+      duration_ms: 0.219899
+      type: 'test'
+      ...
+    # Subtest: imzalı paket kapısı: değişmiş/izlenmeyen dosya ya da yeşil olmayan CI → ret; temiz + YEŞİL → izin
+    ok 4 - imzalı paket kapısı: değişmiş/izlenmeyen dosya ya da yeşil olmayan CI → ret; temiz + YEŞİL → izin
+      ---
+      duration_ms: 0.194956
+      type: 'test'
+      ...
+    # Subtest: tools/release.mjs CI/git okunamayınca anahtarı okumadan reddeder (atlatma seçeneği yok)
+    ok 5 - tools/release.mjs CI/git okunamayınca anahtarı okumadan reddeder (atlatma seçeneği yok)
+      ---
+      duration_ms: 71.521158
+      type: 'test'
+      ...
+    1..5
+ok 12 - doğrulama kapısı: Stop kancası ve imzalı paket kapısı
+  ---
+  duration_ms: 72.940335
+  type: 'suite'
+  ...
+# Subtest: doğrulama kapısı: kanca komutu (Stop / SubagentStop)
+    # Subtest: kancayı tetikleyen klasör (ajanın worktree'si) git deposu değilse durdurur ve nedenini yazar; ikinci denemede bırakır
+    ok 1 - kancayı tetikleyen klasör (ajanın worktree'si) git deposu değilse durdurur ve nedenini yazar; ikinci denemede bırakır
+      ---
+      duration_ms: 143.702352
+      type: 'test'
+      ...
+    # Subtest: depodaki .claude/settings.json Stop ve SubagentStop kancasını bu komuta bağlar
+    ok 2 - depodaki .claude/settings.json Stop ve SubagentStop kancasını bu komuta bağlar
+      ---
+      duration_ms: 0.400535
+      type: 'test'
+      ...
+    1..2
+ok 13 - doğrulama kapısı: kanca komutu (Stop / SubagentStop)
+  ---
+  duration_ms: 144.225214
+  type: 'suite'
+  ...
+# Subtest: kanıt aracı: çağrıldığı klasörde koşar (başka worktree'den çağrılınca ana depo değil)
+    # Subtest: komut ve commit, aracın deposu değil çağrılan klasörün deposu
+    ok 1 - komut ve commit, aracın deposu değil çağrılan klasörün deposu
+      ---
+      duration_ms: 177.44552
+      type: 'test'
+      ...
+    1..1
+ok 14 - kanıt aracı: çağrıldığı klasörde koşar (başka worktree'den çağrılınca ana depo değil)
+  ---
+  duration_ms: 177.550445
+  type: 'suite'
+  ...
+# Subtest: kanıt aracı: başarısız testlerin adı, yeri ve hatası
+    # Subtest: gerçek node --test (tap): yalnız en içteki düşen testler, üst grup adıyla; yer ve hata; çıktının sonunda
+    ok 1 - gerçek node --test (tap): yalnız en içteki düşen testler, üst grup adıyla; yer ve hata; çıktının sonunda
+      ---
+      duration_ms: 159.321944
+      type: 'test'
+      ...
+    # Subtest: gerçek node --test (spec): yalnız en içteki düşen testler, üst grup adıyla; yer ve hata; çıktının sonunda
+    ok 2 - gerçek node --test (spec): yalnız en içteki düşen testler, üst grup adıyla; yer ve hata; çıktının sonunda
+      ---
+      duration_ms: 174.800295
+      type: 'test'
+      ...
+    # Subtest: Windows yolu kısaltılır; senaryo koşucusunun ✗ satırları; geçen koşuda liste boş
+    ok 3 - Windows yolu kısaltılır; senaryo koşucusunun ✗ satırları; geçen koşuda liste boş
+      ---
+      duration_ms: 1.20684
+      type: 'test'
+      ...
+    # Subtest: kapı özeti başarısız testleri adıyla yazar
+    ok 4 - kapı özeti başarısız testleri adıyla yazar
+      ---
+      duration_ms: 63.249543
+      type: 'test'
+      ...
+    1..4
+ok 15 - kanıt aracı: başarısız testlerin adı, yeri ve hatası
+  ---
+  duration_ms: 398.849084
+  type: 'suite'
+  ...
+# Subtest: kanıt aracı: ci --bekle push'tan hemen sonra koşunun oluşmasını bekler
+    # Subtest: sürüyor ya da henüz koşu yok → bekle; GitHub okunamadı, YEŞİL, KIRMIZI → bekleme
+    ok 1 - sürüyor ya da henüz koşu yok → bekle; GitHub okunamadı, YEŞİL, KIRMIZI → bekleme
+      ---
+      duration_ms: 0.170456
+      type: 'test'
+      ...
+    1..1
+ok 16 - kanıt aracı: ci --bekle push'tan hemen sonra koşunun oluşmasını bekler
+  ---
+  duration_ms: 0.229666
+  type: 'suite'
+  ...
+# Subtest: Birleşik tur 6 — uyarının kapının görmediği artışı: günlük + zil; geri yükleme, azalma, yeniden açılış, iki şirket, yedek, gün dönümü sessiz
+    # Subtest: dış yazım (açılış günü girilen Kasa hareketinin tarihi başka bağlantıdan açılış öncesine): Mutabakat Testi günlük + zil + sunucu günlüğü, cümle düzeninde; sunum AYNEN; aynı artış ikinci kez bildirilmez
+    ok 1 - dış yazım (açılış günü girilen Kasa hareketinin tarihi başka bağlantıdan açılış öncesine): Mutabakat Testi günlük + zil + sunucu günlüğü, cümle düzeninde; sunum AYNEN; aynı artış ikinci kez bildirilmez
+      ---
+      duration_ms: 279.549808
+      type: 'test'
+      ...
+    # Subtest: azalma sessiz ve işaret onu izler: satır silinince (3 → 2) günlük yok; sonraki dış artış 2 → 3 diye bildirilir (iş parçacığı taraması da bulur)
+    ok 2 - azalma sessiz ve işaret onu izler: satır silinince (3 → 2) günlük yok; sonraki dış artış 2 → 3 diye bildirilir (iş parçacığı taraması da bulur)
+      ---
+      duration_ms: 247.82969
+      type: 'test'
+      ...
+    # Subtest: geri yükleme sayılır, ama dış artışı ÖRTMEZ: aynı aralıkta 1 geri yükleme + 1 dış artış → 2 → 4, açıklanamayan 1 → bildirilir; yalnız geri yükleme → sessiz
+    ok 3 - geri yükleme sayılır, ama dış artışı ÖRTMEZ: aynı aralıkta 1 geri yükleme + 1 dış artış → 2 → 4, açıklanamayan 1 → bildirilir; yalnız geri yükleme → sessiz
+      ---
+      duration_ms: 84.917768
+      type: 'test'
+      ...
+    # Subtest: üst kaydın geri yüklenmesi (silinmiş taksit kartı; nakit satırı yazılmaz, görünürlüğü döner) sayılır: 5 → 6 sessiz
+    ok 4 - üst kaydın geri yüklenmesi (silinmiş taksit kartı; nakit satırı yazılmaz, görünürlüğü döner) sayılır: 5 → 6 sessiz
+      ---
+      duration_ms: 22.838833
+      type: 'test'
+      ...
+    # Subtest: iş parçacığı taraması sürerken kesinleşen geri yükleme yanlış alarm vermez (ön koşul zorla: geri yükleme taramanın anlık görüntüsüne girdi — ders 20)
+    ok 5 - iş parçacığı taraması sürerken kesinleşen geri yükleme yanlış alarm vermez (ön koşul zorla: geri yükleme taramanın anlık görüntüsüne girdi — ders 20)
+      ---
+      duration_ms: 243.585465
+      type: 'test'
+      ...
+    # Subtest: gün dönümü (sahte saat ertesi gün 00:30): tarama yeniden koşar, sayı aynı → sessiz; yeni günde dış artış bildirilir
+    ok 6 - gün dönümü (sahte saat ertesi gün 00:30): tarama yeniden koşar, sayı aynı → sessiz; yeni günde dış artış bildirilir
+      ---
+      duration_ms: 248.456572
+      type: 'test'
+      ...
+    # Subtest: program yeniden açılınca: aynı artış İKİNCİ kez bildirilmez (açılış, Mutabakat Testi, iş parçacığı); açılıştan sonraki ilk nakit yazımı süzgeçli yolda; açılıştan sonra, İLK taramadan önce yapılan dış artış bildirilir (sayı açılışta ölçüldü)
+    ok 7 - program yeniden açılınca: aynı artış İKİNCİ kez bildirilmez (açılış, Mutabakat Testi, iş parçacığı); açılıştan sonraki ilk nakit yazımı süzgeçli yolda; açılıştan sonra, İLK taramadan önce yapılan dış artış bildirilir (sayı açılışta ölçüldü)
+      ---
+      duration_ms: 396.193024
+      type: 'test'
+      ...
+    # Subtest: iki şirket + yedekten geri yükleme: 002'nin geri yüklemesi / dış artışı yalnız 002'de; 002 yedekten dönünce (sayı geri gelir) yanlış alarm yok
+    ok 8 - iki şirket + yedekten geri yükleme: 002'nin geri yüklemesi / dış artışı yalnız 002'de; 002 yedekten dönünce (sayı geri gelir) yanlış alarm yok
+      ---
+      duration_ms: 854.397843
+      type: 'test'
+      ...
+    1..8
+ok 17 - Birleşik tur 6 — uyarının kapının görmediği artışı: günlük + zil; geri yükleme, azalma, yeniden açılış, iki şirket, yedek, gün dönümü sessiz
+  ---
+  duration_ms: 3152.791743
+  type: 'suite'
+  ...
+# Subtest: Birleşik tur 6 — dar kontrolün betiği: v2.4.9'un GERÇEK koduyla üretilmiş veri (açılış öncesi Kasa Giriş + cari nakit tahsilat) — dış artış bildirilir
+    # Subtest: 2.4.9 verisi açılır (uyarı 2, günlük yok, ilk yazım süzgeçli); açılış günü 250 TL Kasa Giriş başka bağlantıdan 08.03'e → uyarı 3 (tutar Kasa bakiyesinde kalır — açılışın içindeki günle iki kez), günlük + zil
+    ok 1 - 2.4.9 verisi açılır (uyarı 2, günlük yok, ilk yazım süzgeçli); açılış günü 250 TL Kasa Giriş başka bağlantıdan 08.03'e → uyarı 3 (tutar Kasa bakiyesinde kalır — açılışın içindeki günle iki kez), günlük + zil
+      ---
+      duration_ms: 758.977141
+      type: 'test'
+      ...
+    1..1
+ok 18 - Birleşik tur 6 — dar kontrolün betiği: v2.4.9'un GERÇEK koduyla üretilmiş veri (açılış öncesi Kasa Giriş + cari nakit tahsilat) — dış artış bildirilir
+  ---
+  duration_ms: 772.166072
+  type: 'suite'
+  ...
+# Subtest: S94 = A — Kasa açılışından önce tarihli Vergi Ödemesi: düzeltme reddinin iletisi çıkış yolunu söyler; iki yol da çalışır
+    # Subtest: açılıştan önce tarihli Vergi Ödemesi Kasa'dan düzeltilmek istenince 409 cash-tax-payment: ileti çıkış yolunu söyler (açılış günü / sonrası ya da açılışı öne almak); satır değişmez
+    ok 1 - açılıştan önce tarihli Vergi Ödemesi Kasa'dan düzeltilmek istenince 409 cash-tax-payment: ileti çıkış yolunu söyler (açılış günü / sonrası ya da açılışı öne almak); satır değişmez
+      ---
+      duration_ms: 4.56668
+      type: 'test'
+      ...
+    # Subtest: açılıştan SONRA tarihli Vergi Ödemesi: ileti değişmedi (çıkış yolu cümlesi yok)
+    ok 2 - açılıştan SONRA tarihli Vergi Ödemesi: ileti değişmedi (çıkış yolu cümlesi yok)
+      ---
+      duration_ms: 2.922855
+      type: 'test'
+      ...
+    # Subtest: iletideki yol 1: sil + aynı tarihle yeniden giriş 409 cash-before-opening (S12, istisna yok); açılış GÜNÜ tarihiyle 200; uyarı kalkar
+    ok 3 - iletideki yol 1: sil + aynı tarihle yeniden giriş 409 cash-before-opening (S12, istisna yok); açılış GÜNÜ tarihiyle 200; uyarı kalkar
+      ---
+      duration_ms: 40.373254
+      type: 'test'
+      ...
+    # Subtest: açılış GÜNÜ tarihli Vergi Ödemesi Kasa'dan düzeltilmek istenince: 409 cash-tax-payment, ileti değişmedi (çıkış yolu cümlesi yok — açılış günü 'önce' sayılmaz)
+    ok 4 - açılış GÜNÜ tarihli Vergi Ödemesi Kasa'dan düzeltilmek istenince: 409 cash-tax-payment, ileti değişmedi (çıkış yolu cümlesi yok — açılış günü 'önce' sayılmaz)
+      ---
+      duration_ms: 2.501888
+      type: 'test'
+      ...
+    # Subtest: iletideki yol 2: yönetici Kasa açılışını öne alır (04.03) → açılıştan önceki güne (05.03) Vergi Ödemesi 200
+    ok 5 - iletideki yol 2: yönetici Kasa açılışını öne alır (04.03) → açılıştan önceki güne (05.03) Vergi Ödemesi 200
+      ---
+      duration_ms: 24.483682
+      type: 'test'
+      ...
+    1..5
+ok 19 - S94 = A — Kasa açılışından önce tarihli Vergi Ödemesi: düzeltme reddinin iletisi çıkış yolunu söyler; iki yol da çalışır
+  ---
+  duration_ms: 594.278214
+  type: 'suite'
+  ...
+# Subtest: YAPIM AŞAMASI kapısı (yapimAsamasiGate)
+    # Subtest: dolu liste → ret; ileti kayıt sayısını ve paket dağılımını söyler
+    ok 1 - dolu liste → ret; ileti kayıt sayısını ve paket dağılımını söyler
+      ---
+      duration_ms: 2.165132
+      type: 'test'
+      ...
+    # Subtest: CRLF satır sonlu dolu liste de ret (ders 27)
+    ok 2 - CRLF satır sonlu dolu liste de ret (ders 27)
+      ---
+      duration_ms: 0.263562
+      type: 'test'
+      ...
+    # Subtest: boş liste → geçer (LF ve CRLF)
+    ok 3 - boş liste → geçer (LF ve CRLF)
+      ---
+      duration_ms: 0.363686
+      type: 'test'
+      ...
+    # Subtest: dosya yok / bozuk JSON / kayitlar dizisi yok → ret (okunamayan boş sayılmaz, ders 4)
+    ok 4 - dosya yok / bozuk JSON / kayitlar dizisi yok → ret (okunamayan boş sayılmaz, ders 4)
+      ---
+      duration_ms: 0.505047
+      type: 'test'
+      ...
+    # Subtest: yalnız 'eşleme' paketli kayıtlar → yine ret (sayılır; paket dağılımında görünür)
+    ok 5 - yalnız 'eşleme' paketli kayıtlar → yine ret (sayılır; paket dağılımında görünür)
+      ---
+      duration_ms: 0.351331
+      type: 'test'
+      ...
+    # Subtest: varsayılan yol çalışma dizininden bağımsız: başka klasörden çağrılınca da depodaki listeyi okur (aynı sonuç)
+    ok 6 - varsayılan yol çalışma dizininden bağımsız: başka klasörden çağrılınca da depodaki listeyi okur (aynı sonuç)
+      ---
+      duration_ms: 56.436011
+      type: 'test'
+      ...
+    # Subtest: varsayılan çağrı (release.mjs'in yolu: yol ve commit verilmez) listeyi commit'le karşılaştırır; başka yolda karşılaştırmaz
+    ok 7 - varsayılan çağrı (release.mjs'in yolu: yol ve commit verilmez) listeyi commit'le karşılaştırır; başka yolda karşılaştırmaz
+      ---
+      duration_ms: 1.508419
+      type: 'test'
+      ...
+    # Subtest: kapı cari kâhininin okuduğu dosyayı denetler (aynı yol)
+    ok 8 - kapı cari kâhininin okuduğu dosyayı denetler (aynı yol)
+      ---
+      duration_ms: 0.998668
+      type: 'test'
+      ...
+    1..8
+ok 20 - YAPIM AŞAMASI kapısı (yapimAsamasiGate)
+  ---
+  duration_ms: 63.736783
+  type: 'suite'
+  ...
+# Subtest: YAPIM AŞAMASI kapısı — liste commit'ten de okunur (skip-worktree / assume-unchanged atlatması)
+    # Subtest: çalışma ağacında boş, commit'te dolu → ret: 'FARKLI' + 'commit'te boş değil'; ikisi aynıysa (CRLF ↔ LF dahil) geçer; commit'ten okunamıyor / bozuk → ret
+    ok 1 - çalışma ağacında boş, commit'te dolu → ret: 'FARKLI' + 'commit'te boş değil'; ikisi aynıysa (CRLF ↔ LF dahil) geçer; commit'ten okunamıyor / bozuk → ret
+      ---
+      duration_ms: 0.826356
+      type: 'test'
+      ...
+    # Subtest: gerçek git: dolu liste commit'lenir, skip-worktree işaretlenir, çalışma ağacında boşaltılır → git status temiz (ön koşul), kapı ret; işaret yoksa status 'M' gösterir
+    ok 2 - gerçek git: dolu liste commit'lenir, skip-worktree işaretlenir, çalışma ağacında boşaltılır → git status temiz (ön koşul), kapı ret; işaret yoksa status 'M' gösterir
+      ---
+      duration_ms: 110.168012
+      type: 'test'
+      ...
+    # Subtest: gerçek git: replace + skip-worktree → git status temiz ve bayraksız 'git show' boş liste (ön koşul), kapı ret (yerine koyma okunmaz)
+    ok 3 - gerçek git: replace + skip-worktree → git status temiz ve bayraksız 'git show' boş liste (ön koşul), kapı ret (yerine koyma okunmaz)
+      ---
+      duration_ms: 146.128642
+      type: 'test'
+      ...
+    1..3
+ok 21 - YAPIM AŞAMASI kapısı — liste commit'ten de okunur (skip-worktree / assume-unchanged atlatması)
+  ---
+  duration_ms: 257.368783
+  type: 'suite'
+  ...
+# Subtest: tools/release.mjs YAPIM AŞAMASI kapısı
+    # Subtest: depodaki liste doluysa (ya da okunamıyorsa) paket aracı anahtarı okumadan reddeder ve listeyi söyler; boşsa liste iletisi yok
+    ok 1 - depodaki liste doluysa (ya da okunamıyorsa) paket aracı anahtarı okumadan reddeder ve listeyi söyler; boşsa liste iletisi yok
+      ---
+      duration_ms: 83.81791
+      type: 'test'
+      ...
+    # Subtest: release.mjs kapıyı atlatma seçeneği vermez (liste yolu dışarıdan verilemez)
+    ok 2 - release.mjs kapıyı atlatma seçeneği vermez (liste yolu dışarıdan verilemez)
+      ---
+      duration_ms: 0.379038
+      type: 'test'
+      ...
+    1..2
+ok 22 - tools/release.mjs YAPIM AŞAMASI kapısı
+  ---
+  duration_ms: 84.41374
+  type: 'suite'
+  ...
+1..22
+# tests 88
+# suites 22
+# pass 88
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6373.088005

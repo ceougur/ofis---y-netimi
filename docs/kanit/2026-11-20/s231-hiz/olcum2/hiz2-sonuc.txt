@@ -1,0 +1,170 @@
+kilit alındı 05:15 yük 1.05 1.49 1.62 2/119 5634 · nproc 4
+--- tur 1 c7b yük 1.05 1.49 1.62 2/120 5644
+(node:5646) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+kod /dev/shm/s231-a5ab/c7b · iş yükü yeni · veri: 1484 cari, 11448 kart, 11660 çek · aday 0 · yük 1.10 1.47 1.61
+cari-excel-2000: durum 200 · 311.8 ms · olay döngüsü en çok 307 ms · created=2000 updated=0 skipped=0
+taksit-excel-2000: durum 200 · 7262.3 ms · olay döngüsü en çok 7256.1 ms · created=2000 linked=0 skipped=0
+cek-500: durum 200 · 83.3 ms · olay döngüsü en çok 75.6 ms · created=500 linked=0 skippedTotal=0 skipped=0
+tablodan-aktar-onizleme: durum 200 · 178.3 ms · olay döngüsü en çok 0 ms · 
+    ön izleme: 300 kayıt, aktarılabilir 300, eşleşen cari 0
+tablodan-aktar-aktarim: durum 200 · 1524.9 ms · olay döngüsü en çok 1523.6 ms · created=300 linked=0 accountsCreated=300 skipped=0
+cari-excel-grup-2000: durum 200 · 375.4 ms · olay döngüsü en çok 367 ms · created=2000 updated=0 skipped=0
+taksit-excel-grup-2000: durum 200 · 13885.2 ms · olay döngüsü en çok 13883.1 ms · created=2000 linked=0 skipped=0
+    gruplar: 40
+SONUC {"root":"/dev/shm/s231-a5ab/c7b","mode":"yeni","load":"1.13 1.44 1.60","results":{"cari-excel-2000":{"ms":311.8,"loop":307,"status":200},"taksit-excel-2000":{"ms":7262.3,"loop":7256.1,"status":200},"cek-500":{"ms":83.3,"loop":75.6,"status":200},"tablodan-aktar-onizleme":{"ms":178.3,"loop":0,"status":200},"tablodan-aktar-aktarim":{"ms":1524.9,"loop":1523.6,"status":200},"cari-excel-grup-2000":{"ms":375.4,"loop":367,"status":200},"taksit-excel-grup-2000":{"ms":13885.2,"loop":13883.1,"status":200}}}
+--- tur 1 s223 yük 1.13 1.44 1.60 1/117 5716
+(node:5718) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+kod /dev/shm/s231-a5ab/eski · iş yükü yeni · veri: 1484 cari, 11448 kart, 11660 çek · aday 0 · yük 1.36 1.48 1.61
+cari-excel-2000: durum 200 · 350.3 ms · olay döngüsü en çok 345.5 ms · created=2000 updated=0 skipped=0
+taksit-excel-2000: durum 200 · 7073.1 ms · olay döngüsü en çok 7059 ms · created=2000 linked=0 skipped=0
+cek-500: durum 200 · 92.5 ms · olay döngüsü en çok 85.5 ms · created=500 linked=0 skippedTotal=0 skipped=0
+tablodan-aktar-onizleme: durum 200 · 141.9 ms · olay döngüsü en çok 0 ms · 
+    ön izleme: 300 kayıt, aktarılabilir 300, eşleşen cari 0
+tablodan-aktar-aktarim: durum 200 · 1485.2 ms · olay döngüsü en çok 0 ms · created=300 linked=0 accountsCreated=300 skipped=0
+cari-excel-grup-2000: durum 200 · 425 ms · olay döngüsü en çok 418.6 ms · created=2000 updated=0 skipped=0
+taksit-excel-grup-2000: durum 200 · 12205.8 ms · olay döngüsü en çok 12197 ms · created=2000 linked=0 skipped=0
+    gruplar: 40
+SONUC {"root":"/dev/shm/s231-a5ab/eski","mode":"yeni","load":"1.38 1.47 1.60","results":{"cari-excel-2000":{"ms":350.3,"loop":345.5,"status":200},"taksit-excel-2000":{"ms":7073.1,"loop":7059,"status":200},"cek-500":{"ms":92.5,"loop":85.5,"status":200},"tablodan-aktar-onizleme":{"ms":141.9,"loop":0,"status":200},"tablodan-aktar-aktarim":{"ms":1485.2,"loop":0,"status":200},"cari-excel-grup-2000":{"ms":425,"loop":418.6,"status":200},"taksit-excel-grup-2000":{"ms":12205.8,"loop":12197,"status":200}}}
+--- tur 1 yeni yük 1.38 1.47 1.60 1/123 5794
+(node:5796) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+kod /dev/shm/s231-a5ab/yeni · iş yükü yeni · veri: 1484 cari, 11448 kart, 11660 çek · aday 0 · yük 1.65 1.53 1.62
+cari-excel-2000: durum 200 · 338 ms · olay döngüsü en çok 333.2 ms · created=2000 updated=0 skipped=0
+taksit-excel-2000: durum 200 · 7205.2 ms · olay döngüsü en çok 7197.4 ms · created=2000 linked=0 skipped=0
+cek-500: durum 200 · 86 ms · olay döngüsü en çok 78.7 ms · created=500 linked=0 skippedTotal=0 skipped=0
+tablodan-aktar-onizleme: durum 200 · 135.9 ms · olay döngüsü en çok 0 ms · 
+    ön izleme: 300 kayıt, aktarılabilir 300, eşleşen cari 0
+tablodan-aktar-aktarim: durum 200 · 1435.5 ms · olay döngüsü en çok 1433.4 ms · created=300 linked=0 accountsCreated=300 skipped=0
+cari-excel-grup-2000: durum 200 · 340.6 ms · olay döngüsü en çok 333.2 ms · created=2000 updated=0 skipped=0
+taksit-excel-grup-2000: durum 200 · 12369.8 ms · olay döngüsü en çok 12364.8 ms · created=2000 linked=0 skipped=0
+    gruplar: 40
+SONUC {"root":"/dev/shm/s231-a5ab/yeni","mode":"yeni","load":"1.75 1.56 1.63","results":{"cari-excel-2000":{"ms":338,"loop":333.2,"status":200},"taksit-excel-2000":{"ms":7205.2,"loop":7197.4,"status":200},"cek-500":{"ms":86,"loop":78.7,"status":200},"tablodan-aktar-onizleme":{"ms":135.9,"loop":0,"status":200},"tablodan-aktar-aktarim":{"ms":1435.5,"loop":1433.4,"status":200},"cari-excel-grup-2000":{"ms":340.6,"loop":333.2,"status":200},"taksit-excel-grup-2000":{"ms":12369.8,"loop":12364.8,"status":200}}}
+--- tur 2 yeni yük 1.75 1.56 1.63 1/119 5816
+(node:5818) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+kod /dev/shm/s231-a5ab/yeni · iş yükü yeni · veri: 1484 cari, 11448 kart, 11660 çek · aday 0 · yük 2.03 1.65 1.66
+cari-excel-2000: durum 200 · 508.1 ms · olay döngüsü en çok 502.8 ms · created=2000 updated=0 skipped=0
+taksit-excel-2000: durum 200 · 6998.3 ms · olay döngüsü en çok 6983.5 ms · created=2000 linked=0 skipped=0
+cek-500: durum 200 · 80.1 ms · olay döngüsü en çok 76.7 ms · created=500 linked=0 skippedTotal=0 skipped=0
+tablodan-aktar-onizleme: durum 200 · 133.6 ms · olay döngüsü en çok 0 ms · 
+    ön izleme: 300 kayıt, aktarılabilir 300, eşleşen cari 0
+tablodan-aktar-aktarim: durum 200 · 1496.2 ms · olay döngüsü en çok 1494.2 ms · created=300 linked=0 accountsCreated=300 skipped=0
+cari-excel-grup-2000: durum 200 · 352.8 ms · olay döngüsü en çok 346.6 ms · created=2000 updated=0 skipped=0
+taksit-excel-grup-2000: durum 200 · 12509.7 ms · olay döngüsü en çok 12507.4 ms · created=2000 linked=0 skipped=0
+    gruplar: 40
+SONUC {"root":"/dev/shm/s231-a5ab/yeni","mode":"yeni","load":"1.87 1.64 1.65","results":{"cari-excel-2000":{"ms":508.1,"loop":502.8,"status":200},"taksit-excel-2000":{"ms":6998.3,"loop":6983.5,"status":200},"cek-500":{"ms":80.1,"loop":76.7,"status":200},"tablodan-aktar-onizleme":{"ms":133.6,"loop":0,"status":200},"tablodan-aktar-aktarim":{"ms":1496.2,"loop":1494.2,"status":200},"cari-excel-grup-2000":{"ms":352.8,"loop":346.6,"status":200},"taksit-excel-grup-2000":{"ms":12509.7,"loop":12507.4,"status":200}}}
+--- tur 2 s223 yük 1.87 1.64 1.65 1/123 5845
+(node:5847) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+kod /dev/shm/s231-a5ab/eski · iş yükü yeni · veri: 1484 cari, 11448 kart, 11660 çek · aday 0 · yük 1.65 1.60 1.64
+cari-excel-2000: durum 200 · 331.1 ms · olay döngüsü en çok 326.4 ms · created=2000 updated=0 skipped=0
+taksit-excel-2000: durum 200 · 7088.5 ms · olay döngüsü en çok 7080 ms · created=2000 linked=0 skipped=0
+cek-500: durum 200 · 83 ms · olay döngüsü en çok 77.2 ms · created=500 linked=0 skippedTotal=0 skipped=0
+tablodan-aktar-onizleme: durum 200 · 129.9 ms · olay döngüsü en çok 0 ms · 
+    ön izleme: 300 kayıt, aktarılabilir 300, eşleşen cari 0
+tablodan-aktar-aktarim: durum 200 · 1627.7 ms · olay döngüsü en çok 1626.3 ms · created=300 linked=0 accountsCreated=300 skipped=0
+cari-excel-grup-2000: durum 200 · 338.1 ms · olay döngüsü en çok 332.4 ms · created=2000 updated=0 skipped=0
+taksit-excel-grup-2000: durum 200 · 12970.9 ms · olay döngüsü en çok 12968.8 ms · created=2000 linked=0 skipped=0
+    gruplar: 40
+SONUC {"root":"/dev/shm/s231-a5ab/eski","mode":"yeni","load":"1.76 1.63 1.65","results":{"cari-excel-2000":{"ms":331.1,"loop":326.4,"status":200},"taksit-excel-2000":{"ms":7088.5,"loop":7080,"status":200},"cek-500":{"ms":83,"loop":77.2,"status":200},"tablodan-aktar-onizleme":{"ms":129.9,"loop":0,"status":200},"tablodan-aktar-aktarim":{"ms":1627.7,"loop":1626.3,"status":200},"cari-excel-grup-2000":{"ms":338.1,"loop":332.4,"status":200},"taksit-excel-grup-2000":{"ms":12970.9,"loop":12968.8,"status":200}}}
+--- tur 2 c7b yük 1.76 1.63 1.65 1/120 5863
+(node:5865) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+kod /dev/shm/s231-a5ab/c7b · iş yükü yeni · veri: 1484 cari, 11448 kart, 11660 çek · aday 0 · yük 1.50 1.58 1.63
+cari-excel-2000: durum 200 · 359.8 ms · olay döngüsü en çok 354.2 ms · created=2000 updated=0 skipped=0
+taksit-excel-2000: durum 200 · 7698.2 ms · olay döngüsü en çok 7688.2 ms · created=2000 linked=0 skipped=0
+cek-500: durum 200 · 75.5 ms · olay döngüsü en çok 72.3 ms · created=500 linked=0 skippedTotal=0 skipped=0
+tablodan-aktar-onizleme: durum 200 · 193.6 ms · olay döngüsü en çok 0 ms · 
+    ön izleme: 300 kayıt, aktarılabilir 300, eşleşen cari 0
+tablodan-aktar-aktarim: durum 200 · 1538.7 ms · olay döngüsü en çok 1537.2 ms · created=300 linked=0 accountsCreated=300 skipped=0
+cari-excel-grup-2000: durum 200 · 348.3 ms · olay döngüsü en çok 341.3 ms · created=2000 updated=0 skipped=0
+taksit-excel-grup-2000: durum 200 · 12353 ms · olay döngüsü en çok 12348 ms · created=2000 linked=0 skipped=0
+    gruplar: 40
+SONUC {"root":"/dev/shm/s231-a5ab/c7b","mode":"yeni","load":"1.33 1.53 1.61","results":{"cari-excel-2000":{"ms":359.8,"loop":354.2,"status":200},"taksit-excel-2000":{"ms":7698.2,"loop":7688.2,"status":200},"cek-500":{"ms":75.5,"loop":72.3,"status":200},"tablodan-aktar-onizleme":{"ms":193.6,"loop":0,"status":200},"tablodan-aktar-aktarim":{"ms":1538.7,"loop":1537.2,"status":200},"cari-excel-grup-2000":{"ms":348.3,"loop":341.3,"status":200},"taksit-excel-grup-2000":{"ms":12353,"loop":12348,"status":200}}}
+--- tur 3 s223 yük 1.33 1.53 1.61 1/123 5884
+(node:5886) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+kod /dev/shm/s231-a5ab/eski · iş yükü yeni · veri: 1484 cari, 11448 kart, 11660 çek · aday 0 · yük 1.21 1.49 1.59
+cari-excel-2000: durum 200 · 325.1 ms · olay döngüsü en çok 320.3 ms · created=2000 updated=0 skipped=0
+taksit-excel-2000: durum 200 · 6941.5 ms · olay döngüsü en çok 6929 ms · created=2000 linked=0 skipped=0
+cek-500: durum 200 · 88.7 ms · olay döngüsü en çok 81.5 ms · created=500 linked=0 skippedTotal=0 skipped=0
+tablodan-aktar-onizleme: durum 200 · 146.4 ms · olay döngüsü en çok 0 ms · 
+    ön izleme: 300 kayıt, aktarılabilir 300, eşleşen cari 0
+tablodan-aktar-aktarim: durum 200 · 1428.5 ms · olay döngüsü en çok 1427.1 ms · created=300 linked=0 accountsCreated=300 skipped=0
+cari-excel-grup-2000: durum 200 · 348.7 ms · olay döngüsü en çok 343.1 ms · created=2000 updated=0 skipped=0
+taksit-excel-grup-2000: durum 200 · 11788.7 ms · olay döngüsü en çok 11786 ms · created=2000 linked=0 skipped=0
+    gruplar: 40
+SONUC {"root":"/dev/shm/s231-a5ab/eski","mode":"yeni","load":"1.47 1.52 1.60","results":{"cari-excel-2000":{"ms":325.1,"loop":320.3,"status":200},"taksit-excel-2000":{"ms":6941.5,"loop":6929,"status":200},"cek-500":{"ms":88.7,"loop":81.5,"status":200},"tablodan-aktar-onizleme":{"ms":146.4,"loop":0,"status":200},"tablodan-aktar-aktarim":{"ms":1428.5,"loop":1427.1,"status":200},"cari-excel-grup-2000":{"ms":348.7,"loop":343.1,"status":200},"taksit-excel-grup-2000":{"ms":11788.7,"loop":11786,"status":200}}}
+--- tur 3 yeni yük 1.47 1.52 1.60 1/113 5903
+(node:5905) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+kod /dev/shm/s231-a5ab/yeni · iş yükü yeni · veri: 1484 cari, 11448 kart, 11660 çek · aday 0 · yük 1.34 1.49 1.59
+cari-excel-2000: durum 200 · 334.9 ms · olay döngüsü en çok 330 ms · created=2000 updated=0 skipped=0
+taksit-excel-2000: durum 200 · 6849.7 ms · olay döngüsü en çok 6840.9 ms · created=2000 linked=0 skipped=0
+cek-500: durum 200 · 90.4 ms · olay döngüsü en çok 82.9 ms · created=500 linked=0 skippedTotal=0 skipped=0
+tablodan-aktar-onizleme: durum 200 · 133.5 ms · olay döngüsü en çok 0 ms · 
+    ön izleme: 300 kayıt, aktarılabilir 300, eşleşen cari 0
+tablodan-aktar-aktarim: durum 200 · 1326.8 ms · olay döngüsü en çok 1322.3 ms · created=300 linked=0 accountsCreated=300 skipped=0
+cari-excel-grup-2000: durum 200 · 392.6 ms · olay döngüsü en çok 386.7 ms · created=2000 updated=0 skipped=0
+taksit-excel-grup-2000: durum 200 · 12017.7 ms · olay döngüsü en çok 12012.5 ms · created=2000 linked=0 skipped=0
+    gruplar: 40
+SONUC {"root":"/dev/shm/s231-a5ab/yeni","mode":"yeni","load":"1.24 1.45 1.57","results":{"cari-excel-2000":{"ms":334.9,"loop":330,"status":200},"taksit-excel-2000":{"ms":6849.7,"loop":6840.9,"status":200},"cek-500":{"ms":90.4,"loop":82.9,"status":200},"tablodan-aktar-onizleme":{"ms":133.5,"loop":0,"status":200},"tablodan-aktar-aktarim":{"ms":1326.8,"loop":1322.3,"status":200},"cari-excel-grup-2000":{"ms":392.6,"loop":386.7,"status":200},"taksit-excel-grup-2000":{"ms":12017.7,"loop":12012.5,"status":200}}}
+--- tur 3 c7b yük 1.22 1.45 1.57 1/117 5927
+(node:5929) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+kod /dev/shm/s231-a5ab/c7b · iş yükü yeni · veri: 1484 cari, 11448 kart, 11660 çek · aday 0 · yük 1.16 1.42 1.56
+cari-excel-2000: durum 200 · 338.2 ms · olay döngüsü en çok 333.4 ms · created=2000 updated=0 skipped=0
+taksit-excel-2000: durum 200 · 6710.3 ms · olay döngüsü en çok 6702.5 ms · created=2000 linked=0 skipped=0
+cek-500: durum 200 · 75.7 ms · olay döngüsü en çok 68.8 ms · created=500 linked=0 skippedTotal=0 skipped=0
+tablodan-aktar-onizleme: durum 200 · 160 ms · olay döngüsü en çok 0 ms · 
+    ön izleme: 300 kayıt, aktarılabilir 300, eşleşen cari 0
+tablodan-aktar-aktarim: durum 200 · 1395.6 ms · olay döngüsü en çok 1393.6 ms · created=300 linked=0 accountsCreated=300 skipped=0
+cari-excel-grup-2000: durum 200 · 330.3 ms · olay döngüsü en çok 322.7 ms · created=2000 updated=0 skipped=0
+taksit-excel-grup-2000: durum 200 · 12042.2 ms · olay döngüsü en çok 12037.7 ms · created=2000 linked=0 skipped=0
+    gruplar: 40
+SONUC {"root":"/dev/shm/s231-a5ab/c7b","mode":"yeni","load":"1.11 1.39 1.54","results":{"cari-excel-2000":{"ms":338.2,"loop":333.4,"status":200},"taksit-excel-2000":{"ms":6710.3,"loop":6702.5,"status":200},"cek-500":{"ms":75.7,"loop":68.8,"status":200},"tablodan-aktar-onizleme":{"ms":160,"loop":0,"status":200},"tablodan-aktar-aktarim":{"ms":1395.6,"loop":1393.6,"status":200},"cari-excel-grup-2000":{"ms":330.3,"loop":322.7,"status":200},"taksit-excel-grup-2000":{"ms":12042.2,"loop":12037.7,"status":200}}}
+--- tur 4 c7b yük 1.11 1.39 1.54 1/114 5946
+(node:5948) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+kod /dev/shm/s231-a5ab/c7b · iş yükü yeni · veri: 1484 cari, 11448 kart, 11660 çek · aday 0 · yük 1.07 1.36 1.53
+cari-excel-2000: durum 200 · 314.1 ms · olay döngüsü en çok 308 ms · created=2000 updated=0 skipped=0
+taksit-excel-2000: durum 200 · 6742.6 ms · olay döngüsü en çok 6727.7 ms · created=2000 linked=0 skipped=0
+cek-500: durum 200 · 69.3 ms · olay döngüsü en çok 66.1 ms · created=500 linked=0 skippedTotal=0 skipped=0
+tablodan-aktar-onizleme: durum 200 · 158.4 ms · olay döngüsü en çok 0 ms · 
+    ön izleme: 300 kayıt, aktarılabilir 300, eşleşen cari 0
+tablodan-aktar-aktarim: durum 200 · 1384.4 ms · olay döngüsü en çok 1383.1 ms · created=300 linked=0 accountsCreated=300 skipped=0
+cari-excel-grup-2000: durum 200 · 337.1 ms · olay döngüsü en çok 331.1 ms · created=2000 updated=0 skipped=0
+taksit-excel-grup-2000: durum 200 · 11758.8 ms · olay döngüsü en çok 11752.4 ms · created=2000 linked=0 skipped=0
+    gruplar: 40
+SONUC {"root":"/dev/shm/s231-a5ab/c7b","mode":"yeni","load":"1.05 1.33 1.52","results":{"cari-excel-2000":{"ms":314.1,"loop":308,"status":200},"taksit-excel-2000":{"ms":6742.6,"loop":6727.7,"status":200},"cek-500":{"ms":69.3,"loop":66.1,"status":200},"tablodan-aktar-onizleme":{"ms":158.4,"loop":0,"status":200},"tablodan-aktar-aktarim":{"ms":1384.4,"loop":1383.1,"status":200},"cari-excel-grup-2000":{"ms":337.1,"loop":331.1,"status":200},"taksit-excel-grup-2000":{"ms":11758.8,"loop":11752.4,"status":200}}}
+--- tur 4 yeni yük 1.05 1.33 1.52 1/116 5968
+(node:5970) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+kod /dev/shm/s231-a5ab/yeni · iş yükü yeni · veri: 1484 cari, 11448 kart, 11660 çek · aday 0 · yük 1.04 1.31 1.51
+cari-excel-2000: durum 200 · 329 ms · olay döngüsü en çok 324.3 ms · created=2000 updated=0 skipped=0
+taksit-excel-2000: durum 200 · 6708.4 ms · olay döngüsü en çok 6689.9 ms · created=2000 linked=0 skipped=0
+cek-500: durum 200 · 81.9 ms · olay döngüsü en çok 75.8 ms · created=500 linked=0 skippedTotal=0 skipped=0
+tablodan-aktar-onizleme: durum 200 · 121.2 ms · olay döngüsü en çok 0 ms · 
+    ön izleme: 300 kayıt, aktarılabilir 300, eşleşen cari 0
+tablodan-aktar-aktarim: durum 200 · 1297.2 ms · olay döngüsü en çok 1295 ms · created=300 linked=0 accountsCreated=300 skipped=0
+cari-excel-grup-2000: durum 200 · 332.7 ms · olay döngüsü en çok 327.2 ms · created=2000 updated=0 skipped=0
+taksit-excel-grup-2000: durum 200 · 11834.4 ms · olay döngüsü en çok 11827.9 ms · created=2000 linked=0 skipped=0
+    gruplar: 40
+SONUC {"root":"/dev/shm/s231-a5ab/yeni","mode":"yeni","load":"1.02 1.29 1.49","results":{"cari-excel-2000":{"ms":329,"loop":324.3,"status":200},"taksit-excel-2000":{"ms":6708.4,"loop":6689.9,"status":200},"cek-500":{"ms":81.9,"loop":75.8,"status":200},"tablodan-aktar-onizleme":{"ms":121.2,"loop":0,"status":200},"tablodan-aktar-aktarim":{"ms":1297.2,"loop":1295,"status":200},"cari-excel-grup-2000":{"ms":332.7,"loop":327.2,"status":200},"taksit-excel-grup-2000":{"ms":11834.4,"loop":11827.9,"status":200}}}
+--- tur 4 s223 yük 1.02 1.28 1.49 1/113 5986
+(node:5988) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+kod /dev/shm/s231-a5ab/eski · iş yükü yeni · veri: 1484 cari, 11448 kart, 11660 çek · aday 0 · yük 1.02 1.26 1.48
+cari-excel-2000: durum 200 · 375.1 ms · olay döngüsü en çok 370.4 ms · created=2000 updated=0 skipped=0
+taksit-excel-2000: durum 200 · 6865.2 ms · olay döngüsü en çok 6849.3 ms · created=2000 linked=0 skipped=0
+cek-500: durum 200 · 96 ms · olay döngüsü en çok 90.4 ms · created=500 linked=0 skippedTotal=0 skipped=0
+tablodan-aktar-onizleme: durum 200 · 137.9 ms · olay döngüsü en çok 0 ms · 
+    ön izleme: 300 kayıt, aktarılabilir 300, eşleşen cari 0
+tablodan-aktar-aktarim: durum 200 · 1405.9 ms · olay döngüsü en çok 1401.9 ms · created=300 linked=0 accountsCreated=300 skipped=0
+cari-excel-grup-2000: durum 200 · 352 ms · olay döngüsü en çok 346.3 ms · created=2000 updated=0 skipped=0
+taksit-excel-grup-2000: durum 200 · 12594.4 ms · olay döngüsü en çok 12591.3 ms · created=2000 linked=0 skipped=0
+    gruplar: 40
+SONUC {"root":"/dev/shm/s231-a5ab/eski","mode":"yeni","load":"1.01 1.25 1.47","results":{"cari-excel-2000":{"ms":375.1,"loop":370.4,"status":200},"taksit-excel-2000":{"ms":6865.2,"loop":6849.3,"status":200},"cek-500":{"ms":96,"loop":90.4,"status":200},"tablodan-aktar-onizleme":{"ms":137.9,"loop":0,"status":200},"tablodan-aktar-aktarim":{"ms":1405.9,"loop":1401.9,"status":200},"cari-excel-grup-2000":{"ms":352,"loop":346.3,"status":200},"taksit-excel-grup-2000":{"ms":12594.4,"loop":12591.3,"status":200}}}
+BİTTİ 05:24 yük 1.01 1.25 1.47 1/116 6006

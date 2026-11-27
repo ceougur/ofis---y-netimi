@@ -1,0 +1,32 @@
+{
+  "ad": "d2-hacim-sonra-3",
+  "komut": "node --disable-warning=ExperimentalWarning test/devir-d2-hacim-250.mjs --hareket 100000 --taban /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2-hacim-taban --json /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2-calisma/hacim-sonra-3.json",
+  "commit": "5259bffaf0c081cac7fda9a999f509eb2e02c393",
+  "dal": "worktree-agent-ab27a0002c2919cb2",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T11:49:49.367Z",
+  "sure_sn": 21,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 11,
+    "gecen": 11,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2-calisma/kanit/2026-11-06/d2-hacim-sonra-3.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ab27a0002c2919cb2",
+  "ham_cikti_sha256": "22dc334d6dc27b0429bc1753500503355447b4f76e245c27c510e321552e645a",
+  "ham_cikti_bayt": 2295
+}

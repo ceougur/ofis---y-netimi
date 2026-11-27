@@ -1,0 +1,246 @@
+{
+ "aciklama": "2.5.0 Ç5 bakımı 4 (D12): KİLİTSİZ göç — geçiş günü YOK. Mart'ın göç öncesi mahsubu yok → I1 / R1 göçte YENİ yöne (B 191 / A 391); Temmuz'un mahsubu göçten önce yazılmış → I2 ESKİ yön (B-6 kilitten bağımsız), ters kaydedilince yeni yön; Mart mahsubu göçten sonra yeni yönle (H 220, İ 120; 360 aynı 100). Yalnız model (göç).",
+ "simdi": "2026-08-31T17:00:00+03:00",
+ "bugun": "2026-08-31",
+ "olaylar": [
+  {
+   "id": "M1",
+   "tur": "cari",
+   "ad": "Geçiş Alfa Ltd.",
+   "tip": "customer"
+  },
+  {
+   "id": "T1",
+   "tur": "cari",
+   "ad": "Geçiş Tedarik A.Ş.",
+   "tip": "supplier"
+  },
+  {
+   "id": "F1",
+   "tur": "fatura",
+   "fatura": "satis",
+   "tarih": "2026-03-01",
+   "cari": "M1",
+   "kalemler": [
+    {
+     "ad": "Hizmet",
+     "miktar": 10,
+     "fiyat": 100,
+     "kdv": 20
+    }
+   ],
+   "odeme": {
+    "acik": true
+   }
+  },
+  {
+   "id": "A1",
+   "tur": "fatura",
+   "fatura": "alis",
+   "tarih": "2026-03-05",
+   "cari": "T1",
+   "kalemler": [
+    {
+     "ad": "Malzeme",
+     "miktar": 10,
+     "fiyat": 50,
+     "kdv": 20
+    }
+   ],
+   "odeme": {
+    "acik": true
+   }
+  },
+  {
+   "id": "I1",
+   "tur": "fatura",
+   "fatura": "satis_iade",
+   "tarih": "2026-03-10",
+   "cari": "M1",
+   "asil": "F1",
+   "kalemler": [
+    {
+     "satir": 0,
+     "miktar": 1
+    }
+   ]
+  },
+  {
+   "id": "R1",
+   "tur": "fatura",
+   "fatura": "alis_iade",
+   "tarih": "2026-03-12",
+   "cari": "T1",
+   "asil": "A1",
+   "kalemler": [
+    {
+     "satir": 0,
+     "miktar": 2
+    }
+   ]
+  },
+  {
+   "id": "F2",
+   "tur": "fatura",
+   "fatura": "satis",
+   "tarih": "2026-07-05",
+   "cari": "M1",
+   "kalemler": [
+    {
+     "ad": "Hizmet",
+     "miktar": 10,
+     "fiyat": 50,
+     "kdv": 20
+    }
+   ],
+   "odeme": {
+    "acik": true
+   }
+  },
+  {
+   "id": "I2",
+   "tur": "fatura",
+   "fatura": "satis_iade",
+   "tarih": "2026-07-08",
+   "cari": "M1",
+   "asil": "F2",
+   "kalemler": [
+    {
+     "satir": 0,
+     "miktar": 2
+    }
+   ]
+  },
+  {
+   "id": "MH07",
+   "tur": "kdv_mahsup",
+   "tarih": "2026-07-31",
+   "ay": "2026-07"
+  },
+  {
+   "id": "F3",
+   "tur": "fatura",
+   "fatura": "satis",
+   "tarih": "2026-08-05",
+   "cari": "M1",
+   "kalemler": [
+    {
+     "ad": "Hizmet",
+     "miktar": 10,
+     "fiyat": 40,
+     "kdv": 20
+    }
+   ],
+   "odeme": {
+    "acik": true
+   }
+  },
+  {
+   "id": "I3",
+   "tur": "fatura",
+   "fatura": "satis_iade",
+   "tarih": "2026-08-10",
+   "cari": "M1",
+   "asil": "F3",
+   "kalemler": [
+    {
+     "satir": 0,
+     "miktar": 1
+    }
+   ]
+  },
+  {
+   "id": "G",
+   "tur": "goc",
+   "tarih": "2026-08-20"
+  },
+  {
+   "id": "K1",
+   "tur": "kontrol",
+   "tarih": "2026-08-31"
+  },
+  {
+   "id": "GA",
+   "tur": "kdv_mahsup_geri_al",
+   "tarih": "2026-08-31",
+   "mahsup": "MH07"
+  },
+  {
+   "id": "K2",
+   "tur": "kontrol",
+   "tarih": "2026-08-31"
+  },
+  {
+   "id": "MH07B",
+   "tur": "kdv_mahsup",
+   "tarih": "2026-08-31",
+   "ay": "2026-07"
+  },
+  {
+   "id": "K3",
+   "tur": "kontrol",
+   "tarih": "2026-08-31"
+  },
+  {
+   "id": "MH03B",
+   "tur": "kdv_mahsup",
+   "tarih": "2026-08-31",
+   "ay": "2026-03"
+  },
+  {
+   "id": "K4",
+   "tur": "kontrol",
+   "tarih": "2026-08-31"
+  }
+ ],
+ "elleBeklenenTL": {
+  "aciklama": "TL. K1: 391 = −200 (F1) − 20 (R1 yeni) − 100 (F2) + 20 (I2 eski) + 80 (MH07) − 80 (F3) = −300; 191 = 100 (A1) + 20 (I1 yeni) + 8 (I3 yeni) = 128; 360 −80. K2 (MH07 ters; I2 yeni): 391 = −300 − 80 − 20 = −400, 191 = 128 + 20 = 148, 360 0. K3 (MH07B: B 391 100 / A 191 20 / A 360 80): 391 −300, 191 128, 360 −80. K4 (MH03B, yeni yön: H = 180 + 40 = 220, İ = 80 + 40 = 120 → B 391 220 / A 191 120 / A 360 100): 391 −80, 191 8, 360 −180.",
+  "kontroller": {
+   "K1": {
+    "120": 1992,
+    "600": -1900,
+    "770": 400,
+    "320": -480,
+    "610": 240,
+    "391": -300,
+    "191": 128,
+    "360": -80
+   },
+   "K2": {
+    "120": 1992,
+    "600": -1900,
+    "770": 400,
+    "320": -480,
+    "610": 240,
+    "391": -400,
+    "191": 148
+   },
+   "K3": {
+    "120": 1992,
+    "600": -1900,
+    "770": 400,
+    "320": -480,
+    "610": 240,
+    "391": -300,
+    "191": 128,
+    "360": -80
+   },
+   "K4": {
+    "120": 1992,
+    "600": -1900,
+    "770": 400,
+    "320": -480,
+    "610": 240,
+    "391": -80,
+    "191": 8,
+    "360": -180
+   }
+  },
+  "retler": [],
+  "acilisOlabilir": [],
+  "cari": {
+   "Geçiş Alfa Ltd.": 1992,
+   "Geçiş Tedarik A.Ş.": -480
+  }
+ }
+}

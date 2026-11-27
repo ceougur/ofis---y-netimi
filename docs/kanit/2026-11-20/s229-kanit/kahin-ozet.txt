@@ -1,0 +1,9 @@
+kahin-defter-yeni-UTC çıkış 0 : [kanit] s229-kahin-defter-yeni-UTC: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit c25b4c1 +1 değişmiş dosya +1 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4
+kahin-cari-yeni-UTC çıkış 1 : [kanit] s229-kahin-cari-yeni-UTC: BAŞARISIZ (çıkış 1; 46 başarısız, 0 iptal) · çıkış 1 · 17602/17648 geçti, 46 başarısız, 0 iptal, 0 atlanan · commit c25b4c1 +1 değişmiş dosya +1 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4
+kahin-defter-yeni-Istanbul çıkış 0 : [kanit] s229-kahin-defter-yeni-Istanbul: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 336c5f1 +2 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4
+kahin-cari-yeni-Istanbul çıkış 1 : [kanit] s229-kahin-cari-yeni-Istanbul: BAŞARISIZ (çıkış 1; 46 başarısız, 0 iptal) · çıkış 1 · 17602/17648 geçti, 46 başarısız, 0 iptal, 0 atlanan · commit 336c5f1 +2 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4
+kahin-defter-eski-UTC çıkış 0 : [kanit] s229-kahin-defter-eski-UTC: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit undefined · linux 6.18.44-fc-v726 x64 · Node v22.23.4
+kahin-cari-eski-UTC çıkış 0 : [kanit] s229-kahin-cari-eski-UTC: GEÇTİ · çıkış 0 · 17648/17648 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit undefined · linux 6.18.44-fc-v726 x64 · Node v22.23.4
+kahin-defter-eski-Istanbul çıkış 0 : [kanit] s229-kahin-defter-eski-Istanbul: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit undefined · linux 6.18.44-fc-v726 x64 · Node v22.23.4
+kahin-cari-eski-Istanbul çıkış 0 : [kanit] s229-kahin-cari-eski-Istanbul: GEÇTİ · çıkış 0 · 17648/17648 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit undefined · linux 6.18.44-fc-v726 x64 · Node v22.23.4
+yapim-yaz çıkış 0 ; fark: FARKLI

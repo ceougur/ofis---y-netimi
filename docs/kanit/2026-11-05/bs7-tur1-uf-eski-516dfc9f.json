@@ -1,0 +1,32 @@
+{
+  "ad": "bs7-tur1-uf-eski-516dfc9f",
+  "komut": "node --test --test-name-pattern BS-7 /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bs7-tur1-eski-516dfc9f/test/update-flow.test.mjs",
+  "commit": "516dfc9f5ff8f2d190b6e300d353c575a33b8928",
+  "dal": "worktree-agent-ac6f71161a5c927c0",
+  "kirli": 3,
+  "izlenmeyen": 9,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T18:30:45.820Z",
+  "sure_sn": 4.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 1,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/bs7-tur1-uf-eski-516dfc9f.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ac6f71161a5c927c0",
+  "ham_cikti_sha256": "177bc84eb9ee1262588c43592578d6b5754a2a3e86faf669fcba69e696aa2549",
+  "ham_cikti_bayt": 729
+}

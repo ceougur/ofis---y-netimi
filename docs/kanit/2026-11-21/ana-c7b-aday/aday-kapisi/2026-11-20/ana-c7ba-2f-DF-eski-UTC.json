@@ -1,0 +1,73 @@
+{
+  "ad": "ana-c7ba-2f-DF-eski-UTC",
+  "komut": "node --test test/c7b-eski-surum-sinif-250.test.mjs test/c7b-degismez-250.test.mjs",
+  "commit": "fc0d1999468ed9afafd57ca12d6d9c0f44188bb6",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-20T20:42:43.073Z",
+  "sure_sn": 2.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 9,
+    "gecen": 1,
+    "basarisiz": 8,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 8 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Ç7b tur 2f — kabul F: değişmezler (tohum 11) › her işlemde Σ B = Σ A, 336.90 / 600.90 / 610.90 = dizinin toplamları, Defter Mutabakatı + Mutabakat Testi temiz; ay sonları 191 / 391",
+      "konum": "test/c7b-degismez-250.test.mjs:32:5",
+      "hata": "tohum 11 adım 5 (cashSale 2026-10-11): 600.90 = belgesiz satış · 0 !== -100 (beklenen -100, gelen 0)"
+    },
+    {
+      "ad": "Ç7b tur 2f — kabul F: değişmezler (tohum 23) › her işlemde Σ B = Σ A, 336.90 / 600.90 / 610.90 = dizinin toplamları, Defter Mutabakatı + Mutabakat Testi temiz; ay sonları 191 / 391",
+      "konum": "test/c7b-degismez-250.test.mjs:32:5",
+      "hata": "tohum 23 adım 2 (cashSale 2026-09-13): 600.90 = belgesiz satış · 0 !== -400 (beklenen -400, gelen 0)"
+    },
+    {
+      "ad": "Ç7b tur 2f — kabul D: v2.4.9 gerçek verisinde sınıf sınıf (kilitli / açık × iade / iptal / düzeltme; B-6, B-8, KG-7) › 1. ön koşullar: v2.4.9 mahsupları elle (Eylül H 1.800 / İ 500 / 1.300; Ekim H 400 / İ 200 / 200); geçiş günü = kilit; iki eski mahsup '2.4.9' işaretli",
+      "konum": "test/c7b-eski-surum-sinif-250.test.mjs:203:3",
+      "hata": "Cannot read properties of undefined (reading 'value')"
+    },
+    {
+      "ad": "Ç7b tur 2f — kabul D: v2.4.9 gerçek verisinde sınıf sınıf (kilitli / açık × iade / iptal / düzeltme; B-6, B-8, KG-7) › 3. kural farkı TAM: 11 madde (Kasa ±, Borç / Alacak Yaz, stok ×4, Yeni Borç, iki ihracat); B-8'in üç kuralı (kayıt tahsilatı, iki iade KDV'si) ve M14 farksız; hesap farkları elle",
+      "konum": "test/c7b-eski-surum-sinif-250.test.mjs:223:3",
+      "hata": "güncellemeden sonra: Mutabakat Testi · + actual - expected · + [] (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç7b tur 2f — kabul D: v2.4.9 gerçek verisinde sınıf sınıf (kilitli / açık × iade / iptal / düzeltme; B-6, B-8, KG-7) › 4. Kural Farkı Düzeltme Fişi (01.10.2026; aynı yıl → eski hesabın tersi) → 'Düzeltildi'; donmuş defter yine aynı",
+      "konum": "test/c7b-eski-surum-sinif-250.test.mjs:238:3",
+      "hata": "Düzeltilecek kural farkı yok. · true !== false (beklenen false, gelen true)"
+    },
+    {
+      "ad": "Ç7b tur 2f — kabul D: v2.4.9 gerçek verisinde sınıf sınıf (kilitli / açık × iade / iptal / düzeltme; B-6, B-8, KG-7) › 5. açık dönem (v2.4.9'un Ekim verisi) YENİ kuralla; B-6: Ekim mahsuplu → iade KDV'si ESKİ yön, ters kayıt → YENİ yön, yeniden mahsup H 700 / İ 500 / 200",
+      "konum": "test/c7b-eski-surum-sinif-250.test.mjs:255:3",
+      "hata": "K-01 · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç7b tur 2f — kabul D: v2.4.9 gerçek verisinde sınıf sınıf (kilitli / açık × iade / iptal / düzeltme; B-6, B-8, KG-7) › 6. Kasım (güncel kod): yeni kayıtlar yeni kuralla; iptal maddesiz; açık düzeltme (E3 2.000 → 2.500, 601); KG-7 kilitli Düzenle 409, açık Düzenle ile dönem; Kasım H 300 / İ 200 / 100",
+      "konum": "test/c7b-eski-surum-sinif-250.test.mjs:283:3",
+      "hata": "no such column: vat_period"
+    },
+    {
+      "ad": "Ç7b tur 2f — kabul D: v2.4.9 gerçek verisinde sınıf sınıf (kilitli / açık × iade / iptal / düzeltme; B-6, B-8, KG-7) › 7. sonda karma defter (elle): .90 alt hesapları, 601, 336.90 = geçiş sonrası kayıt tahsilatları, 600.90 / 610.90 = belgesiz satış / iade; ay sonu 191 / 391",
+      "konum": "test/c7b-eski-surum-sinif-250.test.mjs:342:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · { (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c7ba/kanit/2026-11-20/ana-c7ba-2f-DF-eski-UTC.log",
+  "klasor": "/dev/shm/ana-c7ba/eski2f",
+  "ham_cikti_sha256": "bdf35d69c6e5098cc8a561aaf5b0cbaf129451440c90feec4cd762904cb41ccd",
+  "ham_cikti_bayt": 12949
+}

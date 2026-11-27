@@ -1,0 +1,84 @@
+// t3hiz: kararın KÖTÜ / eşikteki yollarını ölçen KISA betik (ana oturumun dört betiğinin aynı çağrıları; tam düzenek değil).
+// Kullanım: node olc-kisa.mjs <kod kökü> <veri kopyası> <tekrar> <yollar virgüllü | hepsi>
+// Yollar: mizan yevmiye hmizan amizan dmut mtest yasl liste zil kart-s kart-d yaz-bagli yaz-duz borc evrak fatura iptal borc-k
+import { readFileSync } from "node:fs";
+import path from "node:path";
+import { monitorEventLoopDelay } from "node:perf_hooks";
+import { pathToFileURL } from "node:url";
+process.env.HUKUK_LICENSE_URL ||= "http://127.0.0.1:9";
+const [root, dir, repeatText = "5", only = "hepsi"] = process.argv.slice(2);
+const repeat = Number(repeatText) || 5;
+const want = new Set(only.split(","));
+const load = () => readFileSync("/proc/loadavg", "utf8").trim().split(" ").slice(0, 3).join(" ");
+const { createApp } = await import(pathToFileURL(path.join(root, "server", "app.mjs")).href);
+const { createClient } = await import(pathToFileURL(path.join(root, "test", "helpers.mjs")).href);
+const PASS = "Kapi-Olcum-2026!";
+const app = createApp({
+  dataDir: path.join(dir, "data"), backupDir: path.join(dir, "backups"), logLevel: "silent", scheduleBackups: false,
+  env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0" }, license: { enforce: false, machineId: "0123456789abcdef0123456789abcdef" },
+  startLicenseTimers: false, integrityScan: false, analysisWorker: false, now: "2026-10-08T12:00:00+03:00", moneyStrict: false,
+});
+const { port } = await app.listen(0, "127.0.0.1");
+const r = v => Math.round(v * 10) / 10;
+console.log(`kod ${root} · yük (başta) ${load()} · TZ ${process.env.TZ || "(yerel)"}`);
+{
+  const st = app.ledger.snapshots.state();
+  if (st.pending) await app.ledger.snapshots.runPending();
+}
+const client = createClient(`http://127.0.0.1:${port}`);
+if ((await client.login("admin", PASS)).status !== 200) throw new Error("giriş");
+const store = app.store;
+const doubtfulAcc = store.get("SELECT id FROM accounts WHERE name = 'Ölçüm Şüpheli Bağlı'")?.id;
+const plainAcc = store.get("SELECT a.id FROM accounts a WHERE a.deleted_at IS NULL AND a.type = 'customer' AND NOT EXISTS (SELECT 1 FROM doubtful_receivables d WHERE d.account_id = a.id) ORDER BY (SELECT COUNT(*) FROM account_entries e WHERE e.account_id = a.id) DESC LIMIT 1").id;
+const bigAcc = store.get("SELECT a.id FROM accounts a WHERE a.deleted_at IS NULL AND a.type = 'customer' ORDER BY (SELECT COUNT(*) FROM account_entries e WHERE e.account_id = a.id) DESC LIMIT 1").id;
+const linkInv = doubtfulAcc ? store.get("SELECT id FROM invoices WHERE account_id = ? AND status = 'issued' ORDER BY rowid DESC LIMIT 1", doubtfulAcc)?.id : null;
+const item = store.get("SELECT l.item_id AS id, l.unit_price AS price, l.vat_rate AS vat FROM invoice_lines l JOIN invoices i ON i.id = l.invoice_id WHERE i.scenario = 'service_sale' AND l.item_id <> '' ORDER BY i.issue_date DESC LIMIT 1")
+  || store.get("SELECT l.item_id AS id, l.unit_price AS price, l.vat_rate AS vat FROM invoice_lines l JOIN invoices i ON i.id = l.invoice_id WHERE i.scenario = 'goods_sale' AND l.item_id <> '' ORDER BY i.issue_date DESC LIMIT 1");
+const h = monitorEventLoopDelay({ resolution: 5 });
+h.enable();
+const results = new Map();
+const timed = async (label, call) => {
+  if (process.env.T3HIZ_SAY) console.error(`SAY ---- ${label}`);
+  h.reset();
+  const s = performance.now();
+  const res = await call();
+  const ms = performance.now() - s;
+  if (!results.has(label)) results.set(label, { ms: [], loop: [], status: new Set() });
+  const row = results.get(label);
+  row.ms.push(ms); row.loop.push(h.max / 1e6); row.status.add(res.status);
+  return res;
+};
+const RANGE = "from=2026-01-01&to=2026-12-31";
+const RC = "/api/workspace/report-center";
+const paths = i => [
+  ["mizan", "Mizan + mutabakat (GET ledger)", () => client.get("/api/workspace/ledger")],
+  ["yevmiye", "Yevmiye Defteri (rapor)", () => client.get(`${RC}/yevmiye?${RANGE}`)],
+  ["hmizan", "Hesap Planı Mizanı (rapor)", () => client.get(`${RC}/hesap-mizani?${RANGE}`)],
+  ["amizan", "Alt Hesap Mizanı (rapor)", () => client.get(`${RC}/alt-hesap-mizani?${RANGE}`)],
+  ["dmut", "Defter Mutabakatı (rapor)", () => client.get(`${RC}/defter-mutabakati`)],
+  ["mtest", "Mutabakat Testi (GET ledger/integrity)", () => client.get("/api/workspace/ledger/integrity")],
+  ["yevall", "Yevmiye Defteri bütün zaman (rapor)", () => client.get(`${RC}/yevmiye?from=2000-01-01&to=2099-12-31`)],
+  ["yasl", "Alacak Yaşlandırma (rapor)", () => client.get(`${RC}/alacak-yaslandirma`)],
+  ["liste", "Cari Listesi", () => client.get("/api/workspace/accounts?status=all&limit=200")],
+  ["zil", "zil (dues)", () => client.get("/api/workspace/dues")],
+  ["kart-s", "cari kartı (şüpheli + bağlı)", () => client.get(`/api/workspace/accounts/${doubtfulAcc}`)],
+  ["kart-d", "cari kartı (şüphelisiz, en kalabalık)", () => client.get(`/api/workspace/accounts/${plainAcc}`)],
+  ["yaz-bagli", "YAZIM bağlı tahsilat (şüpheli cari; kapı)", () => client.post(`/api/workspace/accounts/${doubtfulAcc}/entries`, { kind: "in", amount: "1", date: "2026-10-08", method: "cash", cashForce: true, similarOk: true, invoiceId: linkInv, note: `ölçüm ${i}` })],
+  ["yaz-duz", "YAZIM tahsilat (şüphelisiz cari; kapı)", () => client.post(`/api/workspace/accounts/${plainAcc}/entries`, { kind: "in", amount: "1", date: "2026-10-08", method: "cash", cashForce: true, similarOk: true, note: `ölçüm ${i}` })],
+  ["legacy", "Hesabı Atanmamış listesi", () => client.get("/api/workspace/bank/legacy")],
+  ["borc", "YAZIM Borç Yaz (kapı)", () => client.post(`/api/workspace/accounts/${bigAcc}/entries`, { kind: "debt", amount: "10", note: `ölçüm ${i}`, date: "2026-10-08" })],
+  ["evrak", "YAZIM evrak (alınan çek, carili)", () => client.post("/api/workspace/cheques", { direction: "in", instrument: "cheque", serialNo: `OLC-${i}-${Date.now()}`, bank: "Akbank", accountId: bigAcc, amount: "10", issueDate: "2026-10-08", dueDate: "2026-12-08" })],
+  ["fatura", "YAZIM fatura (satış, açık hesap) + iptal", async () => {
+    const inv = await timed("YAZIM fatura (satış, açık hesap)", () => client.post("/api/workspace/invoices", { scenario: "service_sale", accountId: bigAcc, issueDate: "2026-10-08", lines: [{ itemId: item.id, qty: 1, unitPrice: 100, vatRate: Number(item.vat) || 0 }], payment: { rest: "open" } }));
+    const invId = inv.data?.data?.id || inv.data?.id;
+    return timed("YAZIM fatura iptali", () => client.post(`/api/workspace/invoices/${invId}/cancel`, { reason: "ölçüm", cashForce: true, negativeOk: true }));
+  }],
+];
+for (let i = 0; i < repeat; i += 1) for (const [key, label, call] of paths(i)) {
+  if (!want.has("hepsi") && !want.has(key)) continue;
+  if (key === "fatura") await call(); else await timed(label, call);
+}
+const median = list => [...list].sort((a, b) => a - b)[Math.floor(list.length / 2)];
+for (const [label, row] of results) console.log(`  ${label}: durum ${[...row.status].join("/")} · en iyi ${r(Math.min(...row.ms))} ms · ortanca ${r(median(row.ms))} ms · olay döngüsü en çok ${r(Math.max(...row.loop))} ms (n=${row.ms.length})`);
+console.log(`yük (sonda) ${load()}`);
+await app.close();

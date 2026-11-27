@@ -1,0 +1,53 @@
+{
+  "ad": "wkucuk-mut-WY2-kip-WABA-basina-Europe-Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/whatsapp-wy-imzasiz-250.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T06:26:23.953Z",
+  "sure_sn": 9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 7,
+    "gecen": 3,
+    "basarisiz": 4,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 4 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.0 WY — Yol 2 imzasız bildirim: şirket dosyası açılamazken de yazılmaz, tanınmadı (401/503), gerçek bildirim kaybolmaz › WY-1 Yol 2 · geri yükleme sürüyor (geçici) · İMZASIZ delivered → 503, defterde teslim YOK; açılınca imzasız yine 401; gerçek (imzalı) failed uygulanır: Başarısız, kişi gönderilecek, Bu Ay 0",
+      "konum": "test/whatsapp-wy-imzasiz-250.test.mjs:23:3",
+      "hata": "imzasız bildirim defterde teslim YAZMADI (sahte teslim sayılmaz) · true !== false (beklenen false, gelen true)"
+    },
+    {
+      "ad": "2.5.0 WY — Yol 2 imzasız bildirim: şirket dosyası açılamazken de yazılmaz, tanınmadı (401/503), gerçek bildirim kaybolmaz › WY-3 Yol 2 · şirket SİLİNDİ · imzasız delivered ve failed → 401 (200 değil; Meta yeniden dener), defterde teslim / teslim edilemedi YOK; imzalı delivered ×2 → 200, defterde tek teslim",
+      "konum": "test/whatsapp-wy-imzasiz-250.test.mjs:75:3",
+      "hata": "silinmiş şirket · imzasız delivered → 401 (geldi 200 {\"ok\":true}) · 200 !== 401 (beklenen 401, gelen 200)"
+    },
+    {
+      "ad": "2.5.0 WY — Yol 2 imzasız bildirim: şirket dosyası açılamazken de yazılmaz, tanınmadı (401/503), gerçek bildirim kaybolmaz › WY-4 Yol 2 · veri dosyası YOK (kalıcı) · imzasız failed 131026 → 401, teslim edilemedi YAZILMAZ; dosya geri gelince kişi Daha Önce Gönderildi (sahte başarısızlık ikinci ileti açmaz); imzalı failed → 200 + defterde",
+      "konum": "test/whatsapp-wy-imzasiz-250.test.mjs:94:3",
+      "hata": "kalıcı açılamama · imzasız failed → 401 (geldi 200 {\"ok\":true}) · 200 !== 401 (beklenen 401, gelen 200)"
+    },
+    {
+      "ad": "2.5.0 WY — Yol 2 imzasız bildirim: şirket dosyası açılamazken de yazılmaz, tanınmadı (401/503), gerçek bildirim kaybolmaz › WY-5 Yol 1 AYNEN · aynı WABA'da 001 WhatsApp'ı Bağla + 002 Elle Bağla · 002 geçici açılamıyor → imzasız delivered 503 + defterde teslim (X1); 002 silinince imzasız delivered 200 + defterde teslim (kip şirket başına)",
+      "konum": "test/whatsapp-wy-imzasiz-250.test.mjs:117:3",
+      "hata": "Yol 1 imzasız teslim 503'ten önce defterde (bugünkü davranış) · false !== true (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "../wkucuk-kanit/2026-11-06/wkucuk-mut-WY2-kip-WABA-basina-Europe-Istanbul.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wkucuk-mut-WY2-kip-WABA-basina",
+  "ham_cikti_sha256": "787d26651f40b2fecaa4b17ad7dd6df6d7f18dec9a33f5ca1d3ee45e496325f9",
+  "ham_cikti_bayt": 8323
+}

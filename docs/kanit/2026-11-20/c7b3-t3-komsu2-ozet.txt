@@ -1,0 +1,18 @@
+başta 07:07:33 · 2.42 2.86 2.99 7/190 22236 · yeni 2dcc050b
+iade-210-onarim yeni UTC çıkış 0
+iade-210-onarim taban UTC çıkış 0
+banka-210-altin yeni UTC çıkış 0
+banka-210-altin taban UTC çıkış 0
+iade-210-onarim yeni Europe/Istanbul çıkış 0
+iade-210-onarim taban Europe/Istanbul çıkış 0
+banka-210-altin yeni Europe/Istanbul çıkış 0
+banka-210-altin taban Europe/Istanbul çıkış 0
+== banka-210-altin-taban-Europe-Istanbul.tap # tests 6 # pass 6 # fail 0 # cancelled 0 # skipped 0  [kanit] c7b3-banka-210-altin-taban-Europe-Istanbul: GEÇTİ · çıkış 0 · 6/6 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit b85d9e2 +4 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23
+== banka-210-altin-taban-UTC.tap # tests 6 # pass 6 # fail 0 # cancelled 0 # skipped 0  [kanit] c7b3-banka-210-altin-taban-UTC: GEÇTİ · çıkış 0 · 6/6 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit b85d9e2 +4 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4
+== banka-210-altin-yeni-Europe-Istanbul.tap # tests 6 # pass 6 # fail 0 # cancelled 0 # skipped 0  [kanit] c7b3-banka-210-altin-yeni-Europe-Istanbul: GEÇTİ · çıkış 0 · 6/6 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 2dcc050 +1 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.
+== banka-210-altin-yeni-UTC.tap # tests 6 # pass 6 # fail 0 # cancelled 0 # skipped 0  [kanit] c7b3-banka-210-altin-yeni-UTC: GEÇTİ · çıkış 0 · 6/6 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 2dcc050 +1 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4
+== iade-210-onarim-taban-Europe-Istanbul.tap # tests 5 # pass 5 # fail 0 # cancelled 0 # skipped 0  [kanit] c7b3-iade-210-onarim-taban-Europe-Istanbul: GEÇTİ · çıkış 0 · 5/5 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit b85d9e2 +4 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23
+== iade-210-onarim-taban-UTC.tap # tests 5 # pass 5 # fail 0 # cancelled 0 # skipped 0  [kanit] c7b3-iade-210-onarim-taban-UTC: GEÇTİ · çıkış 0 · 5/5 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit b85d9e2 +4 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4
+== iade-210-onarim-yeni-Europe-Istanbul.tap # tests 5 # pass 5 # fail 0 # cancelled 0 # skipped 0  [kanit] c7b3-iade-210-onarim-yeni-Europe-Istanbul: GEÇTİ · çıkış 0 · 5/5 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 2dcc050 +1 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.
+== iade-210-onarim-yeni-UTC.tap # tests 5 # pass 5 # fail 0 # cancelled 0 # skipped 0  [kanit] c7b3-iade-210-onarim-yeni-UTC: GEÇTİ · çıkış 0 · 5/5 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 2dcc050 +1 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4
+BİTTİ 07:09:44 · 7.93 4.86 3.72 8/241 23668

@@ -1,0 +1,73 @@
+B40c Y4 S14 sınırı eski: SUPHELI_NORMAL_ASIM bağlı çekin tamamına
+   DEĞERLE ÖLDÜ: değer 5, değişmez 0
+     - test_S14_hedef_kalem_kapanir: -   'vade': '2026-04-15'}]
+     - test_S25_a_kismi_once_supheli: ?  ^      ^
+     - test_s68_s14_supheli_caride_bagli_cek: + [] : s68-s14-supheli-caride-bagli-cek [A] redler
+     - test_s74_s25_ab_kismi_ve_fazla: + [] : s74-s25-ab-kismi-ve-fazla [A] redler
+B44b Y20 S21: tatilden sonra gelen hafta sonu atlanmaz (tek gün kaydırma)
+   DEĞERLE ÖLDÜ: değer 4, değişmez 0
+     - test_S21_belirsiz_valor_kahin_susar: AssertionError: AssertionError not raised : 2026-05-23
+     - test_S21_tatil_takvimi: ?          ^
+     - test_s72_s21_pos_valor_resmi_tatil: KeyError: "mod0503/pos|POS1: 'pos|POS1' yok"
+     - test_s77_s27_pos_valor_yarim_gun: KeyError: "m271031/pos|POS1: 'pos|POS1' yok"
+B50 Z5 S25 (a) B: kısmi aktarılmış faturada önce 120 kısmı, kalanı 128
+   DEĞERLE ÖLDÜ: değer 3, değişmez 0
+     - test_S25_a_kismi_once_supheli: + (4000, 10000)
+     - test_s74_s25_ab_kismi_ve_fazla: AssertionError: 13000 != 10000 : s74-s25-ab-kismi-ve-fazla [A] mz/satirlar/128|C1/bakiye
+     - test_s75_s25_c_nakit_havale_pos: AssertionError: 10000 != 8000 : s75-s25-c-nakit-havale-pos [A] mz/satirlar/128|C2/bakiye
+B50b Z5 S25 (a) sınır: şüpheli kısımdan küçük tahsilat 128'e düşmez (yalnız kısmı tamamen kapatan)
+   DEĞERLE ÖLDÜ: değer 2, değişmez 0
+     - test_s74_s25_ab_kismi_ve_fazla: AssertionError: 15000 != 10000 : s74-s25-ab-kismi-ve-fazla [A] mz/satirlar/128|C1/bakiye
+     - test_s75_s25_c_nakit_havale_pos: AssertionError: 12000 != 8000 : s75-s25-c-nakit-havale-pos [A] mz/satirlar/128|C2/bakiye
+B50c Z5 S25 (a) yok: kısmi aktarılmış faturada kâhin susar (bakım 4 Y5 S14_KISMI)
+   DEĞERLE ÖLDÜ: değer 2, değişmez 0
+     - test_S25_a_kismi_once_supheli: AssertionError: 'kahin_susuyor' unexpectedly found in {'cari': 'C3', 'tarih': '2026-06-01', 'gecikmis': 4000, 'supheli': 10000, 'detay': [{'kalem': 'fatura:F5',
+     - test_s74_s25_ab_kismi_ve_fazla: AssertionError: [{'kaynak': 'PA1', 'neden': 'S14_KISMI', [66 chars]000}] != 0 : s74-s25-ab-kismi-ve-fazla [A] g1/kahin_susuyor
+B51 Z6 S25 (b) B: faturanın açık kısmını aşan fazla reddedilir
+   DEĞERLE ÖLDÜ: değer 2, değişmez 0
+     - test_s74_s25_ab_kismi_ve_fazla: + [] : s74-s25-ab-kismi-ve-fazla [A] redler
+     - test_tohum_1: + [] : beklenmeyen red
+B51c Z6 S25 (b) sınır: SUPHELI_NORMAL_ASIM fazlaya da uygulanır (bakım 4 Y4 okuması)
+   DEĞERLE ÖLDÜ: değer 1, değişmez 0
+     - test_s74_s25_ab_kismi_ve_fazla: + [] : s74-s25-ab-kismi-ve-fazla [A] redler
+B52 Z7 S25 (c) B: nakit / havale / POS bağlı tahsilat 120'de (bugünkü kural)
+   DEĞERLE ÖLDÜ: değer 1, değişmez 0
+     - test_s75_s25_c_nakit_havale_pos: + [] : s75-s25-c-nakit-havale-pos [A] redler
+B52b Z7 S25 (c) sınır: POS (brüt) kapsam dışı
+   DEĞERLE ÖLDÜ: değer 1, değişmez 0
+     - test_s75_s25_c_nakit_havale_pos: + [] : s75-s25-c-nakit-havale-pos [A] redler
+B53 Z9 S26 B: geri yüklenmiş açılış öncesi Kasa kaydının tutar düzeltmesi de reddedilir
+   DEĞERLE ÖLDÜ: değer 2, değişmez 0
+     - test_S26_tutar_disi_alan_kahin_susar: AssertionError: AssertionError not raised : {'cari': 'C3'}
+     - test_s76_s26_geri_yuklenen_kasa_tutar_duzelt: -  'KASA_ACILIS_ONCE'] : s76-s26-geri-yuklenen-kasa-tutar-duzelt [A] redler
+B53b Z9 S26 sınır: geri yüklenmiş kaydın tarihi açılıştan önceki başka güne de düzeltilir
+   DEĞERLE ÖLDÜ: değer 1, değişmez 0
+     - test_s76_s26_geri_yuklenen_kasa_tutar_duzelt: + ['KASA_ACILIS_ONCE', 'KASA_ACILIS_ONCE', 'KASA_ACILIS_ONCE'] : s76-s26-geri-yuklenen-kasa-tutar-duzelt [A] redler
+B53c Z9 S26 sınır: aynı tarihin açıkça yazılması 'tarih değişti' sayılır
+   DEĞERLE ÖLDÜ: değer 1, değişmez 0
+     - test_s76_s26_geri_yuklenen_kasa_tutar_duzelt: + ['KASA_ACILIS_ONCE', 'KASA_ACILIS_ONCE', 'KASA_ACILIS_ONCE'] : s76-s26-geri-yuklenen-kasa-tutar-duzelt [A] redler
+B54 Z11 S27 B: yarım gün de tatil (valör sonraki iş gününe kayar)
+   DEĞERLE ÖLDÜ: değer 3, değişmez 0
+     - test_S21_belirsiz_valor_kahin_susar: AssertionError: None != 1000
+     - test_S21_tatil_takvimi: ?         ^^
+     - test_s77_s27_pos_valor_yarim_gun: AssertionError: 9800 != 0 : s77-s27-pos-valor-yarim-gun [A] mod1028/pos|POS1
+B54b Z11 S27 sınır: yarım gün bir gün kayık (28 Ekim tam gün, 29 Ekim yarım gün)
+   DEĞERLE ÖLDÜ: değer 4, değişmez 0
+     - test_S21_belirsiz_valor_kahin_susar: AssertionError: None != 1000
+     - test_S21_tatil_takvimi: ?         ^^
+     - test_s77_s27_pos_valor_yarim_gun: AssertionError: 9800 != 0 : s77-s27-pos-valor-yarim-gun [A] mod1028/pos|POS1
+     - test_s72_s21_pos_valor_resmi_tatil: KeyError: "mod1029/pos|POS1: 'pos|POS1' yok"
+B54c Z12 S27: doğrulanmamış dinî bayram penceresi iş günü sayılır (kâhin susmaz)
+   DEĞERLE ÖLDÜ: değer 3, değişmez 0
+     - test_S21_belirsiz_valor_kahin_susar: AssertionError: AssertionError not raised : 2026-05-27
+     - test_S21_tatil_takvimi: + ['tam', 'yarim', 'belirsiz', None, 'tam', 'belirsiz', 'yarim', 'belirsiz']
+     - test_S27_bayram_tarihleri: AssertionError: None != 'belirsiz' : 2026-03-18
+B55 Z2 S24 B: S19 harfiyen — devir yazılış anındaki S8 sonucunu taşır (karşılıksız faturanın vadesiyle)
+   DEĞERLE ÖLDÜ: değer 1, değişmez 0
+     - test_s73_s24_devir_k_kilidi: AssertionError: 0 != 10000 : s73-s24-devir-k-kilidi [A] g1d/gecikmis
+B55b Z1 S24 sınır: kilit = K iken yazılmış K sonrası kayıt da Devir Raporu listesinde
+   DEĞERLE ÖLDÜ: değer 1, değişmez 0
+     - test_s73_s24_devir_k_kilidi: + ['KS1', 'T2'] : s73-s24-devir-k-kilidi [A] devir/s19_devir
+# tests 17
+# pass 17
+# fail 0

@@ -1,0 +1,167 @@
+# Ç7b tur 2e — bugünkü davranışın yeniden üretimi (taban c7b2e-taban = 9d933883 ile AYNI kod; madde 1–3) — betik betik/uc-madde-probe.mjs
+MADDE 1 — KDV Özeti Aralık {"rows":[["Aralık 2026","Alış","%20","2","3.000,00 TL","600,00 TL","0,00 TL"],["Aralık 2026","Satış","%20","1","10.000,00 TL","2.000,00 TL","0,00 TL"]],"summary":[["Hesaplanan KDV (391)","2.000,00 TL"],["İndirilecek KDV (191)","600,00 TL"],["Alıcı Olarak Kesilen Tevkifat (2 No.lu)","0,00 TL"],["Ödenecek KDV","1.400,00 TL"]],"footer":null}
+MADDE 1 — KDV Özeti Ocak {"rows":[["Ocak 2027","Alış","%20","1","500,00 TL","100,00 TL","0,00 TL"],["Ocak 2027","Satış","%20","1","1.000,00 TL","200,00 TL","0,00 TL"]],"summary":[["Hesaplanan KDV (391)","200,00 TL"],["İndirilecek KDV (191)","100,00 TL"],["Alıcı Olarak Kesilen Tevkifat (2 No.lu)","0,00 TL"],["Ödenecek KDV","100,00 TL"]],"footer":null}
+MADDE 1 — Mahsup 2026-12 {"out":200000,"in":20000}
+MADDE 1 — Mahsup 2027-01 {"out":20000,"in":50000}
+MADDE 2 — kilitli P2'nin dönemi kapı dışı Ocak → Şubat: kilit izi değişti mi false Ocak ön izleme İ 10000
+MADDE 3 — sonra mizan {"191":-200,"360":-1800,"391":2000} vat_offsets 1 faturalar 0 mutabakat true [] mahsup listesi ["2026-12 active stale=true"]
+MADDE 3 — sıfırla 200
+MADDE 3 — önce mizan {"120":13200,"191":500,"320":-4200,"360":-1800,"391":-200,"600":-11000,"770":3500} vat_offsets 1
+
+# madde 4 — onarım fikstürü (v2.0.26 gerçek kodu verisi) — yeni uç (onarim-kok-yeni) ve Ç7b öncesi kod c7b2-taban (onarim-kok-onc7b); betik betik/onarim-kok.mjs
+## yeni uç
+bugün 2026-11-06 kilit 2026-10-07 geçiş 2026-10-07
+koşular [{"no":1,"id":"lsr-ace31fba-6597-4ab7-bbb1-076cb1a17b7a","kind":"freeze","state":"pending","from_date":"","through":"2026-10-07","rule_version":"2.4.9","reason":"migration","line_count":0,"entry_count":0,"debit_minor":0,"credit_minor":0,"state_lines":0,"state_debit":0,"state_credit":0,"state_weight":0,"source_digest":"","digest_version":"","created_by":"system","created_at":"2026-11-06T09:00:00.000Z","finished_at":""}]
+ruleDiff {"through":"2026-10-07","count":1,"sample":["cash:cash-57559235-e7d0-47de-8165-3ce2ddeada5e (08.08.2026)"],"balances":[{"year":2026,"account":"649","sub":"","party":"","frozenMinor":-20000000,"liveMinor":0,"differenceMinor":20000000},{"year":2026,"account":"649","sub":"649.90","party":"","frozenMinor":0,"liveMinor":-20000000,"differenceMinor":-20000000}]}
+madde {"id":"cash:cash-57559235-e7d0-47de-8165-3ce2ddeada5e","date":"2026-08-08","source":"Kasa","text":"Açılış","inFrozen":true,"inLive":true,"deltas":[{"year":2026,"account":"649","sub":"","party":"","minor":20000000},{"year":2026,"account":"649","sub":"649.90","party":"","minor":-20000000}]}
+checks [{"code":"ledger:snapshot","name":"Donmuş Defter (07.10.2026 ve Öncesi)","ok":true,"count":0,"sample":[]},{"code":"ledger:rule-diff","name":"Kural Değişikliği Farkı (Kilitli Dönem: 07.10.2026 ve Öncesi)","ok":false,"count":1,"difference":0,"sample":["cash:cash-57559235-e7d0-47de-8165-3ce2ddeada5e (08.08.2026)"],"breakdown":[],"severity":"warning","hint":"Kilitli dönemin donmuş defteri güncel türetmeden farklı: neden defter kuralının program sürümüyle değişmesi ya da kilitli dönemin kaynak verisinin kapının görmediği bir yolla değişmesi olabilir. Kilitli dönemin raporları donmuş defterden okunur, değişmez. Kural farkı Kural Farkı Düzeltme Fişi ile ilk açık güne alınır."}]
+DONMUŞ kolonlar run,run_seq,entry_id,line_no,date,cls,seq,account,sub,party,debit_minor,credit_minor,source,text,rule_version
+CANLI [{"id":"cash:cash-57559235-e7d0-47de-8165-3ce2ddeada5e","date":"2026-08-08","source":"Kasa","text":"Açılış","lines":[{"account":"100","debit":20000000,"credit":0},{"account":"649","debit":0,"credit":20000000,"sub":"649.90"}],"seq":1}]
+DONMUŞ [{"run":1,"run_seq":1,"entry_id":"cash:cash-57559235-e7d0-47de-8165-3ce2ddeada5e","line_no":1,"date":"2026-08-08","cls":32,"seq":1,"account":"100","sub":"","party":"","debit_minor":20000000,"credit_minor":0,"source":"Kasa","text":"Açılış","rule_version":"2.4.9"},{"run":1,"run_seq":2,"entry_id":"cash:cash-57559235-e7d0-47de-8165-3ce2ddeada5e","line_no":2,"date":"2026-08-08","cls":32,"seq":1,"account":"649","sub":"","party":"","debit_minor":0,"credit_minor":20000000,"source":"","text":"","rule_version":"2.4.9"}]
+mutabakat önce {"ok":false,"failures":["ledger:rule-diff"]}
+fiş ön izleme 200 {"date":"2026-10-08","lines":[{"account":"649","sub":"","party":"","debit":20000000,"credit":0,"name":"Diğer Olağan Gelir ve Kârlar"},{"account":"649","sub":"649.90","party":"","debit":0,"credit":20000000,"name":"Diğer Olağan Gelir ve Kârlar"}],"excluded":[],"disabled":false,"code":"","reason":""}
+fiş yaz 200 {"ok":true,"data":{"voucher":{"id":"lv-ce00aa49-b5c3-4322-8736-a9653245bc7a","year":2026,"no":1,"noText":"Fiş 2026-000001","date":"2026-10-08","type":"rule-diff-correction","typeLabel":"Kural Farkı Düzeltme Fişi","cls":"ordinary","description":"Kural Değişikliği Farkı (Kilitli Dönem: 07.10.2026 ve Öncesi)","source":"Kural Farkı Düzeltme","requestKey":"api:rule-diff:c7b2e-kok-istek-0001","reversalO
+mutabakat fişten sonra {"ok":true,"failures":[]}
+## Ç7b öncesi kod (fc0d1999)
+bugün 2026-11-06 kilit 2026-10-07 geçiş undefined
+koşular [{"no":1,"id":"lsr-173197d5-00fe-4093-b466-fded37140107","kind":"freeze","state":"pending","from_date":"","through":"2026-10-07","rule_version":"2.4.9","reason":"migration","line_count":0,"entry_count":0,"debit_minor":0,"credit_minor":0,"state_lines":0,"state_debit":0,"state_credit":0,"state_weight":0,"source_digest":"","digest_version":"","created_by":"system","created_at":"2026-11-06T09:00:00.000Z","finished_at":""}]
+ruleDiff {"through":"2026-10-07","count":0,"sample":[],"balances":[]}
+checks [{"code":"ledger:snapshot","name":"Donmuş Defter (07.10.2026 ve Öncesi)","ok":true,"count":0,"sample":[]},{"code":"ledger:rule-diff","name":"Kural Değişikliği Farkı (Kilitli Dönem: 07.10.2026 ve Öncesi)","ok":true,"count":0,"difference":0,"sample":[],"breakdown":[]}]
+DONMUŞ kolonlar run,run_seq,entry_id,line_no,date,cls,seq,account,sub,party,debit_minor,credit_minor,source,text,rule_version
+mutabakat önce {"ok":true,"failures":[]}
+fiş ön izleme 200 {"date":"2026-10-08","lines":[],"excluded":[],"disabled":true,"code":"rule-diff-nothing","reason":"Düzeltilecek kural farkı yok."}
+
+# sıfırlama listelerinin dışında kalan tablolar (bilgi): listede olmayan: bank_holidays, chat_conversations, chat_members, chat_messages, edoc_usage, edoc_usage_meta, fx_rates, ledger_snapshot_runs, ledger_voucher_lines, ledger_vouchers, mobile_access, mobile_codes, mobile_devices, mobile_sessions, roles, sessions, settings, users
+## betikler
+### uc-madde-probe.mjs
+// Ç7b tur 2e — bugünkü davranışın yeniden üretimi (madde 1–3), verilen kod kökünde. Depoya girmez (not defteri).
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+import { DatabaseSync } from "node:sqlite";
+const ROOT = process.argv[2];
+process.env.HUKUK_LICENSE_URL = "http://127.0.0.1:9";
+const imp = p => import(pathToFileURL(path.join(ROOT, p)).href);
+const { bootBank, trialBalances, BANK } = await imp("test/banka-210-hesap-ortak.mjs");
+const { must } = await imp("test/banka-210-ortak.mjs");
+const { lockDigestOf } = await imp("server/lib/integrity.mjs");
+const { ADMIN_PASSWORD } = await imp("test/helpers.mjs");
+const ctx = await bootBank({ now: "2027-02-10T12:00:00+03:00" });
+const api = ctx.api;
+try {
+  await must("sihirbaz", api.post(`${BANK}/setup/dismiss`, {}));
+  const M = (await must("m", api.post("/api/workspace/accounts", { name: "Probe Müşteri", type: "customer", registeredOn: "2026-12-01" }))).id;
+  const T = (await must("t", api.post("/api/workspace/accounts", { name: "Probe Tedarikçi", type: "supplier", registeredOn: "2026-12-01" }))).id;
+  let n = 0;
+  const buy = (date, net, extra = {}) => must(`alış ${date}`, api.post("/api/workspace/invoices", { kind: "purchase", scenario: "expense_purchase", accountId: T, issueDate: date, number: `PR-${(n += 1)}`, lines: [{ name: "Kırtasiye", qty: 1, unitPrice: net, vatRate: 20, expenseCode: "office" }], payment: { rest: "open" }, ...extra }));
+  const sell = (date, net) => must(`satış ${date}`, api.post("/api/workspace/invoices", { scenario: "service_sale", accountId: M, issueDate: date, lines: [{ name: "Danışmanlık", qty: 1, unitPrice: net, vatRate: 20 }], payment: { rest: "open" } }));
+  await sell("2026-12-10", 10000);
+  await buy("2026-12-15", 1000);
+  const p2 = (await buy("2026-12-31", 2000, { vatPeriod: "2027-01" })).id;
+  await sell("2027-01-10", 1000);
+  await buy("2027-01-20", 500);
+  const report = async q => {
+    const r = await must(`rapor ${q}`, api.get(`/api/workspace/report-center/kdv-ozeti?${q}`));
+    return { rows: r.rows, summary: r.summary, footer: r.footer || r.footerRows || null };
+  };
+  console.log("MADDE 1 — KDV Özeti Aralık", JSON.stringify(await report("from=2026-12-01&to=2026-12-31")));
+  console.log("MADDE 1 — KDV Özeti Ocak", JSON.stringify(await report("from=2027-01-01&to=2027-01-31")));
+  const pv = async m => (await must(`ön izleme ${m}`, api.get(`/api/workspace/tax/vat-offset?month=${m}`))).preview;
+  for (const m of ["2026-12", "2027-01"]) { const v = await pv(m); console.log(`MADDE 1 — Mahsup ${m}`, JSON.stringify({ out: v.outMinor, in: v.inMinor })); }
+  await must("Aralık mahsubu", api.post("/api/workspace/tax/vat-offset", { month: "2026-12" }));
+  // MADDE 2 — kilit 31.12.2026; P2 (kilitli, dönemi Ocak) dönemi kapı dışı değişir → kilit izi?
+  await must("kilit", api.put("/api/admin/period-lock", { lockedUntil: "2026-12-31" }));
+  const file = ctx.store.get("PRAGMA database_list").file;
+  const d0 = lockDigestOf(ctx.store, "2026-12-31");
+  const raw = new DatabaseSync(file);
+  raw.exec("PRAGMA busy_timeout = 5000");
+  raw.prepare("UPDATE invoices SET vat_period = '2027-02' WHERE id = ?").run(p2);
+  const d1 = lockDigestOf(ctx.store, "2026-12-31");
+  const janAfter = await pv("2027-01");
+  console.log("MADDE 2 — kilitli P2'nin dönemi kapı dışı Ocak → Şubat: kilit izi değişti mi", d0 !== d1, "Ocak ön izleme İ", janAfter.inMinor);
+  raw.prepare("UPDATE invoices SET vat_period = '2027-01' WHERE id = ?").run(p2);
+  raw.close();
+  await must("kilit aç", api.put("/api/admin/period-lock", { lockedUntil: "" }));
+  // MADDE 3 — Tüm Hareketleri Sil
+  console.log("MADDE 3 — önce mizan", JSON.stringify(await trialBalances(api)), "vat_offsets", ctx.store.get("SELECT COUNT(*) AS n FROM vat_offsets").n);
+  const rs = await api.post("/api/companies/sirket-001/reset", { mode: "movements", confirm: "001", password: ADMIN_PASSWORD });
+  console.log("MADDE 3 — sıfırla", rs.status);
+  const t = await trialBalances(api);
+  const integ = await must("mutabakat", api.get("/api/workspace/ledger/integrity"));
+  const list = (await must("liste", api.get("/api/workspace/tax/vat-offset"))).offsets;
+  console.log("MADDE 3 — sonra mizan", JSON.stringify(t), "vat_offsets", ctx.store.get("SELECT COUNT(*) AS n FROM vat_offsets").n, "faturalar", ctx.store.get("SELECT COUNT(*) AS n FROM invoices").n, "mutabakat", integ.ok, JSON.stringify((integ.failures || []).map(f => f.code)), "mahsup listesi", JSON.stringify(list.map(o => `${o.month} ${o.status} stale=${o.stale}`)));
+} finally {
+  await ctx.server.close();
+}
+### onarim-kok.mjs
+// Kök neden yeniden üretimi: onarım fikstürü (v2.0.26 gerçek kodu verisi) verilen kod köküyle açılır; Kural Değişikliği Farkı dökümü.
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+const ROOT = process.argv[2];
+const imp = p => import(pathToFileURL(path.join(ROOT, p)).href);
+process.env.HUKUK_LICENSE_URL = "http://127.0.0.1:9";
+const { readFixture, unpackFixture } = await imp("test/guvenilirlik/fikstur.mjs");
+const { ONARIM_FIXTURE } = await imp("test/guvenilirlik/onarim-hiz-veri.mjs");
+const { openWith } = await imp("test/guvenilirlik/onarim-dokum.mjs");
+const fixture = readFixture(ONARIM_FIXTURE);
+const unpacked = unpackFixture(ONARIM_FIXTURE);
+const { app } = await openWith(ROOT, { dataDir: unpacked.dataDir, backupDir: unpacked.backupDir, today: fixture.today });
+try {
+  const s = app.store;
+  const setting = key => s.get("SELECT value FROM settings WHERE key = ?", key)?.value;
+  console.log("bugün", fixture.today, "kilit", setting("ledger.lockedUntil"), "geçiş", setting("ledger.ruleShiftThrough"));
+  console.log("koşular", JSON.stringify(s.all("SELECT * FROM ledger_snapshot_runs")).slice(0, 1200));
+  const snaps = app.context.ledger.snapshots;
+  await snaps.runPending?.();
+  const d = snaps.ruleDiff({ detail: true });
+  console.log("ruleDiff", JSON.stringify({ through: d.through, count: d.count, sample: d.sample, balances: d.balances }));
+  for (const e of d.entries || []) console.log("madde", JSON.stringify(e));
+  const chk = snaps.checks({ includeHidden: true });
+  console.log("checks", JSON.stringify(chk).slice(0, 2000));
+  const ids = d.sample.map(x => x.split(" ")[0]);
+  const live = app.context.ledger.build();
+  const cols = s.all("PRAGMA table_info(ledger_snapshots)").map(c => c.name);
+  console.log("DONMUŞ kolonlar", cols.join(","));
+  for (const id of ids) {
+    console.log("CANLI", JSON.stringify(live.filter(e => e.id === id)));
+    const idCol = cols.includes("entry_id") ? "entry_id" : cols[1];
+    console.log("DONMUŞ", JSON.stringify(s.all(`SELECT * FROM ledger_snapshots WHERE ${idCol} = ?`, id)));
+  }
+  const { createClient, ADMIN_PASSWORD } = await imp("test/helpers.mjs");
+  const { port } = await app.listen(0, "127.0.0.1");
+  const client = createClient(`http://127.0.0.1:${port}`);
+  await client.login("admin", ADMIN_PASSWORD);
+  const integ = async label => { const r = await client.get("/api/workspace/ledger/integrity"); const d = r.data?.data || r.data; console.log(label, JSON.stringify({ ok: d.ok, failures: (d.failures || []).map(f => f.code) })); };
+  await integ("mutabakat önce");
+  const pv = await client.get("/api/admin/ledger/rule-diff-correction");
+  const v = pv.data?.data || pv.data;
+  console.log("fiş ön izleme", pv.status, JSON.stringify({ date: v.date, lines: v.lines, excluded: v.excluded, disabled: v.disabled, code: v.code, reason: v.reason }));
+  if (!v.disabled) {
+    const post = await client.post("/api/admin/ledger/rule-diff-correction", { requestId: "c7b2e-kok-istek-0001", digest: v.digest, confirm: true });
+    console.log("fiş yaz", post.status, JSON.stringify(post.data).slice(0, 400));
+    await integ("mutabakat fişten sonra");
+  }
+} finally {
+  await app.close();
+  unpacked.cleanup();
+}
+### tablolar.mjs
+// Sıfırlama listelerinin dışında kalan tablolar (yalnız bilgi; rapor için).
+import path from "node:path";
+import { readFileSync } from "node:fs";
+import { pathToFileURL } from "node:url";
+const ROOT = process.argv[2];
+process.env.HUKUK_LICENSE_URL = "http://127.0.0.1:9";
+const { bootBank } = await import(pathToFileURL(path.join(ROOT, "test/banka-210-hesap-ortak.mjs")).href);
+const ctx = await bootBank({ now: "2027-02-10T12:00:00+03:00" });
+try {
+  const tables = ctx.store.all("SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%' ORDER BY name").map(r => r.name);
+  const src = readFileSync(path.join(ROOT, "server/app.mjs"), "utf8");
+  const pick = name => {
+    const m = src.match(new RegExp(`const ${name} = \\[([\\s\\S]*?)\\];`));
+    return new Set([...(m?.[1] || "").matchAll(/"([a-z_]+)"/g)].map(x => x[1]));
+  };
+  const listed = new Set([...pick("MOVEMENT_TABLES"), ...pick("CARD_TABLES")]);
+  console.log("listede olmayan:", tables.filter(t => !listed.has(t)).join(", "));
+} finally {
+  await ctx.server.close();
+}

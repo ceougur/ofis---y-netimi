@@ -1,0 +1,142 @@
+{
+ "ad": "s33-gecikmis-b1",
+ "dallar": {
+  "A": {
+   "acilis_olabilir": [],
+   "degismezler": {
+    "canli": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
+     "kdv_mahsup": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": [],
+     "s127_tek_yazim": [],
+     "tahmini_aylik_toplam": [],
+     "tyk": []
+    }
+   },
+   "devirler": [],
+   "raporlar": {
+    "gec0401": {
+     "cari": "C1",
+     "detay": [
+      {
+       "kalan": 30000,
+       "kalem": "fatura:F1",
+       "vade": "2026-02-10"
+      }
+     ],
+     "gecikmis": 30000,
+     "supheli": 0,
+     "tarih": "2026-04-01"
+    },
+    "gec0501": {
+     "cari": "C1",
+     "detay": [
+      {
+       "kalan": 30000,
+       "kalem": "fatura:F1",
+       "vade": "2026-02-10"
+      },
+      {
+       "kalan": 10000,
+       "kalem": "borc:k8",
+       "vade": "2026-04-20"
+      }
+     ],
+     "gecikmis": 40000,
+     "supheli": 0,
+     "tarih": "2026-05-01"
+    },
+    "gec0515": {
+     "cari": "C1",
+     "detay": [
+      {
+       "kalan": 30000,
+       "kalem": "fatura:F1",
+       "vade": "2026-02-10"
+      },
+      {
+       "kalan": 10000,
+       "kalem": "borc:k8",
+       "vade": "2026-04-20"
+      },
+      {
+       "kalan": 40000,
+       "kalem": "kart:TK1",
+       "vade": "2026-05-01"
+      }
+     ],
+     "gecikmis": 80000,
+     "supheli": 0,
+     "tarih": "2026-05-15"
+    }
+   },
+   "redler": []
+  },
+  "B1=B": {
+   "acilis_olabilir": [],
+   "degismezler": {
+    "canli": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
+     "kdv_mahsup": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": [],
+     "s127_tek_yazim": [],
+     "tahmini_aylik_toplam": [],
+     "tyk": []
+    }
+   },
+   "devirler": [],
+   "raporlar": {
+    "gec0401": {
+     "cari": "C1",
+     "detay": [],
+     "gecikmis": 0,
+     "supheli": 0,
+     "tarih": "2026-04-01"
+    },
+    "gec0501": {
+     "cari": "C1",
+     "detay": [
+      {
+       "kalan": 10000,
+       "kalem": "borc:k8",
+       "vade": "2026-04-20"
+      }
+     ],
+     "gecikmis": 10000,
+     "supheli": 0,
+     "tarih": "2026-05-01"
+    },
+    "gec0515": {
+     "cari": "C1",
+     "detay": [
+      {
+       "kalan": 10000,
+       "kalem": "borc:k8",
+       "vade": "2026-04-20"
+      },
+      {
+       "kalan": 40000,
+       "kalem": "kart:TK1",
+       "vade": "2026-05-01"
+      }
+     ],
+     "gecikmis": 50000,
+     "supheli": 0,
+     "tarih": "2026-05-15"
+    }
+   },
+   "redler": []
+  }
+ },
+ "dil": "muhasebe-kahin/1"
+}

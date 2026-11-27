@@ -1,0 +1,22 @@
+KIRMIZI (istisna) S42-01-gonderiliyor-talep-kabul-gonderildi-izi-ayni-donem-daha-once: ValueError: KULLANICIYA SORULMALI S35-a (README §22.9; WK 16 KÂHİN SUSUYOR §21.7, Y16-9): silme talebi anında iş Gönderiliyor (istek gitti, yanıt bekleniyor — T1/A) — S35 yalnız bekleyen işi söyler; kodlanmadı
+KIRMIZI (istisna) S42-02-gonderiliyor-talep-yanit-yok-belirsiz-iz-ayni-donem-elenir: ValueError: KULLANICIYA SORULMALI S35-a (README §22.9; WK 16 KÂHİN SUSUYOR §21.7, Y16-9): silme talebi anında iş Gönderiliyor (istek gitti, yanıt bekleniyor — T1/A) — S35 yalnız bekleyen işi söyler; kodlanmadı
+KIRMIZI (istisna) S42-03-gonderiliyor-talep-yeniden-gonderim-gerektiren-yanit-atlandi-kesin-olumsuz-basarisiz: ValueError: KULLANICIYA SORULMALI S35-a (README §22.9; WK 16 KÂHİN SUSUYOR §21.7, Y16-9): silme talebi anında iş Gönderiliyor (istek gitti, yanıt bekleniyor — T1/G) — S35 yalnız bekleyen işi söyler; kodlanmadı
+KIRMIZI (istisna) S42-04-gonderiliyor-talep-gece-yarisi-yerel-gun-iz-gonderim-aninda: ValueError: KULLANICIYA SORULMALI S35-a (README §22.9; WK 16 KÂHİN SUSUYOR §21.7, Y16-9): silme talebi anında iş Gönderiliyor (istek gitti, yanıt bekleniyor — T1/GB) — S35 yalnız bekleyen işi söyler; kodlanmadı
+AYNI S43-01-yol-2-imzali-taninmayan-bildirim-isaret-koymaz-ayni-donem-daha-once
+AYNI S43-02-yol-1-imzasiz-taninmayan-bildirim-kabul-isaret-koymaz
+AYNI S43-03-yol-2-is-kimligiyle-taninan-bildirim-isaret-koyar-sure-dolar
+# kip uyarlanmis: KIRMIZI 4, AYNI 3
+ok 1 - S42-01-gonderiliyor-talep-kabul-gonderildi-izi-ayni-donem-daha-once — beklenen istisna:KULLANICIYA SORULMALI S35-a, gözlenen istisna
+ok 2 - S42-02-gonderiliyor-talep-yanit-yok-belirsiz-iz-ayni-donem-elenir — beklenen istisna:KULLANICIYA SORULMALI S35-a, gözlenen istisna
+ok 3 - S42-03-gonderiliyor-talep-yeniden-gonderim-gerektiren-yanit-atlandi-kesin-olumsuz-basarisiz — beklenen istisna:KULLANICIYA SORULMALI S35-a, gözlenen istisna
+ok 4 - S42-04-gonderiliyor-talep-gece-yarisi-yerel-gun-iz-gonderim-aninda — beklenen istisna:KULLANICIYA SORULMALI S35-a, gözlenen istisna
+ok 5 - S43-01-yol-2-imzali-taninmayan-bildirim-isaret-koymaz-ayni-donem-daha-once — beklenen ayni, gözlenen ayni
+ok 6 - S43-02-yol-1-imzasiz-taninmayan-bildirim-kabul-isaret-koymaz — beklenen ayni, gözlenen ayni
+ok 7 - S43-03-yol-2-is-kimligiyle-taninan-bildirim-isaret-koyar-sure-dolar — beklenen ayni, gözlenen ayni
+1..7
+# tests 7
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

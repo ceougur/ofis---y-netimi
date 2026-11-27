@@ -1,0 +1,32 @@
+{
+  "ad": "kahinmuh13-muh-mutasyon-utc",
+  "komut": "flock -s -w 3600 /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olcum.lock python3 -I -B test/bagimsiz/muhasebe/mutasyon.py",
+  "commit": "9480a5d245d6841a3f6047b7638ded271a58b859",
+  "dal": "worktree-agent-a1cc7f1375640faa7",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v653 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-19T17:04:17.384Z",
+  "sure_sn": 3814.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 317,
+    "gecen": 314,
+    "basarisiz": 3,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 3 başarısız, 0 iptal",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kanit/2026-11-19/kahinmuh13-muh-mutasyon-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a1cc7f1375640faa7",
+  "ham_cikti_sha256": "47421b4fabbc4fa8377928f7bd9e2eb17b926334f4a5377c0e13940c16b0064f",
+  "ham_cikti_bayt": 63830
+}

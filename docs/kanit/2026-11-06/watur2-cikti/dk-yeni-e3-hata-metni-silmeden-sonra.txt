@@ -1,0 +1,21 @@
+{
+ "talepA": 200,
+ "A": {
+  "state": "failed",
+  "erased": true,
+  "reason": "Değerlerden biri geçersiz (ör. alıcı numarası). (Meta hata kodu 131009: Parameter value is not valid: to …)",
+  "dosya": "Değerlerden biri geçersiz (ör. alıcı numarası). (Meta hata kodu 131009: Parameter value is not valid: to …)"
+ },
+ "talepB": 200,
+ "B": {
+  "state": "failed",
+  "reason": "Recipient … could not be reached (Meta hata kodu 135999)",
+  "dosya": "Recipient … could not be reached (Meta hata kodu 135999)"
+ },
+ "C_once": "Değerlerden biri geçersiz (ör. alıcı numarası). (Meta hata kodu 131009: Parameter value is not valid: to +90 534 777 88 99)",
+ "talepC": 200,
+ "C_sonra": "Değerlerden biri geçersiz (ör. alıcı numarası). (Meta hata kodu 131009: Parameter value is not valid: to …)",
+ "A_bakimdan_sonra": "Değerlerden biri geçersiz (ör. alıcı numarası). (Meta hata kodu 131009: Parameter value is not valid: to …)",
+ "bayt": [],
+ "gunluk": []
+}

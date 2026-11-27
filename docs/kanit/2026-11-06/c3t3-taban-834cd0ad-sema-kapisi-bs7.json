@@ -1,0 +1,38 @@
+{
+  "ad": "c3t3-taban-834cd0ad-sema-kapisi-bs7",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/sema-kapisi-bs7.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T12:00:31.073Z",
+  "sure_sn": 10,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 3,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "BS-7 şema sürüm kapısı › 001 yeni şemalı, 002 normal: giriş ve okuma çalışır, 001'e veri yazılmaz; 002'ye geçilip çalışılır",
+      "konum": "test/sema-kapisi-bs7.test.mjs:218:3",
+      "hata": "001'de yalnız ortak katman ayarı yazılabilir; değişen: company.user.user-bb4e3881-b74b-48b0-87f1-0f3989fdaca7, license.local, whatsapp.appWebhook (beklenen , gelen whatsapp.appWebhook)"
+    }
+  ],
+  "ham_cikti": "../c3t3-kanit/2026-11-06/c3t3-taban-834cd0ad-sema-kapisi-bs7.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t3-eski-834cd0ad",
+  "ham_cikti_sha256": "f4c1e72a7965f1440f9f0e48dd4356bf07e6007dde2c216cd0eb535b81adea01",
+  "ham_cikti_bayt": 2789
+}

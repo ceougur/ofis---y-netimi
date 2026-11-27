@@ -1,0 +1,24 @@
+{"adim":"kilit 31.12.2025","ms":5009,"olayDongusuEnCokMs":31,"status":200,"active":true,"frozenThrough":"","hata":""}
+{"adim":"aynı güne yeniden kilit (yazım sürerken)","ms":4895,"olayDongusuEnCokMs":215,"status":200,"active":false,"frozenThrough":"2025-12-31","hata":""}
+{"adim":"dondurmanın bitişi (yoklama)","ms":2,"olayDongusuEnCokMs":1,"view":"2025-12-31"}
+{
+ "SONUC": "TUTARLI",
+ "sonuc": {
+  "kapsam": "2025-12-31",
+  "gorunenDonmusSatir": 274616,
+  "kosununKayitliSatiri": 274616,
+  "canliTuretmeSatiri": 274616,
+  "hesapMizaniAltBaslik": "01.01.2025 – 31.12.2025 · Borç = Alacak · Mutabakat tutarlı"
+ },
+ "onkosul": "yazım adımında: 1000 satır yazılmışken aynı güne yeniden kilit",
+ "yuk": [
+  8.74,
+  8.89,
+  7.14
+ ],
+ "yukSonra": [
+  9.16,
+  8.81,
+  7.35
+ ]
+}

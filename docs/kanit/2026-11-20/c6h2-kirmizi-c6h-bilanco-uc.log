@@ -1,0 +1,229 @@
+TAP version 13
+# (node:10677) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Ç6-HESAP Bilanço okuma ucu — API'den girilen veri, iş parçacığı, yetki, kilit, iki şirket, yedek
+    # Subtest: Bilanço 30.09.2026 elle hesaplanan sayılarla; aynı adlı iki cari brüt (biri 120'de, öbürü 340'ta); Aktif = Pasif
+    not ok 1 - Bilanço 30.09.2026 elle hesaplanan sayılarla; aynı adlı iki cari brüt (biri 120'de, öbürü 340'ta); Aktif = Pasif
+      ---
+      duration_ms: 7.901773
+      type: 'test'
+      location: '/dev/shm/c6h2-eski/test/c6h-bilanco-uc.test.mjs:50:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        bilanço: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///dev/shm/c6h2-eski/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/c6h2-eski/test/c6h-bilanco-uc.test.mjs:51:17)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: hesaplanmış Dönem Net Kârı = aynı t'nin Gelir Tablosu ucu (1 Ocak – t) — ay / çeyrek / yıl sonu, gelecek tarih; Aktif = Pasif her t'de
+    not ok 2 - hesaplanmış Dönem Net Kârı = aynı t'nin Gelir Tablosu ucu (1 Ocak – t) — ay / çeyrek / yıl sonu, gelecek tarih; Aktif = Pasif her t'de
+      ---
+      duration_ms: 6.178925
+      type: 'test'
+      location: '/dev/shm/c6h2-eski/test/c6h-bilanco-uc.test.mjs:59:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        bilanço 2026-01-31: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///dev/shm/c6h2-eski/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/c6h2-eski/test/c6h-bilanco-uc.test.mjs:61:19)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: iç tutarlılık: hesap başına defter bakiyesi = aynı t'nin Hesap Planı Mizanı (1–5); bilançodaki tutar = defter (153 hariç: DSS_t)
+    not ok 3 - iç tutarlılık: hesap başına defter bakiyesi = aynı t'nin Hesap Planı Mizanı (1–5); bilançodaki tutar = defter (153 hariç: DSS_t)
+      ---
+      duration_ms: 3.236657
+      type: 'test'
+      location: '/dev/shm/c6h2-eski/test/c6h-bilanco-uc.test.mjs:68:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        bilanço: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///dev/shm/c6h2-eski/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/c6h2-eski/test/c6h-bilanco-uc.test.mjs:70:19)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: iş parçacığı ↔ iş parçacığısız sonuç birebir; varsayılan tarih bugün; geçersiz tarih 400
+    not ok 4 - iş parçacığı ↔ iş parçacığısız sonuç birebir; varsayılan tarih bugün; geçersiz tarih 400
+      ---
+      duration_ms: 2.806316
+      type: 'test'
+      location: '/dev/shm/c6h2-eski/test/c6h-bilanco-uc.test.mjs:79:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        bilanço: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///dev/shm/c6h2-eski/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/c6h2-eski/test/c6h-bilanco-uc.test.mjs:80:23)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: yetki: Muhasebe görür; Personel ve Avukat 403
+    not ok 5 - yetki: Muhasebe görür; Personel ve Avukat 403
+      ---
+      duration_ms: 268.495182
+      type: 'test'
+      location: '/dev/shm/c6h2-eski/test/c6h-bilanco-uc.test.mjs:87:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/c6h2-eski/test/c6h-bilanco-uc.test.mjs:92:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: kilitli t DONMUŞ defterden (kural değişikliği benzetiminde değişmez), kilitsiz t canlı
+    not ok 6 - kilitli t DONMUŞ defterden (kural değişikliği benzetiminde değişmez), kilitsiz t canlı
+      ---
+      duration_ms: 2.659282
+      type: 'test'
+      location: '/dev/shm/c6h2-eski/test/c6h-bilanco-uc.test.mjs:96:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        önce: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///dev/shm/c6h2-eski/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/c6h2-eski/test/c6h-bilanco-uc.test.mjs:97:20)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: iki şirket + yedek: ikinci şirketin Bilanço'su birinciyi görmez; 002'de yedek → kayıt → geri yükleme → Bilanço yedekteki gibi; 001'e dönünce sayılar aynı
+    not ok 7 - iki şirket + yedek: ikinci şirketin Bilanço'su birinciyi görmez; 002'de yedek → kayıt → geri yükleme → Bilanço yedekteki gibi; 001'e dönünce sayılar aynı
+      ---
+      duration_ms: 3.331178
+      type: 'test'
+      location: '/dev/shm/c6h2-eski/test/c6h-bilanco-uc.test.mjs:121:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        001: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///dev/shm/c6h2-eski/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/c6h2-eski/test/c6h-bilanco-uc.test.mjs:122:20)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..7
+not ok 1 - Ç6-HESAP Bilanço okuma ucu — API'den girilen veri, iş parçacığı, yetki, kilit, iki şirket, yedek
+  ---
+  duration_ms: 999.857765
+  type: 'suite'
+  location: '/dev/shm/c6h2-eski/test/c6h-bilanco-uc.test.mjs:21:1'
+  failureType: 'subtestsFailed'
+  error: '7 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Ç6-HESAP Bilanço okuma ucu — Kapanış Fişi ve ters kaydı (programın fiş defteri)
+    # Subtest: kapanmamış 2025 → Geçmiş Yıllar 570 kısmı; Kapanış Fişi → 590 (V.F), Geçmiş Yıllar boş; ters kayıt → yeniden kapanmamış; her durumda Aktif = Pasif
+    not ok 1 - kapanmamış 2025 → Geçmiş Yıllar 570 kısmı; Kapanış Fişi → 590 (V.F), Geçmiş Yıllar boş; ters kayıt → yeniden kapanmamış; her durumda Aktif = Pasif
+      ---
+      duration_ms: 2.619783
+      type: 'test'
+      location: '/dev/shm/c6h2-eski/test/c6h-bilanco-uc.test.mjs:161:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kapanmamış: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///dev/shm/c6h2-eski/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/c6h2-eski/test/c6h-bilanco-uc.test.mjs:162:18)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 2 - Ç6-HESAP Bilanço okuma ucu — Kapanış Fişi ve ters kaydı (programın fiş defteri)
+  ---
+  duration_ms: 402.53607
+  type: 'suite'
+  location: '/dev/shm/c6h2-eski/test/c6h-bilanco-uc.test.mjs:148:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 8
+# suites 2
+# pass 0
+# fail 8
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1820.665404

@@ -1,0 +1,32 @@
+{
+  "ad": "kahin-ebelge-mutasyon",
+  "komut": "python3 test/bagimsiz/ebelge/mutasyon.py",
+  "commit": "9e4ca5b4f5ee4ef82f8f58bf2f8b80a3f7c4090b",
+  "dal": "worktree-agent-a2ba3cc62b2d80923",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v445 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-13T11:05:55.906Z",
+  "sure_sn": 57.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 55,
+    "gecen": 55,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8-kanit/kahin-yeni-UTC/2026-11-13/kahin-ebelge-mutasyon.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a2ba3cc62b2d80923",
+  "ham_cikti_sha256": "5f35824af7cf0bd47d3db2faf9be254813e8f6038d1f81a8017224932ddfd5b7",
+  "ham_cikti_bayt": 11422
+}

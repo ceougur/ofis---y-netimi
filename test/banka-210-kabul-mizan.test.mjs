@@ -1,4 +1,5 @@
 // 2.1.0 — Kabul 1–16 baştan sona API'den, sıfırdan; adım 16 sonu MİZANI bağımsız modelle (plan §12.5: "Adım 33 sonunda mizan (bağımsız
+// 2.5.0 Ç5-A tur 1 — BEKLENTİ BİLEREK DEĞİŞTİ (G3: docs/erp/C5-ACILIS-TASARIM.md §2.2 / §11; KG-1, M-01 / M-04 / M-05 / M-07, B3): açılışların karşı hesabı 500 değil 519 "Eşleştirilecek Açılış Bakiyeleri" (banka fişinde saklı kod 500 kalır, türetmede 519). Tutarlar AYNI; yalnız hesap kodu.
 // modelle karşılaştırılır)" tablosunun 2.1.0'a düşen adımlarla karşılığı; eşleme 222 "adım 16 mizanı bağımsız modelle").
 //
 // Ön koşullar (§12.5): boş şirket; sahte saat 08.10.2026 Perşembe; Stok: Ürün A 10 Adet, Ürün B 25 Adet (parasız giriş); Kasa 0; dönem kilidi
@@ -64,8 +65,8 @@ describe("Kabul 1–16 (API, sıfırdan) — adım 16 sonu mizanı bağımsız m
   it("kabul 1–4: Ziraat 100.000 (102.01) ve Garanti 50.000 (102.02), 01.10.2026, Bakiye Doğrulandı → Gerçek Banka 150.000; 500 = 150.000 (A)", async () => {
     acc = await openAcceptanceAccounts(ctx.api);
     assert.deepEqual([acc.ziraat.glSub, acc.garanti.glSub], ["102.01", "102.02"]);
-    model.post("açılış Ziraat", [["102", "102.01", "B", kurus(100000)], ["500", "", "A", kurus(100000)]]);
-    model.post("açılış Garanti", [["102", "102.02", "B", kurus(50000)], ["500", "", "A", kurus(50000)]]);
+    model.post("açılış Ziraat", [["102", "102.01", "B", kurus(100000)], ["519", "", "A", kurus(100000)]]);
+    model.post("açılış Garanti", [["102", "102.02", "B", kurus(50000)], ["519", "", "A", kurus(50000)]]);
     const summary = await must("özet", ctx.api.get(`${BANK}/summary`));
     assert.equal(summary.realBank.minor, kurus(150000));
     for (const account of [acc.ziraat, acc.garanti]) {
@@ -114,7 +115,8 @@ describe("Kabul 1–16 (API, sıfırdan) — adım 16 sonu mizanı bağımsız m
 
   it("adım 16 sonu mizan (Ana Defter, API) = bağımsız model; modelde olmayan hesapta bakiye yok; 770 = 0; Borç = Alacak = 170.000", async () => {
     const trial = await trialBalances(ctx.api);
-    const want = { 100: 10000, 102: 160000, 120: 0, 391: -3333.33, 500: -150000, 600: -16666.67, 770: 0 };
+    // 2.5.0 Ç5-A (G3: plan §12.5 sayısı aynı, hesap kodu KG-1 kararıyla 519 — açılış karşılığı; 500 Sermaye boş).
+    const want = { 100: 10000, 102: 160000, 120: 0, 391: -3333.33, 500: 0, 519: -150000, 600: -16666.67, 770: 0 };
     for (const [code, minor] of model.main) assert.equal(kurus(trial[code] || 0), minor, `mizan ${code}: program ${trial[code] || 0} / model ${minor / 100}`);
     for (const [code, value] of Object.entries(want)) assert.equal(kurus(trial[code] || 0), kurus(value), `plan §12.5 karşılığı ${code}`);
     const extra = Object.entries(trial).filter(([code, value]) => !model.main.has(code) && Math.abs(value) > 0.004);

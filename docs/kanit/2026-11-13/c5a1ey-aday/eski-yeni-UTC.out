@@ -1,0 +1,704 @@
+TAP version 13
+# Subtest: A1 — S127: Kayıt Tarihi tam kilit günü olan, kilitten sonra yüklenmiş kart eski kurala bağlı (bir kez yazılır)
+    # Subtest: v2.4.9'un kendi sayıları (kâhin): 120 = cariler, kilit kilit gününde
+    ok 1 - v2.4.9'un kendi sayıları (kâhin): 120 = cariler, kilit kilit gününde
+      ---
+      duration_ms: 4.75024
+      type: 'test'
+      ...
+    # Subtest: güncel kod: cariler v2.4.9 ile aynı; mizan 120 = cariler (kart iki kez yazılmaz); kartın maddesi Kayıt Tarihi'nde (kilit günü — eski yapı)
+    ok 2 - güncel kod: cariler v2.4.9 ile aynı; mizan 120 = cariler (kart iki kez yazılmaz); kartın maddesi Kayıt Tarihi'nde (kilit günü — eski yapı)
+      ---
+      duration_ms: 90.036343
+      type: 'test'
+      ...
+    1..2
+ok 1 - A1 — S127: Kayıt Tarihi tam kilit günü olan, kilitten sonra yüklenmiş kart eski kurala bağlı (bir kez yazılır)
+  ---
+  duration_ms: 1163.589562
+  type: 'suite'
+  ...
+# Subtest: A8 — taksit kartına sayılmış carisiz evrak Alacak Yaşlandırması'nda KALIR (kartın alacağı evrağa geçer; toplam değişmez)
+    # Subtest: kart 900 → karta sayılan çek 400, evrağın carisi boş (eski veri): yaşlandırmanın toplamı aynı (900) — evrak raporda KALIR
+    ok 1 - kart 900 → karta sayılan çek 400, evrağın carisi boş (eski veri): yaşlandırmanın toplamı aynı (900) — evrak raporda KALIR
+      ---
+      duration_ms: 58.353035
+      type: 'test'
+      ...
+    1..1
+ok 2 - A8 — taksit kartına sayılmış carisiz evrak Alacak Yaşlandırması'nda KALIR (kartın alacağı evrağa geçer; toplam değişmez)
+  ---
+  duration_ms: 415.410293
+  type: 'suite'
+  ...
+# Subtest: A16 — göç 49: evrak açılış işaretini yalnız İLK olayının notundan alır
+    # Subtest: v2.4.9: Excel açılış portföyü evrakı → işaretli; formdan alınıp sonraki olayına aynı not yazılmış evrak → işaretsiz
+    ok 1 - v2.4.9: Excel açılış portföyü evrakı → işaretli; formdan alınıp sonraki olayına aynı not yazılmış evrak → işaretsiz
+      ---
+      duration_ms: 478.969483
+      type: 'test'
+      ...
+    1..1
+ok 3 - A16 — göç 49: evrak açılış işaretini yalnız İLK olayının notundan alır
+  ---
+  duration_ms: 479.332292
+  type: 'suite'
+  ...
+# Subtest: Ç5-A tur 1e — göç 48 ön süzgeci ↔ KG-16 kuralı (aynı boşluk kümesi)
+    # Subtest: [1] ön süzgecin kümesi = trimStart'ın attığı karakterler (bütün Unicode, kod noktası kod noktası)
+    not ok 1 - [1] ön süzgecin kümesi = trimStart'ın attığı karakterler (bütün Unicode, kod noktası kod noktası)
+      ---
+      duration_ms: 1.049572
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/goc48-bosluk-250.test.mjs:31:3'
+      failureType: 'testCodeFailure'
+      error: "göç 48'in ön süzgeç kümesi (OPENING_TRIM_CODES) yok"
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/goc48-bosluk-250.test.mjs:32:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:466:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:435:3)
+        node:internal/per_context/primordials:466:9
+        Array.map (<anonymous>)
+      ...
+    # Subtest: [2] dar kontrolün sekiz örneği + kümenin öbür üyeleri: ön süzgeç ⇔ kural ⇔ v2.4.9 kuralı; kümede olmayan karakter ve ortadaki 'açılış' aday değil
+    not ok 2 - [2] dar kontrolün sekiz örneği + kümenin öbür üyeleri: ön süzgeç ⇔ kural ⇔ v2.4.9 kuralı; kümede olmayan karakter ve ortadaki 'açılış' aday değil
+      ---
+      duration_ms: 1.075442
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/goc48-bosluk-250.test.mjs:50:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        ön süzgeç kuralın kümesini atmalı: "  Açılış"
+        
+        false !== true
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/goc48-bosluk-250.test.mjs:55:16)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: [3] göç 48: v2.4.9 verisinde başında özel boşluk olan 'Açılış…' satırları ADAY (519), aday kümesi = kuralın kümesi
+    not ok 3 - [3] göç 48: v2.4.9 verisinde başında özel boşluk olan 'Açılış…' satırları ADAY (519), aday kümesi = kuralın kümesi
+      ---
+      duration_ms: 1030.928899
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/goc48-bosluk-250.test.mjs:65:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        göç 48'in aday kümesi kuralın kümesiyle aynı olmalı
+        + actual - expected
+        
+        + [
+        +   '" Açılış"',
+        +   '"﻿Açılış"',
+        +   '"　Açılış"',
+        +   '" Açılış"',
+        +   '"\\u000bAçılış"',
+        +   '"\\fAçılış"',
+        +   '" Açılış"',
+        +   '" açılış devri"',
+        +   '" Açilış"',
+        +   '" AÇILIŞ"',
+        +   '" Açılış"',
+        +   '" Acilis"'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: '" Açılış"'
+        1: '"﻿Açılış"'
+        2: '"　Açılış"'
+        3: '" Açılış"'
+        4: '"\\u000bAçılış"'
+        5: '"\\fAçılış"'
+        6: '" Açılış"'
+        7: '" açılış devri"'
+        8: '" Açilış"'
+        9: '" AÇILIŞ"'
+        10: '" Açılış"'
+        11: '" Acilis"'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/goc48-bosluk-250.test.mjs:100:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 4 - Ç5-A tur 1e — göç 48 ön süzgeci ↔ KG-16 kuralı (aynı boşluk kümesi)
+  ---
+  duration_ms: 1034.398352
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/goc48-bosluk-250.test.mjs:30:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Ç5-A tur 1e — Silinenler'den dönen satırın KG-16 durumu (S51 = A, B8)
+    # Subtest: dar kontrolün örneği: v2.4.9'da girilmiş 'Açılış devri (ikinci)' → aday → onay (120 / 519) → sil → geri al: ONAYLI ve 519'da kalır
+    not ok 1 - dar kontrolün örneği: v2.4.9'da girilmiş 'Açılış devri (ikinci)' → aday → onay (120 / 519) → sil → geri al: ONAYLI ve 519'da kalır
+      ---
+      duration_ms: 57.480024
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kg16-geri-alma-250.test.mjs:107:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        onay bilgisi korunur (kapının kopyasıyla)
+        + actual - expected
+        
+          {
+            isOpening: 0,
+        +   review: ''
+        -   review: 'confirmed'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        isOpening: 0
+        review: 'confirmed'
+      actual:
+        isOpening: 0
+        review: ''
+      operator: 'deepStrictEqual'
+      stack: |-
+        assertState (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kg16-geri-alma-250.test.mjs:41:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kg16-geri-alma-250.test.mjs:111:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: sınıf tablosu: reddedilen → reddedilen (602 / 770), aday → aday (519); kapının kopyası aynı
+    not ok 2 - sınıf tablosu: reddedilen → reddedilen (602 / 770), aday → aday (519); kapının kopyası aynı
+      ---
+      duration_ms: 33.610043
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kg16-geri-alma-250.test.mjs:116:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        rejected: silinmeden önceki durum
+        + actual - expected
+        
+          {
+            isOpening: 0,
+        +   review: ''
+        -   review: 'rejected'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        isOpening: 0
+        review: 'rejected'
+      actual:
+        isOpening: 0
+        review: ''
+      operator: 'deepStrictEqual'
+      stack: |-
+        assertState (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kg16-geri-alma-250.test.mjs:41:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kg16-geri-alma-250.test.mjs:121:7)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: B8: v2.4.9'da silinmiş 'Açılış…' satırı (yükünde durum yok) güncel kodda geri alınınca ADAY (519)
+    not ok 3 - B8: v2.4.9'da silinmiş 'Açılış…' satırı (yükünde durum yok) güncel kodda geri alınınca ADAY (519)
+      ---
+      duration_ms: 13.763766
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kg16-geri-alma-250.test.mjs:127:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        B8: aday
+        + actual - expected
+        
+          {
+            isOpening: 0,
+        +   review: ''
+        -   review: 'candidate'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        isOpening: 0
+        review: 'candidate'
+      actual:
+        isOpening: 0
+        review: ''
+      operator: 'deepStrictEqual'
+      stack: |-
+        assertState (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kg16-geri-alma-250.test.mjs:41:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kg16-geri-alma-250.test.mjs:131:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: kilitli dönem: kilitli aday silinmez (409); kilitten önce silinip sonra kilitlenen satır geri alınmaz (409) — durum değişmez
+    not ok 4 - kilitli dönem: kilitli aday silinmez (409); kilitten önce silinip sonra kilitlenen satır geri alınmaz (409) — durum değişmez
+      ---
+      duration_ms: 238.478127
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kg16-geri-alma-250.test.mjs:136:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        yük durumu taşır
+        + actual - expected
+        
+        + undefined
+        - 'candidate'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'candidate'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kg16-geri-alma-250.test.mjs:144:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: S51 = A: açılış silinir, cari başka açılış alır, eskisi geri alınır → 'Açılış Olabilir' (aday, 519) — 2.4.5'te silinmiş yük (açıklamadan) ve 2.5.0'da silinmiş yük (işaretten)
+    not ok 5 - S51 = A: açılış silinir, cari başka açılış alır, eskisi geri alınır → 'Açılış Olabilir' (aday, 519) — 2.4.5'te silinmiş yük (açıklamadan) ve 2.5.0'da silinmiş yük (işaretten)
+      ---
+      duration_ms: 854.026856
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kg16-geri-alma-250.test.mjs:152:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        ön koşul: 2.5.0 yükü durumu taşır ('')
+        
+        undefined !== ''
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ''
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kg16-geri-alma-250.test.mjs:179:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 2.4.5'te silinmiş açılış yükü (işaret alanı yok, açıklama 'Açılış bakiyesi'), cari başka işaretli açılışla → aday
+    not ok 6 - 2.4.5'te silinmiş açılış yükü (işaret alanı yok, açıklama 'Açılış bakiyesi'), cari başka işaretli açılışla → aday
+      ---
+      duration_ms: 863.410418
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kg16-geri-alma-250.test.mjs:192:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        S51 = A (2.4.5 yükü): aday
+        + actual - expected
+        
+          {
+            isOpening: 0,
+        +   review: ''
+        -   review: 'candidate'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        isOpening: 0
+        review: 'candidate'
+      actual:
+        isOpening: 0
+        review: ''
+      operator: 'deepStrictEqual'
+      stack: |-
+        assertState (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kg16-geri-alma-250.test.mjs:41:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kg16-geri-alma-250.test.mjs:215:7)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..6
+not ok 5 - Ç5-A tur 1e — Silinenler'den dönen satırın KG-16 durumu (S51 = A, B8)
+  ---
+  duration_ms: 3368.775348
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kg16-geri-alma-250.test.mjs:64:1'
+  failureType: 'subtestsFailed'
+  error: '6 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Ç5-A tur 1e — kilitli dönemin kapı dışı bozulması bulunur; meşru olaylar sessiz
+    # Subtest: [1] satır içi tarama — Kasa satırının açılış işareti 0→1
+    not ok 1 - [1] satır içi tarama — Kasa satırının açılış işareti 0→1
+      ---
+      duration_ms: 621.573727
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:174:5'
+      failureType: 'testCodeFailure'
+      error: 'satır içi — Kasa satırının açılış işareti 0→1: ledger:snapshot bulunmalı: []'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        assertFound (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:161:40)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:182:9)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: [2] arka plan taraması — Kasa satırının açılış işareti 0→1; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    not ok 2 - [2] arka plan taraması — Kasa satırının açılış işareti 0→1; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 747.839078
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:193:5'
+      failureType: 'testCodeFailure'
+      error: 'arka plan — Kasa satırının açılış işareti 0→1: ledger:snapshot bulunmalı: []'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        assertFound (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:161:40)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:201:9)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: [1] satır içi tarama — cari satırının açılış işareti 0→1
+    not ok 3 - [1] satır içi tarama — cari satırının açılış işareti 0→1
+      ---
+      duration_ms: 506.56321
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:174:5'
+      failureType: 'testCodeFailure'
+      error: 'satır içi — cari satırının açılış işareti 0→1: ledger:snapshot bulunmalı: []'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        assertFound (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:161:40)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:182:9)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: [2] arka plan taraması — cari satırının açılış işareti 0→1; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    not ok 4 - [2] arka plan taraması — cari satırının açılış işareti 0→1; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 768.474596
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:193:5'
+      failureType: 'testCodeFailure'
+      error: 'arka plan — cari satırının açılış işareti 0→1: ledger:snapshot bulunmalı: []'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        assertFound (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:161:40)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:201:9)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: [1] satır içi tarama — cari satırının açılış işareti 1→0 (519 → 602)
+    not ok 5 - [1] satır içi tarama — cari satırının açılış işareti 1→0 (519 → 602)
+      ---
+      duration_ms: 513.4709
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:174:5'
+      failureType: 'testCodeFailure'
+      error: 'satır içi — cari satırının açılış işareti 1→0 (519 → 602): ledger:snapshot bulunmalı: []'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        assertFound (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:161:40)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:182:9)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: [2] arka plan taraması — cari satırının açılış işareti 1→0 (519 → 602); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    not ok 6 - [2] arka plan taraması — cari satırının açılış işareti 1→0 (519 → 602); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 721.148679
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:193:5'
+      failureType: 'testCodeFailure'
+      error: 'arka plan — cari satırının açılış işareti 1→0 (519 → 602): ledger:snapshot bulunmalı: []'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        assertFound (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:161:40)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:201:9)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: [1] satır içi tarama — iki carinin işareti yer değiştirir (sayı ve tutar aynı, yalnız hesap dağılımı)
+    not ok 7 - [1] satır içi tarama — iki carinin işareti yer değiştirir (sayı ve tutar aynı, yalnız hesap dağılımı)
+      ---
+      duration_ms: 506.134579
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:174:5'
+      failureType: 'testCodeFailure'
+      error: 'satır içi — iki carinin işareti yer değiştirir (sayı ve tutar aynı, yalnız hesap dağılımı): ledger:snapshot bulunmalı: []'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        assertFound (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:161:40)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:182:9)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: [2] arka plan taraması — iki carinin işareti yer değiştirir (sayı ve tutar aynı, yalnız hesap dağılımı); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    not ok 8 - [2] arka plan taraması — iki carinin işareti yer değiştirir (sayı ve tutar aynı, yalnız hesap dağılımı); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 746.778106
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:193:5'
+      failureType: 'testCodeFailure'
+      error: 'arka plan — iki carinin işareti yer değiştirir (sayı ve tutar aynı, yalnız hesap dağılımı): ledger:snapshot bulunmalı: []'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        assertFound (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:161:40)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:201:9)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: [1] satır içi tarama — KG-16 durumu (Açılış Olabilir onayı alanı)
+    not ok 9 - [1] satır içi tarama — KG-16 durumu (Açılış Olabilir onayı alanı)
+      ---
+      duration_ms: 493.503099
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:174:5'
+      failureType: 'testCodeFailure'
+      error: 'satır içi — KG-16 durumu (Açılış Olabilir onayı alanı): opening:review bulunmalı: []'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        assertFound (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:161:40)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:182:9)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: [2] arka plan taraması — KG-16 durumu (Açılış Olabilir onayı alanı); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    not ok 10 - [2] arka plan taraması — KG-16 durumu (Açılış Olabilir onayı alanı); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 693.001494
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:193:5'
+      failureType: 'testCodeFailure'
+      error: 'arka plan — KG-16 durumu (Açılış Olabilir onayı alanı): opening:review bulunmalı: []'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        assertFound (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:161:40)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:201:9)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: [1] satır içi tarama — evrakın açılış işareti
+    not ok 11 - [1] satır içi tarama — evrakın açılış işareti
+      ---
+      duration_ms: 495.695407
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:174:5'
+      failureType: 'testCodeFailure'
+      error: 'satır içi — evrakın açılış işareti: ledger:snapshot bulunmalı: []'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        assertFound (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:161:40)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:182:9)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: [2] arka plan taraması — evrakın açılış işareti; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    not ok 12 - [2] arka plan taraması — evrakın açılış işareti; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 684.281385
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:193:5'
+      failureType: 'testCodeFailure'
+      error: 'arka plan — evrakın açılış işareti: ledger:snapshot bulunmalı: []'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        assertFound (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:161:40)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:201:9)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: [1] satır içi tarama — taksit kartının Excel yükleme bağı
+    not ok 13 - [1] satır içi tarama — taksit kartının Excel yükleme bağı
+      ---
+      duration_ms: 489.319897
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:174:5'
+      failureType: 'testCodeFailure'
+      error: 'satır içi — taksit kartının Excel yükleme bağı: ledger:snapshot bulunmalı: []'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        assertFound (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:161:40)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:182:9)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: [2] arka plan taraması — taksit kartının Excel yükleme bağı; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    not ok 14 - [2] arka plan taraması — taksit kartının Excel yükleme bağı; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 700.404467
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:193:5'
+      failureType: 'testCodeFailure'
+      error: 'arka plan — taksit kartının Excel yükleme bağı: ledger:snapshot bulunmalı: []'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        assertFound (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:161:40)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:201:9)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: [4] meşru olaylar sessiz: kilitli satırda KG-16 onayı ve reddi (K8-2), kilidin ilerletilmesi, kaldırılması ve yeniden kilitleme; yeniden açılış
+    not ok 15 - [4] meşru olaylar sessiz: kilitli satırda KG-16 onayı ve reddi (K8-2), kilidin ilerletilmesi, kaldırılması ve yeniden kilitleme; yeniden açılış
+      ---
+      duration_ms: 1057.379429
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:234:3'
+      failureType: 'testCodeFailure'
+      error: 'no such column: opening_review_gate'
+      code: 'ERR_SQLITE_ERROR'
+      stack: |-
+        prepare (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/server/lib/db.mjs:79:22)
+        query (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/server/lib/db.mjs:378:14)
+        Object.get (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/server/lib/db.mjs:395:28)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:255:34)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: [5] yedekten geri yükleme ve Şirket Verisini Sıfırla sessiz
+    not ok 16 - [5] yedekten geri yükleme ve Şirket Verisini Sıfırla sessiz
+      ---
+      duration_ms: 824.306194
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:279:3'
+      failureType: 'testCodeFailure'
+      error: 'no such column: opening_review_gate'
+      code: 'ERR_SQLITE_ERROR'
+      stack: |-
+        prepare (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/server/lib/db.mjs:79:22)
+        query (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/server/lib/db.mjs:378:14)
+        Object.get (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/server/lib/db.mjs:395:28)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:291:34)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: [6] göç 50: gölge sütunu olmayan (göç 49'da kalmış) dosya açılınca gölge durumdan doldurulur — sessiz
+    not ok 17 - [6] göç 50: gölge sütunu olmayan (göç 49'da kalmış) dosya açılınca gölge durumdan doldurulur — sessiz
+      ---
+      duration_ms: 610.07797
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:311:3'
+      failureType: 'testCodeFailure'
+      error: 'no such column: "opening_review_gate"'
+      code: 'ERR_SQLITE_ERROR'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:324:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: [7] kapıdan geçen (mağaza) yazım kilitli satırın açılış işaretini değiştiremez: süzgeç de 'kilitli dönem' der → tam kapı reddeder (eşdeğerlik ihlali yok)
+    not ok 18 - [7] kapıdan geçen (mağaza) yazım kilitli satırın açılış işaretini değiştiremez: süzgeç de 'kilitli dönem' der → tam kapı reddeder (eşdeğerlik ihlali yok)
+      ---
+      duration_ms: 526.340823
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:341:3'
+      failureType: 'testCodeFailure'
+      error: 'Kasa: kapı reddetmeli (409 Kapanmış dönem; eşdeğerlik ihlali değil)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:355:16)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..18
+not ok 6 - Ç5-A tur 1e — kilitli dönemin kapı dışı bozulması bulunur; meşru olaylar sessiz
+  ---
+  duration_ms: 12458.273094
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1ey-eski/test/kural-farki-kapi-disi-250.test.mjs:169:1'
+  failureType: 'subtestsFailed'
+  error: '18 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..6
+# tests 31
+# suites 6
+# pass 4
+# fail 27
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 20526.295501

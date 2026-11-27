@@ -1,0 +1,43 @@
+
+> destekofis@2.5.0 test:senaryo-supheli-kuyruk-250
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-supheli-kuyruk-250.mjs
+
+  ✓ kurulum: {"b120":100,"b128":1000} (120 = 100, 128 = 1.000)
+
+■ 1 + Tahsilat → Kapatılacak Fatura = Fatura 2 → 700 (120'ye düşecek 300 > şüpheli dışı borç 100): RET, form açık, ileti iki tutarı söyler
+  ✓ formun yardım metni yeni kuralı söyler
+  ✓ Kapatılacak Fatura listesinde Fatura 2 var
+  ✓ form kapanmadı
+  ✓ ileti: “Normal cari hesaba işlenecek kısım (300,00 TL; 700,00 TL tahsilatın 400,00 TL'si faturanın şüpheli alacaktaki payından düşüyor) carinin şüpheli dışı borç bakiyesini (100,00 TL) aşıyor; fazlası şüpheli alacaktan düşmek zorunda.”
+  ✓ veri tabanı: satır yazılmadı (3 satır, başta 3; {"b120":100,"b128":1000})
+
+■ 2 Tutarı 300'e düzelt (seç + yaz + Tab) → Kaydet: KABUL (bugünkü kuralda 409 idi); 128 = 700, 120 = 100
+  ✓ form kapandı (kayıt alındı)
+  ✓ veri tabanı: 4 satır (başta 3 + 1), {"b120":100,"b128":700} (128 = 700, 120 = 100)
+  ✓ yeni satır: {"amount":300,"invoiceId":"invoice-bbb2c6e2-c815-495e-ad98-608be229f806","skip":0} (Fatura 2 FIS2026000000002)
+  ✓ mizan: 128 = 700, 120 = 100
+  ✓ Mutabakat Testi tamam (iki yükleyici aynı kural)
+
+■ 3 Hareketler etiketi: işaretli 400 'Normal Cariye İşlendi', F2'ye bağlı 300 (tamamı 128) etiketsiz; F2'ye bağlı 200 → 'Kısmen Normal Cariye İşlendi (₺100,00)'
+  ✓ etiketler (300'den sonra): {"full":["Normal Cariye İşlendi"],"part":[]} (yalnız işaretli 400'de 'Normal Cariye İşlendi')
+  ✓ veri tabanı: {"b120":0,"b128":600} (128 = 600, 120 = 0)
+  ✓ etiketler (200'den sonra): {"full":["Normal Cariye İşlendi"],"part":["Kısmen Normal Cariye İşlendi (₺100,00)"]} (tutar ekranın para biçimiyle)
+
+■ 4 S269 / S268: Değersiz Alacak Yaz formu yazılabilir tutarı (3.000, o günün tarihiyle) önerir; kısmi 1.000'den sonra düğme kalır, 2.000 önerir ve kabul edilir
+  ✓ açık kayıtta (kalan 123,55) Değersiz Alacak Yaz düğmesi var
+  ✓ 4a: ipucu “En çok ₺3.000,00 (kalan şüpheli ₺123,55 + 21.11.2026 tarihli faturaya bağlı tahsilatın bu kayda düşen payı; Değersiz o günün tahsilatından önce sayılır, tarih o güne kuruldu)” (en çok ₺3.000,00)
+  ✓ 4a: önerilen tutar 3000, tarih 2026-11-21 (beklenen 3.000,00 · 2026-11-21)
+  ✓ 4a: form kapandı (kayıt alındı)
+  ✓ veri tabanı: Değersiz toplamı 1000 (1.000)
+  ✓ kalanı aynı günün bağlı payıyla 0'a inmiş kayıtta düğme GÖRÜNÜR (S269 = A)
+  ✓ 4b: ipucu “En çok ₺2.000,00 (kalan şüpheli ₺0,00 + 21.11.2026 tarihli faturaya bağlı tahsilatın bu kayda düşen payı; Değersiz o günün tahsilatından önce sayılır, tarih o güne kuruldu)” (en çok ₺2.000,00)
+  ✓ 4b: önerilen tutar 2000, tarih 2026-11-21 (beklenen 2.000,00 · 2026-11-21)
+  ✓ 4b: form kapandı (kayıt alındı)
+  ✓ veri tabanı: Değersiz toplamı 3000 (3.000)
+  ✓ bakiye 423.55 (2.900 + 3.400 − 2.876,45 − 3.000 = 423,55; v2.4.9 ile aynı)
+  ✓ sınır doldu: Değersiz Alacak Yaz düğmesi yok
+  ✓ Mutabakat Testi tamam
+  ✓ sayfa hatası yok
+
+✓ senaryo-supheli-kuyruk-250: 28 geçti, 0 kaldı
+cikis 0

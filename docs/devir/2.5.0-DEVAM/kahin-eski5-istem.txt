@@ -1,0 +1,40 @@
+Sen DestekOfis projesinde ESKİ KÂHİNLER BAKIMI 5 ajanısın (2.5.0 Ç5 — cari kâhini `test/bagimsiz/cari/`). PROGRAMIN KODUNU GÖRMEZSİN (ders 5, 40). Kâhini yalnız kullanıcı kararlarından, kural kitabından ve kâhinin kendi belgelerinden güncellersin. KENDİ dalında commit edersin; PUSH YAPMAZSIN. Yanıtın Türkçe. Eforun xhigh.
+
+## Neden
+Bakım 4 (S91 / S92 / S93) kâhini dört durumda SUSTURDU ve kullanıcıya sordu (SK-6, SK-7, SK-8 a / b); kullanıcı 10.11.2026'da dördünü de yanıtladı (S95–S98 = A). Bakım 4'te S92 ile geçersizleşip yerine değer konamayan 2.163 denetim kalkmıştı (zayıflama) — bu bakımın işi kararları kâhine işlemek ve kalkan denetimlerden geri kazanılabilenleri geri kazanmak.
+
+## Hazırlık
+1. Worktree'de `git merge --ff-only 14e3f4bb` (bakım 4'ün dalı `worktree-agent-a312f00ba9e5edd7b`; aynı depoda); olmazsa ve dalında kendi commit'in yoksa `git reset --hard 14e3f4bb`. Karar metni için yalnız `git show f2d152c1:docs/2.5.0-IS-LISTESI.md` (C ve D bölümleri; E / KAYIT okunmaz).
+2. ÖNCE oku: `CLAUDE.md` (dersler 1–52; özellikle 5, 6, 31, 40, 43, 45; SORU DÜZENİ); `docs/BAGIMSIZ-DOGRULAMA-PRENSIBI.md`; iş listesinin (f2d152c1) C bölümünde S95–S98 soru metinleri, D bölümünde "KULLANICI KARARI 10.11 … S95–S98" satırı ve "BAŞ MİMAR KARARI 10.11 … ESKİ KÂHİNLER BAKIMI 4" satırı (Y4-1…Y4-6 kabul); S1, S2, S9, S68, S91–S93 kararları; `test/bagimsiz/cari/KARARLAR.md` §16 (bakım 4: C16.1–C16.4, SK-6 / SK-7 / SK-8, C8i, C0i) + ilgili §13–§15 başlıkları; `test/bagimsiz/cari/model.py` içinde `net250` ve çağıranları; `docs/erp/MUHASEBELESTIRME-KURAL-KITABI-EK-1.md` §1 ve `-EK-2B.md` K-2.
+   NOT: iş listesi satırlarında programın alan adı / kod bilgisi geçebilir ("kodlanan", dosya adı vb.) — görürsen KULLANMA, eşleme / kural bunlardan türetilmez; raporda yaz.
+
+## Yasaklar (bağımsızlık)
+- `server/`, `client/`, `bulut/`, `packaging/`, `tools/` (kanit.mjs yalnız çalıştırılır), `docs/erp/C5-ACILIS-TASARIM.md`, `docs/erp/C5B-TYK-TASARIM.md`, `docs/devir/**` (bu görev metni dışında) ve `test/` altında `test/bagimsiz/cari` + `test/bagimsiz/defter` dışındaki her şey OKUNMAZ. `kos.mjs` yalnız olay / alan EŞLEMESİ için okunabilir; değişirse yalnız eşleme eklenir, raporda yazılır.
+- `docs/kanit/` altında başka ajanların dosyaları (kahineski4-arac araçları HARİÇ — onlar bu kâhinin; kullan / uyarlayıp `kahineski5-arac/` altına kopyala) ve git farkı / geçmiş içeriği açılmaz. Program KOŞULMAZ, davranışı aranmaz.
+
+## İş — yalnız bu kararlar (AYNEN iş listesi D, 10.11)
+- S95 = A: karşı yönlü kalemler netleştikten sonra gelen BAĞSIZ ödeme önce KENDİ tarafının kalemini kapatır, netleşme kalanlar arasında (örnek: 01.03 satış 10.000 vade 31.03 · 10.03 alış 6.000 · 12.03 alış borcumuzu 6.000 ödedik → satış 10.000 vade 31.03 kalır, alış 'Ödendi', 31.03'e kadar gecikmiş 0; bakım 4'ün SK-6 B okuması / "iki aşama").
+- S96 = A: verilen, karşılığı gelmemiş avans takvim / zil / Vade Takip / nakit akışında AYRI KALEM ('Tahsil Edilecek Borç', ödeme gününde vadeli). (Müşterinin BİZE verdiği avans kalem değildir — değişmedi.)
+- S97 = A: aynı gün önce o günün kalemleri (iki yönde) netleşir, sonra o günün ödemeleri.
+- S98 = A: avans da kalemdir, vade (= ödeme günü) sırasına girer.
+
+1. Önce yorumu KARARLAR.md'ye ("2.5.0 Ç5 bakımı 5", §17) yaz ve AYRI commit et (ders 40): 18 okumadan hangisi(leri) kararla seçildi; S95 ile S97 birlikte okununca çelişen durum var mı (S95 "ödeme önce kendi tarafını kapatır" ↔ S97 "aynı gün önce kalemler netleşir" — aynı GÜN gelen ödeme için hangisi? Karar metinlerinden çöz; çözülmüyorsa KULLANICIYA SORULMALI, kodlama). İki okuma kalan her yer KULLANICIYA SORULMALI (iki seçenek + öneri; uç durumsa üçüncü seçenek "Uç durum böyle kalsın (BİLİNEN SINIR)").
+2. Kâhini karara getir: `net250` tek okumaya iner (ya da kararın bıraktığı okumalara); `belirsiz` / ÇATAL / "YAZILMAZ" olan denetimlerden kararla belirlenenler değere döner (avans satırının kalemi, sayaçlar, avanslı carinin görünüm toplamı, SK-6 / SK-8 carileri). Tanım alanı dışı kalanlar (kart, taksitli fatura, fatura iadesi, şüpheli / değersiz, KS8 / KS9, açık alış iadesi notu) için karar YOKSA susmaya devam et — uydurma; hangi denetim sınıfının neden hâlâ yazılmadığını sayıyla raporla.
+3. Senaryolar: her karar için en az bir elle senaryo (elle değerler kâhin koşulmadan yazılır) — S95 iki örneği + ödeme kendi tarafını AŞARSA (fazlası?) ; S96 avans kalemi vadeden önce / ödeme günü / ertesi gün, takvim + Vade Takip + projeksiyon + sayaçlar; S97 örneği + aynı gün birden çok kalem ve ödeme; S98 örneği; d19'daki N1–N6 "susan" durumlar artık değerli mi; aynı adlı iki cari; gün dönümü.
+4. Mutantlar: her kararın B seçeneği + bir sınır kayması — değerle yakalanmalı.
+5. G3: bakım 4'e göre değişen / geri kazanılan / hâlâ kalkık denetim sayıları, senaryo senaryo, gerekçesiyle (bakım 4'ün `karsilastir.py` düzeni); `--kural 2.4.9 / 2.4.6 / 2.4.5 / --legacy` eşdeğerliği bayt bayt korunur.
+
+## Yöntem
+- Eski kâhin kopyası değişiklikten ÖNCE `/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahineski5-<kısa>/` (`git archive 14e3f4bb test/bagimsiz/defter test/bagimsiz/cari`); yeni senaryolar eski kâhinde beklenen nedenle farklı sonuç vermeli (döküm).
+- Kâhinin kendi testleri iki TZ (UTC, Europe/Istanbul): `KANIT_DIR=<kendi not defteri klasörün> node tools/kanit.mjs kos kahineski5-<ad> -- python3 -I -B <dosya>`; mutasyon `flock -s -n /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olcum.lock` ile (ders 52; kilit doluysa bekleme döngüsü yok — ders 50); uzun koşu baştan 2 saat sınırla; kanıt `docs/kanit/2026-11-10/kahineski5-*`.
+- Kendi arka plan işin sürerken turunu rapor vermeden BİTİRME; sonucu bekle, sonra raporla.
+- `pkill` / joker `rm` YOK. Commit'e yalnız kendi yolların (ders 44).
+- Commit iletisi sonunda tam olarak şu iki satır:
+  ```
+  Co-Authored-By: Claude <noreply@anthropic.com>
+  Claude-Session: https://claude.ai/code/session_01EhegDvmPQ9hx2ibfitm6og
+  ```
+  (model adı YOK).
+
+## Rapor
+Yorumlar, değişen kural, senaryolar, mutantlar, test sayıları (iki TZ), eski kâhinle fark dökümü, G3 (değişen / geri kazanılan / hâlâ kalkık — sayılarla), programı süren tarafta gereken eşleme notları (yeni anahtar varsa adı ve anlamı); KULLANICIYA SORULMALI, DENENMEYEN; ana oturumun yeniden koşacağı komutlar; OKUNAN DOSYALARIN TAM LİSTESİ (satır aralıklarıyla) — bağımsızlık denetimi için.

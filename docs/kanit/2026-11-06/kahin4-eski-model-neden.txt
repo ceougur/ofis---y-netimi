@@ -1,0 +1,79 @@
+== s58-r9-kartli-fatura-sil-iptal (eskinin bilmediği rapor atlandı: yok)
+   kt3: beklenen {'TK2': {'kapali': True, 'taksitler': []}} ≠ eski {}
+   → 1 fark
+== s66-s18-avans-evrak-karsiliksiz (eskinin bilmediği rapor atlandı: yok)
+   g1b/kahin_susuyor: beklenen 0 ≠ eski [{'kaynak': 'KS1', 'evrak_kaynak': 'P1', 'neden': 'S11_AVANS', 'tutar': 10000}]
+   g3/kahin_susuyor: beklenen 0 ≠ eski [{'kaynak': 'KS3', 'evrak_kaynak': 'P3', 'neden': 'S11_AVANS', 'tutar': 4000}]
+   g2/kahin_susuyor: beklenen 0 ≠ eski [{'kaynak': 'KS2', 'evrak_kaynak': 'P2', 'neden': 'S11_AVANS', 'tutar': 10000}]
+   → 3 fark
+== s67-s19-kilit-ilerletme (eskinin bilmediği rapor atlandı: yok)
+   g1b/gecikmis: beklenen 0 ≠ eski 10000
+   g3c/gecikmis: beklenen 10000 ≠ eski 0
+   ak3c: beklenen [{'k': 'karsiliksiz:KS3', 'tur': 'karsiliksiz', 'kalan': 10000, 'vade': '2027-01-15', 'tarih': '2027-01-15'}] ≠ eski [{'k': 'fatura:F3', 'tur': 'fatura', 'kalan': 10000, 'vade': '2027-03-31', 'tarih': '2026-11-02'}]
+   g2b/gecikmis: beklenen 10000 ≠ eski 0
+   not2b: beklenen [] ≠ eski [{'kaynak': 'T2', 'hedef': 'fatura:F2', 'tutar': 10000, 'tarih': '2027-01-10'}]
+   → 5 fark
+== s68-s14-supheli-caride-bagli-cek (eskinin bilmediği rapor atlandı: yok)
+   redler: beklenen [] ≠ eski ['SUPHELI_NORMAL_ASIM', 'SUPHELI_NORMAL_ASIM', 'SUPHELI_NORMAL_ASIM']
+   mz/satirlar/128|C1/bakiye: beklenen 0 ≠ eski 10000
+   mz/satirlar/129|C1/bakiye: beklenen 0 ≠ eski -4000
+   mz/satirlar/644/bakiye: beklenen -4000 ≠ eski <yok>
+   g1/supheli: beklenen 0 ≠ eski 10000
+   sk1/0/kalan: beklenen 0 ≠ eski 10000
+   sk1/0/karsilik: beklenen 0 ≠ eski 4000
+   yevP1/0/kaynak: beklenen P1 ≠ eski <yok>
+   yevP1/0/satirlar/0/h: beklenen 101.01 ≠ eski <yok>
+   yevP1/0/satirlar/0/b: beklenen 10000 ≠ eski <yok>
+   yevP1/0/satirlar/1/h: beklenen 128 ≠ eski <yok>
+   yevP1/0/satirlar/1/c: beklenen C1 ≠ eski <yok>
+   yevP1/0/satirlar/1/a: beklenen 10000 ≠ eski <yok>
+   yevP1/1/tur: beklenen karsilik_cozulme ≠ eski <yok>
+   yevP1/1/satirlar/1/h: beklenen 644 ≠ eski <yok>
+   mz/satirlar/120|C3/bakiye: beklenen 0 ≠ eski 5000
+   mz/satirlar/128|C3/bakiye: beklenen 10000 ≠ eski 15000
+   g3/gecikmis: beklenen 0 ≠ eski 5000
+   g3/supheli: beklenen 10000 ≠ eski 15000
+   sk3/0/kalan: beklenen 10000 ≠ eski 15000
+   mz/satirlar/128|C2/bakiye: beklenen 6000 ≠ eski 8000
+   g2/supheli: beklenen 6000 ≠ eski 8000
+   sk2/2/kalan: beklenen 0 ≠ eski 2000
+   hat/otomatik: beklenen {'C1': 8000} ≠ eski {}
+   hat/supheli_etiketli: beklenen ['C2', 'C3'] ≠ eski ['C1', 'C2', 'C3']
+   hat/elle: beklenen {} ≠ eski {'C1': 8000, 'C3': 5000}
+   mz/satirlar/101.01/bakiye: beklenen 23000 ≠ eski 3000
+   mz/satirlar/121.01/bakiye: beklenen 7000 ≠ eski 5000
+   → 28 fark
+== s69-s15-kartli-fatura-iptal (eskinin bilmediği rapor atlandı: yok)
+   kt1b: beklenen {'TK1': {'kapali': True, 'taksitler': []}} ≠ eski {}
+   → 1 fark
+== s70-s20-silinenlerden-geri-yukle-kasa (eskinin bilmediği rapor atlandı: ['mu1', 'mu2'])
+   mu1: beklenen [{'kod': 'KASA_ACILIS_ONCESI_HAREKET', 'kaynak': 'KG1', 'tarih': '2026-01-10', 'acilis': '2026-01-15'}] — eski kâhinde rapor YOK
+   mu2: beklenen [{'kod': 'KASA_ACILIS_ONCESI_HAREKET', 'kaynak': 'KG1', 'tarih': '2026-01-10', 'acilis': '2026-01-15'}, {'kod': 'KASA_ACILIS_ONCESI_HAREKET', 'kaynak': 'KC1', 'tarih': '2026-01-12', 'acilis': '2026-01-15'}] — eski kâhinde rapor YOK
+   ESKİ DEĞİŞMEZ KIRMIZI degismez/canli/kasa_acilis_ilk: [{'acilis': '2026-01-15', 'ilk_hareket': '2026-01-10'}]
+   → 3 fark
+== s71-s20-yedekten-eski-veri-kasa (eskinin bilmediği rapor atlandı: ['mu1', 'mu2'])
+   redler: beklenen ['KASA_ACILIS_ONCE', 'KASA_ACILIS_SONRA'] ≠ eski ['KASA_ACILIS_ONCE', 'KASA_ACILIS_ONCE', 'KASA_ACILIS_ONCE', 'KASA_ACILIS_SONRA']
+   mu1: beklenen [{'kod': 'KASA_ACILIS_ONCESI_HAREKET', 'kaynak': 'KY', 'tarih': '2026-01-20', 'acilis': '2026-02-01'}, {'kod': 'KASA_ACILIS_ONCESI_HAREKET', 'kaynak': 'PY', 'tarih': '2026-01-25', 'acilis': '2026-02-01'}] — eski kâhinde rapor YOK
+   mz/satirlar/100/bakiye: beklenen 10900 ≠ eski 10100
+   mz/satirlar/120|C1/bakiye: beklenen -500 ≠ eski <yok>
+   mz/satirlar/649.90/bakiye: beklenen -400 ≠ eski -100
+   mod31/kasa: beklenen 800 ≠ eski <yok>
+   mod31/cari|C1: beklenen -500 ≠ eski <yok>
+   mu2: beklenen [] — eski kâhinde rapor YOK
+   mod31b/kasa: beklenen 10800 ≠ eski 10000
+   → 9 fark
+== s72-s21-pos-valor-resmi-tatil (eskinin bilmediği rapor atlandı: yok)
+   mod0423/pos|POS1: beklenen 39000 ≠ eski <yok>
+   mod0423/banka|B1: beklenen 0 ≠ eski 39000
+   yev0424/0/kaynak: beklenen P1 ≠ eski <yok>
+   yev0424/0/tur: beklenen pos_valor ≠ eski <yok>
+   yev0424/0/satirlar/0/h: beklenen 102.B1 ≠ eski <yok>
+   yev0424/0/satirlar/0/b: beklenen 39000 ≠ eski <yok>
+   mod0503/pos|POS1: beklenen 29400 ≠ eski <yok>
+   mod0503/banka|B1: beklenen 39000 ≠ eski 68400
+   mod1029/pos|POS1: beklenen 9800 ≠ eski <yok>
+   mod1029/banka|B1: beklenen 68400 ≠ eski 78200
+   mod0103/pos|POS1: beklenen 19600 ≠ eski <yok>
+   mod0103/banka|B1: beklenen 78200 ≠ eski 97800
+   → 12 fark
+# eski kâhinde fark toplamı 62

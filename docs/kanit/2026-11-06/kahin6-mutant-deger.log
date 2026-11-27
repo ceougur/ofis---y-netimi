@@ -1,0 +1,41 @@
+B52 Z7 S25 (c) B: nakit / havale / POS bağlı tahsilat 120'de (bugünkü kural)
+  1/134 kırmızı; DEĞER 1, DEĞİŞMEZ 0, HATA 0
+    [DEGER] test_s75_s25_c_nakit_havale_pos: AssertionError: Lists differ: ['SUPHELI_NORMAL_ASIM', 'SUPHELI_NORMAL_ASIM', 'SUPHELI_NORMAL_ASIM'] != [] … + [] : s75-s25-c-nakit-havale-pos [A] redler
+B52b Z7 S25 (c) sınır: POS (brüt) kapsam dışı
+  1/134 kırmızı; DEĞER 1, DEĞİŞMEZ 0, HATA 0
+    [DEGER] test_s75_s25_c_nakit_havale_pos: AssertionError: Lists differ: ['SUPHELI_NORMAL_ASIM'] != [] … + [] : s75-s25-c-nakit-havale-pos [A] redler
+B60 X1 S39 B: faturaya bağlı Kredi Kartına İade 120'de, şüpheli-normal aşım sınırına tabi
+  2/134 kırmızı; DEĞER 2, DEĞİŞMEZ 0, HATA 0
+    [DEGER] test_S39_kart_iade_s25_ile_ayni: AssertionError: Lists differ: [{'olay': 3, 'tur': 'tahsilat', 'kod': 'SU[49 chars] 0'}] != [] … -   'tur': 'tahsilat'}]
+    [DEGER] test_s78_s39_kart_iade_supheli: AssertionError: Lists differ: ['SUPHELI_NORMAL_ASIM', 'SUPHELI_NORMAL_ASIM', 'SUPHELI_NORMAL_ASIM'] != [] … + [] : s78-s39-kart-iade-supheli [A] redler
+B61 X4 S39 sınır: aynı gün açılan şüpheli kaydına kart iadesi 120'de (kayıt tarihi < işlem)
+  1/134 kırmızı; DEĞER 1, DEĞİŞMEZ 0, HATA 0
+    [DEGER] test_s78_s39_kart_iade_supheli: AssertionError: 4000 != 2000 : s78-s39-kart-iade-supheli [A] mz/satirlar/128|C3/bakiye
+B62 X3 S39 sınır: kart iadesinin faturanın açık kısmını aşan fazlası reddedilir (S25 (b) karta uygulanmaz)
+  1/134 kırmızı; DEĞER 1, DEĞİŞMEZ 0, HATA 0
+    [DEGER] test_s78_s39_kart_iade_supheli: AssertionError: Lists differ: ['S39_FAZLA'] != [] … + [] : s78-s39-kart-iade-supheli [A] redler
+B63 X7 S40 B: geri yüklenmiş açılış öncesi Kasa kaydının açıklama / cari düzeltmesi T12 ile red
+  2/134 kırmızı; DEĞER 2, DEĞİŞMEZ 0, HATA 0
+    [DEGER] test_S40_kapsam_disi_kahin_susar: AssertionError: AssertionError not raised : PY {'fatura': 'F1'}
+    [DEGER] test_s79_s40_geri_yuklenen_kasa_tutar_disi_alan: AssertionError: Lists differ: ['KAS[29 chars]ONCE', 'KASA_ACILIS_ONCE', 'KASA_ACILIS_ONCE',[35 chars]NCE'] != ['KAS[29 chars]ONCE'] … -  'KASA_ACILIS_ONCE'] : s79-s40-geri-yuklenen-kasa-tutar-disi-alan [A] redler
+B64 X9 S40 sınır: cari düzeltmesi (para sonucu) red, açıklama kabul
+  2/134 kırmızı; DEĞER 2, DEĞİŞMEZ 0, HATA 0
+    [DEGER] test_S40_kapsam_disi_kahin_susar: AssertionError: AssertionError not raised : PB {'cari': 'C3'}
+    [DEGER] test_s79_s40_geri_yuklenen_kasa_tutar_disi_alan: AssertionError: Lists differ: ['KASA_ACILIS_ONCE', 'KASA_ACILIS_ONCE', 'KASA_ACILIS_ONCE'] != ['KASA_ACILIS_ONCE', 'KASA_ACILIS_ONCE'] … + ['KASA_ACILIS_ONCE', 'KASA_ACILIS_ONCE'] : s79-s40-geri-yuklenen-kasa-tutar-disi-alan [A] redler
+B65 X10 S40 sınır: tutar + açıklama aynı düzeltmede red (tek tek kabul)
+  2/134 kırmızı; DEĞER 2, DEĞİŞMEZ 0, HATA 0
+    [DEGER] test_S40_kapsam_disi_kahin_susar: AssertionError: Lists differ: [{'olay': 8, 'tur': 'duzenle', 'kod': 'KAS[74 chars]01'}] != [] … -   'tur': 'duzenle'}]
+    [DEGER] test_s79_s40_geri_yuklenen_kasa_tutar_disi_alan: AssertionError: Lists differ: ['KASA_ACILIS_ONCE', 'KASA_ACILIS_ONCE', 'KASA_ACILIS_ONCE'] != ['KASA_ACILIS_ONCE', 'KASA_ACILIS_ONCE'] … + ['KASA_ACILIS_ONCE', 'KASA_ACILIS_ONCE'] : s79-s40-geri-yuklenen-kasa-tutar-disi-alan [A] redler
+B66 X10 S40 sınır: tarih değişse de açıklama / cari düzeltmesi kabul
+  2/134 kırmızı; DEĞER 2, DEĞİŞMEZ 0, HATA 0
+    [DEGER] test_S40_kapsam_disi_kahin_susar: AssertionError: Lists differ: [] != ['KASA_ACILIS_ONCE'] … + ['KASA_ACILIS_ONCE']
+    [DEGER] test_s79_s40_geri_yuklenen_kasa_tutar_disi_alan: AssertionError: Lists differ: [] != ['KASA_ACILIS_ONCE', 'KASA_ACILIS_ONCE'] … + ['KASA_ACILIS_ONCE', 'KASA_ACILIS_ONCE'] : s79-s40-geri-yuklenen-kasa-tutar-disi-alan [A] redler
+B67 X12 Z9: S26 / S40 yalnız yedekten gelen kayıtta (Silinenler'den geri alınan T12 ile red)
+  2/134 kırmızı; DEĞER 2, DEĞİŞMEZ 0, HATA 0
+    [DEGER] test_s76_s26_geri_yuklenen_kasa_tutar_duzelt: AssertionError: Lists differ: ['KASA_ACILIS_ONCE', 'KASA_ACILIS_ONCE', 'KASA_ACILIS_ONCE', 'KASA_ACILIS_ONCE'] != ['KASA_ACILIS_ONCE', 'KASA_ACILIS_ON … ASA_ACILIS_ONCE', 'KASA_ACILIS_ONCE', 'KASA_ACILIS_ONCE'] : s76-s26-geri-yuklenen-kasa-tutar-duzelt [A] redler
+    [DEGER] test_s79_s40_geri_yuklenen_kasa_tutar_disi_alan: AssertionError: Lists differ: ['KASA_ACILIS_ONCE', 'KASA_ACILIS_ONCE', 'KASA_ACILIS_ONCE'] != ['KASA_ACILIS_ONCE', 'KASA_ACILIS_ONCE'] … + ['KASA_ACILIS_ONCE', 'KASA_ACILIS_ONCE'] : s79-s40-geri-yuklenen-kasa-tutar-disi-alan [A] redler
+SONUÇ: hepsi değerle yakalandı
+# tests 10
+# pass 10
+# fail 0
+# skipped 0

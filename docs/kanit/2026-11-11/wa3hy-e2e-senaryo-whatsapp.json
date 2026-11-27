@@ -1,0 +1,32 @@
+{
+  "ad": "wa3hy-e2e-senaryo-whatsapp",
+  "komut": "npm run test:senaryo-whatsapp",
+  "commit": "b54318f3d9bc5472b6f49475fee4133788912a6a",
+  "dal": "sinama-wa3h",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-11T17:22:44.330Z",
+  "sure_sn": 168.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 45,
+    "gecen": 45,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../wa3hy-kanit/2026-11-11/wa3hy-e2e-senaryo-whatsapp.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-ya-ag",
+  "ham_cikti_sha256": "2f68e89297d1546c428da6d96c15bd90515b8c08de80a834144e623038c0e932",
+  "ham_cikti_bayt": 3597
+}

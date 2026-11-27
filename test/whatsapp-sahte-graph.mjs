@@ -236,6 +236,15 @@ export async function startFakeGraph({ token, phoneNumberId, wabaId, appId = "15
         if (!state.subscriptions.length && !state.override) return reply(200, { data: [] });
         return reply(200, { data: [{ whatsapp_business_api_data: { id: appId, link: `https://www.facebook.com/games/?app_id=${appId}`, name: "DestekOfis Mesaj" }, ...(state.override ? { override_callback_uri: state.override } : {}) }] });
       }
+      // 2.5.0 W-2 (aynı el — kâhin DEĞİL): abonelik silme — DELETE /<WABA_ID>/subscribed_apps → { success: true } (Meta belgesi embedded-signup/webhooks "Unsubscribe").
+      // Abonelik ve alternatif adres gider; state.unsubscribes silme isteklerini sayar.
+      if (req.method === "DELETE" && parts.length === 2 && parts[1] === "subscribed_apps") {
+        if (parts[0] !== wabaId) return reply(400, metaError(100, `Unsupported delete request. Object with ID '${parts[0]}' does not exist.`, { subcode: 33 }));
+        (state.unsubscribes ||= []).push({ at: Date.now() });
+        state.subscriptions = [];
+        state.override = null;
+        return reply(200, { success: true });
+      }
       // 2.4.8 W7 (aynı el — kâhin DEĞİL): WhatsApp'ı Bağla sonrası numara kaydı (6 haneli PIN) ve birlikte kullanım eşitlemesi.
       if (req.method === "POST" && parts.length === 2 && (parts[1] === "register" || parts[1] === "smb_app_data")) {
         if (parts[0] !== phoneNumberId) return reply(400, metaError(100, `Unsupported post request. Object with ID '${parts[0]}' does not exist.`, { subcode: 33 }));
@@ -258,7 +267,8 @@ export async function startFakeGraph({ token, phoneNumberId, wabaId, appId = "15
         const custom = state.recipientErrors[sent.to];
         if (custom) return reply(custom.status || 400, custom.body);
         state.sent += 1;
-        const wamid = `wamid.SAHTE${String(state.sent).padStart(4, "0")}`;
+        // 2.5.0 W-3 (aynı el — kâhin DEĞİL): wamidOf(to, n) verilirse ileti kimliği ondan (KVKK sızıntı testi: Meta'nın gerçek wamid'i gibi alıcının numarasını base64 taşır).
+        const wamid = typeof state.wamidOf === "function" ? state.wamidOf(sent.to, state.sent) : `wamid.SAHTE${String(state.sent).padStart(4, "0")}`;
         state.messages.push({ to: sent.to, template: sent.template?.name, language: sent.template?.language?.code, params: bodyParams.map(item => item.text), document: doc ? { id: String(doc.id), filename: doc.filename } : null, opaque: sent.biz_opaque_callback_data || "", wamid });
         if (state.dropAfter && state.dropAfter.test(line)) return req.socket.destroy(); // işlendi, yanıt yok
         return reply(200, { messaging_product: "whatsapp", contacts: [{ input: sent.to, wa_id: String(sent.to || "").replace(/\D/g, "") }], messages: [{ id: wamid, message_status: "accepted" }] });
@@ -288,6 +298,87 @@ export async function startFakeGraph({ token, phoneNumberId, wabaId, appId = "15
     close: () => new Promise(resolve => {
       server.closeAllConnections?.();
       server.close(() => resolve());
+    }),
+  };
+}
+
+/**
+ * 2.5.0 WhatsApp tur 2 (KULLANICI KARARI S63 = A; dar kontrol tur 1 betiği f2'nin vekili — aynı el, kâhin DEĞİL): AYNI WABA'ya İKİ Meta uygulaması (Elle Bağla = müşterinin
+ * uygulaması, WhatsApp'ı Bağla = DestekOfis uygulaması). Meta'da alternatif adres (WABA, uygulama) başına tektir; bu vekil `/<WABA>/subscribed_apps`'i belirtece göre UYGULAMA
+ * BAŞINA tutar, öbür istekleri programın sahte Graph'ına (backend; belirteç backendToken'a çevrilir) geçirir.
+ *   listing "hepsi": GET WABA'ya abone BÜTÜN uygulamaları (alternatif adresleriyle) döndürür; "kendi": yalnız çağıran uygulamanın satırını. Meta'nın davranışı DOĞRULANMADI —
+ *   testler iki modeli de koşar.
+ * apps: { [belirteç]: { id, name } }. Dönüş: { url, subs: Map(uygulama kimliği → { override }), log: [{ method, app }], listing (değiştirilebilir), pathOf(appId), close() }.
+ */
+export async function startTwoAppProxy({ backend, backendToken, wabaId, apps, listing = "hepsi" }) {
+  const subs = new Map();
+  const log = [];
+  const box = { listing };
+  const appOf = req => apps[String(req.headers.authorization || "").replace(/^Bearer\s+/i, "")] || null;
+  const proxy = http.createServer((req, res) => {
+    const chunks = [];
+    req.on("data", chunk => chunks.push(chunk));
+    req.on("end", () => {
+      const body = Buffer.concat(chunks);
+      const url = new URL(req.url, "http://x");
+      const match = /^\/v\d+\.\d+\/([^/]+)\/subscribed_apps$/.exec(url.pathname);
+      const app = appOf(req);
+      if (match && match[1] === wabaId && app) {
+        log.push({ method: req.method, app: app.id });
+        const send = (status, payload) => {
+          const text = JSON.stringify(payload);
+          res.writeHead(status, { "content-type": "application/json", "content-length": Buffer.byteLength(text) });
+          res.end(text);
+        };
+        if (req.method === "POST") {
+          let parsed = {};
+          try {
+            parsed = body.length ? JSON.parse(body.toString("utf8")) : {};
+          } catch {
+            parsed = {};
+          }
+          subs.set(app.id, { override: parsed.override_callback_uri || null });
+          return send(200, { success: true });
+        }
+        if (req.method === "GET") {
+          const rows = [...subs]
+            .filter(([id]) => box.listing === "hepsi" || id === app.id)
+            .map(([id, sub]) => ({ whatsapp_business_api_data: { id, link: `https://www.facebook.com/games/?app_id=${id}`, name: Object.values(apps).find(item => item.id === id)?.name || id }, ...(sub.override ? { override_callback_uri: sub.override } : {}) }));
+          return send(200, { data: rows });
+        }
+        if (req.method === "DELETE") {
+          subs.delete(app.id);
+          return send(200, { success: true });
+        }
+      }
+      const headers = { ...req.headers, authorization: app ? `Bearer ${backendToken}` : req.headers.authorization || "", host: new URL(backend.url).host };
+      const out = http.request(new URL(req.url, backend.url), { method: req.method, headers }, upstream => {
+        res.writeHead(upstream.statusCode, upstream.headers);
+        upstream.pipe(res);
+      });
+      out.on("error", () => {
+        if (!res.headersSent) res.writeHead(502);
+        res.end();
+      });
+      out.end(body);
+    });
+  });
+  await new Promise(resolve => proxy.listen(0, "127.0.0.1", resolve));
+  return {
+    url: `http://127.0.0.1:${proxy.address().port}`,
+    subs,
+    log,
+    get listing() {
+      return box.listing;
+    },
+    set listing(value) {
+      box.listing = value;
+    },
+    /** Uygulamanın Meta'daki alternatif adresinin gizli yolu (yoksa null). */
+    pathOf: appId => (subs.get(appId)?.override ? new URL(subs.get(appId).override).pathname.split("/").pop() : null),
+    close: () => new Promise(resolve => {
+      proxy.closeAllConnections?.();
+      proxy.close(() => resolve());
     }),
   };
 }

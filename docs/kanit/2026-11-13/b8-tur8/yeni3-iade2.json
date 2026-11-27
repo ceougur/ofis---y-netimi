@@ -1,0 +1,86 @@
+{
+ "Q1": {
+  "iade": 0,
+  "tahsil": 0,
+  "kalan": 700,
+  "kendi": [
+   0,
+   700
+  ],
+  "toplam": 700,
+  "durum": "overdue",
+  "satirlar": [
+   "500|öd 0|kal 500|iade 0|overdue",
+   "200|öd 0|kal 200|iade 0|open"
+  ],
+  "bakiye": 700,
+  "gecikmis": 500,
+  "zil": 500,
+  "kartOzet": [
+   "overdue|0|700|next 1"
+  ]
+ },
+ "Q2": {
+  "iade": 0,
+  "tahsil": 0,
+  "kalan": 600,
+  "kendi": [
+   0,
+   600
+  ],
+  "toplam": 600,
+  "durum": "overdue",
+  "satirlar": [
+   "300|öd 0|kal 300|iade 0|overdue",
+   "300|öd 0|kal 300|iade 0|overdue"
+  ],
+  "bakiye": 600,
+  "gecikmis": 600,
+  "zil": 600,
+  "kartOzet": [
+   "overdue|0|600|next 1"
+  ]
+ },
+ "Q3": {
+  "iade": 0,
+  "tahsil": 500,
+  "kalan": 200,
+  "kendi": [
+   500,
+   200
+  ],
+  "toplam": 700,
+  "durum": "active",
+  "satirlar": [
+   "500|öd 500|kal 0|iade 0|paid",
+   "200|öd 0|kal 200|iade 0|open"
+  ],
+  "bakiye": 200,
+  "gecikmis": 0,
+  "zil": 0,
+  "kartOzet": [
+   "active|500|200|next 2"
+  ]
+ },
+ "Q4": {
+  "tahsil": 200,
+  "kalan": 500,
+  "iade": 300,
+  "kendi": [
+   0,
+   1000
+  ],
+  "toplam": 1000,
+  "durum": "active",
+  "satirlar": [
+   "500|öd 200|kal 0|iade 300|paid",
+   "500|öd 0|kal 500|iade 0|open"
+  ],
+  "bakiye": 1000,
+  "gecikmis": 0,
+  "zil": 0,
+  "kartOzet": [
+   "active|200|500|next 2"
+  ]
+ }
+}

@@ -1,0 +1,59 @@
+TAP version 13
+# Subtest: 2.5.0 Ç3 tur 2 — dönem kilidi ucu: sıra (DÜŞÜK-1) ve arkada dondurma (İLERLEME)
+    # Subtest: K1: dondurma sürerken geçersiz ya da gelecek tarihli kilit isteği 400 alır; süren dondurma DURMAZ, POS ön adımı çalışmaz; sonunda kapsam = kilit, tek koşu
+    ok 1 - K1: dondurma sürerken geçersiz ya da gelecek tarihli kilit isteği 400 alır; süren dondurma DURMAZ, POS ön adımı çalışmaz; sonunda kapsam = kilit, tek koşu
+      ---
+      duration_ms: 3378.285427
+      type: 'test'
+      ...
+    # Subtest: K2: ön adımı (POS, 409 bank-pending-before-lock) reddedilen istek de süren dondurmayı durdurmaz
+    ok 2 - K2: ön adımı (POS, 409 bank-pending-before-lock) reddedilen istek de süren dondurmayı durdurmaz
+      ---
+      duration_ms: 3400.925387
+      type: 'test'
+      ...
+    # Subtest: K3: süren dondurma durdurulduktan sonra kilit yazılamazsa (işlem düşer) önceki bekleyen koşu sahipsiz kalmaz — arkada sürer, kapsam = kilit
+    ok 3 - K3: süren dondurma durdurulduktan sonra kilit yazılamazsa (işlem düşer) önceki bekleyen koşu sahipsiz kalmaz — arkada sürer, kapsam = kilit
+      ---
+      duration_ms: 3799.940717
+      type: 'test'
+      ...
+    # Subtest: K4: uç dondurmayı BEKLEMEZ — kilit + koşu yazılınca yanıt; ilerleme GET ile; arada kilitli dönem canlı okunur (raporlar aynı), kilitli döneme 409, açık döneme 200; bitince durum temiz
+    ok 4 - K4: uç dondurmayı BEKLEMEZ — kilit + koşu yazılınca yanıt; ilerleme GET ile; arada kilitli dönem canlı okunur (raporlar aynı), kilitli döneme 409, açık döneme 200; bitince durum temiz
+      ---
+      duration_ms: 946.825282
+      type: 'test'
+      ...
+    # Subtest: K5: kilit geri çekilince uç hemen yanıt verir; bayat satırlar ve kapının izi arkada — iş bitince açılan dönemde donmuş satır yok, iz benimsenmiş; yeniden kilit donar
+    ok 5 - K5: kilit geri çekilince uç hemen yanıt verir; bayat satırlar ve kapının izi arkada — iş bitince açılan dönemde donmuş satır yok, iz benimsenmiş; yeniden kilit donar
+      ---
+      duration_ms: 688.872887
+      type: 'test'
+      ...
+    # Subtest: K6: aynı güne yinelenen istek süren dondurmayı durdurmaz (koşu kaldığı yerden sürer, yenisi açılmaz)
+    ok 6 - K6: aynı güne yinelenen istek süren dondurmayı durdurmaz (koşu kaldığı yerden sürer, yenisi açılmaz)
+      ---
+      duration_ms: 6854.956094
+      type: 'test'
+      ...
+    # Subtest: K7: kapanış (app.close) dondurma arkada sürerken süren işi bitirir — kapalı bağlantıya çarpan iş / uyarı yok; yeniden açılışta bekleyen koşu sürer, kapsam = kilit
+    ok 7 - K7: kapanış (app.close) dondurma arkada sürerken süren işi bitirir — kapalı bağlantıya çarpan iş / uyarı yok; yeniden açılışta bekleyen koşu sürer, kapsam = kilit
+      ---
+      duration_ms: 2815.024458
+      type: 'test'
+      ...
+    1..7
+ok 1 - 2.5.0 Ç3 tur 2 — dönem kilidi ucu: sıra (DÜŞÜK-1) ve arkada dondurma (İLERLEME)
+  ---
+  duration_ms: 24195.157173
+  type: 'suite'
+  ...
+1..1
+# tests 7
+# suites 1
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 24753.223574

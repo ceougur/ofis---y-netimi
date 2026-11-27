@@ -1,0 +1,99 @@
+TAP version 13
+# (node:9270) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Aşama 3 — banka hesap kartı
+    # Subtest: çalışıyor mu: Ziraat 102.01 ve Garanti 102.02; kod önerilir, etiket banka · hesap, Bakiye Doğrulandı → Uyar
+    ok 1 - çalışıyor mu: Ziraat 102.01 ve Garanti 102.02; kod önerilir, etiket banka · hesap, Bakiye Doğrulandı → Uyar
+      ---
+      duration_ms: 27.214634
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: aynı IBAN 409 (boşluklu, küçük harfli yazım dahil); geçersiz IBAN 400
+    ok 2 - nasıl bozarım: aynı IBAN 409 (boşluklu, küçük harfli yazım dahil); geçersiz IBAN 400
+      ---
+      duration_ms: 13.632249
+      type: 'test'
+      ...
+    # Subtest: aynı bankada aynı adlı iki hesap izinli; aynı kod (harf büyüklüğü farkıyla) 409; kod verilmezse tekil öneri
+    ok 3 - aynı bankada aynı adlı iki hesap izinli; aynı kod (harf büyüklüğü farkıyla) 409; kod verilmezse tekil öneri
+      ---
+      duration_ms: 51.25009
+      type: 'test'
+      ...
+    # Subtest: tür ve para birimi: döviz hesabı elle kurla; geçersiz eşleşmeler 400
+    ok 4 - tür ve para birimi: döviz hesabı elle kurla; geçersiz eşleşmeler 400
+      ---
+      duration_ms: 98.782464
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: hareketli hesapta para birimi/tür 409; hareketsizde değişir; 102 ailesinden karta 409
+    ok 5 - nasıl bozarım: hareketli hesapta para birimi/tür 409; hareketsizde değişir; 102 ailesinden karta 409
+      ---
+      duration_ms: 73.477853
+      type: 'test'
+      ...
+    # Subtest: pasife alma: seçicide ve etkin listede görünmez; yeniden etkin olur
+    ok 6 - pasife alma: seçicide ve etkin listede görünmez; yeniden etkin olur
+      ---
+      duration_ms: 43.437251
+      type: 'test'
+      ...
+    # Subtest: seçici: kategoriler, tek hesapta single, bakiye dönmez
+    ok 7 - seçici: kategoriler, tek hesapta single, bakiye dönmez
+      ---
+      duration_ms: 3.514783
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: sil → aynı ad, kod ve IBAN ile yeniden aç; alt hesap kodu yeniden kullanılmaz; açılış ters kayıtla kapanır
+    ok 8 - nasıl bozarım: sil → aynı ad, kod ve IBAN ile yeniden aç; alt hesap kodu yeniden kullanılmaz; açılış ters kayıtla kapanır
+      ---
+      duration_ms: 60.240029
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: başka şirketin hesap kimliği 404; şirketler ayrı
+    ok 9 - nasıl bozarım: başka şirketin hesap kimliği 404; şirketler ayrı
+      ---
+      duration_ms: 193.541247
+      type: 'test'
+      ...
+    1..9
+ok 1 - Aşama 3 — banka hesap kartı
+  ---
+  duration_ms: 1014.314523
+  type: 'suite'
+  ...
+# Subtest: Aşama 3 — yetki, salt okunur lisans ve boş şirket
+    # Subtest: personel: hesap listesi, açma, açılış, sihirbaz, ayarlar 403; seçici 200 ve bakiyesiz
+    ok 1 - personel: hesap listesi, açma, açılış, sihirbaz, ayarlar 403; seçici 200 ve bakiyesiz
+      ---
+      duration_ms: 409.723493
+      type: 'test'
+      ...
+    # Subtest: salt okunur lisans: banka yazımı 403 LICENSE_READ_ONLY; banka yazma yetkileri ekrana gönderilmez (fatura yönetimi de)
+    ok 2 - salt okunur lisans: banka yazımı 403 LICENSE_READ_ONLY; banka yazma yetkileri ekrana gönderilmez (fatura yönetimi de)
+      ---
+      duration_ms: 281.21118
+      type: 'test'
+      ...
+    # Subtest: boş şirket: listeler, özet, seçici, eski hareketler, alt hesap mizanı, ayarlar 200 ve boş; sihirbaz hesabı bulamaz
+    ok 3 - boş şirket: listeler, özet, seçici, eski hareketler, alt hesap mizanı, ayarlar 200 ve boş; sihirbaz hesabı bulamaz
+      ---
+      duration_ms: 379.485776
+      type: 'test'
+      ...
+    1..3
+ok 2 - Aşama 3 — yetki, salt okunur lisans ve boş şirket
+  ---
+  duration_ms: 1070.804345
+  type: 'suite'
+  ...
+1..2
+# tests 12
+# suites 2
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2448.229667
+cikis=0

@@ -1,0 +1,355 @@
+{
+ "kok": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a8eba3f64140fc5f1",
+ "results": {
+  "Y1": {
+   "onkosul": {
+    "yazilan": 15,
+    "faz": "yazım"
+   },
+   "purge": [
+    0,
+    0,
+    0
+   ],
+   "ayni_gun": [
+    200,
+    200
+   ],
+   "sonra_yazilan": 15,
+   "ilk_yanit": 200,
+   "son_gorunum": {
+    "lockedUntil": "2026-12-31",
+    "frozenThrough": "2026-12-31",
+    "pending": null,
+    "error": ""
+   },
+   "kosular": [
+    [
+     1,
+     "freeze",
+     "done",
+     "",
+     "2026-12-31",
+     "2.5.0",
+     "lock",
+     84
+    ]
+   ],
+   "butunluk": {
+    "kapsam": "2026-12-31",
+    "kilit": "2026-12-31",
+    "gorunen": 84,
+    "kayitli": 84,
+    "canli": 84,
+    "donmus_eq_canli": true,
+    "tutarli": true
+   }
+  },
+  "Y2": {
+   "onkosul": {
+    "yazilan": 84,
+    "faz": "yazım"
+   },
+   "purge": 0,
+   "ayni_gun": 200,
+   "sonra_yazilan": 84,
+   "son_gorunum": {
+    "lockedUntil": "2026-12-31",
+    "frozenThrough": "2026-12-31",
+    "pending": null,
+    "error": ""
+   },
+   "kosular": [
+    [
+     1,
+     "freeze",
+     "done",
+     "",
+     "2026-12-31",
+     "2.5.0",
+     "lock",
+     84
+    ]
+   ],
+   "butunluk": {
+    "kapsam": "2026-12-31",
+    "kilit": "2026-12-31",
+    "gorunen": 84,
+    "kayitli": 84,
+    "canli": 84,
+    "donmus_eq_canli": true,
+    "tutarli": true
+   }
+  },
+  "Y3": {
+   "onkosul": {
+    "yazilan": 15
+   },
+   "kaldir": 200,
+   "yeniden": 200,
+   "son_gorunum": {
+    "lockedUntil": "2026-12-31",
+    "frozenThrough": "2026-12-31",
+    "pending": null,
+    "error": ""
+   },
+   "kosular": [
+    [
+     1,
+     "freeze",
+     "abandoned",
+     "",
+     "2026-12-31",
+     "2.5.0",
+     "lock",
+     0
+    ],
+    [
+     2,
+     "freeze",
+     "done",
+     "",
+     "2026-12-31",
+     "2.5.0",
+     "lock",
+     84
+    ]
+   ],
+   "butunluk": {
+    "kapsam": "2026-12-31",
+    "kilit": "2026-12-31",
+    "gorunen": 84,
+    "kayitli": 84,
+    "canli": 84,
+    "donmus_eq_canli": true,
+    "tutarli": true
+   }
+  },
+  "Y4": {
+   "onkosul": {
+    "bekleyen": {
+     "no": 2,
+     "from": "2026-06-30",
+     "through": "2026-12-31",
+     "rule": "2.5.0",
+     "reason": "lock"
+    },
+    "yazilan": 15
+   },
+   "fis": "yazıldı",
+   "kilit": "2027-01-05",
+   "postall_sonra": {
+    "kosular": [
+     [
+      1,
+      "done",
+      "2026-06-30",
+      "2.5.0"
+     ],
+     [
+      2,
+      "abandoned",
+      "2026-12-31",
+      "2.5.0"
+     ],
+     [
+      3,
+      "done",
+      "2027-01-05",
+      "2.5.0"
+     ]
+    ],
+    "eski_kosu_satiri": 0
+   },
+   "son_gorunum": {
+    "lockedUntil": "2027-01-05",
+    "frozenThrough": "2027-01-05",
+    "pending": null,
+    "error": ""
+   },
+   "kosular": [
+    [
+     1,
+     "freeze",
+     "done",
+     "",
+     "2026-06-30",
+     "2.5.0",
+     "lock",
+     46
+    ],
+    [
+     2,
+     "freeze",
+     "abandoned",
+     "2026-06-30",
+     "2026-12-31",
+     "2.5.0",
+     "lock",
+     0
+    ],
+    [
+     3,
+     "freeze",
+     "done",
+     "2026-06-30",
+     "2027-01-05",
+     "2.5.0",
+     "voucher-closing",
+     42
+    ]
+   ],
+   "butunluk": {
+    "kapsam": "2027-01-05",
+    "kilit": "2027-01-05",
+    "gorunen": 88,
+    "kayitli": 88,
+    "canli": 88,
+    "donmus_eq_canli": true,
+    "tutarli": true
+   }
+  },
+  "Y6": {
+   "ilk": 200,
+   "onkosul": {
+    "durum": "hata",
+    "hata": "test: dondurma düştü",
+    "bayat": 15
+   },
+   "ayni_gun": 200,
+   "son_gorunum": {
+    "lockedUntil": "2026-12-31",
+    "frozenThrough": "2026-12-31",
+    "pending": null,
+    "error": ""
+   },
+   "kosular": [
+    [
+     1,
+     "freeze",
+     "done",
+     "",
+     "2026-12-31",
+     "2.5.0",
+     "lock",
+     84
+    ]
+   ],
+   "butunluk": {
+    "kapsam": "2026-12-31",
+    "kilit": "2026-12-31",
+    "gorunen": 84,
+    "kayitli": 84,
+    "canli": 84,
+    "donmus_eq_canli": true,
+    "tutarli": true
+   }
+  },
+  "Y7": {
+   "onkosul": {
+    "yazilan": 15
+   },
+   "ilk_put": "fetch failed",
+   "acilis": {
+    "action": "none",
+    "pending": true,
+    "damaged": false
+   },
+   "son_gorunum": {
+    "lockedUntil": "2026-12-31",
+    "frozenThrough": "2026-12-31",
+    "pending": null,
+    "error": ""
+   },
+   "kosular": [
+    [
+     1,
+     "freeze",
+     "done",
+     "",
+     "2026-12-31",
+     "2.5.0",
+     "lock",
+     84
+    ]
+   ],
+   "butunluk": {
+    "kapsam": "2026-12-31",
+    "kilit": "2026-12-31",
+    "gorunen": 84,
+    "kayitli": 84,
+    "canli": 84,
+    "donmus_eq_canli": true,
+    "tutarli": true
+   }
+  },
+  "Y5": {
+   "onkosul": {
+    "bekleyen": {
+     "no": 1,
+     "from": "",
+     "through": "2026-12-31",
+     "rule": "2.4.9",
+     "reason": "repair"
+    },
+    "yazilan": 15
+   },
+   "postall_sonra": [
+    [
+     1,
+     "done",
+     "",
+     "2026-12-31",
+     "2.4.9",
+     84
+    ],
+    [
+     2,
+     "done",
+     "2026-12-31",
+     "2027-01-05",
+     "2.5.0",
+     4
+    ]
+   ],
+   "son_gorunum": {
+    "lockedUntil": "2027-01-05",
+    "frozenThrough": "2027-01-05",
+    "pending": null,
+    "phase": "durdu",
+    "error": ""
+   },
+   "kosular": [
+    [
+     1,
+     "freeze",
+     "done",
+     "",
+     "2026-12-31",
+     "2.4.9",
+     "repair",
+     84
+    ],
+    [
+     2,
+     "freeze",
+     "done",
+     "2026-12-31",
+     "2027-01-05",
+     "2.5.0",
+     "voucher-closing",
+     4
+    ]
+   ],
+   "butunluk": {
+    "kapsam": "2027-01-05",
+    "kilit": "2027-01-05",
+    "gorunen": 88,
+    "kayitli": 88,
+    "canli": 88,
+    "donmus_eq_canli": true,
+    "tutarli": true
+   }
+  }
+ }
+}

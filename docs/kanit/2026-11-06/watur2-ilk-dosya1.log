@@ -1,0 +1,143 @@
+TAP version 13
+# (node:7898) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 WhatsApp tur 2 — İş 1 (tur 1 dk ORTA-1): v2.4.9'un WABA düzeyi hook_seen satırı yükseltmeden sonra işaret SAYILMAZ
+    # Subtest: T2-1 v2.4.9 GERÇEK verisi (tanınmayan wamid'li imzasız bildirim → hook_seen 1, şirket işareti yok) → 13,5 sa sonra bakım turu: iş Meta Kabul Etti, kişi Daha Önce Gönderildi
+    ok 1 - T2-1 v2.4.9 GERÇEK verisi (tanınmayan wamid'li imzasız bildirim → hook_seen 1, şirket işareti yok) → 13,5 sa sonra bakım turu: iş Meta Kabul Etti, kişi Daha Önce Gönderildi
+      ---
+      duration_ms: 905.756487
+      type: 'test'
+      ...
+    1..1
+ok 1 - 2.5.0 WhatsApp tur 2 — İş 1 (tur 1 dk ORTA-1): v2.4.9'un WABA düzeyi hook_seen satırı yükseltmeden sonra işaret SAYILMAZ
+  ---
+  duration_ms: 906.936634
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 WhatsApp tur 2 — S58 = A: kip değişince bildirim yolu işareti sıfırlanır (teslim süresi 12 sa)
+    # Subtest: T2-2a Yol 1 → Yol 2: Yol 1'in işareti Yol 2'de sayılmaz — teslim bilgisi gelmeyen iş TTL + 1 sa sonra Meta Kabul Etti, Daha Önce Gönderildi
+    ok 1 - T2-2a Yol 1 → Yol 2: Yol 1'in işareti Yol 2'de sayılmaz — teslim bilgisi gelmeyen iş TTL + 1 sa sonra Meta Kabul Etti, Daha Önce Gönderildi
+      ---
+      duration_ms: 1471.218683
+      type: 'test'
+      ...
+    # Subtest: T2-2b Yol 2 → Yol 1 (ters yön): Yol 2'nin imzalı bildirimiyle konan işaret Yol 1'de sayılmaz
+    ok 2 - T2-2b Yol 2 → Yol 1 (ters yön): Yol 2'nin imzalı bildirimiyle konan işaret Yol 1'de sayılmaz
+      ---
+      duration_ms: 1715.607593
+      type: 'test'
+      ...
+    # Subtest: T2-2c geri dönüş: Yol 1 → Yol 2 → Yol 1 — eski işaret DİRİLMEZ
+    ok 3 - T2-2c geri dönüş: Yol 1 → Yol 2 → Yol 1 — eski işaret DİRİLMEZ
+      ---
+      duration_ms: 1799.538748
+      type: 'test'
+      ...
+    # Subtest: T2-2d aynı kipte Bilgileri Değiştir: işaret KALIR (karar yalnız kip der) — iş TTL + 1 sa sonra Süresi Doldu (bugünkü kural)
+    ok 4 - T2-2d aynı kipte Bilgileri Değiştir: işaret KALIR (karar yalnız kip der) — iş TTL + 1 sa sonra Süresi Doldu (bugünkü kural)
+      ---
+      duration_ms: 2007.857171
+      type: 'test'
+      ...
+    # Subtest: T2-2e Bağlantıyı Kaldır + başka kiple bağla: işaret silinir; Kaldır + aynı kiple bağla: işaretin kipi kayıtlı → KALIR
+    ok 5 - T2-2e Bağlantıyı Kaldır + başka kiple bağla: işaret silinir; Kaldır + aynı kiple bağla: işaretin kipi kayıtlı → KALIR
+      ---
+      duration_ms: 3416.342566
+      type: 'test'
+      ...
+    # Subtest: T2-2f tur 2'den ÖNCEKİ kodun işareti (kipi yazılmamış — whatsapp-kvkk-329d5d1b gerçek verisi): aynı kipte yeniden girişte kalır; Kaldır + yeniden bağlamada kipi bilinmediği için silinir
+    ok 6 - T2-2f tur 2'den ÖNCEKİ kodun işareti (kipi yazılmamış — whatsapp-kvkk-329d5d1b gerçek verisi): aynı kipte yeniden girişte kalır; Kaldır + yeniden bağlamada kipi bilinmediği için silinir
+      ---
+      duration_ms: 383.091519
+      type: 'test'
+      ...
+    1..6
+ok 2 - 2.5.0 WhatsApp tur 2 — S58 = A: kip değişince bildirim yolu işareti sıfırlanır (teslim süresi 12 sa)
+  ---
+  duration_ms: 10795.011733
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 WhatsApp tur 2 — S63 = A: kanca kaydı WABA + UYGULAMA başına (Meta listeleme modeli: hepsi)
+    # Subtest: T2-3a hepsi · iki şirket iki uygulama: kayıt, Bağlantıyı Sına (iki şirket), bakım turu (1 sa sonra) — her adımdan sonra iki uygulamanın adresi YAŞAR; Meta isteği yalnız ilgili uygulamanın belirteciyle
+    ok 1 - T2-3a hepsi · iki şirket iki uygulama: kayıt, Bağlantıyı Sına (iki şirket), bakım turu (1 sa sonra) — her adımdan sonra iki uygulamanın adresi YAŞAR; Meta isteği yalnız ilgili uygulamanın belirteciyle
+      ---
+      duration_ms: 2324.735483
+      type: 'test'
+      ...
+    # Subtest: T2-3b hepsi · S41: A'nın alternatif adresi Meta'dan kalkar → uygulama düzeyi adrese gelen 001 bildirimi işlenir, adres YALNIZ Elle Bağla şirketiyle (A) yeniden kaydedilir, B'nin adresi değişmez; Elle Bağla şirketi denetleyemezse WhatsApp'ı Bağla şirketi DENETLEMEZ
+    ok 2 - T2-3b hepsi · S41: A'nın alternatif adresi Meta'dan kalkar → uygulama düzeyi adrese gelen 001 bildirimi işlenir, adres YALNIZ Elle Bağla şirketiyle (A) yeniden kaydedilir, B'nin adresi değişmez; Elle Bağla şirketi denetleyemezse WhatsApp'ı Bağla şirketi DENETLEMEZ
+      ---
+      duration_ms: 1824.622663
+      type: 'test'
+      ...
+    # Subtest: T2-3c hepsi · v2.4.9 GERÇEK verisi, TEK uygulama (Elle Bağla): eski WABA başına kayıt Elle Bağla'nın sayılır — eski adres yaşar, bakım turunda Meta'ya YENİ KAYIT GİTMEZ
+    ok 3 - T2-3c hepsi · v2.4.9 GERÇEK verisi, TEK uygulama (Elle Bağla): eski WABA başına kayıt Elle Bağla'nın sayılır — eski adres yaşar, bakım turunda Meta'ya YENİ KAYIT GİTMEZ
+      ---
+      duration_ms: 558.76553
+      type: 'test'
+      ...
+    # Subtest: T2-3d hepsi · v2.4.9 GERÇEK verisi, İKİ uygulama (001 WhatsApp'ı Bağla = B, 002 Elle Bağla = A; v2.4.9'da B'nin adresi 404): ilk bakım turundan sonra iki uygulama da kendi adresini kaydeder, iki şirketin teslimi 200
+    ok 4 - T2-3d hepsi · v2.4.9 GERÇEK verisi, İKİ uygulama (001 WhatsApp'ı Bağla = B, 002 Elle Bağla = A; v2.4.9'da B'nin adresi 404): ilk bakım turundan sonra iki uygulama da kendi adresini kaydeder, iki şirketin teslimi 200
+      ---
+      duration_ms: 880.257257
+      type: 'test'
+      ...
+    1..4
+ok 3 - 2.5.0 WhatsApp tur 2 — S63 = A: kanca kaydı WABA + UYGULAMA başına (Meta listeleme modeli: hepsi)
+  ---
+  duration_ms: 5589.177121
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 WhatsApp tur 2 — S63 = A: kanca kaydı WABA + UYGULAMA başına (Meta listeleme modeli: kendi)
+    # Subtest: T2-3a kendi · iki şirket iki uygulama: kayıt, Bağlantıyı Sına (iki şirket), bakım turu (1 sa sonra) — her adımdan sonra iki uygulamanın adresi YAŞAR; Meta isteği yalnız ilgili uygulamanın belirteciyle
+    ok 1 - T2-3a kendi · iki şirket iki uygulama: kayıt, Bağlantıyı Sına (iki şirket), bakım turu (1 sa sonra) — her adımdan sonra iki uygulamanın adresi YAŞAR; Meta isteği yalnız ilgili uygulamanın belirteciyle
+      ---
+      duration_ms: 2782.696166
+      type: 'test'
+      ...
+    # Subtest: T2-3b kendi · S41: A'nın alternatif adresi Meta'dan kalkar → uygulama düzeyi adrese gelen 001 bildirimi işlenir, adres YALNIZ Elle Bağla şirketiyle (A) yeniden kaydedilir, B'nin adresi değişmez; Elle Bağla şirketi denetleyemezse WhatsApp'ı Bağla şirketi DENETLEMEZ
+    ok 2 - T2-3b kendi · S41: A'nın alternatif adresi Meta'dan kalkar → uygulama düzeyi adrese gelen 001 bildirimi işlenir, adres YALNIZ Elle Bağla şirketiyle (A) yeniden kaydedilir, B'nin adresi değişmez; Elle Bağla şirketi denetleyemezse WhatsApp'ı Bağla şirketi DENETLEMEZ
+      ---
+      duration_ms: 2323.579266
+      type: 'test'
+      ...
+    # Subtest: T2-3c kendi · v2.4.9 GERÇEK verisi, TEK uygulama (Elle Bağla): eski WABA başına kayıt Elle Bağla'nın sayılır — eski adres yaşar, bakım turunda Meta'ya YENİ KAYIT GİTMEZ
+    ok 3 - T2-3c kendi · v2.4.9 GERÇEK verisi, TEK uygulama (Elle Bağla): eski WABA başına kayıt Elle Bağla'nın sayılır — eski adres yaşar, bakım turunda Meta'ya YENİ KAYIT GİTMEZ
+      ---
+      duration_ms: 603.685054
+      type: 'test'
+      ...
+    # Subtest: T2-3d kendi · v2.4.9 GERÇEK verisi, İKİ uygulama (001 WhatsApp'ı Bağla = B, 002 Elle Bağla = A; v2.4.9'da B'nin adresi 404): ilk bakım turundan sonra iki uygulama da kendi adresini kaydeder, iki şirketin teslimi 200
+    ok 4 - T2-3d kendi · v2.4.9 GERÇEK verisi, İKİ uygulama (001 WhatsApp'ı Bağla = B, 002 Elle Bağla = A; v2.4.9'da B'nin adresi 404): ilk bakım turundan sonra iki uygulama da kendi adresini kaydeder, iki şirketin teslimi 200
+      ---
+      duration_ms: 971.819351
+      type: 'test'
+      ...
+    1..4
+ok 4 - 2.5.0 WhatsApp tur 2 — S63 = A: kanca kaydı WABA + UYGULAMA başına (Meta listeleme modeli: kendi)
+  ---
+  duration_ms: 6682.407471
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 WhatsApp tur 2 — tur 1 dk DÜŞÜK-2 (test boşluğu): kilitli defter + kaydı OLMAYAN WABA'nın uygulama düzeyi bildirimi
+    # Subtest: T2-9a defter başka süreçte kilitli (kısa sınama düşer) → kaydı olmayan WABA'nın bildirimi 200 (düşer, işlenmez), Meta'ya istek YOK; kaydı olan WABA'nınki 503
+    ok 1 - T2-9a defter başka süreçte kilitli (kısa sınama düşer) → kaydı olmayan WABA'nın bildirimi 200 (düşer, işlenmez), Meta'ya istek YOK; kaydı olan WABA'nınki 503
+      ---
+      duration_ms: 1287.725343
+      type: 'test'
+      ...
+    1..1
+ok 5 - 2.5.0 WhatsApp tur 2 — tur 1 dk DÜŞÜK-2 (test boşluğu): kilitli defter + kaydı OLMAYAN WABA'nın uygulama düzeyi bildirimi
+  ---
+  duration_ms: 1288.098522
+  type: 'suite'
+  ...
+1..5
+# tests 16
+# suites 5
+# pass 16
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 25966.245903

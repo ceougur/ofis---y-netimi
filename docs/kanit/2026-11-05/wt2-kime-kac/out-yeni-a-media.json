@@ -1,0 +1,102 @@
+{
+ "sina": 200,
+ "b1": 200,
+ "stage": "media",
+ "reqsAfter": [
+  "GET /102290129340398/phone_numbers",
+  "GET /106540352242922",
+  "GET /102290129340398/message_templates",
+  "GET /102290129340398/message_templates",
+  "GET /106540352242922",
+  "POST /106540352242922/media",
+  "POST /106540352242922/messages",
+  "POST /106540352242922/media"
+ ],
+ "tokenExpiry": {
+  "state": "expired",
+  "expiresAt": null,
+  "source": "",
+  "expiredBy": "meta",
+  "expiredAt": "2026-11-05T07:00:00.000Z",
+  "daysLeft": null,
+  "message": "WhatsApp bağlantınızın süresi doldu: Meta erişim belirtecini artık kabul etmiyor (süresi dolmuş ya da iptal edilmiş). Yeni gönderim başlatılamaz; Yönetim → WhatsApp'ta Yeniden Bağla ile yeniden bağlayın."
+ },
+ "audit": 1,
+ "failQueueLeft": 0,
+ "afterFail": {
+  "state": "paused",
+  "pauseCode": "token-expired",
+  "jobs": [
+   "Ali:accepted:",
+   "Berk:paused:0",
+   "Cem:paused:"
+  ],
+  "msgs": {
+   "+905328110001": 1
+  }
+ },
+ "newWhileExpired": [
+  409,
+  "whatsapp-token-expired"
+ ],
+ "reconnect": 200,
+ "preview2": [
+  "Berk:Zaten Kuyrukta",
+  "Deniz:gönderilir"
+ ],
+ "b2": [
+  200,
+  "{\"kind\":\"statement\",\"period\":{\"from\":\"2026-11-01\",\"to\":\"2026-11-05\",\"preset\":\"thisMonth\"},\"template\":{\"ok\":true,\"template\":{\"name\":\"destekofis_ekstre\",\"language\":\"tr\",\"status\":\"APPROVED\",\"category\":\"UTILITY\"}},\"total\":2,\"sendable\":1,\"skipped\":{\"Zaten Kuyrukta\":1},\"alreadySent\":{\"count\":0,\"last\":null,\"included\":0},\"people\":[{\"id\":\"account-8b26e161-66bb-4529-b1da-7c605be2e302\",\"name\":\"Berk\",\"phone\":\"+905328110002\",\"skip\":\"Zaten Kuyrukta\"},{\"id\":\"account-051e20be-a956-4de9-b5a4-c7ed4e968fc3\",\"name\":\"Deniz\",\"phone\":\"+905328110004\",\"skip\":\"\"}],\"limit\":{\"limit\":250,\"tier\":\"TIER_250\",\"cap\":null,\"used\":1,\"left\":249,\"later\":0,\"holdUntil\":null},\"seconds\":1}"
+ ],
+ "b2jobs": [
+  "Berk:skipped:::",
+  "Deniz:accepted:::"
+ ],
+ "b2pause": [
+  "done",
+  "",
+  ""
+ ],
+ "lastReqs": [
+  "GET /102290129340398/message_templates 9-abcdef",
+  "GET /106540352242922 9-abcdef",
+  "GET /102290129340398/message_templates 9-abcdef",
+  "GET /106540352242922 9-abcdef",
+  "POST /106540352242922/media 9-abcdef",
+  "POST /106540352242922/messages 9-abcdef"
+ ],
+ "resume": [
+  200,
+  null,
+  null
+ ],
+ "final1": {
+  "state": "done",
+  "jobs": [
+   "Ali:accepted::",
+   "Berk:accepted::",
+   "Cem:accepted::"
+  ]
+ },
+ "msgsPerPerson": {
+  "+905328110001": 1,
+  "+905328110004": 1,
+  "+905328110002": 1,
+  "+905328110003": 1
+ },
+ "messageRequests": 4,
+ "window": {
+  "count": 4,
+  "phones": 4
+ },
+ "retryFailed": [
+  400,
+  "whatsapp-nothing"
+ ],
+ "msgsAfterRetry": {
+  "+905328110001": 1,
+  "+905328110004": 1,
+  "+905328110002": 1,
+  "+905328110003": 1
+ }
+}

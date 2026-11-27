@@ -13,10 +13,12 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { after, before, describe, test } from "node:test";
 import { companyFolderName, readBackupIdentity } from "../server/lib/backup.mjs";
 import { ADMIN_PASSWORD, createClient, loginAdmin, startTestServer } from "./helpers.mjs";
+import { isoDay } from "../server/lib/plans.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const data = response => (response.data && typeof response.data === "object" && "ok" in response.data ? response.data.data : response.data);
-const today = new Date().toISOString().slice(0, 10);
+// Program "bugün"ü yerel günle hesaplar (period.mjs today, plans.mjs isoDay); UTC günü yerel günden ayrışınca (İstanbul 00:00–03:00) yanlış gün olur (ders 13, 22).
+const today = isoDay(new Date());
 const sqliteFiles = dir => {
   const out = [];
   for (const entry of readdirSync(dir, { withFileTypes: true })) {

@@ -1,0 +1,73 @@
+{
+  "ad": "c3t2-kirmizi-eski-40473f17-utc",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=120000 test/donmus-defter-kilit-ucu-250.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T07:06:55.403Z",
+  "sure_sn": 116.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 9,
+    "gecen": 1,
+    "basarisiz": 8,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 8 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.0 Ç3 tur 2 — dönem kilidi ucu: sıra (DÜŞÜK-1) ve arkada dondurma (İLERLEME) › K1: dondurma sürerken geçersiz ya da gelecek tarihli kilit isteği 400 alır; süren dondurma DURMAZ, POS ön adımı çalışmaz; sonunda kapsam = kilit, tek koşu",
+      "konum": "test/donmus-defter-kilit-ucu-250.test.mjs:87:3",
+      "hata": "2099-01-01 reddedildikten sonra dondurma sürüyor (reddedilen istek süren dondurmayı durdurdu: önce 5 satır, şimdi {\"running\":false,\"phase\":\"durdu\",\"done\":5,\"total\":0,\"run\":1,\"error\":\"\",\"coverage\":\"\"}) (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.5.0 Ç3 tur 2 — dönem kilidi ucu: sıra (DÜŞÜK-1) ve arkada dondurma (İLERLEME) › K3: süren dondurma durdurulduktan sonra kilit yazılamazsa (işlem düşer) önceki bekleyen koşu sahipsiz kalmaz — arkada sürer, kapsam = kilit",
+      "konum": "test/donmus-defter-kilit-ucu-250.test.mjs:158:3",
+      "hata": "durdurulan koşu sahipsiz kaldı (kapsam boş, bekleyen undefined) · '' !== '2026-12-31' (beklenen 2026-12-31, gelen )"
+    },
+    {
+      "ad": "2.5.0 Ç3 tur 2 — dönem kilidi ucu: sıra (DÜŞÜK-1) ve arkada dondurma (İLERLEME) › K4: uç uzun dondurmayı BEKLEMEZ — en çok 5 sn sonra yanıt, kilit izi yanıttan önce; ilerleme GET ile; arada kilitli dönem canlı okunur (raporlar aynı), kilitli döneme 409, açık döneme 200; bitince durum temiz",
+      "konum": "test/donmus-defter-kilit-ucu-250.test.mjs:198:3",
+      "hata": "uç dondurmayı bekledi (yanıtta kapsam 2026-12-31; 20004 ms) · '2026-12-31' !== '' (beklenen , gelen 2026-12-31)"
+    },
+    {
+      "ad": "2.5.0 Ç3 tur 2 — dönem kilidi ucu: sıra (DÜŞÜK-1) ve arkada dondurma (İLERLEME) › K5: kilit geri çekilince uç hemen yanıt verir; bayat satırlar ve kapının izi arkada — iş bitince açılan dönemde donmuş satır yok, iz benimsenmiş; yeniden kilit donar",
+      "konum": "test/donmus-defter-kilit-ucu-250.test.mjs:260:3",
+      "hata": "geri çekmede bekleyen koşu yok · + actual - expected · + undefined"
+    },
+    {
+      "ad": "2.5.0 Ç3 tur 2 — dönem kilidi ucu: sıra (DÜŞÜK-1) ve arkada dondurma (İLERLEME) › K6: aynı güne yinelenen istek süren dondurmayı durdurmaz (koşu kaldığı yerden sürer, yenisi açılmaz)",
+      "konum": "test/donmus-defter-kilit-ucu-250.test.mjs:303:3",
+      "hata": "ön koşul: dondurma yazım adımında sürüyor ({\"running\":false,\"phase\":\"tamam\",\"done\":84,\"total\":84,\"run\":8,\"error\":\"\",\"coverage\":\"2026-12-31\"}) (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.5.0 Ç3 tur 2 — dönem kilidi ucu: sıra (DÜŞÜK-1) ve arkada dondurma (İLERLEME) › K7: kapanış (app.close) dondurma arkada sürerken süren işi bitirir — kapalı bağlantıya çarpan iş / uyarı yok; yeniden açılışta bekleyen koşu sürer, kapsam = kilit",
+      "konum": "test/donmus-defter-kilit-ucu-250.test.mjs:324:3",
+      "hata": "ön koşul: dondurma arkada sürüyor · + actual - expected · + undefined"
+    },
+    {
+      "ad": "2.5.0 Ç3 tur 2 — dondurma sürerken kilitli fişin Ters Kaydet'i › K8: kilitten hemen sonra (dondurma ve iz bekliyor) kilitli fişin Ters Kaydet'i 200, ters fiş bugün tarihli, kilit izi aynı; Düzelt'te kilitli tarih 409; dondurma sonra tamamlanır, Mutabakat Testi temiz",
+      "konum": "test/donmus-defter-kilit-ucu-250.test.mjs:382:3",
+      "hata": "ön koşul: dondurma arkada sürüyor · + actual - expected · + undefined"
+    },
+    {
+      "ad": "2.5.0 Ç3 tur 2 — dondurma sürerken kilitli fişin Ters Kaydet'i › K9 (büyük şirket benzetimi): iz bütçeden (5 sn) uzun sürerse uç bütçe dolunca yanıt verir — sınırsız beklemez; iz ve dondurma arkada gelir",
+      "konum": "test/donmus-defter-kilit-ucu-250.test.mjs:420:3",
+      "hata": "iz bütçesi dolunca yanıt (~5 sn; 20008 ms) (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "../c3t2-kanit/2026-11-06/c3t2-kirmizi-eski-40473f17-utc.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t2-eski-40473f17",
+  "ham_cikti_sha256": "062c03248e9641599409d284d78c65cab880584266bcd17e6fa908acd0b69ffe",
+  "ham_cikti_bayt": 12301
+}

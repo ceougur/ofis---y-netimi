@@ -1,0 +1,703 @@
+TAP version 13
+# (node:5304) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: tahsilat takvimi motoru (v2.0.1)
+    # Subtest: tarih, ay ve ödendi yazımlarını okur
+    ok 1 - tarih, ay ve ödendi yazımlarını okur
+      ---
+      duration_ms: 1.797825
+      type: 'test'
+      ...
+    # Subtest: icra + ödeme sözü + taksit + kira tablosunda ödenmemiş kalemleri bulur
+    ok 2 - icra + ödeme sözü + taksit + kira tablosunda ödenmemiş kalemleri bulur
+      ---
+      duration_ms: 45.532932
+      type: 'test'
+      ...
+    # Subtest: programda girilen tahsilat kalemleri vade sırasıyla kapatır; artan tutar sonrakine sayılır
+    ok 3 - programda girilen tahsilat kalemleri vade sırasıyla kapatır; artan tutar sonrakine sayılır
+      ---
+      duration_ms: 25.524687
+      type: 'test'
+      ...
+    # Subtest: sözleşme bitişi ve sigorta yenilemesi 1 hafta önceden son gün olarak gelir
+    ok 4 - sözleşme bitişi ve sigorta yenilemesi 1 hafta önceden son gün olarak gelir
+      ---
+      duration_ms: 16.112105
+      type: 'test'
+      ...
+    # Subtest: okul servisi: aylık ücret sütunlarında ödenmeyen ve kısmi ödenen aylar, araç ve şoför belgeleri
+    ok 5 - okul servisi: aylık ücret sütunlarında ödenmeyen ve kısmi ödenen aylar, araç ve şoför belgeleri
+      ---
+      duration_ms: 13.006513
+      type: 'test'
+      ...
+    1..5
+ok 1 - tahsilat takvimi motoru (v2.0.1)
+  ---
+  duration_ms: 103.014345
+  type: 'suite'
+  ...
+# Subtest: tahsilat takvimi: şablon satırları ve hizmet dönemi (v2.0.2)
+    # Subtest: ay kolonlarının yılı kolon sırasından: Eylül–Ağustos okul yılında Temmuz ve Ağustos gelecek yılın
+    ok 1 - ay kolonlarının yılı kolon sırasından: Eylül–Ağustos okul yılında Temmuz ve Ağustos gelecek yılın
+      ---
+      duration_ms: 0.546399
+      type: 'test'
+      ...
+    # Subtest: boş şablon satırı, başlamadan önceki aylar, ayrılan öğrenci ve '–' işaretli ay borç sayılmaz
+    ok 2 - boş şablon satırı, başlamadan önceki aylar, ayrılan öğrenci ve '–' işaretli ay borç sayılmaz
+      ---
+      duration_ms: 4.154139
+      type: 'test'
+      ...
+    1..2
+ok 2 - tahsilat takvimi: şablon satırları ve hizmet dönemi (v2.0.2)
+  ---
+  duration_ms: 5.096555
+  type: 'suite'
+  ...
+# Subtest: tahsilat takvimi: gerçek plan ile yapılmış işlem ayrımı (v2.0.2)
+    # Subtest: yapılmış ödemelerin listesi ('Ödeme Tarihi', son günlerde de olsa) ödeme planı sayılmaz
+    ok 1 - yapılmış ödemelerin listesi ('Ödeme Tarihi', son günlerde de olsa) ödeme planı sayılmaz
+      ---
+      duration_ms: 0.974315
+      type: 'test'
+      ...
+    # Subtest: aynı başlık ileri tarihliyse (plan) takvime girer
+    ok 2 - aynı başlık ileri tarihliyse (plan) takvime girer
+      ---
+      duration_ms: 1.096425
+      type: 'test'
+      ...
+    # Subtest: ay kolonlu satış ya da devam tablosu (ödeme kanıtı yok) aidat planı sayılmaz
+    ok 3 - ay kolonlu satış ya da devam tablosu (ödeme kanıtı yok) aidat planı sayılmaz
+      ---
+      duration_ms: 1.37067
+      type: 'test'
+      ...
+    # Subtest: satır bağlamı: kalan borcu 0 olan kayıttan tahsilat beklenmez
+    ok 4 - satır bağlamı: kalan borcu 0 olan kayıttan tahsilat beklenmez
+      ---
+      duration_ms: 1.34088
+      type: 'test'
+      ...
+    # Subtest: ay kolonlarında ödeme işareti varsa ya da ücret kolonu varsa aidat planıdır
+    ok 5 - ay kolonlarında ödeme işareti varsa ya da ücret kolonu varsa aidat planıdır
+      ---
+      duration_ms: 1.076548
+      type: 'test'
+      ...
+    1..5
+ok 3 - tahsilat takvimi: gerçek plan ile yapılmış işlem ayrımı (v2.0.2)
+  ---
+  duration_ms: 6.139591
+  type: 'suite'
+  ...
+# Subtest: PDF yazıcı ve kasa dökümü (v2.0.1)
+    # Subtest: yazı tipi alt kümesi geçerli bir TrueType dosyasıdır ve kullanılan glifleri korur
+    ok 1 - yazı tipi alt kümesi geçerli bir TrueType dosyasıdır ve kullanılan glifleri korur
+      ---
+      duration_ms: 5.493756
+      type: 'test'
+      ...
+    # Subtest: metni ölçer, satırlara böler ve Türkçe metni ToUnicode ile gömer
+    ok 2 - metni ölçer, satırlara böler ve Türkçe metni ToUnicode ile gömer
+      ---
+      duration_ms: 8.001744
+      type: 'test'
+      ...
+    # Subtest: kasa dökümü: devreden kasa, hareketler, toplam ve sayfa numarası
+    ok 3 - kasa dökümü: devreden kasa, hareketler, toplam ve sayfa numarası
+      ---
+      duration_ms: 13.942705
+      type: 'test'
+      ...
+    1..3
+ok 4 - PDF yazıcı ve kasa dökümü (v2.0.1)
+  ---
+  duration_ms: 27.597264
+  type: 'suite'
+  ...
+# Subtest: tahsilat takvimi ve kasa PDF uç noktaları (v2.0.1)
+    # Subtest: takvim ödenmemiş kalemleri ve son günleri döndürür
+    ok 1 - takvim ödenmemiş kalemleri ve son günleri döndürür
+      ---
+      duration_ms: 18.716948
+      type: 'test'
+      ...
+    # Subtest: tahsilat girilince kalem kapanır
+    ok 2 - tahsilat girilince kalem kapanır
+      ---
+      duration_ms: 46.206678
+      type: 'test'
+      ...
+    # Subtest: ödendi say / iptal / geri al; denetim kaydı yazılır
+    ok 3 - ödendi say / iptal / geri al; denetim kaydı yazılır
+      ---
+      duration_ms: 44.157537
+      type: 'test'
+      ...
+    # Subtest: kasa PDF: yetki, tarih denetimi ve dosya
+    ok 4 - kasa PDF: yetki, tarih denetimi ve dosya
+      ---
+      duration_ms: 20.366755
+      type: 'test'
+      ...
+    1..4
+ok 5 - tahsilat takvimi ve kasa PDF uç noktaları (v2.0.1)
+  ---
+  duration_ms: 820.031065
+  type: 'suite'
+  ...
+# Subtest: seyrek belge kolonları (v2.0.6)
+    # Subtest: araç listesinde tek kayda yazılan sigorta, emisyon, takograf tarihi de uyarı verir
+    ok 1 - araç listesinde tek kayda yazılan sigorta, emisyon, takograf tarihi de uyarı verir
+      ---
+      duration_ms: 2.487505
+      type: 'test'
+      ...
+    # Subtest: belge başlığında tarih olmayan değer (şirket adı) tarih sayılmaz; geçmiş tek tarih uyarı vermez
+    ok 2 - belge başlığında tarih olmayan değer (şirket adı) tarih sayılmaz; geçmiş tek tarih uyarı vermez
+      ---
+      duration_ms: 0.678672
+      type: 'test'
+      ...
+    1..2
+ok 6 - seyrek belge kolonları (v2.0.6)
+  ---
+  duration_ms: 3.288147
+  type: 'suite'
+  ...
+# Subtest: bildirimde “Gerçekleştirildi” (v2.0.2)
+    # Subtest: hücreye yazılan “Gerçekleştirildi” kalemi kapatır; tarih hücrede kalır; aylık kısmi ödeme de kapanır
+    ok 1 - hücreye yazılan “Gerçekleştirildi” kalemi kapatır; tarih hücrede kalır; aylık kısmi ödeme de kapanır
+      ---
+      duration_ms: 3.139234
+      type: 'test'
+      ...
+    # Subtest: her ay tekrarlayan ödeme günü kalemi ‘recurring’ olarak işaretlenir (ayar hücresine yazılmaz)
+    ok 2 - her ay tekrarlayan ödeme günü kalemi ‘recurring’ olarak işaretlenir (ayar hücresine yazılmaz)
+      ---
+      duration_ms: 0.656274
+      type: 'test'
+      ...
+    1..2
+ok 7 - bildirimde “Gerçekleştirildi” (v2.0.2)
+  ---
+  duration_ms: 3.892824
+  type: 'suite'
+  ...
+# Subtest: ay kolonu yazımları ve tek vadeli tutar (v2.0.2)
+    # Subtest: Eyl.26, Ekim'26, 2026-11, 12/2026 ay kolonu sayılır; 'Marka' ve 'Ara toplam' sayılmaz
+    ok 1 - Eyl.26, Ekim'26, 2026-11, 12/2026 ay kolonu sayılır; 'Marka' ve 'Ara toplam' sayılmaz
+      ---
+      duration_ms: 0.263122
+      type: 'test'
+      ...
+    # Subtest: tek vade kolonlu tabloda beklenen tutar borç/tutar kolonundan gelir
+    ok 2 - tek vade kolonlu tabloda beklenen tutar borç/tutar kolonundan gelir
+      ---
+      duration_ms: 1.033521
+      type: 'test'
+      ...
+    1..2
+ok 8 - ay kolonu yazımları ve tek vadeli tutar (v2.0.2)
+  ---
+  duration_ms: 1.383399
+  type: 'suite'
+  ...
+# Subtest: eşleme ekranı ve takvim (v2.0.2)
+    # Subtest: 'Son tarih / Vade' seçilen kolon başlığı ne olursa olsun takvime girer; 'Yok Say' seçilen kolon girmez
+    ok 1 - 'Son tarih / Vade' seçilen kolon başlığı ne olursa olsun takvime girer; 'Yok Say' seçilen kolon girmez
+      ---
+      duration_ms: 2.124613
+      type: 'test'
+      ...
+    1..1
+ok 9 - eşleme ekranı ve takvim (v2.0.2)
+  ---
+  duration_ms: 2.199073
+  type: 'suite'
+  ...
+# Subtest: ay matrisi → taksit defteri (v2.0.2)
+    # Subtest: girişten önceki ve çıkıştan sonraki boş aylar taksit değildir; aradaki boş ay ödenmemiştir; durgun kayıt uyarı üretmez
+    ok 1 - girişten önceki ve çıkıştan sonraki boş aylar taksit değildir; aradaki boş ay ödenmemiştir; durgun kayıt uyarı üretmez
+      ---
+      duration_ms: 2.864143
+      type: 'test'
+      ...
+    # Subtest: defter: aralık dışı için satır açılmaz; 2 tam boş ay hâlâ aktiftir, 3 tam boş ay durgundur
+    ok 2 - defter: aralık dışı için satır açılmaz; 2 tam boş ay hâlâ aktiftir, 3 tam boş ay durgundur
+      ---
+      duration_ms: 0.5725
+      type: 'test'
+      ...
+    1..2
+ok 10 - ay matrisi → taksit defteri (v2.0.2)
+  ---
+  duration_ms: 3.58832
+  type: 'suite'
+  ...
+# Subtest: ay hücresinde ödenecek taksit (plan kipi, v2.0.2)
+    # Subtest: Eylül 10.000 + Ekim 10.000 = Toplam 20.000: Eylül bu ay beklenir (ekrandaki örnek)
+    ok 1 - Eylül 10.000 + Ekim 10.000 = Toplam 20.000: Eylül bu ay beklenir (ekrandaki örnek)
+      ---
+      duration_ms: 2.505785
+      type: 'test'
+      ...
+    # Subtest: programda tahsilat girilince, 'Ödenen' ya da Toplam − Kalan ile Eylül kapanır
+    ok 2 - programda tahsilat girilince, 'Ödenen' ya da Toplam − Kalan ile Eylül kapanır
+      ---
+      duration_ms: 8.003035
+      type: 'test'
+      ...
+    # Subtest: aylar geçince ödenmeyen taksitler gecikir; planda boş ay ve plan bitişi borç sayılmaz
+    ok 3 - aylar geçince ödenmeyen taksitler gecikir; planda boş ay ve plan bitişi borç sayılmaz
+      ---
+      duration_ms: 3.864323
+      type: 'test'
+      ...
+    # Subtest: başlıkta yazım hatası ('NİSAN TAKSTİ', 'Mayıs taksit') ay kolonu sayılır; tahsilat Eylül'ü kapatır
+    ok 4 - başlıkta yazım hatası ('NİSAN TAKSTİ', 'Mayıs taksit') ay kolonu sayılır; tahsilat Eylül'ü kapatır
+      ---
+      duration_ms: 3.62816
+      type: 'test'
+      ...
+    # Subtest: uyarıdaki 'Gerçekleştirildi' Eylül'ü kapatır, tutar hücrede kalır; Ekim'de Ekim beklenir
+    ok 5 - uyarıdaki 'Gerçekleştirildi' Eylül'ü kapatır, tutar hücrede kalır; Ekim'de Ekim beklenir
+      ---
+      duration_ms: 3.696373
+      type: 'test'
+      ...
+    # Subtest: kart detayındaki tahsilat notunda ay yazıyorsa tahsilat o aya sayılır (kullanıcı önerisi, v2.0.3)
+    ok 6 - kart detayındaki tahsilat notunda ay yazıyorsa tahsilat o aya sayılır (kullanıcı önerisi, v2.0.3)
+      ---
+      duration_ms: 13.665841
+      type: 'test'
+      ...
+    # Subtest: bütün planlı aylar geçince de hücredeki tutar ödendi sayılmaz (tabloda aylık ücret kolonu yok)
+    ok 7 - bütün planlı aylar geçince de hücredeki tutar ödendi sayılmaz (tabloda aylık ücret kolonu yok)
+      ---
+      duration_ms: 3.879978
+      type: 'test'
+      ...
+    # Subtest: tahsilat notundaki aylar okunur
+    ok 8 - tahsilat notundaki aylar okunur
+      ---
+      duration_ms: 0.194596
+      type: 'test'
+      ...
+    # Subtest: aylık ücret kolonu varken gelecek aya yazılan tutar peşin ödemedir (plan sayılmaz)
+    ok 9 - aylık ücret kolonu varken gelecek aya yazılan tutar peşin ödemedir (plan sayılmaz)
+      ---
+      duration_ms: 0.904225
+      type: 'test'
+      ...
+    # Subtest: ödeme kipi korunur: aylık ücret kolonu varken ay hücresindeki tutar ödemedir
+    ok 10 - ödeme kipi korunur: aylık ücret kolonu varken ay hücresindeki tutar ödemedir
+      ---
+      duration_ms: 0.934188
+      type: 'test'
+      ...
+    1..10
+ok 11 - ay hücresinde ödenecek taksit (plan kipi, v2.0.2)
+  ---
+  duration_ms: 41.627193
+  type: 'suite'
+  ...
+# Subtest: ay hücresinde taksit: kart detayındaki tahsilat (tam yığın, v2.0.3)
+    # Subtest: yüklenen tabloda bu ayın taksiti uyarı verir; notu o ayı söyleyen tahsilat girilince kalkar, başka ayı söyleyen kapatmaz
+    ok 1 - yüklenen tabloda bu ayın taksiti uyarı verir; notu o ayı söyleyen tahsilat girilince kalkar, başka ayı söyleyen kapatmaz
+      ---
+      duration_ms: 52.462372
+      type: 'test'
+      ...
+    1..1
+ok 12 - ay hücresinde taksit: kart detayındaki tahsilat (tam yığın, v2.0.3)
+  ---
+  duration_ms: 378.247045
+  type: 'suite'
+  ...
+# (node:5305) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: http.sendBody ≡ http.send (başlıklar ve baytlar)
+    # Subtest: aynı nesnenin JSON metni Buffer olarak verilince durum, başlıklar ve gövde baytları send ile aynı
+    ok 1 - aynı nesnenin JSON metni Buffer olarak verilince durum, başlıklar ve gövde baytları send ile aynı
+      ---
+      duration_ms: 1.416503
+      type: 'test'
+      ...
+    # Subtest: başlıklar gönderilmişse ikisi de dokunmaz
+    ok 2 - başlıklar gönderilmişse ikisi de dokunmaz
+      ---
+      duration_ms: 0.203605
+      type: 'test'
+      ...
+    1..2
+ok 13 - http.sendBody ≡ http.send (başlıklar ve baytlar)
+  ---
+  duration_ms: 2.915728
+  type: 'suite'
+  ...
+# Subtest: Takvim / zil yanıtının gövdesi: ılık çağrıda yeniden üretilmez, baytlar aynı, bayatlamaz, yetkiyi aşmaz (gerçek program)
+    # Subtest: ilk çağrı gövdeyi üretir; ILIK çağrılar yeniden ÜRETMEZ ve baytlar birebir aynıdır; gövde düz JSON'dur (ok + data; kalemler, sürüm)
+    ok 1 - ilk çağrı gövdeyi üretir; ILIK çağrılar yeniden ÜRETMEZ ve baytlar birebir aynıdır; gövde düz JSON'dur (ok + data; kalemler, sürüm)
+      ---
+      duration_ms: 19.54166
+      type: 'test'
+      ...
+    # Subtest: ekranın gerçek çağrısı (since = elindeki sürüm): içerik aynıysa büyük gövde gönderilmez — davranış aynen
+    ok 2 - ekranın gerçek çağrısı (since = elindeki sürüm): içerik aynıysa büyük gövde gönderilmez — davranış aynen
+      ---
+      duration_ms: 7.786901
+      type: 'test'
+      ...
+    # Subtest: veri değişince gövde YENİLENİR (bayat yanıt yok): yeni vadeli borç hemen yanıtta, sürüm değişir; tahsilatla kalem tutarı düşer
+    ok 3 - veri değişince gövde YENİLENİR (bayat yanıt yok): yeni vadeli borç hemen yanıtta, sürüm değişir; tahsilatla kalem tutarı düşer
+      ---
+      duration_ms: 51.489423
+      type: 'test'
+      ...
+    # Subtest: yetkisi dar kişi başkasının gövdesini ALMAZ: Fatura görme yetkisi kaldırılan kişinin yanıtında fatura kalemi yok; yöneticinin yanıtı aynı kalır
+    ok 4 - yetkisi dar kişi başkasının gövdesini ALMAZ: Fatura görme yetkisi kaldırılan kişinin yanıtında fatura kalemi yok; yöneticinin yanıtı aynı kalır
+      ---
+      duration_ms: 109.833872
+      type: 'test'
+      ...
+    # Subtest: saklanandan (3) çok görünürlük çeşidi istenirse de her biri KENDİ gövdesini alır (bellek sınırı yanlış gövde verdirmez)
+    ok 5 - saklanandan (3) çok görünürlük çeşidi istenirse de her biri KENDİ gövdesini alır (bellek sınırı yanlış gövde verdirmez)
+      ---
+      duration_ms: 388.354345
+      type: 'test'
+      ...
+    1..5
+ok 14 - Takvim / zil yanıtının gövdesi: ılık çağrıda yeniden üretilmez, baytlar aynı, bayatlamaz, yetkiyi aşmaz (gerçek program)
+  ---
+  duration_ms: 1135.615738
+  type: 'suite'
+  ...
+# (node:5305) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Tek carinin kuyruğunda çek / senet bağlarının anı: carinin KENDİ evrak satırlarından sürülen sorgu ≡ önceki sorgu (kilit açık; gerçek program)
+    # Subtest: evrakı faturaya bağlı (düzeltmeyle bağı değişmiş, ciro edilmiş, bağsız) cariler: programın tek cari sorgusu, carinin HER defter satırı için önceki sorguyla aynı anı verir
+    ok 1 - evrakı faturaya bağlı (düzeltmeyle bağı değişmiş, ciro edilmiş, bağsız) cariler: programın tek cari sorgusu, carinin HER defter satırı için önceki sorguyla aynı anı verir
+      ---
+      duration_ms: 541.887181
+      type: 'test'
+      ...
+    1..1
+ok 15 - Tek carinin kuyruğunda çek / senet bağlarının anı: carinin KENDİ evrak satırlarından sürülen sorgu ≡ önceki sorgu (kilit açık; gerçek program)
+  ---
+  duration_ms: 890.571002
+  type: 'suite'
+  ...
+# Subtest: Takvim kalemi kaynağı — sunucu ↔ istemci dalları (kaynak tarama)
+    # Subtest: sunucu taraması boş değil: taksit, çek / senet, fatura ve planlı banka kaynakları bulundu (ders 4)
+    ok 1 - sunucu taraması boş değil: taksit, çek / senet, fatura ve planlı banka kaynakları bulundu (ders 4)
+      ---
+      duration_ms: 1.551214
+      type: 'test'
+      ...
+    # Subtest: Tahsilat Takvimi pil kartı (hof-promises.js) sunucunun her takvim kaynağı için ayrı dal taşır
+    ok 2 - Tahsilat Takvimi pil kartı (hof-promises.js) sunucunun her takvim kaynağı için ayrı dal taşır
+      ---
+      duration_ms: 1.477564
+      type: 'test'
+      ...
+    # Subtest: zil (hof-alerts.js) pil kartının yardımcısını kullanır ya da her kaynak için kendi dalını taşır; kalemi kendi başına workspace.payment'a göndermez
+    ok 3 - zil (hof-alerts.js) pil kartının yardımcısını kullanır ya da her kaynak için kendi dalını taşır; kalemi kendi başına workspace.payment'a göndermez
+      ---
+      duration_ms: 3.638482
+      type: 'test'
+      ...
+    # Subtest: madde 3: tablo kaleminin Tahsilat Gir'i (pil kartı ve zil) tutar ve tablo borcu taşımaz
+    ok 4 - madde 3: tablo kaleminin Tahsilat Gir'i (pil kartı ve zil) tutar ve tablo borcu taşımaz
+      ---
+      duration_ms: 0.746793
+      type: 'test'
+      ...
+    # Subtest: Vade Takip openRef (hof-overview.js) sunucunun Vade Takip satırlarındaki her kaynak türünü açar
+    ok 5 - Vade Takip openRef (hof-overview.js) sunucunun Vade Takip satırlarındaki her kaynak türünü açar
+      ---
+      duration_ms: 2.277168
+      type: 'test'
+      ...
+    1..5
+ok 16 - Takvim kalemi kaynağı — sunucu ↔ istemci dalları (kaynak tarama)
+  ---
+  duration_ms: 10.755088
+  type: 'suite'
+  ...
+# Subtest: Takvim kalemi kaynağı — ortak yardımcının düğmeleri (pil kartı = zil = Vade Takip)
+    # Subtest: sunucunun her kaynağı (ve sözleşmedeki account) için bu testte bir örnek var
+    ok 1 - sunucunun her kaynağı (ve sözleşmedeki account) için bu testte bir örnek var
+      ---
+      duration_ms: 0.275924
+      type: 'test'
+      ...
+    # Subtest: satış faturası: Fatura Kartını Aç + Tahsilat Gir faturanın kendi formu; Ödendi Say yok; seçili kayda gitmez
+    ok 2 - satış faturası: Fatura Kartını Aç + Tahsilat Gir faturanın kendi formu; Ödendi Say yok; seçili kayda gitmez
+      ---
+      duration_ms: 1.265219
+      type: 'test'
+      ...
+    # Subtest: alış faturası: Ödeme Gir (yetki: accounts.manage); tahsilat yetkisi yetmez
+    ok 3 - alış faturası: Ödeme Gir (yetki: accounts.manage); tahsilat yetkisi yetmez
+      ---
+      duration_ms: 1.558208
+      type: 'test'
+      ...
+    # Subtest: planlı banka işlemi: yalnız Planlı İşlemleri Aç (tahsilat formu ve Ödendi Say yok)
+    ok 4 - planlı banka işlemi: yalnız Planlı İşlemleri Aç (tahsilat formu ve Ödendi Say yok)
+      ---
+      duration_ms: 0.688979
+      type: 'test'
+      ...
+    # Subtest: tablodaki kayıt (madde 3): Tahsilat Gir kaydın carisine — tutar ve tablo borcu YOK, kişi/telefon/not var; Ödendi Say ve Söz İptal var
+    ok 5 - tablodaki kayıt (madde 3): Tahsilat Gir kaydın carisine — tutar ve tablo borcu YOK, kişi/telefon/not var; Ödendi Say ve Söz İptal var
+      ---
+      duration_ms: 1.373502
+      type: 'test'
+      ...
+    # Subtest: kayıt anahtarı boş tablo kalemi seçili kayda düşmez: Tahsilat Gir ve Kayda Git yok
+    ok 6 - kayıt anahtarı boş tablo kalemi seçili kayda düşmez: Tahsilat Gir ve Kayda Git yok
+      ---
+      duration_ms: 0.487882
+      type: 'test'
+      ...
+    # Subtest: öbür sayfanın tablo kalemi: tahsilat o sayfada; Kayda Git sayfa adıyla o sayfaya geçer; Ödendi Say çalışır
+    ok 7 - öbür sayfanın tablo kalemi: tahsilat o sayfada; Kayda Git sayfa adıyla o sayfaya geçer; Ödendi Say çalışır
+      ---
+      duration_ms: 1.096338
+      type: 'test'
+      ...
+    # Subtest: taksit ve çek / senet bugünkü yollarında
+    ok 8 - taksit ve çek / senet bugünkü yollarında
+      ---
+      duration_ms: 0.430082
+      type: 'test'
+      ...
+    # Subtest: carinin vadeli borcu (madde 6, K6.3): Cariyi Aç + Tahsilat Gir / Ödeme Gir carinin formu, tutar = Kalan
+    ok 9 - carinin vadeli borcu (madde 6, K6.3): Cariyi Aç + Tahsilat Gir / Ödeme Gir carinin formu, tutar = Kalan
+      ---
+      duration_ms: 0.686557
+      type: 'test'
+      ...
+    # Subtest: tanınmayan kaynak tablo kaydı gibi işlenmez: hiçbir düğme yok
+    ok 10 - tanınmayan kaynak tablo kaydı gibi işlenmez: hiçbir düğme yok
+      ---
+      duration_ms: 0.289157
+      type: 'test'
+      ...
+    # Subtest: Vade Takip openRef aynı yolu açar: fatura → Fatura Kartı, planlı banka → Planlı İşlemler, cari, taksit, çek; kayıt ve Kasa hof-overview'da kalır
+    ok 11 - Vade Takip openRef aynı yolu açar: fatura → Fatura Kartı, planlı banka → Planlı İşlemler, cari, taksit, çek; kayıt ve Kasa hof-overview'da kalır
+      ---
+      duration_ms: 0.625775
+      type: 'test'
+      ...
+    1..11
+ok 17 - Takvim kalemi kaynağı — ortak yardımcının düğmeleri (pil kartı = zil = Vade Takip)
+  ---
+  duration_ms: 9.343465
+  type: 'suite'
+  ...
+# (node:5325) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:5325) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 Ç5-B — kilit × taksitli fatura: kart tahsilatı faturayı kapatır (v2.0.24 değişmezi, karar (3))
+    # Subtest: avans 1.000 → taksitli fatura 169,03 → kilit faturadan sonraya → kart tahsilatı 169,03: fatura Ödendi (açık 0 = kartın kalanı), kapatan kart tahsilatı (Bağlı)
+    ok 1 - avans 1.000 → taksitli fatura 169,03 → kilit faturadan sonraya → kart tahsilatı 169,03: fatura Ödendi (açık 0 = kartın kalanı), kapatan kart tahsilatı (Bağlı)
+      ---
+      duration_ms: 429.194818
+      type: 'test'
+      ...
+    1..1
+ok 18 - 2.5.0 Ç5-B — kilit × taksitli fatura: kart tahsilatı faturayı kapatır (v2.0.24 değişmezi, karar (3))
+  ---
+  duration_ms: 846.544941
+  type: 'suite'
+  ...
+# (node:5334) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 Ç5-B tur 2a — TYK önbelleği (Y-3): iz bütün girdileri kapsar, izi değişmeyen yazımda önbellek korunur
+    # Subtest: cariye dokunmayan yazım (stok girişi, oturum açma, cari notu, Kasa ayarı) bütün carileri yeniden kurmaz; cari yazımı yalnız o cariyi
+    ok 1 - cariye dokunmayan yazım (stok girişi, oturum açma, cari notu, Kasa ayarı) bütün carileri yeniden kurmaz; cari yazımı yalnız o cariyi
+      ---
+      duration_ms: 603.844839
+      type: 'test'
+      ...
+# (node:5334) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:5334) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: iz kolonları tek tek (durağan saat): yalnız bağ / kartın Kayıt Tarihi / taksit vadesi / dönem kilidi değişen yazımdan sonra önbellekli sonuç = baştan kurulan
+    ok 2 - iz kolonları tek tek (durağan saat): yalnız bağ / kartın Kayıt Tarihi / taksit vadesi / dönem kilidi değişen yazımdan sonra önbellekli sonuç = baştan kurulan
+      ---
+      duration_ms: 818.213388
+      type: 'test'
+      ...
+# (node:5334) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# \# tohum 1: {"alacak:200":5,"alis:200":3,"alis:400":2,"alisIadesi:200":4,"borc:200":14,"dokunmayan:-":1,"dokunmayan:200":9,"duzelt:200":10,"elleKart:200":2,"fatura:200":7,"fatura:409":2,"geriAl:-":4,"geriAl:200":3,"kartDurumu:200":1,"kartDuzenle:-":1,"kartHareketi:-":13,"kartTahsilati:-":4,"kartTahsilati:200":1,"kartTahsilati:400":1,"kilit:200":2,"mevcutBorcKarti:200":2,"mevcutBorcKarti:400":1,"odeme:200":3,"sil:-":1,"sil:200":7,"stokSatis:200":7,"stokSatis:409":1,"supheli:-":1,"supheli:200":1,"tahsilat:200":15,"taksit:-":3,"taksit:200":2,"verilenCek:200":1,"yeniBorcKarti:200":5,"yeniBorcKarti:409":1}
+    # Subtest: tohum 1 (durağan saat, 140 yazım): her yazım türünden sonra önbellekli sonuç = baştan kurulan
+    ok 3 - tohum 1 (durağan saat, 140 yazım): her yazım türünden sonra önbellekli sonuç = baştan kurulan
+      ---
+      duration_ms: 3265.447168
+      type: 'test'
+      ...
+# (node:5334) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# \# tohum 2: {"alacak:409":2,"alis:200":5,"alisIadesi:200":2,"borc:200":6,"borc:409":2,"dokunmayan:-":7,"dokunmayan:200":2,"duzelt:-":8,"duzelt:200":3,"elleKart:-":3,"fatura:200":3,"fatura:409":12,"geriAl:-":2,"kartDurumu:-":1,"kartDurumu:200":2,"kartDuzenle:-":1,"kartDuzenle:200":1,"kartHareketi:-":7,"kartTahsilati:-":4,"kartTahsilati:200":2,"kilit:200":2,"mevcutBorcKarti:-":1,"mevcutBorcKarti:200":2,"mevcutBorcKarti:400":2,"odeme:200":3,"odeme:409":4,"sil:-":4,"sil:200":2,"sil:409":1,"stokSatis:200":3,"stokSatis:409":2,"tahsilat:200":7,"tahsilat:409":5,"taksit:-":6,"taksit:200":7,"verilenCek:200":5,"yeniBorcKarti:200":4,"yeniBorcKarti:409":5}
+    # Subtest: tohum 2 (durağan saat, 140 yazım): her yazım türünden sonra önbellekli sonuç = baştan kurulan
+    ok 4 - tohum 2 (durağan saat, 140 yazım): her yazım türünden sonra önbellekli sonuç = baştan kurulan
+      ---
+      duration_ms: 2586.741865
+      type: 'test'
+      ...
+# (node:5334) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:5334) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# \# tohum 3: {"alacak:200":7,"alis:200":4,"alisIadesi:200":1,"borc:200":11,"dokunmayan:-":3,"dokunmayan:200":8,"duzelt:-":2,"duzelt:200":8,"elleKart:-":4,"elleKart:200":1,"elleKart:400":1,"fatura:200":5,"geriAl:-":2,"geriAl:200":2,"kartDurumu:-":1,"kartDuzenle:-":2,"kartDuzenle:200":1,"kartHareketi:-":4,"kartHareketi:200":1,"kartTahsilati:-":3,"kartTahsilati:200":1,"kartTahsilati:400":1,"kartTahsilati:409":1,"kilit:200":3,"mevcutBorcKarti:-":2,"mevcutBorcKarti:200":1,"mevcutBorcKarti:400":1,"odeme:200":2,"sil:200":2,"stokSatis:200":6,"stokSatis:409":1,"supheli:-":2,"supheli:200":1,"tahsilat:200":10,"taksit:-":3,"taksit:200":2,"verilenCek:200":2,"yeniBorcKarti:200":6,"yeniBorcKarti:400":2}
+    # Subtest: tohum 3 (akan saat, 120 yazım): her yazım türünden sonra önbellekli sonuç = baştan kurulan
+    ok 5 - tohum 3 (akan saat, 120 yazım): her yazım türünden sonra önbellekli sonuç = baştan kurulan
+      ---
+      duration_ms: 2884.905786
+      type: 'test'
+      ...
+    # Subtest: yedekten geri yükleme ve Silinenler'den geri alma sonrası önbellek bayat kalmaz (önbellekli = baştan kurulan)
+    ok 6 - yedekten geri yükleme ve Silinenler'den geri alma sonrası önbellek bayat kalmaz (önbellekli = baştan kurulan)
+      ---
+      duration_ms: 534.621742
+      type: 'test'
+      ...
+    1..6
+ok 19 - 2.5.0 Ç5-B tur 2a — TYK önbelleği (Y-3): iz bütün girdileri kapsar, izi değişmeyen yazımda önbellek korunur
+  ---
+  duration_ms: 10695.434697
+  type: 'suite'
+  ...
+# (node:5341) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 Ç5-B tur 2b-1 — G-2: taksitsiz / eksik taksitli kart 'Bitti' olmaz (v2.4.9)
+    # Subtest: her kart türü × taksitsiz × (ödeme yok / kart tahsilatı / cari tahsilatı): durum ve Taksitler sekmesi v2.4.9 ile aynı
+    ok 1 - her kart türü × taksitsiz × (ödeme yok / kart tahsilatı / cari tahsilatı): durum ve Taksitler sekmesi v2.4.9 ile aynı
+      ---
+      duration_ms: 984.937303
+      type: 'test'
+      ...
+    # Subtest: taksitsiz Mevcut Borç kartı Aktif → taksit girilir: [500 Gecikti, 500], Gecikmiş Borç 500, 'Gecikmiş' sekmesi; elle Kartı Kapat → Kapalı
+    ok 2 - taksitsiz Mevcut Borç kartı Aktif → taksit girilir: [500 Gecikti, 500], Gecikmiş Borç 500, 'Gecikmiş' sekmesi; elle Kartı Kapat → Kapalı
+      ---
+      duration_ms: 132.987056
+      type: 'test'
+      ...
+    # Subtest: eksik taksitli kart: taksitler kartla ödenince Bitti (v2.4.9); Mevcut Borç kartında taksitler cari tahsilatıyla kapanınca Aktif (taksitlendirilmemiş kısım var — v2.4.9 Gecikti, S50 farkı)
+    ok 3 - eksik taksitli kart: taksitler kartla ödenince Bitti (v2.4.9); Mevcut Borç kartında taksitler cari tahsilatıyla kapanınca Aktif (taksitlendirilmemiş kısım var — v2.4.9 Gecikti, S50 farkı)
+      ---
+      duration_ms: 156.764616
+      type: 'test'
+      ...
+    1..3
+ok 20 - 2.5.0 Ç5-B tur 2b-1 — G-2: taksitsiz / eksik taksitli kart 'Bitti' olmaz (v2.4.9)
+  ---
+  duration_ms: 1789.646339
+  type: 'suite'
+  ...
+# (node:5341) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:5341) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:5341) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 Ç5-B tur 2b-1 — ORTA-1: çek / senedin Kapatılacak Fatura bağı × kilit (karar (3)) = cari tahsilatı
+    # Subtest: kurulum / değiştirme / tutar / vade / kaldırma: çek ile cari tahsilatı aynı Gecikmiş Borç; kilitten sonra kurulan çek bağı = yeni evrak
+    ok 1 - kurulum / değiştirme / tutar / vade / kaldırma: çek ile cari tahsilatı aynı Gecikmiş Borç; kilitten sonra kurulan çek bağı = yeni evrak
+      ---
+      duration_ms: 1565.566736
+      type: 'test'
+      ...
+# (node:5341) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: D05: bağı kilitten önce ve sonra değiştiren düzeltme — son düzeltmenin anı (çek ve cari tahsilatı): Gecikmiş Borç 0
+    ok 2 - D05: bağı kilitten önce ve sonra değiştiren düzeltme — son düzeltmenin anı (çek ve cari tahsilatı): Gecikmiş Borç 0
+      ---
+      duration_ms: 478.737203
+      type: 'test'
+      ...
+# (node:5341) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: D06: kart tahsilatının 'Hangi Taksite' bağı kilitten SONRA düzeltmeyle kurulunca kilit sayılır: taksitler [0, 0], Borç Yaz açık
+    ok 3 - D06: kart tahsilatının 'Hangi Taksite' bağı kilitten SONRA düzeltmeyle kurulunca kilit sayılır: taksitler [0, 0], Borç Yaz açık
+      ---
+      duration_ms: 297.991866
+      type: 'test'
+      ...
+    1..3
+ok 21 - 2.5.0 Ç5-B tur 2b-1 — ORTA-1: çek / senedin Kapatılacak Fatura bağı × kilit (karar (3)) = cari tahsilatı
+  ---
+  duration_ms: 2684.720961
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 Ç5-B tur 2b-1 — ORTA-2: tedarikçideki Alış İadesi Vade Takip / zil / nakit akışında (gecikmiş = ekranlar)
+    # Subtest: stoktan / kısmen netleşen / faturalı Alış İadesi: gecikmiş = Vade Takip (her süzgeç) = zil = nakit akışı
+    ok 1 - stoktan / kısmen netleşen / faturalı Alış İadesi: gecikmiş = Vade Takip (her süzgeç) = zil = nakit akışı
+      ---
+      duration_ms: 292.651749
+      type: 'test'
+      ...
+    1..1
+ok 22 - 2.5.0 Ç5-B tur 2b-1 — ORTA-2: tedarikçideki Alış İadesi Vade Takip / zil / nakit akışında (gecikmiş = ekranlar)
+  ---
+  duration_ms: 587.33174
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 Ç5-B tur 2b-1 — G-1: kart yanıtı / okuması tek cari kuyruğundan = bütün carilerin kuyruğu; D10 / D11 Taksit İadesi
+    # Subtest: 15 yazım yolu (yönetici + personel): yanıt = okuma = liste satırı
+    ok 1 - 15 yazım yolu (yönetici + personel): yanıt = okuma = liste satırı
+      ---
+      duration_ms: 400.373037
+      type: 'test'
+      ...
+    # Subtest: cariler arası: taksite sayılıp tedarikçiye ciro edilen çek ve carisi değiştirilen tahsilat — iki carinin kartı da okuma = liste satırı
+    ok 2 - cariler arası: taksite sayılıp tedarikçiye ciro edilen çek ve carisi değiştirilen tahsilat — iki carinin kartı da okuma = liste satırı
+      ---
+      duration_ms: 144.63579
+      type: 'test'
+      ...
+    # Subtest: D10 / D11: karşılıksız çekle kartın net tahsilatı eksiye düşünce 'Taksit İadesi' 300 Vade Takip / zilde, kuyruk kalanı 900, Gecikmiş Borç 300
+    ok 3 - D10 / D11: karşılıksız çekle kartın net tahsilatı eksiye düşünce 'Taksit İadesi' 300 Vade Takip / zilde, kuyruk kalanı 900, Gecikmiş Borç 300
+      ---
+      duration_ms: 109.235559
+      type: 'test'
+      ...
+    1..3
+ok 23 - 2.5.0 Ç5-B tur 2b-1 — G-1: kart yanıtı / okuması tek cari kuyruğundan = bütün carilerin kuyruğu; D10 / D11 Taksit İadesi
+  ---
+  duration_ms: 987.343601
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 Ç5-B tur 2b-1 — D01–D03: durağan saatte iz kolonları (önbellek = baştan)
+    # Subtest: D01 'Hangi Taksite', D02 taslak tutarı, D03 çek bağı: değişiklikten sonra önbellek bayat değil
+    ok 1 - D01 'Hangi Taksite', D02 taslak tutarı, D03 çek bağı: değişiklikten sonra önbellek bayat değil
+      ---
+      duration_ms: 173.289368
+      type: 'test'
+      ...
+    1..1
+ok 24 - 2.5.0 Ç5-B tur 2b-1 — D01–D03: durağan saatte iz kolonları (önbellek = baştan)
+  ---
+  duration_ms: 548.825916
+  type: 'suite'
+  ...
+1..24
+# tests 81
+# suites 24
+# pass 81
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 12413.441379

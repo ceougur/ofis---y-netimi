@@ -1,0 +1,28 @@
+başta 4.77 2.87 1.84 5/176 17988 01:27:29
+tam npm test çıkış 0 02:31:33
+kâhin cari UTC çıkış 0
+kâhin cari Europe/Istanbul çıkış 0
+kâhin defter çıkış 0
+e2e senaryo-izt2-250 çıkış 0 · ✓ senaryo-izt2-250: 24 geçti, 0 kaldı
+e2e senaryo-izt-250 çıkış 0 · ✓ senaryo-izt-250: 20 geçti, 0 kaldı
+e2e senaryo-dkfix-250 çıkış 0 · ✓ senaryo-dkfix-250: 21 geçti, 0 kaldı
+e2e senaryo-banka-210b çıkış 0 · ✓ senaryo-banka-210b: 90 geçti, 0 kaldı · ekran görüntüleri /dev/shm/izt
+e2e senaryo-banka-210-eski-satir çıkış 0 · ✓ senaryo-banka-210-eski-satir: 29 geçti, 0 kaldı · ekran görüntüleri /d
+e2e senaryo-pos-220 çıkış 0 · ✓ senaryo-pos-220: 113 geçti, 0 kaldı · ekran görüntüleri /dev/shm/izt2-
+e2e senaryo-entegrator-240 çıkış 0 · ✓ senaryo-entegrator-240: 81 geçti, 0 kaldı
+e2e senaryo-fatura-243 çıkış 0 · 61 geçti, 0 kaldı
+e2e senaryo-kdv-donemi-250 çıkış 0 · ✓ senaryo-kdv-donemi-250: 22 geçti, 0 kaldı
+e2e senaryo-c7b-kabul-250 çıkış 0 · ✓ senaryo-c7b-kabul-250: 39 geçti, 0 kaldı
+e2e senaryo-c7b-tur3-250 çıkış 0 · ✓ senaryo-c7b-tur3-250: 39 geçti, 0 kaldı
+e2e gg244-esmm-gonder çıkış 0 · 66 geçti, 0 kaldı
+e2e gg244-numara-tarih-onay çıkış 0 · ✓ gg244-numara-tarih-onay: 40 geçti, 0 kaldı
+e2e uiux-b-243 çıkış 0 · ✓ uiux-b-243: 58 geçti, 0 kaldı
+e2e senaryo-213 çıkış 0 · 64 / 64 kontrol geçti.
+e2e senaryo-215 çıkış 0 · 73 / 73 kontrol geçti.
+e2e senaryo-216 çıkış 0 · 54 / 54 kontrol geçti.
+e2e senaryo-217 çıkış 0 · 65 / 65 kontrol geçti.
+e2e senaryo-224 çıkış 0 · 
+e2e senaryo-iade-246 çıkış 0 · 26 geçti, 0 kaldı
+e2e senaryo-kart-iade-gecmis-250 çıkış 0 · SONUÇ: 8 geçti, 0 kaldı
+e2e banka-210-kart-onbellek-yaris çıkış 0 · ✓ banka-210-kart-onbellek-yaris: 49 geçti, 0 kaldı
+bitti 2.72 3.44 3.61 3/144 27437 03:16:34

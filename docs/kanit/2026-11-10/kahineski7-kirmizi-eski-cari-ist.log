@@ -1,0 +1,40 @@
+  ✗ d30-c5-s101-bitti-kart.json ESKİ kâhinde koşmadı (AttributeError: 'Model' object has no attribute 'stok_satis_taksit') — 136 elle denetimin hepsi kırmızı; neden BEKLENEN (yeni adım türü yok)
+  (d30-c5-s101-bitti-kart.json'den elle yol satırları: cariler Q6, QR1, QR2, QR3, QR4, QR5, QS — 31 adım, 32 + 14 + 1 elle denetim)
+  ✗ d30-c5-s101-bitti-kart-elle-yol adim:kq6:durum: elle "ret" · ESKİ kâhin "ok"
+  ✗ d30-c5-s101-bitti-kart-elle-yol k1:cari:Q6:gecikmis: elle 0 · ESKİ kâhin "ANAHTAR YOK"
+  ✗ d30-c5-s101-bitti-kart-elle-yol adim:kqr1:durum: elle "ret" · ESKİ kâhin "ok"
+  ✗ d30-c5-s101-bitti-kart-elle-yol adim:qr1k:durum: elle "ret" · ESKİ kâhin "ok"
+  ✗ d30-c5-s101-bitti-kart-elle-yol k1:cari:QR1:bakiye: elle 10000 · ESKİ kâhin -20000
+  ✗ d30-c5-s101-bitti-kart-elle-yol k1:hareket:qr1b:kalan: elle 10000 · ESKİ kâhin 0
+  ✗ d30-c5-s101-bitti-kart-elle-yol k1:cari:QR1:gecikmis: elle 10000 · ESKİ kâhin 0
+  ✗ d30-c5-s101-bitti-kart-elle-yol k1:takvim:hareket:qr1b: elle {"amount": 10000, "dueDate": "2026-05-12", "direction": "in", "label": "Tahsil Edilecek Borç", "state": "overdue", "days": -34, "cari": "QR1", "person": "Elle Bitti Yok"} · ESKİ kâhin "yok"
+  ✗ d30-c5-s101-bitti-kart-elle-yol k1:vadeTakip:hareket:qr1b: elle {"amount": 10000, "date": "2026-05-12", "direction": "in"} · ESKİ kâhin "yok"
+  ✗ d30-c5-s101-bitti-kart-elle-yol k1:projeksiyon:hareket:qr1b: elle {"amount": 10000, "date": "2026-05-12", "direction": "in"} · ESKİ kâhin "yok"
+  ✗ d30-c5-s101-bitti-kart-elle-yol adim:kqr2:durum: elle "ret" · ESKİ kâhin "ok"
+  ✗ d30-c5-s101-bitti-kart-elle-yol k1:cari:QR2:gecikmis: elle 20000 · ESKİ kâhin 0
+  ✗ d30-c5-s101-bitti-kart-elle-yol adim:kqr4:durum: elle "ret" · ESKİ kâhin "ok"
+  ✗ d30-c5-s101-bitti-kart-elle-yol k1:cari:QR4:gecikmis: elle 20000 · ESKİ kâhin 9999
+  ✗ d30-c5-s101-bitti-kart-elle-yol adim:kqr5:durum: elle "ret" · ESKİ kâhin "ok"
+  ✗ d30-c5-s101-bitti-kart-elle-yol k1:cari:QR5:gecikmis: elle 0 · ESKİ kâhin "ANAHTAR YOK"
+  ✗ d30-c5-s101-bitti-kart-elle-yol k1:kart:KQ6:var: elle YOK · ESKİ kâhin true
+  ✗ d30-c5-s101-bitti-kart-elle-yol k1:kart:KQ6:toplam: elle YOK · ESKİ kâhin 100000
+  ✗ d30-c5-s101-bitti-kart-elle-yol k1:kart:KQR1:var: elle YOK · ESKİ kâhin true
+  ✗ d30-c5-s101-bitti-kart-elle-yol k1:kart:KQR1:toplam: elle YOK · ESKİ kâhin 60000
+  ✗ d30-c5-s101-bitti-kart-elle-yol k1:kart:KQR2:var: elle YOK · ESKİ kâhin true
+  ✗ d30-c5-s101-bitti-kart-elle-yol k1:kart:KQR2:toplam: elle YOK · ESKİ kâhin 60000
+  ✗ d30-c5-s101-bitti-kart-elle-yol k1:kart:KQR4:var: elle YOK · ESKİ kâhin true
+  ✗ d30-c5-s101-bitti-kart-elle-yol k1:kart:KQR4:toplam: elle YOK · ESKİ kâhin 20001
+  ✗ d30-c5-s101-bitti-kart-elle-yol k1:kart:KQR5:var: elle YOK · ESKİ kâhin true
+  ✗ d30-c5-s101-bitti-kart-elle-yol k1:kart:KQR5:toplam: elle YOK · ESKİ kâhin 60000
+  ✗ d30-c5-s101-bitti-kart-elle-yol adim:kqs:durum: elle YOK · ESKİ kâhin "ok"
+  ✗ d30-c5-s101-bitti-kart-elle-yol k1:kart:KQS:var: elle YOK · ESKİ kâhin true
+  ✗ d30-c5-s101-bitti-kart-elle-yol k1:kart:KQS:toplam: elle YOK · ESKİ kâhin 60000
+  ✗ d30-c5-s101-bitti-kart-elle-yol belirsiz kaydı ESKİ kâhinde yok: adım kqs + SK-18
+d30-c5-s101-bitti-kart-elle-yol: ESKİ kâhinde 30 kırmızı
+  ✗ d31-c5-s101-taksit-vade-gunu.json ESKİ kâhinde koşmadı (AttributeError: 'Model' object has no attribute 'stok_satis_taksit') — 21 elle denetimin hepsi kırmızı; neden BEKLENEN (yeni adım türü yok)
+  ✗ d32-c5-s101-taksit-ertesi-gun.json ESKİ kâhinde koşmadı (AttributeError: 'Model' object has no attribute 'stok_satis_taksit') — 21 elle denetimin hepsi kırmızı; neden BEKLENEN (yeni adım türü yok)
+ESKİ KÂHİN KIRMIZISI: 208/225 elle denetim kırmızı (beklenen: kırmızı > 0; koşmayan dosyaların nedeni yeni adım türü)
+# tests 1
+# pass 1
+# fail 0
+1/1 denetim geçti

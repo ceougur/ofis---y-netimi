@@ -1,0 +1,108 @@
+{
+  "ad": "c6h5-mut-m8-disari-yanlis-yil-Europe-Istanbul",
+  "komut": "node --test test/c6h-tek-okuma.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-21T18:25:43.256Z",
+  "sure_sn": 7.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 17,
+    "gecen": 2,
+    "basarisiz": 15,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 15 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › satis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer",
+      "konum": "test/c6h-tek-okuma.test.mjs:171:5",
+      "hata": "satis-fatura fişten önce · [2026-01-01, 2026-06-30] split 2026-01-01: içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › alis-fatura: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer",
+      "konum": "test/c6h-tek-okuma.test.mjs:171:5",
+      "hata": "alis-fatura fişten önce · [2026-01-01, 2026-06-30] split 2026-01-01: içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › kasa: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer",
+      "konum": "test/c6h-tek-okuma.test.mjs:171:5",
+      "hata": "kasa fişten önce · [2026-01-01, 2026-06-30] split 2026-01-01: içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › banka: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer",
+      "konum": "test/c6h-tek-okuma.test.mjs:171:5",
+      "hata": "banka fişten önce · [2026-01-01, 2026-06-30] split 2026-01-01: içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › pos: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer",
+      "konum": "test/c6h-tek-okuma.test.mjs:171:5",
+      "hata": "pos fişten önce · ['', 2025-12-31] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › cek-senet: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer",
+      "konum": "test/c6h-tek-okuma.test.mjs:171:5",
+      "hata": "cek-senet fişten önce · [2026-01-01, 2026-06-30] split 2026-01-01: içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › taksit: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer",
+      "konum": "test/c6h-tek-okuma.test.mjs:171:5",
+      "hata": "taksit fişten önce · [2026-01-01, 2026-06-30] split 2026-01-01: içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › elle-borc-alacak: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer",
+      "konum": "test/c6h-tek-okuma.test.mjs:171:5",
+      "hata": "elle-borc-alacak fişten önce · [2026-01-01, 2026-06-30] split 2026-01-01: içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › acilis: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer",
+      "konum": "test/c6h-tek-okuma.test.mjs:171:5",
+      "hata": "acilis fişten önce · [2026-01-01, 2026-06-30] split 2026-01-01: içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › stok: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer",
+      "konum": "test/c6h-tek-okuma.test.mjs:171:5",
+      "hata": "stok fişten önce · [2026-01-01, 2026-06-30] split 2026-01-01: içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › supheli: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer",
+      "konum": "test/c6h-tek-okuma.test.mjs:171:5",
+      "hata": "supheli fişten önce · [2026-01-01, 2026-06-30] split 2026-01-01: içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › vergi: fişten önce / sonra / kilit 30.09.2026 (through < kapsam) — Gelir Tablosu ve Bilanço yeni = tur 4; parçalar eşdeğer",
+      "konum": "test/c6h-tek-okuma.test.mjs:171:5",
+      "hata": "vergi fişten önce · ['', 2025-12-31] split '': içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › kasa: fişten sonra kilit 31.12.2025'e geri çekilir (KALAN ≠ 0) — yeni = tur 4",
+      "konum": "test/c6h-tek-okuma.test.mjs:186:3",
+      "hata": "kasa kilit geri · [2026-01-01, 2025-12-31] split 2026-01-01: içeri + dışarı = kapsamın tamamının periodRuleDiff'i (tur 4) · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › taksit: fiş ters kaydedilir (20.10.2026) — fiş ile ters kayıt arası ve sonrası yeni = tur 4",
+      "konum": "test/c6h-tek-okuma.test.mjs:198:3",
+      "hata": "taksit ters kayıt · Gelir Tablosu 2026-07-01..2026-07-31: yeni = tur 4 · + actual - expected · + `{\"from\":\"2026-07-01\",\"to\":\"2026-07-31\",\"bookType\":\"unset\",\"bilgiAmacli\":true,\"entryCount\":1,\"items\":[{\"kod\":\"A\",\"ad\":\"Brüt Satışlar\",\"gelir\":true,\"tutarMinor\":0,\"hesaplar\":[]},{\"kod\":\"B\",\"ad\":\"Satış İndirimleri (−)\",\"gelir\":false,\"tutarMinor\":0,\"hesaplar\":[]},{\"kod\":\"D\",\"ad\":\"Satışların Maliyeti (−)\",\"gelir\":false,\"tutarMinor\":0,\"hesaplar\":[]},{\"kod\":\"E\",\"ad\":\"Faaliyet Giderleri (−)\",\"gelir\":false,\"tutarMinor\":0,\"hesaplar\":[]},{\"kod\":\"F\",\"ad\":\"Diğer Faaliyetlerden Olağan Gelir ve Kârlar\",\"gelir\":true,\"tutarMinor\":0,\"hesaplar\":[]},{\"kod\":\"G\",\"ad\":\"Diğer Faaliyetlerden Olağan Gider ve Zararlar (−)\",\"gelir\":false,\"tutarMinor\":0,\"hesaplar\":[]},{\"kod\":\"H\",\"ad\":\"Finansman Giderleri (−)\",\"gelir\":false,\"tutarMinor\":0,\"hesaplar\":[]},{\"kod\":\"I\",\"ad\":\"Olağandışı Gelir ve Kârlar\",\"gelir\":true,\"tutarMinor\":120000,\"hesaplar\":[{\"hesap\":\"671\",\"ad\":\"Önceki Dönem Gelir ve Kârları\",\"tutarMinor\":120000,\"altlar\":[{\"hesap\":\"671\",\"ad\":\"Önceki Dönem Gelir ve Kârları\",\"tutarMinor\":120000}]}]},{\"kod\":\"J\",\"ad\":\"Olağandışı Gider ve Zararlar (−)\",\"gelir\":false,\"tutarMinor\":120000,\"hesaplar\":[{\"hesap\":\"681\",\"ad\":\"Önceki Dönem Gider ve Zararları\",\"tutarMinor\":120000,\"altlar\":[{\"hesap\":\"681\",\"ad\":\"Önceki Dönem Gider ve Zararları\",\"tutarMinor\":120000}]}]},{\"kod\":\"K\",\"ad\":\"Dönem Kârı Vergi ve Diğer Yasal Yükümlülük Karşılıkları (−)\",\"gelir\":false,\"tutarMinor\":0,\"hesaplar\":[],\"aciklama\":\"Program dönem kârı vergi karşılığı ayırmaz; Dönem Net Kârı vergi öncesidir.\"}],\"subtotals\":{\"netSatislar\":0,\"brutSatisKari\":0,\"faaliyetKari\":0,\"olaganKar\":0,\"donemKari\":0,\"donemNetKari\":0},\"smm\":{\"estimated\":false,\"posted\":false,\"minor\":0,\"dssPrevMinor\":0,\"dssMinor\":0,\"stockFlowMinor\":0,\"stockMovesMinor\":0,\"differenceMinor\":0},\"kesinDegil\":[{\"kod\":\"kural-farki\",\"baslik\":\"Kural Değişikliği Farkı\",\"aciklama\":\"Kilitli dönemin donmuş defteri ile güncel kural arasındaki farkın Kural Farkı Düzeltme Fişi'yle kapanmamış kısmı aşağıdadır (Yönetim › Sistem › Kural Farkı Düzeltme); tablo donmuş defterdendir.\",\"ayrinti\":[\"602: 1.200,00 TL\",\"681: −1.200,00 TL\"]},{\"kod\":\"bilgi-amacli\",\"baslik\":\"Bilgi Amaçlı\",\"aciklama\":\"Defter Türü Bilanço Esası değil; tablo resmî biçim yerine bilgi amaçlıdır.\"}],\"footnotes\":[{\"kod\":\"yasal-degil\",\"metin\":\"Bu tablolar DestekOfis kayıtlarından üretilmiştir; yasal defter (e-Defter) ve beyannameye esas mali tablo, KÜMİ FRS / BOBİ FRS finansal tablosu değildir.\"},{\"kod\":\"donem-sonu\",\"metin\":\"Amortisman, reeskont, gider / gelir tahakkuku, kur değerlemesi ve dönem kârı vergi karşılığı programda yapılmaz.\"},{\"kod\":\"kasa-banka-gider\",\"metin\":\"Kasa ve banka 'Diğer Gider' çıkışları (0,00 TL) Genel Yönetim Giderleri'ne yazılmıştır; içinde demirbaş, ortak / sahip çekişi, müvekkil masraf avansı ya da borç ödemesi bulunabilir.\",\"tutarMinor\":0}],\"warnings\":[]}` (beklenen `{\"from\":\"2026-07-01\",\"to\":\"2026-07-31\",\"bookType\":\"unset\",\"bilgiAmacli\":true,\"entryCount\":1,\"items\":[{\"kod\":\"A\",\"ad\":\"Brüt Satışlar\",\"gelir\":true,\"tutarMinor\":0,\"hesaplar\":[]},{\"kod\":\"B\",\"ad\":\"Satış İndirimleri (−)\",\"gelir\":false,\"tutarMinor\":0,\"hesaplar\":[]},{\"kod\":\"D\",\"ad\":\"Satışların Maliyeti (−)\",\"gelir\":false,\"tutarMinor\":0,\"hesaplar\":[]},{\"kod\":\"E\",\"ad\":\"Faaliyet Giderleri (−)\",\"gelir\":false,\"tutarMinor\":0,\"hesaplar\":[]},{\"kod\":\"F\",\"ad\":\"Diğer Faaliyetlerden Olağan Gelir ve Kârlar\",\"gelir\":true,\"tutarMinor\":0,\"hesaplar\":[]},{\"kod\":\"G\",\"ad\":\"Diğer Faaliyetlerden Olağan Gider ve Zararlar (−)\",\"gelir\":false,\"tutarMinor\":0,\"hesaplar\":[]},{\"kod\":\"H\",\"ad\":\"Finansman Giderleri (−)\",\"gelir\":false,\"tutarMinor\":0,\"hesaplar\":[]},{\"kod\":\"I\",\"ad\":\"Olağandışı Gelir ve Kârlar\",\"gelir\":true,\"tutarMinor\":120000,\"hesaplar\":[{\"hesap\":\"671\",\"ad\":\"Önceki Dönem Gelir ve Kârları\",\"tutarMinor\":120000,\"altlar\":[{\"hesap\":\"671\",\"ad\":\"Önceki Dönem Gelir ve Kârları\",\"tutarMinor\":120000}]}]},{\"kod\":\"J\",\"ad\":\"Olağandışı Gider ve Zararlar (−)\",\"gelir\":false,\"tutarMinor\":120000,\"hesaplar\":[{\"hesap\":\"681\",\"ad\":\"Önceki Dönem Gider ve Zararları\",\"tutarMinor\":120000,\"altlar\":[{\"hesap\":\"681\",\"ad\":\"Önceki Dönem Gider ve Zararları\",\"tutarMinor\":120000}]}]},{\"kod\":\"K\",\"ad\":\"Dönem Kârı Vergi ve Diğer Yasal Yükümlülük Karşılıkları (−)\",\"gelir\":false,\"tutarMinor\":0,\"hesaplar\":[],\"aciklama\":\"Program dönem kârı vergi karşılığı ayırmaz; Dönem Net Kârı vergi öncesidir.\"}],\"subtotals\":{\"netSatislar\":0,\"brutSatisKari\":0,\"faaliyetKari\":0,\"olaganKar\":0,\"donemKari\":0,\"donemNetKari\":0},\"smm\":{\"estimated\":false,\"posted\":false,\"minor\":0,\"dssPrevMinor\":0,\"dssMinor\":0,\"stockFlowMinor\":0,\"stockMovesMinor\":0,\"differenceMinor\":0},\"kesinDegil\":[{\"kod\":\"bilgi-amacli\",\"baslik\":\"Bilgi Amaçlı\",\"aciklama\":\"Defter Türü Bilanço Esası değil; tablo resmî biçim yerine bilgi amaçlıdır.\"}],\"footnotes\":[{\"kod\":\"yasal-degil\",\"metin\":\"Bu tablolar DestekOfis kayıtlarından üretilmiştir; yasal defter (e-Defter) ve beyannameye esas mali tablo, KÜMİ FRS / BOBİ FRS finansal tablosu değildir.\"},{\"kod\":\"donem-sonu\",\"metin\":\"Amortisman, reeskont, gider / gelir tahakkuku, kur değerlemesi ve dönem kârı vergi karşılığı programda yapılmaz.\"},{\"kod\":\"kasa-banka-gider\",\"metin\":\"Kasa ve banka 'Diğer Gider' çıkışları (0,00 TL) Genel Yönetim Giderleri'ne yazılmıştır; içinde demirbaş, ortak / sahip çekişi, müvekkil masraf avansı ya da borç ödemesi bulunabilir.\",\"tutarMinor\":0}],\"warnings\":[]}`, gelen `{\"from\":\"2026-07-01\",\"to\":\"2026-07-31\",\"bookType\":\"unset\",\"bilgiAmacli\":true,\"entryCount\":1,\"items\":[{\"kod\":\"A\",\"ad\":\"Brüt Satışlar\",\"gelir\":true,\"tutarMinor\":0,\"hesaplar\":[]},{\"kod\":\"B\",\"ad\":\"Satış İndirimleri (−)\",\"gelir\":false,\"tutarMinor\":0,\"hesaplar\":[]},{\"kod\":\"D\",\"ad\":\"Satışların Maliyeti (−)\",\"gelir\":false,\"tutarMinor\":0,\"hesaplar\":[]},{\"kod\":\"E\",\"ad\":\"Faaliyet Giderleri (−)\",\"gelir\":false,\"tutarMinor\":0,\"hesaplar\":[]},{\"kod\":\"F\",\"ad\":\"Diğer Faaliyetlerden Olağan Gelir ve Kârlar\",\"gelir\":true,\"tutarMinor\":0,\"hesaplar\":[]},{\"kod\":\"G\",\"ad\":\"Diğer Faaliyetlerden Olağan Gider ve Zararlar (−)\",\"gelir\":false,\"tutarMinor\":0,\"hesaplar\":[]},{\"kod\":\"H\",\"ad\":\"Finansman Giderleri (−)\",\"gelir\":false,\"tutarMinor\":0,\"hesaplar\":[]},{\"kod\":\"I\",\"ad\":\"Olağandışı Gelir ve Kârlar\",\"gelir\":true,\"tutarMinor\":120000,\"hesaplar\":[{\"hesap\":\"671\",\"ad\":\"Önceki Dönem Gelir ve Kârları\",\"tutarMinor\":120000,\"altlar\":[{\"hesap\":\"671\",\"ad\":\"Önceki Dönem Gelir ve Kârları\",\"tutarMinor\":120000}]}]},{\"kod\":\"J\",\"ad\":\"Olağandışı Gider ve Zararlar (−)\",\"gelir\":false,\"tutarMinor\":120000,\"hesaplar\":[{\"hesap\":\"681\",\"ad\":\"Önceki Dönem Gider ve Zararları\",\"tutarMinor\":120000,\"altlar\":[{\"hesap\":\"681\",\"ad\":\"Önceki Dönem Gider ve Zararları\",\"tutarMinor\":120000}]}]},{\"kod\":\"K\",\"ad\":\"Dönem Kârı Vergi ve Diğer Yasal Yükümlülük Karşılıkları (−)\",\"gelir\":false,\"tutarMinor\":0,\"hesaplar\":[],\"aciklama\":\"Program dönem kârı vergi karşılığı ayırmaz; Dönem Net Kârı vergi öncesidir.\"}],\"subtotals\":{\"netSatislar\":0,\"brutSatisKari\":0,\"faaliyetKari\":0,\"olaganKar\":0,\"donemKari\":0,\"donemNetKari\":0},\"smm\":{\"estimated\":false,\"posted\":false,\"minor\":0,\"dssPrevMinor\":0,\"dssMinor\":0,\"stockFlowMinor\":0,\"stockMovesMinor\":0,\"differenceMinor\":0},\"kesinDegil\":[{\"kod\":\"kural-farki\",\"baslik\":\"Kural Değişikliği Farkı\",\"aciklama\":\"Kilitli dönemin donmuş defteri ile güncel kural arasındaki farkın Kural Farkı Düzeltme Fişi'yle kapanmamış kısmı aşağıdadır (Yönetim › Sistem › Kural Farkı Düzeltme); tablo donmuş defterdendir.\",\"ayrinti\":[\"602: 1.200,00 TL\",\"681: −1.200,00 TL\"]},{\"kod\":\"bilgi-amacli\",\"baslik\":\"Bilgi Amaçlı\",\"aciklama\":\"Defter Türü Bilanço Esası değil; tablo resmî biçim yerine bilgi amaçlıdır.\"}],\"footnotes\":[{\"kod\":\"yasal-degil\",\"metin\":\"Bu tablolar DestekOfis kayıtlarından üretilmiştir; yasal defter (e-Defter) ve beyannameye esas mali tablo, KÜMİ FRS / BOBİ FRS finansal tablosu değildir.\"},{\"kod\":\"donem-sonu\",\"metin\":\"Amortisman, reeskont, gider / gelir tahakkuku, kur değerlemesi ve dönem kârı vergi karşılığı programda yapılmaz.\"},{\"kod\":\"kasa-banka-gider\",\"metin\":\"Kasa ve banka 'Diğer Gider' çıkışları (0,00 TL) Genel Yönetim Giderleri'ne yazılmıştır; içinde demirbaş, ortak / sahip çekişi, müvekkil masraf avansı ya da borç ödemesi bulunabilir.\",\"tutarMinor\":0}],\"warnings\":[]}`)"
+    },
+    {
+      "ad": "2.5.0 Ç6-HESAP tur 5 — KALAN'ın kapsam okuması tek çağrıda: yanıtlar tur 4 ile BAYT BAYT aynı (13 kilitli fikstür) › sınama boş geçmedi: fiş en az dört sınıfta yazıldı, KALAN yolu koştu",
+      "konum": "test/c6h-tek-okuma.test.mjs:210:3",
+      "hata": "fiş yazılan sınıf 0 (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h5-ag/kanit/2026-11-21/c6h5-mut-m8-disari-yanlis-yil-Europe-Istanbul.log",
+  "klasor": "/dev/shm/c6h5-mut",
+  "ham_cikti_sha256": "5ff38c3c5fb6a2347c6a9d29b11c2dca820fb05bf7ef8f03c8bf4eb2267070b4",
+  "ham_cikti_bayt": 86030
+}

@@ -1,0 +1,6 @@
+(node:3031) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+1) yeni kod: 002 = sirket-3303117f-0a84-4935-be4d-f36838e52c6e (002); fiş 3, iz 3; fiş anı 2027-01-10T07:00:00.000Z
+2) 2.4.9 sıfırlama: 200; 002 dosyasındaki company.reset izleri "okunamadı"; kalan fiş okunamadı
+3) onarım (yeni): ledger 200; onarım {"removed":3,"ids":3,"kept":0}; kalan fiş []; Mutabakat Testi 200 ok=true; yevmiyede fiş maddesi 0 []
+SONUC kip=ileri kalan=0 kaldirilan=3

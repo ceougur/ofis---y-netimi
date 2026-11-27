@@ -1,0 +1,21 @@
+MH1-kume-dusurulmez YAKALANDI (değerle) · çıkış 1 · tests 3 pass 0 fail 3 · M1: createBatch'ten sonra küme düşürülmez (dizinin ortasında açılan zincir görülmez — arama yanlış durumda atlanır) · ilk kırmızı: W3H-E tohum 101: zincir / J10 / eski deneme / dizinin ortasında yeni zincir / zincirli yen · AssertionError [ERR_ASSERTION]: tur 3 ile fark:
+MH1-kendisi-de-atlanir KAÇTI · çıkış 0 · tests 3 pass 3 fail 0 · M1: kümede yoksa self yolunda da erken dönüş (eski deneme / yalnız defter yolunda işin kendisi çıkmaz)
+MH1-kendisi-de-atlanir-tur3 YAKALANDI (değerle) · çıkış 1 · tests 1 pass 0 fail 1 · M1 (aynı mutant): tur 3'ün eski deneme testi W3T-70c ile · ilk kırmızı: W3T-70c eski deneme: Meta Bekletti işin 2. denemesi istek sürerken silme talebi + geçici h · AssertionError [ERR_ASSERTION]: S70 (son deneme olmayan ileti): Teslim Edildi, hata kodu kalktı (eski kod: skipped)
+MH1-surum-bakilmaz YAKALANDI (değerle) · çıkış 1 · tests 3 pass 0 fail 3 · M1: data_version değişimi yok sayılır (başka bağlantının yazımı görülmez) · ilk kırmızı: W3H-E tohum 101: zincir / J10 / eski deneme / dizinin ortasında yeni zincir / zincirli yen · AssertionError [ERR_ASSERTION]: tur 3 ile fark:
+MH2-yanlis-kimlik YAKALANDI (değerle) · çıkış 1 · tests 3 pass 0 fail 3 · M2: toplu okuma kaynağın değil zincir işinin kimliğine bakar · ilk kırmızı: W3H-E tohum 101: zincir / J10 / eski deneme / dizinin ortasında yeni zincir / zincirli yen · AssertionError [ERR_ASSERTION]: tur 3 ile fark:
+MH2-yanlis-cari YAKALANDI (değerle) · çıkış 1 · tests 3 pass 0 fail 3 · M2: zincir okuması yanlış cariye bakar (toplu işin kimliği) · ilk kırmızı: W3H-E tohum 101: zincir / J10 / eski deneme / dizinin ortasında yeni zincir / zincirli yen · AssertionError [ERR_ASSERTION]: tur 3 ile fark:
+MH3-cagri-anlik-goruntusu YAKALANDI (değerle) · çıkış 1 · tests 3 pass 0 fail 3 · M3: aynı çağrıdaki ikinci bildirim eski durumu görür (cari zincir satırları çağrı başında bir kez okunup saklanır) · ilk kırmızı: W3H-E tohum 101: zincir / J10 / eski deneme / dizinin ortasında yeni zincir / zincirli yen · AssertionError [ERR_ASSERTION]: tur 3 ile fark:
+# ÖZET
+MH1-kume-dusurulmez YAKALANDI (değerle) · çıkış 1 · tests 3 pass 0 fail 3 · M1: createBatch'ten sonra küme düşürülmez (dizinin ortasında açılan zincir görülmez — arama yanlış durumda atlanır) · ilk kırmızı: W3H-E tohum 101: zincir / J10 / eski deneme / dizinin ortasında yeni zincir / zincirli yen · AssertionError [ERR_ASSERTION]: tur 3 ile fark:
+MH1-kendisi-de-atlanir KAÇTI · çıkış 0 · tests 3 pass 3 fail 0 · M1: kümede yoksa self yolunda da erken dönüş (eski deneme / yalnız defter yolunda işin kendisi çıkmaz)
+MH1-kendisi-de-atlanir-tur3 YAKALANDI (değerle) · çıkış 1 · tests 1 pass 0 fail 1 · M1 (aynı mutant): tur 3'ün eski deneme testi W3T-70c ile · ilk kırmızı: W3T-70c eski deneme: Meta Bekletti işin 2. denemesi istek sürerken silme talebi + geçici h · AssertionError [ERR_ASSERTION]: S70 (son deneme olmayan ileti): Teslim Edildi, hata kodu kalktı (eski kod: skipped)
+MH1-surum-bakilmaz YAKALANDI (değerle) · çıkış 1 · tests 3 pass 0 fail 3 · M1: data_version değişimi yok sayılır (başka bağlantının yazımı görülmez) · ilk kırmızı: W3H-E tohum 101: zincir / J10 / eski deneme / dizinin ortasında yeni zincir / zincirli yen · AssertionError [ERR_ASSERTION]: tur 3 ile fark:
+MH2-yanlis-kimlik YAKALANDI (değerle) · çıkış 1 · tests 3 pass 0 fail 3 · M2: toplu okuma kaynağın değil zincir işinin kimliğine bakar · ilk kırmızı: W3H-E tohum 101: zincir / J10 / eski deneme / dizinin ortasında yeni zincir / zincirli yen · AssertionError [ERR_ASSERTION]: tur 3 ile fark:
+MH2-yanlis-cari YAKALANDI (değerle) · çıkış 1 · tests 3 pass 0 fail 3 · M2: zincir okuması yanlış cariye bakar (toplu işin kimliği) · ilk kırmızı: W3H-E tohum 101: zincir / J10 / eski deneme / dizinin ortasında yeni zincir / zincirli yen · AssertionError [ERR_ASSERTION]: tur 3 ile fark:
+MH3-cagri-anlik-goruntusu YAKALANDI (değerle) · çıkış 1 · tests 3 pass 0 fail 3 · M3: aynı çağrıdaki ikinci bildirim eski durumu görür (cari zincir satırları çağrı başında bir kez okunup saklanır) · ilk kırmızı: W3H-E tohum 101: zincir / J10 / eski deneme / dizinin ortasında yeni zincir / zincirli yen · AssertionError [ERR_ASSERTION]: tur 3 ile fark:
+# tests 7
+# pass 6
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0

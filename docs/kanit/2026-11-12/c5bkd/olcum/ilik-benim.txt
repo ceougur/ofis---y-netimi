@@ -1,0 +1,23 @@
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-a511c161b54069067 · yük 0.50 0.65 1.41
+zil (yazımdan sonra ilk): kalem 39460 · yanıt 21347116 bayt
+ILIK ZİL × 10: en iyi 269 · ortanca 367.6 · en kötü 402.3 ms · 305.5 394.6 272.8 402.3 283.8 390.4 287.2 367.6 269 378.3
+  profil toplam 3840 ms (çağrı başına 384 ms)
+    115.3 ms/çağrı  get :0
+     66.6 ms/çağrı  parseJSONFromBytes undici:5958
+       56 ms/çağrı  (garbage collector) :0
+     54.3 ms/çağrı  decode encoding:442
+     49.1 ms/çağrı  post node:inspector:118
+     12.7 ms/çağrı  (idle) :0
+      7.3 ms/çağrı  _copyActual node:buffer:243
+      4.1 ms/çağrı  fetchParams.controller.resume undici:11530
+      1.4 ms/çağrı  writev :0
+      1.3 ms/çağrı  execute undici:6185
+      1.1 ms/çağrı  nextTick task_queues:111
+      1.1 ms/çağrı  (program) :0
+      1.1 ms/çağrı  createUnsafeBuffer buffer:1082
+      0.8 ms/çağrı  runMicrotasks :0
+      0.6 ms/çağrı  callbackTrampoline async_hooks:118
+      0.6 ms/çağrı  isUint8Array types:13
+ILIK ZİL (since=sürüm; ekranın gerçek çağrısı) × 10: en iyi 98.7 · ortanca 102.4 · en kötü 110.4 ms
+yük (sonda) 0.61 0.67 1.40
+çıkış 0

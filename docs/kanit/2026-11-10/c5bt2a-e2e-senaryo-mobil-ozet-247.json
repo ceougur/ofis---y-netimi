@@ -1,0 +1,32 @@
+{
+  "ad": "c5bt2a-e2e-senaryo-mobil-ozet-247",
+  "komut": "npm run test:senaryo-mobil-ozet-247",
+  "commit": "eff8283c9cf33a3a86d35cea0c600f8b4ba0696d",
+  "dal": "worktree-agent-ad0fa5bd8c34963f1",
+  "kirli": 11,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v338 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-10T23:16:51.176Z",
+  "sure_sn": 15.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 34,
+    "gecen": 34,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2a-kanit/2026-11-10/c5bt2a-e2e-senaryo-mobil-ozet-247.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad0fa5bd8c34963f1",
+  "ham_cikti_sha256": "934e32cd769f83335c6709f37b9f51c1e0fc55133219ce9efc6f0f410463533a",
+  "ham_cikti_bayt": 3295
+}

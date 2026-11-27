@@ -1,0 +1,289 @@
+TAP version 13
+# Subtest: kılavuz ad denetimi (bütün bölümler)
+    # Subtest: bütün bölümleri tarar (bölüm verilmezse)
+    ok 1 - bütün bölümleri tarar (bölüm verilmezse)
+      ---
+      duration_ms: 2.061423
+      type: 'test'
+      ...
+    # Subtest: ekrandaki ad 'ekranda'; ekranda olmayan ama kaynakta birebir geçen ad 7./8. dışında 'kaynakta'
+    ok 2 - ekrandaki ad 'ekranda'; ekranda olmayan ama kaynakta birebir geçen ad 7./8. dışında 'kaynakta'
+      ---
+      duration_ms: 0.378247
+      type: 'test'
+      ...
+    # Subtest: 7. ve 8. bölümde ekran zorunlu: kaynakta olsa da ekranda yoksa EKSİK
+    ok 3 - 7. ve 8. bölümde ekran zorunlu: kaynakta olsa da ekranda yoksa EKSİK
+      ---
+      duration_ms: 0.239921
+      type: 'test'
+      ...
+    # Subtest: eski / yorumdaki / hiç olmayan ad EKSİK (yorumlar ayıklanır, Inno Setup ';' yorumu dahil)
+    ok 4 - eski / yorumdaki / hiç olmayan ad EKSİK (yorumlar ayıklanır, Inno Setup ';' yorumu dahil)
+      ---
+      duration_ms: 0.235551
+      type: 'test'
+      ...
+    # Subtest: accept="image/*" yorum başlangıcı sayılmaz (arkasındaki kod silinmez); adresteki :// yorum değildir
+    ok 5 - accept="image/*" yorum başlangıcı sayılmaz (arkasındaki kod silinmez); adresteki :// yorum değildir
+      ---
+      duration_ms: 0.232236
+      type: 'test'
+      ...
+    # Subtest: yer tutuculu ad, büyük harfli başlık ve etiketle bölünmüş ad bulunur
+    ok 6 - yer tutuculu ad, büyük harfli başlık ve etiketle bölünmüş ad bulunur
+      ---
+      duration_ms: 0.155211
+      type: 'test'
+      ...
+    # Subtest: madde başı vurgusu ve program dışı ekran adı denetim dışında (ayrı listede)
+    ok 7 - madde başı vurgusu ve program dışı ekran adı denetim dışında (ayrı listede)
+      ---
+      duration_ms: 0.103321
+      type: 'test'
+      ...
+    1..7
+ok 1 - kılavuz ad denetimi (bütün bölümler)
+  ---
+  duration_ms: 5.128001
+  type: 'suite'
+  ...
+# Subtest: Kılavuz PDF sürümü (client/kilavuz)
+    # Subtest: PDF metni okunur (boş değil, bilinen başlık var)
+    ok 1 - PDF metni okunur (boş değil, bilinen başlık var)
+      ---
+      duration_ms: 217.816688
+      type: 'test'
+      ...
+    # Subtest: PDF kapağı ve dip notu = HTML sürümü = program sürümü
+    ok 2 - PDF kapağı ve dip notu = HTML sürümü = program sürümü
+      ---
+      duration_ms: 0.503494
+      type: 'test'
+      ...
+    1..2
+ok 2 - Kılavuz PDF sürümü (client/kilavuz)
+  ---
+  duration_ms: 219.412522
+  type: 'suite'
+  ...
+# Subtest: Kullanım kılavuzu sürümü
+    # Subtest: kapakta “Sürüm <program sürümü>” yazar
+    ok 1 - kapakta “Sürüm <program sürümü>” yazar
+      ---
+      duration_ms: 3.144998
+      type: 'test'
+      ...
+    # Subtest: dip notta “DestekOfis <program sürümü> · Kısa Kullanım Kılavuzu” yazar
+    ok 2 - dip notta “DestekOfis <program sürümü> · Kısa Kullanım Kılavuzu” yazar
+      ---
+      duration_ms: 0.417412
+      type: 'test'
+      ...
+    1..2
+ok 3 - Kullanım kılavuzu sürümü
+  ---
+  duration_ms: 5.069539
+  type: 'suite'
+  ...
+# Subtest: sürüm karşılaştırma
+    # Subtest: anlamsal sürüm kurallarına uyar
+    ok 1 - anlamsal sürüm kurallarına uyar
+      ---
+      duration_ms: 1.074309
+      type: 'test'
+      ...
+    1..1
+ok 4 - sürüm karşılaştırma
+  ---
+  duration_ms: 2.05147
+  type: 'suite'
+  ...
+# Subtest: imzalı güncelleme bildirgesi
+    # Subtest: güvenilen anahtarla imzalı bildirgeyi kabul eder
+    ok 1 - güvenilen anahtarla imzalı bildirgeyi kabul eder
+      ---
+      duration_ms: 3.338765
+      type: 'test'
+      ...
+    # Subtest: değiştirilmiş içerik, bilinmeyen anahtar ve sahte kimlik reddedilir
+    ok 2 - değiştirilmiş içerik, bilinmeyen anahtar ve sahte kimlik reddedilir
+      ---
+      duration_ms: 2.180357
+      type: 'test'
+      ...
+    # Subtest: geçersiz bildirge alanları reddedilir
+    ok 3 - geçersiz bildirge alanları reddedilir
+      ---
+      duration_ms: 3.096124
+      type: 'test'
+      ...
+    # Subtest: uyumluluk: eski sürüm, kanal, en düşük sürüm, çalışma zamanı ve başlatıcı
+    ok 4 - uyumluluk: eski sürüm, kanal, en düşük sürüm, çalışma zamanı ve başlatıcı
+      ---
+      duration_ms: 1.640844
+      type: 'test'
+      ...
+    # Subtest: ürüne gömülü anahtar geçerli bir Ed25519 açık anahtarıdır
+    ok 5 - ürüne gömülü anahtar geçerli bir Ed25519 açık anahtarıdır
+      ---
+      duration_ms: 0.828017
+      type: 'test'
+      ...
+    # Subtest: sürüm notları CHANGELOG'dan çıkarılır
+    ok 6 - sürüm notları CHANGELOG'dan çıkarılır
+      ---
+      duration_ms: 1.408651
+      type: 'test'
+      ...
+    1..6
+ok 5 - imzalı güncelleme bildirgesi
+  ---
+  duration_ms: 13.380405
+  type: 'suite'
+  ...
+# Subtest: güncelleyici (sahte GitHub ile)
+    # Subtest: kararlı kanalda en yeni kararlı sürümü bulur; ön sürümü yalnızca beta kanalı görür
+    ok 1 - kararlı kanalda en yeni kararlı sürümü bulur; ön sürümü yalnızca beta kanalı görür
+      ---
+      duration_ms: 71.383843
+      type: 'test'
+      ...
+    # Subtest: indirir, özeti doğrular ve paketi app\\<sürüm> olarak açar
+    ok 2 - indirir, özeti doğrular ve paketi app\\<sürüm> olarak açar
+      ---
+      duration_ms: 207.566033
+      type: 'test'
+      ...
+    # Subtest: kurulu sürüm işlevle okunur: yerinde güncellemeden sonra aynı sürüm yeniden önerilmez; çalışan/etkin klasöre dokunulmaz (2.0.6 saha hatası)
+    ok 3 - kurulu sürüm işlevle okunur: yerinde güncellemeden sonra aynı sürüm yeniden önerilmez; çalışan/etkin klasöre dokunulmaz (2.0.6 saha hatası)
+      ---
+      duration_ms: 188.161833
+      type: 'test'
+      ...
+    # Subtest: paket özeti tutmazsa hiçbir şey kurulmaz
+    ok 4 - paket özeti tutmazsa hiçbir şey kurulmaz
+      ---
+      duration_ms: 59.205324
+      type: 'test'
+      ...
+    # Subtest: yayın etiketi ile bildirge sürümü uyuşmazsa veya imza geçersizse kurulmaz
+    ok 5 - yayın etiketi ile bildirge sürümü uyuşmazsa veya imza geçersizse kurulmaz
+      ---
+      duration_ms: 842.981539
+      type: 'test'
+      ...
+    # Subtest: daha önce başarısız olan sürüm atlanır; kurulum dosyası gerektiren sürüm bildirilir
+    ok 6 - daha önce başarısız olan sürüm atlanır; kurulum dosyası gerektiren sürüm bildirilir
+      ---
+      duration_ms: 20.903103
+      type: 'test'
+      ...
+    # Subtest: ağ hatası yeniden denenebilir, olmayan depo denenemez olarak bildirilir
+    ok 7 - ağ hatası yeniden denenebilir, olmayan depo denenemez olarak bildirilir
+      ---
+      duration_ms: 168.224388
+      type: 'test'
+      ...
+    # Subtest: imzalı bildirge adresi (GitHub dışı kaynak) da desteklenir
+    ok 8 - imzalı bildirge adresi (GitHub dışı kaynak) da desteklenir
+      ---
+      duration_ms: 156.421843
+      type: 'test'
+      ...
+    # Subtest: paket içindeki sürüm bildirgeyle aynı değilse veya dosya eksikse açılmaz
+    ok 9 - paket içindeki sürüm bildirgeyle aynı değilse veya dosya eksikse açılmaz
+      ---
+      duration_ms: 2.782727
+      type: 'test'
+      ...
+    1..9
+ok 6 - güncelleyici (sahte GitHub ile)
+  ---
+  duration_ms: 3478.405119
+  type: 'suite'
+  ...
+# Subtest: kurulum düzeni yardımcıları
+    # Subtest: current.json atomik yazılır; eski sürümler ve yarım klasörler temizlenir
+    ok 1 - current.json atomik yazılır; eski sürümler ve yarım klasörler temizlenir
+      ---
+      duration_ms: 3.294355
+      type: 'test'
+      ...
+    1..1
+ok 7 - kurulum düzeni yardımcıları
+  ---
+  duration_ms: 3.457042
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 G1 — Graph API sürümü tek yerden (program + kapıcı)
+    # Subtest: program ve kapıcı aynı Graph sürümünü kullanır; biçim vNN.0
+    ok 1 - program ve kapıcı aynı Graph sürümünü kullanır; biçim vNN.0
+      ---
+      duration_ms: 0.7218
+      type: 'test'
+      ...
+    # Subtest: kaynakta (server/, bulut/, istemcinin WhatsApp dosyaları) başka yerde Graph sürümü yazılı değil
+    ok 2 - kaynakta (server/, bulut/, istemcinin WhatsApp dosyaları) başka yerde Graph sürümü yazılı değil
+      ---
+      duration_ms: 71.273313
+      type: 'test'
+      ...
+    1..2
+ok 8 - 2.5.0 G1 — Graph API sürümü tek yerden (program + kapıcı)
+  ---
+  duration_ms: 72.995162
+  type: 'suite'
+  ...
+# Subtest: yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+    # Subtest: arayüz dosyalarında kurala uymayan ad yok
+    ok 1 - arayüz dosyalarında kurala uymayan ad yok
+      ---
+      duration_ms: 81.8626
+      type: 'test'
+      ...
+    # Subtest: hareket türü adları ve programın varsayılan adları kurala uyuyor
+    ok 2 - hareket türü adları ve programın varsayılan adları kurala uyuyor
+      ---
+      duration_ms: 6.19191
+      type: 'test'
+      ...
+    # Subtest: derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+    ok 3 - derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+      ---
+      duration_ms: 2.319464
+      type: 'test'
+      ...
+    # Subtest: Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+    ok 4 - Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+      ---
+      duration_ms: 3.968615
+      type: 'test'
+      ...
+    # Subtest: mobil görünümde (client/mobil) kurala uymayan ad yok
+    ok 5 - mobil görünümde (client/mobil) kurala uymayan ad yok
+      ---
+      duration_ms: 4.172442
+      type: 'test'
+      ...
+    # Subtest: rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+    ok 6 - rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+      ---
+      duration_ms: 45.064524
+      type: 'test'
+      ...
+    1..6
+ok 9 - yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+  ---
+  duration_ms: 145.039564
+  type: 'suite'
+  ...
+1..9
+# tests 36
+# suites 9
+# pass 36
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3779.981818

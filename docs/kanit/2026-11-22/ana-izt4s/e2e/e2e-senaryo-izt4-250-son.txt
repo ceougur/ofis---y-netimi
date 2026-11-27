@@ -1,0 +1,15 @@
+  ✓ API bakiye 300, gecikmiş 0: 300 / 0
+
+■ B) Cari kartı → + Tahsilat → Kapatılacak Fatura = F, 900 → kart Kalan ₺0,00, bakiye ₺0,00
+  ✓ beklenen soru geldi: Bu carinin açık taksit kartı var. Taksit ödemesiyse taksite yazın: tutar o taksitten düşer, Kasa’ya tek kayıt olarak gir → 'Taksit Dışı Tahsilat'
+  ✓ Kapatılacak Fatura seçeneklerinde F (gösterilen açık 300): Otomatik (Vadesi En Önce Gelen) | Satış Faturası FIS2026000000002 · 01.09.2026 · açık ₺300,00
+  ✓ veri tabanı: Kapatılacak Fatura = F, 900 ([{"kind":"in","amount":900,"invoiceId":"invoice-7cd65d24-da79-4828-83d8-9062543e3a9b"}])
+  ✓ API kart Tahsil Edilen 600 · Kalan 0 (tabanda 0 / 600): {"paid":600,"left":0,"items":[0,0,0]}
+  ✓ cari kartında kart satırı Ödenen ₺600,00 · Kalan ₺0,00: 2Ekran İzt4 Kapatılacak Fatura Kartı3 taksit₺600,00₺600,00₺0,00Tamamlandı
+  ✓ cari kartı Gecikmiş Borç ₺0,00: ₺0,00Gecikmiş Borç
+  ✓ kart penceresi Tahsil Edilen ₺600,00 · Kalan ₺0,00: ₺600,00Toplam Tutar₺600,00Tahsil Edilen · %100₺0,00Kalan₺0,00Geciken · 0 taksit
+  ✓ API bakiye 0, gecikmiş 0: 0 / 0
+  ✓ Mutabakat Testi temiz
+  ✓ sayfa hatası yok
+
+✓ senaryo-izt4-250: 21 geçti, 0 kaldı

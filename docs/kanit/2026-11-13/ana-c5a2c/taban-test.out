@@ -1,0 +1,462 @@
+TAP version 13
+# Subtest: Ç5-A tur 2c — v2.4.9 kilitli verisinde açılış düzeni (kabul D): sınıf listesi, aday → Kural Farkı → Düzeltildi → eşleştirme → ters kayıt
+    # Subtest: [1] güncelleme: iki aday (kilitli 1); Kural Farkı fişi aday varken pasif (B16); karar → pasiflik kalkar
+    not ok 1 - [1] güncelleme: iki aday (kilitli 1); Kural Farkı fişi aday varken pasif (B16); karar → pasiflik kalkar
+      ---
+      duration_ms: 7.594965
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/taban/test/acilis-duzeni-v249-250.test.mjs:91:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            [
+              'aentry-bbb112cf-6b22-43f7-84cb-2005891e5487',
+        +     undefined
+        -     true
+            ],
+            [
+              'aentry-2b5206eb-d48d-4da5-b65b-d05469ef3baf',
+        +     undefined
+        -     false
+            ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 'aentry-bbb112cf-6b22-43f7-84cb-2005891e5487'
+          1: true
+        1:
+          0: 'aentry-2b5206eb-d48d-4da5-b65b-d05469ef3baf'
+          1: false
+      actual:
+        0:
+          0: 'aentry-bbb112cf-6b22-43f7-84cb-2005891e5487'
+        1:
+          0: 'aentry-2b5206eb-d48d-4da5-b65b-d05469ef3baf'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/taban/test/acilis-duzeni-v249-250.test.mjs:93:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: [2] sınıf listesi: kilitli dönemdeki her açılış türü kural farkında (eski 500 / 602 → 519); açık dönemdekiler farkta YOK, defterde 519 (reddedilen aday 602)
+    not ok 2 - [2] sınıf listesi: kilitli dönemdeki her açılış türü kural farkında (eski 500 / 602 → 519); açık dönemdekiler farkta YOK, defterde 519 (reddedilen aday 602)
+      ---
+      duration_ms: 9.023107
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/taban/test/acilis-duzeni-v249-250.test.mjs:103:3'
+      failureType: 'testCodeFailure'
+      error: 'reddedilen açık aday 602'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/taban/test/acilis-duzeni-v249-250.test.mjs:120:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: [3] Kural Farkı Düzeltme Fişi 01.07.2026: B 500 6.370 / B 602 2.800 / A 519 9.170; Düzeltildi; değişmez (1–5 karma = baştan)
+    not ok 3 - [3] Kural Farkı Düzeltme Fişi 01.07.2026: B 500 6.370 / B 602 2.800 / A 519 9.170; Düzeltildi; değişmez (1–5 karma = baştan)
+      ---
+      duration_ms: 10.537689
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/taban/test/acilis-duzeni-v249-250.test.mjs:123:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        fiş: 409 {"ok":false,"error":"Önce Açılış Olabilir listesini tamamlayın: kilitli dönemde onay bekleyen 1 kayıt var (Cariler › Açılış Olabilir Kayıtlar).","code":"rule-diff-candidates"}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/taban/test/acilis-duzeni-v249-250.test.mjs:27:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/taban/test/acilis-duzeni-v249-250.test.mjs:128:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: [4] Açılış Eşleştirme 20.11.2026: 519 = 11.670 alacak (fiş 9.170 + açık dönem 2.500); A 500 10.000 + A 570 1.670 → 519 sıfır; Açılış Karşılığı tutarlı
+    not ok 4 - [4] Açılış Eşleştirme 20.11.2026: 519 = 11.670 alacak (fiş 9.170 + açık dönem 2.500); A 500 10.000 + A 570 1.670 → 519 sıfır; Açılış Karşılığı tutarlı
+      ---
+      duration_ms: 3.60447
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/taban/test/acilis-duzeni-v249-250.test.mjs:139:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        eşleştirme: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/taban/test/acilis-duzeni-v249-250.test.mjs:27:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/taban/test/acilis-duzeni-v249-250.test.mjs:140:18)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: [5] Kural Farkı fişi ters kaydedilir → uyarı geri gelir (Mizan'da 519 9.170 borç — kural farkı düzeltilmemiş; canlı türetmede 519 = 0, bilgi satırı YOK); açık dönemde açılış silinir → 519 eşleştirmenin tersine geçer: ENGELLENMEZ, bilgi satırı
+    not ok 5 - [5] Kural Farkı fişi ters kaydedilir → uyarı geri gelir (Mizan'da 519 9.170 borç — kural farkı düzeltilmemiş; canlı türetmede 519 = 0, bilgi satırı YOK); açık dönemde açılış silinir → 519 eşleştirmenin tersine geçer: ENGELLENMEZ, bilgi satırı
+      ---
+      duration_ms: 0.56013
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/taban/test/acilis-duzeni-v249-250.test.mjs:153:3'
+      failureType: 'testCodeFailure'
+      error: "Cannot read properties of undefined (reading 'id')"
+      code: 'ERR_TEST_FAILURE'
+      name: 'TypeError'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/taban/test/acilis-duzeni-v249-250.test.mjs:154:111)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..5
+not ok 1 - Ç5-A tur 2c — v2.4.9 kilitli verisinde açılış düzeni (kabul D): sınıf listesi, aday → Kural Farkı → Düzeltildi → eşleştirme → ters kayıt
+  ---
+  duration_ms: 1608.19839
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/taban/test/acilis-duzeni-v249-250.test.mjs:37:1'
+  failureType: 'subtestsFailed'
+  error: '5 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Ç5-A tur 2c İş 1 — Açılış Eşleştirme Fişi
+    # Subtest: ön izleme verisi: 519'un gün sonu bakiyesi ve açılış türlerine göre dökümü (toplam = bakiye); izinli hedefler alt defter hesabı ve 519 içermez
+    not ok 1 - ön izleme verisi: 519'un gün sonu bakiyesi ve açılış türlerine göre dökümü (toplam = bakiye); izinli hedefler alt defter hesabı ve 519 içermez
+      ---
+      duration_ms: 6.670144
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/taban/test/acilis-eslestirme-250.test.mjs:60:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        GET: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/taban/test/acilis-eslestirme-250.test.mjs:20:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/taban/test/acilis-eslestirme-250.test.mjs:61:18)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: ret: izinsiz hedef (102, 120, 600, 519) 400 ESLESTIRME_HESAP; 519'u büyüten 409; ters bakiye 409 ESLESTIRME_TERS (aynı gün açılışı dahil, ertesi gün açılışı hariç); fiş yazılmaz
+    not ok 2 - ret: izinsiz hedef (102, 120, 600, 519) 400 ESLESTIRME_HESAP; 519'u büyüten 409; ters bakiye 409 ESLESTIRME_TERS (aynı gün açılışı dahil, ertesi gün açılışı hariç); fiş yazılmaz
+      ---
+      duration_ms: 6.441909
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/taban/test/acilis-eslestirme-250.test.mjs:73:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        hedef 102: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 400
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        refused (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/taban/test/acilis-eslestirme-250.test.mjs:25:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/taban/test/acilis-eslestirme-250.test.mjs:74:64)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: kısmi + ikinci fiş (iki hedef) + fazlası ret; Açılış Karşılığı fiş satırlarını görür; cari / Kasa / banka / stok bakiyesi değişmez; aynı istek iki kez tek fiş
+    not ok 3 - kısmi + ikinci fiş (iki hedef) + fazlası ret; Açılış Karşılığı fiş satırlarını görür; cari / Kasa / banka / stok bakiyesi değişmez; aynı istek iki kez tek fiş
+      ---
+      duration_ms: 13.219186
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/taban/test/acilis-eslestirme-250.test.mjs:86:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kısmi 4.000: 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/taban/test/acilis-eslestirme-250.test.mjs:20:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/taban/test/acilis-eslestirme-250.test.mjs:89:19)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: fişten sonra açık dönemde açılış silinir → 519 ters bakiye: ENGELLENMEZ; Mutabakat'ta bilgi satırı (zil / günlük değişmez); ters kayıtla geri döner
+    not ok 4 - fişten sonra açık dönemde açılış silinir → 519 ters bakiye: ENGELLENMEZ; Mutabakat'ta bilgi satırı (zil / günlük değişmez); ters kayıtla geri döner
+      ---
+      duration_ms: 19.726942
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/taban/test/acilis-eslestirme-250.test.mjs:109:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        519 eşleştirmenin tersine geçti (borç 1.000)
+        + actual - expected
+        
+        + -630000
+        - 100000
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 100000
+      actual: -630000
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/taban/test/acilis-eslestirme-250.test.mjs:112:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: iki kişi aynı anda kalanın tamamını eşleştirir: biri yazılır, öbürü güncel bakiyeyle (0) 409; Muhasebe 403; ileri tarih 400; kilitli tarih 409
+    not ok 5 - iki kişi aynı anda kalanın tamamını eşleştirir: biri yazılır, öbürü güncel bakiyeyle (0) 409; Muhasebe 403; ileri tarih 400; kilitli tarih 409
+      ---
+      duration_ms: 50.59269
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/taban/test/acilis-eslestirme-250.test.mjs:125:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        404 404
+        + actual - expected
+        
+          [
+        +   404,
+        +   404
+        -   200,
+        -   409
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 200
+        1: 409
+      actual:
+        0: 404
+        1: 404
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/taban/test/acilis-eslestirme-250.test.mjs:131:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..5
+not ok 2 - Ç5-A tur 2c İş 1 — Açılış Eşleştirme Fişi
+  ---
+  duration_ms: 676.882408
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/taban/test/acilis-eslestirme-250.test.mjs:32:1'
+  failureType: 'subtestsFailed'
+  error: '5 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Ç5-A tur 2c İş 3 — Açılış Olabilir Kayıtlar: sayfalama, zil sayısı, toplu karar, geri al, kilitli satır, yetki
+    # Subtest: sayfalama + toplam; sayfasız çağrı tur 1 çıktısı (kilit alanı yok); zil sayısı kilitli dönemdeki adayı ayrıca verir; geçersiz sayfa 400
+    not ok 1 - sayfalama + toplam; sayfasız çağrı tur 1 çıktısı (kilit alanı yok); zil sayısı kilitli dönemdeki adayı ayrıca verir; geçersiz sayfa 400
+      ---
+      duration_ms: 15.38302
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/taban/test/acilis-olabilir-250.test.mjs:75:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        sayfalar sıralı listeyi eksiksiz, tekrarsız böler
+        + actual - expected
+        
+          [
+            'aentry-5783092c-ac2b-405e-a702-cd98914ba02c',
+            'aentry-29b680ab-b368-4d09-a7f9-2b70268f1626',
+            'aentry-fd3495ff-7ff8-4b72-91e7-cc7402f7121f',
+            'aentry-9a80dea4-8e5e-4087-9d7f-65ed8d76593f',
+            'aentry-2d2e763c-2365-485e-aeb3-48a3ec0d5532',
+        +   'aentry-5783092c-ac2b-405e-a702-cd98914ba02c',
+        +   'aentry-29b680ab-b368-4d09-a7f9-2b70268f1626',
+        +   'aentry-fd3495ff-7ff8-4b72-91e7-cc7402f7121f',
+        +   'aentry-9a80dea4-8e5e-4087-9d7f-65ed8d76593f',
+        +   'aentry-2d2e763c-2365-485e-aeb3-48a3ec0d5532',
+        +   'aentry-5783092c-ac2b-405e-a702-cd98914ba02c',
+        +   'aentry-29b680ab-b368-4d09-a7f9-2b70268f1626',
+        +   'aentry-fd3495ff-7ff8-4b72-91e7-cc7402f7121f',
+        +   'aentry-9a80dea4-8e5e-4087-9d7f-65ed8d76593f',
+        +   'aentry-2d2e763c-2365-485e-aeb3-48a3ec0d5532'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'aentry-5783092c-ac2b-405e-a702-cd98914ba02c'
+        1: 'aentry-29b680ab-b368-4d09-a7f9-2b70268f1626'
+        2: 'aentry-fd3495ff-7ff8-4b72-91e7-cc7402f7121f'
+        3: 'aentry-9a80dea4-8e5e-4087-9d7f-65ed8d76593f'
+        4: 'aentry-2d2e763c-2365-485e-aeb3-48a3ec0d5532'
+      actual:
+        0: 'aentry-5783092c-ac2b-405e-a702-cd98914ba02c'
+        1: 'aentry-29b680ab-b368-4d09-a7f9-2b70268f1626'
+        2: 'aentry-fd3495ff-7ff8-4b72-91e7-cc7402f7121f'
+        3: 'aentry-9a80dea4-8e5e-4087-9d7f-65ed8d76593f'
+        4: 'aentry-2d2e763c-2365-485e-aeb3-48a3ec0d5532'
+        5: 'aentry-5783092c-ac2b-405e-a702-cd98914ba02c'
+        6: 'aentry-29b680ab-b368-4d09-a7f9-2b70268f1626'
+        7: 'aentry-fd3495ff-7ff8-4b72-91e7-cc7402f7121f'
+        8: 'aentry-9a80dea4-8e5e-4087-9d7f-65ed8d76593f'
+        9: 'aentry-2d2e763c-2365-485e-aeb3-48a3ec0d5532'
+        10: 'aentry-5783092c-ac2b-405e-a702-cd98914ba02c'
+        11: 'aentry-29b680ab-b368-4d09-a7f9-2b70268f1626'
+        12: 'aentry-fd3495ff-7ff8-4b72-91e7-cc7402f7121f'
+        13: 'aentry-9a80dea4-8e5e-4087-9d7f-65ed8d76593f'
+        14: 'aentry-2d2e763c-2365-485e-aeb3-48a3ec0d5532'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/taban/test/acilis-olabilir-250.test.mjs:84:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: toplu karar (aynı adlı iki cari): ikisi de onaylanır, 519; listede olmayan kimlik varsa HİÇBİRİ yazılmaz (404); karar tutar / tarih / yön / işaret değiştirmez
+    not ok 2 - toplu karar (aynı adlı iki cari): ikisi de onaylanır, 519; listede olmayan kimlik varsa HİÇBİRİ yazılmaz (404); karar tutar / tarih / yön / işaret değiştirmez
+      ---
+      duration_ms: 16.302635
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/taban/test/acilis-olabilir-250.test.mjs:95:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"ok":false,"error":"Bu yöntem desteklenmiyor."}
+        
+        405 !== 404
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 404
+      actual: 405
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/taban/test/acilis-olabilir-250.test.mjs:98:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: geri al: kararlı satır yeniden onay bekler (S47: defterde yine 519); ret → geri al → onay; listede olmayan satırda 404; adayda değişiklik yok
+    not ok 3 - geri al: kararlı satır yeniden onay bekler (S47: defterde yine 519); ret → geri al → onay; listede olmayan satırda 404; adayda değişiklik yok
+      ---
+      duration_ms: 2.728181
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/taban/test/acilis-olabilir-250.test.mjs:115:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        geri al: 400 {"ok":false,"error":"Kararı seçin: Açılış (onayla) ya da Açılış Değil (reddet).","code":"opening-review-decision"}
+        
+        400 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 400
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/taban/test/acilis-olabilir-250.test.mjs:24:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/taban/test/acilis-olabilir-250.test.mjs:116:18)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: kilitli satır: karar verilir, kilit izi ve donmuş defter değişmez; Kural Farkı fişi aday varken pasif, neden aday ekranını söyler (B16); karar verilince pasiflik kalkar
+    not ok 4 - kilitli satır: karar verilir, kilit izi ve donmuş defter değişmez; Kural Farkı fişi aday varken pasif, neden aday ekranını söyler (B16); karar verilince pasiflik kalkar
+      ---
+      duration_ms: 7.733433
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/taban/test/acilis-olabilir-250.test.mjs:132:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        The input did not match the regular expression /onay bekleyen 1 kayıt var \(Yönetim › Sistem › Açılış Olabilir Kayıtlar\)\.$/. Input:
+        
+        'Önce Açılış Olabilir listesini tamamlayın: kilitli dönemde onay bekleyen 1 kayıt var (Cariler › Açılış Olabilir Kayıtlar).'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'Önce Açılış Olabilir listesini tamamlayın: kilitli dönemde onay bekleyen 1 kayıt var (Cariler › Açılış Olabilir Kayıtlar).'
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/taban/test/acilis-olabilir-250.test.mjs:138:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: yetki: personel 403 (liste, zil, tek, toplu, geri al); Muhasebe uçları kullanır (tur 1 yetkisi accounts.manage); iki kişi aynı anda — son karar geçerli, kopya aynı
+    not ok 5 - yetki: personel 403 (liste, zil, tek, toplu, geri al); Muhasebe uçları kullanır (tur 1 yetkisi accounts.manage); iki kişi aynı anda — son karar geçerli, kopya aynı
+      ---
+      duration_ms: 111.066998
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/taban/test/acilis-olabilir-250.test.mjs:150:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        toplu
+        
+        405 !== 403
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 403
+      actual: 405
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/taban/test/acilis-olabilir-250.test.mjs:156:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..5
+not ok 3 - Ç5-A tur 2c İş 3 — Açılış Olabilir Kayıtlar: sayfalama, zil sayısı, toplu karar, geri al, kilitli satır, yetki
+  ---
+  duration_ms: 1295.546963
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c5a2c/taban/test/acilis-olabilir-250.test.mjs:31:1'
+  failureType: 'subtestsFailed'
+  error: '5 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Error: Test "yetki: personel 403 (liste, zil, tek, toplu, geri al); Muhasebe uçları kullanır (tur 1 yetkisi accounts.manage); iki kişi aynı anda — son karar geçerli, kopya aynı" at test/acilis-olabilir-250.test.mjs:150:3 generated asynchronous activity after the test ended. This activity created the error "TypeError: fetch failed" and would have caused the test to fail, but instead triggered an unhandledRejection event.
+1..3
+# tests 15
+# suites 3
+# pass 0
+# fail 15
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4699.928309

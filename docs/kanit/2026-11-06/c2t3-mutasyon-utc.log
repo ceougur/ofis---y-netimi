@@ -1,0 +1,64 @@
+taban: 61 geçti / 0 kaldı / 0 atlandı (çıkış 0)
+ok 1 - fiş denkliği denetimi düşer (borç ≠ alacak kabul) · KIRMIZI (1 başarısız) · beklenen neden /not ok \d+ - N1–N3[\s\S]*beklenen 400, gelen 409/ görüldü
+ok 2 - sıfır satır denetimi düşer (iki tarafı sıfır satır kabul) · KIRMIZI (1 başarısız) · beklenen neden /not ok \d+ - N1–N3[\s\S]*beklenen 400, gelen undefined/ görüldü
+ok 3 - ters kayıt yönü (satırlar aynalanmaz) · KIRMIZI (2 başarısız) · beklenen neden /not ok \d+ - N9–N10[\s\S]*ters kaydı asıl fişin aynası[\s\S]*ters kayıt asıl fişin aynası değil/ görüldü
+ok 4 - istek kimliği tekilliği (yinelenen kimlik aranmaz) · KIRMIZI (3 başarısız) · beklenen neden /aynı fiş ikinci kez yazılamaz/ görüldü
+ok 5 - kilit 409 (kilit günü açık sayılır) · KIRMIZI (4 başarısız) · beklenen neden /beklenen kod period-locked/ görüldü
+ok 6 - UPDATE tetikleyicisi yok (başlık) · KIRMIZI (1 başarısız) · beklenen neden /not ok \d+ - N8[\s\S]*Missing expected exception: UPDATE başlık/ görüldü
+ok 7 - DELETE tetikleyicisi yok (satır) · KIRMIZI (9 başarısız) · beklenen neden /not ok \d+ - N8[\s\S]*Missing expected exception: DELETE satır/ görüldü
+ok 8 - journal() sınıf sırası (kapanış günün sonunda değil) · KIRMIZI (3 başarısız) · beklenen neden /not ok \d+ - N13[\s\S]*not ok \d+ - N20/ görüldü
+ok 9 - journal() sınıf sırası (açılış günün başında değil) · KIRMIZI (2 başarısız) · beklenen neden /01\.01'in ilk maddesi açılış/ görüldü
+ok 10 - kapanış + kilit aynı işlemde değil (kilit konmaz) · KIRMIZI (1 başarısız) · beklenen neden /kilit fişlerle aynı işlemde kondu/ görüldü
+ok 11 - aynı fişin ikinci ters kaydı denetlenmez (yalnız indeks kalır) · KIRMIZI (2 başarısız) · beklenen neden /beklenen 409, gelen undefined/ görüldü
+ok 12 - Şirket Verisini Sıfırla fişleri silmez · KIRMIZI (2 başarısız) · beklenen neden /sıfırlama raporu fiş sayısını taşır/ görüldü
+ok 13 - sıfırlama tetikleyicileri geri kurmaz · KIRMIZI (3 başarısız) · beklenen neden /not ok \d+ - N17/ görüldü
+ok 14 - eski sürüm sıfırlamasının açılış onarımı yok · KIRMIZI (1 başarısız) · beklenen neden /not ok \d+ - izi olmayan fiş/ görüldü
+ok 15 - kilit izinde fiş girdisi yok · KIRMIZI (1 başarısız) · beklenen neden /kapanmış dönem sapması/ görüldü
+ok 16 - fiş tabloları kapıda değil (FINANCIAL) · KIRMIZI (1 başarısız) · beklenen neden /not ok \d+ - N21/ görüldü
+ok 17 - MA bugün tarihli fiş reddedilir (> yerine >=) · KIRMIZI (1 başarısız) · beklenen neden /not ok \d+ - MA:[\s\S]*İleri tarihli fiş yazılamaz/ görüldü
+ok 18 - MB kilit geri gidebilir (yinelenen kapanış kilidi önceki güne çeker) · KIRMIZI (1 başarısız) · beklenen neden /kilit geri gitmedi/ görüldü
+ok 19 - MC istek kimliğinin içerik karşılaştırmasında sınıf yok · KIRMIZI (1 başarısız) · beklenen neden /not ok \d+ - MC:[\s\S]*Missing expected exception/ görüldü
+ok 20 - MG yevmiyede fiş satırının alt hesabı düşer · KIRMIZI (1 başarısız) · beklenen neden /not ok \d+ - MG:/ görüldü
+ok 21 - K6 alt defter koruması yok (fiş denetimi atlanır; yalnız kapı) · KIRMIZI (3 başarısız) · beklenen neden /KABUL edildi \(K6 iddiası\): 121/ görüldü
+ok 22 - K6 listesi kullanıma bağlı (every kipi senet satırını açmaz) · KIRMIZI (2 başarısız) · beklenen neden /KABUL edildi \(K6 iddiası\): 121/ görüldü
+ok 23 - K5 şirket denetimi yok (her şirketin sıfırlama izi sayılır) · KIRMIZI (2 başarısız) · beklenen neden /başka şirketin sıfırlaması 001'in fişini kaldırmamalı/ görüldü
+ok 24 - K5 yazım sırası denetimi yok (izi duran fişten sonra yazılan izsiz fiş de kaldırılır) · KIRMIZI (2 başarısız) · beklenen neden /izi duran fişten sonra yazılan izsiz fiş kalmalı/ görüldü
+ok 25 - K5 duvar saati geri gelir (yazım sırası yerine fişin anı ↔ sıfırlamanın anı) · KIRMIZI (4 başarısız) · beklenen neden /saat geri alınmış olsa da sıfırlamadan artakalan asıl fiş \+ ters kaydı birlikte kaldırılır/ görüldü
+ok 26 - kapanmış fiş tetikleyicisi yeniden COUNT(*) (O(n²)) · KIRMIZI (1 başarısız) · beklenen neden /O\(n²\)/ görüldü
+ok 27 - kapanmış fiş tetikleyicisi aynı sırayı denetlemez (INSERT OR REPLACE satır geçer) · KIRMIZI (9 başarısız) · beklenen neden /atlatan deneme: INSERT OR REPLACE satır/ görüldü
+ok 28 - metin alanı nesne alır ([object Object] saklanır) · KIRMIZI (2 başarısız) · beklenen neden /not ok \d+ - ters kayıt ucu: açıklama nesne/ görüldü
+ok 29 - postAll lockThrough kilit öncesi adımı (POS) çağırmaz · KIRMIZI (2 başarısız) · beklenen neden /not ok \d+ - Elle Onay kipi/ görüldü
+ok 30 - fiş defterine kilit öncesi adım bağlanmaz (routes) · KIRMIZI (2 başarısız) · beklenen neden /not ok \d+ - Elle Onay kipi/ görüldü
+ok 31 - B2 K5 çift kuralı yok (asıl fiş ile ters kaydı ayrı ayrı değerlendirilir; baş mimar kararı 5) · KIRMIZI (2 başarısız) · beklenen neden /ters kaydı kalan asıl fiş kaldırılmaz/ görüldü
+ok 32 - B1 K5 çift kuralı tek yöne döner (yalnız kalan ters kaydın asıl fişi korunur; tur 1 kuralı) · KIRMIZI (1 başarısız) · beklenen neden /asıl fiş kalıyorsa ters kaydı da kalır/ görüldü
+ok 33 - B1 K5 sıfırlama izinin işlem geçmişini sildiği denetlenmez (izli fişten sonra eklenmiş iz de sayılır) · KIRMIZI (1 başarısız) · beklenen neden /işlem geçmişini silmeyen sıfırlama izi fiş kaldırmamalı/ görüldü
+ok 34 - B1 kuşkulu fiş Mutabakat Günlüğü'ne yazılmaz (sessiz) · KIRMIZI (4 başarısız) · beklenen neden /kuşkulu fişin görünür kaydı/ görüldü
+ok 35 - B1 kuşkulu fişin kaydı her açılışta yinelenir (tekilleştirme yok) · KIRMIZI (1 başarısız) · beklenen neden /aynı kuşkulu fiş için kayıt her açılışta yinelenmez/ görüldü
+ok 36 - D1 K5 en son yerine EN ESKİ sıfırlama izi · KIRMIZI (1 başarısız) · beklenen neden /en son sıfırlama izi işlem geçmişini silmemiş: izsiz fiş kalmalı/ görüldü
+ok 37 - D2 K5 izli ilk yerine izli SON fiş · KIRMIZI (1 başarısız) · beklenen neden /izli İLK fişten sonra yazılan izsiz fiş kalmalı/ görüldü
+ok 38 - D3 K5 'işlem geçmişi silinmemiş' denetimi ilk yerine SON izle · KIRMIZI (1 başarısız) · beklenen neden /ilk iz sıfırlama izinden önce: iz işlem geçmişini silmemiş, fiş kalmalı/ görüldü
+ok 39 - D5 kuşku kaydında keptCount yazılmaz · KIRMIZI (2 başarısız) · beklenen neden /kuşku kaydının ayrıntısı \(Ç2 tur 2 biçimi\)/ görüldü
+ok 40 - D6 kuşku kaydında 50 sınırı kalkar · KIRMIZI (2 başarısız) · beklenen neden /kuşku kaydının ayrıntısı \(Ç2 tur 2 biçimi\)/ görüldü
+ok 41 - kaldırma kaydında removedCount yazılmaz · KIRMIZI (3 başarısız) · beklenen neden /ilk 50 kimlik \(yazım sırasıyla\) \+ tam sayılar/ görüldü
+ok 42 - kaldırma kaydında 50 sınırı kalkar · KIRMIZI (2 başarısız) · beklenen neden /ilk 50 kimlik \(yazım sırasıyla\) \+ tam sayılar/ görüldü
+ok 43 - D8 kaldırma kaydı 200 karakterde kesilir · KIRMIZI (2 başarısız) · beklenen neden /kaldırma kaydı \(600\): kayıt ayrıntısı geçerli JSON değil/ görüldü
+ok 44 - yan bulgu 1 geri gelir (kaldırma kaydı JSON.stringify(...).slice(0, 20000)) · KIRMIZI (3 başarısız) · beklenen neden /kaldırma kaydı \(600\): kayıt ayrıntısı geçerli JSON değil/ görüldü
+ok 45 - boundedDetail boyut aşınca listeyi kısaltmaz (yalnız metni keser) · KIRMIZI (2 başarısız) · beklenen neden /liste kısaldı/ görüldü
+ok 46 - boundedDetail kökün alanlarını da kısaltır (sayılar kaybolabilir) · KIRMIZI (1 başarısız) · beklenen neden /kökün 20 alanı/ görüldü
+ok 47 - boundedDetail kayıt nesnesinin alanlarını keser (az anahtarlı nesne de liste sayılır) · KIRMIZI (1 başarısız) · beklenen neden /kayıt nesnelerinin alanları kısaltılmaz/ görüldü
+ok 48 - boundedDetail sığan değerde de metni kısaltır (JSON.stringify ile birebir değil) · KIRMIZI (2 başarısız) · beklenen neden /sığan değer birebir olmalı/ görüldü
+ok 49 - boundedDetail listenin bütün öğelerini okur (öğe başına iş; ders 47) · KIRMIZI (1 başarısız) · beklenen neden /100\.000 öğeli listeden \d+ öğe okundu/ görüldü
+ok 50 - yan bulgu 2 geri gelir (banka onarımı kaydı JSON.stringify(...).slice(0, 20000)) · KIRMIZI (1 başarısız) · beklenen neden /onarım kaydının ayrıntısı geçerli JSON değil/ görüldü
+ok 51 - banka onarımı kaydında tam sayılar (counts) yazılmaz · KIRMIZI (1 başarısız) · beklenen neden /tam sayılar/ görüldü
+ok 52 - banka onarımı kaydında 50 sınırı kalkar · KIRMIZI (1 başarısız) · beklenen neden /kayıtta ilk 50 başlık/ görüldü
+ok 53 - integrity günlük yazımı yine kesilir (JSON.stringify(...).slice(0, 20000)) · KIRMIZI (2 başarısız) · beklenen neden /açılış 1: taban kaydı: kayıt ayrıntısı geçerli JSON değil/ görüldü
+ok 54 - integrity taban karşılaştırması sınırsız JSON'la (her açılışta yeni satır) · KIRMIZI (2 başarısız) · beklenen neden /açılış 2: tek taban kaydı/ görüldü
+ok 55 - integrity günlük ayrıntısına liste sınırı girer (sığan kayıt birebir değil) · KIRMIZI (2 başarısız) · beklenen neden /sığan kayıt birebir/ görüldü
+1..55
+# tests 55
+# pass 55
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+55/55 mutasyon beklenen nedenle yakalandı

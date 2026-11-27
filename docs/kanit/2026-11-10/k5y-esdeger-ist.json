@@ -1,0 +1,32 @@
+{
+  "ad": "k5y-esdeger-ist",
+  "komut": "python3 -I -B docs/kanit/2026-11-10/kahineski5-arac/karsilastir.py --eski /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahineski5y-eski/test/bagimsiz/cari --yeni test/bagimsiz/cari --dokum /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahineski5y-kanit/g3-dokum-ist.json",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v338 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-10T18:25:04.010Z",
+  "sure_sn": 27.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 393,
+    "gecen": 393,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../kahineski5y-kanit/2026-11-10/k5y-esdeger-ist.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahineski5y-yeni",
+  "ham_cikti_sha256": "b3a9dcc0cf447b2fe1fe65ca15f5c200faf5e405e0907ddfe14f1ed9d1087b37",
+  "ham_cikti_bayt": 5061
+}

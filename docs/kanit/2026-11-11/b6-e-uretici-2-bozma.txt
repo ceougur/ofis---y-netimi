@@ -1,0 +1,18 @@
+{
+ "degistirilen": {
+  "senaryo": "c10-ks10-projeksiyon-cari-vade",
+  "anahtar": "k1:takvim:cariKalemSayisi",
+  "paket": "Ç5-B tur 2",
+  "not": "ana oturum 10.11: Ç5-B ÖNCESİ kodda (fd310c0a^1 ayrı kopya + bugünkü kâhin) bu fark YOK — Ç5-B ile doğdu, OLASI GERİLEME; tur 2b'de kök neden (ders 6)",
+  "eskiProgram": 4,
+  "listedeki": 1004
+ },
+ "silinen": {
+  "senaryo": "b2-ux18-karsiliksiz",
+  "anahtar": "k1:mizan:500"
+ },
+ "eklenen": {
+  "senaryo": "b2-ux18-karsiliksiz",
+  "anahtar": "b6:olmayan:kayit"
+ }
+}

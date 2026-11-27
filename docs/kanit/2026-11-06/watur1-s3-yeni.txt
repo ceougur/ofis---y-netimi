@@ -1,0 +1,2 @@
+[alternatif-adres] sent=200; delivered POST=200 → iş delivered; 13 sa sonra iş delivered; önizleme: Daha Önce Gönderildi
+[uygulama-duzeyi-adres] sent=200; delivered POST=200 → iş delivered; 13 sa sonra iş delivered; önizleme: Daha Önce Gönderildi

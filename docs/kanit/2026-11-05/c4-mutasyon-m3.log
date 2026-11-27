@@ -1,0 +1,99 @@
+TAP version 13
+# Subtest: 2.5.0 Ç4 Defter Türü
+    # Subtest: varsayılan Seçilmedi; seçenekler yazım düzeninde; Kişi Türü / VKN uzunluğundan tür uydurulmaz; kaydedilir ve yeniden okunur
+    not ok 1 - varsayılan Seçilmedi; seçenekler yazım düzeninde; Kişi Türü / VKN uzunluğundan tür uydurulmaz; kaydedilir ve yeniden okunur
+      ---
+      duration_ms: 589.791012
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c4-mutasyon-m3/test/defter-turu-c4.test.mjs:49:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        tüzel kişiden tür uydurulmamalı
+        
+        'balance' !== 'unset'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'unset'
+      actual: 'balance'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c4-mutasyon-m3/test/defter-turu-c4.test.mjs:60:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: geçersiz değer 400 ve hiçbir ayar yazılmaz (aynı gövdedeki firma bilgisi de)
+    ok 2 - geçersiz değer 400 ve hiçbir ayar yazılmaz (aynı gövdedeki firma bilgisi de)
+      ---
+      duration_ms: 399.821692
+      type: 'test'
+      ...
+    # Subtest: yetki: yönetici ve muhasebe değiştirir; avukat ve personel 403 (ayar değişmez)
+    ok 3 - yetki: yönetici ve muhasebe değiştirir; avukat ve personel 403 (ayar değişmez)
+      ---
+      duration_ms: 1016.509276
+      type: 'test'
+      ...
+    # Subtest: Şirket Verisini Sıfırla: Tüm Hareketleri Sil ve Tümünü Sıfırla ayarı KORUR; dönem kilidi (ledger.) kalkar
+    ok 4 - Şirket Verisini Sıfırla: Tüm Hareketleri Sil ve Tümünü Sıfırla ayarı KORUR; dönem kilidi (ledger.) kalkar
+      ---
+      duration_ms: 796.3109
+      type: 'test'
+      ...
+    # Subtest: iki şirket ayrı ayar; yedek → değiştir → geri yükle: 002 hemen, 001 yeniden açılışta geri gelir; öbür şirket etkilenmez
+    not ok 5 - iki şirket ayrı ayar; yedek → değiştir → geri yükle: 002 hemen, 001 yeniden açılışta geri gelir; öbür şirket etkilenmez
+      ---
+      duration_ms: 1418.997184
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c4-mutasyon-m3/test/defter-turu-c4.test.mjs:140:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        002'nin geri yüklenmesi 001'e dokunmadı
+        
+        'balance' !== 'unset'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'unset'
+      actual: 'balance'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c4-mutasyon-m3/test/defter-turu-c4.test.mjs:169:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: BS-7 kapılı (yeni şemalı) şirkette Defter Türü yazımı 409 SCHEMA_AHEAD; okuma çalışır, dosya değişmez
+    ok 6 - BS-7 kapılı (yeni şemalı) şirkette Defter Türü yazımı 409 SCHEMA_AHEAD; okuma çalışır, dosya değişmez
+      ---
+      duration_ms: 1512.650306
+      type: 'test'
+      ...
+    # Subtest: okuyucu bookTypeOf: store, ham değer, bozuk / bilinmeyen değer → unset; okunamayan store → unset
+    ok 7 - okuyucu bookTypeOf: store, ham değer, bozuk / bilinmeyen değer → unset; okunamayan store → unset
+      ---
+      duration_ms: 1.415451
+      type: 'test'
+      ...
+    1..7
+not ok 1 - 2.5.0 Ç4 Defter Türü
+  ---
+  duration_ms: 5738.180431
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c4-mutasyon-m3/test/defter-turu-c4.test.mjs:48:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 7
+# suites 1
+# pass 5
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6211.112837

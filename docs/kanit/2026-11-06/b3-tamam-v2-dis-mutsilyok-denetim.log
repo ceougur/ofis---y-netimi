@@ -1,0 +1,20 @@
+# B3 T1 ölçüm: [[1,1665,122880,14287,200,0,1665,0],[2,1666,241664,24337,400,-200,1666,0],[3,1665,356352,30307,600,-400,1665,0],[4,1665,475136,40357,800,-600,1665,0],[5,1661,593920,50407,1000,-800,1661,0],[6,1671,708608,56377,1200,-1000,1671,0],[7,1659,827392,66427,1400,-1200,1659,0],[8,1666,946176,76477,1600,-1400,1666,0],[9,1670,1060864,82447,1800,-1600,1670,0],[10,1671,1179648,92497,2000,-1800,1671,0]]
+# B3 tur süresi: ileti 200 · 7005 ms (başlangıçtan 7005 ms)
+# B3 tur süresi: ileti 400 · 2892 ms (başlangıçtan 9897 ms)
+# B3 tur süresi: ileti 600 · 3103 ms (başlangıçtan 13000 ms)
+# B3 tur süresi: ileti 800 · 3013 ms (başlangıçtan 16013 ms)
+# B3 tur süresi: ileti 1000 · 2801 ms (başlangıçtan 18814 ms)
+# B3 tur süresi: ileti 1200 · 3060 ms (başlangıçtan 21874 ms)
+# B3 tur süresi: ileti 1400 · 2689 ms (başlangıçtan 24563 ms)
+# B3 tur süresi: ileti 1600 · 3074 ms (başlangıçtan 27637 ms)
+# B3 tur süresi: ileti 1800 · 2726 ms (başlangıçtan 30363 ms)
+# B3 tur süresi: ileti 2000 · 2760 ms (başlangıçtan 33123 ms)
+# B3 T1 havuz: 1580 sayfa (PDF ortalaması 32356 bayt × 200 / 4096)
+# tests 1
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+AssertionError [ERR_ASSERTION]: kesinleşen işlerin PDF yeri bakımdan sonra canlı kalıyor (havuz 1580 sayfa, tur 2–10 canlı artış: 1666, 1665, 1665, 1661, 1671, 1659, 1666, 1670, 1671)
+[zorla] test/whatsapp-b3-buyume-249.test.mjs · sıçrama turları [] (iş 100) · ara bakımlı tur [] · artışı 0 tur [] · ön koşul BEKLENDİĞİ GİBİ · test KIRMIZI (çıkış 1)

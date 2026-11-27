@@ -1,0 +1,770 @@
+TAP version 13
+# (node:11210) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: B6 — kaynağı boş cari satırı süzgeçten geçmez
+    # Subtest: üretim kipi: çek/stok kaynaklı, kaynak kimliği boş ve tanınmayan kaynaklı satır → 409; tam kapı temiz; sonraki banka hesabı yazımı geçer
+    ok 1 - üretim kipi: çek/stok kaynaklı, kaynak kimliği boş ve tanınmayan kaynaklı satır → 409; tam kapı temiz; sonraki banka hesabı yazımı geçer
+      ---
+      duration_ms: 520.209256
+      type: 'test'
+      ...
+    # Subtest: test kipi (eşdeğerlik denetimi açık): çek/stok kaynaklı, kaynak kimliği boş ve tanınmayan kaynaklı satır → 409; tam kapı temiz; sonraki banka hesabı yazımı geçer
+    ok 2 - test kipi (eşdeğerlik denetimi açık): çek/stok kaynaklı, kaynak kimliği boş ve tanınmayan kaynaklı satır → 409; tam kapı temiz; sonraki banka hesabı yazımı geçer
+      ---
+      duration_ms: 585.388114
+      type: 'test'
+      ...
+    1..2
+ok 1 - B6 — kaynağı boş cari satırı süzgeçten geçmez
+  ---
+  duration_ms: 1106.723264
+  type: 'suite'
+  ...
+# Subtest: B9 — taban sapması varlık bazında (eski kuruşlu satır, hesap bazında para alanı)
+    # Subtest: eski kuruşlu Kasa satırı: yeni Kasa girişi süzgeç yolunda; eski satıra dokunan yazım tam kapıda ve geçer
+    ok 1 - eski kuruşlu Kasa satırı: yeni Kasa girişi süzgeç yolunda; eski satıra dokunan yazım tam kapıda ve geçer
+      ---
+      duration_ms: 46.23198
+      type: 'test'
+      ...
+    # Subtest: 102'deki eski sapma (karşılığı olmayan transfer bacağı): nakit yazımı süzgeçte, havale yazımı tam kapıda
+    ok 2 - 102'deki eski sapma (karşılığı olmayan transfer bacağı): nakit yazımı süzgeçte, havale yazımı tam kapıda
+      ---
+      duration_ms: 45.511057
+      type: 'test'
+      ...
+    1..2
+ok 2 - B9 — taban sapması varlık bazında (eski kuruşlu satır, hesap bazında para alanı)
+  ---
+  duration_ms: 428.145839
+  type: 'suite'
+  ...
+# (node:11210) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: D8 — kilitli dönem: kimlik değişimi ve kapının görmediği değişiklik
+    # Subtest: üretim kipi: kilitli satırın kimliğini değiştir → 409; store dışından kilitli satır değişikliği → Mutabakat Testi bulur
+    ok 1 - üretim kipi: kilitli satırın kimliğini değiştir → 409; store dışından kilitli satır değişikliği → Mutabakat Testi bulur
+      ---
+      duration_ms: 633.502224
+      type: 'test'
+      ...
+# (node:11210) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: test kipi: kilitli satırın kimliğini değiştir → 409; store dışından kilitli satır değişikliği → Mutabakat Testi bulur
+    ok 2 - test kipi: kilitli satırın kimliğini değiştir → 409; store dışından kilitli satır değişikliği → Mutabakat Testi bulur
+      ---
+      duration_ms: 551.788804
+      type: 'test'
+      ...
+    1..2
+ok 3 - D8 — kilitli dönem: kimlik değişimi ve kapının görmediği değişiklik
+  ---
+  duration_ms: 1185.837654
+  type: 'suite'
+  ...
+# Subtest: bozma bulanıklaştırması (sabit tohum; test kipi): süzgeç ↔ tam kapı eşdeğerliği
+    # Subtest: tohum 11: 250 bozma, eşdeğerlik ihlali yok
+    ok 1 - tohum 11: 250 bozma, eşdeğerlik ihlali yok
+      ---
+      duration_ms: 6293.368515
+      type: 'test'
+      ...
+# (node:11210) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: tohum 23 (kilitli dönem): 250 bozma, eşdeğerlik ihlali yok
+    ok 2 - tohum 23 (kilitli dönem): 250 bozma, eşdeğerlik ihlali yok
+      ---
+      duration_ms: 5437.115142
+      type: 'test'
+      ...
+    # Subtest: tohum 7: 250 bozma, eşdeğerlik ihlali yok
+    ok 3 - tohum 7: 250 bozma, eşdeğerlik ihlali yok
+      ---
+      duration_ms: 5470.292987
+      type: 'test'
+      ...
+    1..3
+ok 4 - bozma bulanıklaştırması (sabit tohum; test kipi): süzgeç ↔ tam kapı eşdeğerliği
+  ---
+  duration_ms: 17201.230984
+  type: 'suite'
+  ...
+# (node:11211) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:11211) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: B7 — arka plan taraması
+    # Subtest: gerçek 2.0.26 verisi: arka plan sonucu = satır içi sonuç; tam çalışma ana iş parçacığında koşmaz
+    ok 1 - gerçek 2.0.26 verisi: arka plan sonucu = satır içi sonuç; tam çalışma ana iş parçacığında koşmaz
+      ---
+      duration_ms: 979.957123
+      type: 'test'
+      ...
+# (node:11211) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: gerçek 2.0.26 verisi, açılıştaki bekleyen dondurma: sürerken iki yol aynı (kural farkı henüz yok); bitince arka plan taraması ATLANMADAN yeniden koşar ve kural farkını görür
+    ok 2 - gerçek 2.0.26 verisi, açılıştaki bekleyen dondurma: sürerken iki yol aynı (kural farkı henüz yok); bitince arka plan taraması ATLANMADAN yeniden koşar ve kural farkını görür
+      ---
+      duration_ms: 1113.773375
+      type: 'test'
+      ...
+# (node:11211) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: değişiklik yoksa atlanır; yazım ya da gün değişince yeniden koşar; tarama veri yazmaz
+    ok 3 - değişiklik yoksa atlanır; yazım ya da gün değişince yeniden koşar; tarama veri yazmaz
+      ---
+      duration_ms: 1022.849384
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: store dışı bozuk satırı bulur; tarama sürerken yazımlar geçer ve yanlış sapma çıkmaz; iş parçacığı açılamazsa sunucu sürer
+    ok 4 - nasıl bozarım: store dışı bozuk satırı bulur; tarama sürerken yazımlar geçer ve yanlış sapma çıkmaz; iş parçacığı açılamazsa sunucu sürer
+      ---
+      duration_ms: 681.144411
+      type: 'test'
+      ...
+# (node:11211) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:11211) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: iş parçacığı açılamazsa (veri dosyası yok) tarama 'çalışmadı' olur, sunucu ve sonraki tarama etkilenmez
+    ok 5 - iş parçacığı açılamazsa (veri dosyası yok) tarama 'çalışmadı' olur, sunucu ve sonraki tarama etkilenmez
+      ---
+      duration_ms: 696.534406
+      type: 'test'
+      ...
+    1..5
+ok 5 - B7 — arka plan taraması
+  ---
+  duration_ms: 4496.46656
+  type: 'suite'
+  ...
+# (node:11241) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:11241) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 Ç3 — donmuş defter: kilit, ilerletme, geri çekme, kural değişikliği
+    # Subtest: F1: kilit konunca kilit gününe kadarki türetilmiş yevmiye satır satır donar; donmuş = canlı (madde madde, mizan yıl yıl); koşu başlığı kural sürümü ve kaynak iziyle
+    ok 1 - F1: kilit konunca kilit gününe kadarki türetilmiş yevmiye satır satır donar; donmuş = canlı (madde madde, mizan yıl yıl); koşu başlığı kural sürümü ve kaynak iziyle
+      ---
+      duration_ms: 340.564582
+      type: 'test'
+      ...
+# (node:11241) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:11241) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:11241) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: F2 / F3 / F4: kilit geri çekilince açılan dönemin donmuş satırları izle kalkar; değişen kayıtla yeniden kilitlenince yeniden donar; ilerletme ardışık iki koşu
+    ok 2 - F2 / F3 / F4: kilit geri çekilince açılan dönemin donmuş satırları izle kalkar; değişen kayıtla yeniden kilitlenince yeniden donar; ilerletme ardışık iki koşu
+      ---
+      duration_ms: 747.491367
+      type: 'test'
+      ...
+    # Subtest: F5: kural değişikliği benzetimi — kilitli dönemin Yevmiye Defteri ve Hesap Planı Mizanı DEĞİŞMEZ, açık dönem yeni kuralla; Mutabakat Testi ve Defter Mutabakatı 'Kural Değişikliği Farkı'; ruleDiff tutarları; yeni işlemler engellenmez
+    ok 3 - F5: kural değişikliği benzetimi — kilitli dönemin Yevmiye Defteri ve Hesap Planı Mizanı DEĞİŞMEZ, açık dönem yeni kuralla; Mutabakat Testi ve Defter Mutabakatı 'Kural Değişikliği Farkı'; ruleDiff tutarları; yeni işlemler engellenmez
+      ---
+      duration_ms: 101.085729
+      type: 'test'
+      ...
+    # Subtest: F5b: aralığın tamamı donmuş dönemdeyse Yevmiye Defteri canlı türetme yapmaz (yan kazanç); açık dönemi kapsayan aralıkta yapar
+    ok 4 - F5b: aralığın tamamı donmuş dönemdeyse Yevmiye Defteri canlı türetme yapmaz (yan kazanç); açık dönemi kapsayan aralıkta yapar
+      ---
+      duration_ms: 7.508292
+      type: 'test'
+      ...
+    # Subtest: F6: değişmezlik — donmuş satır değiştirilemez, kapsam içinde silinemez, REPLACE ile ezilemez, kapanmış koşuya satır eklenemez; koşu başlığı değiştirilemez / silinemez
+    ok 5 - F6: değişmezlik — donmuş satır değiştirilemez, kapsam içinde silinemez, REPLACE ile ezilemez, kapanmış koşuya satır eklenemez; koşu başlığı değiştirilemez / silinemez
+      ---
+      duration_ms: 3.200719
+      type: 'test'
+      ...
+# (node:11241) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: F8: kilit sırasında yazım (kilitli döneme 409, açık döneme 200) ve aynı anda iki kilit isteği → son kilit; tek bekleyen koşu yok, donmuş = canlı
+    ok 6 - F8: kilit sırasında yazım (kilitli döneme 409, açık döneme 200) ve aynı anda iki kilit isteği → son kilit; tek bekleyen koşu yok, donmuş = canlı
+      ---
+      duration_ms: 296.7187
+      type: 'test'
+      ...
+# (node:11241) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: F9: gün / yıl dönümü — 01.01.2027'ye kadar kilit 31.12 ve 01.01 maddelerini dondurur; 01.01 geri çekilince yalnız o gün açılır
+    ok 7 - F9: gün / yıl dönümü — 01.01.2027'ye kadar kilit 31.12 ve 01.01 maddelerini dondurur; 01.01 geri çekilince yalnız o gün açılır
+      ---
+      duration_ms: 319.807858
+      type: 'test'
+      ...
+    # Subtest: F10: kapanış fişi kilitle aynı işlemde (postAll lockThrough) — fiş donmuş defterde, koşu eşzamanlı ve tek işlemde; dondurma düşerse fiş de kilit de yok
+    ok 8 - F10: kapanış fişi kilitle aynı işlemde (postAll lockThrough) — fiş donmuş defterde, koşu eşzamanlı ve tek işlemde; dondurma düşerse fiş de kilit de yok
+      ---
+      duration_ms: 351.410445
+      type: 'test'
+      ...
+# (node:11241) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: F14: kaynak izi — kilitli dönemin kaynak satırı kapının görmediği bir yolla değişirse Mutabakat Testi 'Donmuş Defter' bulgusu verir; donmuş defter aynen kalır (düzeltme yok)
+    ok 9 - F14: kaynak izi — kilitli dönemin kaynak satırı kapının görmediği bir yolla değişirse Mutabakat Testi 'Donmuş Defter' bulgusu verir; donmuş defter aynen kalır (düzeltme yok)
+      ---
+      duration_ms: 274.820877
+      type: 'test'
+      ...
+# (node:11241) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: F13 / yetki: Şirket Verisini Sıfırla donmuş defteri ve koşuları siler, tetikleyiciler yeniden kurulu; Muhasebe rolü kilit koyamaz (403)
+    ok 10 - F13 / yetki: Şirket Verisini Sıfırla donmuş defteri ve koşuları siler, tetikleyiciler yeniden kurulu; Muhasebe rolü kilit koyamaz (403)
+      ---
+      duration_ms: 605.686999
+      type: 'test'
+      ...
+    1..10
+ok 6 - 2.5.0 Ç3 — donmuş defter: kilit, ilerletme, geri çekme, kural değişikliği
+  ---
+  duration_ms: 3894.412931
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 Ç3 — 2.4.9 kural kopyası (dondurulmuş) ve kural tuzağı
+    # Subtest: kopya dosyaları sabit (sha256); kopya yalnız kendi klasörünü içe aktarır
+    ok 1 - kopya dosyaları sabit (sha256); kopya yalnız kendi klasörünü içe aktarır
+      ---
+      duration_ms: 1.680681
+      type: 'test'
+      ...
+    # Subtest: LOCK_SQL_VERSION kilit izinin en yeni girdisinin sürümüdür (koşunun kaynak izi = kapının kilit izi tanımı)
+    ok 2 - LOCK_SQL_VERSION kilit izinin en yeni girdisinin sürümüdür (koşunun kaynak izi = kapının kilit izi tanımı)
+      ---
+      duration_ms: 1.188097
+      type: 'test'
+      ...
+    # Subtest: kural tuzağı: güncel kural 2.5.0-defter; güncel türetme ↔ 2.4.9 kopyası farkı yalnız Ç5-A kural kimliklerinde (500 → 519 açılış, açıklamalı Borç Yaz 500 → 602); öbür maddeler aynen
+    ok 3 - kural tuzağı: güncel kural 2.5.0-defter; güncel türetme ↔ 2.4.9 kopyası farkı yalnız Ç5-A kural kimliklerinde (500 → 519 açılış, açıklamalı Borç Yaz 500 → 602); öbür maddeler aynen
+      ---
+      duration_ms: 576.766209
+      type: 'test'
+      ...
+    1..3
+ok 7 - 2.5.0 Ç3 — 2.4.9 kural kopyası (dondurulmuş) ve kural tuzağı
+  ---
+  duration_ms: 579.949777
+  type: 'suite'
+  ...
+# (node:11269) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Birleşik tur 7 İş 1 — kimlik kümesi; satır içi tarama (Mutabakat Testi)
+    # Subtest: §16.1-1 (S1 / S1b): iki tarama arası sil + Silinenler'den geri yükle + dış yazım → alarm (2 → 3; açıklanamayan 1); sonraki tarama sessiz
+    ok 1 - §16.1-1 (S1 / S1b): iki tarama arası sil + Silinenler'den geri yükle + dış yazım → alarm (2 → 3; açıklanamayan 1); sonraki tarama sessiz
+      ---
+      duration_ms: 706.895265
+      type: 'test'
+      ...
+    # Subtest: §16.1-4 (S9; §15'in BİLİNEN SINIR'ı kapanır): sil + dış yazım (sayı aynı 2 → 2) → alarm 'yeni hareket girdi'
+    ok 2 - §16.1-4 (S9; §15'in BİLİNEN SINIR'ı kapanır): sil + dış yazım (sayı aynı 2 → 2) → alarm 'yeni hareket girdi'
+      ---
+      duration_ms: 510.947321
+      type: 'test'
+      ...
+    # Subtest: §16.1-3: yalnız meşru geri yükleme — iki tek satırlık geri yükleme (2 → 4) ve birden çok satır getiren taksit kartı (4 → 6) sessiz; aynı aralıkta kart + dış yazım → açıklanamayan 1
+    ok 3 - §16.1-3: yalnız meşru geri yükleme — iki tek satırlık geri yükleme (2 → 4) ve birden çok satır getiren taksit kartı (4 → 6) sessiz; aynı aralıkta kart + dış yazım → açıklanamayan 1
+      ---
+      duration_ms: 618.122224
+      type: 'test'
+      ...
+    # Subtest: §16.1-13 (kimliği yeniden kullanılan satır): geri gelen, taranan, silinip taranan, sonra DIŞARIDAN aynı kimlikle yeniden eklenen satır → alarm (eski açıklama düşer)
+    ok 4 - §16.1-13 (kimliği yeniden kullanılan satır): geri gelen, taranan, silinip taranan, sonra DIŞARIDAN aynı kimlikle yeniden eklenen satır → alarm (eski açıklama düşer)
+      ---
+      duration_ms: 502.684307
+      type: 'test'
+      ...
+    # Subtest: §16.1-14: kapının kabul ettiği kimlik değişimi (aynı İşlem No, aynı gün; önceki hâl önceki kümede) sessiz; dış yazımla kümeye girmiş satırın kapıdan kimlik değişimi → alarm
+    ok 5 - §16.1-14: kapının kabul ettiği kimlik değişimi (aynı İşlem No, aynı gün; önceki hâl önceki kümede) sessiz; dış yazımla kümeye girmiş satırın kapıdan kimlik değişimi → alarm
+      ---
+      duration_ms: 488.999243
+      type: 'test'
+      ...
+    # Subtest: §16.1-5 / 6: açılışı öne alma (sayı azalır) sessiz, sonra dış yazım alarm; açılışı silip yeniden girme (ilk hareketten sonra olamaz) sessiz
+    ok 6 - §16.1-5 / 6: açılışı öne alma (sayı azalır) sessiz, sonra dış yazım alarm; açılışı silip yeniden girme (ilk hareketten sonra olamaz) sessiz
+      ---
+      duration_ms: 523.817834
+      type: 'test'
+      ...
+    # Subtest: §16.1-9: Şirket Verisini Sıfırla — küme yeniden ölçülür, sessiz (sıfırlamadan önce kaydedilen geri yükleme sonraki dış yazımı örtmez)
+    ok 7 - §16.1-9: Şirket Verisini Sıfırla — küme yeniden ölçülür, sessiz (sıfırlamadan önce kaydedilen geri yükleme sonraki dış yazımı örtmez)
+      ---
+      duration_ms: 624.030613
+      type: 'test'
+      ...
+    1..7
+ok 8 - Birleşik tur 7 İş 1 — kimlik kümesi; satır içi tarama (Mutabakat Testi)
+  ---
+  duration_ms: 3977.227527
+  type: 'suite'
+  ...
+# Subtest: Birleşik tur 7 İş 1 — kimlik kümesi; iş parçacığı taraması
+    # Subtest: §16.1-1 (S1 / S1b): iki tarama arası sil + Silinenler'den geri yükle + dış yazım → alarm (2 → 3; açıklanamayan 1); sonraki tarama sessiz
+    ok 1 - §16.1-1 (S1 / S1b): iki tarama arası sil + Silinenler'den geri yükle + dış yazım → alarm (2 → 3; açıklanamayan 1); sonraki tarama sessiz
+      ---
+      duration_ms: 683.521929
+      type: 'test'
+      ...
+    # Subtest: §16.1-4 (S9; §15'in BİLİNEN SINIR'ı kapanır): sil + dış yazım (sayı aynı 2 → 2) → alarm 'yeni hareket girdi'
+    ok 2 - §16.1-4 (S9; §15'in BİLİNEN SINIR'ı kapanır): sil + dış yazım (sayı aynı 2 → 2) → alarm 'yeni hareket girdi'
+      ---
+      duration_ms: 688.620581
+      type: 'test'
+      ...
+    # Subtest: §16.1-3: yalnız meşru geri yükleme — iki tek satırlık geri yükleme (2 → 4) ve birden çok satır getiren taksit kartı (4 → 6) sessiz; aynı aralıkta kart + dış yazım → açıklanamayan 1
+    ok 3 - §16.1-3: yalnız meşru geri yükleme — iki tek satırlık geri yükleme (2 → 4) ve birden çok satır getiren taksit kartı (4 → 6) sessiz; aynı aralıkta kart + dış yazım → açıklanamayan 1
+      ---
+      duration_ms: 1411.219728
+      type: 'test'
+      ...
+# (node:11269) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:11269) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: §16.1-13 (kimliği yeniden kullanılan satır): geri gelen, taranan, silinip taranan, sonra DIŞARIDAN aynı kimlikle yeniden eklenen satır → alarm (eski açıklama düşer)
+    ok 4 - §16.1-13 (kimliği yeniden kullanılan satır): geri gelen, taranan, silinip taranan, sonra DIŞARIDAN aynı kimlikle yeniden eklenen satır → alarm (eski açıklama düşer)
+      ---
+      duration_ms: 1192.954971
+      type: 'test'
+      ...
+    # Subtest: §16.1-14: kapının kabul ettiği kimlik değişimi (aynı İşlem No, aynı gün; önceki hâl önceki kümede) sessiz; dış yazımla kümeye girmiş satırın kapıdan kimlik değişimi → alarm
+    ok 5 - §16.1-14: kapının kabul ettiği kimlik değişimi (aynı İşlem No, aynı gün; önceki hâl önceki kümede) sessiz; dış yazımla kümeye girmiş satırın kapıdan kimlik değişimi → alarm
+      ---
+      duration_ms: 933.393713
+      type: 'test'
+      ...
+# (node:11269) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: §16.1-5 / 6: açılışı öne alma (sayı azalır) sessiz, sonra dış yazım alarm; açılışı silip yeniden girme (ilk hareketten sonra olamaz) sessiz
+    ok 6 - §16.1-5 / 6: açılışı öne alma (sayı azalır) sessiz, sonra dış yazım alarm; açılışı silip yeniden girme (ilk hareketten sonra olamaz) sessiz
+      ---
+      duration_ms: 1462.3282
+      type: 'test'
+      ...
+# (node:11269) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: §16.1-9: Şirket Verisini Sıfırla — küme yeniden ölçülür, sessiz (sıfırlamadan önce kaydedilen geri yükleme sonraki dış yazımı örtmez)
+    ok 7 - §16.1-9: Şirket Verisini Sıfırla — küme yeniden ölçülür, sessiz (sıfırlamadan önce kaydedilen geri yükleme sonraki dış yazımı örtmez)
+      ---
+      duration_ms: 1347.015389
+      type: 'test'
+      ...
+    1..7
+ok 9 - Birleşik tur 7 İş 1 — kimlik kümesi; iş parçacığı taraması
+  ---
+  duration_ms: 7719.926336
+  type: 'suite'
+  ...
+# (node:11269) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:11269) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:11269) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:11269) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:11269) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:11269) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:11269) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Birleşik tur 7 İş 1 — §16.1-12 (b): geri yükleme iş parçacığının anlık görüntüsünden SONRA kesinleşir (görüntüde yok) → o tarama karşılaştırmaz, sonraki tarama yanlış alarm vermez (ön koşul zorla — ders 20)
+    # Subtest: geri yükleme tarama sürerken, görüntüye girmeden: işaret ilerlemez; sonraki iki tarama sessiz, sayı +1
+    ok 1 - geri yükleme tarama sürerken, görüntüye girmeden: işaret ilerlemez; sonraki iki tarama sessiz, sayı +1
+      ---
+      duration_ms: 11948.552041
+      type: 'test'
+      ...
+    # ön koşul 2 / 23 denemede oluştu (gecikmeler: 400 200 100 150 175 163 169 166 168 169 189 179 184 187 188 188 168 178 183* 183 181 180 179*)
+    1..1
+ok 10 - Birleşik tur 7 İş 1 — §16.1-12 (b): geri yükleme iş parçacığının anlık görüntüsünden SONRA kesinleşir (görüntüde yok) → o tarama karşılaştırmaz, sonraki tarama yanlış alarm vermez (ön koşul zorla — ders 20)
+  ---
+  duration_ms: 11948.87056
+  type: 'suite'
+  ...
+# Subtest: Birleşik tur 7 İş 5 — M11: Mutabakat Günlüğü'nde sapma + uyarı artışını birlikte taşıyan kayıt 'Sapma' adıyla
+    # Subtest: dışarıdan aynı kimlikle yeniden yazılan Kasa satırı: tek tarama kaydı iki bulgu (İşlem Başlığı sapması + uyarı artışı) → 'Taramada Bulunan Sapma'; yalnız dış tarih taşıma → 'Taramada Bulunan Uyarı Artışı'
+    ok 1 - dışarıdan aynı kimlikle yeniden yazılan Kasa satırı: tek tarama kaydı iki bulgu (İşlem Başlığı sapması + uyarı artışı) → 'Taramada Bulunan Sapma'; yalnız dış tarih taşıma → 'Taramada Bulunan Uyarı Artışı'
+      ---
+      duration_ms: 589.70065
+      type: 'test'
+      ...
+    1..1
+ok 11 - Birleşik tur 7 İş 5 — M11: Mutabakat Günlüğü'nde sapma + uyarı artışını birlikte taşıyan kayıt 'Sapma' adıyla
+  ---
+  duration_ms: 589.88999
+  type: 'suite'
+  ...
+# (node:11295) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Birleşik tur 8 İş 8 — Silinenler özeti; satır içi tarama
+    # Subtest: ÖZETLİ öğe (kart bu kodla silindi) × değişmemiş gizli satır → sessiz (meşru geri yükleme)
+    ok 1 - ÖZETLİ öğe (kart bu kodla silindi) × değişmemiş gizli satır → sessiz (meşru geri yükleme)
+      ---
+      duration_ms: 633.28062
+      type: 'test'
+      ...
+    # Subtest: ÖZETSİZ (eski) öğe × değişmemiş gizli satır → sessiz (bugünkü davranış; yanlış alarm üretilmez)
+    ok 2 - ÖZETSİZ (eski) öğe × değişmemiş gizli satır → sessiz (bugünkü davranış; yanlış alarm üretilmez)
+      ---
+      duration_ms: 535.605618
+      type: 'test'
+      ...
+    # Subtest: ÖZETLİ öğe (kart bu kodla silindi) × tarihi değişmiş gizli satır → alarm (açıklanamayan 1)
+    ok 3 - ÖZETLİ öğe (kart bu kodla silindi) × tarihi değişmiş gizli satır → alarm (açıklanamayan 1)
+      ---
+      duration_ms: 674.493095
+      type: 'test'
+      ...
+    # Subtest: ÖZETSİZ (eski) öğe × tarihi değişmiş gizli satır → sessiz (bugünkü davranış; yanlış alarm üretilmez)
+    ok 4 - ÖZETSİZ (eski) öğe × tarihi değişmiş gizli satır → sessiz (bugünkü davranış; yanlış alarm üretilmez)
+      ---
+      duration_ms: 533.07052
+      type: 'test'
+      ...
+    # Subtest: ÖZETLİ öğe (kart bu kodla silindi) × tutarı değişmiş gizli satır → alarm (açıklanamayan 1)
+    ok 5 - ÖZETLİ öğe (kart bu kodla silindi) × tutarı değişmiş gizli satır → alarm (açıklanamayan 1)
+      ---
+      duration_ms: 633.908056
+      type: 'test'
+      ...
+    # Subtest: ÖZETSİZ (eski) öğe × tutarı değişmiş gizli satır → sessiz (bugünkü davranış; yanlış alarm üretilmez)
+    ok 6 - ÖZETSİZ (eski) öğe × tutarı değişmiş gizli satır → sessiz (bugünkü davranış; yanlış alarm üretilmez)
+      ---
+      duration_ms: 590.692065
+      type: 'test'
+      ...
+    # Subtest: ÖZETLİ öğe (kart bu kodla silindi) × kimliği değişmiş gizli satır → alarm (açıklanamayan 1)
+    ok 7 - ÖZETLİ öğe (kart bu kodla silindi) × kimliği değişmiş gizli satır → alarm (açıklanamayan 1)
+      ---
+      duration_ms: 566.803451
+      type: 'test'
+      ...
+    # Subtest: ÖZETSİZ (eski) öğe × kimliği değişmiş gizli satır → sessiz (bugünkü davranış; yanlış alarm üretilmez)
+    ok 8 - ÖZETSİZ (eski) öğe × kimliği değişmiş gizli satır → sessiz (bugünkü davranış; yanlış alarm üretilmez)
+      ---
+      duration_ms: 529.143144
+      type: 'test'
+      ...
+    # Subtest: tek satırlık öğe: yükü dışarıdan değiştirilmiş (tarih 03.03 → 05.03) Kasa hareketi geri yüklenince alarm; yükü değişmemiş öğe sessiz
+    ok 9 - tek satırlık öğe: yükü dışarıdan değiştirilmiş (tarih 03.03 → 05.03) Kasa hareketi geri yüklenince alarm; yükü değişmemiş öğe sessiz
+      ---
+      duration_ms: 636.027476
+      type: 'test'
+      ...
+    # Subtest: meşru yollar sessiz: sil → geri yükle → yeniden sil → geri yükle (kart); iki ayrı tek satır geri yüklemesi
+    ok 10 - meşru yollar sessiz: sil → geri yükle → yeniden sil → geri yükle (kart); iki ayrı tek satır geri yüklemesi
+      ---
+      duration_ms: 660.717348
+      type: 'test'
+      ...
+    # Subtest: DÜŞÜK-1 (i): dış yazım (açılış sonrası Kasa hareketi açılış öncesine) SONRA tek satır geri yükleme → alarm (2 → 4; açıklanamayan 1)
+    ok 11 - DÜŞÜK-1 (i): dış yazım (açılış sonrası Kasa hareketi açılış öncesine) SONRA tek satır geri yükleme → alarm (2 → 4; açıklanamayan 1)
+      ---
+      duration_ms: 576.737342
+      type: 'test'
+      ...
+    # Subtest: DÜŞÜK-1 (i) — ÖZETSİZ (eski) tek satırlık öğede de: dış yazım SONRA geri yükleme → alarm (geri yükleme önceden var olan kimliği açıklamaz)
+    ok 12 - DÜŞÜK-1 (i) — ÖZETSİZ (eski) tek satırlık öğede de: dış yazım SONRA geri yükleme → alarm (geri yükleme önceden var olan kimliği açıklamaz)
+      ---
+      duration_ms: 592.856851
+      type: 'test'
+      ...
+    1..12
+ok 12 - Birleşik tur 8 İş 8 — Silinenler özeti; satır içi tarama
+  ---
+  duration_ms: 7165.707205
+  type: 'suite'
+  ...
+# (node:11295) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Birleşik tur 8 İş 8 — Silinenler özeti; iş parçacığı taraması
+    # Subtest: ÖZETLİ öğe (kart bu kodla silindi) × değişmemiş gizli satır → sessiz (meşru geri yükleme)
+    ok 1 - ÖZETLİ öğe (kart bu kodla silindi) × değişmemiş gizli satır → sessiz (meşru geri yükleme)
+      ---
+      duration_ms: 851.868665
+      type: 'test'
+      ...
+    # Subtest: ÖZETSİZ (eski) öğe × değişmemiş gizli satır → sessiz (bugünkü davranış; yanlış alarm üretilmez)
+    ok 2 - ÖZETSİZ (eski) öğe × değişmemiş gizli satır → sessiz (bugünkü davranış; yanlış alarm üretilmez)
+      ---
+      duration_ms: 759.930994
+      type: 'test'
+      ...
+    # Subtest: ÖZETLİ öğe (kart bu kodla silindi) × tarihi değişmiş gizli satır → alarm (açıklanamayan 1)
+    ok 3 - ÖZETLİ öğe (kart bu kodla silindi) × tarihi değişmiş gizli satır → alarm (açıklanamayan 1)
+      ---
+      duration_ms: 660.145573
+      type: 'test'
+      ...
+    # Subtest: ÖZETSİZ (eski) öğe × tarihi değişmiş gizli satır → sessiz (bugünkü davranış; yanlış alarm üretilmez)
+    ok 4 - ÖZETSİZ (eski) öğe × tarihi değişmiş gizli satır → sessiz (bugünkü davranış; yanlış alarm üretilmez)
+      ---
+      duration_ms: 757.451718
+      type: 'test'
+      ...
+    # Subtest: ÖZETLİ öğe (kart bu kodla silindi) × tutarı değişmiş gizli satır → alarm (açıklanamayan 1)
+    ok 5 - ÖZETLİ öğe (kart bu kodla silindi) × tutarı değişmiş gizli satır → alarm (açıklanamayan 1)
+      ---
+      duration_ms: 664.731372
+      type: 'test'
+      ...
+# (node:11295) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: ÖZETSİZ (eski) öğe × tutarı değişmiş gizli satır → sessiz (bugünkü davranış; yanlış alarm üretilmez)
+    ok 6 - ÖZETSİZ (eski) öğe × tutarı değişmiş gizli satır → sessiz (bugünkü davranış; yanlış alarm üretilmez)
+      ---
+      duration_ms: 704.787973
+      type: 'test'
+      ...
+    # Subtest: ÖZETLİ öğe (kart bu kodla silindi) × kimliği değişmiş gizli satır → alarm (açıklanamayan 1)
+    ok 7 - ÖZETLİ öğe (kart bu kodla silindi) × kimliği değişmiş gizli satır → alarm (açıklanamayan 1)
+      ---
+      duration_ms: 700.552132
+      type: 'test'
+      ...
+    # Subtest: ÖZETSİZ (eski) öğe × kimliği değişmiş gizli satır → sessiz (bugünkü davranış; yanlış alarm üretilmez)
+    ok 8 - ÖZETSİZ (eski) öğe × kimliği değişmiş gizli satır → sessiz (bugünkü davranış; yanlış alarm üretilmez)
+      ---
+      duration_ms: 711.407525
+      type: 'test'
+      ...
+    # Subtest: tek satırlık öğe: yükü dışarıdan değiştirilmiş (tarih 03.03 → 05.03) Kasa hareketi geri yüklenince alarm; yükü değişmemiş öğe sessiz
+    ok 9 - tek satırlık öğe: yükü dışarıdan değiştirilmiş (tarih 03.03 → 05.03) Kasa hareketi geri yüklenince alarm; yükü değişmemiş öğe sessiz
+      ---
+      duration_ms: 1048.171698
+      type: 'test'
+      ...
+# (node:11295) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:11295) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: meşru yollar sessiz: sil → geri yükle → yeniden sil → geri yükle (kart); iki ayrı tek satır geri yüklemesi
+    ok 10 - meşru yollar sessiz: sil → geri yükle → yeniden sil → geri yükle (kart); iki ayrı tek satır geri yüklemesi
+      ---
+      duration_ms: 1241.29483
+      type: 'test'
+      ...
+    # Subtest: DÜŞÜK-1 (i): dış yazım (açılış sonrası Kasa hareketi açılış öncesine) SONRA tek satır geri yükleme → alarm (2 → 4; açıklanamayan 1)
+    ok 11 - DÜŞÜK-1 (i): dış yazım (açılış sonrası Kasa hareketi açılış öncesine) SONRA tek satır geri yükleme → alarm (2 → 4; açıklanamayan 1)
+      ---
+      duration_ms: 777.506251
+      type: 'test'
+      ...
+    # Subtest: DÜŞÜK-1 (i) — ÖZETSİZ (eski) tek satırlık öğede de: dış yazım SONRA geri yükleme → alarm (geri yükleme önceden var olan kimliği açıklamaz)
+    ok 12 - DÜŞÜK-1 (i) — ÖZETSİZ (eski) tek satırlık öğede de: dış yazım SONRA geri yükleme → alarm (geri yükleme önceden var olan kimliği açıklamaz)
+      ---
+      duration_ms: 700.179606
+      type: 'test'
+      ...
+    1..12
+ok 13 - Birleşik tur 8 İş 8 — Silinenler özeti; iş parçacığı taraması
+  ---
+  duration_ms: 9579.465713
+  type: 'suite'
+  ...
+# (node:11295) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Birleşik tur 8 İş 8 — DÜŞÜK-1 (ii) (mutant N8): uyarının kimlik kümesi Mutabakat Testi yanıtına SIZMAZ
+    # Subtest: Mutabakat Testi yanıtında 'noticeKeys' alanı yok; uyarının kendisi var
+    ok 1 - Mutabakat Testi yanıtında 'noticeKeys' alanı yok; uyarının kendisi var
+      ---
+      duration_ms: 472.317497
+      type: 'test'
+      ...
+    1..1
+ok 14 - Birleşik tur 8 İş 8 — DÜŞÜK-1 (ii) (mutant N8): uyarının kimlik kümesi Mutabakat Testi yanıtına SIZMAZ
+  ---
+  duration_ms: 472.500134
+  type: 'suite'
+  ...
+# (node:11365) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Ç5-K tur 2 — temiz veri (Kasa açılışı var, açılıştan önce satır yok): değişiklik yok
+    # Subtest: Mutabakat Testi tutarlı, uyarı denetimi listede YOK; Defter Mutabakatı alt başlığı aynen, 'Uyarı' satırı yok, Sonuç Tutarlı
+    ok 1 - Mutabakat Testi tutarlı, uyarı denetimi listede YOK; Defter Mutabakatı alt başlığı aynen, 'Uyarı' satırı yok, Sonuç Tutarlı
+      ---
+      duration_ms: 36.031049
+      type: 'test'
+      ...
+    1..1
+ok 15 - Ç5-K tur 2 — temiz veri (Kasa açılışı var, açılıştan önce satır yok): değişiklik yok
+  ---
+  duration_ms: 485.041129
+  type: 'suite'
+  ...
+# Subtest: Ç5-K tur 2 — Silinenler'den geri gelen açılış öncesi Kasa hareketi: uyarı SAPMA DEĞİL
+    # Subtest: Mutabakat Testi: denetim görünür (ok false, gizlenmez) ama UYARI işaretli (notice, severity warning); ne yapılacağı (hint) var, 'eski sürümden kalan' demez; örnek metni Kaynak · kimlik · tarih (K14); uyarı dışı sapma yok
+    ok 1 - Mutabakat Testi: denetim görünür (ok false, gizlenmez) ama UYARI işaretli (notice, severity warning); ne yapılacağı (hint) var, 'eski sürümden kalan' demez; örnek metni Kaynak · kimlik · tarih (K14); uyarı dışı sapma yok
+      ---
+      duration_ms: 17.760607
+      type: 'test'
+      ...
+    # Subtest: tarama 'yeni sapma' kaydı ve zili üretmez — Mutabakat Testi (iş parçacığında da), sayı ARTINCA da (ikinci geri yükleme)
+    ok 2 - tarama 'yeni sapma' kaydı ve zili üretmez — Mutabakat Testi (iş parçacığında da), sayı ARTINCA da (ikinci geri yükleme)
+      ---
+      duration_ms: 253.887548
+      type: 'test'
+      ...
+    # Subtest: Defter Mutabakatı (ekran verisi, PDF, Excel aynı): satır 'Uyarı'; Sonuç 'Tutarlı' (Fark Var DEĞİL); alt başlık uyarıyı ve ne yapılacağını söyler, 'yöneticiye bildirin' / 'eski sürümden kalan' demez
+    ok 3 - Defter Mutabakatı (ekran verisi, PDF, Excel aynı): satır 'Uyarı'; Sonuç 'Tutarlı' (Fark Var DEĞİL); alt başlık uyarıyı ve ne yapılacağını söyler, 'yöneticiye bildirin' / 'eski sürümden kalan' demez
+      ---
+      duration_ms: 86.699516
+      type: 'test'
+      ...
+    # Subtest: kapı: uyarının alanı yok — familyOf('cash:before-opening') = null (tam kapıyı tetiklemez)
+    ok 4 - kapı: uyarının alanı yok — familyOf('cash:before-opening') = null (tam kapıyı tetiklemez)
+      ---
+      duration_ms: 0.370288
+      type: 'test'
+      ...
+    # Subtest: program yeniden açılınca: açılış günlüğü / sunucu günlüğü 'sapma' yazmaz; açılıştan sonraki İLK nakit yazımı süzgeçli yolda (scoped), sonrakiler de
+    ok 5 - program yeniden açılınca: açılış günlüğü / sunucu günlüğü 'sapma' yazmaz; açılıştan sonraki İLK nakit yazımı süzgeçli yolda (scoped), sonrakiler de
+      ---
+      duration_ms: 115.039086
+      type: 'test'
+      ...
+    # Subtest: uyarı gerçeği GİZLEMEZ: gerçek sapma (kapının görmediği tanınmayan ödeme yolu) + uyarı → sapma 'Fark Var' + 'yöneticiye bildirin', taramada günlük + zil YALNIZ sapma için; uyarı satırı yine 'Uyarı'
+    ok 6 - uyarı gerçeği GİZLEMEZ: gerçek sapma (kapının görmediği tanınmayan ödeme yolu) + uyarı → sapma 'Fark Var' + 'yöneticiye bildirin', taramada günlük + zil YALNIZ sapma için; uyarı satırı yine 'Uyarı'
+      ---
+      duration_ms: 30.71013
+      type: 'test'
+      ...
+    1..6
+ok 16 - Ç5-K tur 2 — Silinenler'den geri gelen açılış öncesi Kasa hareketi: uyarı SAPMA DEĞİL
+  ---
+  duration_ms: 925.85091
+  type: 'suite'
+  ...
+# (node:11377) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Birleşik tur 6 — uyarının kapının görmediği artışı: günlük + zil; geri yükleme, azalma, yeniden açılış, iki şirket, yedek, gün dönümü sessiz
+    # Subtest: dış yazım (açılış günü girilen Kasa hareketinin tarihi başka bağlantıdan açılış öncesine): Mutabakat Testi günlük + zil + sunucu günlüğü, cümle düzeninde; sunum AYNEN; aynı artış ikinci kez bildirilmez
+    ok 1 - dış yazım (açılış günü girilen Kasa hareketinin tarihi başka bağlantıdan açılış öncesine): Mutabakat Testi günlük + zil + sunucu günlüğü, cümle düzeninde; sunum AYNEN; aynı artış ikinci kez bildirilmez
+      ---
+      duration_ms: 254.477735
+      type: 'test'
+      ...
+    # Subtest: azalma sessiz ve işaret onu izler: satır silinince (3 → 2) günlük yok; sonraki dış artış 2 → 3 diye bildirilir (iş parçacığı taraması da bulur)
+    ok 2 - azalma sessiz ve işaret onu izler: satır silinince (3 → 2) günlük yok; sonraki dış artış 2 → 3 diye bildirilir (iş parçacığı taraması da bulur)
+      ---
+      duration_ms: 236.34202
+      type: 'test'
+      ...
+    # Subtest: geri yükleme sayılır, ama dış artışı ÖRTMEZ: aynı aralıkta 1 geri yükleme + 1 dış artış → 2 → 4, açıklanamayan 1 → bildirilir; yalnız geri yükleme → sessiz
+    ok 3 - geri yükleme sayılır, ama dış artışı ÖRTMEZ: aynı aralıkta 1 geri yükleme + 1 dış artış → 2 → 4, açıklanamayan 1 → bildirilir; yalnız geri yükleme → sessiz
+      ---
+      duration_ms: 78.720062
+      type: 'test'
+      ...
+    # Subtest: üst kaydın geri yüklenmesi (silinmiş taksit kartı; nakit satırı yazılmaz, görünürlüğü döner) sayılır: 5 → 6 sessiz
+    ok 4 - üst kaydın geri yüklenmesi (silinmiş taksit kartı; nakit satırı yazılmaz, görünürlüğü döner) sayılır: 5 → 6 sessiz
+      ---
+      duration_ms: 24.676311
+      type: 'test'
+      ...
+    # Subtest: iş parçacığı taraması sürerken kesinleşen geri yükleme yanlış alarm vermez (ön koşul zorla: geri yükleme taramanın anlık görüntüsüne girdi — ders 20)
+    ok 5 - iş parçacığı taraması sürerken kesinleşen geri yükleme yanlış alarm vermez (ön koşul zorla: geri yükleme taramanın anlık görüntüsüne girdi — ders 20)
+      ---
+      duration_ms: 240.571975
+      type: 'test'
+      ...
+    # Subtest: gün dönümü (sahte saat ertesi gün 00:30): tarama yeniden koşar, sayı aynı → sessiz; yeni günde dış artış bildirilir
+    ok 6 - gün dönümü (sahte saat ertesi gün 00:30): tarama yeniden koşar, sayı aynı → sessiz; yeni günde dış artış bildirilir
+      ---
+      duration_ms: 261.193218
+      type: 'test'
+      ...
+    # Subtest: program yeniden açılınca: aynı artış İKİNCİ kez bildirilmez (açılış, Mutabakat Testi, iş parçacığı); açılıştan sonraki ilk nakit yazımı süzgeçli yolda; açılıştan sonra, İLK taramadan önce yapılan dış artış bildirilir (sayı açılışta ölçüldü)
+    ok 7 - program yeniden açılınca: aynı artış İKİNCİ kez bildirilmez (açılış, Mutabakat Testi, iş parçacığı); açılıştan sonraki ilk nakit yazımı süzgeçli yolda; açılıştan sonra, İLK taramadan önce yapılan dış artış bildirilir (sayı açılışta ölçüldü)
+      ---
+      duration_ms: 395.058763
+      type: 'test'
+      ...
+    # Subtest: iki şirket + yedekten geri yükleme: 002'nin geri yüklemesi / dış artışı yalnız 002'de; 002 yedekten dönünce (sayı geri gelir) yanlış alarm yok
+    ok 8 - iki şirket + yedekten geri yükleme: 002'nin geri yüklemesi / dış artışı yalnız 002'de; 002 yedekten dönünce (sayı geri gelir) yanlış alarm yok
+      ---
+      duration_ms: 710.842131
+      type: 'test'
+      ...
+    1..8
+ok 17 - Birleşik tur 6 — uyarının kapının görmediği artışı: günlük + zil; geri yükleme, azalma, yeniden açılış, iki şirket, yedek, gün dönümü sessiz
+  ---
+  duration_ms: 2862.124897
+  type: 'suite'
+  ...
+# Subtest: Birleşik tur 6 — dar kontrolün betiği: v2.4.9'un GERÇEK koduyla üretilmiş veri (açılış öncesi Kasa Giriş + cari nakit tahsilat) — dış artış bildirilir
+    # Subtest: 2.4.9 verisi açılır (uyarı 2, günlük yok, ilk yazım süzgeçli); açılış günü 250 TL Kasa Giriş başka bağlantıdan 08.03'e → uyarı 3 (tutar Kasa bakiyesinde kalır — açılışın içindeki günle iki kez), günlük + zil
+    ok 1 - 2.4.9 verisi açılır (uyarı 2, günlük yok, ilk yazım süzgeçli); açılış günü 250 TL Kasa Giriş başka bağlantıdan 08.03'e → uyarı 3 (tutar Kasa bakiyesinde kalır — açılışın içindeki günle iki kez), günlük + zil
+      ---
+      duration_ms: 771.621814
+      type: 'test'
+      ...
+    1..1
+ok 18 - Birleşik tur 6 — dar kontrolün betiği: v2.4.9'un GERÇEK koduyla üretilmiş veri (açılış öncesi Kasa Giriş + cari nakit tahsilat) — dış artış bildirilir
+  ---
+  duration_ms: 791.489201
+  type: 'suite'
+  ...
+# (node:11391) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:11391) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:11391) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Ç5-A tur 1d — Kural Değişikliği Farkı uyarıdır, yeni sapma değildir
+    # Subtest: [1] kilitli eski veri: dondurmadan sonraki İLK ARKA PLAN taraması sessiz (günlük / zil / sunucu yok), uyarı satırı var; ardından satır içi de sessiz
+    ok 1 - [1] kilitli eski veri: dondurmadan sonraki İLK ARKA PLAN taraması sessiz (günlük / zil / sunucu yok), uyarı satırı var; ardından satır içi de sessiz
+      ---
+      duration_ms: 987.698659
+      type: 'test'
+      ...
+# (node:11391) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: [3] dondurmadan sonra yeniden açılış: taban satırı / sunucu 'kalan sapma' iletisi kural farkını taşımaz, ilk taramalar sessiz; kapı dışı kilitli kaynak değişimi yine bulunur
+    ok 2 - [3] dondurmadan sonra yeniden açılış: taban satırı / sunucu 'kalan sapma' iletisi kural farkını taşımaz, ilk taramalar sessiz; kapı dışı kilitli kaynak değişimi yine bulunur
+      ---
+      duration_ms: 1180.227633
+      type: 'test'
+      ...
+# (node:11391) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: [1] kilitli eski veri: dondurmadan sonraki İLK tarama SATIR İÇİ yoldan (Mutabakat Testi ucu) sessiz, uyarı satırı yanıtta
+    ok 3 - [1] kilitli eski veri: dondurmadan sonraki İLK tarama SATIR İÇİ yoldan (Mutabakat Testi ucu) sessiz, uyarı satırı yanıtta
+      ---
+      duration_ms: 967.36893
+      type: 'test'
+      ...
+# (node:11391) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: [2] GERÇEK yeni sapma (kural farkı dışı) dondurmadan SONRA, kural farkıyla AYNI taramada: bulunur, günlüğe yazılır, zil + sunucu iletisi; kural farkı bulgu değil
+    ok 4 - [2] GERÇEK yeni sapma (kural farkı dışı) dondurmadan SONRA, kural farkıyla AYNI taramada: bulunur, günlüğe yazılır, zil + sunucu iletisi; kural farkı bulgu değil
+      ---
+      duration_ms: 792.684877
+      type: 'test'
+      ...
+    # Subtest: [4] kilitsiz veri: kural farkı denetimi yok, ilk tarama sessiz; gerçek sapma eskisi gibi bulunur (gerileme yok)
+    ok 5 - [4] kilitsiz veri: kural farkı denetimi yok, ilk tarama sessiz; gerçek sapma eskisi gibi bulunur (gerileme yok)
+      ---
+      duration_ms: 497.672981
+      type: 'test'
+      ...
+    1..5
+ok 19 - Ç5-A tur 1d — Kural Değişikliği Farkı uyarıdır, yeni sapma değildir
+  ---
+  duration_ms: 4427.284085
+  type: 'suite'
+  ...
+1..19
+# tests 89
+# suites 19
+# pass 89
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 42662.011894
+
+[kanit] b8-is8-Istanbul: GEÇTİ · çıkış 0 · 89/89 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 472d2b4 +6 değişmiş dosya +2 izlenmeyen · linux 6.18.44-fc-v445 x64 · Node v22.23.4

@@ -89,9 +89,10 @@ describe("Aşama 9 — çalışıyor mu: kabul 13–16 ve ücretli örnek (bağ�
     const cash = await must("Kasa", ctx.api.get("/api/workspace/cash"));
     assert.equal(Math.round(cash.byMethod.cash * 100) + s.realBank.minor, 17_000_000, "Kasa + Banka 170.000 (= 150.000 + 20.000)");
     // Bağımsız mizan (kabul 16 sonu; plan §12.5'in 2.1.0 karşılığı): 100 10.000 · 102.01 90.000 · 102.02 70.000 · 120 0 · 391 3.333,33 ·
-    // 500 150.000 · 600 16.666,67.
+    // 500 150.000 · 600 16.666,67. 2.5.0 Ç5-A tur 1b (G3; KG-1, M-01 / M-04 — açılış karşı hesabı 519; C5-ACILIS-TASARIM §2.2): Kasa ve banka açılışlarının karşılığı 519
+    // (önceden 500); 500 Sermaye'ye hiçbir olay yazmaz. Tutar aynı (150.000), hesap 519.
     const trial = await trialBalances(ctx.api);
-    const want = { 100: 10000, 102: 160000, 120: 0, 391: -3333.33, 500: -150000, 600: -16666.67 };
+    const want = { 100: 10000, 102: 160000, 120: 0, 391: -3333.33, 500: 0, 519: -150000, 600: -16666.67 };
     for (const [code, value] of Object.entries(want)) assert.equal(Math.round((trial[code] || 0) * 100), Math.round(value * 100), `mizan ${code}: ${trial[code]} ≠ ${value}`);
     const subs = await subBalances(ctx.api);
     assert.equal(subs[acc.ziraat.glSub].balance, 90000);

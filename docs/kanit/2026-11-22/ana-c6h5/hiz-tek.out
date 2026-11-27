@@ -1,0 +1,18 @@
+kilit bekleniyor 22:45:34
+kilit alındı 23:12:25 · yük 1.08 1.06 1.07
+tur 1 · kilit bekleniyor 23:12:25
+tur 1 · kilit alındı 23:12:25 · yük 1.08 1.06 1.07 · yeni f3a234b0
+=== tur 1 · eski · kilitli · başta yük 1.07 1.05 1.07 · GEÇERLİ · 23:12:25
+çıkış 0 · sonda yük 1.14 1.16 1.11 · 23:15:57
+=== tur 1 · tur4 · kilitli · başta yük 1.14 1.16 1.11 · GEÇERLİ · 23:15:57
+çıkış 0 · sonda yük 1.27 1.22 1.14 · 23:19:47
+=== tur 1 · yeni · kilitli · başta yük 1.27 1.22 1.14 · GEÇERLİ · 23:19:47
+çıkış 0 · sonda yük 1.24 1.21 1.14 · 23:23:24
+=== tur 1 · eski · kilitsiz · başta yük 1.24 1.21 1.14 · GEÇERLİ · 23:23:24
+çıkış 0 · sonda yük 1.45 1.27 1.17 · 23:24:52
+=== tur 1 · tur4 · kilitsiz · başta yük 1.45 1.27 1.17 · GEÇERLİ · 23:24:53
+çıkış 0 · sonda yük 1.41 1.29 1.18 · 23:26:21
+=== tur 1 · yeni · kilitsiz · başta yük 1.41 1.29 1.18 · GEÇERLİ · 23:26:21
+çıkış 0 · sonda yük 1.51 1.31 1.20 · 23:27:48
+tur 1 bitti 23:27:48 · yük 1.51 1.31 1.20
+çıkış 0 23:27:48

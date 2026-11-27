@@ -1,0 +1,78 @@
+{
+  "ad": "c5bkd-komsu-son-utc",
+  "komut": "node --test --test-concurrency=2 test/accounts-stock.test.mjs test/acilis-onarimi-hiz-250.test.mjs test/acilis-onarimi-savunma-250.test.mjs test/banka-210-altin.test.mjs test/banka-210-gg-cari.test.mjs test/banka-210-gg-kapi.test.mjs test/banka-210-gg-tarama.test.mjs test/banka-210-gg2-hiz.test.mjs test/banka-210-goc-zinciri.test.mjs test/banka-210-goc.test.mjs test/banka-210-hiz-esdegerlik.test.mjs test/banka-210-isgunu.test.mjs test/banka-210-kapi-kapsam.test.mjs test/banka-210-rapor-is-parcacigi-kapanis.test.mjs test/banka-210-saat.test.mjs test/banka-210-ters-kayit.test.mjs test/banka-220-pos-hesap.test.mjs test/banka-220-senet-121.test.mjs test/banka-220-tahsile-ver-dogrulama.test.mjs test/banka-230-k8-cek.test.mjs test/banka-230-k8-taksit.test.mjs test/banka-230-supheli-bozma.test.mjs test/birlesik-tur3-yaris-250.test.mjs test/bs2-kart-iade-ekstre-250.test.mjs test/bulgu-223.test.mjs test/cari-bilgi-222.test.mjs test/cari-tur-222.test.mjs test/cari-vade-245.test.mjs test/cek-istek-kimligi-247.test.mjs test/cheques-overview.test.mjs test/donem-213.test.mjs test/donmus-defter-250.test.mjs test/donmus-defter-kilit-ucu-250.test.mjs test/dues.test.mjs test/ebelge-244-efatura-belirsiz-iptal.test.mjs test/ebelge-244-gonderim-izi.test.mjs test/ebelge-244-iptal-suresi.test.mjs test/ebelge-244-yerel-iptal.test.mjs test/eksi-stok-217.test.mjs test/fatura-durum-222.test.mjs test/fatura-liste-243-fark.test.mjs test/fatura-model.test.mjs test/fis-defteri-yasam-250.test.mjs test/form-izolasyon.test.mjs test/geri-yukleme-uyari-244.test.mjs test/gg243-dar3-stok.test.mjs test/goc-243-stok-acilis.test.mjs test/goc-244-iptal-suresi.test.mjs test/iade-210-fazla-tahsilat.test.mjs test/iade-210-onarim.test.mjs test/iade-210.test.mjs test/iade-224.test.mjs test/iade-geri-odeme-246.test.mjs test/iade-kapama-k1.test.mjs test/iade-kesinti-tarama-249.test.mjs test/inceleme-222.test.mjs test/istek-kimligi-222.test.mjs test/kalan-metin-246.test.mjs test/kapali-kart-ekstre-tarihi-250.test.mjs test/kapama-tek-gecis-245.test.mjs test/kapi-para-245.test.mjs test/kapi-uyari-245.test.mjs test/kasa-acilis-mutant-b6-250.test.mjs test/kasa-acilis-once-250.test.mjs test/kasa-acilis-uyari-250.test.mjs test/koruma-taban-ailesi-250.test.mjs test/maliyet-bagsizlik.test.mjs test/mobil-eslesme-247.test.mjs test/mutabakat-213.test.mjs test/mutabakat-cekirdek.test.mjs test/mutabakat-yil-donumu.test.mjs test/numara-silinen-244.test.mjs test/odeme-yolu-222.test.mjs test/plans.test.mjs test/projeksiyon-vade-246.test.mjs test/rapor-220.test.mjs test/raporlar-209.test.mjs test/raporlar-224.test.mjs test/sema-kapisi-bs7.test.mjs test/sirket-pencere-221.test.mjs test/sirket-siniri-225.test.mjs test/sirketler-217.test.mjs test/tablodan-aktar-244.test.mjs test/takvim-govde-250.test.mjs test/takvim-pil-kaynak.test.mjs test/tyk-250.test.mjs test/tyk-api-250.test.mjs test/tyk-fark-v249-250.test.mjs test/tyk-goc-249-250.test.mjs test/tyk-kapanis-250.test.mjs test/tyk-kapanis-dis-250.test.mjs test/tyk-kapanis-sigma-250.test.mjs test/tyk-kilit-taksitli-250.test.mjs test/tyk-onbellek-250.test.mjs test/tyk-son-250.test.mjs test/tyk-tur2a-250.test.mjs test/tyk-tur2b1-250.test.mjs test/tyk-tur2b2-250.test.mjs test/uiux-244-ux9.test.mjs test/ux18-cek-fatura-244.test.mjs test/vekil-sunucu-uygulama.test.mjs test/whatsapp-b3-pdf-249.test.mjs test/whatsapp-elle-alici-249.test.mjs test/whatsapp-onizleme-olcek-248.test.mjs test/whatsapp-t2-6-248.test.mjs test/yazim-duzeni.test.mjs test/yedek-denetim-221.test.mjs",
+  "commit": "e0771de0ad456b5c2b398d32cfff07843b7bb919",
+  "dal": "worktree-agent-a511c161b54069067",
+  "kirli": 3,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-12T20:42:01.591Z",
+  "sure_sn": 484.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1270,
+    "gecen": 1261,
+    "basarisiz": 9,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 9 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.0 AH — açılış onarımı: öğe başına ağır okuma yok, çıktı eski kodla birebir › eşdeğerlik: döküm taban kodun (eski) gerçek dökümüyle bölüm bölüm aynı; eleme değişmezi (toplu durum = cari başına durum) her adayda",
+      "konum": "test/acilis-onarimi-hiz-250.test.mjs:82:3",
+      "hata": "cariler: yeni [{\"id\":\"account-94452b9a-b236-46eb-a28e-336093bb441e\",\"debit\":7650,\"credit\":7350,\"balance\":300,\"planRemaining\":300,\"overdue\":500},{\"id\":\"account-e67e0d37-a733-4e33-8c71-31f3bad886e7\",\"debit\":4400,\"credit\":2000,\"balance\":2400,\"planRemaining\":2400,\"overdue\":733.32},{\"id\":\"account-4ab90932-3173-4165-94 ↔ eski [{\"id\":\"account-94452b9a-b236-46eb-a28e-336093bb441e\",\"debit\":7650,\"credit\":7350,\"balance\":300,\"planRemaining\":600,\"overdue\":500},{\"id\":\"account-e67e0d37-a733-4e33-8c71-31f3bad886e7\",\"debit\":4400,\"credit\":2000,\"balance\":2400,\"planRemaining\":2400,\"overdue\":733.32},{\"id\":\"account-4ab90932-3173-4165-94 · adayKartlar: yeni [{\"planId\":\"plan-2c9602db-06df-4ca3-8dfb-96ffa1542206\",\"total\":100,\"paid\":100,\"remaining\":0,\"overdue\":0},{\"planId\":\"plan-6a7ea793-b887-42d9-9c12-c8e1439d40ff\",\"total\":1125,\"paid\":1000,\"remaining\":125,\"overdue\":875},{\"planId\":\"plan-33306f26-2efa-4e1d-9a73-32b09a14e5f1\",\"total\":1100,\"paid\":1100,\"remai ↔ eski [{\"planId\":\"plan-2c9602db-06df-4ca3-8dfb-96ffa1542206\",\"total\":100,\"paid\":100,\"remaining\":0,\"overdue\":0},{\"planId\":\"plan-6a7ea793-b887-42d9-9c12-c8e1439d40ff\",\"total\":1125,\"paid\":250,\"remaining\":875,\"overdue\":875},{\"planId\":\"plan-33306f26-2efa-4e1d-9a73-32b09a14e5f1\",\"total\":1100,\"paid\":1100,\"remain · + actual - expected (beklenen , gelen )"
+    },
+    {
+      "ad": "K8 taksit kuralı — yetki, avans, mevcut fazla tahsilat (N10, N7) › N7: kartın toplamı tahsilatın altına indirilince mevcut fazla okunur ve gösterilir; yeni tahsilat plan-paid; iade serbest; kalan açılınca tahsilat 200",
+      "konum": "test/banka-230-k8-taksit.test.mjs:269:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "K8 taksit kuralı — Silinenler'den geri yükleme ve düzeltme (N8, N9) › N9: düzeltmede tutar büyütüp kalanı aşmak → plan-overpay; küçültmek / aynı tutarla tarih → 200; overpay:true → 200; iade düzeltmesi kural dışı",
+      "konum": "test/banka-230-k8-taksit.test.mjs:328:3",
+      "hata": "Expected values to be strictly equal: · 0 !== 100 (beklenen 100, gelen 0)"
+    },
+    {
+      "ad": "2.0.23 Bulgu 2: taksit kartı ↔ fatura kapama › E: taksitli fatura + cari kartından bağsız tahsilat — fatura açığı = kendi kartının kalanı",
+      "konum": "test/bulgu-223.test.mjs:191:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.0.23 gözden geçirme: kapamanın kalan yolları › \\#6: eski veride taksitli faturaya bağlı cari tahsilatı düzeltilebilir (bağ değişmeden)",
+      "konum": "test/bulgu-223.test.mjs:398:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.1.0 Canlı Hata 2 — v2.0.26 verisinde yanlış büyümüş taksit kartlarının açılış onarımı › yanlış kartlar (C, B, J) doğru kalana iner; D, E, A dokunulmaz; kilitli dönemdeki kart (KILIT) değişmez",
+      "konum": "test/iade-210-onarim.test.mjs:49:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · ... Skipped lines"
+    },
+    {
+      "ad": "Raporlar penceresi uçları (tam yığın) › Yeni modül raporları rakamları ekranlarla aynı",
+      "konum": "test/raporlar-209.test.mjs:212:3",
+      "hata": "The input did not match the regular expression /1\\.000,00/. Input: · '300,00 TL' (beklenen , gelen 300,00 TL)"
+    },
+    {
+      "ad": "2.4.4 5a: Tablodan Aktar kayda bağlı carinin taksit dışı tahsilatlarını karta yazar; bakiye, Kasa ve banka aynı › A1–A7 aktar: kart 9.000 / ödenen 3.500 (1. taksit kapandı, 2.'nin 500'ü); cari bakiyesi, Kasa, banka hesabı ve işlem sayısı aynı",
+      "konum": "test/tablodan-aktar-244.test.mjs:115:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.4.4 UX18: faturadan / Kapatılacak Fatura ile alınan çek-senet bu faturayı kapatır › T17 bağsız evrak karşılıksız dönünce kapattığı faturalar açılır (kısmi, geri al, sonraki ödeme en eskiye, ciro, iki karşılıksız, iade, taksitli, şüpheli, tahsildeki, Mevcut Borç kartı)",
+      "konum": "test/ux18-cek-fatura-244.test.mjs:461:3",
+      "hata": "bağsız evrak taksitli faturanın taksitlerini kapatır (S99); kartın kendi kalanı 1.200 · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkd-kanit/2026-11-12/c5bkd-komsu-son-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a511c161b54069067",
+  "ham_cikti_sha256": "e592f7ef3b6ca1fd9717d2714d5fd6e2f58e73ca1c7977b3a4245e210fc1f86d",
+  "ham_cikti_bayt": 572641
+}

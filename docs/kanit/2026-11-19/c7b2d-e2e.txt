@@ -1,0 +1,194 @@
+# Ç7b tur 2d — fatura / KDV ekran senaryoları (taramayla: HOF.invoices|hof-invoices|data-scenario=|vat-offset|KDV Mahsup|hof-tax|/tax/ + senaryo-211), 46 dosya × 2 TZ, her dosya ayrı (timeout 900)
+## ist-1
+test/e2e/banka-210-ekran-aciklama-yetki.mjs çıkış 0 süre 10 sn | ✓ banka-210-ekran-aciklama-yetki: 11 geçti, 0 kaldı 
+test/e2e/banka-210-kart-onbellek-yaris.mjs çıkış 0 süre 69 sn | ✓ banka-210-kart-onbellek-yaris: 49 geçti, 0 kaldı 
+test/e2e/baslarken-244.mjs çıkış 0 süre 22 sn | 60 geçti, 0 kaldı 
+test/e2e/fatura-243-daha-fazla-yaris.mjs çıkış 0 süre 49 sn | ✓ fatura-243-daha-fazla-yaris: 9 geçti, 0 kaldı 
+test/e2e/fatura-243-duzen-kaymasi.mjs çıkış 0 süre 14 sn | ✓ fatura-243-duzen-kaymasi: 7 geçti, 0 kaldı 
+test/e2e/gg243-dar2-ekran.mjs çıkış 0 süre 7 sn | ✓ gg243-dar2-ekran: 21 geçti, 0 kaldı 
+test/e2e/gg243-odak-dugme.mjs çıkış 0 süre 8 sn | ✓ gg243-odak-dugme: 11 geçti, 0 kaldı 
+test/e2e/gg243-odak-kalem-sil.mjs çıkış 0 süre 6 sn | ✓ gg243-odak-kalem-sil: 16 geçti, 0 kaldı 
+test/e2e/gg243-odak-silme-diger.mjs çıkış 0 süre 29 sn | ✓ gg243-odak-silme-diger: 61 geçti, 0 kaldı 
+test/e2e/gg243-tumunu-gonder.mjs çıkış 0 süre 55 sn | ✓ gg243-tumunu-gonder: 17 geçti, 0 kaldı 
+test/e2e/gg244-esmm-gonder.mjs çıkış 0 süre 66 sn | 66 geçti, 0 kaldı 
+test/e2e/gg244-numara-tarih-onay.mjs çıkış 0 süre 51 sn | ✓ gg244-numara-tarih-onay: 40 geçti, 0 kaldı 
+test/e2e/gg244-secilenleri-gonder.mjs çıkış 0 süre 17 sn | ✓ gg244-secilenleri-gonder: 45 geçti, 0 kaldı 
+test/e2e/senaryo-211.mjs çıkış 0 süre 91 sn | 
+test/e2e/senaryo-215.mjs çıkış 0 süre 85 sn | 
+test/e2e/senaryo-216.mjs çıkış 0 süre 87 sn | 
+test/e2e/senaryo-217.mjs çıkış 0 süre 73 sn | 
+test/e2e/senaryo-220-yedek.mjs çıkış 0 süre 11 sn | Senaryo 2.0.20 (yedek): 38 geçti, 0 kaldı. Ekranlar: test/e2e/artifacts/senaryo-220-yedek 
+test/e2e/senaryo-222.mjs çıkış 0 süre 120 sn | Senaryo 2.0.22: 60 geçti, 0 kaldı. Ekranlar: test/e2e/artifacts/senaryo-222 
+test/e2e/senaryo-223.mjs çıkış 0 süre 79 sn | 
+test/e2e/senaryo-224.mjs çıkış 0 süre 71 sn | 
+test/e2e/senaryo-banka-210-eski-satir.mjs çıkış 0 süre 26 sn | ✓ senaryo-banka-210-eski-satir: 29 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a187e057786d3b7e4/test/e2e/artifacts/senaryo-banka-210-eski-satir 
+test/e2e/senaryo-banka-210.mjs çıkış 0 süre 309 sn | 
+BİTTİ
+## ist-2
+test/e2e/senaryo-banka-210b.mjs çıkış 0 süre 91 sn | ✓ senaryo-banka-210b: 90 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a187e057786d3b7e4/test/e2e/artifacts/senaryo-banka-210b 
+test/e2e/senaryo-banka-220.mjs çıkış 0 süre 78 sn | ✓ senaryo-banka-220: 76 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a187e057786d3b7e4/test/e2e/artifacts/senaryo-banka-220 
+test/e2e/senaryo-defter-243.mjs çıkış 0 süre 30 sn | ✓ senaryo-defter-243: 33 geçti, 0 kaldı · depo /home/user/ofis---y-netimi/.claude/worktrees/agent-a187e057786d3b7e4 · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a187e057786d3b7e4/test/e2e/artifacts/senaryo-defter-243 
+test/e2e/senaryo-defter-turu-250.mjs çıkış 0 süre 17 sn | 28 geçti, 0 kaldı 
+test/e2e/senaryo-ebelge-242.mjs çıkış 0 süre 48 sn | 21 geçti, 0 kaldı 
+test/e2e/senaryo-ebelge-243.mjs çıkış 0 süre 19 sn | 20 geçti, 0 kaldı 
+test/e2e/senaryo-entegrator-240.mjs çıkış 0 süre 71 sn | ✓ senaryo-entegrator-240: 81 geçti, 0 kaldı 
+test/e2e/senaryo-fatura-243.mjs çıkış 0 süre 65 sn | 61 geçti, 0 kaldı 
+test/e2e/senaryo-form-izolasyon-243.mjs çıkış 0 süre 215 sn | 188 geçti, 0 kaldı 
+test/e2e/senaryo-iz32-230.mjs çıkış 0 süre 32 sn | ✓ senaryo-iz32-230: 41 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a187e057786d3b7e4/test/e2e/artifacts/senaryo-iz32-230 
+test/e2e/senaryo-iz5-230.mjs çıkış 0 süre 35 sn | SONUÇ: 44 geçti, 0 kaldı 
+test/e2e/senaryo-kdv-donemi-250.mjs çıkış 0 süre 18 sn | ✓ senaryo-kdv-donemi-250: 19 geçti, 0 kaldı 
+test/e2e/senaryo-netten-brute-244.mjs çıkış 0 süre 33 sn | 43 geçti, 0 kaldı 
+test/e2e/senaryo-pil-karti-245.mjs çıkış 0 süre 36 sn | 85 geçti, 0 kaldı 
+test/e2e/senaryo-portal-244.mjs çıkış 0 süre 13 sn | ✓ senaryo-portal-244: 32 geçti, 0 kaldı · depo /home/user/ofis---y-netimi/.claude/worktrees/agent-a187e057786d3b7e4 · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a187e057786d3b7e4/test/e2e/artifacts/senaryo-portal-244 
+test/e2e/senaryo-pos-220.mjs çıkış 0 süre 110 sn | ✓ senaryo-pos-220: 113 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a187e057786d3b7e4/test/e2e/artifacts/senaryo-pos-220 
+test/e2e/senaryo-supheli-230.mjs çıkış 0 süre 40 sn | ✓ senaryo-supheli-230: 67 geçti, 0 kaldı 
+test/e2e/senaryo-tyk-tur2a-250.mjs çıkış 0 süre 35 sn | SONUÇ: 51 geçti, 0 kaldı 
+test/e2e/senaryo-ux18-244.mjs çıkış 0 süre 14 sn | 27 geçti, 0 kaldı 
+test/e2e/uiux-244-ux9-ux10.mjs çıkış 0 süre 67 sn | ✓ uiux-244-ux9-ux10: 74 geçti, 0 kaldı 
+test/e2e/uiux-a-243.mjs çıkış 0 süre 38 sn | ✓ uiux-a-243: 51 geçti, 0 kaldı 
+test/e2e/uiux-b-243.mjs çıkış 0 süre 46 sn | ✓ uiux-b-243: 58 geçti, 0 kaldı 
+test/e2e/uiux-ui11-244.mjs çıkış 0 süre 10 sn | 153 geçti, 0 kaldı 
+BİTTİ
+## utc-1
+test/e2e/banka-210-ekran-aciklama-yetki.mjs çıkış 0 süre 10 sn | ✓ banka-210-ekran-aciklama-yetki: 11 geçti, 0 kaldı 
+test/e2e/banka-210-kart-onbellek-yaris.mjs çıkış 0 süre 72 sn | ✓ banka-210-kart-onbellek-yaris: 49 geçti, 0 kaldı 
+test/e2e/baslarken-244.mjs çıkış 0 süre 23 sn | 60 geçti, 0 kaldı 
+test/e2e/fatura-243-daha-fazla-yaris.mjs çıkış 0 süre 48 sn | ✓ fatura-243-daha-fazla-yaris: 9 geçti, 0 kaldı 
+test/e2e/fatura-243-duzen-kaymasi.mjs çıkış 0 süre 14 sn | ✓ fatura-243-duzen-kaymasi: 7 geçti, 0 kaldı 
+test/e2e/gg243-dar2-ekran.mjs çıkış 0 süre 9 sn | ✓ gg243-dar2-ekran: 21 geçti, 0 kaldı 
+test/e2e/gg243-odak-dugme.mjs çıkış 0 süre 7 sn | ✓ gg243-odak-dugme: 11 geçti, 0 kaldı 
+test/e2e/gg243-odak-kalem-sil.mjs çıkış 0 süre 7 sn | ✓ gg243-odak-kalem-sil: 16 geçti, 0 kaldı 
+test/e2e/gg243-odak-silme-diger.mjs çıkış 0 süre 29 sn | ✓ gg243-odak-silme-diger: 61 geçti, 0 kaldı 
+test/e2e/gg243-tumunu-gonder.mjs çıkış 0 süre 55 sn | ✓ gg243-tumunu-gonder: 17 geçti, 0 kaldı 
+test/e2e/gg244-esmm-gonder.mjs çıkış 0 süre 69 sn | 66 geçti, 0 kaldı 
+test/e2e/gg244-numara-tarih-onay.mjs çıkış 0 süre 53 sn | ✓ gg244-numara-tarih-onay: 40 geçti, 0 kaldı 
+test/e2e/gg244-secilenleri-gonder.mjs çıkış 0 süre 18 sn | ✓ gg244-secilenleri-gonder: 45 geçti, 0 kaldı 
+test/e2e/senaryo-211.mjs çıkış 0 süre 95 sn | 
+test/e2e/senaryo-215.mjs çıkış 0 süre 87 sn | 
+test/e2e/senaryo-216.mjs çıkış 0 süre 89 sn | 
+test/e2e/senaryo-217.mjs çıkış 0 süre 74 sn | 
+test/e2e/senaryo-220-yedek.mjs çıkış 0 süre 12 sn | Senaryo 2.0.20 (yedek): 38 geçti, 0 kaldı. Ekranlar: test/e2e/artifacts/senaryo-220-yedek 
+test/e2e/senaryo-222.mjs çıkış 0 süre 122 sn | Senaryo 2.0.22: 60 geçti, 0 kaldı. Ekranlar: test/e2e/artifacts/senaryo-222 
+test/e2e/senaryo-223.mjs çıkış 0 süre 84 sn | 
+test/e2e/senaryo-224.mjs çıkış 0 süre 78 sn | 
+test/e2e/senaryo-banka-210-eski-satir.mjs çıkış 0 süre 28 sn | ✓ senaryo-banka-210-eski-satir: 29 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a187e057786d3b7e4/test/e2e/artifacts/senaryo-banka-210-eski-satir 
+test/e2e/senaryo-banka-210.mjs çıkış 0 süre 327 sn | 
+BİTTİ
+## utc-2
+test/e2e/senaryo-banka-210b.mjs çıkış 0 süre 96 sn | ✓ senaryo-banka-210b: 90 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a187e057786d3b7e4/test/e2e/artifacts/senaryo-banka-210b 
+test/e2e/senaryo-banka-220.mjs çıkış 0 süre 79 sn | ✓ senaryo-banka-220: 76 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a187e057786d3b7e4/test/e2e/artifacts/senaryo-banka-220 
+test/e2e/senaryo-defter-243.mjs çıkış 0 süre 32 sn | ✓ senaryo-defter-243: 33 geçti, 0 kaldı · depo /home/user/ofis---y-netimi/.claude/worktrees/agent-a187e057786d3b7e4 · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a187e057786d3b7e4/test/e2e/artifacts/senaryo-defter-243 
+test/e2e/senaryo-defter-turu-250.mjs çıkış 0 süre 16 sn | 28 geçti, 0 kaldı 
+test/e2e/senaryo-ebelge-242.mjs çıkış 0 süre 47 sn | 21 geçti, 0 kaldı 
+test/e2e/senaryo-ebelge-243.mjs çıkış 0 süre 20 sn | 20 geçti, 0 kaldı 
+test/e2e/senaryo-entegrator-240.mjs çıkış 0 süre 74 sn | ✓ senaryo-entegrator-240: 81 geçti, 0 kaldı 
+test/e2e/senaryo-fatura-243.mjs çıkış 0 süre 65 sn | 61 geçti, 0 kaldı 
+test/e2e/senaryo-form-izolasyon-243.mjs çıkış 0 süre 219 sn | 188 geçti, 0 kaldı 
+test/e2e/senaryo-iz32-230.mjs çıkış 0 süre 34 sn | ✓ senaryo-iz32-230: 41 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a187e057786d3b7e4/test/e2e/artifacts/senaryo-iz32-230 
+test/e2e/senaryo-iz5-230.mjs çıkış 0 süre 40 sn | SONUÇ: 44 geçti, 0 kaldı 
+test/e2e/senaryo-kdv-donemi-250.mjs çıkış 0 süre 21 sn | ✓ senaryo-kdv-donemi-250: 19 geçti, 0 kaldı 
+test/e2e/senaryo-netten-brute-244.mjs çıkış 0 süre 35 sn | 43 geçti, 0 kaldı 
+test/e2e/senaryo-pil-karti-245.mjs çıkış 0 süre 37 sn | 85 geçti, 0 kaldı 
+test/e2e/senaryo-portal-244.mjs çıkış 0 süre 14 sn | ✓ senaryo-portal-244: 32 geçti, 0 kaldı · depo /home/user/ofis---y-netimi/.claude/worktrees/agent-a187e057786d3b7e4 · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a187e057786d3b7e4/test/e2e/artifacts/senaryo-portal-244 
+test/e2e/senaryo-pos-220.mjs çıkış 0 süre 115 sn | ✓ senaryo-pos-220: 113 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a187e057786d3b7e4/test/e2e/artifacts/senaryo-pos-220 
+test/e2e/senaryo-supheli-230.mjs çıkış 0 süre 43 sn | ✓ senaryo-supheli-230: 67 geçti, 0 kaldı 
+test/e2e/senaryo-tyk-tur2a-250.mjs çıkış 0 süre 39 sn | SONUÇ: 51 geçti, 0 kaldı 
+test/e2e/senaryo-ux18-244.mjs çıkış 0 süre 19 sn | 27 geçti, 0 kaldı 
+test/e2e/uiux-244-ux9-ux10.mjs çıkış 0 süre 68 sn | ✓ uiux-244-ux9-ux10: 74 geçti, 0 kaldı 
+test/e2e/uiux-a-243.mjs çıkış 0 süre 39 sn | ✓ uiux-a-243: 51 geçti, 0 kaldı 
+test/e2e/uiux-b-243.mjs çıkış 0 süre 48 sn | ✓ uiux-b-243: 58 geçti, 0 kaldı 
+test/e2e/uiux-ui11-244.mjs çıkış 0 süre 10 sn | 153 geçti, 0 kaldı 
+BİTTİ
+## özet satırları (günlüğün son 'geçti' satırı)
+ist-1 banka-210-ekran-aciklama-yetki: ✓ banka-210-ekran-aciklama-yetki: 11 geçti, 0 kaldı
+ist-1 banka-210-kart-onbellek-yaris: ✓ banka-210-kart-onbellek-yaris: 49 geçti, 0 kaldı
+ist-1 baslarken-244: 60 geçti, 0 kaldı
+ist-1 fatura-243-daha-fazla-yaris: ✓ fatura-243-daha-fazla-yaris: 9 geçti, 0 kaldı
+ist-1 fatura-243-duzen-kaymasi: ✓ fatura-243-duzen-kaymasi: 7 geçti, 0 kaldı
+ist-1 gg243-dar2-ekran: ✓ gg243-dar2-ekran: 21 geçti, 0 kaldı
+ist-1 gg243-odak-dugme: ✓ gg243-odak-dugme: 11 geçti, 0 kaldı
+ist-1 gg243-odak-kalem-sil: ✓ gg243-odak-kalem-sil: 16 geçti, 0 kaldı
+ist-1 gg243-odak-silme-diger: ✓ gg243-odak-silme-diger: 61 geçti, 0 kaldı
+ist-1 gg243-tumunu-gonder: ✓ gg243-tumunu-gonder: 17 geçti, 0 kaldı
+ist-1 gg244-esmm-gonder: 66 geçti, 0 kaldı
+ist-1 gg244-numara-tarih-onay: ✓ gg244-numara-tarih-onay: 40 geçti, 0 kaldı
+ist-1 gg244-secilenleri-gonder: ✓ gg244-secilenleri-gonder: 45 geçti, 0 kaldı
+ist-1 senaryo-211: 59/59 denetim geçti. Ekran görüntüleri: /home/user/ofis---y-netimi/.claude/worktrees/agent-a187e057786d3b7e4/test/e2
+ist-1 senaryo-215: 73 / 73 kontrol geçti.
+ist-1 senaryo-216: 54 / 54 kontrol geçti.
+ist-1 senaryo-217: 65 / 65 kontrol geçti.
+ist-1 senaryo-220-yedek: Senaryo 2.0.20 (yedek): 38 geçti, 0 kaldı. Ekranlar: test/e2e/artifacts/senaryo-220-yedek
+ist-1 senaryo-222: Senaryo 2.0.22: 60 geçti, 0 kaldı. Ekranlar: test/e2e/artifacts/senaryo-222
+ist-1 senaryo-223: TAMAM: 29 denetim geçti, 0 başarısız.
+ist-1 senaryo-224: TAMAM: 69 denetim geçti, 0 başarısız.
+ist-1 senaryo-banka-210-eski-satir: ✓ senaryo-banka-210-eski-satir: 29 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktre
+ist-1 senaryo-banka-210: TAMAM: 428 denetim geçti, 0 başarısız. Ekran görüntüleri: /home/user/ofis---y-netimi/.claude/worktrees/agent-a187
+ist-2 senaryo-banka-210b: ✓ senaryo-banka-210b: 90 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a
+ist-2 senaryo-banka-220: ✓ senaryo-banka-220: 76 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a1
+ist-2 senaryo-defter-243: ✓ senaryo-defter-243: 33 geçti, 0 kaldı · depo /home/user/ofis---y-netimi/.claude/worktrees/agent-a187e057786d3b7e4
+ist-2 senaryo-defter-turu-250: 28 geçti, 0 kaldı
+ist-2 senaryo-ebelge-242: 21 geçti, 0 kaldı
+ist-2 senaryo-ebelge-243: 20 geçti, 0 kaldı
+ist-2 senaryo-entegrator-240: ✓ senaryo-entegrator-240: 81 geçti, 0 kaldı
+ist-2 senaryo-fatura-243: 61 geçti, 0 kaldı
+ist-2 senaryo-form-izolasyon-243: 188 geçti, 0 kaldı
+ist-2 senaryo-iz32-230: ✓ senaryo-iz32-230: 41 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a18
+ist-2 senaryo-iz5-230: SONUÇ: 44 geçti, 0 kaldı
+ist-2 senaryo-kdv-donemi-250: ✓ senaryo-kdv-donemi-250: 19 geçti, 0 kaldı
+ist-2 senaryo-netten-brute-244: 43 geçti, 0 kaldı
+ist-2 senaryo-pil-karti-245: 85 geçti, 0 kaldı
+ist-2 senaryo-portal-244: ✓ senaryo-portal-244: 32 geçti, 0 kaldı · depo /home/user/ofis---y-netimi/.claude/worktrees/agent-a187e057786d3b7e4
+ist-2 senaryo-pos-220: ✓ senaryo-pos-220: 113 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a18
+ist-2 senaryo-supheli-230: ✓ senaryo-supheli-230: 67 geçti, 0 kaldı
+ist-2 senaryo-tyk-tur2a-250: SONUÇ: 51 geçti, 0 kaldı
+ist-2 senaryo-ux18-244: 27 geçti, 0 kaldı
+ist-2 uiux-244-ux9-ux10: ✓ uiux-244-ux9-ux10: 74 geçti, 0 kaldı
+ist-2 uiux-a-243: ✓ uiux-a-243: 51 geçti, 0 kaldı
+ist-2 uiux-b-243: ✓ uiux-b-243: 58 geçti, 0 kaldı
+ist-2 uiux-ui11-244: 153 geçti, 0 kaldı
+utc-1 banka-210-ekran-aciklama-yetki: ✓ banka-210-ekran-aciklama-yetki: 11 geçti, 0 kaldı
+utc-1 banka-210-kart-onbellek-yaris: ✓ banka-210-kart-onbellek-yaris: 49 geçti, 0 kaldı
+utc-1 baslarken-244: 60 geçti, 0 kaldı
+utc-1 fatura-243-daha-fazla-yaris: ✓ fatura-243-daha-fazla-yaris: 9 geçti, 0 kaldı
+utc-1 fatura-243-duzen-kaymasi: ✓ fatura-243-duzen-kaymasi: 7 geçti, 0 kaldı
+utc-1 gg243-dar2-ekran: ✓ gg243-dar2-ekran: 21 geçti, 0 kaldı
+utc-1 gg243-odak-dugme: ✓ gg243-odak-dugme: 11 geçti, 0 kaldı
+utc-1 gg243-odak-kalem-sil: ✓ gg243-odak-kalem-sil: 16 geçti, 0 kaldı
+utc-1 gg243-odak-silme-diger: ✓ gg243-odak-silme-diger: 61 geçti, 0 kaldı
+utc-1 gg243-tumunu-gonder: ✓ gg243-tumunu-gonder: 17 geçti, 0 kaldı
+utc-1 gg244-esmm-gonder: 66 geçti, 0 kaldı
+utc-1 gg244-numara-tarih-onay: ✓ gg244-numara-tarih-onay: 40 geçti, 0 kaldı
+utc-1 gg244-secilenleri-gonder: ✓ gg244-secilenleri-gonder: 45 geçti, 0 kaldı
+utc-1 senaryo-211: 59/59 denetim geçti. Ekran görüntüleri: /home/user/ofis---y-netimi/.claude/worktrees/agent-a187e057786d3b7e4/test/e2
+utc-1 senaryo-215: 73 / 73 kontrol geçti.
+utc-1 senaryo-216: 54 / 54 kontrol geçti.
+utc-1 senaryo-217: 65 / 65 kontrol geçti.
+utc-1 senaryo-220-yedek: Senaryo 2.0.20 (yedek): 38 geçti, 0 kaldı. Ekranlar: test/e2e/artifacts/senaryo-220-yedek
+utc-1 senaryo-222: Senaryo 2.0.22: 60 geçti, 0 kaldı. Ekranlar: test/e2e/artifacts/senaryo-222
+utc-1 senaryo-223: TAMAM: 29 denetim geçti, 0 başarısız.
+utc-1 senaryo-224: TAMAM: 69 denetim geçti, 0 başarısız.
+utc-1 senaryo-banka-210-eski-satir: ✓ senaryo-banka-210-eski-satir: 29 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktre
+utc-1 senaryo-banka-210: TAMAM: 428 denetim geçti, 0 başarısız. Ekran görüntüleri: /home/user/ofis---y-netimi/.claude/worktrees/agent-a187
+utc-2 senaryo-banka-210b: ✓ senaryo-banka-210b: 90 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a
+utc-2 senaryo-banka-220: ✓ senaryo-banka-220: 76 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a1
+utc-2 senaryo-defter-243: ✓ senaryo-defter-243: 33 geçti, 0 kaldı · depo /home/user/ofis---y-netimi/.claude/worktrees/agent-a187e057786d3b7e4
+utc-2 senaryo-defter-turu-250: 28 geçti, 0 kaldı
+utc-2 senaryo-ebelge-242: 21 geçti, 0 kaldı
+utc-2 senaryo-ebelge-243: 20 geçti, 0 kaldı
+utc-2 senaryo-entegrator-240: ✓ senaryo-entegrator-240: 81 geçti, 0 kaldı
+utc-2 senaryo-fatura-243: 61 geçti, 0 kaldı
+utc-2 senaryo-form-izolasyon-243: 188 geçti, 0 kaldı
+utc-2 senaryo-iz32-230: ✓ senaryo-iz32-230: 41 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a18
+utc-2 senaryo-iz5-230: SONUÇ: 44 geçti, 0 kaldı
+utc-2 senaryo-kdv-donemi-250: ✓ senaryo-kdv-donemi-250: 19 geçti, 0 kaldı
+utc-2 senaryo-netten-brute-244: 43 geçti, 0 kaldı
+utc-2 senaryo-pil-karti-245: 85 geçti, 0 kaldı
+utc-2 senaryo-portal-244: ✓ senaryo-portal-244: 32 geçti, 0 kaldı · depo /home/user/ofis---y-netimi/.claude/worktrees/agent-a187e057786d3b7e4
+utc-2 senaryo-pos-220: ✓ senaryo-pos-220: 113 geçti, 0 kaldı · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a18
+utc-2 senaryo-supheli-230: ✓ senaryo-supheli-230: 67 geçti, 0 kaldı
+utc-2 senaryo-tyk-tur2a-250: SONUÇ: 51 geçti, 0 kaldı
+utc-2 senaryo-ux18-244: 27 geçti, 0 kaldı
+utc-2 uiux-244-ux9-ux10: ✓ uiux-244-ux9-ux10: 74 geçti, 0 kaldı
+utc-2 uiux-a-243: ✓ uiux-a-243: 51 geçti, 0 kaldı
+utc-2 uiux-b-243: ✓ uiux-b-243: 58 geçti, 0 kaldı
+utc-2 uiux-ui11-244: 153 geçti, 0 kaldı

@@ -1,0 +1,65 @@
+[eşdeğerlik] 100k-kilitsiz-Europe-Istanbul · TZ Europe/Istanbul · şema 49/49 · dondurma {"coverage":"","lock":"","pending":null,"runs":0} · hepsi birebir (15 çıktı)
+  AYNI  GET ledger: 200/200 · bee8e244515d0791 = bee8e244515d0791 · 6292 bayt
+  AYNI  GET ledger (dönem): 200/200 · 23765cf847b6689d = 23765cf847b6689d · 6499 bayt
+  AYNI  Yevmiye Defteri (bu yıl): 200/200 · 1c022ef87950e625 = 1c022ef87950e625 · 15151 bayt
+  AYNI  Yevmiye Defteri (geçen yıl): 200/200 · 78148c07573fa67d = 78148c07573fa67d · 13667 bayt
+  AYNI  Yevmiye Defteri (bütün zaman): 200/200 · b401ccfe7edaf46c = b401ccfe7edaf46c · 18759 bayt
+  AYNI  Hesap Planı Mizanı (bu yıl): 200/200 · 143a99ed516b6283 = 143a99ed516b6283 · 4312 bayt
+  AYNI  Hesap Planı Mizanı (geçen yıl): 200/200 · 6cd613333fa37277 = 6cd613333fa37277 · 3810 bayt
+  AYNI  Alt Hesap Mizanı: 200/200 · ee2dbc37ada6f044 = ee2dbc37ada6f044 · 2119 bayt
+  AYNI  Defter Mutabakatı: 200/200 · 0793a8d94fff3dc9 = 0793a8d94fff3dc9 · 7507 bayt
+  AYNI  Mutabakat Testi: 200/200 · 864800f4c442e798 = 864800f4c442e798 · 11055 bayt
+  AYNI  Alacak Yaşlandırma: 200/200 · 940e960f298b0e53 = 940e960f298b0e53 · 28435 bayt
+  AYNI  Açılış Olabilir: 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  Açılış Olabilir (hepsi): 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  build() maddeleri: 200/200 · 004998490bdacbd9 = 004998490bdacbd9 · 48315046 bayt · 153803 madde
+  AYNI  build(süzgeç: 20 cari): 200/200 · 4f53cda18c2baa0c = 4f53cda18c2baa0c · 2 bayt · 0 madde
+[eşdeğerlik] 100k-kilitli-Europe-Istanbul · TZ Europe/Istanbul · şema 49/49 · dondurma {"coverage":"2026-06-30","lock":"2026-06-30","pending":null,"runs":1} · hepsi birebir (15 çıktı)
+  AYNI  GET ledger: 200/200 · 85a556237cc2ac03 = 85a556237cc2ac03 · 6267 bayt
+  AYNI  GET ledger (dönem): 200/200 · a799787b4f52a3fd = a799787b4f52a3fd · 6474 bayt
+  AYNI  Yevmiye Defteri (bu yıl): 200/200 · 1c022ef87950e625 = 1c022ef87950e625 · 15151 bayt
+  AYNI  Yevmiye Defteri (geçen yıl): 200/200 · 78148c07573fa67d = 78148c07573fa67d · 13667 bayt
+  AYNI  Yevmiye Defteri (bütün zaman): 200/200 · b401ccfe7edaf46c = b401ccfe7edaf46c · 18759 bayt
+  AYNI  Hesap Planı Mizanı (bu yıl): 200/200 · 8788285102642536 = 8788285102642536 · 4287 bayt
+  AYNI  Hesap Planı Mizanı (geçen yıl): 200/200 · 96570894b7e1013c = 96570894b7e1013c · 3785 bayt
+  AYNI  Alt Hesap Mizanı: 200/200 · ee2dbc37ada6f044 = ee2dbc37ada6f044 · 2119 bayt
+  AYNI  Defter Mutabakatı: 200/200 · 4cd0d26d3d648080 = 4cd0d26d3d648080 · 8075 bayt
+  AYNI  Mutabakat Testi: 200/200 · edab1596cc377b30 = edab1596cc377b30 · 13125 bayt
+  AYNI  Alacak Yaşlandırma: 200/200 · 940e960f298b0e53 = 940e960f298b0e53 · 28435 bayt
+  AYNI  Açılış Olabilir: 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  Açılış Olabilir (hepsi): 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  build() maddeleri: 200/200 · 004998490bdacbd9 = 004998490bdacbd9 · 48315046 bayt · 153803 madde
+  AYNI  build(süzgeç: 20 cari): 200/200 · 4f53cda18c2baa0c = 4f53cda18c2baa0c · 2 bayt · 0 madde
+[eşdeğerlik] 100k-kilitsiz-UTC · TZ UTC · şema 49/49 · dondurma {"coverage":"","lock":"","pending":null,"runs":0} · hepsi birebir (15 çıktı)
+  AYNI  GET ledger: 200/200 · bee8e244515d0791 = bee8e244515d0791 · 6292 bayt
+  AYNI  GET ledger (dönem): 200/200 · 23765cf847b6689d = 23765cf847b6689d · 6499 bayt
+  AYNI  Yevmiye Defteri (bu yıl): 200/200 · 1c022ef87950e625 = 1c022ef87950e625 · 15151 bayt
+  AYNI  Yevmiye Defteri (geçen yıl): 200/200 · 78148c07573fa67d = 78148c07573fa67d · 13667 bayt
+  AYNI  Yevmiye Defteri (bütün zaman): 200/200 · b401ccfe7edaf46c = b401ccfe7edaf46c · 18759 bayt
+  AYNI  Hesap Planı Mizanı (bu yıl): 200/200 · 143a99ed516b6283 = 143a99ed516b6283 · 4312 bayt
+  AYNI  Hesap Planı Mizanı (geçen yıl): 200/200 · 6cd613333fa37277 = 6cd613333fa37277 · 3810 bayt
+  AYNI  Alt Hesap Mizanı: 200/200 · ee2dbc37ada6f044 = ee2dbc37ada6f044 · 2119 bayt
+  AYNI  Defter Mutabakatı: 200/200 · 0793a8d94fff3dc9 = 0793a8d94fff3dc9 · 7507 bayt
+  AYNI  Mutabakat Testi: 200/200 · 864800f4c442e798 = 864800f4c442e798 · 11055 bayt
+  AYNI  Alacak Yaşlandırma: 200/200 · 940e960f298b0e53 = 940e960f298b0e53 · 28435 bayt
+  AYNI  Açılış Olabilir: 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  Açılış Olabilir (hepsi): 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  build() maddeleri: 200/200 · 004998490bdacbd9 = 004998490bdacbd9 · 48315046 bayt · 153803 madde
+  AYNI  build(süzgeç: 20 cari): 200/200 · 4f53cda18c2baa0c = 4f53cda18c2baa0c · 2 bayt · 0 madde
+[eşdeğerlik] 100k-kilitli-UTC · TZ UTC · şema 49/49 · dondurma {"coverage":"2026-06-30","lock":"2026-06-30","pending":null,"runs":1} · hepsi birebir (15 çıktı)
+  AYNI  GET ledger: 200/200 · 85a556237cc2ac03 = 85a556237cc2ac03 · 6267 bayt
+  AYNI  GET ledger (dönem): 200/200 · a799787b4f52a3fd = a799787b4f52a3fd · 6474 bayt
+  AYNI  Yevmiye Defteri (bu yıl): 200/200 · 1c022ef87950e625 = 1c022ef87950e625 · 15151 bayt
+  AYNI  Yevmiye Defteri (geçen yıl): 200/200 · 78148c07573fa67d = 78148c07573fa67d · 13667 bayt
+  AYNI  Yevmiye Defteri (bütün zaman): 200/200 · b401ccfe7edaf46c = b401ccfe7edaf46c · 18759 bayt
+  AYNI  Hesap Planı Mizanı (bu yıl): 200/200 · 8788285102642536 = 8788285102642536 · 4287 bayt
+  AYNI  Hesap Planı Mizanı (geçen yıl): 200/200 · 96570894b7e1013c = 96570894b7e1013c · 3785 bayt
+  AYNI  Alt Hesap Mizanı: 200/200 · ee2dbc37ada6f044 = ee2dbc37ada6f044 · 2119 bayt
+  AYNI  Defter Mutabakatı: 200/200 · 4cd0d26d3d648080 = 4cd0d26d3d648080 · 8075 bayt
+  AYNI  Mutabakat Testi: 200/200 · edab1596cc377b30 = edab1596cc377b30 · 13125 bayt
+  AYNI  Alacak Yaşlandırma: 200/200 · 940e960f298b0e53 = 940e960f298b0e53 · 28435 bayt
+  AYNI  Açılış Olabilir: 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  Açılış Olabilir (hepsi): 200/200 · 00b3ea86b9e4b2a5 = 00b3ea86b9e4b2a5 · 105 bayt
+  AYNI  build() maddeleri: 200/200 · 004998490bdacbd9 = 004998490bdacbd9 · 48315046 bayt · 153803 madde
+  AYNI  build(süzgeç: 20 cari): 200/200 · 4f53cda18c2baa0c = 4f53cda18c2baa0c · 2 bayt · 0 madde
+[eşdeğerlik özet] 4 çift karşılaştırıldı · 0 başarısız / farklı

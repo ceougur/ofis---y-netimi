@@ -1,0 +1,13 @@
+== yük 11.17 9.40 10.01
+AÇILIŞSIZ #1: 200 · istek 12777 ms · tarama 12759 ms · cash-opening bölümü 3.5 ms · uyarı 0
+AÇILIŞSIZ #2: 200 · istek 11118 ms · tarama 11095 ms · cash-opening bölümü 3.4 ms · uyarı 0
+AÇILIŞSIZ #3: 200 · istek 14644 ms · tarama 14637 ms · cash-opening bölümü 5.0 ms · uyarı 0
+açılış 2000-01-01: 200
+AÇILIŞ 2000-01-01 #1: 200 · istek 13441 ms · tarama 13424 ms · cash-opening bölümü 75.8 ms · uyarı 0
+AÇILIŞ 2000-01-01 #2: 200 · istek 10454 ms · tarama 10449 ms · cash-opening bölümü 71.4 ms · uyarı 0
+AÇILIŞ 2000-01-01 #3: 200 · istek 10133 ms · tarama 10127 ms · cash-opening bölümü 88.2 ms · uyarı 0
+açılış tarihi doğrudan 2024-10-27 yapıldı (önce satırlar eski veri gibi; R8 denetimi API'de)
+AÇILIŞ 2024-10-27 #1: 200 · istek 9055 ms · tarama 9034 ms · cash-opening bölümü 236.1 ms · uyarı 18651
+AÇILIŞ 2024-10-27 #2: 200 · istek 10442 ms · tarama 10435 ms · cash-opening bölümü 299.3 ms · uyarı 18651
+AÇILIŞ 2024-10-27 #3: 200 · istek 10894 ms · tarama 10885 ms · cash-opening bölümü 317.1 ms · uyarı 18651
+cikis 0

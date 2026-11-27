@@ -1,0 +1,20 @@
+AYRIŞTIRMA d2 (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-kabul/temiz-100k) · kilitsiz · tekrar 3 · yollar borc,evrak,fatura,kart-d · kilit 07:52:15 · yük 2.20 3.17 2.93
+=== ana · başta 2.20 3.17 2.93 2/117 4618 · GEÇERSİZ (yük > 2)
+kod /dev/shm/t3hiz/k-ana · yük (başta) 1.93 3.03 2.89 · TZ Europe/Istanbul
+  cari kartı (şüphelisiz, en kalabalık): durum 200 · en iyi 221.7 ms · ortanca 230.4 ms · olay döngüsü en çok 235.9 ms (n=3)
+  YAZIM Borç Yaz (kapı): durum 200 · en iyi 274.3 ms · ortanca 287.4 ms · olay döngüsü en çok 0 ms (n=3)
+  YAZIM evrak (alınan çek, carili): durum 200 · en iyi 49.6 ms · ortanca 49.7 ms · olay döngüsü en çok 54.5 ms (n=3)
+  YAZIM fatura (satış, açık hesap): durum 200 · en iyi 174.7 ms · ortanca 183.5 ms · olay döngüsü en çok 0 ms (n=3)
+  YAZIM fatura iptali: durum 200 · en iyi 95.7 ms · ortanca 97.9 ms · olay döngüsü en çok 0 ms (n=3)
+yük (sonda) 1.93 3.03 2.89
+çıkış 0 · sonda 1.93 3.03 2.89 1/120 4749
+=== uc1 · başta 1.93 3.03 2.89 1/120 4754 
+kod /dev/shm/t3hiz/k-uc1 · yük (başta) 1.86 2.93 2.86 · TZ Europe/Istanbul
+  cari kartı (şüphelisiz, en kalabalık): durum 200 · en iyi 146.4 ms · ortanca 148.4 ms · olay döngüsü en çok 169.7 ms (n=3)
+  YAZIM Borç Yaz (kapı): durum 200 · en iyi 152.6 ms · ortanca 155.4 ms · olay döngüsü en çok 150.1 ms (n=3)
+  YAZIM evrak (alınan çek, carili): durum 200 · en iyi 11.6 ms · ortanca 13.6 ms · olay döngüsü en çok 0 ms (n=3)
+  YAZIM fatura (satış, açık hesap): durum 200 · en iyi 66.6 ms · ortanca 69.5 ms · olay döngüsü en çok 0 ms (n=3)
+  YAZIM fatura iptali: durum 200 · en iyi 57.2 ms · ortanca 60.3 ms · olay döngüsü en çok 56.1 ms (n=3)
+yük (sonda) 1.86 2.93 2.86
+çıkış 0 · sonda 1.86 2.93 2.86 1/123 4774
+bitti 07:53:04

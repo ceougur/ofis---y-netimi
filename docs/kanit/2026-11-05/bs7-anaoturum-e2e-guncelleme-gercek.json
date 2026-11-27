@@ -1,0 +1,32 @@
+{
+  "ad": "bs7-anaoturum-e2e-guncelleme-gercek",
+  "komut": "npm run test:guncelleme-gercek",
+  "commit": "5402b712093022ef06006a9c4ee0fbfe0c2b4462",
+  "dal": "claude/epic-thompson-w0lc2l",
+  "kirli": 0,
+  "izlenmeyen": 6,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T18:03:18.784Z",
+  "sure_sn": 241.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 22,
+    "gecen": 22,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/bs7-anaoturum-e2e-guncelleme-gercek.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "ea95103f327443d3dfa2baef25e08cdf9066036650528be669e5a998895c6103",
+  "ham_cikti_bayt": 2091
+}

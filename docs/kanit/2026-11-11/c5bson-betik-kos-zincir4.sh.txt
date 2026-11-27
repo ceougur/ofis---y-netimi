@@ -1,0 +1,35 @@
+#!/bin/bash
+# Ç5-B SON TUR — zincir 4 (son kod + test düzeltmeleri; worktree): banka-210 senaryosu tek başına ×2 (zincir 3'te yük 5–6 iken 427/428) → değişen + yeni testler iki TZ →
+# mutasyon (kendi kopyasında) → mutabakat varsayılanı.
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+W=/home/user/ofis---y-netimi/.claude/worktrees/agent-ac2cc1e4fd632460d
+export HUKUK_LICENSE_URL=http://127.0.0.1:9 KANIT_DIR=$S/c5bson-kanit PLAYWRIGHT_BROWSERS_PATH=$S/pw-1194
+cd "$W" || exit 1
+L="flock -s -n $S/olcum.lock"
+run() { # ad, TZ, komut…
+  local ad=$1 tz=$2; shift 2
+  echo "--- $ad · yük $(cut -d' ' -f1-3 /proc/loadavg) · $(date -u +%H:%M)"
+  TZ=$tz $L node tools/kanit.mjs kos "$ad" --sure 100 -- "$@" > $S/c5bson-cikti/$ad.out 2>&1
+  echo "== $ad cikis=$? · $(grep -E '^# (tests|pass|fail|cancelled|skipped)' $S/c5bson-cikti/$ad.out | tr '\n' ' ') $(tail -1 $S/c5bson-cikti/$ad.out | cut -c1-220)"
+}
+N="node --disable-warning=ExperimentalWarning"
+PART=${1:-hepsi}
+if [ "$PART" = hepsi ] || [ "$PART" = e2e ]; then
+  run c5bson-e2e-senaryo-banka-210-tek1 UTC $N test/e2e/senaryo-banka-210.mjs
+  grep -n "✗" $S/c5bson-cikti/c5bson-e2e-senaryo-banka-210-tek1.out | cut -c1-200
+  run c5bson-e2e-senaryo-banka-210-tek2 UTC $N test/e2e/senaryo-banka-210.mjs
+  grep -n "✗" $S/c5bson-cikti/c5bson-e2e-senaryo-banka-210-tek2.out | cut -c1-200
+fi
+if [ "$PART" = hepsi ] || [ "$PART" = test ]; then
+  FILES="test/tyk-son-250.test.mjs test/tyk-tur2b2-250.test.mjs test/tyk-250.test.mjs test/tyk-onbellek-250.test.mjs test/tyk-tur2b1-250.test.mjs test/tyk-tur2a-250.test.mjs test/tyk-kilit-taksitli-250.test.mjs test/tyk-fark-v249-250.test.mjs test/bulgu-223.test.mjs test/cari-vade-245.test.mjs test/iade-geri-odeme-246.test.mjs test/plans.test.mjs test/ux18-cek-fatura-244.test.mjs test/whatsapp-onizleme-olcek-248.test.mjs"
+  run c5bson-son2-degisen-UTC UTC $N --test --test-concurrency=1 $FILES
+  run c5bson-son2-degisen-Europe-Istanbul Europe/Istanbul $N --test --test-concurrency=1 $FILES
+fi
+if [ "$PART" = hepsi ] || [ "$PART" = mutasyon ]; then
+  run c5bson-mutasyon2 UTC $N test/tyk-mutasyon-250.mjs --klasor $S/c5bson-mut
+  grep -E "YAŞADI|ENJEKTE|TABAN" $S/c5bson-cikti/c5bson-mutasyon2.out | cut -c1-220
+fi
+if [ "$PART" = hepsi ] || [ "$PART" = mutabakat ]; then
+  run c5bson-mutabakat UTC npm run test:mutabakat
+fi
+echo "ZİNCİR 4 ($PART) BİTTİ $(date -u +%H:%M)"

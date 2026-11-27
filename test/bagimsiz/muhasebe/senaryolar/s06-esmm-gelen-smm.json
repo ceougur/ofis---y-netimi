@@ -1,0 +1,136 @@
+{
+ "aciklama": "Serbest meslek makbuzu (stopaj 193) ve gelen SMM; Defter Türü Serbest Meslek → Bilgi Amaçlı.",
+ "ad": "s06-esmm-gelen-smm",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [],
+ "defter_turu": "serbest_meslek",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "bil/aktif/I.C": 1000000,
+   "bil/aktif/I.H": 260000,
+   "bil/bilgi_amacli": true,
+   "bil/kesin_degil": [
+    "BILGI_AMACLI"
+   ],
+   "bil/pasif/III.B": 300000,
+   "bil/pasif/III.F": 60000,
+   "bil/pasif/III.I": 200000,
+   "bil/pasif/V.F": 700000,
+   "gt/kalemler/A": 1000000,
+   "gt/kalemler/DNK": 700000,
+   "gt/kalemler/E": 300000,
+   "gt/kesin_degil": [
+    "BILGI_AMACLI"
+   ]
+  }
+ },
+ "kapsam": [
+  "F-10",
+  "F-11",
+  "V-05",
+  "V-06",
+  "§7.5"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "K": 200000,
+   "S": 200000,
+   "brut": 1000000,
+   "cari": "C1",
+   "id": "E1",
+   "tarih": "2026-06-01",
+   "tur": "esmm"
+  },
+  {
+   "K": 60000,
+   "S": 60000,
+   "brut": 300000,
+   "cari": "T1",
+   "id": "S1",
+   "tarih": "2026-06-02",
+   "tur": "gelen_smm"
+  },
+  {
+   "ad": "gt",
+   "bas": "2026-01-01",
+   "rapor": "gelir_tablosu",
+   "son": "2026-12-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "bil",
+   "rapor": "bilanco",
+   "tarih": "2026-06-30",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

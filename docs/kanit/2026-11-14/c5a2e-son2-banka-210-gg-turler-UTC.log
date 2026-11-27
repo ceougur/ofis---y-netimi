@@ -1,0 +1,11 @@
+▶ B5 — 2.0.26'nın eski para türleri göçten sonra güncel kodla işlenir
+  ✔ ciro, verilen çek/senet, karta bağlı çek, taksit iadesi/açılışı, peşin stok: geri al / düzelt / sil → 200, yeni sapma yok (1599.39187ms)
+✔ B5 — 2.0.26'nın eski para türleri göçten sonra güncel kodla işlenir (1600.431996ms)
+ℹ tests 1
+ℹ suites 1
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1912.552727

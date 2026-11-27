@@ -1,0 +1,30 @@
+başlangıç 2026-11-06T07:47:42Z HEAD 3f662426
+/dev/vda        252G   31G  7.6G  81% /
+07:47:42 → 07:49:19 c2t3-yeni-utc çıkış 0
+07:49:19 → 07:51:05 c2t3-yeni-ist çıkış 0
+07:51:05 → 07:51:56 c2t3-eski-bc495a1c-utc çıkış 1
+07:51:56 → 07:52:47 c2t3-eski-bc495a1c-ist çıkış 1
+07:52:47 → 07:53:20 c2t3-v249-banka-utc çıkış 1
+07:53:20 → 07:53:53 c2t3-v249-banka-ist çıkış 1
+07:53:53 → 07:53:57 c2t3-g6-fis-eski-surum-utc çıkış 0
+07:53:57 → 07:54:01 c2t3-g6-fis-eski-surum-ist çıkış 0
+07:54:01 → 07:54:07 c2t3-g6-donmus-eski-surum-utc çıkış 0
+07:54:07 → 07:54:12 c2t3-g6-donmus-eski-surum-ist çıkış 0
+07:54:12 → 07:54:20 c2t3-e2e-sema-kapisi-bs7 çıkış 0
+07:54:20 → 07:54:54 c2t3-e2e-senaryo-defter-243 çıkış 0
+/dev/vda        252G   29G   11G  74% /
+07:54:54 → 08:17:37 c2t3-g2-utc çıkış 0
+08:17:37 → 08:35:42 c2t3-g2-ist çıkış 0
+08:35:42 → 08:57:17 c2t3-mutasyon-utc çıkış 1
+08:57:17 → 08:58:47 c2t3-mutasyon-yeni-ist çıkış 1
+bitiş 2026-11-06T08:58:47Z
+/dev/vda        252G   31G  7.8G  80% /
+ikinci başlangıç 2026-11-06T09:00:55Z HEAD 5a2c2844
+09:00:55 → 09:02:13 c2t3-yeni-utc çıkış 0
+09:02:13 → 09:03:24 c2t3-yeni-ist çıkış 0
+09:03:24 → 09:03:57 c2t3-eski-bc495a1c-utc çıkış 1
+09:03:57 → 09:04:27 c2t3-eski-bc495a1c-ist çıkış 1
+09:04:27 → 09:28:36 c2t3-mutasyon-utc çıkış 0
+09:28:36 → 09:39:35 c2t3-mutasyon-yeni-ist çıkış 0
+ikinci bitiş 2026-11-06T09:39:35Z
+/dev/vda        252G   29G  9.6G  76% /

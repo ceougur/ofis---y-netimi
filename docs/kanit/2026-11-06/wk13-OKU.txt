@@ -1,0 +1,19 @@
+WK GÜNCELLEMESİ 13 — S16, S17, karar (5) (NB5) — WhatsApp kâhini (test/bagimsiz/whatsapp-248), kodu görmeyen ajan, 06.11.2026
+Ayrıntı: test/bagimsiz/whatsapp-248/README.md §18 (18.1–18.4 kodlamadan önce, commit 96328138; 18.5–18.9 sonra).
+Kod commit'i: 9f8276bd (kâhin + senaryolar + kâhinin kendi testi). Taban: e6e5610f. Programa karşı KOŞULMADI.
+
+KOŞULAR (depo kökünden; tools/kanit.mjs kos; KANIT_DIR not defterinde, ham çıktı buraya kopyalandı — sha256 .json'daki ham_cikti_sha256 ile aynı):
+  TZ=UTC              node tools/kanit.mjs kos wk13-senaryolar            -- python3 -I test/bagimsiz/whatsapp-248/kahin/senaryolar.py    → GEÇTİ, çıkış 0, 326/326
+  TZ=Europe/Istanbul  node tools/kanit.mjs kos wk13-senaryolar-tz-istanbul -- python3 -I test/bagimsiz/whatsapp-248/kahin/senaryolar.py  → GEÇTİ, çıkış 0, 326/326
+  TZ=UTC              node tools/kanit.mjs kos wk13-kahin                 -- python3 -I test/bagimsiz/whatsapp-248/kahin/kahin_test.py     → GEÇTİ, çıkış 0, 352/352 (F mutasyon 208/208)
+  TZ=Europe/Istanbul  node tools/kanit.mjs kos wk13-kahin-tz-istanbul     -- python3 -I test/bagimsiz/whatsapp-248/kahin/kahin_test.py     → GEÇTİ, çıkış 0, 352/352
+  (senaryolar.json koşulardan sonra değişmedi: sha256 273612c5cba7c7bc4f6b91630f45c599e21e61f499ba8c7227b820410502f1f5)
+
+ESKİ KÂHİN (taban e6e5610f'nin kahin/* dosyalarının değişiklikten ÖNCE not defterine alınmış kopyası; git'ten değil):
+  kahin.py 6e063ef960e4af258df4b9ccfd1d1a98179aa41f93f9ae269a728664e3e106f1, senaryolar.py 02297a22a84318d9b9348f5e083940763caea0800e9423a837dfefa5e6e54529,
+  kahin_test.py 447de022bb047963598be4ef9f59f39e98e3763e1fb70845e795ede6acfb5fbf, senaryolar.json 3167f89177ee1c32c1d6e07cb65511463d080ab2aad9b2575996cc11db1849e7
+  wk13-eski-kahinle-yeni-senaryolar.txt       python3 -I wk13-araclar/eski_yeni.py <eski kopya> test/bagimsiz/whatsapp-248/kahin S16 S17 NB5   → 8 yeni: 7 KIRMIZI, 1 AYNI (S16-03), çıkış 0
+  wk13-eski-kahinle-yeni-senaryolar-notr.txt  aynı, eski kopyanın YALNIZ S7-c hata satırı etkisiz (wk13-araclar/notr_kopya.py)              → S16-01/02/04 beklenen nedenle KIRMIZI, çıkış 0
+  wk13-eski-318-tam-sonuc-fark.txt            python3 -I wk13-araclar/tam_fark.py test/bagimsiz/whatsapp-248/kahin <eski senaryolar.json>      → 318/318 bayt bayt aynı, çıkış 0
+  wk13-on-tarama-net-borc.txt                 python3 -I wk13-araclar/net_tarama.py <eski kopya> (kodlamadan önce)                             → net sınırına takılan eski iş 0, çıkış 0
+  wk13-araclar/goster.py                      yeni senaryoların model çıktısının göz denetimi (kanıt değil)

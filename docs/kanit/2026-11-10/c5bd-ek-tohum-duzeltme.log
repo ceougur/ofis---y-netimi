@@ -1,0 +1,77 @@
+TAP version 13
+# Subtest: mutabakat yıl dönümü ek tohumlar (/home/user/ofis---y-netimi/.claude/worktrees/agent-acb431b717a5f6ae0)
+    # Subtest: tohum 1
+    ok 1 - tohum 1
+      ---
+      duration_ms: 20490.115672
+      type: 'test'
+      ...
+    # Subtest: tohum 2
+    ok 2 - tohum 2
+      ---
+      duration_ms: 21222.206836
+      type: 'test'
+      ...
+    # Subtest: tohum 3
+    ok 3 - tohum 3
+      ---
+      duration_ms: 19438.226895
+      type: 'test'
+      ...
+    # Subtest: tohum 5
+    ok 4 - tohum 5
+      ---
+      duration_ms: 21042.945374
+      type: 'test'
+      ...
+    # Subtest: tohum 7
+    ok 5 - tohum 7
+      ---
+      duration_ms: 19693.884194
+      type: 'test'
+      ...
+    # Subtest: tohum 11
+    ok 6 - tohum 11
+      ---
+      duration_ms: 20718.100278
+      type: 'test'
+      ...
+    # Subtest: tohum 13
+    ok 7 - tohum 13
+      ---
+      duration_ms: 19758.088074
+      type: 'test'
+      ...
+    # Subtest: tohum 17
+    ok 8 - tohum 17
+      ---
+      duration_ms: 19074.628814
+      type: 'test'
+      ...
+    # Subtest: tohum 23
+    ok 9 - tohum 23
+      ---
+      duration_ms: 19358.697101
+      type: 'test'
+      ...
+    # Subtest: tohum 31
+    ok 10 - tohum 31
+      ---
+      duration_ms: 20488.034312
+      type: 'test'
+      ...
+    1..10
+ok 1 - mutabakat yıl dönümü ek tohumlar (/home/user/ofis---y-netimi/.claude/worktrees/agent-acb431b717a5f6ae0)
+  ---
+  duration_ms: 201287.309555
+  type: 'suite'
+  ...
+1..1
+# tests 10
+# suites 1
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 201684.639337

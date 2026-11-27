@@ -1,0 +1,156 @@
+[
+ {
+  "no": "M1",
+  "ad": "kapının kilit izi her taramada yenilenir (taban her taramada)",
+  "sonuc": "YAKALANDI",
+  "cikis": 1,
+  "tests": "18",
+  "pass": "5",
+  "fail": "13",
+  "cancelled": "0",
+  "ilk_ileti": "AssertionError [ERR_ASSERTION]: satır içi — Kasa satırının açılış işareti 0→1: period-lock bulunmalı: [\"ledger:snapshot\"]"
+ },
+ {
+  "no": "M2",
+  "ad": "cari açılış izi yalnız sayı + toplam (hesap dağılımı izden çıkar)",
+  "sonuc": "YAKALANDI",
+  "cikis": 1,
+  "tests": "18",
+  "pass": "16",
+  "fail": "2",
+  "cancelled": "0",
+  "ilk_ileti": "AssertionError [ERR_ASSERTION]: satır içi — iki carinin işareti yer değiştirir (sayı ve tutar aynı, yalnız hesap dağılımı): ledger:snapshot bulunmalı: []"
+ },
+ {
+  "no": "M3",
+  "ad": "KG-16 kararı kapının kopyasını yazmaz (meşru olayda taban yenilenmez)",
+  "sonuc": "YAKALANDI",
+  "cikis": 1,
+  "tests": "18",
+  "pass": "17",
+  "fail": "1",
+  "cancelled": "0",
+  "ilk_ileti": "AssertionError [ERR_ASSERTION]: onaydan sonra: satır içi tarama sessiz: [\"opening:review\"]"
+ },
+ {
+  "no": "M4",
+  "ad": "açılışta kopya durumdan sessizce yenilenir",
+  "sonuc": "YAKALANDI",
+  "cikis": 1,
+  "tests": "18",
+  "pass": "17",
+  "fail": "1",
+  "cancelled": "0",
+  "ilk_ileti": "AssertionError [ERR_ASSERTION]: açılışta Mutabakat Testi'nde sapma (opening:review): [\"ledger:rule-diff\"]"
+ },
+ {
+  "no": "M5",
+  "ad": "dört işaret kilit izinden çıkar (B4 sınırı geri)",
+  "sonuc": "YAKALANDI",
+  "cikis": 1,
+  "tests": "18",
+  "pass": "14",
+  "fail": "4",
+  "cancelled": "0",
+  "ilk_ileti": "AssertionError [ERR_ASSERTION]: satır içi — Kasa satırının açılış işareti 0→1: ledger:snapshot bulunmalı: []"
+ },
+ {
+  "no": "M6",
+  "ad": "süzgeç Kasa açılış işaretini bilmez (kapı ↔ süzgeç eşdeğerliği)",
+  "sonuc": "YAKALANDI",
+  "cikis": 1,
+  "tests": "18",
+  "pass": "17",
+  "fail": "1",
+  "cancelled": "0",
+  "ilk_ileti": "AssertionError [ERR_ASSERTION]: Kasa: kapı reddetmeli (409 Kapanmış dönem; eşdeğerlik ihlali değil)"
+ },
+ {
+  "no": "M7",
+  "ad": "silme yükü KG-16 durumunu taşımaz",
+  "sonuc": "YAKALANDI",
+  "cikis": 1,
+  "tests": "6",
+  "pass": "2",
+  "fail": "4",
+  "cancelled": "0",
+  "ilk_ileti": "AssertionError [ERR_ASSERTION]: onay bilgisi korunur (kapının kopyasıyla)"
+ },
+ {
+  "no": "M8",
+  "ad": "geri alma KG-16 durumunu yazmaz (G-2'nin kendisi)",
+  "sonuc": "YAKALANDI",
+  "cikis": 1,
+  "tests": "6",
+  "pass": "1",
+  "fail": "5",
+  "cancelled": "0",
+  "ilk_ileti": "AssertionError [ERR_ASSERTION]: onay bilgisi korunur (kapının kopyasıyla)"
+ },
+ {
+  "no": "M9",
+  "ad": "restoredOpeningReview eski sıra (yükteki durum S51'den önce)",
+  "sonuc": "YAKALANDI",
+  "cikis": 1,
+  "tests": "6",
+  "pass": "5",
+  "fail": "1",
+  "cancelled": "0",
+  "ilk_ileti": "AssertionError [ERR_ASSERTION]: S51 = A: cari başka açılışla → Açılış Olabilir (aday)"
+ },
+ {
+  "no": "M10",
+  "ad": "geri alma kapının kopyasını yazmaz",
+  "sonuc": "YAKALANDI",
+  "cikis": 1,
+  "tests": "6",
+  "pass": "0",
+  "fail": "6",
+  "cancelled": "0",
+  "ilk_ileti": "AssertionError [ERR_ASSERTION]: onay bilgisi korunur (kapının kopyasıyla) — kapının kopyası aynı işlemde"
+ },
+ {
+  "no": "M11",
+  "ad": "göç 48 ön süzgeci eski boşluk kümesi",
+  "sonuc": "YAKALANDI",
+  "cikis": 1,
+  "tests": "3",
+  "pass": "2",
+  "fail": "1",
+  "cancelled": "0",
+  "ilk_ileti": "AssertionError [ERR_ASSERTION]: göç 48'in aday kümesi kuralın kümesiyle aynı olmalı"
+ },
+ {
+  "no": "A1",
+  "ad": "S127 bölge sınırı <= → < (kilit günü bölge dışı)",
+  "sonuc": "YAKALANDI",
+  "cikis": 1,
+  "tests": "4",
+  "pass": "3",
+  "fail": "1",
+  "cancelled": "0",
+  "ilk_ileti": "AssertionError [ERR_ASSERTION]: mizan 120 = cariler (S127 = A): {\"120\":470000,\"500\":-100000,\"519\":-170000,\"602\":-200000}"
+ },
+ {
+  "no": "A8",
+  "ad": "yaşlandırma: taksite bağlı carisiz evrak da düşer",
+  "sonuc": "YAKALANDI",
+  "cikis": 1,
+  "tests": "4",
+  "pass": "3",
+  "fail": "1",
+  "cancelled": "0",
+  "ilk_ileti": "AssertionError [ERR_ASSERTION]: taksite sayılı carisiz evrak yaşlandırmada KALIR (toplam = kart tutarı)"
+ },
+ {
+  "no": "A16",
+  "ad": "göç 49: ilk olay şartı düşer",
+  "sonuc": "YAKALANDI",
+  "cikis": 1,
+  "tests": "4",
+  "pass": "3",
+  "fail": "1",
+  "cancelled": "0",
+  "ilk_ileti": "AssertionError [ERR_ASSERTION]: formdan evrak: sonraki olayının notu yüzünden açılış OLMAZ (ilk olay şartı)"
+ }
+]

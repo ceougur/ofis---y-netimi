@@ -1,0 +1,15 @@
+  ✓ yeniden soru GÜNCEL kalanla:  × ONAY Kartı Kapat Kalan ₺500,00 açıkken “Ayşe Kapanış Kartı” kartı kapatılsın mı? Ödeme planı biter; kalan borç carinin borcunda kalır, ya
+  ✓ ilk onay sunucuda reddedildi (409; gelen [409]) — ön koşul oluştu
+  ✓ reddedilen ilk onay kartı kapatmadı (veri tabanı)
+    [soru] "Kartı Kapat" → Kartı Kapat (güncel kalan 500 — beklenen soru)
+  ✓ kart kapandı (veri tabanı)
+  ✓ ikinci onay 200 (gelen [409,200])
+
+■ D) Telefon genişliği (390 px): KDV Özeti açılır, sayfa yatay kaymaz, TOPLAM görünür
+  ✓ sayfa yatay kaymıyor (scrollWidth 390 ≤ 390)
+  ✓ TOPLAM satırı görünür
+  ✓ sayfa hatası yok
+
+GÖZLEM (1): 'Farkı Doğuran Kayıtlar'ın 'Hesap Farkı' sütunu alt hesabı göstermiyor — Kasa + satırı: "02.09.2026KasaHurda satışı649 +₺300,00 · 649 −₺300,00" (ana hesap 649 iki kez, biri −, biri +; hangisinin 649.90 olduğu okunmuyor)
+
+✓ senaryo-c7b-kabul-250: 39 geçti, 0 kaldı

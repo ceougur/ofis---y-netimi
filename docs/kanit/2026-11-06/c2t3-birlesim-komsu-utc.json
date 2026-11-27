@@ -1,0 +1,38 @@
+{
+  "ad": "c2t3-birlesim-komsu-utc",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=180000 test/acilis-onarimi-hiz-250.test.mjs test/asama0-226-kesinti.test.mjs test/asama0-226-saat.test.mjs test/asama0-226.test.mjs test/banka-210-acilis.test.mjs test/banka-210-altin.test.mjs test/banka-210-arayuz-hareket.test.mjs test/banka-210-ariza.test.mjs test/banka-210-asama5-cari.test.mjs test/banka-210-asama6-kasa.test.mjs test/banka-210-asama78-modul.test.mjs test/banka-210-bozarim.test.mjs test/banka-210-defter.test.mjs test/banka-210-dun-bugun.test.mjs test/banka-210-ertelenen.test.mjs test/banka-210-eslesmis.test.mjs test/banka-210-fis-kapi.test.mjs test/banka-210-fis.test.mjs test/banka-210-gg-cari.test.mjs test/banka-210-gg-eski.test.mjs test/banka-210-gg-geri-yukle.test.mjs test/banka-210-gg-kapi.test.mjs test/banka-210-gg-olay.test.mjs test/banka-210-gg-tarama.test.mjs test/banka-210-gg-turler.test.mjs test/banka-210-gg2-bag.test.mjs test/banka-210-gg2-devir.test.mjs test/banka-210-gg2-fis.test.mjs test/banka-210-gg2-gosterge.test.mjs test/banka-210-gg2-hesap.test.mjs test/banka-210-gg2-hiz.test.mjs test/banka-210-gg3-bag.test.mjs test/banka-210-gg3-eski-satir.test.mjs test/banka-210-goc-zinciri.test.mjs test/banka-210-goc.test.mjs test/banka-210-hareketler.test.mjs test/banka-210-hesap.test.mjs test/banka-210-hiz-esdegerlik.test.mjs test/banka-210-ileri-tarihli-eski.test.mjs test/banka-210-kabul-mizan.test.mjs test/banka-210-kapi-kapsam.test.mjs test/banka-210-kapi-plan.test.mjs test/banka-210-kapi.test.mjs test/banka-210-kurumsal-kart.test.mjs test/banka-210-mutabakat-araci.test.mjs test/banka-210-onarim.test.mjs test/banka-210-planli.test.mjs test/banka-210-post-kesinti.test.mjs test/banka-210-post.test.mjs test/banka-210-raporlar.test.mjs test/banka-210-saat.test.mjs test/banka-210-sihirbaz.test.mjs test/banka-210-sira.test.mjs test/banka-210-tek-kaynak.test.mjs test/banka-210-ters-kayit.test.mjs test/banka-210-transfer.test.mjs test/banka-210-yargic.test.mjs test/banka-210-yetki-matrisi.test.mjs test/banka-220-cek-hesabi.test.mjs test/banka-220-hesap-kart.test.mjs test/banka-220-pos-bozma.test.mjs test/banka-220-pos-hesap.test.mjs test/banka-220-pos-iz3.test.mjs test/banka-220-pos-kuyruk.test.mjs test/banka-220-pos-moduller.test.mjs test/banka-220-senet-121.test.mjs test/banka-220-tahsile-ver-dogrulama.test.mjs test/banka-220-tahsile-ver-isaret.test.mjs test/banka-220-tahsile-ver-tur2.test.mjs test/banka-220-tahsile-ver.test.mjs test/banka-230-k8-cek.test.mjs test/banka-230-k8-taksit.test.mjs test/banka-230-supheli-bozma.test.mjs test/banka-230-supheli.test.mjs test/banka-onarim-kayit-250.test.mjs test/birlesik-tur2-yaris-250.test.mjs test/bs3-silinmis-kayit-250.test.mjs test/c1-tur1-249.test.mjs test/cari-bilgi-222.test.mjs test/cari-hareket-249.test.mjs test/cari-tur-222.test.mjs test/cek-istek-kimligi-247.test.mjs test/cheques-overview.test.mjs test/ci-kapi-listesi.test.mjs test/createapp-acilis-geri-alma-249.test.mjs test/db-acilis-kilit-250.test.mjs test/db-tx-commit-hata-249.test.mjs test/defter-213.test.mjs test/defter-243-kapi.test.mjs test/defter-243-raporlar.test.mjs test/defter-243-stok-acilis.test.mjs test/defter-243-ux24-toplam.test.mjs test/defter-243-vergi.test.mjs test/donem-213.test.mjs test/donmus-defter-250.test.mjs test/donmus-defter-bellek-250.test.mjs test/donmus-defter-tur1-250.test.mjs test/donmus-defter-yasam-250.test.mjs test/ebelge-243-gonderim.test.mjs test/einvoice-edm.test.mjs test/ertelenen-224.test.mjs test/fatura-215.test.mjs test/fatura-217.test.mjs test/fatura-230-ayarlar-banka.test.mjs test/fatura-buyuk-tutar-210.test.mjs test/fatura-model.test.mjs test/fis-defteri-250.test.mjs test/fis-defteri-kayit-250.test.mjs test/fis-defteri-koruma-250.test.mjs test/fis-defteri-yasam-250.test.mjs test/geri-yukleme-uyari-244.test.mjs test/gg243-dar-kontrol-ek.test.mjs test/gg243-dar3-stok.test.mjs test/goc-243-iade-ref.test.mjs test/goc-243-stok-acilis.test.mjs test/goc-243-stok-kdv.test.mjs test/goc-244-esmm-gonderim.test.mjs test/goc-244-iptal-suresi.test.mjs test/guvenilirlik-221-ariza.test.mjs test/hakem-k3-kasa-istek-kimligi.test.mjs test/hakem-k4-yineleme-sirasi.test.mjs test/hakem-k5-banka-eksi-kodu.test.mjs test/iade-210-fazla-tahsilat.test.mjs test/iade-210-onarim.test.mjs test/iade-210.test.mjs test/iade-224.test.mjs test/ice-aktarma-istek-kimligi-248.test.mjs test/import-crash.test.mjs test/inceleme-226-2.test.mjs test/inceleme-226.test.mjs test/istek-kimligi-222.test.mjs test/iz1-kasa-acilis.test.mjs test/kanit-araci.test.mjs test/kayit-bag-31e.test.mjs test/maliyet-bagsizlik.test.mjs test/mm-smm-244.test.mjs test/mobil-ozet-247.test.mjs test/mutabakat-213.test.mjs test/mutabakat-cekirdek.test.mjs test/mutabakat-yil-donumu.test.mjs test/packaging.test.mjs test/raporlar-209.test.mjs test/raporlar-210-banka.test.mjs test/raporlar-224.test.mjs test/raporlar-230-banka.test.mjs test/sema-kapisi-bs7.test.mjs test/silinenler-donem-kilidi-244.test.mjs test/stopaj-tevkifat-iade-244.test.mjs test/supheli-230-elestirmen.test.mjs test/supheli-230-karar.test.mjs test/supheli-230-kontrol2.test.mjs test/supheli-230-sil-cakisma.test.mjs test/supheli-230-yargic.test.mjs test/supheli-240-k4-iptal.test.mjs test/tablodan-aktar-244.test.mjs test/test-temizlik-243.test.mjs test/update-flow.test.mjs test/ux18-cek-fatura-244.test.mjs test/whatsapp-dk7-belirsiz-ileti-248.test.mjs test/whatsapp-w2-kaldir-250.test.mjs test/whatsapp-wt2-kod0-250.test.mjs test/yedek-220-inceleme.test.mjs test/yedek-220.test.mjs",
+  "commit": "6fb882ca3a33fe0f489597a1d66f3acd73c30d8a",
+  "dal": "c2t3-birlesim",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T10:05:50.045Z",
+  "sure_sn": 1070.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1796,
+    "gecen": 1795,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "BS-7 şema sürüm kapısı › 001 yeni şemalı, 002 normal: giriş ve okuma çalışır, 001'e veri yazılmaz; 002'ye geçilip çalışılır",
+      "konum": "test/sema-kapisi-bs7.test.mjs:218:3",
+      "hata": "001'de yalnız ortak katman ayarı yazılabilir; değişen: company.user.user-088463eb-ee0d-43e7-9db1-5c598ffa7544, license.local, whatsapp.appWebhook (beklenen , gelen whatsapp.appWebhook)"
+    }
+  ],
+  "ham_cikti": "../bekleyen-kanit/2026-11-06/2026-11-06/c2t3-birlesim-komsu-utc.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-birlesim-ag",
+  "ham_cikti_sha256": "0e72816758c2a69fb799462cbd4e8d221a0f4d7a4d5a568e57612439c3a184fa",
+  "ham_cikti_bayt": 698262
+}

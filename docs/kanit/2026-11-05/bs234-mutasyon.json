@@ -1,0 +1,32 @@
+{
+  "ad": "bs234-mutasyon",
+  "komut": "node --disable-warning=ExperimentalWarning test/bs234-250-mutasyon.mjs --kopya /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bs234-yeni-1abb2724",
+  "commit": "1abb27240c345eed7605218428edb4f3a0bf739b",
+  "dal": "worktree-agent-a43c8fa8274cd88ab",
+  "kirli": 0,
+  "izlenmeyen": 16,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T21:06:28.340Z",
+  "sure_sn": 72,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 10,
+    "gecen": 10,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/bs234-mutasyon.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a43c8fa8274cd88ab",
+  "ham_cikti_sha256": "d76c73f5ed747cc018548b2aaba59701cd24c339d0f2ad01b511d714522bb466",
+  "ham_cikti_bayt": 2280
+}

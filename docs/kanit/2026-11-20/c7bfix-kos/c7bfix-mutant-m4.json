@@ -1,0 +1,48 @@
+{
+  "ad": "c7bfix-mutant-m4",
+  "komut": "node --test test/c7bfix-kart-kapat-kuyruk-250.test.mjs test/c7b-kart-kapat-onay-250.test.mjs",
+  "commit": "317e507ef006388bf854d8f0ffba68938ade207e",
+  "dal": "HEAD",
+  "kirli": 1,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-21T00:02:16.488Z",
+  "sure_sn": 4.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 12,
+    "gecen": 9,
+    "basarisiz": 3,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 3 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Ç7b YB-1 — eskimiş 'Kalan X' onayıyla Kartı Kapat reddedilir › kalansız kart: onay 'kalan 0' iken tutar büyüdü → 409; eski istemci (alan yok) bugünkü gibi kapatır",
+      "konum": "test/c7b-kart-kapat-onay-250.test.mjs:51:3",
+      "hata": "{\"id\":\"plan-422b52e8-e9f3-472d-9152-c67fe0239dd3\",\"accountId\":\"account-7d8c4baa-4211-49ec-be92-10292f526346\",\"refNo\":\"2\",\"registeredOn\":\"2026-09-01\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"groupId\":null,\"subgroupId\":null,\"name\":\"Kart B\",\"note\":\"\",\"phone\":\"\",\"total\":3500,\"status\":\"closed\",\"coversBalance\":0,\"closedAt\":\"2026-10-08\",\"closeRule\":\"\",\"invoiceId\":\"\",\"invoiceNumber\":\"\",\"createdBy\":\"user-3f9ac412-a1a0-4721-a870-bd8d3f1d0e8a\",\"createdAt\":\"2026-10-08T09:00:01.353Z\",\"updatedAt\":\"2026-10-08T09:00:01.502Z\",\"actorName\":\"Ofis yöneticisi\",\"groupName\":\"\",\"subgroupName\":\"\",\"accountName\":\"Kart Müşterisi\",\"accountRef\":\"1\",\"items\":[{\"id\":\"item-2f45c14b-446a-43c7-9812-b32c6dde1bcb\",\"seq\":1,\"dueDate\":\"2026-10-01\",\"amount\":1000,\"note\":\"\",\"updatedAt\":\"2026-10-08T09:00:01.353Z\",\"paid\":1000,\"remaining\":0,\"ownPaid\":1000,\"ownRemaining\":0,\"partial\":false,\"days\":-7,\"state\":\"paid\",\"planDueDate\":\"2026-10-01\",\"returned\":0,\"held\":0,\"accountPaid\":0},{\"id\":\"item-f6940b26-7cd9-48e0-a2ed-1966f52fe3b6\",\"seq\":2,\"dueDate\":\"2026-10-08\",\"amount\":1000,\"note\":\"\",\"updatedAt\":\"2026-10-08T09:00:01.353Z\",\"paid\":1000,\"remaining\":0,\"ownPaid\":1000,\"ownRemaining\":0,\"partial\":false,\"days\":0,\"state\":\"paid\",\"planDueDate\":\"2026-11-01\",\"returned\":0,\"held\":0,\"accountPaid\":0},{\"id\":\"item-f6a7209b-57d7-4c8e-b814-5cf4fadb06de\",\"seq\":3,\"dueDate\":\"2026-10-08\",\"amount\":1000,\"note\":\"\",\"updatedAt\":\"2026-10-08T09:00:01.353Z\",\"paid\":500,\"remaining\":500,\"ownPaid\":1000,\"ownRemaining\":0,\"partial\":true,\"days\":0,\"state\":\"today\",\"planDueDate\":\"2026-12-01\",\"returned\":0,\"held\":0,\"accountPaid\":0}],\"totals\":{\"total\":3500,\"planned\":3000,\"unplanned\":500,\"paidIn\":3000,\"paidOut\":0,\"paid\":3000,\"remaining\":500,\"ownPaid\":3000,\"ownRemaining\":500,\"extra\":0,\"overdue\":0,\"overdueCount\":0,\"returned\":0,\"queueRemaining\":500,\"accountPaid\":0,\"overdueRest\":0,\"overdueExtras\":[],\"ownOverdue\":0},\"next\":{\"id\":\"item-f6a7209b-57d7-4c8e-b814-5cf4fadb06de\",\"seq\":3,\"dueDate\":\"2026-10-08\",\"remaining\":500,\"days\":0,\"state\":\"today\"},\"state\":\"closed\",\"deleteBlock\":\"\",\"entries\":[{\"id\":\"entry-7eacd2c5-4160-45f4-8875-8eb5a0163041\",\"itemId\":null,\"kind\":\"in\",\"amount\":3000,\"date\":\"2026-10-01\",\"note\":\"\",\"method\":\"cash\",\"receiptNo\":2,\"chequeId\":\"\",\"opening\":false,\"finRef\":\"\",\"createdBy\":\"user-3f9ac412-a1a0-4721-a870-bd8d3f1d0e8a\",\"createdAt\":\"2026-10-08T09:00:01.396Z\",\"updatedAt\":null,\"actorName\":\"Ofis yöneticisi\",\"editable\":true}],\"canManage\":true,\"canCollect\":true,\"ownNext\":null} · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "Ç7b aday düzeltme — Kartı Kapat onayı pencerenin GÖSTERDİĞİ kalanla (S129 = A) › K5 kalansız kart (pencere 0, kartın kendisi 600) tek onayla; tutar büyüyünce onay 0 → 409",
+      "konum": "test/c7bfix-kart-kapat-kuyruk-250.test.mjs:133:3",
+      "hata": "K5b: 200 {\"id\":\"plan-8af44ff5-fe3d-4e81-bd98-2039be27d630\",\"accountId\":\"account-813c7e55-ab20-4249-a93d-f5776d82a559\",\"refNo\":\"7\",\"registeredOn\":\"2026-09-01\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"groupId\":null,\"subgroupId\":null,\"name\":\"Deneme Kartı 13\",\"note\":\"\",\"phone\":\"\",\"total\":1200,\"status\":\"close · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "Ç7b aday düzeltme — Kartı Kapat onayı pencerenin GÖSTERDİĞİ kalanla (S129 = A) › K8 iki kart aynı caride: her kart kendi pencere sayısıyla tek onay",
+      "konum": "test/c7bfix-kart-kapat-kuyruk-250.test.mjs:185:3",
+      "hata": "K8 eski kart — eskimiş 'kalan 0' onayı: 200 {\"id\":\"plan-215a41ff-d2a7-4566-af8c-49d5d3a21e2a\",\"accountId\":\"account-f5714664-f184-4db9-bbe3-43bb13f02e3c\",\"refNo\":\"11\",\"registeredOn\":\"2026-09-01\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"groupId\":null,\"subgroupId\":null,\"name\":\"Deneme Kartı 21\",\"note\":\"\",\"phone\":\"\",\"total\":1000,\"status\":\"clos · 200 !== 409 (beklenen 409, gelen 200)"
+    }
+  ],
+  "ham_cikti": "../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7bfix-a66/kanit/2026-11-21/c7bfix-mutant-m4.log",
+  "klasor": "/dev/shm/c7bfix-a66/mut",
+  "ham_cikti_sha256": "158d49e21cb03256e5d31f9150dc5b109edf1ad2a89ca5562c45bbe40af418e9",
+  "ham_cikti_bayt": 9728
+}

@@ -1,0 +1,88 @@
+TAP version 13
+# (node:27600) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: BS-7 şema sürüm kapısı
+    # Subtest: göç: yeni şemalı dosyada hiçbir göç adımı koşmaz (ensureBankSchema dahil), dosya aynen kalır
+    ok 1 - göç: yeni şemalı dosyada hiçbir göç adımı koşmaz (ensureBankSchema dahil), dosya aynen kalır
+      ---
+      duration_ms: 266.017873
+      type: 'test'
+      ...
+    # Subtest: 002 yeni şemalı, 001 normal: 002 yalnız görüntülenir, 001 çalışır; 002 dosyası bayt bayt aynı mantıksal içerikte kalır
+    ok 2 - 002 yeni şemalı, 001 normal: 002 yalnız görüntülenir, 001 çalışır; 002 dosyası bayt bayt aynı mantıksal içerikte kalır
+      ---
+      duration_ms: 2120.869762
+      type: 'test'
+      ...
+    # Subtest: 001 yeni şemalı, 002 normal: giriş ve okuma çalışır, 001'e veri yazılmaz; 002'ye geçilip çalışılır
+    ok 3 - 001 yeni şemalı, 002 normal: giriş ve okuma çalışır, 001'e veri yazılmaz; 002'ye geçilip çalışılır
+      ---
+      duration_ms: 1479.652625
+      type: 'test'
+      ...
+    # Subtest: geri yükleme + kapı: yeni şemalı 002 eski yedeğine döner (kapı kalkar); 001 eski yedeği yeniden açılışta uygulanır; daha yeni yedek reddedilir
+    ok 4 - geri yükleme + kapı: yeni şemalı 002 eski yedeğine döner (kapı kalkar); 001 eski yedeği yeniden açılışta uygulanır; daha yeni yedek reddedilir
+      ---
+      duration_ms: 1594.818294
+      type: 'test'
+      ...
+    1..4
+ok 1 - BS-7 şema sürüm kapısı
+  ---
+  duration_ms: 5463.718925
+  type: 'suite'
+  ...
+# (node:27601) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: otomatik güncelleme akışı
+    # Subtest: açılışta yeni sürüm indirilir, bakım sayfası gösterilir, yeni sürüme geçilir; veriler korunur
+    ok 1 - açılışta yeni sürüm indirilir, bakım sayfası gösterilir, yeni sürüme geçilir; veriler korunur
+      ---
+      duration_ms: 4693.001605
+      type: 'test'
+      ...
+    # Subtest: yeni sürüm açılamazsa veritabanı ve sürüm geri alınır; o sürüm bir daha denenmez
+    ok 2 - yeni sürüm açılamazsa veritabanı ve sürüm geri alınır; o sürüm bir daha denenmez
+      ---
+      duration_ms: 2755.018839
+      type: 'test'
+      ...
+    # Subtest: yeni sürüm açılamazsa 001 dışındaki şirketler de güncelleme öncesi yedeğe döner (BS-7)
+    ok 3 - yeni sürüm açılamazsa 001 dışındaki şirketler de güncelleme öncesi yedeğe döner (BS-7)
+      ---
+      duration_ms: 3116.733986
+      type: 'test'
+      ...
+    # Subtest: otomatik güncelleme kapalıyken yönetici panelinden denetlenip kurulabilir
+    ok 4 - otomatik güncelleme kapalıyken yönetici panelinden denetlenip kurulabilir
+      ---
+      duration_ms: 5496.486009
+      type: 'test'
+      ...
+    # Subtest: elektrik kesintisinden kalan onaylanmamış sürüm açılışta denenir, açılmazsa önceki sürüme dönülür
+    ok 5 - elektrik kesintisinden kalan onaylanmamış sürüm açılışta denenir, açılmazsa önceki sürüme dönülür
+      ---
+      duration_ms: 1271.2047
+      type: 'test'
+      ...
+    # Subtest: güncelleme sunucusuna ulaşılamazsa uygulama normal açılır
+    ok 6 - güncelleme sunucusuna ulaşılamazsa uygulama normal açılır
+      ---
+      duration_ms: 1000.518149
+      type: 'test'
+      ...
+    1..6
+ok 2 - otomatik güncelleme akışı
+  ---
+  duration_ms: 18335.322805
+  type: 'suite'
+  ...
+1..2
+# tests 10
+# suites 2
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 19740.209384

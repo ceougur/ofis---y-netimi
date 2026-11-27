@@ -1,0 +1,21 @@
+YAKALANDI M1-calismamis-belirtec-190 (çıkış 1; # tests 9, # pass 8, # fail 1) kırmızı: Meta 190 ama belirteç hiç çalışmamış (yeni yazılmış, yanlış)
+YAKALANDI M2-defter-stop-removed (çıkış 1; # tests 7, # pass 6, # fail 1) kırmızı: bekleyen gönderimler 'Durduruldu' (ilke 1): süren, duraklatı
+YAKALANDI M3-baslatma-engeli-yok (çıkış 1; # tests 9, # pass 6, # fail 3) kırmızı: Yol 2 (WhatsApp'ı Bağla): bitiş = bağlanma + 60 gün; bitişe  | süren toplu iş: bitiş anı gelince işçi Meta'ya ileti isteği  | Meta 190, Meta'nın daha önce kabul ettiği belirteçte: bağlan
+YAKALANDI M4-gunde-bir-yok (çıkış 1; # tests 9, # pass 8, # fail 1) kırmızı: bildirim: bitişe 7 gün kala ve sonra her gün EN ÇOK BİR KEZ,
+YAKALANDI M5-meta-duserse-yerel-kalir (çıkış 1; # tests 7, # pass 5, # fail 2) kırmızı: Meta düşerse yerel kaldırma YİNE yapılır: Meta reddi, Meta'y | Meta adresi tanımsız kurulum: yerel kaldırma yapılır, Meta t
+YAKALANDI M6-ikinci-kaldir-yeniden-ister (çıkış 1; # tests 7, # pass 6, # fail 1) kırmızı: aynı anda iki Kaldır: Meta'ya TEK silme isteği, ikisi aynı s
+YAKALANDI M7-ortak-waba-silinir (çıkış 1; # tests 7, # pass 6, # fail 1) kırmızı: iki şirket aynı WhatsApp hesabı (WABA): biri kaldırınca Meta
+YAKALANDI M8-uyari-esigi-kesin-kucuk (çıkış 1; # tests 9, # pass 7, # fail 2) kırmızı: Yol 2 (WhatsApp'ı Bağla): bitiş = bağlanma + 60 gün; bitişe  | bildirim: bitişe 7 gün kala ve sonra her gün EN ÇOK BİR KEZ,
+YAKALANDI M9-bitis-ani-kesin-buyuk (çıkış 1; # tests 9, # pass 7, # fail 2) kırmızı: Yol 2 (WhatsApp'ı Bağla): bitiş = bağlanma + 60 gün; bitişe  | süren toplu iş: bitiş anı gelince işçi Meta'ya ileti isteği 
+YAKALANDI M10-kaldirmada-durdurma-yok (çıkış 1; # tests 7, # pass 6, # fail 1) kırmızı: bekleyen gönderimler 'Durduruldu' (ilke 1): süren, duraklatı
+YAKALANDI M11-yeni-baglanti-silinir (çıkış 1; # tests 7, # pass 6, # fail 1) kırmızı: Meta beklenirken bağlantı yeniden kurulursa (başka pencerede
+YAKALANDI M12-veri-erisimi-uzatir (çıkış 1; # tests 9, # pass 8, # fail 1) kırmızı: Yol 2 süresi Meta yanıtında varsa kaydedilir: expires_in → b
+YAKALANDI M13-meta-abonelik-silinmez (çıkış 1; # tests 7, # pass 2, # fail 5) kırmızı: Yol 2: Kaldır → Meta'da abonelik silinir (DELETE /<WABA>/sub | aynı anda iki Kaldır: Meta'ya TEK silme isteği, ikisi aynı s | Meta düşerse yerel kaldırma YİNE yapılır: Meta reddi, Meta'y | iki şirket aynı WhatsApp hesabı (WABA): biri kaldırınca Meta | Meta beklenirken bağlantı yeniden kurulursa (başka pencerede
+YAKALANDI M14-190-sure-dolmaz (çıkış 1; # tests 9, # pass 7, # fail 2) kırmızı: Meta 190, Meta'nın daha önce kabul ettiği belirteçte: bağlan | Meta 190 ama belirteç hiç çalışmamış (yeni yazılmış, yanlış)
+YAKALANDI M15-eski-yol2-suresiz (çıkış 1; # tests 9, # pass 8, # fail 1) kırmızı: ek denetim — 2.5.0 öncesi Yol 2 kaydı (süre alanları yok): b
+YAKALANDI M17-pdf-adiminda-190-sure-dolumu-ezer (çıkış 1; # tests 12, # pass 11, # fail 1) kırmızı: toplu gönderim, hata ve durum uçlarının yanıtları, işlem geç
+YAKALANDI M16-onizleme-meta-okur (çıkış 1; # tests 9, # pass 8, # fail 1) kırmızı: Yol 2 (WhatsApp'ı Bağla): bitiş = bağlanma + 60 gün; bitişe 
+
+# tests 17
+# pass 17
+# fail 0

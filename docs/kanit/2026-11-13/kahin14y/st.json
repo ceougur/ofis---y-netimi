@@ -1,0 +1,64 @@
+{
+ "a-bugun-100": {
+  "supheli": 200,
+  "tahsilat": 200,
+  "kod": "",
+  "ileti": "",
+  "sorular": [],
+  "bakiye": 900,
+  "supheliOzet": {
+   "count": 1,
+   "openCount": 1,
+   "openMinor": 80000,
+   "provisionMinor": 0,
+   "collectedMinor": 10000,
+   "writtenOffMinor": 0,
+   "releasedMinor": 0
+  },
+  "satirlar": [
+   "debt:1000:",
+   "in:100:"
+  ]
+ },
+ "b-bugun-300": {
+  "supheli": 200,
+  "tahsilat": 200,
+  "kod": "",
+  "ileti": "",
+  "sorular": [],
+  "bakiye": 700,
+  "supheliOzet": {
+   "count": 1,
+   "openCount": 1,
+   "openMinor": 60000,
+   "provisionMinor": 0,
+   "collectedMinor": 30000,
+   "writtenOffMinor": 0,
+   "releasedMinor": 0
+  },
+  "satirlar": [
+   "debt:1000:",
+   "in:300:"
+  ]
+ },
+ "c-geriye-300": {
+  "supheli": 200,
+  "tahsilat": 409,
+  "kod": "ledger-integrity",
+  "ileti": "İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Şüpheli Alacak — Carinin Normal Alacağı Eksi Değil (120 = kart − açık şüpheli ≥ 0)). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.",
+  "sorular": [],
+  "bakiye": 1000,
+  "supheliOzet": {
+   "count": 1,
+   "openCount": 1,
+   "openMinor": 90000,
+   "provisionMinor": 0,
+   "collectedMinor": 0,
+   "writtenOffMinor": 0,
+   "releasedMinor": 0
+  },
+  "satirlar": [
+   "debt:1000:"
+  ]
+ }
+}

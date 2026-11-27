@@ -1,0 +1,32 @@
+{
+  "ad": "c5a1b-s127-Europe-Istanbul",
+  "komut": "node --test --test-concurrency=1 test/s127-tek-kez-250.test.mjs test/acilis-519-250.test.mjs test/donmus-defter-250.test.mjs test/donmus-defter-tur1-250.test.mjs",
+  "commit": "b6d493918f2f8cb6efca9e853c49b158b582e438",
+  "dal": "worktree-agent-ae40882bc6254a115",
+  "kirli": 4,
+  "izlenmeyen": 11,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-11T17:27:20.132Z",
+  "sure_sn": 25.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 47,
+    "gecen": 47,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-kanit/2026-11-11/c5a1b-s127-Europe-Istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ae40882bc6254a115",
+  "ham_cikti_sha256": "a972a3b1b1eefcf54517ee6e54f5d41210c8bf7a4ce54046f728823a4a7cf314",
+  "ham_cikti_bayt": 31926
+}

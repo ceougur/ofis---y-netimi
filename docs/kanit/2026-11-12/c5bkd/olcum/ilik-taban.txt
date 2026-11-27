@@ -1,0 +1,23 @@
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkd-taban · yük 0.86 1.32 2.81
+zil (yazımdan sonra ilk): kalem 39460 · yanıt 21347116 bayt
+ILIK ZİL × 10: en iyi 477.7 · ortanca 589.3 · en kötü 675.8 ms · 587.6 482 628.6 492.8 675.8 496.4 649.1 477.7 591.6 589.3
+  profil toplam 6332 ms (çağrı başına 633.2 ms)
+    132.3 ms/çağrı  send http.mjs:38
+    111.3 ms/çağrı  get :0
+       72 ms/çağrı  parseJSONFromBytes undici:5958
+       66 ms/çağrı  post node:inspector:118
+     64.6 ms/çağrı  (garbage collector) :0
+     62.4 ms/çağrı  decode encoding:442
+       33 ms/çağrı  writevGeneric stream_base_commons:121
+     24.3 ms/çağrı  writev :0
+     23.5 ms/çağrı  (anonim) :0
+     13.1 ms/çağrı  (idle) :0
+      3.7 ms/çağrı  fetchParams.controller.resume undici:11530
+      3.2 ms/çağrı  createUnsafeBuffer buffer:1082
+      2.9 ms/çağrı  _copyActual node:buffer:243
+      1.8 ms/çağrı  nextTick task_queues:111
+      1.7 ms/çağrı  (anonim) dues.mjs:153
+      1.4 ms/çağrı  (anonim) dues.mjs:143
+ILIK ZİL (since=sürüm; ekranın gerçek çağrısı) × 10: en iyi 99 · ortanca 102 · en kötü 113.9 ms
+yük (sonda) 0.97 1.32 2.79
+çıkış 0

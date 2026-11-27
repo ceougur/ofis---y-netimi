@@ -1,0 +1,748 @@
+ok 1 - A senaryolar.json güncel (yeniden üretim = dosya)
+  # bilgi: 367 senaryo
+ok 2 - A senaryo sayısı ≥ 40 ve plan §8 başlıklarının hepsi temsil ediliyor
+ok 3 - B elle = model: TEMEL-01-ekstre-uc-kisi
+ok 4 - B elle = model: TEMEL-02-odeme-hatirlatma
+ok 5 - B elle = model: TEMEL-03-okundu-teslimsiz
+ok 6 - B elle = model: TEMEL-04-sirasiz-kanca
+ok 7 - B elle = model: TEMEL-05-teslimden-sonra-failed
+ok 8 - B elle = model: CIFT-01-zaman-asimi-meta-aldi
+ok 9 - B elle = model: CIFT-02-yanitsiz-yine-de-gonder
+ok 10 - B elle = model: CIFT-03-yine-de-gonder-cift-gider
+ok 11 - B elle = model: CIFT-04-cokme-istek-ulasti
+ok 12 - B elle = model: CIFT-05-cokme-istek-ulasmadi
+ok 13 - B elle = model: CIFT-06-cift-tik
+ok 14 - B elle = model: CIFT-07-iki-sekme
+ok 15 - B elle = model: CIFT-07b-iki-sekme-yine-de-gonder
+ok 16 - B elle = model: CIFT-08-iki-kullanici-ayni-cari
+ok 17 - B elle = model: CIFT-09-basarisizlari-yeniden-dene
+ok 18 - B elle = model: CIFT-10-yinelenen-kanca
+ok 19 - B elle = model: CIFT-11-medya-yanitsiz
+ok 20 - B elle = model: CIFT-12-geri-yukleme-dirilmez
+ok 21 - B elle = model: CIFT-13-veri-tasindi
+ok 22 - B elle = model: CIFT-15-daha-once-basarisiz
+ok 23 - B elle = model: CIFT-16-daha-once-suresi-doldu
+ok 24 - B elle = model: CIFT-17-baska-donem
+ok 25 - B elle = model: CIFT-14-geri-yukleme-sonra-baslat
+ok 26 - B elle = model: KAYIP-01-kapaliyken-kanca
+ok 27 - B elle = model: KAYIP-02-sekiz-gun-kapali
+ok 28 - B elle = model: KAYIP-03-tunel-kapali
+ok 29 - B elle = model: KAYIP-04-guncelleme-kapat-ac
+ok 30 - B elle = model: KAYIP-05-meta-ulasilamaz
+ok 31 - B elle = model: KAYIP-06-meta-ulasilamaz-uc-kisi
+ok 32 - B elle = model: KAYIP-07-baglanti-arada-koptu
+ok 33 - B elle = model: KISI-01-telefon-kuyrukta-degisti
+ok 34 - B elle = model: KISI-02-ayni-adli-iki-cari
+ok 35 - B elle = model: KISI-03-ayni-kisi-iki-kez
+ok 36 - B elle = model: KISI-04-hucrede-iki-numara
+ok 37 - B elle = model: KISI-05-sabit-hat
+ok 38 - B elle = model: KISI-06-yurt-disi
+ok 39 - B elle = model: KISI-07-telefonsuz-gecersiz
+ok 40 - B elle = model: KISI-08-istemiyor
+ok 41 - B elle = model: KISI-09-istemiyor-sonradan
+ok 42 - B elle = model: KISI-10-silindi-kuyrukta
+ok 43 - B elle = model: KISI-11-numara-bicimleri
+ok 44 - B elle = model: KISI-12-ayni-telefon-iki-cari
+ok 45 - B elle = model: KISI-13-hepsi-elendi
+ok 46 - B elle = model: KISI-14-ayiricilar
+ok 47 - B elle = model: KISI-15-pasif
+ok 48 - B elle = model: ICERIK-01-pdf-karismasi
+ok 49 - B elle = model: ICERIK-02-devir-ve-donem-uclari
+ok 50 - B elle = model: ICERIK-03-yil-donumu
+ok 51 - B elle = model: ICERIK-04-turkce-emoji-satir-sonu
+ok 52 - B elle = model: ICERIK-05-cok-uzun-ad
+ok 53 - B elle = model: ICERIK-06-eksi-bakiye
+ok 54 - B elle = model: ICERIK-07-tutar-bicimi
+ok 55 - B elle = model: ICERIK-08-tum-hareketler
+ok 56 - B elle = model: ICERIK-09-kuyrukta-bakiye-degisti
+ok 57 - B elle = model: ICERIK-10-ttl-sonrasi-teslim
+ok 58 - B elle = model: ICERIK-11-ttl-icinde-gec-teslim
+ok 59 - B elle = model: ICERIK-12-hatirlatma-kuyrukta-odendi
+ok 60 - B elle = model: HESAP-0
+ok 61 - B elle = model: HESAP-10
+ok 62 - B elle = model: HESAP-200
+ok 63 - B elle = model: HESAP-131005
+ok 64 - B elle = model: HESAP-368
+ok 65 - B elle = model: HESAP-131031
+ok 66 - B elle = model: HESAP-131042
+ok 67 - B elle = model: HESAP-133010
+ok 68 - B elle = model: HESAP-131045
+ok 69 - B elle = model: SABLON-GONDERIM-132000
+ok 70 - B elle = model: SABLON-GONDERIM-132001
+ok 71 - B elle = model: SABLON-GONDERIM-132007
+ok 72 - B elle = model: SABLON-GONDERIM-132012
+ok 73 - B elle = model: SABLON-GONDERIM-132015
+ok 74 - B elle = model: SABLON-GONDERIM-132016
+ok 75 - B elle = model: SABLON-GONDERIM-132018
+ok 76 - B elle = model: HATA-SINIFSIZ-100
+ok 77 - B elle = model: HATA-SINIFSIZ-131008
+ok 78 - B elle = model: HATA-SINIFSIZ-135000
+ok 79 - B elle = model: HATA-SINIFSIZ-131053
+ok 80 - B elle = model: HATA-SINIFSIZ-131047
+ok 81 - B elle = model: HATA-SINIFSIZ-131050
+ok 82 - B elle = model: HATA-SINIFSIZ-131051
+ok 83 - B elle = model: HATA-SINIFSIZ-130403
+ok 84 - B elle = model: HATA-SINIFSIZ-131064
+ok 85 - B elle = model: HATA-SINIFSIZ-131063
+ok 86 - B elle = model: HATA-SINIFSIZ-133016
+ok 87 - B elle = model: HATA-SINIFSIZ-987654
+ok 88 - B elle = model: SABLON-BASLATMA-PENDING
+ok 89 - B elle = model: SABLON-BASLATMA-REJECTED
+ok 90 - B elle = model: SABLON-BASLATMA-PAZARLAMA
+ok 91 - B elle = model: SABLON-BASLATMA-DURAKLATILMIS
+ok 92 - B elle = model: SABLON-BASLATMA-YOK
+ok 93 - B elle = model: SABLON-BASLATMA-YALNIZ-HATIRLATMA
+ok 94 - B elle = model: SABLON-SONRAKI-TOPLU
+ok 95 - B elle = model: SABLON-PAZARLAMA-ARADA
+ok 96 - B elle = model: SABLON-PAZARLAMA-10-DK
+ok 97 - B elle = model: GECICI-01-131000-iki-kez
+ok 98 - B elle = model: GECICI-02-bes-art-arda
+ok 99 - B elle = model: GECICI-03-uc-sonra-kabul
+ok 100 - B elle = model: GECICI-03b-dort-hata-basarisiz
+ok 101 - B elle = model: GECICI-130429
+ok 102 - B elle = model: GECICI-131057
+ok 103 - B elle = model: GECICI-80007
+ok 104 - B elle = model: GECICI-4
+ok 105 - B elle = model: GECICI-1
+ok 106 - B elle = model: GECICI-2
+ok 107 - B elle = model: GECICI-133004
+ok 108 - B elle = model: GECICI-131056
+ok 109 - B elle = model: ALICI-131049-bir-kez
+ok 110 - B elle = model: ALICI-131049-iki-kez
+ok 111 - B elle = model: ALICI-131049-esanli
+ok 112 - B elle = model: ALICI-131026-kancada
+ok 113 - B elle = model: ALICI-131021-esanli
+ok 114 - B elle = model: SINIR-01-250-uzeri
+ok 115 - B elle = model: SINIR-02-basamak-artti
+ok 116 - B elle = model: SINIR-03-elle-ust-sinir
+ok 117 - B elle = model: SINIR-04-meta-sinir-hatasi
+ok 118 - B elle = model: SINIR-05-pencerede-sayili-alici
+ok 119 - B elle = model: SINIR-06-gece-yarisi-kayan
+ok 120 - B elle = model: SINIR-07-131048
+ok 121 - B elle = model: SIRKET-01-ayni-waba
+ok 122 - B elle = model: SIRKET-02-ayri-waba
+ok 123 - B elle = model: SIRKET-03-sinir-hatasi-ayri-waba
+ok 124 - B elle = model: OLCEK-01-iki-bin
+ok 125 - B elle = model: OLCEK-02-uc-gune-yayilan
+ok 126 - B elle = model: OLCEK-03-kanca-yagmuru
+ok 127 - B elle = model: OLCEK-04-pazarlama-300
+ok 128 - B elle = model: OLCEK-05-pazarlama-100-ileti
+ok 129 - B elle = model: GUV-01-yetkisiz
+ok 130 - B elle = model: GUV-02-salt-okunur-lisans
+ok 131 - B elle = model: GUV-03-lisans-arada-biter
+ok 132 - B elle = model: GUV-04-onay-yok
+ok 133 - B elle = model: GUV-05-sahte-kanca
+ok 134 - B elle = model: GUV-06-sahte-opaque
+ok 135 - B elle = model: GUV-07-bagli-degil
+ok 136 - B elle = model: GUV-08-lisans-geri-gelir
+ok 137 - B elle = model: GUV-09-sahte-gercek-wamid
+ok 138 - B elle = model: GUV-10-yetki-ve-baglanti-sirasi
+ok 139 - B elle = model: GUV-11-yetki-lisans-onay-sirasi
+ok 140 - B elle = model: GUV-12-onay-sablon-sirasi
+ok 141 - B elle = model: TARIH-01-ay-sonu
+ok 142 - B elle = model: TARIH-02-ttl-sonu
+ok 143 - B elle = model: TARIH-03-kancasiz
+ok 144 - B elle = model: TARIH-03b-kancasiz-yol-calisiyor
+ok 145 - B elle = model: TARIH-04-eski-toplu-sinirda
+ok 146 - B elle = model: TARIH-05-eski-toplu
+ok 147 - B elle = model: TARIH-06-genc-toplu-kapat-ac
+ok 148 - B elle = model: K1-01-ay-sonu-bu-ay-sonra-gecen-ay
+ok 149 - B elle = model: K1-02-yil-donumu
+ok 150 - B elle = model: K1-03-yarim-ay-bu-ay-sonra-tam-ay-gecen-ay
+ok 151 - B elle = model: K1-04-zaten-kuyrukta-ay-donumu
+ok 152 - B elle = model: K1-05-son-3-ay-7-gun
+ok 153 - B elle = model: K1-06-tum-hareketler-7-gun
+ok 154 - B elle = model: K1-07-hatirlatma-ayni-yerel-gun
+ok 155 - B elle = model: K1-08-hatirlatma-zaten-kuyrukta-ayni-gun
+ok 156 - B elle = model: K1-09-bu-ay-gecen-ay-farkli-ay
+ok 157 - B elle = model: K1-10-ozel-aralik-birebir
+ok 158 - B elle = model: K2-01-son-3-ay-bekleyen-yasi-yok
+ok 159 - B elle = model: K2-02-tum-hareketler-bekleyen-yasi-yok-iptal-sonra
+ok 160 - B elle = model: K3-01-basarisiz-sayilmaz-ay-donumu
+ok 161 - B elle = model: K3-02-meta-bekletti-ret-sonra-gec-teslim-sayilir
+ok 162 - B elle = model: K7-01-meta-bekletti-ikinci-deneme-reddi-sayilmaz
+ok 163 - B elle = model: K7-02-iptal-meta-bekletti-sayilmaz
+ok 164 - B elle = model: K7-03-iptal-meta-bekletti-gec-teslim-sayilir
+ok 165 - B elle = model: K7-04-geri-yukleme-meta-bekletti-sayilmaz
+ok 166 - B elle = model: K7-05-tasima-meta-bekletti-gec-teslim-sayilir
+ok 167 - B elle = model: K4-01-ay-sonu-yeniden-deneme-donemi-tasinir
+ok 168 - B elle = model: K4-02-yil-donumu-yeniden-deneme
+ok 169 - B elle = model: K4-03-son-3-ay-yeniden-deneme-secim-tasinir
+ok 170 - B elle = model: K5-01-karar-yeniden-denemeye-tasinir
+ok 171 - B elle = model: K5-02-acilistan-sonra-baska-isle-giden-elenir
+ok 172 - B elle = model: K5-03-sonra-programin-saatine-gore
+ok 173 - B elle = model: K5-04-isteki-yine-de-gonder-karari-tasir
+ok 174 - B elle = model: K5-05-karar-yokken-onceki-gec-teslim-sayilir
+ok 175 - B elle = model: K6-01-yeniden-denemesi-belirsiz-elenir
+ok 176 - B elle = model: K6-02-asil-isin-karari-belirsizi-gecmez
+ok 177 - B elle = model: K6-03-acilistan-once-belirsiz-geri-yukleme-sonrasi
+ok 178 - B elle = model: K6-04-hic-basarisiz-olmamis-belirsiz-aday-degil
+ok 179 - B elle = model: K8-01-sayfalama-imlec-kaymaz
+ok 180 - B elle = model: K8-02-tarih-suzgeci-yerel-gun
+ok 181 - B elle = model: K8-03-suzgec-ile-sayfalama
+ok 182 - B elle = model: D1-01-belirsiz-yeni-toplu-iste-elenir
+ok 183 - B elle = model: D1-02-belirsiz-ay-sonu-eslik
+ok 184 - B elle = model: D1-03-belirsiz-son-3-ay-7-gun
+ok 185 - B elle = model: D2-01-hatirlatma-dunden-bekleyen-bugunku-eler
+ok 186 - B elle = model: D2-02-hatirlatma-uc-gundur-bekleyen-ve-ertesi-gun-serbest
+ok 187 - B elle = model: D3-01-yeniden-deneme-7-gun-yeni-gonderimden
+ok 188 - B elle = model: D3-02-yine-de-gonder-7-gun-yeni-gonderimden
+ok 189 - B elle = model: D4-01-ozel-aralik-ayni-gun-bu-ay
+ok 190 - B elle = model: D4-02-ay-sonu-bu-ay-sonra-ozel-aralik
+ok 191 - B elle = model: D4-03-yil-donumu-ozel-aralik-zaten-kuyrukta
+ok 192 - B elle = model: D5-01-sonraki-denemesi-kabul-daha-once
+ok 193 - B elle = model: D5-02-sonraki-denemesi-bekliyor-zaten-kuyrukta
+ok 194 - B elle = model: D6-01-asilmis-belirsiz-yeni-toplu-iste-eler
+ok 195 - B elle = model: D6-02-asilmis-belirsiz-yeniden-denemede-eler
+ok 196 - B elle = model: D6-03-asilmis-belirsiz-son-3-ay-7-gun
+ok 197 - B elle = model: D7-01-geri-yukleme-sonrasi-defterdeki-kabul-sayilir
+ok 198 - B elle = model: D7-02-geri-yukleme-ay-donumu-defterdeki-kabul
+ok 199 - B elle = model: D8-01-tasinan-veride-dosyadaki-ileti-sayilir
+ok 200 - B elle = model: D8-02-tasinan-veride-yine-de-gonder
+ok 201 - B elle = model: E1-01-dosyada-ve-defterde-belirsiz
+ok 202 - B elle = model: E2-01-yeni-is-uclu-cakisma
+ok 203 - B elle = model: E2-02-yeni-is-belirsiz-ve-r3-yine-de-gonder
+ok 204 - B elle = model: E2-03-yeniden-denemede-kuyrukta-once-belirsiz
+ok 205 - B elle = model: E2-04-yeniden-denemede-uclu-cakisma
+ok 206 - B elle = model: E2-05-yeniden-denemede-belirsiz-once-r3
+ok 207 - B elle = model: E2-06-isteki-yine-de-gonder-zaten-kuyrukta
+ok 208 - B elle = model: E3-01-hatirlatma-belirsiz-ayni-yerel-gun
+ok 209 - B elle = model: E3-02-hatirlatma-yeniden-deneme-ayni-gun-belirsiz
+ok 210 - B elle = model: E4-01-son-3-ay-sonraki-teslim-7-gun
+ok 211 - B elle = model: E4-02-tum-hareketler-sonraki-teslim-7-gun
+ok 212 - B elle = model: N6-01-yeniden-denemede-baska-iste-bekleyen
+ok 213 - B elle = model: F1-01-iki-belirsiz-is-isteki-yine-de-gonder-gider
+ok 214 - B elle = model: F1-02-asilmis-belirsiz-ve-bekleyen-zaten-kuyrukta
+ok 215 - B elle = model: F1-03-asilmis-eski-belirsiz-isteki-yine-de-gonder-gider
+ok 216 - B elle = model: F2-01-hatirlatma-yeniden-deneme-ertesi-gun
+ok 217 - B elle = model: F2-02-hatirlatma-dunku-belirsiz-bugunku-r3
+ok 218 - B elle = model: G0-01-sonraki-denemesi-teslimsiz-durdu-yeniden-gider
+ok 219 - B elle = model: G0-02-asil-isteki-belirsiz-deneme-yine-de-gonder
+ok 220 - B elle = model: G1-01-ozel-aralik-sinirla-ertesi-gun-ayni-donem
+ok 221 - B elle = model: G1-02-bu-ay-sinirla-ertesi-gun-ayni-donem
+ok 222 - B elle = model: G1-03-yeniden-deneme-ertesi-gun-asil-isin-gunu
+ok 223 - B elle = model: G2-01-bu-ay-0311-ozel-0511
+ok 224 - B elle = model: G2-02-iki-ozel-aralik-kendi-gunlerinde-bu-ay
+ok 225 - B elle = model: G2-03-gece-yarisi-bu-ay-yerel-gun
+ok 226 - B elle = model: G3-01-tasinan-belirsiz-yeni-iste-eler
+ok 227 - B elle = model: G3-02-tasinan-belirsiz-yeniden-denemede-eler
+ok 228 - B elle = model: G3-03-tasinan-teslim-son-3-ay-7-gun
+ok 229 - B elle = model: G3-04-tasinan-asil-isin-yine-de-gonder-siniri
+ok 230 - B elle = model: G4-01-sifirlama-meta-bekletti-sayilmaz
+ok 231 - B elle = model: G4-02-sifirlama-meta-bekletti-gec-teslim-sayilir
+ok 232 - B elle = model: G5-01-meta-bekletti-ikinci-deneme-belirsiz-elenir
+ok 233 - B elle = model: G5-02-meta-bekletti-ikinci-deneme-cozuldu-teslim
+ok 234 - B elle = model: G6-01-son-3-ay-ozel-aralik-7-gun
+ok 235 - B elle = model: G6-02-ozel-aralik-tum-hareketler-kisiye-gore
+ok 236 - B elle = model: G6-03-son-3-ay-bekleyen-ozel-aralik-gece-yarisi
+ok 237 - B elle = model: G6-04-tum-hareketler-belirsiz-ozel-aralik
+ok 238 - B elle = model: G6-05-son-3-ay-yeniden-deneme-asil-isin-gunu
+ok 239 - B elle = model: H1-01-yine-de-gonder-teslim-daha-once
+ok 240 - B elle = model: H1-02-yine-de-gonder-basarisiz-belirsiz-surer
+ok 241 - B elle = model: H1-03-gece-yarisi-son-3-ay-yine-de-gonder
+ok 242 - B elle = model: H2-01-tasima-gonderiliyor-belirsiz
+ok 243 - B elle = model: H2-02-tasima-gonderiliyor-gec-kanca
+ok 244 - B elle = model: H3-01-geri-yukleme-dosyasiz-gec-kabul
+ok 245 - B elle = model: H3-02-geri-yukleme-meta-bekletti-gec-teslim
+ok 246 - B elle = model: H4-01-r3-son-gonderim-son-kabul-gece-yarisi
+ok 247 - B elle = model: J1-01-duraklatilmis-meta-bekletti-teslim-is-kapanir
+ok 248 - B elle = model: J1-02-suresi-doldu-sonra-teslim-daha-once
+ok 249 - B elle = model: J1-03-silinmis-sirket-gec-bildirim
+ok 250 - B elle = model: J1-04-asilmis-belirsiz-gec-teslim-iki-deneme
+ok 251 - B elle = model: J1-05-asilmis-belirsiz-gec-teslim-yeni-deneme-basarisiz
+ok 252 - B elle = model: J1-06-meta-bekletti-ret-gec-teslim-yeniden-acilmaz
+ok 253 - B elle = model: J2-01-meta-bekletti-teslim-is-kapanir
+ok 254 - B elle = model: J2-02-meta-bekletti-okundu-is-kapanir
+ok 255 - B elle = model: J3-01-geri-yukleme-sonrasi-gec-failed-yeniden-gonderilir
+ok 256 - B elle = model: J3-02-sifirlama-sonrasi-gec-failed-yeniden-gonderilir
+ok 257 - B elle = model: J3-03-asilmis-belirsiz-gec-failed-kisi-almadi
+ok 258 - B elle = model: J3-04-eski-denemenin-failed-i-simdiki-kabulu-bozmaz
+ok 259 - B elle = model: J4-01-suresi-doldu-son-kabulden-meta-bekletti
+ok 260 - B elle = model: J4-02-suresi-doldu-son-kabulden-yine-de-gonder
+ok 261 - B elle = model: J5-01-bekletme-sonrasi-iki-teslim
+ok 262 - B elle = model: J5-02-iki-teslim-ay-donumu-yerel
+ok 263 - B elle = model: J6-01-yanit-beklenirken-taninmayan-503-yineleme
+ok 264 - B elle = model: J6-02-sirket-gecici-acilamaz-503
+ok 265 - B elle = model: J6-03-bildirim-kaydedilemez-503
+ok 266 - B elle = model: J7-01-onarim-bekleyen-kabul-yeni-gonderim-baslamaz
+ok 267 - B elle = model: J7-02-onarim-sirasinda-bildirim-sonra-tek-ileti
+ok 268 - B elle = model: J8-01-tum-hareketler-bu-ay-ayni-gun
+ok 269 - B elle = model: J8-02-tum-hareketler-gecen-ay-ayni-gun
+ok 270 - B elle = model: J8-03-tum-hareketler-kanon-sonraki-gun-bu-ay
+ok 271 - B elle = model: J8-04-tum-hareketler-bekleyen-bu-ay-zaten-kuyrukta
+ok 272 - B elle = model: J8-05-ay-sonu-tum-sonra-gecen-ay-gece-yarisi
+ok 273 - B elle = model: J8-06-ozel-aralik-kanon-sonra-tum-hareketler
+ok 274 - B elle = model: J9-01-n3-iptal-sonrasi-ikinci-is-gec-teslim-iki-ileti
+ok 275 - B elle = model: J9-02-n3-basarisiz-sonrasi-ikinci-is-gec-teslim-iki-ileti
+ok 276 - B elle = model: J10-01-a-yine-de-gonder-sinirda-eski-teslim-gitmez
+ok 277 - B elle = model: J10-02-a-yine-de-gonder-duraklatilmis-eski-teslim-gitmez
+ok 278 - B elle = model: J10-03-c-belirsiz-zinciri-yeniden-deneme-eski-teslim-gitmez
+ok 279 - B elle = model: J10-04-c-duz-yeniden-deneme-eski-teslim-ikinci-kopya-gider
+ok 280 - B elle = model: J10-05-b-r3-yine-de-gonder-onceki-teslim-ikinci-kopya-gider
+ok 281 - B elle = model: J11-01-tum-hareketler-metni-acilis-gunu-sinirla-ertesi-gun
+ok 282 - B elle = model: J11-02-hareketsiz-cari-metni-ve-eslik
+ok 283 - B elle = model: J11-03-ertesi-gune-kayan-kisi-acilis-gunuyle-eslesir
+ok 284 - B elle = model: J12-01-yine-de-gonder-ekstre-icerigi-acilistaki-gibi
+ok 285 - B elle = model: J12-02-tum-hareketler-acilistan-sonra-tarihli-hareket-girmez
+ok 286 - B elle = model: J12-03-tum-hareketler-sinirla-ertesi-gun-kuyrukta-hareket
+ok 287 - B elle = model: W1-01-varsayilan-30-gun-eski-72-sa-okunmaz
+ok 288 - B elle = model: W1-02-30-gun-dolmadan-daha-once-yine-de-gonder
+ok 289 - B elle = model: W1-03-meta-bildirir-12-sa-sablon-basina
+ok 290 - B elle = model: W1-04-ay-sonu-12-sa-gec-teslim
+ok 291 - B elle = model: W1-05-varsayilan-30-gun-meta-bekletti-son-kabulden
+ok 292 - B elle = model: W2-01-kabulde-bilinmiyor-sonra-12-sa
+ok 293 - B elle = model: W2-02-kabulde-30-gun-sonra-12-sa-kisalir
+ok 294 - B elle = model: W3-01-kabulde-12-sa-sonra-30-gun-uzar
+ok 295 - B elle = model: SW1-01-gec-teslim-ikinci-is-beklerken-gelir-iki-ileti
+ok 296 - B elle = model: SW1-02-gec-teslim-yedi-gun-sonra-iki-ileti
+ok 297 - B elle = model: SW1-03-birinci-basarisiz-kalir-ikinci-gider-tek-ileti
+ok 298 - B elle = model: SW2-01-suresi-doldu-pencerede-sayilmaz-yeni-is-gider
+ok 299 - B elle = model: SW2-02-ayni-aliciya-sayilan-baska-kabul-varsa-sayilir
+ok 300 - B elle = model: SD1837-01-sure-dolunca-duraklar-yeniden-baglaninca-devam-yalniz-kalanlar
+ok 301 - B elle = model: SD1837-02-yeniden-baglanmadan-devam-et-ileti-gitmez
+ok 302 - B elle = model: SD1837-03-sure-dolunca-yeni-gonderim-baslamaz
+ok 303 - B elle = model: SD1915-01-ileti-isteginde-190-bekleyenlere-doner
+ok 304 - B elle = model: SD1915-02-pdf-yuklemesinde-190-bekleyenlere-doner
+ok 305 - B elle = model: SD1915-03-meta-bekletti-ikinci-deneme-190-ilk-ileti-teslim-is-kapanir
+ok 306 - B elle = model: SD1915-04-geri-yukleme-reddedilen-sayilmaz
+ok 307 - B elle = model: SD1915-05-tasima-reddedilen-sayilmaz-kod-0
+ok 308 - B elle = model: SW4-01-kod-0-ayni-sirketin-oburu-toplu-isi-de-duraklar
+ok 309 - B elle = model: SW4-02-kod-0-pdf-yuklemesinde
+ok 310 - B elle = model: SW4-03-kod-102-bugunku-gibi
+ok 311 - B elle = model: S7-01-supheli-alacakli-otomatik-listeye-girmez
+ok 312 - B elle = model: S7-02-supheli-alacakli-elle-secilir-suphelisiz-tutar
+ok 313 - B elle = model: S7A-01-elle-supheli-suphesiz-gecikmis-yok-elenir
+ok 314 - B elle = model: S7A-02-elle-supheli-kuyrukta-suphesiz-kapanir-gonderimde-atlanir
+ok 315 - B elle = model: S7A-03-gece-yarisi-suphesiz-vade-yerel-gun
+ok 316 - B elle = model: S7B-01-sinirda-supheli-acilan-atlanir-yeni-gonderimde-elle-gider
+ok 317 - B elle = model: S7B-02-duraklatmada-supheli-acilan-atlanir-elle-secilen-gider
+ok 318 - B elle = model: S7B-03-kuyrukta-acilan-kayit-kapanirsa-gider
+ok 319 - B elle = model: S7B-04-meta-bekletti-ikinci-denemede-supheli-atlanir
+ok 320 - B elle = model: S7B-05-yeniden-denemede-supheli-atlanir-elle-isaret-tasinir
+ok 321 - B elle = model: S16-01-yine-de-gonder-supheli-acik-elle-sayilir-suphesiz-tutarla-gider
+ok 322 - B elle = model: S16-02-yine-de-gonder-suphesiz-tutar-yok-elenir-ertesi-gun-gider
+ok 323 - B elle = model: S16-03-kayit-basmadan-once-kapanir-etiket-yok-butun-gecikmisle-gider
+ok 324 - B elle = model: S16-04-s16-elle-isareti-zincirdeki-yeniden-denemeye-tasinir
+ok 325 - B elle = model: S17-01-elle-supheli-suphesiz-net-borcla-sinirlanir
+ok 326 - B elle = model: S17-02-gonderim-aninda-suphesiz-net-borc-yeniden-hesaplanir
+ok 327 - B elle = model: NB5-01-net-borc-siniri-bize-alacakli-elenir
+ok 328 - B elle = model: NB5-02-gonderim-aninda-bize-alacakli-atlanir-tutar-yeniden
+ok 329 - B elle = model: S22-01-sinirda-bekleyen-yine-de-gonder-supheli-acilir-atlanir-yeniden-basma-gider
+ok 330 - B elle = model: S22-02-duraklatildi-devam-et-atlanir-ayni-gun-yeni-is-belirsiz-yeniden-basma-gider
+ok 331 - B elle = model: S22-03-zincirdeki-yeniden-denemede-supheli-atlanir-yeni-gonderimde-elle-gider
+ok 332 - B elle = model: S22-04-kayit-gonderimden-once-kapanirsa-butun-gecikmisle-gider-acik-kalan-atlanir
+ok 333 - B elle = model: S22-05-ay-sonu-gece-yarisi-atlanir-yerel-gunle-yeniden-basma
+ok 334 - B elle = model: S22-06-meta-bekletti-ikinci-denemede-atlanir-yeniden-basma-gider
+ok 335 - B elle = model: S23-01-sinirda-bekleyen-yeniden-basma-elle-sayilir-pencere-acilinca-gider
+ok 336 - B elle = model: S23-02-duraklatildi-yeniden-basma-elle-devam-et-ile-gider-kayitsiz-zaten-kuyrukta
+ok 337 - B elle = model: S23-03-zincirdeki-yeniden-deneme-beklerken-yeniden-basma-elle-gider
+ok 338 - B elle = model: S23-04-meta-bekletti-beklerken-yeniden-basma-ikinci-denemede-gider
+ok 339 - B elle = model: S23-05-yeniden-basmada-suphesiz-tutar-yok-iki-okuma-ileti-gitmez
+ok 340 - B elle = model: SW3-01-bir-yil-siniri-iki-yani-sure-dolunca-ayni-donem-daha-once-gonderildi
+ok 341 - B elle = model: SW3-02-gece-yarisi-yerel-gun-utc-farkli-bir-yil-siniri
+ok 342 - B elle = model: SW3-03-silme-talebi-ayni-donem-elenir-sonraki-donem-gider-silinen-telefon-kullanilmaz
+ok 343 - B elle = model: SW3-04-geri-yukleme-bir-yildan-eski-icerik-donunce-silinir
+ok 344 - B elle = model: SW3-05-silme-talebinden-once-alinan-yedek-geri-yuklenir-icerik-susuyor-r3-kesin
+ok 345 - B elle = model: S29-01-yeniden-basmada-tutar-yok-ertesi-gun-devam-et-gonderim-anindaki-tutarla-gider
+ok 346 - B elle = model: S29-02-gece-yarisi-yerel-gun-tutar-dogar-utc-gunu-farkli
+ok 347 - B elle = model: S29-03-meta-bekletti-ikinci-denemede-tutar-dogar-net-borcla-sinirli
+ok 348 - B elle = model: S29-04-sinirda-yeni-gecikmis-kalem-eklenir-kayit-kapanirsa-butun-gecikmisle
+ok 349 - B elle = model: S30-01-talep-duraklatildi-meta-bekletti-zincir-gonderilmez-belirsiz-iz-eler
+ok 350 - B elle = model: S30-02-talep-sinir-lisans-gonderilmez-belirsiz-hatirlatma-ayni-gun-elenir-ertesi-gun-gider
+ok 351 - B elle = model: S30-03-bir-yil-dolumu-bekleyen-isler-gonderilmez-belirsiz-iz-eler
+ok 352 - B elle = model: S31-01-talep-sonrasi-basarisizlari-yeniden-dene-silinmis-ekstre-elenir-yeni-gonderim-gider
+ok 353 - B elle = model: S31-02-bir-yil-sonra-silinmis-ekstre-yeniden-dene-ve-yine-de-gonder-kapali
+ok 354 - B elle = model: S32-01-talepten-once-ve-sonra-alinan-iki-yedek-icerik-gelmez-sonraki-icerik-kalir
+ok 355 - B elle = model: S32-02-talepten-once-yedekte-basarisiz-ve-belirsiz-geri-yukleme-sonrasi-silinmis
+ok 356 - B elle = model: S34-01-ilk-yine-de-gonder-tutar-yok-is-alinir-ertesi-gun-gonderim-anindaki-tutarla
+ok 357 - B elle = model: S34-02-ilk-yine-de-gonder-gece-yarisi-yerel-gun-tutar-dogar
+ok 358 - B elle = model: S35-01-talep-aninda-kapanir-ayni-donem-yeni-gonderim-gider-meta-bekletti-gec-teslim
+ok 359 - B elle = model: S35-02-hatirlatma-talep-sonrasi-ayni-gun-yeni-gonderim-gece-yarisi-belirsiz-yerel-gun
+ok 360 - B elle = model: S36-01-silinmis-belirsiz-ekstre-ayni-donem-yol-yok-sonraki-donem-gider
+ok 361 - B elle = model: S36-02-silinmis-belirsiz-son-3-ay-yedi-gun-icinde-yol-yok-sonra-gider
+ok 362 - B elle = model: S37-01-talep-sonrasi-hatirlatma-yeniden-dene-ve-yine-de-gonder-karttan-gider
+ok 363 - B elle = model: S37-02-bir-yil-sonra-hatirlatma-yeniden-dene-ve-yine-de-gonder-karttan-gider
+ok 364 - B elle = model: S38-01-tasima-oncesi-talep-yeni-bilgisayarda-geri-yuklemede-uygulanir
+ok 365 - B elle = model: S38-02-tasima-sonrasi-talep-ve-zincirleme-tasima
+ok 366 - B elle = model: S33-01-yol-2-imzasiz-bildirim-isaret-koymaz-sure-dolmaz-ayni-donem-daha-once
+ok 367 - B elle = model: S33-02-yol-1-imzasiz-bildirim-kabul-isaret-ve-sure-dolumu-sahte-de-islenir
+ok 368 - B elle = model: S41-01-yol-2-uygulama-duzeyi-adres-imzali-islenir-imzasiz-duser
+ok 369 - B elle = model: S41-02-yol-1-uygulama-duzeyi-adres-imzasiz-kabul
+not ok 370 - C değişmezler: her senaryo (birleşik sonuç)
+  # S35-01-talep-aninda-kapanir-ayni-donem-yeni-gonderim-gider-meta-bekletti-gec-teslim: teslim_sayac: 'Bu Ay' teslim 4 ≠ Teslim + Okundu iş 3
+not ok 371 - C değişmezler: zaman uçlarının HER biri ayrı (birleştirmeden önce); bildirilmiş ihlal yalnız bildirildiği seçimde
+  # S35-01-talep-aninda-kapanir-ayni-donem-yeni-gonderim-gider-meta-bekletti-gec-teslim[hizli]: teslim_sayac: 'Bu Ay' teslim 4 ≠ Teslim + Okundu iş 3
+  # S35-01-talep-aninda-kapanir-ayni-donem-yeni-gonderim-gider-meta-bekletti-gec-teslim[yavas]: teslim_sayac: 'Bu Ay' teslim 4 ≠ Teslim + Okundu iş 3
+  # bilgi: K6-03-acilistan-once-belirsiz-geri-yukleme-sonrasi: bildirilen ihlal 'post_toplam' görüldü — geri yüklemeyle dosyadan çıkan işin POST'u Meta'da kalır; iş başına sayım dosyadaki işlerden (sürücü de böyle)
+  # bilgi: D7-01-geri-yukleme-sonrasi-defterdeki-kabul-sayilir: bildirilen ihlal 'post_toplam' görüldü — geri yüklemeyle dosyadan çıkan işin POST'u Meta'da kalır; iş başına sayım dosyadaki işlerden
+  # bilgi: D7-02-geri-yukleme-ay-donumu-defterdeki-kabul: bildirilen ihlal 'post_toplam' görüldü — geri yüklemeyle dosyadan çıkan işin POST'u Meta'da kalır; iş başına sayım dosyadaki işlerden
+  # bilgi: E1-01-dosyada-ve-defterde-belirsiz: bildirilen ihlal 'post_toplam' görüldü — geri yüklemeyle dosyadan çıkan işin POST'u Meta'da kalır; iş başına sayım dosyadaki işlerden
+  # bilgi: E2-03-yeniden-denemede-kuyrukta-once-belirsiz: bildirilen ihlal 'post_toplam' görüldü — geri yüklemeyle dosyadan çıkan işin POST'u Meta'da kalır; iş başına sayım dosyadaki işlerden
+  # bilgi: E2-04-yeniden-denemede-uclu-cakisma: bildirilen ihlal 'post_toplam' görüldü — geri yüklemeyle dosyadan çıkan işin POST'u Meta'da kalır; iş başına sayım dosyadaki işlerden
+  # bilgi: E2-05-yeniden-denemede-belirsiz-once-r3: bildirilen ihlal 'post_toplam' görüldü — geri yüklemeyle dosyadan çıkan işin POST'u Meta'da kalır; iş başına sayım dosyadaki işlerden
+  # bilgi: H3-01-geri-yukleme-dosyasiz-gec-kabul: bildirilen ihlal 'post_toplam' görüldü — geri yüklemeyle dosyadan çıkan işin POST'u Meta'da kalır; iş başına sayım dosyadaki işlerden
+  # bilgi: H3-02-geri-yukleme-meta-bekletti-gec-teslim: bildirilen ihlal 'post_toplam' görüldü — geri yüklemeyle dosyadan çıkan işin POST'u Meta'da kalır; iş başına sayım dosyadaki işlerden
+  # bilgi: J1-03-silinmis-sirket-gec-bildirim: bildirilen ihlal 'post_toplam' görüldü — silinen şirketin / dosyadan çıkan işin POST'u Meta'da kalır; iş başına sayım dosyadaki işlerden
+  # bilgi: J3-01-geri-yukleme-sonrasi-gec-failed-yeniden-gonderilir: bildirilen ihlal 'post_toplam' görüldü — geri yüklemeyle dosyadan çıkan işin POST'u Meta'da kalır; iş başına sayım dosyadaki işlerden
+ok 372 - D §7a sabitlemesi: SERBEST boş, hiçbir senaryo serbest seçim bildirmiyor, beklenen tek grup
+ok 373 - D iki zaman ucu (adım 0,5 sn / 5 sn) her senaryoda aynı sonucu verir (beklenende 'biri' yaprağı yok)
+ok 374 - E §7a 12: sınıfsız / tanınmayan kod reddedilmez → o iş Başarısız (kodlu), toplu iş sürer; 131048 → bekler, sonra gider
+ok 375 - E bilinmeyen olay türü ve modellenmemiş medya yanıtı reddedilir
+ok 376 - E senaryo nesnesi koşudan sonra değişmez (aynı senaryo birçok kez koşar)
+ok 377 - F mutasyon: 249 mutasyonun her biri en az bir senaryoda yakalanır
+  # bilgi: M1 (gönderim sınırı FARKLI alıcı yerine kabul sayısıyla) ← CIFT-07b-iki-sekme-yine-de-gonder: CIFT-07b-iki-sekme-yine-de-gonder * [{}…] kontroller.K1.toplam_post: elle 2 ≠ model 1
+  # bilgi: M2 ('WhatsApp Mesajı İstemiyor' yok sayılır) ← KISI-08-istemiyor: KISI-08-istemiyor * [{}…] elenen.T1: elle {"B": "istemiyor"} ≠ model "<YOK>"
+  # bilgi: M3 (yanıtsız istek kendiliğinden yeniden gönderilir) ← CIFT-01-zaman-asimi-meta-aldi: CIFT-01-zaman-asimi-meta-aldi * [{}…] meta.post: elle {"A": 1} ≠ model {"A": 2}
+  # bilgi: M4 (PDF (medya) kesinleşmeden, kabulde silinir) ← KAYIP-01-kapaliyken-kanca: KAYIP-01-kapaliyken-kanca * [{}…] kontroller.K1.medya_silme: elle 0 ≠ model 2
+  # bilgi: M5 (aynı cari iki kez seçilince iki iş) ← KISI-03-ayni-kisi-iki-kez: istisna KeyError
+  # bilgi: M6 (sınır kayan 24 saat yerine takvim günü) ← CIFT-12-geri-yukleme-dirilmez: CIFT-12-geri-yukleme-dirilmez * [{}…] kontroller.K1.toplam_post: elle 2 ≠ model 4
+  # bilgi: M7 (W1 (Y10-4): Meta bildirmezse 2.4.8'in 72 sa teslim süresi (ttlHours / eski varsayılan) kullanılır — 30 gün yerine (eski M7'nin TERSİ)) ← W1-01-varsayilan-30-gun-eski-72-sa-okunmaz: W1-01-varsayilan-30-gun-eski-72-sa-okunmaz * [{}…] kontroller.K1.isler: elle {"T1/A": "Gönderildi", "T1/B": "Teslim Edildi"} ≠ model {"T1/A": "Süresi 
+  # bilgi: M8 (şablon durumu/kategorisi başlatmada denetlenmez) ← SABLON-BASLATMA-PENDING: SABLON-BASLATMA-PENDING * [{}…] baslamadi: elle {"T1": "sablon_uygun_degil"} ≠ model {}
+  # bilgi: M9 (5 ardışık geçici hatada duraklamaz) ← GECICI-02-bes-art-arda: GECICI-02-bes-art-arda * [{}…] meta.toplam_post: elle 5 ≠ model 12
+  # bilgi: M10 (hesap/şablon hatası toplu işi duraklatmaz) ← HESAP-10: HESAP-10 * [{}…] kontroller.K1.toplam_post: elle 2 ≠ model 3
+  # bilgi: M11 (read'den sonra gelen delivered durumu geri alır) ← TEMEL-04-sirasiz-kanca: TEMEL-04-sirasiz-kanca * [{}…] isler.T1/A.durum: elle "Okundu" ≠ model "Teslim Edildi"
+  # bilgi: M12 (yinelenen delivered teslim sayacını artırır) ← TEMEL-04-sirasiz-kanca: TEMEL-04-sirasiz-kanca * [{}…] bu_ay.W1.2026-10: elle {"teslim": 1, "yaklasik_usd": "0.0009"} ≠ model {"teslim": 2, "yaklasik_usd": "0.0018"}
+  # bilgi: M13 (yedekten geri yükleme bitmemiş işleri durdurmaz) ← CIFT-12-geri-yukleme-dirilmez: CIFT-12-geri-yukleme-dirilmez * [{}…] kontroller.K1.durum_sayilari: elle {"Durduruldu (Geri Yükleme)": 3, "Sınır Nedeniyle Bekliyor": 2, "Teslim Edild
+  # bilgi: M14 (ekstrede devir (dönem öncesi bakiye) atlanır) ← TEMEL-01-ekstre-uc-kisi: TEMEL-01-ekstre-uc-kisi * [{}…] isler.T1/A.degiskenler: elle ["Ayşe Yılmaz", "Deneme Ticaret Ltd. Şti.", "01.10.2026 – 31.10.2026", "1.250,00 TL"] ≠ m
+  # bilgi: M15 (ekstre seçilen döneme uymaz (bütün hareketler)) ← TEMEL-01-ekstre-uc-kisi: TEMEL-01-ekstre-uc-kisi * [{}…] isler.T1/A.pdf: elle {"cari_ad": "Ayşe Yılmaz", "donem_bas": "2026-10-01", "donem_son": "2026-10-31", "devir": "1000.0
+  # bilgi: M16 (numara '+' olmadan gönderilir) ← TEMEL-01-ekstre-uc-kisi: TEMEL-01-ekstre-uc-kisi * [{}…] isler.T1/A.telefon: elle "+905321112233" ≠ model "905321112233"
+  # bilgi: M17 (bir kez onay işaretsizken de başlar) ← GUV-04-onay-yok: GUV-04-onay-yok * [{}…] baslamadi: elle {"T1": "onay_yok"} ≠ model {}
+  # bilgi: M18 (salt okunur lisansta başlar) ← GUV-02-salt-okunur-lisans: GUV-02-salt-okunur-lisans * [{}…] baslamadi: elle {"T1": "lisans_salt_okunur"} ≠ model {}
+  # bilgi: M18b (lisans gönderim sırasında salt okunura geçince işçi durmaz) ← GUV-03-lisans-arada-biter: GUV-03-lisans-arada-biter * [{}…] kontroller.K1.durum_sayilari: elle {"Lisans Nedeniyle Durdu": 2, "Teslim Edildi": 2} ≠ model {"Sınır Nedeniyle Bekli
+  # bilgi: M18y (whatsapp.send yetkisi denetlenmez) ← GUV-01-yetkisiz: GUV-01-yetkisiz * [{}…] baslamadi: elle {"T1": "yetki_yok"} ≠ model {}
+  # bilgi: M19 (131049'da 24 saat beklemeden yeniden gönderir) ← ALICI-131049-bir-kez: ALICI-131049-bir-kez * [{}…] kontroller.K1.isler: elle {"T1/A": "Meta Bekletti (24 Saat Sonra Yeniden)"} ≠ model {"T1/A": "Teslim Edildi"}
+  # bilgi: M20 (131049'da sınırsız yeniden gönderir) ← ALICI-131049-iki-kez: ALICI-131049-iki-kez * [{}…] isler.T1/A.durum: elle "Başarısız" ≠ model "Meta Bekletti (24 Saat Sonra Yeniden)"
+  # bilgi: M21 (Meta basamağı 6 saatte bir yeniden okunmaz) ← S35-01-talep-aninda-kapanir-ayni-donem-yeni-gonderim-gider-meta-bekletti-gec-teslim: S35-01-talep-aninda-kapanir-ayni-donem-yeni-gonderim-gider-meta-bekletti-gec-teslim: teslim_sayac: 'Bu Ay' teslim 4 ≠ Teslim + Okundu iş 3
+  # bilgi: M22 ('Başarısızları Yeniden Dene' Sonucu Belirsiz işi de gönderir) ← K6-04-hic-basarisiz-olmamis-belirsiz-aday-degil: K6-04-hic-basarisiz-olmamis-belirsiz-aday-degil * [{}…] yeniden: elle {"Y1": {"elenen": {}, "alinan": ["A"], "oneri": null}} ≠ model {"Y1": {"elenen":
+  # bilgi: M22b ('Başarısızları Yeniden Dene' kabul edilmiş/teslim edilmiş işi de gönderir) ← K4-01-ay-sonu-yeniden-deneme-donemi-tasinir: K4-01-ay-sonu-yeniden-deneme-donemi-tasinir * [{}…] yeniden: elle {"Y1": {"elenen": {}, "alinan": ["A"], "oneri": null}} ≠ model {"Y1": {"elenen": {"B
+  # bilgi: M23 (elle günlük üst sınır (dailyCap) yok sayılır) ← CIFT-07-iki-sekme: CIFT-07-iki-sekme * [{}…] elenen.T2: elle {"A": "daha_once_gonderildi", "B": "zaten_kuyrukta", "C": "zaten_kuyrukta"} ≠ model {"A": "daha_once_gonderi
+  # bilgi: M24 (imzasız (sahte) kanca Sonucu Belirsiz'i çözer) ← GUV-06-sahte-opaque: GUV-06-sahte-opaque * [{}…] meta.kabul: elle {"A": 0} ≠ model {"A": 1}
+  # bilgi: M27 (24 saatten eski toplu iş (kapalı kalan) açılışta sorulmadan sürer) ← TARIH-05-eski-toplu: TARIH-05-eski-toplu * [{}…] kontroller.K1.toplam_post: elle 1 ≠ model 2
+  # bilgi: M28 (program kapalıyken gelen kanca kaybolur (Meta yeniden denemesi yok sayılır)) ← CIFT-04-cokme-istek-ulasti: CIFT-04-cokme-istek-ulasti * [{}…] meta.kabul: elle {"A": 1, "B": 1, "C": 1} ≠ model {"A": 1, "B": 0, "C": 1}
+  # bilgi: M29 (Süresi Doldu'da PDF silinmez) ← ICERIK-10-ttl-sonrasi-teslim: ICERIK-10-ttl-sonrasi-teslim * [{}…] meta.medya_silme: elle {"A": 1} ≠ model {"A": 0}
+  # bilgi: M30 (failed 131026 işi Başarısız yapmaz) ← CIFT-15-daha-once-basarisiz: CIFT-15-daha-once-basarisiz * [{}…] elenen.T2: elle {"B": "daha_once_gonderildi"} ≠ model {"A": "daha_once_gonderildi", "B": "daha_once_gonderildi"}
+  # bilgi: M31 ('Bu Ay' sayacı teslim yerine kabulü sayar) ← CIFT-15-daha-once-basarisiz: CIFT-15-daha-once-basarisiz: teslim_sayac: 'Bu Ay' teslim 3 ≠ Teslim + Okundu iş 1
+  # bilgi: M32 (alıcı hatası (131009) toplu işi duraklatır) ← CIFT-09-basarisizlari-yeniden-dene: CIFT-09-basarisizlari-yeniden-dene * [{}…] kontroller.K1.isler: elle {"T1/A": "Teslim Edildi", "T1/B": "Başarısız", "T1/C": "Sonucu Belirsiz"} ≠ model
+  # bilgi: M34 (mesajdaki bakiye dönemden bağımsız (PDF ile ayrışır)) ← CIFT-17-baska-donem: CIFT-17-baska-donem T1/A: metin bakiyesi 1.250,00 TL ≠ PDF 1000.00
+  # bilgi: M35 (Meta sınır hatası işi Başarısız yapar) ← SINIR-04-meta-sinir-hatasi: SINIR-04-meta-sinir-hatasi * [{}…] meta.post: elle {"A": 1, "B": 2, "C": 1, "D": 1, "E": 1} ≠ model {"A": 1, "B": 1, "C": 1, "D": 1, "E": 1}
+  # bilgi: M36 (yeniden denemede silinmiş medya kimliği kullanılır) ← CIFT-09-basarisizlari-yeniden-dene: CIFT-09-basarisizlari-yeniden-dene * [{}…] meta.medya_yukleme: elle {"A": 1, "B": 2, "C": 1} ≠ model {"A": 1, "B": 1, "C": 1}
+  # bilgi: M37 ('Zaten Kuyrukta' denetimi yok (bekleyen cariye ikinci iş)) ← CIFT-07-iki-sekme: CIFT-07-iki-sekme * [{}…] elenen.T2: elle {"A": "daha_once_gonderildi", "B": "zaten_kuyrukta", "C": "zaten_kuyrukta"} ≠ model {"A": "daha_once_gonderi
+  # bilgi: M38 (aynı istek kimliği yeni toplu iş açar) ← CIFT-06-cift-tik: CIFT-06-cift-tik * [{}…] ayni_istek: elle {"T2": "T1"} ≠ model {}
+  # bilgi: M39 (geçici hata sınırsız yeniden denenir (3 yeniden denemeden sonra Başarısız olmaz)) ← GECICI-03b-dort-hata-basarisiz: GECICI-03b-dort-hata-basarisiz * [{}…] kontroller.K1.isler.T1/B: elle "Başarısız" ≠ model "Bekliyor"
+  # bilgi: M40 (toplu işi durduran hatayı alan iş Başarısız değil Duraklatıldı) ← HESAP-10: HESAP-10 * [{}…] kontroller.K1.isler: elle {"T1/A": "Teslim Edildi", "T1/B": "Başarısız", "T1/C": "Duraklatıldı"} ≠ model {"T1/A": "Teslim Edildi", "T
+  # bilgi: M41 (kanca yolu hiç çalışmamışken de TTL sonunda Süresi Doldu) ← TARIH-03-kancasiz: TARIH-03-kancasiz * [{}…] kontroller.K1.isler: elle {"T1/A": "Meta Kabul Etti"} ≠ model {"T1/A": "Süresi Doldu"}
+  # bilgi: M42 (Süresi Doldu'dan sonra gelen teslim yok sayılır) ← ICERIK-10-ttl-sonrasi-teslim: ICERIK-10-ttl-sonrasi-teslim * [{}…] isler.T1/A.durum: elle "Teslim Edildi" ≠ model "Süresi Doldu"
+  # bilgi: M43 ('Bu Ay' ayı teslim yerine kabul zamanından) ← ICERIK-10-ttl-sonrasi-teslim: ICERIK-10-ttl-sonrasi-teslim * [{}…] bu_ay: elle {"W1": {"2026-11": {"teslim": 1, "yaklasik_usd": "0.0009"}}} ≠ model {"W1": {"2026-10": {"teslim": 1,
+  # bilgi: M44 (hatırlatmada gecikmiş borcu olmayan cari elenmez) ← TEMEL-02-odeme-hatirlatma: TEMEL-02-odeme-hatirlatma * [{}…] elenen.T1: elle {"B": "gecikmis_borc_yok", "H": "gecikmis_borc_yok"} ≠ model "<YOK>"
+  # bilgi: M45 (eksi bakiye '(Alacaklı)' eki olmadan) ← ICERIK-06-eksi-bakiye: ICERIK-06-eksi-bakiye * [{}…] isler.T1/V.degiskenler: elle ["Veli Alacaklı", "Deneme Ticaret Ltd. Şti.", "01.10.2026 – 31.10.2026", "500,00 TL (Alacak
+  # bilgi: M46 (lisans yeniden yazılabilir olunca işler kendiliğinden sürer) ← GUV-08-lisans-geri-gelir: GUV-08-lisans-geri-gelir * [{}…] kontroller.K1.durum_sayilari: elle {"Lisans Nedeniyle Durdu": 2, "Teslim Edildi": 2} ≠ model {"Sınır Nedeniyle Bekliy
+  # bilgi: M47 (sınıfsız hata kodu toplu işi duraklatır) ← HATA-SINIFSIZ-100: HATA-SINIFSIZ-100 * [{}…] toplular.T1.durum: elle "aktif" ≠ model "duraklatildi"
+  # bilgi: M48 (şablon kategorisi gönderim sürerken denetlenmez) ← SABLON-PAZARLAMA-ARADA: SABLON-PAZARLAMA-ARADA * [{}…] toplular.T1: elle {"durum": "duraklatildi", "neden": "Şablon Pazarlama'ya Alındı", "is_sayisi": 3} ≠ model {"durum": "a
+  # bilgi: M49 (bütün seçilenler elenince boş toplu iş kaydı oluşur) ← CIFT-07-iki-sekme: CIFT-07-iki-sekme * [{}…] olusmadi: elle ["T2"] ≠ model []
+  # bilgi: M50 (başarılı işin hata kodu temizlenmez) ← CIFT-09-basarisizlari-yeniden-dene: CIFT-09-basarisizlari-yeniden-dene * [{}…] isler.T1/B.hata_kodu: elle null ≠ model 131009
+  # bilgi: M51 (131048 işi Başarısız yapar (beklemez)) ← SINIR-07-131048: SINIR-07-131048 * [{}…] kontroller.K1.isler: elle {"T1/A": "Teslim Edildi", "T1/B": "Sınır Nedeniyle Bekliyor", "T1/C": "Sınır Nedeniyle Bekliyor", "T
+  # bilgi: M52 (Meta sınır hatasında yalnız o toplu iş bekler (WABA'nın hepsi değil)) ← SINIR-04-meta-sinir-hatasi: SINIR-04-meta-sinir-hatasi * [{}…] kontroller.K1.isler: elle {"T1/A": "Teslim Edildi", "T1/B": "Sınır Nedeniyle Bekliyor", "T1/C": "Sınır Nedeniyle Be
+  # bilgi: M53 (sabit hat elenir) ← KISI-05-sabit-hat: KISI-05-sabit-hat * [{}…] isler.T1/L.durum: elle "Başarısız" ≠ model "<YOK>"
+  # bilgi: M54 (aynı telefonlu ikinci cari elenir) ← KISI-12-ayni-telefon-iki-cari: KISI-12-ayni-telefon-iki-cari * [{}…] meta.post: elle {"X1": 1, "X2": 1} ≠ model {"X1": 1}
+  # bilgi: M55 (dönem metni ISO biçiminde) ← TEMEL-01-ekstre-uc-kisi: TEMEL-01-ekstre-uc-kisi * [{}…] isler.T1/A.degiskenler: elle ["Ayşe Yılmaz", "Deneme Ticaret Ltd. Şti.", "01.10.2026 – 31.10.2026", "1.250,00 TL"] ≠ m
+  # bilgi: M56 (24 saatten eski toplu işte sınır bekleyen iş de sorulur) ← TARIH-04-eski-toplu-sinirda: TARIH-04-eski-toplu-sinirda * [{}…] kontroller.K1.toplam_post: elle 2 ≠ model 1
+  # bilgi: M57 (kuyrukta 'İstemiyor' işaretlenen cariye yine gönderilir) ← KISI-09-istemiyor-sonradan: KISI-09-istemiyor-sonradan * [{}…] meta.post: elle {"A": 1, "B": 0} ≠ model {"A": 1, "B": 1}
+  # bilgi: M58 (telefon (ve hatırlatma verisi) gönderimde değil başlatmada okunur — güncelleme 9c: ekstre içeriğinin açılışta hazırlanması artık doğru model (M163)) ← KISI-01-telefon-kuyrukta-degisti: KISI-01-telefon-kuyrukta-degisti * [{}…] isler.T2/B.telefon: elle "+905339998877" ≠ model "+905332223344"
+  # bilgi: M59 (bağlantı kurulamadığında Sonucu Belirsiz (bekleme değil)) ← KAYIP-05-meta-ulasilamaz: KAYIP-05-meta-ulasilamaz * [{}…] kontroller.K0.isler: elle {"T1/A": "Bekliyor"} ≠ model {"T1/A": "Sonucu Belirsiz"}
+  # bilgi: M60 (131049'da PDF silinir ve yeniden yüklenir) ← ALICI-131049-bir-kez: ALICI-131049-bir-kez * [{}…] kontroller.K1.medya_silme: elle 0 ≠ model 1
+  # bilgi: M61 (bağlantı yokken iş geçici hata sayılır (30 sn → 2 dk → 15 dk → Başarısız; R1 öncesi)) ← KAYIP-05-meta-ulasilamaz: KAYIP-05-meta-ulasilamaz * [{}…] kontroller.K0.toplular: elle {"T1": "baglanti_bekleniyor"} ≠ model {"T1": "aktif"}
+  # bilgi: M62 (bağlantı dönünce 'Bağlantı Bekleniyor' toplu iş kendiliğinden sürmez) ← KAYIP-05-meta-ulasilamaz: KAYIP-05-meta-ulasilamaz * [{}…] kontroller.K2.isler: elle {"T1/A": "Teslim Edildi"} ≠ model {"T1/A": "Bekliyor"}
+  # bilgi: M63 (şablon kategorisi saatte bir okunur (R2 öncesi)) ← SABLON-PAZARLAMA-10-DK: SABLON-PAZARLAMA-10-DK * [{}…] kontroller.K1.durum_sayilari: elle {"Duraklatıldı": 1, "Teslim Edildi": 2} ≠ model {"Teslim Edildi": 3}
+  # bilgi: M64 (şablon kategorisi 100 iletide okunmaz (yalnız 10 dk)) ← S35-01-talep-aninda-kapanir-ayni-donem-yeni-gonderim-gider-meta-bekletti-gec-teslim: S35-01-talep-aninda-kapanir-ayni-donem-yeni-gonderim-gider-meta-bekletti-gec-teslim: teslim_sayac: 'Bu Ay' teslim 4 ≠ Teslim + Okundu iş 3
+  # bilgi: M65 (daha önce gönderilmiş cari bayraksız da gönderilir (R3 yok)) ← CIFT-07-iki-sekme: CIFT-07-iki-sekme * [{}…] elenen.T2: elle {"A": "daha_once_gonderildi", "B": "zaten_kuyrukta", "C": "zaten_kuyrukta"} ≠ model {"B": "zaten_kuyrukta", 
+  # bilgi: M66 ('Yine de Gönder' bayrağı yok sayılır (daha önce gönderilen hep elenir)) ← CIFT-07b-iki-sekme-yine-de-gonder: CIFT-07b-iki-sekme-yine-de-gonder * [{}…] elenen.T2: elle {"B": "zaten_kuyrukta", "C": "zaten_kuyrukta"} ≠ model {"A": "daha_once_gonderildi", "B": "z
+  # bilgi: M67 (daha önce Başarısız olan iş de 'Daha Önce Gönderildi' sayılır) ← CIFT-15-daha-once-basarisiz: CIFT-15-daha-once-basarisiz * [{}…] elenen.T2: elle {"B": "daha_once_gonderildi"} ≠ model {"A": "daha_once_gonderildi", "B": "daha_once_gonderildi"}
+  # bilgi: M68 (K1: Bu Ay/Geçen Ay eşliği seçim adına göre (aynı takvim ayı farklı seçim adıyla eşleşmez)) ← K1-01-ay-sonu-bu-ay-sonra-gecen-ay: K1-01-ay-sonu-bu-ay-sonra-gecen-ay * [{}…] elenen: elle {"T2": {"A": "daha_once_gonderildi", "B": "daha_once_gonderildi"}} ≠ model {}
+  # bilgi: M69 (K1: Bu Ay/Geçen Ay eşliği birebir tarih aralığıyla (Bu Ay bitişi bugün; yarım ay Bu Ay ≠ tam ay Geçen Ay)) ← K1-03-yarim-ay-bu-ay-sonra-tam-ay-gecen-ay: K1-03-yarim-ay-bu-ay-sonra-tam-ay-gecen-ay * [{}…] olusmadi: elle ["T2"] ≠ model []
+  # bilgi: M70 (K1: Son 3 Ay/Tüm Hareketler R3'te 7 gün penceresi yok (aynı seçim her zaman aynı dönem)) ← K1-05-son-3-ay-7-gun: K1-05-son-3-ay-7-gun * [{}…] olusmadi: elle ["T3"] ≠ model ["T3", "T4"]
+  # bilgi: M71 (K1: Son 3 Ay/Tüm Hareketler'de R3 hiç uygulanmaz (eski kâhin)) ← K1-05-son-3-ay-7-gun: K1-05-son-3-ay-7-gun * [{}…] olusmadi: elle ["T3"] ≠ model []
+  # bilgi: M72 (K2: 'Zaten Kuyrukta'ya da 7 gün penceresi uygulanır (7 günden eski bekleyen iş elemez)) ← K2-01-son-3-ay-bekleyen-yasi-yok: K2-01-son-3-ay-bekleyen-yasi-yok * [{}…] elenen: elle {"T2": {"Z": "zaten_kuyrukta"}} ≠ model {}
+  # bilgi: M73 (K1: Ödeme Hatırlatma'da R3 yok (eski kâhin)) ← K1-07-hatirlatma-ayni-yerel-gun: K1-07-hatirlatma-ayni-yerel-gun * [{}…] olusmadi: elle ["T2"] ≠ model []
+  # bilgi: M74 (K1: Ödeme Hatırlatma 'aynı gün' UTC gününe göre) ← K1-07-hatirlatma-ayni-yerel-gun: K1-07-hatirlatma-ayni-yerel-gun * [{}…] olusmadi: elle ["T2"] ≠ model ["T2", "T3"]
+  # bilgi: M75 (K1: Son 3 Ay ile Tüm Hareketler aynı seçim sayılır) ← K1-05-son-3-ay-7-gun: K1-05-son-3-ay-7-gun * [{}…] olusmadi: elle ["T3"] ≠ model ["T2", "T3"]
+  # bilgi: M76 (K3/K7: teslimsiz kapanan işe (Başarısız/İptal/Durduruldu/Taşınan) geç gelen teslim R3'te sayılmaz) ← K3-02-meta-bekletti-ret-sonra-gec-teslim-sayilir: K3-02-meta-bekletti-ret-sonra-gec-teslim-sayilir * [{}…] olusmadi: elle ["T2"] ≠ model []
+  # bilgi: M77 (K7: Meta Bekletti 2. denemesi reddedilen kişi (teslim yok) 'Daha Önce Gönderildi' sayılır) ← K7-01-meta-bekletti-ikinci-deneme-reddi-sayilmaz: K7-01-meta-bekletti-ikinci-deneme-reddi-sayilmaz * [{}…] elenen: elle {} ≠ model {"T2": {"A": "daha_once_gonderildi"}}
+  # bilgi: M78 (K7: İPTAL edilen Meta Bekletti (teslim yok) 'Daha Önce Gönderildi' sayılır) ← K7-02-iptal-meta-bekletti-sayilmaz: K7-02-iptal-meta-bekletti-sayilmaz * [{}…] elenen: elle {} ≠ model {"T2": {"A": "daha_once_gonderildi"}}
+  # bilgi: M79 (K7: geri yükleme / taşıma ile duran Meta Bekletti (teslim yok) 'Daha Önce Gönderildi' sayılır) ← K7-04-geri-yukleme-meta-bekletti-sayilmaz: K7-04-geri-yukleme-meta-bekletti-sayilmaz * [{}…] elenen: elle {} ≠ model {"T2": {"A": "daha_once_gonderildi"}}
+  # bilgi: M80 (K5: asıl işin 'Yine de Gönder' kararı Başarısızları Yeniden Dene'ye taşınmaz) ← K5-01-karar-yeniden-denemeye-tasinir: K5-01-karar-yeniden-denemeye-tasinir * [{}…] yeniden: elle {"Y1": {"elenen": {}, "alinan": ["A"], "oneri": null}} ≠ model {"Y1": {"elenen": {"A": "dah
+  # bilgi: M81 (K5: asıl işin 'Yine de Gönder' kararı açılıştan SONRAKİ kabulleri de yok sayar) ← K5-02-acilistan-sonra-baska-isle-giden-elenir: K5-02-acilistan-sonra-baska-isle-giden-elenir * [{}…] yeniden: elle {"Y1": {"elenen": {"A": "daha_once_gonderildi"}, "alinan": [], "oneri": null}} ≠ m
+  # bilgi: M82 (K5: çözülen Sonucu Belirsiz iletinin zamanı Meta'nın bildirim saatinden (programın saati değil)) ← K5-03-sonra-programin-saatine-gore: K5-03-sonra-programin-saatine-gore * [{}…] yeniden: elle {"Y1": {"elenen": {"A": "daha_once_gonderildi"}, "alinan": [], "oneri": null}} ≠ model {"Y1":
+  # bilgi: M83 (K5: işteki 'Yine de Gönder' asıl işin kararını taşımaz) ← K5-04-isteki-yine-de-gonder-karari-tasir: K5-04-isteki-yine-de-gonder-karari-tasir * [{}…] yeniden: elle {"G1": {"elenen": {}, "alinan": ["A"], "oneri": null}} ≠ model {"G1": {"elenen": {"A": 
+  # bilgi: M84 (K6: Başarısızları Yeniden Dene Sonucu Belirsiz kişiye yeniden gönderir (eleme yok)) ← K6-01-yeniden-denemesi-belirsiz-elenir: K6-01-yeniden-denemesi-belirsiz-elenir * [{}…] yeniden: elle {"Y1": {"elenen": {}, "alinan": ["A"], "oneri": null}, "Y2": {"elenen": {"A": "sonucu_bel
+  # bilgi: M85 (K6: asıl işin 'Yine de Gönder' sınırı Sonucu Belirsiz elemesine de uygulanır (açılıştan önceki belirsiz yok sayılır)) ← K6-03-acilistan-once-belirsiz-geri-yukleme-sonrasi: K6-03-acilistan-once-belirsiz-geri-yukleme-sonrasi * [{}…] yeniden: elle {"Y1": {"elenen": {"A": "sonucu_belirsiz"}, "alinan": [], "oneri": "yeni_gond
+  # bilgi: M86 (K6: iş dosyada yokken de eleme önerisi 'işteki Yine de Gönder') ← K6-03-acilistan-once-belirsiz-geri-yukleme-sonrasi: K6-03-acilistan-once-belirsiz-geri-yukleme-sonrasi * [{}…] yeniden: elle {"Y1": {"elenen": {"A": "sonucu_belirsiz"}, "alinan": [], "oneri": "yeni_gond
+  # bilgi: M87 (K4: yeniden deneme dönemi bugüne göre yeniden hesaplanır (seçim korunur)) ← K4-01-ay-sonu-yeniden-deneme-donemi-tasinir: K4-01-ay-sonu-yeniden-deneme-donemi-tasinir * [{}…] olusmadi: elle ["T2"] ≠ model []
+  # bilgi: M88 (K4: yeniden deneme / Yine de Gönder dönemi özel aralık sayılır (seçim düşer)) ← K4-03-son-3-ay-yeniden-deneme-secim-tasinir: K4-03-son-3-ay-yeniden-deneme-secim-tasinir * [{}…] olusmadi: elle ["T2"] ≠ model []
+  # bilgi: M89 (K8: Gönderimler listesi eskiden yeniye) ← K8-01-sayfalama-imlec-kaymaz: K8-01-sayfalama-imlec-kaymaz * [{}…] listeler.L1: elle {"etiketler": ["T65", "T64", "T63", "T62", "T61", "T60", "T59", "T58", "T57", "T56", "T55", "T5
+  # bilgi: M90 (K8: sayfa 30 değil 20) ← K8-01-sayfalama-imlec-kaymaz: K8-01-sayfalama-imlec-kaymaz * [{}…] listeler.L1: elle {"etiketler": ["T65", "T64", "T63", "T62", "T61", "T60", "T59", "T58", "T57", "T56", "T55", "T5
+  # bilgi: M91 (K8: Daha Fazla Göster ofsetle (araya giren yeni gönderim sayfayı kaydırır)) ← K8-01-sayfalama-imlec-kaymaz: K8-01-sayfalama-imlec-kaymaz * [{}…] listeler.L2: elle {"etiketler": ["T35", "T34", "T33", "T32", "T31", "T30", "T29", "T28", "T27", "T26", "T25", "T2
+  # bilgi: M92 (K8: tarih süzgeci UTC gününe göre) ← K8-02-tarih-suzgeci-yerel-gun: K8-02-tarih-suzgeci-yerel-gun * [{}…] listeler: elle {"L1": {"etiketler": ["T4", "T3", "T2"], "daha_fazla": false}, "L2": {"etiketler": ["T4", "T3", "
+  # bilgi: M93 (K8: Bitiş günü süzgece dahil değil) ← K8-02-tarih-suzgeci-yerel-gun: K8-02-tarih-suzgeci-yerel-gun * [{}…] listeler: elle {"L1": {"etiketler": ["T4", "T3", "T2"], "daha_fazla": false}, "L2": {"etiketler": ["T4", "T3", "
+  # bilgi: M94 (K8: Başlangıç > Bitiş reddedilmez (boş liste)) ← K8-02-tarih-suzgeci-yerel-gun: K8-02-tarih-suzgeci-yerel-gun * [{}…] listeler: elle {"L1": {"etiketler": ["T4", "T3", "T2"], "daha_fazla": false}, "L2": {"etiketler": ["T4", "T3", "
+  # bilgi: M95 (K5: asıl işte 'Yine de Gönder' kararı yokken de açılıştan önceki kabuller yok sayılır) ← K5-05-karar-yokken-onceki-gec-teslim-sayilir: K5-05-karar-yokken-onceki-gec-teslim-sayilir * [{}…] yeniden: elle {"Y1": {"elenen": {"A": "daha_once_gonderildi"}, "alinan": [], "oneri": null}} ≠ mo
+  # bilgi: M96 (K1: Bu Ay ile Geçen Ay her zaman aynı dönem sayılır (takvim ayına bakılmaz)) ← K1-09-bu-ay-gecen-ay-farkli-ay: K1-09-bu-ay-gecen-ay-farkli-ay * [{}…] elenen: elle {} ≠ model {"T2": {"A": "daha_once_gonderildi"}}
+  # bilgi: M97 (K6: asıl işin 'Yine de Gönder' kararı Sonucu Belirsiz elemesini tümüyle geçer) ← K6-02-asil-isin-karari-belirsizi-gecmez: K6-02-asil-isin-karari-belirsizi-gecmez * [{}…] yeniden: elle {"Y1": {"elenen": {}, "alinan": ["A"], "oneri": null}, "Y2": {"elenen": {"A": "sonucu_be
+  # bilgi: M98 (D3: Son 3 Ay/Tüm'de yeniden deneme / Yine de Gönder için 7 gün asıl işin açılışından (yeni gönderim anından değil)) ← D3-01-yeniden-deneme-7-gun-yeni-gonderimden: D3-01-yeniden-deneme-7-gun-yeni-gonderimden * [{}…] yeniden: elle {"Y1": {"elenen": {"A": "daha_once_gonderildi"}, "alinan": [], "oneri": null}, "Y2":
+  # bilgi: M99 (D5: asıl işte Başarısız, sonraki denemesi kabul edilmiş / bekleyen kişi asıl işten yeniden gönderilir (eleme yok)) ← D5-01-sonraki-denemesi-kabul-daha-once: D5-01-sonraki-denemesi-kabul-daha-once * [{}…] yeniden: elle {"Y1": {"elenen": {}, "alinan": ["A"], "oneri": null}, "Y2": {"elenen": {"A": "daha_once_
+  # bilgi: M100 (D6: 'Yine de Gönder' ile aşılmış eski Sonucu Belirsiz deneme sayılmaz) ← D6-01-asilmis-belirsiz-yeni-toplu-iste-eler: D6-01-asilmis-belirsiz-yeni-toplu-iste-eler * [{}…] olusmadi: elle ["T2"] ≠ model []
+  # bilgi: M101 (D1: yeni toplu işte Sonucu Belirsiz kişi 'Zaten Kuyrukta' sayılır (eski yorum 3)) ← D1-01-belirsiz-yeni-toplu-iste-elenir: D1-01-belirsiz-yeni-toplu-iste-elenir * [{}…] elenen: elle {"T2": {"A": "sonucu_belirsiz", "B": "daha_once_gonderildi"}, "T3": {"A": "sonucu_belirsiz"
+  # bilgi: M102 (D1: R3 uyarısındaki 'Yine de Gönder' (toplu iş) Sonucu Belirsiz elemesini geçer) ← D1-01-belirsiz-yeni-toplu-iste-elenir: D1-01-belirsiz-yeni-toplu-iste-elenir * [{}…] elenen: elle {"T2": {"A": "sonucu_belirsiz", "B": "daha_once_gonderildi"}, "T3": {"A": "sonucu_belirsiz"
+  # bilgi: M103 (D7: geri yüklemeden sonra yalnız makine defterinde kalan kabul R3'te sayılmaz) ← D7-01-geri-yukleme-sonrasi-defterdeki-kabul-sayilir: D7-01-geri-yukleme-sonrasi-defterdeki-kabul-sayilir * [{}…] olusmadi: elle ["T2"] ≠ model []
+  # bilgi: M104 (D8: taşınan veride şirket dosyasındaki kabul / teslim R3'te sayılmaz (yalnız yeni bilgisayarın defteri — eski ★6)) ← D8-01-tasinan-veride-dosyadaki-ileti-sayilir: D8-01-tasinan-veride-dosyadaki-ileti-sayilir * [{}…] olusmadi: elle ["T2"] ≠ model []
+  # bilgi: M105 (D2: hatırlatmada 'Zaten Kuyrukta' yalnız aynı gün (dünden bekleyen bugünküyü elemez)) ← D2-01-hatirlatma-dunden-bekleyen-bugunku-eler: D2-01-hatirlatma-dunden-bekleyen-bugunku-eler * [{}…] olusmadi: elle ["T2"] ≠ model []
+  # bilgi: M106 (D4: özel aralık ile aynı tarihli hazır seçim (Bu Ay / Geçen Ay) hiç eşleşmez) ← D4-01-ozel-aralik-ayni-gun-bu-ay: D4-01-ozel-aralik-ayni-gun-bu-ay * [{}…] olusmadi: elle ["T2"] ≠ model []
+  # bilgi: M107 (D1: yeni toplu işte Sonucu Belirsiz kişi elenmez (alınır)) ← D1-01-belirsiz-yeni-toplu-iste-elenir: D1-01-belirsiz-yeni-toplu-iste-elenir * [{}…] olusmadi: elle ["T2"] ≠ model []
+  # bilgi: M108 (D1 + yorum 21: yeni toplu işte YALNIZ makine defterinde kalan Sonucu Belirsiz de eler) ← K6-03-acilistan-once-belirsiz-geri-yukleme-sonrasi: istisna KeyError
+  # bilgi: M109 (E2: yeniden denemede Sonucu Belirsiz, Zaten Kuyrukta'dan ÖNCE denetlenir (eski yorum 22 sırası)) ← E2-03-yeniden-denemede-kuyrukta-once-belirsiz: E2-03-yeniden-denemede-kuyrukta-once-belirsiz * [{}…] yeniden: elle {"Y1": {"elenen": {"A": "zaten_kuyrukta"}, "alinan": [], "oneri": null}} ≠ model {
+  # bilgi: M110 (E2: yeniden denemede Daha Önce Gönderildi, Sonucu Belirsiz'den ÖNCE denetlenir) ← E2-05-yeniden-denemede-belirsiz-once-r3: E2-05-yeniden-denemede-belirsiz-once-r3 * [{}…] yeniden: elle {"Y1": {"elenen": {"A": "sonucu_belirsiz"}, "alinan": [], "oneri": "yeni_gonderim"}} ≠ m
+  # bilgi: M111 (E2: işteki Yine de Gönder'de Zaten Kuyrukta denetimi yok) ← E2-06-isteki-yine-de-gonder-zaten-kuyrukta: E2-06-isteki-yine-de-gonder-zaten-kuyrukta * [{}…] yeniden: elle {"G1": {"elenen": {"Y": "zaten_kuyrukta"}, "alinan": [], "oneri": null}} ≠ model {"G1
+  # bilgi: M112 (E2: yeni toplu işte Sonucu Belirsiz, Zaten Kuyrukta'dan ÖNCE denetlenir) ← E2-01-yeni-is-uclu-cakisma: E2-01-yeni-is-uclu-cakisma * [{}…] elenen: elle {"T2": {"A": "zaten_kuyrukta"}} ≠ model {"T2": {"A": "sonucu_belirsiz"}}
+  # bilgi: M113 (E2: Zaten Kuyrukta / Sonucu Belirsiz ile elenen R3 uyarı sayısına girer) ← E2-01-yeni-is-uclu-cakisma: E2-01-yeni-is-uclu-cakisma * [{}…] onceki_uyari: elle {"T1": {"sayi": 1, "son": "2026-10-30"}} ≠ model {"T1": {"sayi": 1, "son": "2026-10-30"}, "T2": 
+  # bilgi: M114 (E3: hatırlatmada Sonucu Belirsiz eşliği UTC günü) ← E3-01-hatirlatma-belirsiz-ayni-yerel-gun: E3-01-hatirlatma-belirsiz-ayni-yerel-gun * [{}…] olusmadi: elle ["T2"] ≠ model ["T2", "T3"]
+  # bilgi: M115 (E3: hatırlatmada Sonucu Belirsiz eşliği gün bakılmadan (dünkü belirsiz bugünküyü eler)) ← E3-01-hatirlatma-belirsiz-ayni-yerel-gun: E3-01-hatirlatma-belirsiz-ayni-yerel-gun * [{}…] olusmadi: elle ["T2"] ≠ model ["T2", "T3"]
+  # bilgi: M116 (E4: 7 günden eski sonraki kabul / teslim de 'Daha Önce Gönderildi' (D5 7 gün kuralına üstün)) ← E4-01-son-3-ay-sonraki-teslim-7-gun: E4-01-son-3-ay-sonraki-teslim-7-gun * [{}…] yeniden: elle {"Y1": {"elenen": {}, "alinan": ["A"], "oneri": null}, "Y2": {"elenen": {"A": "daha_once_gon
+  # bilgi: M117 (N6: yeniden denemede başka işte bekleyen kişi elenmez (yalnız kendi sonraki denemesi)) ← N6-01-yeniden-denemede-baska-iste-bekleyen: N6-01-yeniden-denemede-baska-iste-bekleyen * [{}…] yeniden: elle {"Y1": {"elenen": {"A": "zaten_kuyrukta"}, "alinan": [], "oneri": null}} ≠ model {"Y1
+  # bilgi: M118 (F1: işteki Yine de Gönder BAŞKA bir denemenin Sonucu Belirsiz'iyle (başka iş ya da aşılmış eski deneme) kişiyi eler) ← F1-01-iki-belirsiz-is-isteki-yine-de-gonder-gider: F1-01-iki-belirsiz-is-isteki-yine-de-gonder-gider * [{}…] yeniden: elle {"G1": {"elenen": {}, "alinan": ["A"], "oneri": null}} ≠ model {"G1": {"elenen
+  # bilgi: M119 (F2: hatırlatmanın yeniden denemesinde 'aynı gün' asıl işin günü (yeniden denemenin günü değil)) ← F2-01-hatirlatma-yeniden-deneme-ertesi-gun: F2-01-hatirlatma-yeniden-deneme-ertesi-gun * [{}…] yeniden: elle {"Y1": {"elenen": {}, "alinan": ["H"], "oneri": null}, "Y2": {"elenen": {"H": "sonucu
+  # bilgi: M120 (G2: hazır seçimin o günkü tarihleri eşliğe girmez (03.11 Bu Ay ↔ 05.11 özel 01.11–03.11 eşleşmez)) ← G2-01-bu-ay-0311-ozel-0511: G2-01-bu-ay-0311-ozel-0511 * [{}…] olusmadi: elle ["T2"] ≠ model []
+  # bilgi: M121 (G2: kendi günlerinde Bu Ay'a eşit iki farklı özel aralık aynı dönem sayılmaz) ← G2-02-iki-ozel-aralik-kendi-gunlerinde-bu-ay: G2-02-iki-ozel-aralik-kendi-gunlerinde-bu-ay * [{}…] olusmadi: elle ["T2"] ≠ model []
+  # bilgi: M122 (G1: özel aralığın / hazır seçimin 'o gün'ü gönderim günü (toplu işin açıldığı gün değil; sınırla ertesi güne kayan başka dönem)) ← G1-01-ozel-aralik-sinirla-ertesi-gun-ayni-donem: G1-01-ozel-aralik-sinirla-ertesi-gun-ayni-donem * [{}…] olusmadi: elle ["T2"] ≠ model []
+  # bilgi: M123 (G2: hazır seçimin 'bugün'ü UTC'ye göre (gece yarısı yerel ≠ UTC)) ← G2-03-gece-yarisi-bu-ay-yerel-gun: G2-03-gece-yarisi-bu-ay-yerel-gun * [{}…] olusmadi: elle ["T2"] ≠ model ["T2", "T3"]
+  # bilgi: M124 (G3: taşınan veride şirket dosyasındaki Sonucu Belirsiz sayılmaz (yalnız yeni bilgisayarın defteri)) ← G3-01-tasinan-belirsiz-yeni-iste-eler: G3-01-tasinan-belirsiz-yeni-iste-eler * [{}…] olusmadi: elle ["T2"] ≠ model []
+  # bilgi: M125 (G4: Şirket Verisini Sıfırla ile durmuş teslimsiz Meta Bekletti 'Daha Önce Gönderildi' sayılır) ← G4-01-sifirlama-meta-bekletti-sayilmaz: G4-01-sifirlama-meta-bekletti-sayilmaz * [{}…] elenen: elle {} ≠ model {"T2": {"A": "daha_once_gonderildi"}}
+  # bilgi: M126 (G5: Meta Bekletti sonrası 2. denemesi Sonucu Belirsiz kalan kişi elenmez) ← G5-01-meta-bekletti-ikinci-deneme-belirsiz-elenir: G5-01-meta-bekletti-ikinci-deneme-belirsiz-elenir * [{}…] olusmadi: elle ["T2"] ≠ model []
+  # bilgi: M127 (G0 (1, 4): asıl işte Başarısız, sonraki denemesi teslimsiz duran (Durduruldu / Taşınan / İptal / Süresi Doldu) kişi asıl işten yeniden gönderilmez) ← G0-01-sonraki-denemesi-teslimsiz-durdu-yeniden-gider: G0-01-sonraki-denemesi-teslimsiz-durdu-yeniden-gider * [{}…] yeniden: elle {"Y1": {"elenen": {}, "alinan": ["A"], "oneri": null}, "Y2": {"elenen": {},
+  # bilgi: M128 (G0 (4): işteki Yine de Gönder yalnız ŞU AN Sonucu Belirsiz duran işte (asıl işte belirsiz kalan denemenin yolu yok — çıkmaz)) ← G0-02-asil-isteki-belirsiz-deneme-yine-de-gonder: G0-02-asil-isteki-belirsiz-deneme-yine-de-gonder * [{}…] yeniden: elle {"G1": {"elenen": {}, "alinan": ["A"], "oneri": null}, "Y1": {"elenen": {"A": "
+  # bilgi: M129 (G6: Son 3 Ay / Tüm Hareketler ile o günkü tarihlerine birebir eşit özel aralık eşleşmez) ← G6-01-son-3-ay-ozel-aralik-7-gun: G6-01-son-3-ay-ozel-aralik-7-gun * [{}…] olusmadi: elle ["T2"] ≠ model ["T3"]
+  # bilgi: M130 (G6: Son 3 Ay / Tüm ↔ özel aralık çapraz eşliğinde 7 gün penceresi yok) ← G6-01-son-3-ay-ozel-aralik-7-gun: G6-01-son-3-ay-ozel-aralik-7-gun * [{}…] olusmadi: elle ["T2"] ≠ model ["T2", "T3"]
+  # bilgi: M131 (H1: Yine de Gönder ile açılan işin kabul/teslimi kaynak Sonucu Belirsiz denemeyi çözmez (D6 gibi elemeye devam eder)) ← H1-01-yine-de-gonder-teslim-daha-once: H1-01-yine-de-gonder-teslim-daha-once * [{}…] olusmadi: elle ["T2"] ≠ model ["T2", "T3"]
+  # bilgi: M132 (H1: Yine de Gönder kaynak belirsizi açılan işin SONUCUNA bakmadan çözer (başarısız/belirsiz kalsa da)) ← H1-02-yine-de-gonder-basarisiz-belirsiz-surer: H1-02-yine-de-gonder-basarisiz-belirsiz-surer * [{}…] yeniden: elle {"G1": {"elenen": {}, "alinan": ["B"], "oneri": null}, "G2": {"elenen": {}, "alina
+  # bilgi: M133 (H2: taşımada Gönderiliyor kalan iş 'Taşınan Veri — Durduruldu' olur (Sonucu Belirsiz değil)) ← H2-01-tasima-gonderiliyor-belirsiz: H2-01-tasima-gonderiliyor-belirsiz * [{}…] olusmadi: elle ["T2"] ≠ model []
+  # bilgi: M134 (H3: iş şirket dosyasında yokken gelen imzalı geç kabul/teslim yok sayılır) ← H3-01-geri-yukleme-dosyasiz-gec-kabul: H3-01-geri-yukleme-dosyasiz-gec-kabul * [{}…] olusmadi: elle ["T2"] ≠ model []
+  # bilgi: M135 (H4: R3 'son gönderim' tarihi SAYILMAYAN (başarısız) denemeler dahil son denemenin anı) ← H4-01-r3-son-gonderim-son-kabul-gece-yarisi: H4-01-r3-son-gonderim-son-kabul-gece-yarisi * [{}…] onceki_uyari: elle {"T2": {"sayi": 1, "son": "2026-10-31"}, "T3": {"sayi": 1, "son": "2026-10-31"}
+  # bilgi: M136 (H4: R3 'son gönderim' tarihi UTC günüyle yazılır (yerel gün değil)) ← H4-01-r3-son-gonderim-son-kabul-gece-yarisi: H4-01-r3-son-gonderim-son-kabul-gece-yarisi * [{}…] onceki_uyari: elle {"T2": {"sayi": 1, "son": "2026-10-31"}, "T3": {"sayi": 1, "son": "2026-10-31"}
+  # bilgi: M137 (J1 + Y9-7: Meta Bekletti'den Duraklatıldı / Lisans / Bekliyor'a geçmiş işte teslim yok sayılır (iş kapanmaz, 2. deneme gider)) ← J1-01-duraklatilmis-meta-bekletti-teslim-is-kapanir: J1-01-duraklatilmis-meta-bekletti-teslim-is-kapanir * [{}…] kontroller.K2.isler: elle {"T1/A": "Teslim Edildi"} ≠ model {"T1/A": "Duraklatıldı"}
+  # bilgi: M138 (J1 + J5: dosyada olmayan işin (yedeğe dönüş / silinmiş şirket) geç teslimi 'Bu Ay'a girmez (güncelleme 8 yorum 5)) ← J1-03-silinmis-sirket-gec-bildirim: J1-03-silinmis-sirket-gec-bildirim * [{}…] bu_ay: elle {"W1": {"2026-10": {"teslim": 2, "yaklasik_usd": "0.0018"}}} ≠ model {"W1": {"2026-10": {"tesli
+  # bilgi: M139 (J2: Meta Bekletti'deki iletinin teslimi yok sayılır (iş kapanmaz, 24 sa sonraki 2. deneme gider)) ← J2-01-meta-bekletti-teslim-is-kapanir: J2-01-meta-bekletti-teslim-is-kapanir * [{}…] kontroller.K2.isler: elle {"T1/A": "Teslim Edildi"} ≠ model {"T1/A": "Meta Bekletti (24 Saat Sonra Yenid
+  # bilgi: M140 (J3: dosyada olmayan işin wamid'i bilinen kabulüne gelen geç failed yok sayılır (kabul 'Daha Önce Gönderildi' sayılmaya devam eder)) ← J3-01-geri-yukleme-sonrasi-gec-failed-yeniden-gonderilir: J3-01-geri-yukleme-sonrasi-gec-failed-yeniden-gonderilir * [{}…] olusmadi: elle ["T2"] ≠ model ["T2", "T3"]
+  # bilgi: M141 (J4: Süresi Doldu ilk kabul edilen denemeden ölçülür) ← J4-01-suresi-doldu-son-kabulden-meta-bekletti: J4-01-suresi-doldu-son-kabulden-meta-bekletti * [{}…] kontroller.K1.isler: elle {"T1/A": "Gönderildi", "T1/B": "Teslim Edildi"} ≠ model {"T1/A": "Süre
+  # bilgi: M142 (J5: 'Bu Ay' iş başına bir teslim sayar (deneme başına değil; dosyada olmayan işin teslimi de girmez)) ← J5-01-bekletme-sonrasi-iki-teslim: J5-01-bekletme-sonrasi-iki-teslim * [{}…] bu_ay: elle {"W1": {"2026-10": {"teslim": 2, "yaklasik_usd": "0.0018"}}} ≠ model {"W1": {"2026-10": {"teslim
+  # bilgi: M143 (J6: yanıt beklenirken tanınmayan bildirim 200 ile düşürülür (Meta yinelemez, bildirim kaybolur)) ← J6-01-yanit-beklenirken-taninmayan-503-yineleme: J6-01-yanit-beklenirken-taninmayan-503-yineleme * [{}…] isler.T1/A.durum: elle "Teslim Edildi" ≠ model "Meta Kabul Etti"
+  # bilgi: M144 (J6: şirket geçici açılamazken bildirim 200 ile düşürülür) ← J6-02-sirket-gecici-acilamaz-503: J6-02-sirket-gecici-acilamaz-503 * [{}…] kontroller.K2.isler: elle {"T1/A": "Teslim Edildi"} ≠ model {"T1/A": "Gönderildi"}
+  # bilgi: M145 (J6: bildirim kaydedilemezken 200 (bildirim kaybolur)) ← J6-03-bildirim-kaydedilemez-503: J6-03-bildirim-kaydedilemez-503 * [{}…] kontroller.K2.isler: elle {"T1/A": "Teslim Edildi"} ≠ model {"T1/A": "Gönderildi"}
+  # bilgi: M146 (J6: silinmiş (kalıcı) şirketin bildirimine 503 (Meta boşuna yineler; teslim yazılmaz)) ← J1-03-silinmis-sirket-gec-bildirim: J1-03-silinmis-sirket-gec-bildirim * [{}…] bu_ay: elle {"W1": {"2026-10": {"teslim": 2, "yaklasik_usd": "0.0018"}}} ≠ model {"W1": {"2026-10": {"tesli
+  # bilgi: M147 (J7: defterde onarım bekleyen kabul varken yeni gönderim başlar) ← J7-01-onarim-bekleyen-kabul-yeni-gonderim-baslamaz: J7-01-onarim-bekleyen-kabul-yeni-gonderim-baslamaz * [{}…] baslamadi: elle {"T2": "onarim_bekleyen_kabul"} ≠ model {}
+  # bilgi: M148 (J8: Tüm Hareketler'in kişiye özel dönemi Bu Ay / Geçen Ay ile hiç eşleşmez) ← J8-01-tum-hareketler-bu-ay-ayni-gun: J8-01-tum-hareketler-bu-ay-ayni-gun * [{}…] elenen: elle {"T2": {"P": "daha_once_gonderildi"}} ≠ model {}
+  # bilgi: M150 (J8: Tüm Hareketler'de 'o günün Bu Ay'ı' kanonu yok (yalnız Bu Ay / Geçen Ay gönderiminin kendi günündeki tarih eşliği)) ← J8-03-tum-hareketler-kanon-sonraki-gun-bu-ay: J8-03-tum-hareketler-kanon-sonraki-gun-bu-ay * [{}…] olusmadi: elle ["T2"] ≠ model []
+  # bilgi: M151 (SW1'in tersi (n3 A seçeneği; J9 artık KARAR): gönderimden hemen önce R3 bir kez daha denetlenir — kuyruktaki ikinci iş birincinin teslimiyle elenir) ← J9-01-n3-iptal-sonrasi-ikinci-is-gec-teslim-iki-ileti: J9-01-n3-iptal-sonrasi-ikinci-is-gec-teslim-iki-ileti * [{}…] kontroller.K2.isler: elle {"T1/A": {"secenek": ["İptal", "Teslim Edildi"], "susuyor": "t
+  # bilgi: M152 (J1 + Y9-5: dosyadaki işin aşılmış (Yine de Gönder ile geride kalmış) belirsiz denemesine iş kimliğiyle gelen geç bildirim düşer (eski kâhin)) ← J1-04-asilmis-belirsiz-gec-teslim-iki-deneme: J1-04-asilmis-belirsiz-gec-teslim-iki-deneme * [{}…] bu_ay: elle {"W1": {"2026-10": {"teslim": 2, "yaklasik_usd": "0.0018"}}} ≠ model {"W1": {"2026-10
+  # bilgi: M153 (J3 + Y9-5: eski denemenin geç failed'ı işin ŞU ANKİ (kabul edilmiş) denemesini Başarısız yapar) ← J3-04-eski-denemenin-failed-i-simdiki-kabulu-bozmaz: J3-04-eski-denemenin-failed-i-simdiki-kabulu-bozmaz * [{}…] kontroller.K1.isler: elle {"T1/B": "Gönderildi"} ≠ model {"T1/B": "Başarısız"}
+  # bilgi: M154 (J10 (S9-1 a): Sonucu Belirsiz işteki Yine de Gönder bekleyen işte eski iletinin teslimi yeni iletiyi durdurmaz) ← J10-01-a-yine-de-gonder-sinirda-eski-teslim-gitmez: J10-01-a-yine-de-gonder-sinirda-eski-teslim-gitmez * [{}…] kontroller.K2.isler: elle {"T1/A": "Teslim Edildi", "T1/B": "Atlandı"} ≠ model {"T1/A": "Te
+  # bilgi: M155 (J11 (S9-2): Tüm Hareketler {{3}} bitişi son hareket tarihi (açılış günü değil)) ← J11-01-tum-hareketler-metni-acilis-gunu-sinirla-ertesi-gun: J11-01-tum-hareketler-metni-acilis-gunu-sinirla-ertesi-gun * [{}…] isler.T1/P.degiskenler: elle ["Pelin Kara", "Deneme Ticaret Ltd. Şti.", "01.11.2026
+  # bilgi: M156 (J11 + J8: hareketsiz caride Tüm Hareketler'in dönemi yok (eşleşmez — eski Y9-18)) ← J11-02-hareketsiz-cari-metni-ve-eslik: J11-02-hareketsiz-cari-metni-ve-eslik * [{}…] olusmadi: elle ["T2", "T5"] ≠ model []
+  # bilgi: M157 (J11 + S9-3: kişiye özel dönemin 'ilk – son hareket' okuması da eşleşir (S9-2 öncesi birleşim)) ← J8-02-tum-hareketler-gecen-ay-ayni-gun: J8-02-tum-hareketler-gecen-ay-ayni-gun * [{}…] elenen: elle {} ≠ model {"T2": {"Q": "daha_once_gonderildi"}}
+  # bilgi: M158 (J11 (07:11): Tüm Hareketler {{3}} bitişi iletinin GERÇEKTEN gönderildiği gün (açılış günü değil)) ← J11-01-tum-hareketler-metni-acilis-gunu-sinirla-ertesi-gun: J11-01-tum-hareketler-metni-acilis-gunu-sinirla-ertesi-gun * [{}…] isler.T1/R.degiskenler: elle ["Rana Ortada", "Deneme Ticaret Ltd. Şti.", "15.10.202
+  # bilgi: M159 (J11 + Y9c-7: Tüm Hareketler eşliğine gerçek gönderim günü de girer (düşen Y9b-4 birleşimi)) ← J11-03-ertesi-gune-kayan-kisi-acilis-gunuyle-eslesir: J11-03-ertesi-gune-kayan-kisi-acilis-gunuyle-eslesir * [{}…] toplular.T2.is_sayisi: elle 1 ≠ model "<YOK>"
+  # bilgi: M160 (J10 (07:11 c): belirsizlik zinciri dışındaki düz Başarısızları Yeniden Dene de durdurulur (düşen Y9b-2 İLKEYLE)) ← J10-04-c-duz-yeniden-deneme-eski-teslim-ikinci-kopya-gider: J10-04-c-duz-yeniden-deneme-eski-teslim-ikinci-kopya-gider * [{}…] kontroller.K1.isler: elle {"T1/A": "Duraklatıldı"} ≠ model {"T1/A": "Atlandı"}
+  # bilgi: M161 (J10 (07:11 b): R3 uyarısına rağmen bilerek seçilen Yine de Gönder de önceki işin teslimiyle durdurulur) ← J10-05-b-r3-yine-de-gonder-onceki-teslim-ikinci-kopya-gider: J10-05-b-r3-yine-de-gonder-onceki-teslim-ikinci-kopya-gider * [{}…] kontroller.K2.isler: elle {"T1/B": "Teslim Edildi", "T2/B": "Teslim Edildi"} ≠ mod
+  # bilgi: M162 (J11 (07:11 'metin PDF ile aynı'): Tüm Hareketler PDF'inde dönem uçları yok (eski: None)) ← ICERIK-08-tum-hareketler: ICERIK-08-tum-hareketler * [{}…] isler.T1/A.pdf: elle {"cari_ad": "Ayşe Yılmaz", "donem_bas": "2026-09-10", "donem_son": "2026-10-30", "devir": "0.00"
+  # bilgi: M163 (J12: ekstre içeriği GÖNDERİM ANINDA okunur (§7a 1'in eski ekstre yorumu; açılışta hazırlanmaz)) ← ICERIK-09-kuyrukta-bakiye-degisti: ICERIK-09-kuyrukta-bakiye-degisti * [{}…] isler.T2/B.degiskenler: elle ["Mehmet Kaya", "Deneme Ticaret Ltd. Şti.", "01.10.2026 – 31.10.2026", "2.000,0
+  # bilgi: M164 (J12 + Y9d-3: Tüm Hareketler içeriğine açılış gününden sonra tarihli hareket girer (eski 'bütün hesap')) ← J12-02-tum-hareketler-acilistan-sonra-tarihli-hareket-girmez: J12-02-tum-hareketler-acilistan-sonra-tarihli-hareket-girmez * [{}…] isler.T1/F2.degiskenler: elle ["Ferhat İleri", "Deneme Ticaret Ltd. Şti.", "05.10
+  # bilgi: M165 (J7 (Y9e-2): defter yeniden yazılabilir olunca eksik kabul onarılmaz (yeni gönderim düğmesi pasif kalır)) ← J7-01-onarim-bekleyen-kabul-yeni-gonderim-baslamaz: J7-01-onarim-bekleyen-kabul-yeni-gonderim-baslamaz * [{}…] baslamadi: elle {"T2": "onarim_bekleyen_kabul"} ≠ model {"T2": "onarim_bekleyen_kabul", "T3
+  # bilgi: M166 (W1 (Y10-1): Meta'nın şablon listesinde bildirdiği teslim süresi yok sayılır (hep 30 gün)) ← W1-03-meta-bildirir-12-sa-sablon-basina: W1-03-meta-bildirir-12-sa-sablon-basina * [{}…] kontroller.K2.isler: elle {"T1/A": "Süresi Doldu", "T1/B": "Teslim Edildi", "T2/D": "Gönderildi"} ≠ mo
+  # bilgi: M167 (W1 (Y10-2): 1 saatlik pay yok — Süresi Doldu tam süre dolunca (30. günde)) ← W1-01-varsayilan-30-gun-eski-72-sa-okunmaz: W1-01-varsayilan-30-gun-eski-72-sa-okunmaz * [{}…] kontroller.K2.isler: elle {"T1/A": "Gönderildi", "T1/B": "Teslim Edildi", "T3/C": "Teslim Edildi"} 
+  # bilgi: M168 (W1 (Y10-7): Meta medyayı 30 günde silmez — 30 günden eski PDF'in kesinleşmede silinmesi Meta'da sayılır) ← W1-01-varsayilan-30-gun-eski-72-sa-okunmaz: W1-01-varsayilan-30-gun-eski-72-sa-okunmaz * [{}…] kontroller.K3.medya_silme: elle 2 ≠ model 3
+  # bilgi: M169 (W1 (Y10-8): bir şablonda bildirilen teslim süresi bütün şablonlara uygulanır (şablon başına değil)) ← W1-03-meta-bildirir-12-sa-sablon-basina: W1-03-meta-bildirir-12-sa-sablon-basina * [{}…] kontroller.K2.isler: elle {"T1/A": "Süresi Doldu", "T1/B": "Teslim Edildi", "T2/D": "Gönderildi"} ≠ mo
+  # bilgi: M170 (W2 (W-KÖK, Y10-10): teslim süresi kabul anındaki değerden değil Meta'nın GÜNCEL listesinden (sonradan kısalan süre önceden kabul edilmiş işe uygulanır)) ← W2-01-kabulde-bilinmiyor-sonra-12-sa: W2-01-kabulde-bilinmiyor-sonra-12-sa * [{}…] kontroller.K1.isler: elle {"T1/A": "Gönderildi", "T1/B": "Teslim Edildi"} ≠ model {"T1/A": "Süresi Doldu"
+  # bilgi: M171 (W3 (S10-6, Y10-14): yalnız kabul anındaki süre — sonradan UZAYAN süre önceden kabul edilmiş işe uygulanmaz (max yok; S10-6'nın A okuması)) ← W3-01-kabulde-12-sa-sonra-30-gun-uzar: W3-01-kabulde-12-sa-sonra-30-gun-uzar * [{}…] kontroller.K1.isler: elle {"T1/A": "Gönderildi", "T1/B": "Teslim Edildi"} ≠ model {"T1/A": "Süresi Doldu
+  # bilgi: M172 (SD1915: Meta 190 / 0 alan kişi Başarısız (Başarısızları Yeniden Dene — 19:15 öncesi düzen; bağlantı durumu yok)) ← SD1915-01-ileti-isteginde-190-bekleyenlere-doner: SD1915-01-ileti-isteginde-190-bekleyenlere-doner * [{}…] kontroller.K1.isler: elle {"T1/A": "Teslim Edildi", "T1/B": "Duraklatıldı", "T1/C": "Duraklat
+  # bilgi: M173 (SW4: Meta 0 (AuthException) alan kişi Başarısız, bağlantı Süresi Doldu olmaz (S-W4 öncesi; yalnız 190 belirteç reddi)) ← SW4-01-kod-0-ayni-sirketin-oburu-toplu-isi-de-duraklar: SW4-01-kod-0-ayni-sirketin-oburu-toplu-isi-de-duraklar * [{}…] kontroller.K1.toplular: elle {"T1": "duraklatildi", "T2": "duraklatildi"} ≠ model {"T1"
+  # bilgi: M174 (SD1915 + SD1837: belirteç reddinde (190 / 0) toplu iş duraklamaz — işçi kalan kişilere de istek gönderir (her biri reddedilir)) ← SD1915-01-ileti-isteginde-190-bekleyenlere-doner: SD1915-01-ileti-isteginde-190-bekleyenlere-doner * [{}…] kontroller.K1.toplular: elle {"T1": "duraklatildi"} ≠ model {"T1": "aktif"}
+  # bilgi: M175 (SD1837: program bağlantının süresinin dolduğunu bildiği hâlde toplu işi duraklatmaz; Meta'nın 190 reddine kadar göndermeyi dener) ← SD1837-01-sure-dolunca-duraklar-yeniden-baglaninca-devam-yalniz-kalanlar: SD1837-01-sure-dolunca-duraklar-yeniden-baglaninca-devam-yalniz-kalanlar * [{}…] kontroller.K1.toplular: elle {"T1": "duraklatildi", "T2": "duraklatil
+  # bilgi: M176 (SD1837: yeniden bağlanınca duran toplu iş Devam Et beklemeden kendiliğinden sürer) ← SD1837-01-sure-dolunca-duraklar-yeniden-baglaninca-devam-yalniz-kalanlar: SD1837-01-sure-dolunca-duraklar-yeniden-baglaninca-devam-yalniz-kalanlar * [{}…] kontroller.K2.toplular: elle {"T1": "duraklatildi", "T2": "duraklatil
+  # bilgi: M177 (SD1837 'kimseye ikinci ileti gitmez': Devam Et teslimi beklenen (Meta Kabul Etti / Gönderildi) kişilere de yeniden gönderir) ← SD1837-01-sure-dolunca-duraklar-yeniden-baglaninca-devam-yalniz-kalanlar: SD1837-01-sure-dolunca-duraklar-yeniden-baglaninca-devam-yalniz-kalanlar * [{}…] kontroller.K3.isler: elle {"T1/A": "Teslim Edildi", "T1/B": "Gönderil
+  # bilgi: M178 (SW2: Süresi Doldu ileti 24 saatlik farklı alıcı penceresinde sayılır (A seçeneği — eski kâhin)) ← SW2-01-suresi-doldu-pencerede-sayilmaz-yeni-is-gider: SW2-01-suresi-doldu-pencerede-sayilmaz-yeni-is-gider * [{}…] kontroller.K1.pencere_farkli_alici: elle {"W1": 0} ≠ model {"W1": 1}
+  # bilgi: M179 (P6 W-1 (a): bağlantı Süresi Doldu iken yeni toplu gönderim başlar) ← SD1837-03-sure-dolunca-yeni-gonderim-baslamaz: SD1837-03-sure-dolunca-yeni-gonderim-baslamaz * [{}…] baslamadi: elle {"T1": "baglanti_suresi_doldu"} ≠ model {}
+  # bilgi: M180 (SW4: kod 102 de 190 gibi işlenir (karar dışı)) ← SW4-03-kod-102-bugunku-gibi: SW4-03-kod-102-bugunku-gibi * [{}…] kontroller.K1.isler: elle {"T1/A": "Teslim Edildi", "T1/B": "Başarısız", "T1/C": "Teslim Edildi"} ≠ model {"T1/A":
+  # bilgi: M181 (S7: şüpheli alacak kaydı açık cari seçimde elenmez — şüphesiz kısım gider (S7'nin B seçeneği)) ← S7-01-supheli-alacakli-otomatik-listeye-girmez: S7-01-supheli-alacakli-otomatik-listeye-girmez * [{}…] elenen: elle {"T1": {"SA": "supheli_alacak", "VI": "supheli_alacak"}} ≠ model {"T1": {"VI": "ge
+  # bilgi: M182 (S7: elle seçilen şüpheli alacaklı caride {{4}} şüpheli tutarı da içerir) ← S7-02-supheli-alacakli-elle-secilir-suphelisiz-tutar: S7-02-supheli-alacakli-elle-secilir-suphelisiz-tutar * [{}…] isler.T1/SA.degiskenler: elle ["Seda Şüpheli", "Deneme Ticaret Ltd. Şti.", "12.10.2026", 
+  # bilgi: M183 (S7: elle seçilen şüpheli alacaklı cari de elenir (elle seçim yolu yok — çıkmaz)) ← S7-02-supheli-alacakli-elle-secilir-suphelisiz-tutar: S7-02-supheli-alacakli-elle-secilir-suphelisiz-tutar * [{}…] elenen: elle {} ≠ model {"T1": {"SA": "supheli_alacak"}}
+  # bilgi: M184 (SD1915: PDF yüklemesinde 190 / 0 alan kişi Başarısız (yalnız ileti isteğinde bekleyenlere döner)) ← SD1915-02-pdf-yuklemesinde-190-bekleyenlere-doner: SD1915-02-pdf-yuklemesinde-190-bekleyenlere-doner * [{}…] kontroller.K1.isler: elle {"T1/A": "Teslim Edildi", "T1/B": "Duraklatıldı", "T1/C": "Durakla
+  # bilgi: M185 (SD1915: 190 / 0 alan kişi Sonucu Belirsiz sayılır (almış olabilir) — bekleyenlere dönmez) ← SD1915-01-ileti-isteginde-190-bekleyenlere-doner: SD1915-01-ileti-isteginde-190-bekleyenlere-doner * [{}…] kontroller.K1.isler: elle {"T1/A": "Teslim Edildi", "T1/B": "Duraklatıldı", "T1/C": "Duraklat
+  # bilgi: M186 (SD1915 + J2: Meta Bekletti 2. denemesi 190 ile reddedilip beklerken 1. iletinin teslimi işi kapatmaz (2. deneme yine gider)) ← SD1915-03-meta-bekletti-ikinci-deneme-190-ilk-ileti-teslim-is-kapanir: SD1915-03-meta-bekletti-ikinci-deneme-190-ilk-ileti-teslim-is-kapanir * [{}…] kontroller.K2.isler: elle {"T1/A": "Teslim Edildi"} ≠ model {"T1/A": "Du
+  # bilgi: M187 (SW2: Süresi Doldu olan alıcı pencereden tümüyle düşer (aynı alıcının sayılan başka kabulü olsa da)) ← SW2-02-ayni-aliciya-sayilan-baska-kabul-varsa-sayilir: SW2-02-ayni-aliciya-sayilan-baska-kabul-varsa-sayilir * [{}…] kontroller.K1.pencere_farkli_alici: elle {"W1": 1} ≠ model {"W1": 0}
+  # bilgi: M188 (SD1915: 190 / 0 ile reddedilen deneme 'Daha Önce Gönderildi' sayılır (kesin gitmedi sayılmaz)) ← SD1915-04-geri-yukleme-reddedilen-sayilmaz: SD1915-04-geri-yukleme-reddedilen-sayilmaz * [{}…] kontroller.K1.isler.T2/B: elle "Teslim Edildi" ≠ model "<YOK>"
+  # bilgi: M189 (SD1837 öncesi plan notu (P6 §3 madde 3): süre dolunca bekleyen işler 'Durduruldu', Devam Et ile sürmez) ← SD1837-01-sure-dolunca-duraklar-yeniden-baglaninca-devam-yalniz-kalanlar: SD1837-01-sure-dolunca-duraklar-yeniden-baglaninca-devam-yalniz-kalanlar * [{}…] kontroller.K1.isler: elle {"T1/A": "Teslim Edildi", "T1/B": "Gönderil
+  # bilgi: M190 (S7A'nın tersi (S7-a B seçeneği): elle seçilen şüpheli alacaklı caride şüphesiz gecikmiş borç yokken başlatmada elenmez, ileti yine gider) ← S7A-01-elle-supheli-suphesiz-gecikmis-yok-elenir: S7A-01-elle-supheli-suphesiz-gecikmis-yok-elenir * [{}…] elenen: elle {"T1": {"SA2": "gecikmis_borc_yok", "SC": "gecikmis_borc_yok", "SD": "gecikmis_b
+  # bilgi: M191 (S7A (Y12-2): elle seçilen şüpheli caride şüphesiz gecikmiş borç yalnız başlatmada denetlenir — kuyrukta kapanırsa gönderim anında ileti yine gider) ← S7A-02-elle-supheli-kuyrukta-suphesiz-kapanir-gonderimde-atlanir: S7A-02-elle-supheli-kuyrukta-suphesiz-kapanir-gonderimde-atlanir * [{}…] isler.T1/SE.durum: elle "Atlandı" ≠ model "Teslim Edildi"
+  # bilgi: M192 (S7B'nin tersi (S7-b B seçeneği): kuyruktayken şüpheli alacak kaydı açılan elle seçilmemiş cari başlatmadaki seçimle gider (şüphesiz tutarla)) ← S7B-01-sinirda-supheli-acilan-atlanir-yeni-gonderimde-elle-gider: S7B-01-sinirda-supheli-acilan-atlanir-yeni-gonderimde-elle-gider * [{}…] elenen: elle {} ≠ model {"T2": {"D7": "daha_once_gonderildi"}}
+  # bilgi: M193 (S7B (Y12-8): elle işareti Devam Et / Başarısızları Yeniden Dene'ye taşınmaz — elle seçilmiş şüpheli cari de gönderim anında atlanır) ← S7B-02-duraklatmada-supheli-acilan-atlanir-elle-secilen-gider: S7B-02-duraklatmada-supheli-acilan-atlanir-elle-secilen-gider * [{}…] kontroller.K2.isler: elle {"T1/A": "Teslim Edildi", "T1/SE7": "Teslim Edildi", "
+  # bilgi: M194 (S7B (Y12-7, Y11-17): şüpheli işaretli kalem kalanı 0 olsa da kayıt açık sayılır (kuyrukta kapanan kayıt da atlatır)) ← S7B-03-kuyrukta-acilan-kayit-kapanirsa-gider: S7B-03-kuyrukta-acilan-kayit-kapanirsa-gider * [{}…] isler.T1/KP7.durum: elle "Teslim Edildi" ≠ model "Atlandı"
+  # bilgi: M195 (S7B (Y12-4): Meta Bekletti 2. denemesi gönderim anı sayılmaz — kuyrukta şüpheli açılan cariye 2. deneme gider) ← S7B-04-meta-bekletti-ikinci-denemede-supheli-atlanir: S7B-04-meta-bekletti-ikinci-denemede-supheli-atlanir * [{}…] kontroller.K2.isler: elle {"T1/A": "Teslim Edildi", "T1/MB7": "Atlandı"} ≠ model {"T1/A":
+  # bilgi: M196 (S7B (Y12-5, ilke 1/4): 'Şüpheli Alacağı Var' ile atlanan iş 'Zaten Kuyrukta' sayılır — yeni gönderimde elle seçilen de elenir (çıkmaz)) ← S7B-01-sinirda-supheli-acilan-atlanir-yeni-gonderimde-elle-gider: S7B-01-sinirda-supheli-acilan-atlanir-yeni-gonderimde-elle-gider * [{}…] elenen: elle {} ≠ model {"T2": {"D7": "zaten_kuyrukta"}}
+  # bilgi: M197 (S7B (Y12-6): gönderim anında 'Gecikmiş Borç Yok' denetimi şüpheli denetiminden ÖNCE (başlatma sırasının tersi)) ← S7B-01-sinirda-supheli-acilan-atlanir-yeni-gonderimde-elle-gider: S7B-01-sinirda-supheli-acilan-atlanir-yeni-gonderimde-elle-gider * [{}…] isler.T1/B7.atlanma_nedeni: elle "supheli_alacak" ≠ model "gecikmis_borc_yok"
+  # bilgi: M198 (S7A + §7a 20 (Y12-1): 'vadesi geçmiş' bugünü UTC günüyle (yerel gün değil)) ← S7A-03-gece-yarisi-suphesiz-vade-yerel-gun: S7A-03-gece-yarisi-suphesiz-vade-yerel-gun * [{}…] elenen: elle {"T1": {"SG": "gecikmis_borc_yok"}} ≠ model {"T1": {"SG": "gecikmis_borc_yok"}, "T2": 
+  # bilgi: M199 (S16'nın tersi (B seçeneği): işteki Yine de Gönder elle seçim sayılmaz — şüpheli kaydı açık kişi gönderim anında 'Atlandı — Şüpheli Alacağı Var' (o gün yol kalmaz)) ← S16-01-yine-de-gonder-supheli-acik-elle-sayilir-suphesiz-tutarla-gider: S16-01-yine-de-gonder-supheli-acik-elle-sayilir-suphesiz-tutarla-gider * [{}…] kontroller.K1.isler: elle {"T1/A": "Teslim Edildi", "T1/U": "Teslim Edi
+  # bilgi: M200 (S16 'yoksa elenir'in tersi: Yine de Gönder ile elle sayılan caride şüphesiz tutar yokken de iş alınır ve ileti gider (gecikmiş denetimi atlanır)) ← S16-02-yine-de-gonder-suphesiz-tutar-yok-elenir-ertesi-gun-gider: S16-02-yine-de-gonder-suphesiz-tutar-yok-elenir-ertesi-gun-gider * [{}…] kontroller.K1.isler.T1/X: elle "Atlandı" ≠ model "Teslim Edildi"
+  # bilgi: M201 (S16: Yine de Gönder onay penceresinde 'Şüpheli Alacağı Var' etiketi yok) ← S16-01-yine-de-gonder-supheli-acik-elle-sayilir-suphesiz-tutarla-gider: S16-01-yine-de-gonder-supheli-acik-elle-sayilir-suphesiz-tutarla-gider * [{}…] yeniden.Y1: elle {"elenen": {}, "alinan": ["U"], "oneri": null, "suphel
+  # bilgi: M202 (S17'nin tersi (B seçeneği): elle seçilen şüpheli alacaklı caride sınır carinin TOPLAM net borcu (şüpheli kalemler dahil)) ← S17-01-elle-supheli-suphesiz-net-borcla-sinirlanir: S17-01-elle-supheli-suphesiz-net-borcla-sinirlanir * [{}…] elenen: elle {"T1": {"SN2": {"secenek": ["gecikmis_borc_yok", "net_borc_yok"], "susuyor": "
+  # bilgi: M203 (S17 (Y13-8): net borçtan yalnız vadesi geçmiş şüpheli kalemler düşülür (vadesi gelmemiş şüpheli kalem net borçta kalır)) ← S17-01-elle-supheli-suphesiz-net-borcla-sinirlanir: S17-01-elle-supheli-suphesiz-net-borcla-sinirlanir * [{}…] isler.T1/SN3.degiskenler: elle ["Nevin Gelecek", "Deneme Ticaret Ltd. Şti.", "13.10.2026", 
+  # bilgi: M204 (NB5'in tersi (eski §7a 20): gecikmiş tutar net borçla sınırlanmaz, bize alacaklı kişi elenmez) ← NB5-01-net-borc-siniri-bize-alacakli-elenir: NB5-01-net-borc-siniri-bize-alacakli-elenir * [{}…] elenen: elle {"T1": {"C": "gecikmis_borc_yok", "Q5": {"secenek": ["gecikmis_borc_yok", "net_borc_y
+  # bilgi: M205 (NB5 (Y13-7): yalnız net borç < 0 elenir — net borcu 0 olan kişiye 0,00 TL'lik hatırlatma gider) ← NB5-01-net-borc-siniri-bize-alacakli-elenir: NB5-01-net-borc-siniri-bize-alacakli-elenir * [{}…] elenen: elle {"T1": {"C": "gecikmis_borc_yok", "Q5": {"secenek": ["gecikmis_borc_yok", "net_borc_y
+  # bilgi: M206 (NB5 (Y13-6/7): net borç yalnız başlatmada denetlenir — kuyrukta bize alacaklı olan kişiye gönderim anında yine gider) ← NB5-02-gonderim-aninda-bize-alacakli-atlanir-tutar-yeniden: NB5-02-gonderim-aninda-bize-alacakli-atlanir-tutar-yeniden * [{}…] isler.T1/V5.durum: elle "Atlandı" ≠ model "Teslim Edildi"
+  # bilgi: M207 (NB5 (Y13-7 sırası): net denetimi §7a 20 kalem denetiminden ÖNCE — vadesi geçmiş kalemi olmayan alacaklı kişi de net adıyla elenir) ← NB5-01-net-borc-siniri-bize-alacakli-elenir: NB5-01-net-borc-siniri-bize-alacakli-elenir * [{}…] elenen: elle {"T1": {"C": "gecikmis_borc_yok", "Q5": {"secenek": ["gecikmis_borc_yok", "net_borc_y
+  # bilgi: M208 (S16 tetiği (Y13-1): basma anında kalanı 0 olan (kapanmış) şüpheli kalem de 'Şüpheli Alacağı Var' sayılır (etiket + elle)) ← S16-03-kayit-basmadan-once-kapanir-etiket-yok-butun-gecikmisle-gider: S16-03-kayit-basmadan-once-kapanir-etiket-yok-butun-gecikmisle-gider * [{}…] yeniden.Y1: elle {"elenen": {}, "alinan": ["KB"], "oneri": null} ≠ model 
+  # bilgi: M209 (S16 (Y13-4 + Y12-9): onay penceresinin etiketi Ekstre işinde de görünür) ← S16-01-yine-de-gonder-supheli-acik-elle-sayilir-suphesiz-tutarla-gider: S16-01-yine-de-gonder-supheli-acik-elle-sayilir-suphesiz-tutarla-gider * [{}…] yeniden.Y2: elle {"elenen": {}, "alinan": ["EY"], "oneri": null} ≠ mode
+  # bilgi: M210 (S22'nin tersi (B seçeneği): işteki Yine de Gönder kişiye özel onaylı seçim — basmada kayıt yokken sonra açılan işte de elle sayılır, gönderim anında şüphesiz tutarla gider) ← S22-01-sinirda-bekleyen-yine-de-gonder-supheli-acilir-atlanir-yeniden-basma-gider: S22-01-sinirda-bekleyen-yine-de-gonder-supheli-acilir-atlanir-yeniden-basma-gider * [{}…] kontroller.K2.isler: elle {"T1/A": "Teslim Edildi", "T1/SU":
+  # bilgi: M211 (S22 (Y14-2): atlama etiketi yanlış ad — belirsizlik onayı işinde 'Şüpheli Alacağı Var' yerine J10'un 'Daha Önce Gönderildi'si) ← S22-01-sinirda-bekleyen-yine-de-gonder-supheli-acilir-atlanir-yeniden-basma-gider: S22-01-sinirda-bekleyen-yine-de-gonder-supheli-acilir-atlanir-yeniden-basma-gider * [{}…] isler.T1/SV.atlanma_nedeni: elle "supheli_alacak" ≠ model "d
+  # bilgi: M212 (S22 yolu (Y14-4): Atlandı — Şüpheli Alacağı Var işin asıl işten yeniden Yine de Gönder'inde S16 uygulanmaz (elle sayılmaz) — kayıt açık kişi yine atlanır (çıkmaz)) ← S22-01-sinirda-bekleyen-yine-de-gonder-supheli-acilir-atlanir-yeniden-basma-gider: S22-01-sinirda-bekleyen-yine-de-gonder-supheli-acilir-atlanir-yeniden-basma-gider * [{}…] kontroller.K3.isler: elle {"T1/A": "Teslim Edildi", "T1/SU":
+  # bilgi: M213 (S23'ün tersi (B seçeneği): F1 aynen — kayıt açıkken bekleyen işte yeniden basma 'Zaten Kuyrukta' ile elenir, iş elle sayılmaz; gönderim anında S22 ile 'Atlandı — Şüpheli Alacağı Var') ← S23-01-sinirda-bekleyen-yeniden-basma-elle-sayilir-pencere-acilinca-gider: S23-01-sinirda-bekleyen-yeniden-basma-elle-sayilir-pencere-acilinca-gider * [{}…] yeniden.Y3: elle {"elenen": {}, "alinan": [], "oneri": null, "suphel
+  # bilgi: M214 (S23 'yeni iş açılmaz'ın tersi: yeniden basma asıl işten yeni bir iş açar (elle) ve bekleyen iş de elle sayılır — ikisi de gider (aynı kişiye ikinci ileti)) ← S23-01-sinirda-bekleyen-yeniden-basma-elle-sayilir-pencere-acilinca-gider: S23-01-sinirda-bekleyen-yeniden-basma-elle-sayilir-pencere-acilinca-gider * [{}…] yeniden.Y3: elle {"elenen": {}, "alinan": [], "oneri": null, "suphel
+  # bilgi: M215 (S-W3 'anonim iz kalır'ın tersi (B seçeneği): silinen kaydın izi de silinir — R3 / Sonucu Belirsiz görmez, aynı dönemde ikinci ileti uyarısız gider) ← SW3-01-bir-yil-siniri-iki-yani-sure-dolunca-ayni-donem-daha-once-gonderildi: SW3-01-bir-yil-siniri-iki-yani-sure-dolunca-ayni-donem-daha-once-gonderildi * [{}…] elenen: elle {"T2": {"A": "daha_once_gonderildi", "B": "daha_once_
+  # bilgi: M216 (S-W3 (Y15-13): saklama sınırı bir gün geç (1 yıl + 1 gün)) ← SW3-01-bir-yil-siniri-iki-yani-sure-dolunca-ayni-donem-daha-once-gonderildi: SW3-01-bir-yil-siniri-iki-yani-sure-dolunca-ayni-donem-daha-once-gonderildi * [{}…] kontroller.K2.icerik: elle {"T1/A": {"telefon": null, "degiskenler
+  # bilgi: M217 (S-W3 (Y15-13): saklama sınırı bir gün erken (1 yıl − 1 gün)) ← SW3-01-bir-yil-siniri-iki-yani-sure-dolunca-ayni-donem-daha-once-gonderildi: SW3-01-bir-yil-siniri-iki-yani-sure-dolunca-ayni-donem-daha-once-gonderildi * [{}…] kontroller.K1.icerik: elle {"T1/A": {"telefon": "+905321112233", "
+  # bilgi: M218 (S-W3 (Y15-16): silinen telefon yeniden kullanılır — kart telefonu boşsa kişinin silinmiş gönderim kaydındaki telefona gider) ← SW3-03-silme-talebi-ayni-donem-elenir-sonraki-donem-gider-silinen-telefon-kullanilmaz: SW3-03-silme-talebi-ayni-donem-elenir-sonraki-donem-gider-silinen-telefon-kullanilmaz * [{}…] elenen: elle {"T2": {"A": "daha_once_gonderildi", "B": "
+  # bilgi: M219 (S-W3 (Y15-15): silme talebi içeriği / telefonu / PDF'i silmez (yalnız süre dolunca silinir)) ← SW3-03-silme-talebi-ayni-donem-elenir-sonraki-donem-gider-silinen-telefon-kullanilmaz: SW3-03-silme-talebi-ayni-donem-elenir-sonraki-donem-gider-silinen-telefon-kullanilmaz * [{}…] kontroller.K1.icerik: elle {"T1/A": {"telefon": null, "d
+  # bilgi: M220 (S-W3 (Y15-13): 1 yıl UTC gününe göre — kaydın UTC günü + 1 yıl, o UTC gününün başında silinir (yerel an değil)) ← SW3-02-gece-yarisi-yerel-gun-utc-farkli-bir-yil-siniri: SW3-02-gece-yarisi-yerel-gun-utc-farkli-bir-yil-siniri * [{}…] kontroller.K1.icerik: elle {"T1/A": {"telefon": "+905321112233", "degiskenler": ["Ayşe 
+  # bilgi: M221 (S-W3 (Y15-17): silme talebinden sonra o kişinin teslimleri 'Bu Ay'dan düşer) ← SW3-03-silme-talebi-ayni-donem-elenir-sonraki-donem-gider-silinen-telefon-kullanilmaz: SW3-03-silme-talebi-ayni-donem-elenir-sonraki-donem-gider-silinen-telefon-kullanilmaz * [{}…] bu_ay: elle {"W1": {"2026-11": {"teslim": 4, "yaklasik_u
+  # bilgi: M222 (S-W3 (Y15-18, ilke 5): geri yüklenen işe saklama kuralı uygulanmaz — 1 yıldan eski içerik yedekten geri gelir ve kalır) ← SW3-04-geri-yukleme-bir-yildan-eski-icerik-donunce-silinir: SW3-04-geri-yukleme-bir-yildan-eski-icerik-donunce-silinir * [{}…] kontroller.K2.icerik: elle {"T1/A": {"telefon": null, "degiskenler": null, "pdf": n
+  # bilgi: M223 (S29'un tersi (B seçeneği): yeniden basmada şüphesiz tutar yoksa iş elle sayılmaz (yanıtta 'Gecikmiş Borç Yok' ile elenir) — gönderim anında S22 'Atlandı — Şüpheli Alacağı Var') ← S29-01-yeniden-basmada-tutar-yok-ertesi-gun-devam-et-gonderim-anindaki-tutarla-gider: S29-01-yeniden-basmada-tutar-yok-ertesi-gun-devam-et-gonderim-anindaki-tutarla-gider * [{}…] yeniden.Y3: elle {"elenen": {}, "alinan": [], "oneri": nu
+  # bilgi: M224 (S29 (Y16-2/4) zaman sınırı: şüphesiz tutar yeniden basma anının gününe göre sabitlenir — gönderim anına kadar vadesi geçen kalem sayılmaz ('Gecikmiş Borç Yok')) ← S29-01-yeniden-basmada-tutar-yok-ertesi-gun-devam-et-gonderim-anindaki-tutarla-gider: S29-01-yeniden-basmada-tutar-yok-ertesi-gun-devam-et-gonderim-anindaki-tutarla-gider * [{}…] kontroller.K2.isler: elle {"T1/A": "Teslim Edildi", "T1/N
+  # bilgi: M225 (S30'un tersi (B seçeneği): silme talebi / 1 yıl dolumu anında bekleyen iş karttaki güncel bilgiyle gider (silme yalnız geçmiş kayıtları kapsar)) ← S30-01-talep-duraklatildi-meta-bekletti-zincir-gonderilmez-belirsiz-iz-eler: S30-01-talep-duraklatildi-meta-bekletti-zincir-gonderilmez-belirsiz-iz-eler * [{}…] kontroller.K2.isler: elle {"T1/A": "Teslim Edildi", "T1/E": "Atlan
+  # bilgi: M226 (S30 'Sonucu Belirsiz izi kalır'ın tersi: silmede belirsiz denemenin izi de gider — aynı dönemde yeni gönderim 'Sonucu Belirsiz' ile elenmez) ← S30-01-talep-duraklatildi-meta-bekletti-zincir-gonderilmez-belirsiz-iz-eler: S30-01-talep-duraklatildi-meta-bekletti-zincir-gonderilmez-belirsiz-iz-eler * [{}…] elenen: elle {"T4": {"E": "sonucu_belirsiz"}} ≠ model {}
+  # bilgi: M227 (S30 (Y16-9) bekleyen kümesi: Meta Bekletti iş bekleyen sayılmaz — 2. deneme karttaki bilgiyle gider) ← S30-01-talep-duraklatildi-meta-bekletti-zincir-gonderilmez-belirsiz-iz-eler: S30-01-talep-duraklatildi-meta-bekletti-zincir-gonderilmez-belirsiz-iz-eler * [{}…] kontroller.K2.isler: elle {"T1/A": "Teslim Edildi", "T1/E": "Atlan
+  # bilgi: M228 (S30 (Y16-9) bekleyen kümesi: Duraklatıldı / Lisans Nedeniyle Durdu / açılışta sorulan iş bekleyen sayılmaz — Devam Et'te karttaki bilgiyle gider) ← S30-01-talep-duraklatildi-meta-bekletti-zincir-gonderilmez-belirsiz-iz-eler: S30-01-talep-duraklatildi-meta-bekletti-zincir-gonderilmez-belirsiz-iz-eler * [{}…] kontroller.K2.isler: elle {"T1/A": "Teslim Edildi", "T1/E": "Atlan
+  # bilgi: M229 (S30 (Y16-14): 1 yıl kuralı yalnız içeriği yazılmış işe — içeriği hiç yazılmamış bekleyen (Ödeme Hatırlatma) iş 1 yıl sonra Devam Et'te gider) ← S30-03-bir-yil-dolumu-bekleyen-isler-gonderilmez-belirsiz-iz-eler: S30-03-bir-yil-dolumu-bekleyen-isler-gonderilmez-belirsiz-iz-eler * [{}…] kontroller.K2.isler: elle {"T1/A": "Teslim Edildi", "T2/B": "Atlandı", "T3/H
+  # bilgi: M230 (S31'in tersi (B seçeneği): içeriği silinmiş Ekstre işi yeniden gönderilir — içerik açılış günü verisiyle yeniden üretilip gider) ← S31-01-talep-sonrasi-basarisizlari-yeniden-dene-silinmis-ekstre-elenir-yeni-gonderim-gider: S31-01-talep-sonrasi-basarisizlari-yeniden-dene-silinmis-ekstre-elenir-yeni-gonderim-gider * [{}…] yeniden.Y1: elle {"elenen": {"A": "icerik_silindi"}
+  # bilgi: M231 (S31 (Y16-16) yol sınırı: yalnız Başarısızları Yeniden Dene kapalı — işteki Yine de Gönder içeriği silinmiş (Sonucu Belirsiz) Ekstre'yi yeniden üretip gönderir) ← S31-02-bir-yil-sonra-silinmis-ekstre-yeniden-dene-ve-yine-de-gonder-kapali: S31-02-bir-yil-sonra-silinmis-ekstre-yeniden-dene-ve-yine-de-gonder-kapali * [{}…] yeniden.Y2: elle {"elenen": {"B": "icerik_silindi"}, "alinan": [], 
+  # bilgi: M232 (S32'nin tersi (B seçeneği): geri yüklemede silme talebi yeniden uygulanmaz — talepten önceki yedekten içerik / telefon geri gelir) ← S32-01-talepten-once-ve-sonra-alinan-iki-yedek-icerik-gelmez-sonraki-icerik-kalir: S32-01-talepten-once-ve-sonra-alinan-iki-yedek-icerik-gelmez-sonraki-icerik-kalir * [{}…] kontroller.K1.icerik: elle {"T1/A": {"telefon": null, "degis
+  # bilgi: M233 (S32 (Y16-22) zaman sınırı: yeniden uygulamada talepten SONRA yazılmış içerik de silinir) ← S32-01-talepten-once-ve-sonra-alinan-iki-yedek-icerik-gelmez-sonraki-icerik-kalir: S32-01-talepten-once-ve-sonra-alinan-iki-yedek-icerik-gelmez-sonraki-icerik-kalir * [{}…] kontroller.K2.icerik: elle {"T1/A": {"telefon": null, "degis
+  # bilgi: M234 (S32 (Y16-20): silme talebi kaydı şirket dosyasında (yedekle birlikte) — talepten önceki yedek geri yüklenince kayıt da kaybolur, sonraki geri yüklemelerde de uygulanmaz) ← S32-01-talepten-once-ve-sonra-alinan-iki-yedek-icerik-gelmez-sonraki-icerik-kalir: S32-01-talepten-once-ve-sonra-alinan-iki-yedek-icerik-gelmez-sonraki-icerik-kalir * [{}…] kontroller.K1.icerik: elle {"T1/A": {"telefon": null, "degis
+  # bilgi: M235 (S31 'neden görünür'ün tersi: içeriği silinmiş Ekstre işi yeniden gönderime sessizce alınmaz — kişi yanıtta ne alınan ne elenen listesinde) ← S31-01-talep-sonrasi-basarisizlari-yeniden-dene-silinmis-ekstre-elenir-yeni-gonderim-gider: S31-01-talep-sonrasi-basarisizlari-yeniden-dene-silinmis-ekstre-elenir-yeni-gonderim-gider * [{}…] yeniden.Y1: elle {"elenen": {"A": "icerik_silindi"}
+  # bilgi: M236 (S34'ün tersi (B seçeneği): ilk Yine de Gönder'de şüphesiz tutar yoksa kişi basmada 'Gecikmiş Borç Yok' ile elenir, iş Sonucu Belirsiz kalır (eski s16_an 'basma' okuması)) ← S34-01-ilk-yine-de-gonder-tutar-yok-is-alinir-ertesi-gun-gonderim-anindaki-tutarla: S34-01-ilk-yine-de-gonder-tutar-yok-is-alinir-ertesi-gun-gonderim-anindaki-tutarla * [{}…] yeniden.Y1: elle {"elenen": {}, "alinan": ["P1"], "oneri": 
+  # bilgi: M237 (S34 (Y17-2/4) zaman sınırı: ilk Yine de Gönder'de tutar yoksa şüphesiz tutar basma anının gününe göre sabitlenir — gönderim anına kadar vadesi geçen kalem sayılmaz) ← S34-01-ilk-yine-de-gonder-tutar-yok-is-alinir-ertesi-gun-gonderim-anindaki-tutarla: S34-01-ilk-yine-de-gonder-tutar-yok-is-alinir-ertesi-gun-gonderim-anindaki-tutarla * [{}…] kontroller.K2.isler: elle {"T1/A": "Teslim Edildi", "T1/P1"
+  # bilgi: M238 (S35'in tersi (B seçeneği): silme talebinde bekleyen iş gönderim anına kadar kuyrukta sayılır ('Zaten Kuyrukta'), kendi gönderim anında atlanır) ← S35-01-talep-aninda-kapanir-ayni-donem-yeni-gonderim-gider-meta-bekletti-gec-teslim: S35-01-talep-aninda-kapanir-ayni-donem-yeni-gonderim-gider-meta-bekletti-gec-teslim * [{}…] kontroller.K1.isler: elle {"T1/A": "Teslim Edildi", "T2/B"
+  # bilgi: M239 (S35 (Y17-8) sınır: talep anında kapanan ('Atlandı — Silme Talebi') iş 'Zaten Kuyrukta' sayılır — aynı dönem yeni gönderim elenir) ← S35-01-talep-aninda-kapanir-ayni-donem-yeni-gonderim-gider-meta-bekletti-gec-teslim: S35-01-talep-aninda-kapanir-ayni-donem-yeni-gonderim-gider-meta-bekletti-gec-teslim * [{}…] elenen: elle {"T5": {"B": "daha_once_gonderildi", "D": "da
+  # bilgi: M240 (S35 (Y17-6) kapsam: anında kapanma yalnız silme talebinde — 1 yıl dolumunda bekleyen iş gönderim anına kadar kuyrukta kalır) ← S30-03-bir-yil-dolumu-bekleyen-isler-gonderilmez-belirsiz-iz-eler: S30-03-bir-yil-dolumu-bekleyen-isler-gonderilmez-belirsiz-iz-eler * [{}…] kontroller.K2.isler: elle {"T1/A": "Teslim Edildi", "T2/B": "Atlandı", "T3/H
+  # bilgi: M241 (S36'nın tersi (B seçeneği): içeriği silinmiş Sonucu Belirsiz Ekstre'nin kişisi yeni gönderimde 'Sonucu Belirsiz' yerine R3 uyarısıyla gelir, onaylı Yine de Gönder ile gider) ← S36-01-silinmis-belirsiz-ekstre-ayni-donem-yol-yok-sonraki-donem-gider: S36-01-silinmis-belirsiz-ekstre-ayni-donem-yol-yok-sonraki-donem-gider * [{}…] elenen: elle {"T2": {"A": "sonucu_belirsiz"}, "T3": {"A": "sonucu_belir
+  # bilgi: M242 (S36 (Y17-13) dönem sınırı: içeriği silinmiş Sonucu Belirsiz Ekstre izi dönem eşliğine bakmadan eler — sonraki dönem de gitmez) ← S36-01-silinmis-belirsiz-ekstre-ayni-donem-yol-yok-sonraki-donem-gider: S36-01-silinmis-belirsiz-ekstre-ayni-donem-yol-yok-sonraki-donem-gider * [{}…] elenen: elle {"T2": {"A": "sonucu_belirsiz"}, "T3": {"A": "sonucu_belir
+  # bilgi: M243 (S37'nin tersi (A seçeneği): içeriği silinmiş Ödeme Hatırlatma da Ekstre gibi yeniden gönderilemez ('içerik silindi' ile elenir)) ← S37-01-talep-sonrasi-hatirlatma-yeniden-dene-ve-yine-de-gonder-karttan-gider: S37-01-talep-sonrasi-hatirlatma-yeniden-dene-ve-yine-de-gonder-karttan-gider * [{}…] yeniden.Y1: elle {"elenen": {}, "alinan": ["RF", "RT"], "oneri": 
+  # bilgi: M244 (S37 (Y17-16) yol sınırı: yalnız Başarısızları Yeniden Dene açık — işteki Yine de Gönder içeriği silinmiş Ödeme Hatırlatma'yı 'içerik silindi' ile eler) ← S37-01-talep-sonrasi-hatirlatma-yeniden-dene-ve-yine-de-gonder-karttan-gider: S37-01-talep-sonrasi-hatirlatma-yeniden-dene-ve-yine-de-gonder-karttan-gider * [{}…] yeniden.Y2: elle {"elenen": {}, "alinan": ["RB"], "oneri": null} 
+  # bilgi: M245 (S38'in tersi (B seçeneği): silme talebi kayıtları taşınmaz — yeni bilgisayarda talep öncesi yedek geri yüklenince içerik / telefon geri gelir) ← S38-01-tasima-oncesi-talep-yeni-bilgisayarda-geri-yuklemede-uygulanir: S38-01-tasima-oncesi-talep-yeni-bilgisayarda-geri-yuklemede-uygulanir * [{}…] kontroller.K1.icerik: elle {"T1/A": {"telefon": null, "degiskenler": nul
+  # bilgi: M246 (S38 (Y17-20) zaman sınırı: taşınan talep kaydının anı taşıma anı olur — talepten sonra (taşımadan önce) yazılmış içerik de geri yüklemede silinir) ← S38-01-tasima-oncesi-talep-yeni-bilgisayarda-geri-yuklemede-uygulanir: S38-01-tasima-oncesi-talep-yeni-bilgisayarda-geri-yuklemede-uygulanir * [{}…] kontroller.K2.icerik: elle {"T1/A": {"telefon": null, "degiskenler": nul
+  # bilgi: M247 (S33'ün tersi (B seçeneği, bugünkü program): Yol 2'de imzasız bildirim de (wamid tanınmasa bile) 'bildirim yolu çalışıyor' işaretini koyar — TTL + 1 sa'te Süresi Doldu) ← S33-01-yol-2-imzasiz-bildirim-isaret-koymaz-sure-dolmaz-ayni-donem-daha-once: S33-01-yol-2-imzasiz-bildirim-isaret-koymaz-sure-dolmaz-ayni-donem-daha-once * [{}…] kontroller.K1.isler: elle {"T1/A": "Meta Kabul Etti", "T1/B": "Me
+  # bilgi: M248 (S41'in tersi (B seçeneği): uygulama düzeyi adrese gelen bildirim işlenmez (200, yok sayılır) — teslim bilgisi kaybolur) ← S41-01-yol-2-uygulama-duzeyi-adres-imzali-islenir-imzasiz-duser: S41-01-yol-2-uygulama-duzeyi-adres-imzali-islenir-imzasiz-duser * [{}…] kontroller.K1.isler: elle {"T1/A": "Teslim Edildi", "T1/B": "Teslim Edildi", "
+  # bilgi: M249 (S41 'aynı kurallar'ın tersi: uygulama düzeyi adreste imza aranmaz — Yol 2'de imzasız bildirim de işlenir) ← S41-01-yol-2-uygulama-duzeyi-adres-imzali-islenir-imzasiz-duser: S41-01-yol-2-uygulama-duzeyi-adres-imzali-islenir-imzasiz-duser * [{}…] kontroller.K1.isler: elle {"T1/A": "Teslim Edildi", "T1/B": "Teslim Edildi", "
+  # bilgi: M250 (Yol 1 'imzasız kabul'ün tersi (S41 metni): Yol 1'de de imzasız bildirim düşer (§7a 3) — Meta'nın bildirimleri işlenmez) ← S33-02-yol-1-imzasiz-bildirim-kabul-isaret-ve-sure-dolumu-sahte-de-islenir: S33-02-yol-1-imzasiz-bildirim-kabul-isaret-ve-sure-dolumu-sahte-de-islenir * [{}…] kontroller.K1.isler: elle {"T1/A": "Teslim Edildi", "T1/B": "Gönder
+ok 378 - G komut satırı: hesapla + karsilastir (kendi tek koşusu 0 fark; bozulmuş çıktı fark verir)
+ok 379 - G karsilastir: 'biri' (zaman serbestliği), 'plan_susuyor' (denetlenmez), 'kisaltilabilir' (önek)
+ok 380 - G numara(): plan §2.2 '+' + ülke kodu; §7a 6 geçersiz = E.164'e çevrilemeyen; §7a 7 ayırıcılar; telefonsuz/geçersiz ayrımı
+ok 381 - G para(): '1.250,00 TL' biçimi; §7a 22 eksi bakiye '1.234,56 TL (Alacaklı)', 2 ondalık; donem_metni() §7a 21
+ok 382 - G karsilastir: 'secenek' yaprağı (karar susuyor: program seçeneklerden biri olmalı)
+ok 383 - I dönem çözümü (K1): Bu Ay/Geçen Ay takvim ayı anahtarı; ay sonu → 1'i; 31.12 → 01.01; şubat kırpması; hatırlatma yerel gün
+ok 384 - I karar izlenebilirliği: K1–K8, D1–D8, E1–E4, N6 … J12, W1 metinleri KARARLAR'da, her karar ≥ 2 senaryoda (başlık ya da kaynak)
+  # bilgi: K1: 19 senaryo
+  # bilgi: K2: 4 senaryo
+  # bilgi: K3: 11 senaryo
+  # bilgi: K4: 5 senaryo
+  # bilgi: K5: 8 senaryo
+  # bilgi: K6: 8 senaryo
+  # bilgi: K7: 13 senaryo
+  # bilgi: K8: 3 senaryo
+  # bilgi: D1: 13 senaryo
+  # bilgi: D2: 4 senaryo
+  # bilgi: D3: 3 senaryo
+  # bilgi: D4: 6 senaryo
+  # bilgi: D5: 3 senaryo
+  # bilgi: D6: 8 senaryo
+  # bilgi: D7: 6 senaryo
+  # bilgi: D8: 6 senaryo
+  # bilgi: E1: 4 senaryo
+  # bilgi: E2: 13 senaryo
+  # bilgi: E3: 7 senaryo
+  # bilgi: E4: 2 senaryo
+  # bilgi: N6: 2 senaryo
+  # bilgi: F1: 6 senaryo
+  # bilgi: F2: 2 senaryo
+  # bilgi: G0: 27 senaryo
+  # bilgi: G1: 4 senaryo
+  # bilgi: G2: 6 senaryo
+  # bilgi: G3: 5 senaryo
+  # bilgi: G4: 2 senaryo
+  # bilgi: G5: 2 senaryo
+  # bilgi: G6: 6 senaryo
+  # bilgi: H1: 4 senaryo
+  # bilgi: H2: 2 senaryo
+  # bilgi: H3: 2 senaryo
+  # bilgi: H4: 6 senaryo
+  # bilgi: J1: 27 senaryo
+  # bilgi: J2: 4 senaryo
+  # bilgi: J3: 9 senaryo
+  # bilgi: J4: 3 senaryo
+  # bilgi: J5: 9 senaryo
+  # bilgi: J6: 5 senaryo
+  # bilgi: J7: 2 senaryo
+  # bilgi: J8: 8 senaryo
+  # bilgi: J9: 3 senaryo
+  # bilgi: J10: 8 senaryo
+  # bilgi: J11: 7 senaryo
+  # bilgi: J12: 4 senaryo
+  # bilgi: W1: 27 senaryo
+  # bilgi: W2: 24 senaryo
+  # bilgi: W3: 15 senaryo
+  # bilgi: SW1: 5 senaryo
+  # bilgi: SW2: 2 senaryo
+  # bilgi: SD1837: 6 senaryo
+  # bilgi: SD1915: 9 senaryo
+  # bilgi: SW4: 5 senaryo
+  # bilgi: S7: 17 senaryo
+  # bilgi: S7A: 9 senaryo
+  # bilgi: S7B: 5 senaryo
+  # bilgi: S16: 15 senaryo
+  # bilgi: S17: 15 senaryo
+  # bilgi: NB5: 7 senaryo
+  # bilgi: S22: 8 senaryo
+  # bilgi: S23: 9 senaryo
+  # bilgi: SW3: 11 senaryo
+  # bilgi: S29: 5 senaryo
+  # bilgi: S30: 9 senaryo
+  # bilgi: S31: 5 senaryo
+  # bilgi: S32: 5 senaryo
+  # bilgi: S34: 3 senaryo
+  # bilgi: S35: 5 senaryo
+  # bilgi: S36: 2 senaryo
+  # bilgi: S37: 2 senaryo
+  # bilgi: S38: 2 senaryo
+  # bilgi: S33: 3 senaryo
+  # bilgi: S41: 3 senaryo
+ok 385 - I yeniden deneme ve liste çıktıları tutarlı (elenen ∩ alınan = ∅; sayfa ≤ 30, etiket tekil, kısa sayfada Daha Fazla yok)
+ok 386 - I eski 145 senaryoda yeni yaprak türü ('secenek') ve yeni çıktı alanı (yeniden, listeler) YOK (beklentileri değişmedi)
+ok 387 - I G2 dönem eşliği birim denetimi: hazır seçimin o günkü tarihleri + kendi günlerinde Bu Ay'a eşit özel aralıklar BİRLİKTE (G0 3: şüphede aynı dönem)
+ok 388 - I D1: hiçbir senaryoda Sonucu Belirsiz kişi 'Zaten Kuyrukta' ile elenmiyor (eski yorum 3 düştü); yeni toplu işte 'Sonucu Belirsiz' elemesi en az bir senaryoda
+  # bilgi: yeni toplu işte Sonucu Belirsiz elemesi 26 kez
+ok 389 - I güncelleme 9 + 11: BİLİNEN SINIR işaretleri (J5 iki ileti; n3 artık KARAR SW1 — işaretsiz) ve kanca yanıt sayıları tutarlı
+  # bilgi: BİLİNEN SINIR J5: J5-01-bekletme-sonrasi-iki-teslim
+  # bilgi: BİLİNEN SINIR J5: J5-02-iki-teslim-ay-donumu-yerel
+ok 390 - I güncelleme 11: secenek_birlestir birim; yeniden bağlanmadan Devam Et'in üç okumasında kime / kaç kez AYNI; belirteç kodları; karar dışı durumlar hata verir
+  # bilgi: üç okumalı koşu 2 (senaryo × zaman ucu)
+ok 391 - I güncelleme 12 (S7A, S7B): güncelleme 11'in S7-a / S7-b hata yolları A sonucunu verir; eski S7-c girdisi S16 ile hesaplanır (güncelleme 13); girdi tutarsızlığı hata verir; elle işaretli Yine de Gönder ve Ekstre'de supheli_elle hesaplanır
+ok 392 - I güncelleme 13 (S16, S17, NB5): supheli_etiketi yalnız S16 / S22 / S23 / S29 / S34'te; net eleme adı iki seçenekli (güncelleme 17: s16_an iki okuması ve ayrışma hatası → I14)
+  # bilgi: net elemesi başlatmada 5, gönderim anında 2
+ok 393 - I güncelleme 14 (S22): eski S7-d girdileri 'Atlandı — Şüpheli Alacağı Var' ile hesaplanır; B seçeneği (M210) aynı girdide ayrışır; S22 senaryolarının yeniden basması Atlandı'dan sonra (S23 tetiği yok)
+ok 394 - I güncelleme 15 (S23, SW3): eski S7-e girdisi S23 ile hesaplanır, B (M213) ayrışır; yil_sonra; yeni alanlar yalnız S23 / SW3'te (güncelleme 16: + S29–S32; s23_an, S-W3-a / S-W3-b → I13)
+ok 395 - I güncelleme 16 (S29–S32): eski S23-a / S-W3-a / S-W3-b girdileri hesaplanır (B seçenekleri ayrışır); yeni adlar yalnız yeni başlıklarda (güncelleme 17: s30_an, S30-a, S31-a, S32-a, Gönderiliyor → I14)
+ok 396 - I güncelleme 17 (S34–S38, S33, S41): s16_an / s30_an yok; eski ayrışma / S30-a / 1 yıl / S31-a / S32-a girdileri hesaplanır, B seçenekleri ayrışır; S35-a hata verir; Yol 1 = Yol 2 (gerçek bildirim)
+  # bilgi: Yol 1 = Yol 2 denetimi 359 senaryo
+ok 397 - H beklenen şablon metinleri = plan (§7a 23 ekstre gövdesi, W5 hatırlatma gövdesi, KVKK alt satırı ≤ 60)
+1..397
+# tests 397
+# pass 395
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0

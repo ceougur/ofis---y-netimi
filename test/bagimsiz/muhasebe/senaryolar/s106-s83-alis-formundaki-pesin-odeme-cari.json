@@ -1,0 +1,384 @@
+{
+ "aciklama": "S83: alış faturası formunda yapılan peşin ödemenin carisi düzeltmeyle değişmez — S80 ile aynı FATURA_DUZENLENMELI, düzeltmenin tamamı (olağan ve geri yüklenmiş açılış öncesi kayıtta; S79 uygulanmaz; T12 önce); carisi aynı peşin ödemenin tutarı / açıklaması bugünkü kuralla kabul.",
+ "ad": "s106-s83-alis-formundaki-pesin-odeme-cari",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "ak1": [
+    {
+     "k": "fatura:A2",
+     "kalan": -550,
+     "tarih": "2026-01-06",
+     "tur": "fatura",
+     "vade": "2026-01-31"
+    },
+    {
+     "k": "fatura:A1",
+     "kalan": -650,
+     "tarih": "2026-01-09",
+     "tur": "fatura",
+     "vade": "2026-01-31"
+    }
+   ],
+   "ak1a": [
+    {
+     "k": "fatura:A2",
+     "kalan": -600,
+     "tarih": "2026-01-06",
+     "tur": "fatura",
+     "vade": "2026-01-31"
+    },
+    {
+     "k": "fatura:A1",
+     "kalan": -700,
+     "tarih": "2026-01-09",
+     "tur": "fatura",
+     "vade": "2026-01-31"
+    }
+   ],
+   "ak2": [
+    {
+     "k": "fatura:A3",
+     "kalan": -500,
+     "tarih": "2026-01-10",
+     "tur": "fatura",
+     "vade": "2026-01-20"
+    }
+   ],
+   "ak2b": [
+    {
+     "k": "fatura:A3",
+     "kalan": -500,
+     "tarih": "2026-01-10",
+     "tur": "fatura",
+     "vade": "2026-01-20"
+    }
+   ],
+   "mu": [
+    {
+     "acilis": "2026-01-08",
+     "kaynak": "O2",
+     "kod": "KASA_ACILIS_ONCESI_HAREKET",
+     "tarih": "2026-01-06"
+    }
+   ],
+   "mz0/satirlar/100/bakiye": 500,
+   "mz0/satirlar/320|T1/bakiye": -1300,
+   "mz0/satirlar/320|T2/bakiye": -500,
+   "mz1/satirlar/100/bakiye": 500,
+   "mz1/satirlar/320|T1/bakiye": -1300,
+   "mz1/satirlar/320|T2/bakiye": -500,
+   "mz2/satirlar/100/bakiye": 400,
+   "mz2/satirlar/320|T1/bakiye": -1200,
+   "mz2/satirlar/320|T2/bakiye": -500,
+   "redler": [
+    "FATURA_DUZENLENMELI",
+    "FATURA_DUZENLENMELI",
+    "FATURA_DUZENLENMELI",
+    "FATURA_DUZENLENMELI",
+    "FATURA_DUZENLENMELI",
+    "FATURA_DUZENLENMELI",
+    "FATURA_DUZENLENMELI",
+    "KASA_ACILIS_ONCE",
+    "FATURA_DUZENLENMELI"
+   ]
+  }
+ },
+ "kapsam": [
+  "S83",
+  "S80",
+  "F-12",
+  "F-14",
+  "G-7",
+  "T-05",
+  "S26",
+  "S40",
+  "S20",
+  "T12",
+  "B11",
+  "X10",
+  "Ö1",
+  "Ö2"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "id": "KA",
+   "tarih": "2026-01-08",
+   "tur": "kasa_acilis",
+   "tutar": 1000
+  },
+  {
+   "K": 0,
+   "M": 800,
+   "cari": "T1",
+   "fatura_turu": "gider",
+   "gider_turu": "genel",
+   "id": "A2",
+   "tarih": "2026-01-06",
+   "tur": "alis_faturasi",
+   "vade": "2026-01-31"
+  },
+  {
+   "cari": "T1",
+   "fatura": "A2",
+   "fatura_odemesi": true,
+   "id": "O2",
+   "tarih": "2026-01-06",
+   "tur": "odeme",
+   "tutar": 200,
+   "yedekten": true,
+   "yol": "nakit"
+  },
+  {
+   "K": 0,
+   "M": 1000,
+   "cari": "T1",
+   "fatura_turu": "gider",
+   "gider_turu": "genel",
+   "id": "A1",
+   "tarih": "2026-01-09",
+   "tur": "alis_faturasi",
+   "vade": "2026-01-31"
+  },
+  {
+   "cari": "T1",
+   "fatura": "A1",
+   "fatura_odemesi": true,
+   "id": "O1",
+   "tarih": "2026-01-09",
+   "tur": "odeme",
+   "tutar": 300,
+   "yol": "nakit"
+  },
+  {
+   "K": 0,
+   "M": 500,
+   "cari": "T2",
+   "fatura_turu": "gider",
+   "gider_turu": "genel",
+   "id": "A3",
+   "tarih": "2026-01-10",
+   "tur": "alis_faturasi",
+   "vade": "2026-01-20"
+  },
+  {
+   "ad": "mz0",
+   "bas": "2026-01-01",
+   "rapor": "mizan",
+   "son": "2026-01-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "ak1a",
+   "cari": "T1",
+   "rapor": "acik_kalemler",
+   "tarih": "2026-02-01",
+   "tur": "rapor"
+  },
+  {
+   "degisiklik": {
+    "cari": "T2"
+   },
+   "kaynak": "O1",
+   "tur": "duzenle"
+  },
+  {
+   "degisiklik": {
+    "cari": "T2",
+    "tutar": 250
+   },
+   "kaynak": "O1",
+   "tur": "duzenle"
+  },
+  {
+   "degisiklik": {
+    "cari": "T2",
+    "fatura": "A3"
+   },
+   "kaynak": "O1",
+   "tur": "duzenle"
+  },
+  {
+   "degisiklik": {
+    "cari": "T2",
+    "fatura": null
+   },
+   "kaynak": "O1",
+   "tur": "duzenle"
+  },
+  {
+   "degisiklik": {
+    "cari": "T2",
+    "tarih": "2026-01-12"
+   },
+   "kaynak": "O1",
+   "tur": "duzenle"
+  },
+  {
+   "degisiklik": {
+    "cari": "T2"
+   },
+   "kaynak": "O2",
+   "tur": "duzenle"
+  },
+  {
+   "degisiklik": {
+    "aciklama": "Yanlış cari",
+    "cari": "T2"
+   },
+   "kaynak": "O2",
+   "tur": "duzenle"
+  },
+  {
+   "degisiklik": {
+    "cari": "T2",
+    "tarih": "2026-01-07"
+   },
+   "kaynak": "O2",
+   "tur": "duzenle"
+  },
+  {
+   "degisiklik": {
+    "cari": "T2",
+    "tarih": "2026-01-09"
+   },
+   "kaynak": "O2",
+   "tur": "duzenle"
+  },
+  {
+   "ad": "mz1",
+   "bas": "2026-01-01",
+   "rapor": "mizan",
+   "son": "2026-01-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "ak2b",
+   "cari": "T2",
+   "rapor": "acik_kalemler",
+   "tarih": "2026-02-01",
+   "tur": "rapor"
+  },
+  {
+   "degisiklik": {
+    "aciklama": "Peşin düzeltme",
+    "tutar": 350
+   },
+   "kaynak": "O1",
+   "tur": "duzenle"
+  },
+  {
+   "degisiklik": {
+    "tutar": 250
+   },
+   "kaynak": "O2",
+   "tur": "duzenle"
+  },
+  {
+   "degisiklik": {
+    "aciklama": "Aynı cari",
+    "cari": "T1"
+   },
+   "kaynak": "O1",
+   "tur": "duzenle"
+  },
+  {
+   "ad": "mz2",
+   "bas": "2026-01-01",
+   "rapor": "mizan",
+   "son": "2026-01-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "ak1",
+   "cari": "T1",
+   "rapor": "acik_kalemler",
+   "tarih": "2026-02-01",
+   "tur": "rapor"
+  },
+  {
+   "ad": "ak2",
+   "cari": "T2",
+   "rapor": "acik_kalemler",
+   "tarih": "2026-02-01",
+   "tur": "rapor"
+  },
+  {
+   "ad": "mu",
+   "rapor": "mutabakat_uyarilari",
+   "tarih": "2026-01-31",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

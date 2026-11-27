@@ -1,0 +1,186 @@
+TAP version 13
+# Subtest: 2.5.0 W-2 — Bağlantıyı Kaldır Meta'da da
+    # Subtest: Yol 2: Kaldır → Meta'da abonelik silinir (DELETE /<WABA>/subscribed_apps, belirteç yalnız başlıkta), yerel kayıt silinir; ikinci Kaldır etkisiz (Meta'ya ikinci istek yok)
+    ok 1 - Yol 2: Kaldır → Meta'da abonelik silinir (DELETE /<WABA>/subscribed_apps, belirteç yalnız başlıkta), yerel kayıt silinir; ikinci Kaldır etkisiz (Meta'ya ikinci istek yok)
+      ---
+      duration_ms: 529.031664
+      type: 'test'
+      ...
+    # Subtest: aynı anda iki Kaldır: Meta'ya TEK silme isteği, ikisi aynı sonucu alır; Meta beklenirken yeni gönderim 409 'kaldırılıyor'
+    ok 2 - aynı anda iki Kaldır: Meta'ya TEK silme isteği, ikisi aynı sonucu alır; Meta beklenirken yeni gönderim 409 'kaldırılıyor'
+      ---
+      duration_ms: 368.164085
+      type: 'test'
+      ...
+    # Subtest: Meta düşerse yerel kaldırma YİNE yapılır: Meta reddi, Meta'ya ulaşılamıyor, silme isteğinde 190, süresi dolmuş belirteç (istek gönderilmez) → 'Meta tarafında kaldırılamadı' + destekofis.net/veri-silme
+    ok 3 - Meta düşerse yerel kaldırma YİNE yapılır: Meta reddi, Meta'ya ulaşılamıyor, silme isteğinde 190, süresi dolmuş belirteç (istek gönderilmez) → 'Meta tarafında kaldırılamadı' + destekofis.net/veri-silme
+      ---
+      duration_ms: 403.953537
+      type: 'test'
+      ...
+    # Subtest: Meta adresi tanımsız kurulum: yerel kaldırma yapılır, Meta tarafı 'kaldırılamadı' + veri silme adımı; dış istek YOK
+    ok 4 - Meta adresi tanımsız kurulum: yerel kaldırma yapılır, Meta tarafı 'kaldırılamadı' + veri silme adımı; dış istek YOK
+      ---
+      duration_ms: 308.647083
+      type: 'test'
+      ...
+    # Subtest: bekleyen gönderimler 'Durduruldu' (ilke 1): süren, duraklatılmış ve Meta Bekletti işi olan toplu işler; Meta Kabul Etti iş aynen; yeniden bağlanınca gönderilmemiş kişiler gönderilecek, kabul edilen kişi 'Daha Önce Gönderildi'
+    ok 5 - bekleyen gönderimler 'Durduruldu' (ilke 1): süren, duraklatılmış ve Meta Bekletti işi olan toplu işler; Meta Kabul Etti iş aynen; yeniden bağlanınca gönderilmemiş kişiler gönderilecek, kabul edilen kişi 'Daha Önce Gönderildi'
+      ---
+      duration_ms: 536.061446
+      type: 'test'
+      ...
+    # Subtest: iki şirket aynı WhatsApp hesabı (WABA): biri kaldırınca Meta'daki abonelik SİLİNMEZ (öbürü kullanıyor), öbürünün bağlantısı sürer; ikincisi de kaldırınca silinir
+    ok 6 - iki şirket aynı WhatsApp hesabı (WABA): biri kaldırınca Meta'daki abonelik SİLİNMEZ (öbürü kullanıyor), öbürünün bağlantısı sürer; ikincisi de kaldırınca silinir
+      ---
+      duration_ms: 552.444478
+      type: 'test'
+      ...
+    # Subtest: aynı WABA'lı ikinci şirket SİLİNDİ: kalan şirketin Kaldır'ı Meta'daki aboneliği siler (silinen şirket 'başka şirkette bağlı' sayılmaz)
+    ok 7 - aynı WABA'lı ikinci şirket SİLİNDİ: kalan şirketin Kaldır'ı Meta'daki aboneliği siler (silinen şirket 'başka şirkette bağlı' sayılmaz)
+      ---
+      duration_ms: 709.180202
+      type: 'test'
+      ...
+    # Subtest: aynı WABA'lı ikinci şirket BAĞLANTISIZ yedekten geri yüklendi (ortak kayıtta hâlâ 'bağlı' görünüyor): 001'in Kaldır'ı Meta'daki aboneliği siler; ileti 'başka şirkette bağlı' demez
+    ok 8 - aynı WABA'lı ikinci şirket BAĞLANTISIZ yedekten geri yüklendi (ortak kayıtta hâlâ 'bağlı' görünüyor): 001'in Kaldır'ı Meta'daki aboneliği siler; ileti 'başka şirkette bağlı' demez
+      ---
+      duration_ms: 773.30589
+      type: 'test'
+      ...
+    # Subtest: ters yön: aynı WABA'lı ikinci şirket BAĞLANTILI yedekten geri yüklendi (ortak kayıtta 'bağlı değil' görünüyor): 001'in Kaldır'ı aboneliği SİLMEZ (ikinci şirket gerçekten kullanıyor); ikinci şirket de kaldırınca silinir
+    ok 9 - ters yön: aynı WABA'lı ikinci şirket BAĞLANTILI yedekten geri yüklendi (ortak kayıtta 'bağlı değil' görünüyor): 001'in Kaldır'ı aboneliği SİLMEZ (ikinci şirket gerçekten kullanıyor); ikinci şirket de kaldırınca silinir
+      ---
+      duration_ms: 715.227299
+      type: 'test'
+      ...
+    # Subtest: aynı WABA'ya bağlı ikinci şirket kapalı, dosyası sağlam, ortak kayıtta ESKİ 'bağlı değil' özeti: 001'in Kaldır'ı Meta'daki aboneliği SİLMEZ (ikinci şirket bağlı sayılır); ortak kayıt dosyadaki güncel özetle tazelenir
+    ok 10 - aynı WABA'ya bağlı ikinci şirket kapalı, dosyası sağlam, ortak kayıtta ESKİ 'bağlı değil' özeti: 001'in Kaldır'ı Meta'daki aboneliği SİLMEZ (ikinci şirket bağlı sayılır); ortak kayıt dosyadaki güncel özetle tazelenir
+      ---
+      duration_ms: 556.108824
+      type: 'test'
+      ...
+    # Subtest: aynı WABA'ya bağlı ikinci şirket kapalı, dosyası BOZUK (okunamıyor): 001'in Kaldır'ı Meta'daki aboneliği SİLMEZ (ikinci şirket bağlı sayılır) — okunamayan dosya 'bağlı değil' sayılmaz (ders 4)
+    ok 11 - aynı WABA'ya bağlı ikinci şirket kapalı, dosyası BOZUK (okunamıyor): 001'in Kaldır'ı Meta'daki aboneliği SİLMEZ (ikinci şirket bağlı sayılır) — okunamayan dosya 'bağlı değil' sayılmaz (ders 4)
+      ---
+      duration_ms: 591.560921
+      type: 'test'
+      ...
+    # Subtest: aynı WABA'ya bağlı ikinci şirket kapalı, dosyası YOK (klasör silinmiş): 001'in Kaldır'ı Meta'daki aboneliği SİLMEZ (ikinci şirket bağlı sayılır) — okunamayan dosya 'bağlı değil' sayılmaz (ders 4)
+    ok 12 - aynı WABA'ya bağlı ikinci şirket kapalı, dosyası YOK (klasör silinmiş): 001'in Kaldır'ı Meta'daki aboneliği SİLMEZ (ikinci şirket bağlı sayılır) — okunamayan dosya 'bağlı değil' sayılmaz (ders 4)
+      ---
+      duration_ms: 525.904484
+      type: 'test'
+      ...
+    # Subtest: aynı veri klasörünü gösteren iki şirket (Ayır'dan ÖNCE): öbür şirketin bağlantısı aynı ayar satırıdır, 'başka şirket' sayılmaz → Kaldır Meta'daki aboneliği SİLER
+    ok 13 - aynı veri klasörünü gösteren iki şirket (Ayır'dan ÖNCE): öbür şirketin bağlantısı aynı ayar satırıdır, 'başka şirket' sayılmaz → Kaldır Meta'daki aboneliği SİLER
+      ---
+      duration_ms: 618.257566
+      type: 'test'
+      ...
+    # Subtest: aynı veri klasörünü gösteren iki şirket AYIR'dan SONRA: ayrılan şirket bağlantıyı kendi kopyasında taşır → ilk şirketin Kaldır'ı aboneliği SİLMEZ, ayrılanın Kaldır'ı SİLER
+    ok 14 - aynı veri klasörünü gösteren iki şirket AYIR'dan SONRA: ayrılan şirket bağlantıyı kendi kopyasında taşır → ilk şirketin Kaldır'ı aboneliği SİLMEZ, ayrılanın Kaldır'ı SİLER
+      ---
+      duration_ms: 689.563041
+      type: 'test'
+      ...
+    # Subtest: Kaldır aboneliği silince Bildirim Yolu kaydı da düşer: Sına'sız yeniden bağlanınca 'Kayıtlı Değil' (Çalışıyor DEĞİL), ilk bakım turu Meta'ya hemen yeniden kaydeder
+    ok 15 - Kaldır aboneliği silince Bildirim Yolu kaydı da düşer: Sına'sız yeniden bağlanınca 'Kayıtlı Değil' (Çalışıyor DEĞİL), ilk bakım turu Meta'ya hemen yeniden kaydeder
+      ---
+      duration_ms: 398.877287
+      type: 'test'
+      ...
+    # Subtest: Meta beklenirken bağlantı yeniden kurulursa (başka pencerede yeni belirteç) yeni bağlantı SİLİNMEZ
+    ok 16 - Meta beklenirken bağlantı yeniden kurulursa (başka pencerede yeni belirteç) yeni bağlantı SİLİNMEZ
+      ---
+      duration_ms: 404.415194
+      type: 'test'
+      ...
+    1..16
+ok 1 - 2.5.0 W-2 — Bağlantıyı Kaldır Meta'da da
+  ---
+  duration_ms: 8686.545564
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 W TUR 2 — Meta kod 0 (AuthException) 190 gibi (KULLANICI KARARI 05.11 21:08 S-W4 = A)
+    # Subtest: Yol 2, kod 0 şablon okuması sırasında: bağlantı Süresi Doldu; iletisi gitmeyen kişi Başarısız DEĞİL, bekleyenlerle Duraklatıldı; neden 'Devam Et' der, 'Elle Bağla' demez; Yeniden Bağla → Devam Et → üç kişiye birer ileti
+    ok 1 - Yol 2, kod 0 şablon okuması sırasında: bağlantı Süresi Doldu; iletisi gitmeyen kişi Başarısız DEĞİL, bekleyenlerle Duraklatıldı; neden 'Devam Et' der, 'Elle Bağla' demez; Yeniden Bağla → Devam Et → üç kişiye birer ileti
+      ---
+      duration_ms: 634.333785
+      type: 'test'
+      ...
+    # Subtest: Yol 2, kod 0 PDF yükleme sırasında: bağlantı Süresi Doldu; iletisi gitmeyen kişi Başarısız DEĞİL, bekleyenlerle Duraklatıldı; neden 'Devam Et' der, 'Elle Bağla' demez; Yeniden Bağla → Devam Et → üç kişiye birer ileti
+    ok 2 - Yol 2, kod 0 PDF yükleme sırasında: bağlantı Süresi Doldu; iletisi gitmeyen kişi Başarısız DEĞİL, bekleyenlerle Duraklatıldı; neden 'Devam Et' der, 'Elle Bağla' demez; Yeniden Bağla → Devam Et → üç kişiye birer ileti
+      ---
+      duration_ms: 467.86507
+      type: 'test'
+      ...
+    # Subtest: Yol 2, kod 0 ileti isteği sırasında: bağlantı Süresi Doldu; iletisi gitmeyen kişi Başarısız DEĞİL, bekleyenlerle Duraklatıldı; neden 'Devam Et' der, 'Elle Bağla' demez; Yeniden Bağla → Devam Et → üç kişiye birer ileti
+    ok 3 - Yol 2, kod 0 ileti isteği sırasında: bağlantı Süresi Doldu; iletisi gitmeyen kişi Başarısız DEĞİL, bekleyenlerle Duraklatıldı; neden 'Devam Et' der, 'Elle Bağla' demez; Yeniden Bağla → Devam Et → üç kişiye birer ileti
+      ---
+      duration_ms: 476.060179
+      type: 'test'
+      ...
+    # Subtest: Yol 1 (sınanmış belirteç), ileti isteklerinin HEPSİ kod 0 (belirteç Meta'da iptal): bir kişi gitti, kalan üçü bekler; yeniden bağlanmadan basılan Devam Et (3 kez) reddedilir — kimse Başarısız olmaz, 'geri yüklenmiş / taşınmış' Durdurması çıkmaz, Meta'ya yeni istek gitmez; yeniden bağlanınca Devam Et → kişi başına 1 ileti
+    ok 4 - Yol 1 (sınanmış belirteç), ileti isteklerinin HEPSİ kod 0 (belirteç Meta'da iptal): bir kişi gitti, kalan üçü bekler; yeniden bağlanmadan basılan Devam Et (3 kez) reddedilir — kimse Başarısız olmaz, 'geri yüklenmiş / taşınmış' Durdurması çıkmaz, Meta'ya yeni istek gitmez; yeniden bağlanınca Devam Et → kişi başına 1 ileti
+      ---
+      duration_ms: 559.74571
+      type: 'test'
+      ...
+    # Subtest: Yol 1: ileti isteği Meta'dayken belirteç değiştirildi ve ESKİ belirteç kod 0 aldı → bağlantı Süresi Doldu olmaz; kişi bekleyenlere döner; neden kendi yolunu söyler ('Bilgileri Değiştir', 'Devam Et'); Devam Et yeni belirteçle gönderir
+    ok 5 - Yol 1: ileti isteği Meta'dayken belirteç değiştirildi ve ESKİ belirteç kod 0 aldı → bağlantı Süresi Doldu olmaz; kişi bekleyenlere döner; neden kendi yolunu söyler ('Bilgileri Değiştir', 'Devam Et'); Devam Et yeni belirteçle gönderir
+      ---
+      duration_ms: 503.064019
+      type: 'test'
+      ...
+    # Subtest: Yol 2: ileti isteği Meta'dayken belirteç değiştirildi ve ESKİ belirteç kod 0 aldı → bağlantı Süresi Doldu olmaz; kişi bekleyenlere döner; neden kendi yolunu söyler ('WhatsApp'ı Yeniden Bağla', 'Devam Et'); Devam Et yeni belirteçle gönderir
+    ok 6 - Yol 2: ileti isteği Meta'dayken belirteç değiştirildi ve ESKİ belirteç kod 0 aldı → bağlantı Süresi Doldu olmaz; kişi bekleyenlere döner; neden kendi yolunu söyler ('WhatsApp'ı Yeniden Bağla', 'Devam Et'); Devam Et yeni belirteçle gönderir
+      ---
+      duration_ms: 494.009925
+      type: 'test'
+      ...
+    # Subtest: kod 102 (kararın DIŞINDA) belirteç reddi SAYILMAZ: o kişi Başarısız, toplu iş duraklamadan kalanlara sürer, bağlantı Süresi Doldu olmaz
+    ok 7 - kod 102 (kararın DIŞINDA) belirteç reddi SAYILMAZ: o kişi Başarısız, toplu iş duraklamadan kalanlara sürer, bağlantı Süresi Doldu olmaz
+      ---
+      duration_ms: 466.102816
+      type: 'test'
+      ...
+    # Subtest: Sına yapılmamış (Meta'da hiç çalışmamış) belirteç kod 0 alırsa bağlantı Süresi Doldu OLMAZ (yanlış yazım; 190'ın kuralı — BAŞ MİMAR KARARI (a)); alt kod 463 ile Süresi Doldu olur
+    ok 8 - Sına yapılmamış (Meta'da hiç çalışmamış) belirteç kod 0 alırsa bağlantı Süresi Doldu OLMAZ (yanlış yazım; 190'ın kuralı — BAŞ MİMAR KARARI (a)); alt kod 463 ile Süresi Doldu olur
+      ---
+      duration_ms: 761.668981
+      type: 'test'
+      ...
+    # Subtest: kodsuz Meta hatası (error nesnesinde code yok) belirteç reddi SAYILMAZ: bağlantı Süresi Doldu olmaz (kod 0 ile karışmaz)
+    ok 9 - kodsuz Meta hatası (error nesnesinde code yok) belirteç reddi SAYILMAZ: bağlantı Süresi Doldu olmaz (kod 0 ile karışmaz)
+      ---
+      duration_ms: 444.349085
+      type: 'test'
+      ...
+    # Subtest: Bağlantıyı Kaldır: Meta'daki abonelik silme isteği kod 0 alırsa yerel kaldırma yapılır, neden 190'daki gibi 'erişim belirtecinin süresi dolmuş' + veri silme adımı
+    ok 10 - Bağlantıyı Kaldır: Meta'daki abonelik silme isteği kod 0 alırsa yerel kaldırma yapılır, neden 190'daki gibi 'erişim belirtecinin süresi dolmuş' + veri silme adımı
+      ---
+      duration_ms: 409.301995
+      type: 'test'
+      ...
+    # Subtest: geri yükleme (ilke 5): kod 0 alan kişi bekler → YEDEK → yeniden bağlan + Devam Et (gönderildi) → yedek geri yüklenir: eski toplu iş Durduruldu, Devam Et reddedilir, aynı kişilere yeni gönderim 'Daha Önce Gönderildi' — kişi başına 1 ileti
+    ok 11 - geri yükleme (ilke 5): kod 0 alan kişi bekler → YEDEK → yeniden bağlan + Devam Et (gönderildi) → yedek geri yüklenir: eski toplu iş Durduruldu, Devam Et reddedilir, aynı kişilere yeni gönderim 'Daha Önce Gönderildi' — kişi başına 1 ileti
+      ---
+      duration_ms: 781.098861
+      type: 'test'
+      ...
+    1..11
+ok 2 - 2.5.0 W TUR 2 — Meta kod 0 (AuthException) 190 gibi (KULLANICI KARARI 05.11 21:08 S-W4 = A)
+  ---
+  duration_ms: 6000.183387
+  type: 'suite'
+  ...
+1..2
+# tests 27
+# suites 2
+# pass 27
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 15552.837914

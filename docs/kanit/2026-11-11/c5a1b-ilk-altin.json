@@ -1,0 +1,38 @@
+{
+  "ad": "c5a1b-ilk-altin",
+  "komut": "node --test test/banka-210-altin.test.mjs",
+  "commit": "653b8a8ff2a0281e5411716353a9bf466e18bc73",
+  "dal": "worktree-agent-ae40882bc6254a115",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-11T17:08:24.742Z",
+  "sure_sn": 23.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 6,
+    "gecen": 5,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "altın test: v2.0.26 ile bu dal aynı veride aynı Kasa, Banka ve POS, ANLIK DURUM, Ana Defter ve raporları gösterir › zincir fikstürü surum-2.0.26-zincir (2.0.16 → 2.0.26 gerçek sürüm koduyla, 4 şirket)",
+      "konum": "test/banka-210-altin.test.mjs:467:3",
+      "hata": "64 fark: · zincir · 001 · admin · json /api/workspace/ledger: Expected values to be strictly deep-equal: · + actual - expected"
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-kanit/2026-11-11/c5a1b-ilk-altin.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ae40882bc6254a115",
+  "ham_cikti_sha256": "3eca1e38d82d95ae1e67b022e094f98824241ac4ce69cd3073954392edbfb23b",
+  "ham_cikti_bayt": 229345
+}

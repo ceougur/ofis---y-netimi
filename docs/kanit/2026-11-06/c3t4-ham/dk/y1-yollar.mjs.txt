@@ -1,0 +1,207 @@
+// DAR KONTROL Ç3 tur 3 — YÜKSEK-1'in kapanışı: süren (YAZILAN) koşunun satırlarını silebilecek bütün yollar, kancayla tutulan ön koşulda (süreye bağlı değil — ders 20).
+// Her senaryo taze sunucu (programın kendi API'siyle 40 Kasa + cari); bitince: kapsam = kilit, görünen donmuş satır = son koşunun kayıtlı satırı = canlı türetme, madde madde donmuş = canlı.
+//   Y1 yazım adımında: doğrudan purgeStale() × 3 + aynı güne PUT × 2
+//   Y2 "before-done" (yazım bitti, doğrulama öncesi): purgeStale() + aynı güne PUT
+//   Y3 yazım adımında Kilidi Kaldır → hemen yeniden Kilitle (aynı gün)
+//   Y4 yazım adımında (güncel kurallı koşu) eşzamanlı kip: vouchers.postAll(lockThrough) — koşuyu bırakır, bu işlemde dondurur
+//   Y5 yazım adımında ESKİ KURALLI (2.4.9) açılış koşusu + eşzamanlı kip postAll(lockThrough) — carryLock devralır
+//   Y6 dondurma hata verir (iş parçacığı / yazım düşer) → aynı güne PUT → yeniden dener
+//   Y7 yazım adımında program kapanır → yeniden açılış
+// Kullanım: node y1-yollar.mjs <kod kökü> [senaryo …]
+import { DatabaseSync } from "node:sqlite";
+import path from "node:path";
+import { ENV, LOCK, MID, NOW, ROOT, imp, must, runsOf, seed, setLockRaw, sleep, whole } from "./ortak.mjs";
+
+const pick = process.argv.slice(3);
+const { loginAdmin, removeTestDir, startTestServer } = await imp("test/helpers.mjs");
+const { lockAndWait, waitForFreeze } = await imp("test/fixtures/donma-bekle.mjs");
+const results = {};
+const USER = { id: "admin", display_name: "Yönetici" };
+
+function holder() {
+  let release = () => {};
+  let held = new Promise(resolve => {
+    release = resolve;
+  });
+  const state = { batches: 0, phase: null, throwAt: 0, holdAt: 3, holdPhase: "batch", on: true };
+  const hook = {
+    fn: async (phase, info) => {
+      if (!state.on) return;
+      if (phase === "batch") state.batches += 1;
+      if (phase === "batch" && state.throwAt && state.batches === state.throwAt) throw new Error("test: dondurma düştü");
+      if (phase === state.holdPhase && (phase !== "batch" || state.batches === state.holdAt)) {
+        state.phase = phase;
+        await held;
+      }
+    },
+  };
+  return { hook, state, release: () => release() };
+}
+const runRows = (store, no) => store.get("SELECT COUNT(*) AS n FROM ledger_snapshots WHERE run = ?", no).n;
+async function until(cond, label, tries = 2000) {
+  for (let i = 0; i < tries && !cond(); i += 1) await sleep(10);
+  if (!cond()) throw new Error(`ön koşul oluşmadı: ${label}`);
+}
+
+async function scenario(name, body) {
+  if (pick.length && !pick.includes(name)) return;
+  const h = holder();
+  const server = await startTestServer({ now: { time: NOW, fixed: true }, env: ENV, __testFreezeHook: h.hook, freezeBatchLines: 5 });
+  const out = { };
+  const extra = [];
+  try {
+    h.state.on = false;
+    const admin = await loginAdmin(server);
+    await seed(admin);
+    h.state.on = true;
+    await body({ server, admin, h, out, extra });
+    h.state.on = false;
+    h.release();
+    const lastView = await waitForFreeze(extra.admin || admin);
+    out.son_gorunum = { lockedUntil: lastView.lockedUntil, frozenThrough: lastView.frozenThrough, pending: lastView.freeze.pending, error: lastView.freeze.error };
+    const target = extra.server || server;
+    out.kosular = runsOf(target.app.store).map(run => [run.no, run.kind, run.state, run.fromDate, run.through, run.rule, run.reason, run.lines]);
+    out.butunluk = whole(target, out.kilit || LOCK);
+  } catch (error) {
+    out.hata = String(error?.stack || error).slice(0, 1500);
+  } finally {
+    h.state.on = false;
+    h.release();
+    for (const other of extra) await other.app.close().catch(() => {});
+    await server.app.close().catch(() => {});
+    removeTestDir(server.root);
+  }
+  results[name] = out;
+  console.error(`${name}: ${out.hata ? `HATA ${out.hata.split("\n")[0]}` : `tutarlı=${out.butunluk.tutarli} (${out.butunluk.gorunen}/${out.butunluk.kayitli}/${out.butunluk.canli})`}`);
+}
+
+await scenario("Y1", async ({ server, admin, h, out }) => {
+  const S = server.app.ledger.snapshots;
+  const first = admin.put("/api/admin/period-lock", { lockedUntil: LOCK });
+  await until(() => h.state.phase === "batch", "yazım adımında tutuluyor");
+  const run = S.state().pending.no;
+  out.onkosul = { yazilan: runRows(server.app.store, run), faz: S.status().phase };
+  out.purge = [await S.purgeStale(), await S.purgeStale(), await S.purgeStale()];
+  const again = await Promise.all([admin.put("/api/admin/period-lock", { lockedUntil: LOCK }), admin.put("/api/admin/period-lock", { lockedUntil: LOCK })]);
+  out.ayni_gun = again.map(r => r.status);
+  out.sonra_yazilan = runRows(server.app.store, run);
+  out.ilk_yanit = (await Promise.race([first, sleep(6000).then(() => ({ status: "bekliyor" }))])).status;
+});
+
+await scenario("Y2", async ({ server, admin, h, out }) => {
+  const S = server.app.ledger.snapshots;
+  h.state.holdPhase = "before-done";
+  const first = admin.put("/api/admin/period-lock", { lockedUntil: LOCK });
+  await until(() => h.state.phase === "before-done", "before-done'da tutuluyor");
+  const run = S.state().pending.no;
+  out.onkosul = { yazilan: runRows(server.app.store, run), faz: S.status().phase };
+  out.purge = await S.purgeStale();
+  out.ayni_gun = (await admin.put("/api/admin/period-lock", { lockedUntil: LOCK })).status;
+  out.sonra_yazilan = runRows(server.app.store, run);
+  await first;
+});
+
+await scenario("Y3", async ({ server, admin, h, out }) => {
+  const S = server.app.ledger.snapshots;
+  admin.put("/api/admin/period-lock", { lockedUntil: LOCK }).catch(() => {});
+  await until(() => h.state.phase === "batch", "yazım adımında tutuluyor");
+  out.onkosul = { yazilan: runRows(server.app.store, S.state().pending.no) };
+  const unlock = admin.put("/api/admin/period-lock", { lockedUntil: "" });
+  // Kaldırma isteği süren dondurmayı durdurur (cancel) — tutulan kanca bırakılınca durur.
+  await sleep(200);
+  h.state.on = false;
+  h.release();
+  out.kaldir = (await unlock).status;
+  out.yeniden = (await admin.put("/api/admin/period-lock", { lockedUntil: LOCK })).status;
+});
+
+await scenario("Y4", async ({ server, admin, h, out }) => {
+  const S = server.app.ledger.snapshots;
+  h.state.on = false;
+  await lockAndWait(admin, MID);
+  h.state.on = true;
+  h.state.batches = 0;
+  admin.put("/api/admin/period-lock", { lockedUntil: LOCK }).catch(() => {});
+  await until(() => h.state.phase === "batch", "yazım adımında tutuluyor");
+  const run = S.state().pending;
+  out.onkosul = { bekleyen: run, yazilan: runRows(server.app.store, run.no) };
+  const lines = [{ account: "602", debit: 4321 }, { account: "690", credit: 4321 }];
+  const [voucher] = server.app.ledger.vouchers.postAll(USER, [{ type: "closing", date: "2027-01-05", description: "Kapanış", requestKey: "dk-c3t3-y4-kapanis", lines }], { lockThrough: "2027-01-05" });
+  out.fis = voucher?.id ? "yazıldı" : "yok";
+  out.kilit = "2027-01-05";
+  out.postall_sonra = { kosular: runsOf(server.app.store).map(r => [r.no, r.state, r.through, r.rule]), eski_kosu_satiri: runRows(server.app.store, run.no) };
+});
+
+await scenario("Y6", async ({ server, admin, h, out }) => {
+  const S = server.app.ledger.snapshots;
+  h.state.throwAt = 3;
+  h.state.holdAt = 0;
+  out.ilk = (await admin.put("/api/admin/period-lock", { lockedUntil: LOCK })).status;
+  await until(() => !S.status().running, "dondurma düştü");
+  out.onkosul = { durum: S.status().phase, hata: S.status().error, bayat: server.app.store.get("SELECT COUNT(*) AS n FROM ledger_snapshots WHERE date > ''").n };
+  h.state.throwAt = 0;
+  out.ayni_gun = (await admin.put("/api/admin/period-lock", { lockedUntil: LOCK })).status;
+});
+
+await scenario("Y7", async ({ server, admin, h, out, extra }) => {
+  const S = server.app.ledger.snapshots;
+  admin.put("/api/admin/period-lock", { lockedUntil: LOCK }).catch(error => (out.ilk_put = String(error?.message || error)));
+  await until(() => h.state.phase === "batch", "yazım adımında tutuluyor");
+  out.onkosul = { yazilan: runRows(server.app.store, S.state().pending.no) };
+  const closing = server.app.close();
+  h.state.on = false;
+  h.release();
+  await closing;
+  const dirs = { dataDir: server.dataDir, backupDir: server.backupDir };
+  const again = await startTestServer({ now: { time: NOW, fixed: true }, env: ENV, ...dirs });
+  extra.push(again);
+  extra.server = again;
+  out.acilis = again.app.context.snapshotRepair;
+  const admin2 = await loginAdmin(again);
+  await waitForFreeze(admin2);
+  for (let i = 0; i < 10 && again.app.ledger.snapshots.state().pending; i += 1) await again.app.ledger.snapshots.runPending();
+  // Kapanmış sunucunun istemcisi yerine yenisi beklenir (waitForFreeze dıştaki admin'le çağrılmasın).
+  extra.admin = admin2;
+});
+
+// Y5: eski kurallı (2.4.9) açılış koşusu yazım adımındayken eşzamanlı kip (postAll lockThrough) — carryLock süren koşuyu devralır.
+if (!pick.length || pick.includes("Y5")) {
+  const out = {};
+  const first = await startTestServer({ now: { time: NOW, fixed: true }, env: ENV });
+  const dirs = { dataDir: first.dataDir, backupDir: first.backupDir };
+  let second = null;
+  const h = holder();
+  try {
+    await seed(await loginAdmin(first));
+    await first.app.close();
+    setLockRaw(dirs.dataDir, LOCK);
+    second = await startTestServer({ now: { time: NOW, fixed: true }, env: ENV, ...dirs, __testFreezeHook: h.hook, freezeBatchLines: 5 });
+    const S = second.app.ledger.snapshots;
+    await until(() => h.state.phase === "batch", "açılıştaki 2.4.9 koşusu yazım adımında");
+    const run = S.state().pending;
+    out.onkosul = { bekleyen: run, yazilan: runRows(second.app.store, run.no) };
+    const lines = [{ account: "602", debit: 4321 }, { account: "690", credit: 4321 }];
+    second.app.ledger.vouchers.postAll(USER, [{ type: "closing", date: "2027-01-05", description: "Kapanış", requestKey: "dk-c3t3-y5-kapanis", lines }], { lockThrough: "2027-01-05" });
+    out.postall_sonra = runsOf(second.app.store).map(r => [r.no, r.state, r.fromDate, r.through, r.rule, r.lines]);
+    h.state.on = false;
+    h.release();
+    const admin = await loginAdmin(second);
+    const view = await waitForFreeze(admin);
+    out.son_gorunum = { lockedUntil: view.lockedUntil, frozenThrough: view.frozenThrough, pending: view.freeze.pending, phase: view.freeze.phase, error: view.freeze.error };
+    out.kosular = runsOf(second.app.store).map(r => [r.no, r.kind, r.state, r.fromDate, r.through, r.rule, r.reason, r.lines]);
+    out.butunluk = whole(second, "2027-01-05");
+  } catch (error) {
+    out.hata = String(error?.stack || error).slice(0, 1500);
+  } finally {
+    h.state.on = false;
+    h.release();
+    if (second) await second.app.close().catch(() => {});
+    await first.app.close().catch(() => {});
+    removeTestDir(first.root);
+  }
+  results.Y5 = out;
+  console.error(`Y5: ${out.hata ? `HATA ${out.hata.split("\n")[0]}` : `tutarlı=${out.butunluk.tutarli} (${out.butunluk.gorunen}/${out.butunluk.kayitli}/${out.butunluk.canli})`}`);
+}
+
+console.log(JSON.stringify({ kok: ROOT, results }, null, 1));
+process.exit(0);

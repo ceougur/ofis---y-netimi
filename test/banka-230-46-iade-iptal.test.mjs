@@ -249,7 +249,8 @@ describe("E — düzeltme (§4.6): bekleyen satışta tutar değişimi tek etkin
       assert.deepEqual(sales.map(sale => [sale.status, sale.grossMinor]).sort(), [["active", kurus(1500)], ["void", kurus(1000)]]);
       const active = sales.find(sale => sale.status === "active");
       assert.deepEqual([active.authCode, active.cardLast4, active.items.length, active.items[0].netMinor], ["PRV1", "1234", 1, kurus(1500) - kurus(37.5)], "kalem yeniden: 1.500 − %2,5");
-      assert.equal(kurus((await subBalances(w.api))["108.01"]?.balance || 0), kurus(1500), "108.01 = 1.500");
+      // BEKLENTİ BİLEREK DEĞİŞTİ (2.5.0 Ç7a tur 2b, KG-6 = A — kullanıcı 05.11 17:16 (5)): komisyon 37,50 satış gününde → 108.01 = bankaya geçmemiş NET alacak.
+      assert.equal(kurus((await subBalances(w.api))["108.01"]?.balance || 0), kurus(1500) - kurus(37.5), "108.01 = 1.462,50 (1.500 − %2,5; void kaydın maddesi yok)");
       await must("yol nakit", w.api.put(url, { kind: "in", method: "cash", amount: "1.500", date: TODAY, cashForce: true }));
       sales = await salesOf(w.api, "?kind=sale&status=");
       assert.ok(sales.every(sale => sale.status === "void"), "POS'tan nakde: satış void");
@@ -353,7 +354,9 @@ describe("G — bağ türü verisi (eşleme 290; Fatura ve Banka Hareketleri rap
       const auto = await must("bağsız tahsilat", ctx.api.post(`/api/workspace/accounts/${abc.id}/entries`, { kind: "in", method: "bank", amount: "500", date: TODAY, bankAccountId: acc.ziraat.id, similarOk: true }));
       assert.equal(ctx.store.get("SELECT invoice_id AS invoiceId FROM account_entries WHERE id = ?", auto.entryId).invoiceId, "", "Otomatik: invoice_id boş");
       const doc1 = await must("fatura 1", ctx.api.get(`${INV}/${open1.id}`));
-      assert.deepEqual([doc1.payState, doc1.closers.map(c => [c.mode, c.modeLabel])], ["paid", [["auto", "Otomatik (en eski)"]]]);
+      // 2.5.0 Ç5-B (bilerek güncellendi; S2 "vadesi en önce gelen", C5-ACILIS-TASARIM §2.10 madde 3): kapatan adı "Otomatik (en eski)" → "Otomatik (vadesi en önce gelen)".
+      // Fatura ve Banka Hareketleri raporunun kendi bağ türü adı (report-center "Otomatik (En Eski)") ayrı eşlemedir, değişmedi.
+      assert.deepEqual([doc1.payState, doc1.closers.map(c => [c.mode, c.modeLabel])], ["paid", [["auto", "Otomatik (vadesi en önce gelen)"]]]);
       // 4) Komisyon Kesintisi (Bağlı): KDV kipi gün fişi kesinti satırı source=bank; aylık komisyon faturası kaydedilince invoice_id ona bağlanır.
       await must("POS'lu fatura", posInvoice(ctx.api, { accountId: abc.id, itemId: item.id, qty: 10, unitPrice: 1000, date: TODAY }));
       ctx.server.clock.set("2026-10-12T09:00:00+03:00");

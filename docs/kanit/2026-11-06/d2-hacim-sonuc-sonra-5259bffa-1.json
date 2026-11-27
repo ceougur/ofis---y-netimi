@@ -1,0 +1,53 @@
+{
+  "hareket": 100000,
+  "dosyaBoyuMB": 145,
+  "bes-arsiv-benzetimi": {
+    "ms": 4821,
+    "loopMaxMs": 611
+  },
+  "arsiv-listesi": {
+    "ms": 6,
+    "loopMaxMs": 8
+  },
+  "yedek-listesi": {
+    "ms": 4,
+    "loopMaxMs": 6
+  },
+  "arsiv-ornegi-acilis": {
+    "ms": 247,
+    "loopMaxMs": 11
+  },
+  "arsiv-ilk-istek": {
+    "ms": 3078,
+    "loopMaxMs": 458
+  },
+  "canli-ayni-istek": {
+    "ms": 3176,
+    "loopMaxMs": 526
+  },
+  "bes-arsiv-dogrulama": {
+    "ms": 993,
+    "loopMaxMs": 10
+  },
+  "devir-yedegi": {
+    "ms": 2158,
+    "loopMaxMs": 12
+  },
+  "devirYedegiMB": 823,
+  "devir-yedekleri-listesi": {
+    "ms": 13,
+    "loopMaxMs": 7
+  },
+  "bakim-ac": {
+    "ms": 9,
+    "loopMaxMs": 5
+  },
+  "bakim-kapat": {
+    "ms": 4,
+    "loopMaxMs": 5
+  },
+  "diskten-tanima-taramasi": {
+    "ms": 0,
+    "loopMaxMs": 5
+  }
+}

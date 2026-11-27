@@ -1,0 +1,32 @@
+{
+  "ad": "b7y-e2e-banka-210-saat",
+  "komut": "npm run test:banka-210-saat",
+  "commit": "5dc16feebc400f20457df0dcd9c5217a1b978ba4",
+  "dal": "sinama-b7",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v445 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-13T08:10:03.685Z",
+  "sure_sn": 5.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 12,
+    "gecen": 12,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../b7y-aday-kanit/2026-11-13/b7y-e2e-banka-210-saat.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-ya-ag",
+  "ham_cikti_sha256": "048091f618a4a37cafdecd28d6113e3726493711f287725467762f2b065988c2",
+  "ham_cikti_bayt": 763
+}

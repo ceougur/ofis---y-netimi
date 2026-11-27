@@ -1,0 +1,14 @@
+komut: TZ=UTC python3 -I /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wk17-calisma/araclar/eski_tam_sonuc_fark.py /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wk17-eski-7d6c6369/kahin/senaryolar.json test/bagimsiz/whatsapp-248/kahin/senaryolar.json
+commit: bb920588 (+ çalışma ağacı)
+zaman: 2026-11-06T08:46:49Z
+---
+eski 353 senaryo, yeni 367
+sıra korunuyor
+DEĞİŞTİ S16-02-yine-de-gonder-suphesiz-tutar-yok-elenir-ertesi-gun-gider: ['aciklama', 'beklenen', 'elle', 'kaynak']
+DEĞİŞTİ S30-01-talep-duraklatildi-meta-bekletti-zincir-gonderilmez-belirsiz-iz-eler: ['aciklama', 'beklenen', 'elle', 'kaynak']
+DEĞİŞTİ S30-02-talep-sinir-lisans-gonderilmez-belirsiz-hatirlatma-ayni-gun-elenir-ertesi-gun-gider: ['aciklama', 'beklenen', 'elle', 'kaynak']
+DEĞİŞTİ S30-03-bir-yil-dolumu-bekleyen-isler-gonderilmez-belirsiz-iz-eler: ['aciklama', 'beklenen', 'elle', 'kaynak']
+aynı 349 / 353; değişen 4
+üst alanlarda değişen: ['kararlar']
+kararlar: eklenen ['S33', 'S34', 'S35', 'S36', 'S37', 'S38', 'S41']; eskilerden değişen []
+--- çıkış 0

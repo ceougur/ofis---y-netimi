@@ -1,0 +1,1473 @@
+TAP version 13
+# Subtest: dışa aktarım düğmeleri (UI11)
+    # Subtest: eski düğme adları kalmadı (liste/rapor tek ad PDF / Excel)
+    ok 1 - eski düğme adları kalmadı (liste/rapor tek ad PDF / Excel)
+      ---
+      duration_ms: 6.59176
+      type: 'test'
+      ...
+    # Subtest: PDF / Excel bağlantıları ortak ailede (makbuz satırı ve kılavuz bağlantısı hariç)
+    ok 2 - PDF / Excel bağlantıları ortak ailede (makbuz satırı ve kılavuz bağlantısı hariç)
+      ---
+      duration_ms: 2.932927
+      type: 'test'
+      ...
+    # Subtest: Yazdır / dışa aktar / PDF düğmeleri elle yazılmıyor (HOF.outputButton)
+    ok 3 - Yazdır / dışa aktar / PDF düğmeleri elle yazılmıyor (HOF.outputButton)
+      ---
+      duration_ms: 1.979522
+      type: 'test'
+      ...
+    # Subtest: ortak yardımcı: tür sınıfı, simge, erişilebilir ad ve ipucu
+    ok 4 - ortak yardımcı: tür sınıfı, simge, erişilebilir ad ve ipucu
+      ---
+      duration_ms: 2.435626
+      type: 'test'
+      ...
+    1..4
+ok 1 - dışa aktarım düğmeleri (UI11)
+  ---
+  duration_ms: 14.966111
+  type: 'suite'
+  ...
+# (node:14927) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Bitiş turu bulguları (sahte EDM; canlıya giden istek yakalanır, ağa çıkmaz)
+    # Subtest: Y1/E1: canlı kilidi Servis Adresi'yle delinmez (ayar 400; veri tabanında kalmış adres 409, ağa çıkılmaz)
+    ok 1 - Y1/E1: canlı kilidi Servis Adresi'yle delinmez (ayar 400; veri tabanında kalmış adres 409, ağa çıkılmaz)
+      ---
+      duration_ms: 78.037224
+      type: 'test'
+      ...
+    # Subtest: Y2: bağlantısı kurulmamış entegratörle Gönder, Gönderilecekler'deki belgeye numara vermez
+    ok 2 - Y2: bağlantısı kurulmamış entegratörle Gönder, Gönderilecekler'deki belgeye numara vermez
+      ---
+      duration_ms: 165.284654
+      type: 'test'
+      ...
+    # Subtest: E2: portaldan gönderilmiş taslak programda düzenlenmez, e-Fatura taslağı onayla da iptal edilmez; durum güncellenir
+    ok 3 - E2: portaldan gönderilmiş taslak programda düzenlenmez, e-Fatura taslağı onayla da iptal edilmez; durum güncellenir
+      ---
+      duration_ms: 118.054537
+      type: 'test'
+      ...
+    # Subtest: Y3/S1: yanıtı kaybolan gönderim belirsizdir — silinmez, düzenlenmez; yeniden Gönder ikinci kez göndermez, durumu alır
+    ok 4 - Y3/S1: yanıtı kaybolan gönderim belirsizdir — silinmez, düzenlenmez; yeniden Gönder ikinci kez göndermez, durumu alır
+      ---
+      duration_ms: 56.564882
+      type: 'test'
+      ...
+    # Subtest: Y3: belirsiz gönderimde belge EDM'ye ulaşmadıysa Durum Sorgula belirsizliği kaldırır (EDM 11017 'Fatura bulunamadı')
+    ok 5 - Y3: belirsiz gönderimde belge EDM'ye ulaşmadıysa Durum Sorgula belirsizliği kaldırır (EDM 11017 'Fatura bulunamadı')
+      ---
+      duration_ms: 45.755688
+      type: 'test'
+      ...
+    # Subtest: Kontrol K1: Gönderilecekler'den silinmiş (withdrawn) belge bağlantısız Gönder'de de numara almaz
+    ok 6 - Kontrol K1: Gönderilecekler'den silinmiş (withdrawn) belge bağlantısız Gönder'de de numara almaz
+      ---
+      duration_ms: 41.067339
+      type: 'test'
+      ...
+    # Subtest: Kontrol K2: 'Hata'daki belgenin yeniden gönderiminde yanıt kaybolursa da belirsiz — ikinci kez gönderilmez
+    ok 7 - Kontrol K2: 'Hata'daki belgenin yeniden gönderiminde yanıt kaybolursa da belirsiz — ikinci kez gönderilmez
+      ---
+      duration_ms: 72.174482
+      type: 'test'
+      ...
+    # Subtest: Kontrol K3: tevkifatlı + istisnalı kalem aynı e-Belgede kaydedilmez (geçerli GİB tipi yok)
+    ok 8 - Kontrol K3: tevkifatlı + istisnalı kalem aynı e-Belgede kaydedilmez (geçerli GİB tipi yok)
+      ---
+      duration_ms: 17.30271
+      type: 'test'
+      ...
+    # Subtest: Çıkış yolu (kullanıcı kararı): entegratöre ulaşılamıyorsa belirsiz / taslak belge yalnız programda iptal edilir — yetki + onay + işlem kaydı
+    ok 9 - Çıkış yolu (kullanıcı kararı): entegratöre ulaşılamıyorsa belirsiz / taslak belge yalnız programda iptal edilir — yetki + onay + işlem kaydı
+      ---
+      duration_ms: 234.206127
+      type: 'test'
+      ...
+    # Subtest: Arayüz denemesi (gerçek EDM): mükellefiyeti sorgulanmamış e-Fatura mükellefine e-Arşiv gönderilmez; cari işaretlenir, numara harcanmaz
+    ok 10 - Arayüz denemesi (gerçek EDM): mükellefiyeti sorgulanmamış e-Fatura mükellefine e-Arşiv gönderilmez; cari işaretlenir, numara harcanmaz
+      ---
+      duration_ms: 42.49492
+      type: 'test'
+      ...
+    # Subtest: Arayüz denemesi: birden çok posta kutulu mükellefte kutu kendiliğinden seçilmez; kutusu bilinmeyen alıcıya e-Fatura numara almadan durur
+    ok 11 - Arayüz denemesi: birden çok posta kutulu mükellefte kutu kendiliğinden seçilmez; kutusu bilinmeyen alıcıya e-Fatura numara almadan durur
+      ---
+      duration_ms: 41.799468
+      type: 'test'
+      ...
+    # Subtest: E3: test serisi adları firmanın serisinde kalamaz (her kayıtta); kâğıt belge seri adı yüzünden 'Test' sayılmaz
+    ok 12 - E3: test serisi adları firmanın serisinde kalamaz (her kayıtta); kâğıt belge seri adı yüzünden 'Test' sayılmaz
+      ---
+      duration_ms: 34.207718
+      type: 'test'
+      ...
+    # Subtest: E4/Y7/Y6: karekod yalnız numaralı, entegratöre ulaşmış e-Fatura / e-Arşivde (PDF ve görünüm); e-SMM'ye basılmaz
+    ok 13 - E4/Y7/Y6: karekod yalnız numaralı, entegratöre ulaşmış e-Fatura / e-Arşivde (PDF ve görünüm); e-SMM'ye basılmaz
+      ---
+      duration_ms: 146.274789
+      type: 'test'
+      ...
+    # Subtest: Y4: istisnalı kalem + KDV'li kalem → ISTISNA ve GİB şematronundan temiz; 351 + 301'de iki istisna kodu da belgede
+    ok 14 - Y4: istisnalı kalem + KDV'li kalem → ISTISNA ve GİB şematronundan temiz; 351 + 301'de iki istisna kodu da belgede
+      ---
+      duration_ms: 1223.58649
+      type: 'test'
+      ...
+    # Subtest: E5: U+FFFE / U+FFFF kalem adından ayıklanır; belge şemadan geçer
+    ok 15 - E5: U+FFFE / U+FFFF kalem adından ayıklanır; belge şemadan geçer
+      ---
+      duration_ms: 377.64733
+      type: 'test'
+      ...
+    # Subtest: E9: resmî görüntü önbelleği belgenin durumuna bağlı — e-Arşiv iptalinden sonra EDM'den yeniden alınır
+    ok 16 - E9: resmî görüntü önbelleği belgenin durumuna bağlı — e-Arşiv iptalinden sonra EDM'den yeniden alınır
+      ---
+      duration_ms: 107.423199
+      type: 'test'
+      ...
+    # Subtest: E10: Fatura Ayarları yetkisi olmayan kullanıcı entegratör kullanıcı adını, adresini ve son test iletisini görmez
+    ok 17 - E10: Fatura Ayarları yetkisi olmayan kullanıcı entegratör kullanıcı adını, adresini ve son test iletisini görmez
+      ---
+      duration_ms: 83.490954
+      type: 'test'
+      ...
+    1..17
+ok 2 - Bitiş turu bulguları (sahte EDM; canlıya giden istek yakalanır, ağa çıkmaz)
+  ---
+  duration_ms: 3384.757059
+  type: 'suite'
+  ...
+# Subtest: E6: vekil sunucu adresindeki boşluk sessizce kesilmez
+    # Subtest: 'vekil.firma.local 8080' → 400
+    ok 1 - 'vekil.firma.local 8080' → 400
+      ---
+      duration_ms: 332.355559
+      type: 'test'
+      ...
+    1..1
+ok 3 - E6: vekil sunucu adresindeki boşluk sessizce kesilmez
+  ---
+  duration_ms: 332.543282
+  type: 'suite'
+  ...
+# Subtest: Y5: görünüm kapatılınca karekodun da kalkacağı ekranda yazar
+    # Subtest: onay kutusu metni karekodu anar
+    ok 1 - onay kutusu metni karekodu anar
+      ---
+      duration_ms: 1.730786
+      type: 'test'
+      ...
+    1..1
+ok 4 - Y5: görünüm kapatılınca karekodun da kalkacağı ekranda yazar
+  ---
+  duration_ms: 1.815605
+  type: 'suite'
+  ...
+# Subtest: Arayüz denemesi (gerçek EDM): kendine gönderilen belgenin alıcı tarafı durumu
+    # Subtest: 'RECEIVE - WAIT_APPLICATION_RESPONSE' (gerçek EDM ham yanıtı) 'işleniyor'da kalmaz, gönderen karşılığıyla aynı eşlenir
+    ok 1 - 'RECEIVE - WAIT_APPLICATION_RESPONSE' (gerçek EDM ham yanıtı) 'işleniyor'da kalmaz, gönderen karşılığıyla aynı eşlenir
+      ---
+      duration_ms: 0.422331
+      type: 'test'
+      ...
+    1..1
+ok 5 - Arayüz denemesi (gerçek EDM): kendine gönderilen belgenin alıcı tarafı durumu
+  ---
+  duration_ms: 0.499029
+  type: 'suite'
+  ...
+# (node:14940) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.4 E6: Seçilenleri Gönder — ön denetim, aynı tur, kronoloji
+    # Subtest: S1: seçilmemiş daha eski bekleyen varken seçilen yeni belge GÖNDERİLMEDEN sorulur (409); hiçbir belge numara almaz, EDM'ye gidilmez
+    ok 1 - S1: seçilmemiş daha eski bekleyen varken seçilen yeni belge GÖNDERİLMEDEN sorulur (409); hiçbir belge numara almaz, EDM'ye gidilmez
+      ---
+      duration_ms: 601.716911
+      type: 'test'
+      ...
+    # Subtest: S2: 'Onları da Ekle' — seçim eski belgelerle genişleyince ikisi de gider; numara sırası = tarih sırası
+    ok 2 - S2: 'Onları da Ekle' — seçim eski belgelerle genişleyince ikisi de gider; numara sırası = tarih sırası
+      ---
+      duration_ms: 602.265007
+      type: 'test'
+      ...
+    # Subtest: S3: ön denetim (check) gönderimsiz — numara yok, entegratöre gidilmez; sayılar: gönderilebilir / kalıcı engelli / Gönderilecekler'de değil (gönderilmiş, iptal, kâğıt, yok) / eski
+    ok 3 - S3: ön denetim (check) gönderimsiz — numara yok, entegratöre gidilmez; sayılar: gönderilebilir / kalıcı engelli / Gönderilecekler'de değil (gönderilmiş, iptal, kâğıt, yok) / eski
+      ---
+      duration_ms: 557.055385
+      type: 'test'
+      ...
+    # Subtest: S4: seçilmemiş eski belge yokken (aynı gün / daha yeni / başka seri / numaralı) soru yok; yalnız seçilenler gider
+    ok 4 - S4: seçilmemiş eski belge yokken (aynı gün / daha yeni / başka seri / numaralı) soru yok; yalnız seçilenler gider
+      ---
+      duration_ms: 539.896223
+      type: 'test'
+      ...
+    # Subtest: S5: numaralı ama gitmemiş (Sonucu Belirsiz) eski belge yeni belgeyi bekletmez; seçilince önce durumu sorulur, EDM'ye bir kez gider
+    ok 5 - S5: numaralı ama gitmemiş (Sonucu Belirsiz) eski belge yeni belgeyi bekletmez; seçilince önce durumu sorulur, EDM'ye bir kez gider
+      ---
+      duration_ms: 591.345318
+      type: 'test'
+      ...
+    # Subtest: S6: 25 seçili — Tümünü Gönder'in turu: istek başına 20, kalan + imleç; hepsi bir kez, numara = tarih sırası
+    ok 6 - S6: 25 seçili — Tümünü Gönder'in turu: istek başına 20, kalan + imleç; hepsi bir kez, numara = tarih sırası
+      ---
+      duration_ms: 1676.909887
+      type: 'test'
+      ...
+    # Subtest: S7: ön denetimden sonra, tur sürerken daha eski belge kaydedilirse kalan yeni seçililer numara almaz ('dahil değil'); eski belge gönderilmez
+    ok 7 - S7: ön denetimden sonra, tur sürerken daha eski belge kaydedilirse kalan yeni seçililer numara almaz ('dahil değil'); eski belge gönderilmez
+      ---
+      duration_ms: 1308.700112
+      type: 'test'
+      ...
+    # Subtest: S8: iki oturum aynı seçimi aynı anda gönderir (ikincisi birincinin gönderdiği belgeye denk getirilir) — her belge EDM'ye bir kez, hata yok
+    ok 8 - S8: iki oturum aynı seçimi aynı anda gönderir (ikincisi birincinin gönderdiği belgeye denk getirilir) — her belge EDM'ye bir kez, hata yok
+      ---
+      duration_ms: 1876.279815
+      type: 'test'
+      ...
+    # Subtest: S9: iki oturum aynı anda — biri eski belgeyi, öbürü yenisini seçer: eski numarasını aldıktan sonra başlayan yeni gönderim sorulmadan gider, sıra korunur
+    ok 9 - S9: iki oturum aynı anda — biri eski belgeyi, öbürü yenisini seçer: eski numarasını aldıktan sonra başlayan yeni gönderim sorulmadan gider, sıra korunur
+      ---
+      duration_ms: 795.137939
+      type: 'test'
+      ...
+    # Subtest: S10: yetkisiz kullanıcı (yalnız görüntüleme) 403; boş ve çok büyük seçim 400; hiçbiri numara vermez ya da gönderim yapmaz
+    ok 10 - S10: yetkisiz kullanıcı (yalnız görüntüleme) 403; boş ve çok büyük seçim 400; hiçbiri numara vermez ya da gönderim yapmaz
+      ---
+      duration_ms: 570.027194
+      type: 'test'
+      ...
+    # Subtest: S11: seçilmemiş KALICI engelli eski belge (seride daha yeni numara / alıcı e-Fatura mükellefi) soru doğurmaz; seçilen gönderilir
+    ok 11 - S11: seçilmemiş KALICI engelli eski belge (seride daha yeni numara / alıcı e-Fatura mükellefi) soru doğurmaz; seçilen gönderilir
+      ---
+      duration_ms: 451.339943
+      type: 'test'
+      ...
+    # Subtest: S12: liste satırı kalıcı engelli bekleyeni işaretler (eBlocked) — 'Seçilenleri Gönder (N)' sayısına girmez; sayfalı liste ve dışa aktarım aynı
+    ok 12 - S12: liste satırı kalıcı engelli bekleyeni işaretler (eBlocked) — 'Seçilenleri Gönder (N)' sayısına girmez; sayfalı liste ve dışa aktarım aynı
+      ---
+      duration_ms: 375.055744
+      type: 'test'
+      ...
+    1..12
+ok 6 - 2.4.4 E6: Seçilenleri Gönder — ön denetim, aynı tur, kronoloji
+  ---
+  duration_ms: 10134.553153
+  type: 'suite'
+  ...
+# (node:14954) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: e-SMM açılınca e-SMM kullanıcısı olmayan firmada her şey eskisi gibi (fark testi: bayrak kapalı ↔ açık)
+    # Subtest: A1/A4: kâğıt makbuz iki kurulumda da KAGIT, SMM serisi, kayıtta numaralı; hesap (brüt / stopaj / KDV / ödenecek) aynı
+    ok 1 - A1/A4: kâğıt makbuz iki kurulumda da KAGIT, SMM serisi, kayıtta numaralı; hesap (brüt / stopaj / KDV / ödenecek) aynı
+      ---
+      duration_ms: 1.576447
+      type: 'test'
+      ...
+    # Subtest: A2: kâğıt makbuz Gönderilecekler'e düşmez, e-Belge uçları reddeder, kartında gönderim düğmesi yok — iki kurulumda aynı
+    ok 2 - A2: kâğıt makbuz Gönderilecekler'e düşmez, e-Belge uçları reddeder, kartında gönderim düğmesi yok — iki kurulumda aynı
+      ---
+      duration_ms: 0.216622
+      type: 'test'
+      ...
+    # Subtest: A3: e-Arşiv / e-Fatura aynı numara ve profille, yalnız e-Fatura servisine gider; e-SMM servisine HİÇ istek yok
+    ok 3 - A3: e-Arşiv / e-Fatura aynı numara ve profille, yalnız e-Fatura servisine gider; e-SMM servisine HİÇ istek yok
+      ---
+      duration_ms: 0.204574
+      type: 'test'
+      ...
+    # Subtest: A6: yevmiye, cari ve Kasa kayıtları aynı (para çekirdeği bayraktan bağımsız)
+    ok 4 - A6: yevmiye, cari ve Kasa kayıtları aynı (para çekirdeği bayraktan bağımsız)
+      ---
+      duration_ms: 0.202218
+      type: 'test'
+      ...
+    # Subtest: beklenen farklar yalnız bunlar: e-SMM işareti görünür, e-SMM serisi satırı, /meta'da makbuz türü gönderilebilir (kâğıt profilde düğme yok)
+    ok 5 - beklenen farklar yalnız bunlar: e-SMM işareti görünür, e-SMM serisi satırı, /meta'da makbuz türü gönderilebilir (kâğıt profilde düğme yok)
+      ---
+      duration_ms: 0.387591
+      type: 'test'
+      ...
+    1..5
+ok 7 - e-SMM açılınca e-SMM kullanıcısı olmayan firmada her şey eskisi gibi (fark testi: bayrak kapalı ↔ açık)
+  ---
+  duration_ms: 1585.20543
+  type: 'suite'
+  ...
+# Subtest: A5: açık kurulumda e-SMM işaretlenip kaldırılınca yeni makbuz kâğıda döner (TES numaralı eski makbuz e-SMM kalır)
+    # Subtest: işaretli: ESMM + TES; işaret kaldırılınca: KAGIT + SMM; e-SMM makbuzunun numarası ve türü değişmez
+    ok 1 - işaretli: ESMM + TES; işaret kaldırılınca: KAGIT + SMM; e-SMM makbuzunun numarası ve türü değişmez
+      ---
+      duration_ms: 80.7965
+      type: 'test'
+      ...
+    1..1
+ok 8 - A5: açık kurulumda e-SMM işaretlenip kaldırılınca yeni makbuz kâğıda döner (TES numaralı eski makbuz e-SMM kalır)
+  ---
+  duration_ms: 409.180487
+  type: 'suite'
+  ...
+# Subtest: form izolasyonu (2.4.3) — kaynak taraması
+    # Subtest: kod maskesi şablonun ${…} kısmını kod sayar, metni ve yorumu boşaltır
+    ok 1 - kod maskesi şablonun ${…} kısmını kod sayar, metni ve yorumu boşaltır
+      ---
+      duration_ms: 2.463119
+      type: 'test'
+      ...
+    # Subtest: dosya / resim seçimi işleyicileri bulunuyor (test boşa geçmesin)
+    ok 2 - dosya / resim seçimi işleyicileri bulunuyor (test boşa geçmesin)
+      ---
+      duration_ms: 359.227396
+      type: 'test'
+      ...
+    # Subtest: hiçbir dosya seçimi işleyicisi dosya kutusunu içeren formu yeniden çizmez (D1)
+    ok 3 - hiçbir dosya seçimi işleyicisi dosya kutusunu içeren formu yeniden çizmez (D1)
+      ---
+      duration_ms: 202.364052
+      type: 'test'
+      ...
+    # Subtest: Fatura Ayarları: Logo / Kaşe seçme ve kaldırma renderSettings() çağırmaz
+    ok 4 - Fatura Ayarları: Logo / Kaşe seçme ve kaldırma renderSettings() çağırmaz
+      ---
+      duration_ms: 25.481876
+      type: 'test'
+      ...
+    # Subtest: ortak çekirdek: HOF.swap taslağı korur, pencere kapanırken kaydedilmemiş değişikliği sorar
+    ok 5 - ortak çekirdek: HOF.swap taslağı korur, pencere kapanırken kaydedilmemiş değişikliği sorar
+      ---
+      duration_ms: 1.046626
+      type: 'test'
+      ...
+    1..5
+ok 9 - form izolasyonu (2.4.3) — kaynak taraması
+  ---
+  duration_ms: 591.661878
+  type: 'suite'
+  ...
+#   background çağrıları: 22 (yazma: hof-stock.js:594, hof-whatsapp-api.js:596)
+# Subtest: gg243: ortak çekirdek — arka plan yazması ve odak anahtarı
+    # Subtest: \#3 bütün background çağrıları rawApi'den geçer; rawApi bayrağı sendApi'ye iletir; writeOrigin arka plan isteğine pencere vermez
+    ok 1 - \#3 bütün background çağrıları rawApi'den geçer; rawApi bayrağı sendApi'ye iletir; writeOrigin arka plan isteğine pencere vermez
+      ---
+      duration_ms: 26.739621
+      type: 'test'
+      ...
+    # Subtest: \#4 odak anahtarı satır data-* niteliklerini içerir; bulunamazsa yalnız tekil birincil anahtara döner
+    ok 2 - \#4 odak anahtarı satır data-* niteliklerini içerir; bulunamazsa yalnız tekil birincil anahtara döner
+      ---
+      duration_ms: 0.218816
+      type: 'test'
+      ...
+    1..2
+ok 10 - gg243: ortak çekirdek — arka plan yazması ve odak anahtarı
+  ---
+  duration_ms: 27.805536
+  type: 'suite'
+  ...
+# (node:14975) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: gg243 dar kontrol: e-Belge numara ve Tümünü Gönder çekirdeği
+    # Subtest: Y1: Tümünü Gönder bir istekte en çok 20 belgeyi dener; kalan sayısı döner, yinelenince hepsi eskiden yeniye gider
+    ok 1 - Y1: Tümünü Gönder bir istekte en çok 20 belgeyi dener; kalan sayısı döner, yinelenince hepsi eskiden yeniye gider
+      ---
+      duration_ms: 2771.256414
+      type: 'test'
+      ...
+    # Subtest: Y1: süre bütçesi dolunca istek erken döner (en az bir belge); kalanlar sonraki isteklerde
+    ok 2 - Y1: süre bütçesi dolunca istek erken döner (en az bir belge); kalanlar sonraki isteklerde
+      ---
+      duration_ms: 2723.190063
+      type: 'test'
+      ...
+    # Subtest: O1 (kaydet-ve-gonder): seride daha eski tarihli numarasız bekleyen varken yeni belge numara almaz; Gönderilecekler'de kalır, eskiden yeniye gider
+    ok 3 - O1 (kaydet-ve-gonder): seride daha eski tarihli numarasız bekleyen varken yeni belge numara almaz; Gönderilecekler'de kalır, eskiden yeniye gider
+      ---
+      duration_ms: 415.821418
+      type: 'test'
+      ...
+    # Subtest: O1 (duz-kaydet): seride daha eski tarihli numarasız bekleyen varken yeni belge numara almaz; Gönderilecekler'de kalır, eskiden yeniye gider
+    ok 4 - O1 (duz-kaydet): seride daha eski tarihli numarasız bekleyen varken yeni belge numara almaz; Gönderilecekler'de kalır, eskiden yeniye gider
+      ---
+      duration_ms: 445.333705
+      type: 'test'
+      ...
+    # Subtest: O1 (kartta-gonder): seride daha eski tarihli numarasız bekleyen varken yeni belge numara almaz; Gönderilecekler'de kalır, eskiden yeniye gider
+    ok 5 - O1 (kartta-gonder): seride daha eski tarihli numarasız bekleyen varken yeni belge numara almaz; Gönderilecekler'de kalır, eskiden yeniye gider
+      ---
+      duration_ms: 410.977139
+      type: 'test'
+      ...
+    # Subtest: O1 (taslaktan Kaydet ve Gönder, Seçilenleri Kaydet — hemen gönderim açık): aynı kural; belge numarasız Gönderilecekler'de
+    ok 6 - O1 (taslaktan Kaydet ve Gönder, Seçilenleri Kaydet — hemen gönderim açık): aynı kural; belge numarasız Gönderilecekler'de
+      ---
+      duration_ms: 496.40462
+      type: 'test'
+      ...
+    # Subtest: O1 komşu: aynı günlü eski bekleyen ve KALICI engelli eski bekleyen numara vermeyi durdurmaz
+    ok 7 - O1 komşu: aynı günlü eski bekleyen ve KALICI engelli eski bekleyen numara vermeyi durdurmaz
+      ---
+      duration_ms: 446.986737
+      type: 'test'
+      ...
+    # Subtest: O1 yarış (tohum 1): Tümünü Gönder sürerken ikinci oturum seçili gönderim + geriye tarihli Sonra Gönder + bugünlü Kaydet ve Gönder — seri tutarlı, kalıcı engele düşen yok
+    ok 8 - O1 yarış (tohum 1): Tümünü Gönder sürerken ikinci oturum seçili gönderim + geriye tarihli Sonra Gönder + bugünlü Kaydet ve Gönder — seri tutarlı, kalıcı engele düşen yok
+      ---
+      duration_ms: 2417.621093
+      type: 'test'
+      ...
+    # Subtest: O1 yarış (tohum 2): Tümünü Gönder sürerken ikinci oturum seçili gönderim + geriye tarihli Sonra Gönder + bugünlü Kaydet ve Gönder — seri tutarlı, kalıcı engele düşen yok
+    ok 9 - O1 yarış (tohum 2): Tümünü Gönder sürerken ikinci oturum seçili gönderim + geriye tarihli Sonra Gönder + bugünlü Kaydet ve Gönder — seri tutarlı, kalıcı engele düşen yok
+      ---
+      duration_ms: 2824.160927
+      type: 'test'
+      ...
+    # Subtest: O1 yarış (tohum 3): Tümünü Gönder sürerken ikinci oturum seçili gönderim + geriye tarihli Sonra Gönder + bugünlü Kaydet ve Gönder — seri tutarlı, kalıcı engele düşen yok
+    ok 10 - O1 yarış (tohum 3): Tümünü Gönder sürerken ikinci oturum seçili gönderim + geriye tarihli Sonra Gönder + bugünlü Kaydet ve Gönder — seri tutarlı, kalıcı engele düşen yok
+      ---
+      duration_ms: 3004.448941
+      type: 'test'
+      ...
+    # Subtest: O2: Tümünü Gönder sürerken Müşteri Fişi olarak bırakılan belge e-Belge olarak gönderilmez; Müşteri Fişi kalır (kartından yine gönderilebilir)
+    ok 11 - O2: Tümünü Gönder sürerken Müşteri Fişi olarak bırakılan belge e-Belge olarak gönderilmez; Müşteri Fişi kalır (kartından yine gönderilebilir)
+      ---
+      duration_ms: 2052.537079
+      type: 'test'
+      ...
+    # Subtest: O3: alıcısı e-Fatura mükellefi olan numarasız e-Arşiv KALICI sayılır — seriyi bekletmez; kartta gönderilemez ve nedeni yazar
+    ok 12 - O3: alıcısı e-Fatura mükellefi olan numarasız e-Arşiv KALICI sayılır — seriyi bekletmez; kartta gönderilemez ve nedeni yazar
+      ---
+      duration_ms: 575.114818
+      type: 'test'
+      ...
+    # Subtest: D2 (all): eşzamanlı Tümünü Gönder — başka oturumda gönderilen belge hata sayılmaz, iletisi ezilmez
+    ok 13 - D2 (all): eşzamanlı Tümünü Gönder — başka oturumda gönderilen belge hata sayılmaz, iletisi ezilmez
+      ---
+      duration_ms: 758.390338
+      type: 'test'
+      ...
+    # Subtest: D2 (ids): eşzamanlı Tümünü Gönder — başka oturumda gönderilen belge hata sayılmaz, iletisi ezilmez
+    ok 14 - D2 (ids): eşzamanlı Tümünü Gönder — başka oturumda gönderilen belge hata sayılmaz, iletisi ezilmez
+      ---
+      duration_ms: 729.93324
+      type: 'test'
+      ...
+    # Subtest: D4: numarasız bekleyenin tarihi Düzenle ile serinin son numaralı belgesine kadar ileri alınır; ondan eskiye alınamaz
+    ok 15 - D4: numarasız bekleyenin tarihi Düzenle ile serinin son numaralı belgesine kadar ileri alınır; ondan eskiye alınamaz
+      ---
+      duration_ms: 481.713075
+      type: 'test'
+      ...
+    # Subtest: D4 yarışı (r12): tur sürerken öndeki numarasız belgenin tarihi ileri alınır — arkadaki eski bekleyenler kalıcı engele düşmez
+    ok 16 - D4 yarışı (r12): tur sürerken öndeki numarasız belgenin tarihi ileri alınır — arkadaki eski bekleyenler kalıcı engele düşmez
+      ---
+      duration_ms: 2353.651153
+      type: 'test'
+      ...
+    # Subtest: Ek 1 (tur): yanlış parolada Tümünü Gönder ilk girişte durur; HİÇBİR belge numara almaz; parola düzelince hepsi sırayla gider
+    ok 17 - Ek 1 (tur): yanlış parolada Tümünü Gönder ilk girişte durur; HİÇBİR belge numara almaz; parola düzelince hepsi sırayla gider
+      ---
+      duration_ms: 504.159429
+      type: 'test'
+      ...
+    # Subtest: Ek 1 (kartta e-Belge Gönder ve Kaydet ve Gönder): yanlış parolada numara verilmez; iletiler girişin reddedildiğini söyler
+    ok 18 - Ek 1 (kartta e-Belge Gönder ve Kaydet ve Gönder): yanlış parolada numara verilmez; iletiler girişin reddedildiğini söyler
+      ---
+      duration_ms: 369.274657
+      type: 'test'
+      ...
+    # Subtest: Ek 1 (Seçilenleri Kaydet, hemen gönderim açık): yanlış parolada aynı istekte YALNIZ BİR giriş denenir; taslaklar numarasız Gönderilecekler'de, tek ileti
+    ok 19 - Ek 1 (Seçilenleri Kaydet, hemen gönderim açık): yanlış parolada aynı istekte YALNIZ BİR giriş denenir; taslaklar numarasız Gönderilecekler'de, tek ileti
+      ---
+      duration_ms: 521.860226
+      type: 'test'
+      ...
+    # Subtest: Ek 2 (O3 kenar): belgedeki alıcı numarası carinin şimdiki numarasından farklı ve mükellef — kartta da kalıcı engel; yeni belgeyi bekletmez
+    ok 20 - Ek 2 (O3 kenar): belgedeki alıcı numarası carinin şimdiki numarasından farklı ve mükellef — kartta da kalıcı engel; yeni belgeyi bekletmez
+      ---
+      duration_ms: 369.174769
+      type: 'test'
+      ...
+    # Subtest: Ek 6 (kâhin hedefli-ag-yokken-numara): oturum önbellekteyken ağ kesilir — Kaydet ve Gönder numara vermez; ileti; bağlantı gelince sırayla gider
+    ok 21 - Ek 6 (kâhin hedefli-ag-yokken-numara): oturum önbellekteyken ağ kesilir — Kaydet ve Gönder numara vermez; ileti; bağlantı gelince sırayla gider
+      ---
+      duration_ms: 473.325672
+      type: 'test'
+      ...
+    # Subtest: Ek 7 (kâhin kucuk-esz-gonderiliyor-hata): iki oturum aynı anda Tümünü Gönder — öbür oturumda gönderilen belge ikinci yanıtta hata değil
+    ok 22 - Ek 7 (kâhin kucuk-esz-gonderiliyor-hata): iki oturum aynı anda Tümünü Gönder — öbür oturumda gönderilen belge ikinci yanıtta hata değil
+      ---
+      duration_ms: 1046.269624
+      type: 'test'
+      ...
+    # Subtest: Ek 8 (kâhin kucuk-fis-sira): Müşteri Fişi Olarak Bırak, FIS serisinin son fişinden eski tarihli belgeye fiş numarası vermez (reddeder); aynı/yeni tarih serbest
+    ok 23 - Ek 8 (kâhin kucuk-fis-sira): Müşteri Fişi Olarak Bırak, FIS serisinin son fişinden eski tarihli belgeye fiş numarası vermez (reddeder); aynı/yeni tarih serbest
+      ---
+      duration_ms: 386.211518
+      type: 'test'
+      ...
+    # Subtest: Ek 9 (kâhin kucuk-o1-pk-yok-bekletir, I19): PK'sız eski e-Fatura yeni e-Faturayı bekletir (doğru) — her gönderilmeyen sonucun kodu ve iletisi dolu
+    ok 24 - Ek 9 (kâhin kucuk-o1-pk-yok-bekletir, I19): PK'sız eski e-Fatura yeni e-Faturayı bekletir (doğru) — her gönderilmeyen sonucun kodu ve iletisi dolu
+      ---
+      duration_ms: 350.102797
+      type: 'test'
+      ...
+    # Subtest: BİLGİ: bağlantı yokken Tümünü Gönder ilk 'EDM'ye ulaşılamadı'da durur, kalanlara numara verilmez; bağlantı gelince hepsi gider
+    ok 25 - BİLGİ: bağlantı yokken Tümünü Gönder ilk 'EDM'ye ulaşılamadı'da durur, kalanlara numara verilmez; bağlantı gelince hepsi gider
+      ---
+      duration_ms: 597.458434
+      type: 'test'
+      ...
+    1..25
+ok 11 - gg243 dar kontrol: e-Belge numara ve Tümünü Gönder çekirdeği
+  ---
+  duration_ms: 28014.673129
+  type: 'suite'
+  ...
+# (node:14982) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: gg243 dar kontrol 2: Tümünü Gönder imleci (B1)
+    # Subtest: B1: kuyruğun başında 20 reddedilen belge varken bir basışta 30 yeni belge gider; her belge turda en çok bir kez denenir
+    ok 1 - B1: kuyruğun başında 20 reddedilen belge varken bir basışta 30 yeni belge gider; her belge turda en çok bir kez denenir
+      ---
+      duration_ms: 3056.172963
+      type: 'test'
+      ...
+    # Subtest: B1: imleçten önce gönderilemeyen numarasız eski belge, sonraki istekteki aynı serinin yeni belgelerini bekletir (bir kez denenir)
+    ok 2 - B1: imleçten önce gönderilemeyen numarasız eski belge, sonraki istekteki aynı serinin yeni belgelerini bekletir (bir kez denenir)
+      ---
+      duration_ms: 1200.657449
+      type: 'test'
+      ...
+    # Subtest: B1: bozuk ya da eksik imleç turu baştan başlatır (hata değil)
+    ok 3 - B1: bozuk ya da eksik imleç turu baştan başlatır (hata değil)
+      ---
+      duration_ms: 358.834353
+      type: 'test'
+      ...
+    1..3
+ok 12 - gg243 dar kontrol 2: Tümünü Gönder imleci (B1)
+  ---
+  duration_ms: 4665.485016
+  type: 'suite'
+  ...
+# Subtest: gg243 dar kontrol 2: gönderim sonrası kopma belirsizdir, tur sürer (B2)
+    # Subtest: B2: tek SendInvoice'ın bağlantısı istek gittikten sonra koparsa tur durmaz; o belge Sonucu Belirsiz, sonraki turda yinelemesiz gider
+    ok 1 - B2: tek SendInvoice'ın bağlantısı istek gittikten sonra koparsa tur durmaz; o belge Sonucu Belirsiz, sonraki turda yinelemesiz gider
+      ---
+      duration_ms: 796.916107
+      type: 'test'
+      ...
+    # Subtest: B2: bağlantı hiç kurulamazsa (ECONNREFUSED) tur yine durur, kalanlara numara verilmez (K12)
+    ok 2 - B2: bağlantı hiç kurulamazsa (ECONNREFUSED) tur yine durur, kalanlara numara verilmez (K12)
+      ---
+      duration_ms: 349.925989
+      type: 'test'
+      ...
+    1..2
+ok 13 - gg243 dar kontrol 2: gönderim sonrası kopma belirsizdir, tur sürer (B2)
+  ---
+  duration_ms: 1179.241093
+  type: 'suite'
+  ...
+# Subtest: gg243 dar kontrol 2: oturum önbelleği erişim kanıtıdır, numara ağ yokken verilmez (B3)
+    # Subtest: B3: ısınmadan sonra 10 e-Fatura Kaydet ve Gönder, 10 kartta Gönder ve 45 belgelik Tümünü Gönder yeniden giriş yapmaz
+    ok 1 - B3: ısınmadan sonra 10 e-Fatura Kaydet ve Gönder, 10 kartta Gönder ve 45 belgelik Tümünü Gönder yeniden giriş yapmaz
+      ---
+      duration_ms: 3211.574555
+      type: 'test'
+      ...
+    # Subtest: B3: parola değişince önbellekteki oturum kanıt sayılmaz — giriş numaradan önce; yanlış parolada numara harcanmaz
+    ok 2 - B3: parola değişince önbellekteki oturum kanıt sayılmaz — giriş numaradan önce; yanlış parolada numara harcanmaz
+      ---
+      duration_ms: 628.646736
+      type: 'test'
+      ...
+    # Subtest: B3 + K12: kanıt önbellekten gelirken ağ giderse Kaydet ve Gönder, kartta Gönder ve Tümünü Gönder numara vermez (verilen geri bırakılır)
+    ok 3 - B3 + K12: kanıt önbellekten gelirken ağ giderse Kaydet ve Gönder, kartta Gönder ve Tümünü Gönder numara vermez (verilen geri bırakılır)
+      ---
+      duration_ms: 529.592932
+      type: 'test'
+      ...
+    # Subtest: B3 + K12: araya başka belgenin numarası girdiyse geri bırakılmaz (seride boşluk açılmaz); belge numaralı, gönderilmemiş kalır
+    ok 4 - B3 + K12: araya başka belgenin numarası girdiyse geri bırakılmaz (seride boşluk açılmaz); belge numaralı, gönderilmemiş kalır
+      ---
+      duration_ms: 550.003867
+      type: 'test'
+      ...
+    1..4
+ok 14 - gg243 dar kontrol 2: oturum önbelleği erişim kanıtıdır, numara ağ yokken verilmez (B3)
+  ---
+  duration_ms: 5001.077851
+  type: 'suite'
+  ...
+# (node:15089) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: gg243: Tümünü Gönder — bütün Gönderilecekler, kalıcı engel, eşzamanlı gönderim, canlıda test serisi
+    # Subtest: S2: 203 bekleyen — Tümünü Gönder (all) hepsini eskiden yeniye gönderir; bir istekte en eski 20, kalan sayısı söylenir; numara tarih sırasında
+    ok 1 - S2: 203 bekleyen — Tümünü Gönder (all) hepsini eskiden yeniye gönderir; bir istekte en eski 20, kalan sayısı söylenir; numara tarih sırasında
+      ---
+      duration_ms: 12551.912184
+      type: 'test'
+      ...
+    # Subtest: S2 komşu: seçili kimliklerle gönderim, gönderime dahil olmayan daha eski numarasız bekleyenden önce yenisini numaralandırmaz
+    ok 2 - S2 komşu: seçili kimliklerle gönderim, gönderime dahil olmayan daha eski numarasız bekleyenden önce yenisini numaralandırmaz
+      ---
+      duration_ms: 529.796158
+      type: 'test'
+      ...
+    # Subtest: S1: kalıcı kronoloji engelli eski belge, gönderilebilir yeni belgeyi bekletmez; iletisi Müşteri Fişi Olarak Bırak / İptal Et yolunu söyler
+    ok 3 - S1: kalıcı kronoloji engelli eski belge, gönderilebilir yeni belgeyi bekletmez; iletisi Müşteri Fişi Olarak Bırak / İptal Et yolunu söyler
+      ---
+      duration_ms: 488.995232
+      type: 'test'
+      ...
+    # Subtest: B1 korunur: eski belge GEÇİCİ nedenle (bağlantı) gönderilemezse aynı serideki yeni belge numara almaz; bağlantı düzelince ikisi de sırayla gider
+    ok 4 - B1 korunur: eski belge GEÇİCİ nedenle (bağlantı) gönderilemezse aynı serideki yeni belge numara almaz; bağlantı düzelince ikisi de sırayla gider
+      ---
+      duration_ms: 581.963747
+      type: 'test'
+      ...
+    # Subtest: B1 korunur ({ all: true }): geçici hatada yeni belge eski numarasızın önüne geçmez
+    ok 5 - B1 korunur ({ all: true }): geçici hatada yeni belge eski numarasızın önüne geçmez
+      ---
+      duration_ms: 448.142281
+      type: 'test'
+      ...
+    # Subtest: S3 (ids): iki kişi aynı anda Tümünü Gönder — her belge EDM'ye bir kez; ikinci kişiye 'başka oturumda gönderildi' (hata değil)
+    ok 6 - S3 (ids): iki kişi aynı anda Tümünü Gönder — her belge EDM'ye bir kez; ikinci kişiye 'başka oturumda gönderildi' (hata değil)
+      ---
+      duration_ms: 3733.793798
+      type: 'test'
+      ...
+    # Subtest: S3 (all): iki kişi aynı anda Tümünü Gönder — her belge EDM'ye bir kez; ikinci kişiye 'başka oturumda gönderildi' (hata değil)
+    ok 7 - S3 (all): iki kişi aynı anda Tümünü Gönder — her belge EDM'ye bir kez; ikinci kişiye 'başka oturumda gönderildi' (hata değil)
+      ---
+      duration_ms: 3713.142204
+      type: 'test'
+      ...
+    # Subtest: 5b: canlı ortamda test serili numaralı gönderilmemiş belge — rozet ve Gönderilecekler tutarlı; 'Test serisi canlıda gönderilmez; İptal Edin'
+    ok 8 - 5b: canlı ortamda test serili numaralı gönderilmemiş belge — rozet ve Gönderilecekler tutarlı; 'Test serisi canlıda gönderilmez; İptal Edin'
+      ---
+      duration_ms: 491.882208
+      type: 'test'
+      ...
+    1..8
+ok 15 - gg243: Tümünü Gönder — bütün Gönderilecekler, kalıcı engel, eşzamanlı gönderim, canlıda test serisi
+  ---
+  duration_ms: 22728.497604
+  type: 'suite'
+  ...
+# (node:15124) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Otomatik güncelleme: arka planda indir, sonraki açılışta kur (gerçek süreçler)
+    # Subtest: (a) gün içinde kullanıcı çalışırken bulunan sürüm arka planda indirilir + doğrulanır + açılır; servis durmaz, 'hazır' görünür; (b) durdur/başlat → eski sürüm hiç açılmadan kurulur
+    ok 1 - (a) gün içinde kullanıcı çalışırken bulunan sürüm arka planda indirilir + doğrulanır + açılır; servis durmaz, 'hazır' görünür; (b) durdur/başlat → eski sürüm hiç açılmadan kurulur
+      ---
+      duration_ms: 5864.231516
+      type: 'test'
+      ...
+    # Subtest: (c) açılışta ağ yok (yayın kaynağı kapalı) → hazırdaki sürüm kurulur
+    ok 2 - (c) açılışta ağ yok (yayın kaynağı kapalı) → hazırdaki sürüm kurulur
+      ---
+      duration_ms: 3770.290729
+      type: 'test'
+      ...
+    # Subtest: (d) açılışta daha yeni sürüm var → o indirilip kurulur; tek geçiş, ara sürüm kurulmaz
+    ok 3 - (d) açılışta daha yeni sürüm var → o indirilip kurulur; tek geçiş, ara sürüm kurulmaz
+      ---
+      duration_ms: 3241.96763
+      type: 'test'
+      ...
+    # Subtest: (e)+(k) hazırken daha yeni sürüm çıkar → önce yenisi tamamen hazırlanır, SONRA eski hazır paket (klasör + zip) silinir; çalışan ve önceki sürüm durur
+    ok 4 - (e)+(k) hazırken daha yeni sürüm çıkar → önce yenisi tamamen hazırlanır, SONRA eski hazır paket (klasör + zip) silinir; çalışan ve önceki sürüm durur
+      ---
+      duration_ms: 4292.493587
+      type: 'test'
+      ...
+    # Subtest: (j) hazır 9.0.1 varken 9.0.2 indirmesi yarıda kesilir ya da özeti tutmaz → 9.0.1 hazır kalır (hiçbir an hazır paketsiz değil); açılışta 9.0.1 kurulur
+    ok 5 - (j) hazır 9.0.1 varken 9.0.2 indirmesi yarıda kesilir ya da özeti tutmaz → 9.0.1 hazır kalır (hiçbir an hazır paketsiz değil); açılışta 9.0.1 kurulur
+      ---
+      duration_ms: 5716.708338
+      type: 'test'
+      ...
+    # Subtest: (f) bozuk (SHA-256 tutmayan) ya da yanlış imzalı hazır paket → kurulmaz, eski sürüm açılır, kayıt düşülür, hazır paket silinir
+    ok 6 - (f) bozuk (SHA-256 tutmayan) ya da yanlış imzalı hazır paket → kurulmaz, eski sürüm açılır, kayıt düşülür, hazır paket silinir
+      ---
+      duration_ms: 5109.550731
+      type: 'test'
+      ...
+    # Subtest: (g) yeni sürümün deneme açılışı başarısız → önceki sürüme dönülür, 'kurulamadı' işaretlenir; sonraki açılışta aynı sürüm yeniden denenmez
+    ok 7 - (g) yeni sürümün deneme açılışı başarısız → önceki sürüme dönülür, 'kurulamadı' işaretlenir; sonraki açılışta aynı sürüm yeniden denenmez
+      ---
+      duration_ms: 5513.659526
+      type: 'test'
+      ...
+    # Subtest: (h) kendiliğinden kur KAPALI → bulunan sürüm indirilmez, hazırlanmaz, yalnız 'hazır' bildirilir; (i) saatlik denetim sürer
+    ok 8 - (h) kendiliğinden kur KAPALI → bulunan sürüm indirilmez, hazırlanmaz, yalnız 'hazır' bildirilir; (i) saatlik denetim sürer
+      ---
+      duration_ms: 8184.084519
+      type: 'test'
+      ...
+    # Subtest: (l) iki indirme aynı anda başlamaz: yavaş indirme sürerken saatlik denetimler ve yöneticinin elle 'Denetle'si yeni indirme başlatmaz
+    ok 9 - (l) iki indirme aynı anda başlamaz: yavaş indirme sürerken saatlik denetimler ve yöneticinin elle 'Denetle'si yeni indirme başlatmaz
+      ---
+      duration_ms: 9127.334823
+      type: 'test'
+      ...
+    1..9
+ok 16 - Otomatik güncelleme: arka planda indir, sonraki açılışta kur (gerçek süreçler)
+  ---
+  duration_ms: 50822.545807
+  type: 'suite'
+  ...
+# Subtest: yalnız hesaplayan / ön izleyen istekler defter değişikliği sayılmaz (2.4.3 H2)
+    # Subtest: fatura toplamı, görünüm ön izlemesi ve Excel ön izlemeleri olay yayımlamaz
+    ok 1 - fatura toplamı, görünüm ön izlemesi ve Excel ön izlemeleri olay yayımlamaz
+      ---
+      duration_ms: 3.266556
+      type: 'test'
+      ...
+    # Subtest: gerçek yazımlar eskisi gibi hemen bildirilir (tür listesiyle)
+    ok 2 - gerçek yazımlar eskisi gibi hemen bildirilir (tür listesiyle)
+      ---
+      duration_ms: 2.610157
+      type: 'test'
+      ...
+    1..2
+ok 17 - yalnız hesaplayan / ön izleyen istekler defter değişikliği sayılmaz (2.4.3 H2)
+  ---
+  duration_ms: 6.704585
+  type: 'suite'
+  ...
+# Subtest: Kılavuz PDF sürümü (client/kilavuz)
+    # Subtest: PDF metni okunur (boş değil, bilinen başlık var)
+    ok 1 - PDF metni okunur (boş değil, bilinen başlık var)
+      ---
+      duration_ms: 219.898982
+      type: 'test'
+      ...
+    # Subtest: PDF kapağı ve dip notu = HTML sürümü = program sürümü
+    ok 2 - PDF kapağı ve dip notu = HTML sürümü = program sürümü
+      ---
+      duration_ms: 0.324345
+      type: 'test'
+      ...
+    1..2
+ok 18 - Kılavuz PDF sürümü (client/kilavuz)
+  ---
+  duration_ms: 221.038488
+  type: 'suite'
+  ...
+# Subtest: Kullanım kılavuzu sürümü
+    # Subtest: kapakta “Sürüm <program sürümü>” yazar
+    ok 1 - kapakta “Sürüm <program sürümü>” yazar
+      ---
+      duration_ms: 2.354359
+      type: 'test'
+      ...
+    # Subtest: dip notta “DestekOfis <program sürümü> · Kısa Kullanım Kılavuzu” yazar
+    ok 2 - dip notta “DestekOfis <program sürümü> · Kısa Kullanım Kılavuzu” yazar
+      ---
+      duration_ms: 0.257578
+      type: 'test'
+      ...
+    1..2
+ok 19 - Kullanım kılavuzu sürümü
+  ---
+  duration_ms: 3.449583
+  type: 'suite'
+  ...
+# Subtest: gerçek programı ayrı süreçte açan her test ve araç (test/ + tools/) lisans servisini yerel ölü adrese yönlendirir
+ok 20 - gerçek programı ayrı süreçte açan her test ve araç (test/ + tools/) lisans servisini yerel ölü adrese yönlendirir
+  ---
+  duration_ms: 7.839358
+  type: 'test'
+  ...
+# Subtest: aynı süreçte gerçek programı açan her createApp çağrısı (test/ + tools/) lisans servisine deneme atamaz
+ok 21 - aynı süreçte gerçek programı açan her createApp çağrısı (test/ + tools/) lisans servisine deneme atamaz
+  ---
+  duration_ms: 119.11243
+  type: 'test'
+  ...
+# Subtest: gerçek kurulum paketini kuran/servisi başlatan her iş akışı işi lisans servisini önce engeller, nöbetçiyle kanıtlar
+ok 22 - gerçek kurulum paketini kuran/servisi başlatan her iş akışı işi lisans servisini önce engeller, nöbetçiyle kanıtlar
+  ---
+  duration_ms: 2.345196
+  type: 'test'
+  ...
+# Subtest: iş akışlarında lisans servisi adresi gerçek servise çevrilmez
+ok 23 - iş akışlarında lisans servisi adresi gerçek servise çevrilmez
+  ---
+  duration_ms: 0.555961
+  type: 'test'
+  ...
+# Subtest: lisans servisi adresi yalnız yerel ölü adres ya da yerel sahte servistir
+ok 24 - lisans servisi adresi yalnız yerel ölü adres ya da yerel sahte servistir
+  ---
+  duration_ms: 1.373065
+  type: 'test'
+  ...
+# Subtest: liste kapısı: Daha Fazla ↔ arka plan yenilemesi (H4)
+    # Subtest: Daha Fazla tutulurken başka kayıt + arka plan yenilemesi: Daha Fazla yeni listenin sonundan yinelenir; liste = sunucunun ilk 6'sı
+    ok 1 - Daha Fazla tutulurken başka kayıt + arka plan yenilemesi: Daha Fazla yeni listenin sonundan yinelenir; liste = sunucunun ilk 6'sı
+      ---
+      duration_ms: 4.620412
+      type: 'test'
+      ...
+    # Subtest: arka plan yenilemesi tutulurken Daha Fazla yazıldı: yenileme yeni uzunlukla yinelenir (satırlar geri alınmaz, yeni kayıt görünür)
+    ok 2 - arka plan yenilemesi tutulurken Daha Fazla yazıldı: yenileme yeni uzunlukla yinelenir (satırlar geri alınmaz, yeni kayıt görünür)
+      ---
+      duration_ms: 4.73711
+      type: 'test'
+      ...
+    # Subtest: aynı sırada iki yenileme: sonra başlayan yazılır, önceki düşer (v2.0.22 kuralı); kullanıcı araması Daha Fazla'yı ve eski yenilemeyi geçersiz sayar
+    ok 3 - aynı sırada iki yenileme: sonra başlayan yazılır, önceki düşer (v2.0.22 kuralı); kullanıcı araması Daha Fazla'yı ve eski yenilemeyi geçersiz sayar
+      ---
+      duration_ms: 1.402752
+      type: 'test'
+      ...
+    # Subtest: rastgele sıralar (tohumlu, 300 tur): her sonuçta liste = sunucunun ilk N satırı, Daha Fazla geri alınmaz
+    ok 4 - rastgele sıralar (tohumlu, 300 tur): her sonuçta liste = sunucunun ilk N satırı, Daha Fazla geri alınmaz
+      ---
+      duration_ms: 36.470293
+      type: 'test'
+      ...
+    1..4
+ok 25 - liste kapısı: Daha Fazla ↔ arka plan yenilemesi (H4)
+  ---
+  duration_ms: 48.349725
+  type: 'suite'
+  ...
+# (node:15374) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Netten Brüte — kaydedilen makbuzun Net Ücreti yazılan tutardır (veri tabanından)
+    # Subtest: gerçek kişi alıcı, oran boş, KDV %20
+    ok 1 - gerçek kişi alıcı, oran boş, KDV %20
+      ---
+      duration_ms: 40.817679
+      type: 'test'
+      ...
+    # Subtest: nihai tüketici (kimliksiz kişi), oran boş
+    ok 2 - nihai tüketici (kimliksiz kişi), oran boş
+      ---
+      duration_ms: 19.232598
+      type: 'test'
+      ...
+    # Subtest: tüzel alıcı, oran boş (%20), KDV %20
+    ok 3 - tüzel alıcı, oran boş (%20), KDV %20
+      ---
+      duration_ms: 21.638948
+      type: 'test'
+      ...
+    # Subtest: tüzel alıcı, KDV'siz kalem
+    ok 4 - tüzel alıcı, KDV'siz kalem
+      ---
+      duration_ms: 19.063052
+      type: 'test'
+      ...
+    # Subtest: tüzel alıcı, Fiyatlar KDV Dahil
+    ok 5 - tüzel alıcı, Fiyatlar KDV Dahil
+      ---
+      duration_ms: 16.821798
+      type: 'test'
+      ...
+    # Subtest: gerçek kişi alıcı, Fiyatlar KDV Dahil
+    ok 6 - gerçek kişi alıcı, Fiyatlar KDV Dahil
+      ---
+      duration_ms: 14.635937
+      type: 'test'
+      ...
+    # Subtest: gerçek kişi alıcı, KDV dahil, KDV kuruşu matrahtan
+    ok 7 - gerçek kişi alıcı, KDV dahil, KDV kuruşu matrahtan
+      ---
+      duration_ms: 18.707926
+      type: 'test'
+      ...
+    # Subtest: gerçek kişi alıcı, oran elle %15
+    ok 8 - gerçek kişi alıcı, oran elle %15
+      ---
+      duration_ms: 23.108359
+      type: 'test'
+      ...
+    # Subtest: tüzel alıcı, oran elle 0
+    ok 9 - tüzel alıcı, oran elle 0
+      ---
+      duration_ms: 15.952889
+      type: 'test'
+      ...
+    # Subtest: tüzel alıcı, oran elle %17, KDV %10
+    ok 10 - tüzel alıcı, oran elle %17, KDV %10
+      ---
+      duration_ms: 14.798645
+      type: 'test'
+      ...
+    # Subtest: tüzel alıcı, KDV tevkifatlı (602, 9/10)
+    ok 11 - tüzel alıcı, KDV tevkifatlı (602, 9/10)
+      ---
+      duration_ms: 15.368512
+      type: 'test'
+      ...
+    # Subtest: tüzel alıcı, kuruşlu net
+    ok 12 - tüzel alıcı, kuruşlu net
+      ---
+      duration_ms: 18.083222
+      type: 'test'
+      ...
+    # Subtest: tüzel alıcı, iki kalem (net makbuzun tamamı)
+    ok 13 - tüzel alıcı, iki kalem (net makbuzun tamamı)
+      ---
+      duration_ms: 15.196637
+      type: 'test'
+      ...
+    # Subtest: tüzel alıcı, kalem iskontosu %10
+    ok 14 - tüzel alıcı, kalem iskontosu %10
+      ---
+      duration_ms: 15.503695
+      type: 'test'
+      ...
+    # Subtest: tüzel alıcı, genel iskonto %10
+    ok 15 - tüzel alıcı, genel iskonto %10
+      ---
+      duration_ms: 15.799723
+      type: 'test'
+      ...
+    1..15
+ok 26 - Netten Brüte — kaydedilen makbuzun Net Ücreti yazılan tutardır (veri tabanından)
+  ---
+  duration_ms: 443.80591
+  type: 'suite'
+  ...
+# Subtest: Netten Brüte — reddedilen istekler
+    # Subtest: cari seçilmeden: neden yazılır
+    ok 1 - cari seçilmeden: neden yazılır
+      ---
+      duration_ms: 3.321999
+      type: 'test'
+      ...
+    # Subtest: net boş / sıfır / harf
+    ok 2 - net boş / sıfır / harf
+      ---
+      duration_ms: 7.12882
+      type: 'test'
+      ...
+    # Subtest: SMM dışında kullanılmaz
+    ok 3 - SMM dışında kullanılmaz
+      ---
+      duration_ms: 2.268364
+      type: 'test'
+      ...
+    # Subtest: öbür kalemlerin net ücreti hedefi aşıyorsa yazılmaz
+    ok 4 - öbür kalemlerin net ücreti hedefi aşıyorsa yazılmaz
+      ---
+      duration_ms: 2.357125
+      type: 'test'
+      ...
+    # Subtest: öbür kalemde tanınmayan tevkifat kodu: girdi hatası söylenir
+    ok 5 - öbür kalemde tanınmayan tevkifat kodu: girdi hatası söylenir
+      ---
+      duration_ms: 2.084937
+      type: 'test'
+      ...
+    1..5
+ok 27 - Netten Brüte — reddedilen istekler
+  ---
+  duration_ms: 17.507078
+  type: 'suite'
+  ...
+# Subtest: Netten Brüte — rastgele formlar (tohum 2026_1022)
+    # Subtest: 300 makbuz: Net Ücret = yazılan, oran = alıcı kuralı
+    ok 1 - 300 makbuz: Net Ücret = yazılan, oran = alıcı kuralı
+      ---
+      duration_ms: 6561.126945
+      type: 'test'
+      ...
+    1..1
+ok 28 - Netten Brüte — rastgele formlar (tohum 2026_1022)
+  ---
+  duration_ms: 6561.318267
+  type: 'suite'
+  ...
+# (node:15476) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: kurulum sonrası sürüm etkinleştirme (bootstrap etkinlestir)
+    # Subtest: ilk kurulumda kurulan sürümü etkinleştirir
+    ok 1 - ilk kurulumda kurulan sürümü etkinleştirir
+      ---
+      duration_ms: 39.19664
+      type: 'test'
+      ...
+    # Subtest: yükseltmede yeni sürümü etkinleştirir, öncekini saklar, daha eskileri siler
+    ok 2 - yükseltmede yeni sürümü etkinleştirir, öncekini saklar, daha eskileri siler
+      ---
+      duration_ms: 33.649129
+      type: 'test'
+      ...
+    # Subtest: otomatik güncellemeyle gelmiş daha yeni sürümü eski kurulum dosyası geri almaz
+    ok 3 - otomatik güncellemeyle gelmiş daha yeni sürümü eski kurulum dosyası geri almaz
+      ---
+      duration_ms: 68.00173
+      type: 'test'
+      ...
+    1..3
+ok 29 - kurulum sonrası sürüm etkinleştirme (bootstrap etkinlestir)
+  ---
+  duration_ms: 141.910677
+  type: 'suite'
+  ...
+# Subtest: Windows kurulum düzeni (bootstrap)
+    # Subtest: bootstrap etkin sürümü açar; veri kurulum kökündeki data klasörüne yazılır
+    ok 1 - bootstrap etkin sürümü açar; veri kurulum kökündeki data klasörüne yazılır
+      ---
+      duration_ms: 1027.254894
+      type: 'test'
+      ...
+    # uygulama alt süreci bootstrap kapandıktan 0 ms sonra kapandı (linux)
+    # Subtest: 'surum' ve 'yedek' alt komutları çalışır
+    ok 2 - 'surum' ve 'yedek' alt komutları çalışır
+      ---
+      duration_ms: 217.067531
+      type: 'test'
+      ...
+    # Subtest: hizmet ÇALIŞIRKEN ve yazarken 'yedek' alınır; yedek bütün ve okunur
+    ok 3 - hizmet ÇALIŞIRKEN ve yazarken 'yedek' alınır; yedek bütün ve okunur
+      ---
+      duration_ms: 923.640735
+      type: 'test'
+      ...
+    # hizmet açıkken yedek 175 ms; bu sürede 5 giriş yazıldı
+    # uygulama alt süreci bootstrap kapandıktan 0 ms sonra kapandı (linux)
+    # Subtest: etkin sürüm açılamazsa önceki sürüme dönülür ve açılamayan sürüm işaretlenir
+    ok 4 - etkin sürüm açılamazsa önceki sürüme dönülür ve açılamayan sürüm işaretlenir
+      ---
+      duration_ms: 656.149507
+      type: 'test'
+      ...
+    # uygulama alt süreci bootstrap kapandıktan 0 ms sonra kapandı (linux)
+    # Subtest: current.json bozuk veya olmayan sürümü gösteriyorsa kurulu en yeni sürümle açılır
+    ok 5 - current.json bozuk veya olmayan sürümü gösteriyorsa kurulu en yeni sürümle açılır
+      ---
+      duration_ms: 639.775151
+      type: 'test'
+      ...
+    # uygulama alt süreci bootstrap kapandıktan 0 ms sonra kapandı (linux)
+    1..5
+ok 30 - Windows kurulum düzeni (bootstrap)
+  ---
+  duration_ms: 3529.267858
+  type: 'suite'
+  ...
+# Subtest: kurulum sonrası sağlık kontrolü (bootstrap saglik)
+    # Subtest: sağlık ucu 200 dönünce hemen başarılı olur
+    ok 1 - sağlık ucu 200 dönünce hemen başarılı olur
+      ---
+      duration_ms: 69.716609
+      type: 'test'
+      ...
+    # Subtest: servis bakım yanıtı veriyorsa (açılışta güncelleme) çalışıyor sayılır
+    ok 2 - servis bakım yanıtı veriyorsa (açılışta güncelleme) çalışıyor sayılır
+      ---
+      duration_ms: 2091.035155
+      type: 'test'
+      ...
+    # Subtest: servis başlatılamadıysa veya hiç yanıt yoksa başarısız olur ve servis günlüğünü yazdırır
+    ok 3 - servis başlatılamadıysa veya hiç yanıt yoksa başarısız olur ve servis günlüğünü yazdırır
+      ---
+      duration_ms: 4131.986135
+      type: 'test'
+      ...
+    1..3
+ok 31 - kurulum sonrası sağlık kontrolü (bootstrap saglik)
+  ---
+  duration_ms: 6294.983727
+  type: 'suite'
+  ...
+# Subtest: platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta yok
+    # Subtest: taranan dosya var
+    ok 1 - taranan dosya var
+      ---
+      duration_ms: 0.677727
+      type: 'test'
+      ...
+    # Subtest: import(path.join/resolve(…)) yerine import(pathToFileURL(…).href)
+    ok 2 - import(path.join/resolve(…)) yerine import(pathToFileURL(…).href)
+      ---
+      duration_ms: 156.399586
+      type: 'test'
+      ...
+    # Subtest: new URL(…, import.meta.url).pathname yerine fileURLToPath(…)
+    ok 3 - new URL(…, import.meta.url).pathname yerine fileURLToPath(…)
+      ---
+      duration_ms: 187.295363
+      type: 'test'
+      ...
+    # Subtest: signal === "SIGKILL" iddiası Windows kolu olmadan (process.platform === "win32")
+    ok 4 - signal === "SIGKILL" iddiası Windows kolu olmadan (process.platform === "win32")
+      ---
+      duration_ms: 177.091906
+      type: 'test'
+      ...
+    # Subtest: path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join("/"))
+    ok 5 - path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join("/"))
+      ---
+      duration_ms: 334.85105
+      type: 'test'
+      ...
+    1..5
+ok 32 - platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta yok
+  ---
+  duration_ms: 857.370888
+  type: 'suite'
+  ...
+# Subtest: platform taşınabilirliği: depodaki dosya adları Windows'ta açılır
+    # Subtest: dosya adlarında < > : " | ? * yok, ad boşluk ya da noktayla bitmiyor
+    ok 1 - dosya adlarında < > : " | ? * yok, ad boşluk ya da noktayla bitmiyor
+      ---
+      duration_ms: 69.942822
+      type: 'test'
+      ...
+    1..1
+ok 33 - platform taşınabilirliği: depodaki dosya adları Windows'ta açılır
+  ---
+  duration_ms: 70.065961
+  type: 'suite'
+  ...
+# (node:15738) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: statik dosyalar
+    # Subtest: ana sayfayı güvenlik başlıkları ve CSP ile sunar
+    ok 1 - ana sayfayı güvenlik başlıkları ve CSP ile sunar
+      ---
+      duration_ms: 21.927306
+      type: 'test'
+      ...
+    # Subtest: değişmeyen dosyada 304 döner ve sıkıştırma uygular
+    ok 2 - değişmeyen dosyada 304 döner ve sıkıştırma uygular
+      ---
+      duration_ms: 32.037886
+      type: 'test'
+      ...
+    # Subtest: klasör dışına çıkma ve gizli dosya denemelerini engeller
+    ok 3 - klasör dışına çıkma ve gizli dosya denemelerini engeller
+      ---
+      duration_ms: 11.169058
+      type: 'test'
+      ...
+    # Subtest: bilinmeyen sayfada tarayıcıya HTML 404 gösterir
+    ok 4 - bilinmeyen sayfada tarayıcıya HTML 404 gösterir
+      ---
+      duration_ms: 2.7201
+      type: 'test'
+      ...
+    # Subtest: bilinmeyen API ucu 404, desteklenmeyen yöntem 405 döner
+    ok 5 - bilinmeyen API ucu 404, desteklenmeyen yöntem 405 döner
+      ---
+      duration_ms: 20.066074
+      type: 'test'
+      ...
+    1..5
+ok 34 - statik dosyalar
+  ---
+  duration_ms: 452.654986
+  type: 'suite'
+  ...
+# (node:15760) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: servis yöneticisi (supervisor)
+    # Subtest: bakım sayfası markalı, otomatik yenilenen bir HTML üretir
+    ok 1 - bakım sayfası markalı, otomatik yenilenen bir HTML üretir
+      ---
+      duration_ms: 0.899583
+      type: 'test'
+      ...
+    # Subtest: istekleri uygulamaya iletir; oturum çerezi ve istemci IP'si korunur
+    ok 2 - istekleri uygulamaya iletir; oturum çerezi ve istemci IP'si korunur
+      ---
+      duration_ms: 73.650038
+      type: 'test'
+      ...
+    # Subtest: canlı olay akışını (SSE) kapıdan geçirir; tarayıcı kapanınca uygulama tarafı da kapanır
+    ok 3 - canlı olay akışını (SSE) kapıdan geçirir; tarayıcı kapanınca uygulama tarafı da kapanır
+      ---
+      duration_ms: 79.719155
+      type: 'test'
+      ...
+    # Subtest: UDP keşif sinyaline sunucu adresiyle yanıt verir
+    ok 4 - UDP keşif sinyaline sunucu adresiyle yanıt verir
+      ---
+      duration_ms: 801.729779
+      type: 'test'
+      ...
+    # Subtest: uygulama çökerse bakım yanıtı verir ve kendini yeniden başlatır
+    ok 5 - uygulama çökerse bakım yanıtı verir ve kendini yeniden başlatır
+      ---
+      duration_ms: 1463.768706
+      type: 'test'
+      ...
+    # Subtest: güncelleme kipinde kullanıcıya 'Sistem güncelleniyor' sayfası gösterir
+    ok 6 - güncelleme kipinde kullanıcıya 'Sistem güncelleniyor' sayfası gösterir
+      ---
+      duration_ms: 537.185865
+      type: 'test'
+      ...
+    1..6
+ok 35 - servis yöneticisi (supervisor)
+  ---
+  duration_ms: 3747.862483
+  type: 'suite'
+  ...
+# Subtest: servis günlükleri
+    # Subtest: nssm'in kenara ayırdığı eski günlüklerden yalnızca en yeni 10 tanesi kalır
+    ok 1 - nssm'in kenara ayırdığı eski günlüklerden yalnızca en yeni 10 tanesi kalır
+      ---
+      duration_ms: 2.832181
+      type: 'test'
+      ...
+    1..1
+ok 36 - servis günlükleri
+  ---
+  duration_ms: 3.128098
+  type: 'suite'
+  ...
+# Subtest: öksüz süreç koruması
+    # Subtest: servis yöneticisi zorla kapatılınca uygulama da kapanır
+    ok 1 - servis yöneticisi zorla kapatılınca uygulama da kapanır
+      ---
+      duration_ms: 8016.184938
+      type: 'test'
+      ...
+    1..1
+ok 37 - öksüz süreç koruması
+  ---
+  duration_ms: 8016.465212
+  type: 'suite'
+  ...
+# Subtest: sürüm karşılaştırma
+    # Subtest: anlamsal sürüm kurallarına uyar
+    ok 1 - anlamsal sürüm kurallarına uyar
+      ---
+      duration_ms: 0.891299
+      type: 'test'
+      ...
+    1..1
+ok 38 - sürüm karşılaştırma
+  ---
+  duration_ms: 1.675038
+  type: 'suite'
+  ...
+# Subtest: imzalı güncelleme bildirgesi
+    # Subtest: güvenilen anahtarla imzalı bildirgeyi kabul eder
+    ok 1 - güvenilen anahtarla imzalı bildirgeyi kabul eder
+      ---
+      duration_ms: 1.961082
+      type: 'test'
+      ...
+    # Subtest: değiştirilmiş içerik, bilinmeyen anahtar ve sahte kimlik reddedilir
+    ok 2 - değiştirilmiş içerik, bilinmeyen anahtar ve sahte kimlik reddedilir
+      ---
+      duration_ms: 1.40012
+      type: 'test'
+      ...
+    # Subtest: geçersiz bildirge alanları reddedilir
+    ok 3 - geçersiz bildirge alanları reddedilir
+      ---
+      duration_ms: 1.731626
+      type: 'test'
+      ...
+    # Subtest: uyumluluk: eski sürüm, kanal, en düşük sürüm, çalışma zamanı ve başlatıcı
+    ok 4 - uyumluluk: eski sürüm, kanal, en düşük sürüm, çalışma zamanı ve başlatıcı
+      ---
+      duration_ms: 1.021968
+      type: 'test'
+      ...
+    # Subtest: ürüne gömülü anahtar geçerli bir Ed25519 açık anahtarıdır
+    ok 5 - ürüne gömülü anahtar geçerli bir Ed25519 açık anahtarıdır
+      ---
+      duration_ms: 0.579321
+      type: 'test'
+      ...
+    # Subtest: sürüm notları CHANGELOG'dan çıkarılır
+    ok 6 - sürüm notları CHANGELOG'dan çıkarılır
+      ---
+      duration_ms: 0.910447
+      type: 'test'
+      ...
+    1..6
+ok 39 - imzalı güncelleme bildirgesi
+  ---
+  duration_ms: 8.176942
+  type: 'suite'
+  ...
+# Subtest: güncelleyici (sahte GitHub ile)
+    # Subtest: kararlı kanalda en yeni kararlı sürümü bulur; ön sürümü yalnızca beta kanalı görür
+    ok 1 - kararlı kanalda en yeni kararlı sürümü bulur; ön sürümü yalnızca beta kanalı görür
+      ---
+      duration_ms: 49.119941
+      type: 'test'
+      ...
+    # Subtest: indirir, özeti doğrular ve paketi app\\<sürüm> olarak açar
+    ok 2 - indirir, özeti doğrular ve paketi app\\<sürüm> olarak açar
+      ---
+      duration_ms: 253.824215
+      type: 'test'
+      ...
+    # Subtest: kurulu sürüm işlevle okunur: yerinde güncellemeden sonra aynı sürüm yeniden önerilmez; çalışan/etkin klasöre dokunulmaz (2.0.6 saha hatası)
+    ok 3 - kurulu sürüm işlevle okunur: yerinde güncellemeden sonra aynı sürüm yeniden önerilmez; çalışan/etkin klasöre dokunulmaz (2.0.6 saha hatası)
+      ---
+      duration_ms: 239.537692
+      type: 'test'
+      ...
+    # Subtest: paket özeti tutmazsa hiçbir şey kurulmaz
+    ok 4 - paket özeti tutmazsa hiçbir şey kurulmaz
+      ---
+      duration_ms: 46.24769
+      type: 'test'
+      ...
+    # Subtest: yayın etiketi ile bildirge sürümü uyuşmazsa veya imza geçersizse kurulmaz
+    ok 5 - yayın etiketi ile bildirge sürümü uyuşmazsa veya imza geçersizse kurulmaz
+      ---
+      duration_ms: 751.196962
+      type: 'test'
+      ...
+    # Subtest: daha önce başarısız olan sürüm atlanır; kurulum dosyası gerektiren sürüm bildirilir
+    ok 6 - daha önce başarısız olan sürüm atlanır; kurulum dosyası gerektiren sürüm bildirilir
+      ---
+      duration_ms: 17.832129
+      type: 'test'
+      ...
+    # Subtest: ağ hatası yeniden denenebilir, olmayan depo denenemez olarak bildirilir
+    ok 7 - ağ hatası yeniden denenebilir, olmayan depo denenemez olarak bildirilir
+      ---
+      duration_ms: 104.507406
+      type: 'test'
+      ...
+    # Subtest: imzalı bildirge adresi (GitHub dışı kaynak) da desteklenir
+    ok 8 - imzalı bildirge adresi (GitHub dışı kaynak) da desteklenir
+      ---
+      duration_ms: 211.681068
+      type: 'test'
+      ...
+    # Subtest: paket içindeki sürüm bildirgeyle aynı değilse veya dosya eksikse açılmaz
+    ok 9 - paket içindeki sürüm bildirgeyle aynı değilse veya dosya eksikse açılmaz
+      ---
+      duration_ms: 2.692887
+      type: 'test'
+      ...
+    1..9
+ok 40 - güncelleyici (sahte GitHub ile)
+  ---
+  duration_ms: 3367.457499
+  type: 'suite'
+  ...
+# Subtest: kurulum düzeni yardımcıları
+    # Subtest: current.json atomik yazılır; eski sürümler ve yarım klasörler temizlenir
+    ok 1 - current.json atomik yazılır; eski sürümler ve yarım klasörler temizlenir
+      ---
+      duration_ms: 2.007431
+      type: 'test'
+      ...
+    1..1
+ok 41 - kurulum düzeni yardımcıları
+  ---
+  duration_ms: 2.14431
+  type: 'suite'
+  ...
+# Subtest: yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+    # Subtest: arayüz dosyalarında kurala uymayan ad yok
+    ok 1 - arayüz dosyalarında kurala uymayan ad yok
+      ---
+      duration_ms: 76.715286
+      type: 'test'
+      ...
+    # Subtest: hareket türü adları ve programın varsayılan adları kurala uyuyor
+    ok 2 - hareket türü adları ve programın varsayılan adları kurala uyuyor
+      ---
+      duration_ms: 5.307347
+      type: 'test'
+      ...
+    # Subtest: derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+    ok 3 - derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+      ---
+      duration_ms: 2.061379
+      type: 'test'
+      ...
+    # Subtest: Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+    ok 4 - Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+      ---
+      duration_ms: 3.79839
+      type: 'test'
+      ...
+    # Subtest: mobil görünümde (client/mobil) kurala uymayan ad yok
+    ok 5 - mobil görünümde (client/mobil) kurala uymayan ad yok
+      ---
+      duration_ms: 3.173354
+      type: 'test'
+      ...
+    # Subtest: rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+    ok 6 - rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+      ---
+      duration_ms: 37.423708
+      type: 'test'
+      ...
+    1..6
+ok 42 - yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+  ---
+  duration_ms: 129.534936
+  type: 'suite'
+  ...
+# (node:16102) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.0.21 · yedek denetimi: güncel kodla gerçek iş akışı
+    # Subtest: yedekler, ad/kod değişimi, silme, aynı kodla yeni şirket, otomatik tur → her yedek kendi şirketinin klasöründe
+    ok 1 - yedekler, ad/kod değişimi, silme, aynı kodla yeni şirket, otomatik tur → her yedek kendi şirketinin klasöründe
+      ---
+      duration_ms: 588.000487
+      type: 'test'
+      ...
+    # Subtest: denetim yanlış yere konmuş yedeği bulur (elle kopyalanmış: 001'in yedeği 005'in klasöründe)
+    ok 2 - denetim yanlış yere konmuş yedeği bulur (elle kopyalanmış: 001'in yedeği 005'in klasöründe)
+      ---
+      duration_ms: 36.308831
+      type: 'test'
+      ...
+    # Subtest: yetkisiz kullanıcı denetimi göremez
+    ok 3 - yetkisiz kullanıcı denetimi göremez
+      ---
+      duration_ms: 79.20888
+      type: 'test'
+      ...
+    1..3
+ok 43 - 2.0.21 · yedek denetimi: güncel kodla gerçek iş akışı
+  ---
+  duration_ms: 2247.214339
+  type: 'suite'
+  ...
+# Subtest: 2.0.21 · yedek denetimi: gerçek v2.0.19 verisinden güncelleme
+    # Subtest: 2.0.19'un bıraktığı yedekler: güncel kod açılınca her biri kendi şirketinin klasöründe; çakışma bildirilir
+    ok 1 - 2.0.19'un bıraktığı yedekler: güncel kod açılınca her biri kendi şirketinin klasöründe; çakışma bildirilir
+      ---
+      duration_ms: 643.688042
+      type: 'test'
+      ...
+    1..1
+ok 44 - 2.0.21 · yedek denetimi: gerçek v2.0.19 verisinden güncelleme
+  ---
+  duration_ms: 1343.53796
+  type: 'suite'
+  ...
+1..44
+# tests 193
+# suites 39
+# pass 193
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 89845.880158
+
+[kanit] b7-komsu-Europe-Istanbul: GEÇTİ · çıkış 0 · 193/193 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 55508b3 +14 değişmiş dosya +2 izlenmeyen · linux 6.18.44-fc-v445 x64 · Node v22.23.4

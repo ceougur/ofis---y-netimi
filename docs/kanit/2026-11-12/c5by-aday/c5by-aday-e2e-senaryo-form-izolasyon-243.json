@@ -1,0 +1,32 @@
+{
+  "ad": "c5by-aday-e2e-senaryo-form-izolasyon-243",
+  "komut": "npm run test:senaryo-form-izolasyon-243",
+  "commit": "465a2eeb72f28fc62eeab423c182cb3082118510",
+  "dal": "sinama-c5b-aday",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-12T14:56:57.576Z",
+  "sure_sn": 227.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 188,
+    "gecen": 188,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../c5by-aday-kanit/2026-11-12/c5by-aday-e2e-senaryo-form-izolasyon-243.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-ya-ag",
+  "ham_cikti_sha256": "0105f7556e3df2d18834775f19289383dc134e30d879114e5b70725977eb7056",
+  "ham_cikti_bayt": 29657
+}

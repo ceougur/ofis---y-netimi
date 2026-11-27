@@ -1,0 +1,210 @@
+TAP version 13
+# Subtest: Ç5-A tur 2e DÜŞÜK-4 — kilitli dönemdeki adayın kararı yalnız yöneticide
+    # Subtest: rol × uç × kilitli / açık: Avukat ve Muhasebe kilitli adaya (kilit günü dahil) tek karar ve geri alma 403, açık adaya 200; personel her uçta 403; okuma uçları değişmez
+    ok 1 - rol × uç × kilitli / açık: Avukat ve Muhasebe kilitli adaya (kilit günü dahil) tek karar ve geri alma 403, açık adaya 200; personel her uçta 403; okuma uçları değişmez
+      ---
+      duration_ms: 66.98555
+      type: 'test'
+      ...
+    # Subtest: toplu: seçimde kilitli kayıt varsa İŞLEM BÜTÜN reddedilir (açık kayıt da yazılmaz), ileti yöneticiye kalan kayıtları sayar; yalnız açık kayıtlar 200; yönetici kilitliyi toplu karara alır
+    ok 2 - toplu: seçimde kilitli kayıt varsa İŞLEM BÜTÜN reddedilir (açık kayıt da yazılmaz), ileti yöneticiye kalan kayıtları sayar; yalnız açık kayıtlar 200; yönetici kilitliyi toplu karara alır
+      ---
+      duration_ms: 33.607299
+      type: 'test'
+      ...
+    # Subtest: kilit SONRADAN ilerleyip kararı kapsarsa geri alma yöneticide; kilit kaldırılınca bugünkü yetki geri gelir
+    ok 3 - kilit SONRADAN ilerleyip kararı kapsarsa geri alma yöneticide; kilit kaldırılınca bugünkü yetki geri gelir
+      ---
+      duration_ms: 212.146083
+      type: 'test'
+      ...
+    1..3
+ok 1 - Ç5-A tur 2e DÜŞÜK-4 — kilitli dönemdeki adayın kararı yalnız yöneticide
+  ---
+  duration_ms: 1457.04802
+  type: 'suite'
+  ...
+# Subtest: Ç5-A tur 2b İş 2 — Kural Farkı Düzeltme Fişi
+    # Subtest: [1] v2.4.9 verisi (kilit 31.12.2025, Excel kartları): fiş 01.01.2026; önceki yıl 602 farkı 681'e; Düzeltildi; ters kayıtla uyarı geri; ikinci fiş; değişmez
+    ok 1 - [1] v2.4.9 verisi (kilit 31.12.2025, Excel kartları): fiş 01.01.2026; önceki yıl 602 farkı 681'e; Düzeltildi; ters kayıtla uyarı geri; ikinci fiş; değişmez
+      ---
+      duration_ms: 544.114211
+      type: 'test'
+      ...
+    # Subtest: [2] v2.0.26 verisi (kilit 05.10.2026; aynı yıl): yalnız 500 ↔ 519; gerçek eski sürüm satırı (ileri tarihli evrak) ayrı kalır; Muhasebe 403; iki kişi aynı anda
+    ok 2 - [2] v2.0.26 verisi (kilit 05.10.2026; aynı yıl): yalnız 500 ↔ 519; gerçek eski sürüm satırı (ileri tarihli evrak) ayrı kalır; Muhasebe 403; iki kişi aynı anda
+      ---
+      duration_ms: 753.950137
+      type: 'test'
+      ...
+    # Subtest: [3] kilit bugün: ön izleme pasif + görünür neden, kayıt 400 ve fiş yok
+    ok 3 - [3] kilit bugün: ön izleme pasif + görünür neden, kayıt 400 ve fiş yok
+      ---
+      duration_ms: 1138.60581
+      type: 'test'
+      ...
+    # Subtest: [4] B16: kilitli dönemde onay bekleyen Açılış Olabilir kaydı varken fiş yazılmaz; karar verilince satırlar kararla değişir (onay 519, ret 602 / 770)
+    ok 4 - [4] B16: kilitli dönemde onay bekleyen Açılış Olabilir kaydı varken fiş yazılmaz; karar verilince satırlar kararla değişir (onay 519, ret 602 / 770)
+      ---
+      duration_ms: 966.439106
+      type: 'test'
+      ...
+    # Subtest: [5] fazla düzeltme: fişten sonra kilit kaldırılır → uyarı (kilit olmasa da görünür); yeniden kilitlenir → yine fazla; ters kayıtla temiz
+    ok 5 - [5] fazla düzeltme: fişten sonra kilit kaldırılır → uyarı (kilit olmasa da görünür); yeniden kilitlenir → yine fazla; ters kayıtla temiz
+      ---
+      duration_ms: 954.910709
+      type: 'test'
+      ...
+    # Subtest: [7] S164 = C: kilitli kaynağın kapı dışı değişikliği kural farkına karışırsa fişe sessizce girmez — alt defter hesabı farkı dışarıda, kaydı kaynak listesinde 'fişle düzeltilmez'
+    ok 6 - [7] S164 = C: kilitli kaynağın kapı dışı değişikliği kural farkına karışırsa fişe sessizce girmez — alt defter hesabı farkı dışarıda, kaydı kaynak listesinde 'fişle düzeltilmez'
+      ---
+      duration_ms: 597.926092
+      type: 'test'
+      ...
+    # Subtest: [8] S164 = C ikinci örnek: kilitli tahsilatın fatura bağı kapı dışından yazılınca 120 / 128 farkı kaynağıyla dışarıda; fiş yalnız gerçek kural farkı (500 → 519)
+    ok 7 - [8] S164 = C ikinci örnek: kilitli tahsilatın fatura bağı kapı dışından yazılınca 120 / 128 farkı kaynağıyla dışarıda; fiş yalnız gerçek kural farkı (500 → 519)
+      ---
+      duration_ms: 911.737215
+      type: 'test'
+      ...
+    # Subtest: [6] kilitsiz v2.4.9 verisi: ön izleme pasif (kilit yok), fiş yazılmaz, Mutabakat Testi çıktısı değişmez
+    ok 8 - [6] kilitsiz v2.4.9 verisi: ön izleme pasif (kilit yok), fiş yazılmaz, Mutabakat Testi çıktısı değişmez
+      ---
+      duration_ms: 148.963912
+      type: 'test'
+      ...
+    1..8
+ok 2 - Ç5-A tur 2b İş 2 — Kural Farkı Düzeltme Fişi
+  ---
+  duration_ms: 6019.525115
+  type: 'suite'
+  ...
+# Subtest: Ç5-A tur 2e — Kural Farkı Düzeltme Fişi: yıl kuralı (saf plan)
+    # Subtest: [y1] eşleme yılı tek tanım: ilk açık günün (kilit + 1) yılı; 30.12 / 31.12 sınırı; kilit yoksa donmuş dönem, o da yoksa bugün
+    ok 1 - [y1] eşleme yılı tek tanım: ilk açık günün (kilit + 1) yılı; 30.12 / 31.12 sınırı; kilit yoksa donmuş dönem, o da yoksa bugün
+      ---
+      duration_ms: 1.069112
+      type: 'test'
+      ...
+    # Subtest: [y2] S174 = A: 2026'da yazılmış fiş (B 500 / A 602) kilit 31.12.2026'yı aşınca kendi yılında düzeltilmiş sayılır — 2027'de fiş önerilmez
+    ok 2 - [y2] S174 = A: 2026'da yazılmış fiş (B 500 / A 602) kilit 31.12.2026'yı aşınca kendi yılında düzeltilmiş sayılır — 2027'de fiş önerilmez
+      ---
+      duration_ms: 1.257175
+      type: 'test'
+      ...
+    # Subtest: [y3] eski yıldan DÜZELTİLMEMİŞ fark + aynı yıl düzeltilmiş fark birlikte: yeni fiş yalnız düzeltilmemiş kısmı, 671'e
+    ok 3 - [y3] eski yıldan DÜZELTİLMEMİŞ fark + aynı yıl düzeltilmiş fark birlikte: yeni fiş yalnız düzeltilmemiş kısmı, 671'e
+      ---
+      duration_ms: 0.528866
+      type: 'test'
+      ...
+    # Subtest: [y4] eski biçim (yıl ayrımsız toplam) ve tek yıl fişi: sonuç expected − posted (bugünkü hesap AYNEN)
+    ok 4 - [y4] eski biçim (yıl ayrımsız toplam) ve tek yıl fişi: sonuç expected − posted (bugünkü hesap AYNEN)
+      ---
+      duration_ms: 0.199427
+      type: 'test'
+      ...
+    # Subtest: [y5] fazla düzeltme yıl sonundan sonra: tutar doğru (700); fişin yılı eşleme yılından SONRA ise (kilit geri alındı) satırlar fişin tersi
+    ok 5 - [y5] fazla düzeltme yıl sonundan sonra: tutar doğru (700); fişin yılı eşleme yılından SONRA ise (kilit geri alındı) satırlar fişin tersi
+      ---
+      duration_ms: 0.22915
+      type: 'test'
+      ...
+    # Subtest: [y6] N1: alt defter dışlaması kararlı noktaya kadar yinelenir — birinci maddenin dışlanması ikinci maddenin alt defter hesabını sıfırdan çıkarır
+    ok 6 - [y6] N1: alt defter dışlaması kararlı noktaya kadar yinelenir — birinci maddenin dışlanması ikinci maddenin alt defter hesabını sıfırdan çıkarır
+      ---
+      duration_ms: 0.247538
+      type: 'test'
+      ...
+    1..6
+ok 3 - Ç5-A tur 2e — Kural Farkı Düzeltme Fişi: yıl kuralı (saf plan)
+  ---
+  duration_ms: 4.238202
+  type: 'suite'
+  ...
+# Subtest: Ç5-A tur 2e — Kural Farkı Düzeltme Fişi: yıl kuralı (program, v2.4.9 verisi)
+    # Subtest: [y7] S174 = A uçtan uca: fiş 2026 → kilit 30.12 (602) → kilit 31.12 (671) → aday onayı → 'Fişle düzeltilebilen fark kalmadı' + Düzeltildi; ikinci fiş; ters kayıt; kilit kaldır / yeniden kilitle
+    ok 1 - [y7] S174 = A uçtan uca: fiş 2026 → kilit 30.12 (602) → kilit 31.12 (671) → aday onayı → 'Fişle düzeltilebilen fark kalmadı' + Düzeltildi; ikinci fiş; ters kayıt; kilit kaldır / yeniden kilitle
+      ---
+      duration_ms: 1677.223829
+      type: 'test'
+      ...
+    1..1
+ok 4 - Ç5-A tur 2e — Kural Farkı Düzeltme Fişi: yıl kuralı (program, v2.4.9 verisi)
+  ---
+  duration_ms: 1677.613391
+  type: 'suite'
+  ...
+# Subtest: S160 = A — kilitli dönemdeki tahsilatın fatura bağını düşüren iptal / silme 409; kilitli defter değişmez
+    # Subtest: iptal 409 — şüpheli VAR; bağ, fatura ve kilitli defter aynı
+    ok 1 - iptal 409 — şüpheli VAR; bağ, fatura ve kilitli defter aynı
+      ---
+      duration_ms: 7.888538
+      type: 'test'
+      ...
+    # Subtest: iptal 409 — şüpheli YOK (kural şüpheliye bağlanmaz); bağ, fatura ve kilitli defter aynı
+    ok 2 - iptal 409 — şüpheli YOK (kural şüpheliye bağlanmaz); bağ, fatura ve kilitli defter aynı
+      ---
+      duration_ms: 6.947429
+      type: 'test'
+      ...
+    # Subtest: iptal 409 — tahsilat tam kilit günü; bağ, fatura ve kilitli defter aynı
+    ok 3 - iptal 409 — tahsilat tam kilit günü; bağ, fatura ve kilitli defter aynı
+      ---
+      duration_ms: 4.506229
+      type: 'test'
+      ...
+    # Subtest: silme (iptali çağırır) 409 — fatura silinmedi, bağ ve kilitli defter aynı
+    ok 4 - silme (iptali çağırır) 409 — fatura silinmedi, bağ ve kilitli defter aynı
+      ---
+      duration_ms: 8.561166
+      type: 'test'
+      ...
+    # Subtest: Kapatılacak Fatura ile bağlanmış KİLİTLİ alınan evrak: iptal 409 (evrakın bağı kalır)
+    ok 5 - Kapatılacak Fatura ile bağlanmış KİLİTLİ alınan evrak: iptal 409 (evrakın bağı kalır)
+      ---
+      duration_ms: 2.19699
+      type: 'test'
+      ...
+    # Subtest: kilit DIŞINDAKİ tahsilat bağlıysa iptal serbest (200)
+    ok 6 - kilit DIŞINDAKİ tahsilat bağlıysa iptal serbest (200)
+      ---
+      duration_ms: 16.455604
+      type: 'test'
+      ...
+    # Subtest: kilit kaldırılınca iptal serbest; yeniden kilitleme çalışır (yönetici yolu)
+    ok 7 - kilit kaldırılınca iptal serbest; yeniden kilitleme çalışır (yönetici yolu)
+      ---
+      duration_ms: 177.032896
+      type: 'test'
+      ...
+    1..7
+ok 5 - S160 = A — kilitli dönemdeki tahsilatın fatura bağını düşüren iptal / silme 409; kilitli defter değişmez
+  ---
+  duration_ms: 1138.963324
+  type: 'suite'
+  ...
+# Subtest: S160 = A — silinmiş evrakın kilitli bağı iptali engellemez
+    # Subtest: silinmiş evrak (Kapatılacak Fatura, kilitli tarih) → iptal 200, fatura iptal edildi
+    ok 1 - silinmiş evrak (Kapatılacak Fatura, kilitli tarih) → iptal 200, fatura iptal edildi
+      ---
+      duration_ms: 264.630371
+      type: 'test'
+      ...
+    1..1
+ok 6 - S160 = A — silinmiş evrakın kilitli bağı iptali engellemez
+  ---
+  duration_ms: 565.024842
+  type: 'suite'
+  ...
+1..6
+# tests 26
+# suites 6
+# pass 26
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 12047.695876
+
+[kanit] c5a2e-yeni-Europe-Istanbul: GEÇTİ · çıkış 0 · 26/26 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit d2a37e3 +1 izlenmeyen · linux 6.18.44-fc-v470 x64 · Node v22.23.4

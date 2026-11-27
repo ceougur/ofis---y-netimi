@@ -1,0 +1,6 @@
+✗ işlem 2343 taksit-tahsil:
+  Cari Aynı Ad Müşteri T7 (2): açık kalemlerin toplamı 81238,22 ≠ bakiye (model) 79481,67 — kalemler toplamı = cari bakiyesi
+Tohum 7: işlem 2343; uyuşmazlık 1; 647 sn
+işlem 2343 (taksit-tahsil, 2026-09-20) 
+  Cari Aynı Ad Müşteri T7 (2): açık kalemlerin toplamı 81238,22 ≠ bakiye (model) 79481,67 — kalemler toplamı = cari bakiyesi
+DÖKÜM Aynı Ad Müşteri T7 2 kimlik account-974f1fc7-7d8c-45c9-9fbc-5232af3ea1d7 bakiye 79481.67 sigmaÖnbellek 8123822 sigmaTaze 8123822 geçiş {"count":1,"stable":true}

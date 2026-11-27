@@ -1,0 +1,32 @@
+{
+  "ad": "c3t3a-h2-tek-3",
+  "komut": "node --test --test-concurrency=1 test/banka-210-rapor-is-parcacigi-kapanis.test.mjs",
+  "commit": "218083460a0b2ddc530f51122f56cbed6649d6a1",
+  "dal": "c3t3-birlesim",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T13:03:28.309Z",
+  "sure_sn": 8.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 5,
+    "gecen": 5,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../c3t3a-kanit/2026-11-06/c3t3a-h2-tek-3.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t3-birlesim-ag",
+  "ham_cikti_sha256": "c3036e45748c9dff0e5491ae022dd723efb65a0918700158eb50ec21e4a6c61b",
+  "ham_cikti_bayt": 4178
+}

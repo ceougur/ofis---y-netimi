@@ -1,0 +1,7 @@
+nesne: HTTP 400 voucher-text; saklanan açıklama = null
+dizi: HTTP 400 voucher-text; saklanan açıklama = null
+mantıksal: HTTP 400 request-id-invalid; saklanan açıklama = null
+metin: HTTP 200 ; saklanan açıklama = "Düzeltme"
+iç API description: RED 400 voucher-text
+iç API source: RED 400 voucher-text
+iç API note: RED 400 voucher-text

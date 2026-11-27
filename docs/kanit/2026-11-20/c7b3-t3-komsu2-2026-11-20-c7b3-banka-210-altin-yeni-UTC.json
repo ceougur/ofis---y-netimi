@@ -1,0 +1,32 @@
+{
+  "ad": "c7b3-banka-210-altin-yeni-UTC",
+  "komut": "node --test --test-reporter=tap test/banka-210-altin.test.mjs",
+  "commit": "2dcc050b529e807e3a7f7d07b09d262ff02b753d",
+  "dal": "worktree-agent-a16e6df818485d98e",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-20T07:07:36.637Z",
+  "sure_sn": 23.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 6,
+    "gecen": 6,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b3-d3/t3-komsu2/2026-11-20/c7b3-banka-210-altin-yeni-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a16e6df818485d98e",
+  "ham_cikti_sha256": "fe3e7d3d7cd6b6d650c31d0aedfe67c9e3fdd5b97253547372d7213d9e39702a",
+  "ham_cikti_bayt": 3366
+}

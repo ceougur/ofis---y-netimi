@@ -109,6 +109,10 @@
     "bank.account.deleted": "Banka hesabını sildi",
     "bank.account.opening.entered": "Banka açılış bakiyesini girdi",
     "bank.account.opening.corrected": "Banka açılış bakiyesini düzeltti",
+    // 2.5.0 Ç5-A: Açılış Olabilir Kayıtlar kararları (routes/opening-review.mjs).
+    "account.opening.confirmed": "Açılış Olabilir kaydını açılış saydı",
+    "account.opening.rejected": "Açılış Olabilir kaydını açılış saymadı",
+    "account.opening.reopened": "Açılış Olabilir kaydının kararını geri aldı",
     "bank.legacy.assigned": "Eski banka hareketini hesaba atadı",
     "bank.legacy.reclassed": "Hesabı atanmamış POS / kart bakiyesini aktardı",
     "bank.setup": "Banka Kurulum Sihirbazı'nı çalıştırdı",
@@ -133,6 +137,10 @@
     "message.created": "Mesaj gönderdi",
     "settings.client.updated": "Ofis ayarını değiştirdi",
     "settings.office.updated": "Ofis adını değiştirdi",
+    // 2.5.0 Ç4 dar kontrol DÜŞÜK: Fatura Ayarları'nın yazdığı üç tür (server/routes/invoices.mjs) ham anahtar görünüyordu; üçü "Ayarlar" süzgecinde de (admin.mjs AUDIT_GROUPS).
+    "invoice.settings.updated": "Fatura Ayarları'nı değiştirdi",
+    "office.report_header.updated": "Tabela Adı / Rapor ve Ekstre Başlığı'nı değiştirdi",
+    "accounting.book_type.updated": "Defter Türü'nü değiştirdi",
     "system.backup_created": "Yedek aldı",
     "system.backup_downloaded": "Yedek indirdi",
     "system.backup_restored": "Yedekten geri yükledi",
@@ -912,6 +920,8 @@
     if (payload.title) parts.push(payload.title);
     if (payload.recipient) parts.push(`Alıcı: ${payload.recipient}`);
     if (payload.key && event.type.startsWith("settings.")) parts.push(payload.key);
+    // Ekran adları sunucudan (admin.mjs → lib/book-type.mjs bookTypeLabel; tek yardımcı).
+    if (event.type === "accounting.book_type.updated") parts.push(`${payload.fromLabel || payload.from || ""} → ${payload.toLabel || payload.to || ""}`);
     if (payload.ip) parts.push(`IP ${payload.ip}`);
     if (event.type.startsWith("staff.") && Array.isArray(payload.fields) && payload.fields.length) parts.push(`Alanlar: ${payload.fields.join(", ")}`);
     return parts.join(" · ");
@@ -1032,52 +1042,155 @@
 
   // ---------- Dönem kilidi ve mutabakat ----------
   const dayText = iso => (iso ? `${iso.slice(8, 10)}.${iso.slice(5, 7)}.${iso.slice(0, 4)}` : "");
+  // 2.5.0 Ç3 tur 2: kilit ucu kilitli dönemin defterinin UZUN dondurulmasını beklemez (en çok 5 sn; büyük şirkette dakikalar); dondurma sunucuda arkada sürer. Kart durumu
+  // GET /api/workspace/ledger/lock → freeze ile yazar (pending: bekleyen koşu, active: süren iş) ve sürerken ARKA PLAN isteğiyle yoklar; bitince durur.
+  const FREEZE_FIRST_POLL_MS = 500;
+  const FREEZE_POLL_MS = 1500;
+  const FREEZE_POLL_FAILURES = 5;
+  let freezeTimer = null;
+  let freezeLong = false; // bir yoklama dondurmayı sürerken gördü (kısa dondurmada "donduruldu" bildirimi çıkmaz)
+  let freezeFailures = 0;
+  // Ç3 tur 3: dondurma ya da önceki dönemin defter temizliği (kilit geri çekilince; büyük şirkette dakikalar) sürerken Kilitle PASİF, nedeni düğmenin altında görünür yazı
+  // (kalıcı ürün kararı: pasif düğmenin nedeni görünür). Sunucu da korur: aynı güne yinelenen kilit süren dondurmanın satırlarına dokunmaz, temizlik sürerken yeni kilit 409.
+  let lockBusy = "";
+  let lockSaving = false;
+  const freezing = freeze => Boolean(freeze?.pending && freeze.active);
+  const cleaning = freeze => Boolean(freeze?.cleanup?.running) && !freezing(freeze);
+  function freezeText(freeze) {
+    if (!freeze?.pending) return "";
+    if (freeze.active) return `Kilitli dönemin defteri donduruluyor${freeze.phase === "yazım" && freeze.done ? ` (${Number(freeze.done).toLocaleString("tr-TR")} satır yazıldı)` : ""}… Bu sırada çalışmaya devam edebilirsiniz.`;
+    if (freeze.error && freeze.run === freeze.pending.no) return `Kilitli dönemin defteri dondurulamadı (${freeze.error}). Kilit yerinde; kilidi yeniden kaydedin ya da programı yeniden açın, dondurma yeniden denenir.`;
+    return "Kilitli dönemin defteri dondurulmayı bekliyor; kilidi yeniden kaydedin ya da programı yeniden açın.";
+  }
+  const cleanupText = freeze => (cleaning(freeze) ? `Önceki dönemin defter temizliği sürüyor${freeze.cleanup.removed ? ` (${Number(freeze.cleanup.removed).toLocaleString("tr-TR")} satır silindi)` : ""}…` : "");
+  const busyReason = freeze => (freezing(freeze) ? "Kilitle, kilitli dönemin defteri dondurulurken kullanılamaz; dondurma bitince açılır." : cleaning(freeze) ? "Kilitle, önceki dönemin defter temizliği sürerken kullanılamaz; temizlik bitince açılır." : "");
+  function syncLockButton() {
+    const save = $("#adm-period-save");
+    save.disabled = lockSaving || Boolean(lockBusy);
+    save.title = lockBusy;
+    let note = $("#adm-period-busy");
+    if (!note && lockBusy) {
+      note = document.createElement("p");
+      note.className = "adm-muted";
+      note.id = "adm-period-busy";
+      $("#adm-period-status").before(note);
+    }
+    if (note) {
+      note.textContent = lockBusy;
+      note.hidden = !lockBusy;
+    }
+  }
+  function renderLock({ lockedUntil, freeze }) {
+    const status = $("#adm-period-status");
+    const extra = lockedUntil ? freezeText(freeze) : "";
+    const base = lockedUntil ? `${dayText(lockedUntil)} ve öncesi kilitli.` : "Kilitli dönem yok; tüm geçmiş tarihlere hareket girilebilir.";
+    status.textContent = [base, extra, cleanupText(freeze)].filter(Boolean).join(" ");
+    status.classList.toggle("adm-warn-text", Boolean(extra) && !freeze?.active);
+    lockBusy = busyReason(freeze);
+    syncLockButton();
+  }
+  // view: GET /api/workspace/ledger/lock. "Donduruldu" bildirimi yalnız kilit varken ve kapsam = kilit iken (Ç3 tur 3 DÜŞÜK-1: kilit kaldırılınca da çıkıyordu).
+  function watchFreeze(view, delay = FREEZE_FIRST_POLL_MS) {
+    const freeze = view?.freeze;
+    clearTimeout(freezeTimer);
+    freezeTimer = null;
+    if (!(freezing(freeze) || cleaning(freeze))) {
+      if (freezeLong) {
+        freezeLong = false;
+        if (!freeze?.pending && view?.lockedUntil && view.frozenThrough === view.lockedUntil) HOF.toast("Kilitli dönemin defteri donduruldu.", { type: "success" });
+      }
+      return;
+    }
+    freezeTimer = setTimeout(async () => {
+      freezeTimer = null;
+      try {
+        const next = await HOF.api("/api/workspace/ledger/lock", { background: true });
+        freezeFailures = 0;
+        if (freezing(next.freeze)) freezeLong = true;
+        renderLock(next);
+        watchFreeze(next, FREEZE_POLL_MS);
+      } catch {
+        // Yoklama düştü (ağ, oturum): birkaç tur yeniden denenir, sonra durur (kart yeniden açılınca sürer).
+        freezeFailures += 1;
+        if (freezeFailures < FREEZE_POLL_FAILURES) watchFreeze(view, FREEZE_POLL_MS);
+      }
+    }, delay);
+  }
   async function loadPeriod() {
     const status = $("#adm-period-status");
-    const health = $("#adm-integrity-status");
     try {
-      const { lockedUntil, today } = await HOF.api("/api/workspace/ledger/lock");
+      const view = await HOF.api("/api/workspace/ledger/lock");
       const input = $("#adm-period-date");
-      input.max = today;
-      if (document.activeElement !== input) input.value = lockedUntil || "";
-      status.textContent = lockedUntil ? `${dayText(lockedUntil)} ve öncesi kilitli.` : "Kilitli dönem yok; tüm geçmiş tarihlere hareket girilebilir.";
-      $("#adm-period-clear").hidden = !lockedUntil;
+      input.max = view.today;
+      if (document.activeElement !== input) input.value = view.lockedUntil || "";
+      renderLock(view);
+      $("#adm-period-clear").hidden = !view.lockedUntil;
+      freezeFailures = 0;
+      watchFreeze(view);
     } catch (error) {
       status.textContent = error.message;
     }
+    await loadIntegrity();
+  }
+  async function loadIntegrity() {
+    const health = $("#adm-integrity-status");
     try {
       const result = await HOF.api("/api/workspace/ledger/integrity");
       const rolled = (result.log || []).filter(row => row.action === "rolled-back").length;
       // v2.0.26 (2. gözden geçirme İ8): yalnız eski sürümden kalan satır varsa (yeni işlem engellenmez) kırmızı hata değil sarı uyarı
       // ve ne yapılacağı (sunucunun hint'i, ör. çek/senette Düzenle ile alış tarihini gerçek güne çekmek).
       const legacyOnly = item => item.legacy && item.legacy >= item.count;
-      const onlyLegacy = !result.ok && result.failures.every(legacyOnly);
-      health.textContent = result.ok
-        ? `Mutabakat: ${result.checks.length} denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı.${rolled ? ` Son kayıtlarda ${rolled} işlem sapma yaratacağı için geri alındı (Raporlar › Mutabakat Günlüğü).` : ""}`
+      // 2.5.0 Ç5-K tur 2 (dar kontrol ORTA-1; S20 = A "Mutabakat Testi uyarı verir"): sunucunun "uyarı" işaretli denetimi (notice; Kasa Açılışından Önce Tarihli Hareket)
+      // sapma değildir — sarı, ne yapılacağı (hint) yazılı; başka sapma yoksa "N denetim tamam" bilgisi aynen kalır (uyarı ayrı cümle). Gerçek sapma varsa yine kırmızı.
+      const notices = (result.failures || []).filter(item => item.notice);
+      // 2.5.0 Ç5-A tur 2 İş 0 (EY-1; D 12.11 15:57 (4)): "Kural Değişikliği Farkı" (ledger:rule-diff) tasarım gereği UYARIDIR (tur 1d: sapma kümesinin dışında) — sapma
+      // cümlesine ve kırmızıya girmez; ne yapılacağını söyleyen ayrı cümle (Kural Farkı Düzeltme). Gerçek sapma ve eski sürümden kalan satır eskisi gibi, ayrı görünür.
+      const ruleDiffs = (result.failures || []).filter(item => !item.notice && item.code === "ledger:rule-diff");
+      const failures = (result.failures || []).filter(item => !item.notice && item.code !== "ledger:rule-diff");
+      const clean = !failures.length;
+      const onlyLegacy = !clean && failures.every(legacyOnly);
+      const noticeText = notices.length ? ` Uyarı (yeni işlemleri engellemez): ${notices.map(item => `${item.name} — ${item.count} hareket. ${item.hint || ""}`).join(" ")}`.replace(/\s+/g, " ").trimEnd() : "";
+      // Ç5-A tur 2b İş 2: Kural Farkı Düzeltme Fişi farkı kapattıysa öğe ok (Mutabakat Testi uyarısız) ve adı "… — Düzeltildi (Fiş …)" — bilgi cümlesi; fiş fazla kaldıysa
+      // (kilit kaldırıldı / yeniden kilitlendi) ya da farkın bir kısmı kaldıysa sunucunun ipucu.
+      const corrected = (result.checks || []).filter(item => item.ok && item.code === "ledger:rule-diff" && item.corrected);
+      const ruleDiffText = ruleDiffs.map(item => (item.correction?.over
+        ? ` Uyarı (yeni işlemleri engellemez): ${item.hint || item.name}`
+        : ` Uyarı (yeni işlemleri engellemez): ${item.name} — ${item.count} madde${item.difference ? `, fark ${HOF.formatMoney(item.difference)}` : ""}. Kilitli dönemin raporları donmuş defterden okunur, değişmez; ${item.correction?.vouchers?.length ? `${item.correction.remainderMinor ? "kalan fark" : "alt defter hesabı farkı fişle düzeltilmez (Kilidi Aç → Yeniden Kilitle);"} ${item.correction.remainderMinor ? "Yönetim › Kural Farkı Düzeltme ile ilk açık güne alınır." : `düzeltme fişi: ${item.correction.vouchers.join(", ")}.`}` : "fark Yönetim › Kural Farkı Düzeltme ile ilk açık güne alınır."}`)).join("") + corrected.map(item => ` Bilgi: ${item.name}; kilitli dönemin farkı ilk açık güne alındı.`).join("");
+      health.textContent = (clean
+        ? `Mutabakat: ${result.checks.length - notices.length - ruleDiffs.length} denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı.${rolled ? ` Son kayıtlarda ${rolled} işlem sapma yaratacağı için geri alındı (Raporlar › Mutabakat Günlüğü).` : ""}`
         : onlyLegacy
-          ? `Mutabakat: ${result.failures.length} denetimde eski sürümden kalan satır var; yeni işlemler engellenmez (${result.failures.map(item => `${item.name}: ${item.legacy} satır`).join(", ")}). ${result.failures.map(item => item.hint || "").filter(Boolean).join(" ")} Raporlar › Defter Mutabakatı'nda ayrıntıyı görün.`.replace(/\s+/g, " ")
-          : `Mutabakat: ${result.failures.length} denetimde sapma var (${result.failures.map(item => (legacyOnly(item) ? `${item.name} — eski sürümden kalan ${item.legacy} satır; yeni işlemler engellenmez` : item.name)).join(", ")}). Raporlar › Defter Mutabakatı'nda ayrıntıyı görün.`;
-      health.classList.toggle("adm-error-text", !result.ok && !onlyLegacy);
-      health.classList.toggle("adm-warn-text", onlyLegacy);
-    } catch {
-      health.textContent = "";
+          ? `Mutabakat: ${failures.length} denetimde eski sürümden kalan satır var; yeni işlemler engellenmez (${failures.map(item => `${item.name}: ${item.legacy} satır`).join(", ")}). ${failures.map(item => item.hint || "").filter(Boolean).join(" ")} Raporlar › Defter Mutabakatı'nda ayrıntıyı görün.`.replace(/\s+/g, " ")
+          : `Mutabakat: ${failures.length} denetimde sapma var (${failures.map(item => (legacyOnly(item) ? `${item.name} — eski sürümden kalan ${item.legacy} satır; yeni işlemler engellenmez` : item.name)).join(", ")}). Raporlar › Defter Mutabakatı'nda ayrıntıyı görün.`) + ruleDiffText.replace(/\s+/g, " ").trimEnd() + noticeText;
+      health.classList.toggle("adm-error-text", !clean && !onlyLegacy);
+      health.classList.toggle("adm-warn-text", clean ? notices.length + ruleDiffs.length > 0 : onlyLegacy);
+    } catch (error) {
+      // Ç3 tur 3 (Ç3 küçük işler (c)): Mutabakat Testi çalışamazsa satır sessizce boşalmaz — neden görünür (ders 4: okunamayan boş değildir).
+      health.textContent = `Mutabakat Testi çalıştırılamadı: ${error?.message || String(error)}`;
+      health.classList.add("adm-error-text");
+      health.classList.remove("adm-warn-text");
     }
   }
   async function savePeriod(value) {
-    const save = $("#adm-period-save");
-    save.disabled = true;
+    lockSaving = true;
+    syncLockButton();
     try {
       const { lockedUntil } = await HOF.api("/api/admin/period-lock", { method: "PUT", body: { lockedUntil: value } });
       HOF.toast(lockedUntil ? `${dayText(lockedUntil)} ve öncesi kilitlendi.` : "Dönem kilidi kaldırıldı.", { type: "success" });
       await loadPeriod();
     } catch (error) {
       HOF.toastError(error);
+      // Temizlik sürüyor (409 ledger-cleanup-running): kart ilerlemeyi gösterir, Kilitle temizlik bitince açılır.
+      if (error?.data?.code === "ledger-cleanup-running") await loadPeriod();
     } finally {
-      save.disabled = false;
+      lockSaving = false;
+      syncLockButton();
     }
   }
+  // Ç5-A tur 2b İş 2: Kural Farkı Düzeltme penceresi (hof-kural-farki.js) fiş yazınca / ters kaydedince Mutabakat satırı yenilenir.
+  document.addEventListener("hof:rule-diff-changed", () => loadIntegrity());
   $("#adm-period").addEventListener("submit", event => {
     event.preventDefault();
+    if (lockBusy) return HOF.toast(lockBusy, { type: "error" });
     const value = $("#adm-period-date").value;
     if (!value) return HOF.toast("Kilitlenecek son günü seçin.", { type: "error" });
     savePeriod(value);
@@ -1614,7 +1727,7 @@
       eyebrow: "ŞİRKET",
       intro: "Önce zorunlu yedek alınır (Yedekler'den geri yüklenebilir). Lisans, kullanıcılar ve öbür şirketler etkilenmez. Dönem kilidi varsa o da kaldırılır; kapatılmış dönemin hareketleri de silinir, yeniden girdikten sonra kilidi yeniden koyun. Geri alınamaz; onay için şirket kodunu ve parolanızı yazın.",
       fields: [
-        { name: "mode", label: "Ne Silinsin", type: "select", value: "movements", options: [{ value: "movements", label: "Tüm Hareketleri Sil (cari/stok kartları, Kasa hesapları ve ayarlar kalır; bakiyeler sıfır)" }, { value: "all", label: "Tümünü Sıfırla (şirket ilk açıldığı gibi boş; ad/kod, unvan/VKN/logo, fatura serisi kalır)" }] },
+        { name: "mode", label: "Ne Silinsin", type: "select", value: "movements", options: [{ value: "movements", label: "Tüm Hareketleri Sil (cari/stok kartları, Kasa hesapları ve ayarlar kalır; bakiyeler sıfır)" }, { value: "all", label: "Tümünü Sıfırla (şirket ilk açıldığı gibi boş; ad/kod, unvan/VKN/logo, Tabela Adı, Defter Türü ve fatura serisi kalır)" }] },
         // 2.4.4 (madde 30c G6): kutu yalnız tahsilat makbuzu sayacını (plans.receiptSeq, app.mjs) siler; fatura/fiş serileri kutudan bağımsız baştan başlar
         // (faturalar ve invoice.numberFloor silinir) — ad buna göre, fatura numaralarının durumu açıklamada.
         // 31f U11: kararın tek cümlesi kutunun ALTINDA (önceden giriş paragrafındaydı).
@@ -1771,6 +1884,8 @@
     // Lisans etkinleştirilmemiş veya salt okunurken yönetici önce Lisans sekmesini görür.
     const needsLicense = me.license && !me.license.writable && visible.includes("license");
     selectTab(visible.includes(requested) ? requested : needsLicense ? "license" : visible[0]);
+    // 2.5.0 Ç5-A tur 2c İş 3: zildeki "Açılış Olabilir Kayıtlar" bildirimi (#system/acilis-olabilir) pencereyi açar (client/assets/hof-acilis-olabilir.js).
+    if (hashTab === "system" && hashIntent === "acilis-olabilir" && visible.includes("system")) document.dispatchEvent(new CustomEvent("hof:opening-review-open"));
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot, { once: true });
   else boot();

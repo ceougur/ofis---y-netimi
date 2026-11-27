@@ -1,0 +1,38 @@
+{
+  "ad": "webs7-komsu-utc",
+  "komut": "node --test test/acilis-isareti-246.test.mjs test/banka-210-ariza.test.mjs test/banka-210-gg-geri-yukle.test.mjs test/banka-210-rapor-is-parcacigi-kapanis.test.mjs test/cari-vade-245.test.mjs test/cek-istek-kimligi-247.test.mjs test/createapp-acilis-geri-alma-249.test.mjs test/defter-turu-c4.test.mjs test/donmus-defter-yasam-250.test.mjs test/drive-kaldirildi.test.mjs test/ebelge-244-gonderim-izi.test.mjs test/edoc-kullanim-247.test.mjs test/edoc-kullanim-yedek-247.test.mjs test/fis-defteri-koruma-250.test.mjs test/fis-defteri-yasam-250.test.mjs test/geri-yukleme-uyari-244.test.mjs test/goc-244-numara-tabani.test.mjs test/guvenilirlik-221-ariza.test.mjs test/guvenilirlik-221-bulgular.test.mjs test/guvenilirlik-221-tatbikat.test.mjs test/inceleme-221.test.mjs test/isgecmisi-230-geri-yukleme-yetki.test.mjs test/kapanis-zamanlayici-248.test.mjs test/maliyet-cekirdek-246.test.mjs test/mobil-eslesme-247.test.mjs test/mobil-ozet-247.test.mjs test/personel-ozluk-244.test.mjs test/sema-kapisi-bs7.test.mjs test/sheets-yedek.test.mjs test/sirket-canli-olay-244.test.mjs test/sirket-yedek-klasor-210.test.mjs test/sirket-yedeksiz-sil-249.test.mjs test/update-flow.test.mjs test/ux18-cek-fatura-244.test.mjs test/whatsapp-b3-goc-249.test.mjs test/whatsapp-dk7-belirsiz-ileti-248.test.mjs test/whatsapp-dk8-bekletti-geri-yukleme-248.test.mjs test/whatsapp-dk8-g-ek-248.test.mjs test/whatsapp-s1-satir-denemeyi-bilmiyor-248.test.mjs test/whatsapp-t-durum-karar-tablosu-248.test.mjs test/whatsapp-t2-4-248.test.mjs test/whatsapp-t2dk-orta1-248.test.mjs test/whatsapp-w-kok-ttl-249.test.mjs test/whatsapp-w2-kaldir-250.test.mjs test/whatsapp-w2-veri-248.test.mjs test/whatsapp-we-webhook-bilgisi-250.test.mjs test/whatsapp-wt2-kod0-250.test.mjs test/whatsapp-wy-imzasiz-250.test.mjs test/yedek-220-inceleme.test.mjs test/yedek-220.test.mjs test/yedek-denetim-221.test.mjs",
+  "commit": "2c59e7e916d40d0e5c705e7959a27e68db2ee1a3",
+  "dal": "worktree-agent-a790a293738c6ae40",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T08:50:17.835Z",
+  "sure_sn": 483.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 611,
+    "gecen": 610,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "rapor iş parçacığı (doğrudan): kapanış nedeni, zaman aşımında yuva ve tanıtıcı, beklenmeyen hata › H2: zaman aşımında istek hemen 503 alır ama sorgusu süren iş parçacığı yuvayı tutar (en çok max); close() onu bekler, dosya serbest",
+      "konum": "test/banka-210-rapor-is-parcacigi-kapanis.test.mjs:75:3",
+      "hata": "sorgusu süren iş parçacığı yuvada: 0 (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/webs7-kanit/2026-11-06/webs7-komsu-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a790a293738c6ae40",
+  "ham_cikti_sha256": "8e03a6ccb669bf65a2289a23a5bc3050033a6b9656346422e840a8caba6ec280",
+  "ham_cikti_bayt": 270776
+}

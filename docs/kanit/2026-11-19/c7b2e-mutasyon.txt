@@ -1,0 +1,88 @@
+# Ç7b tur 2e — karşı mutantlar (python3 -I betik/mutant.py <git worktree kopyası> <çıktı>; her mutant: değiştirilen satır DEĞERLE, her test 2 koşu = Europe/Istanbul + UTC; dosya her mutanttan sonra geri yazıldı)
+M1-ozet-belge-ayi {"c7b-kdv-ozeti-donem-250.test.mjs Europe/Istanbul": {"exit": 1, "tests": 4, "pass": 0, "fail": 4, "cancelled": 0, "skipped": 0, "ilk": "Aralık (kâhin)"}, "c7b-kdv-ozeti-donem-250.test.mjs UTC": {"exit": 1, "tests": 4, "pass": 0, "fail": 4, "cancelled": 0, "skipped": 0, "ilk": "Aralık (kâhin)"}}
+M1b-ozet-basliklar-belge-tarihi {"c7b-kdv-ozeti-donem-250.test.mjs Europe/Istanbul": {"exit": 1, "tests": 4, "pass": 0, "fail": 4, "cancelled": 0, "skipped": 0, "ilk": "Aralık: özetin 191'i = TOPLAM Alış − TOPLAM Alıştan İade"}, "c7b-kdv-ozeti-donem-250.test.mjs UTC": {"exit": 1, "tests": 4, "pass": 0, "fail": 4, "cancelled": 0, "skipped": 0, "ilk": "Aralık: özetin 191'i = TOPLAM Alış − TOPLAM Alıştan İade"}}
+M1c-suzgec-belge-tarihi {"c7b-kdv-ozeti-donem-250.test.mjs Europe/Istanbul": {"exit": 1, "tests": 4, "pass": 0, "fail": 4, "cancelled": 0, "skipped": 0, "ilk": "Aralık: özetin 191'i = TOPLAM Alış − TOPLAM Alıştan İade"}, "c7b-kdv-ozeti-donem-250.test.mjs UTC": {"exit": 1, "tests": 4, "pass": 0, "fail": 4, "cancelled": 0, "skipped": 0, "ilk": "Aralık: özetin 191'i = TOPLAM Alış − TOPLAM Alıştan İade"}}
+M1d-ay-sonu-gunu {"c7b-kdv-ozeti-donem-250.test.mjs Europe/Istanbul": {"exit": 1, "tests": 4, "pass": 2, "fail": 2, "cancelled": 0, "skipped": 0, "ilk": "Son 30 Gün (11.01–10.02): P2'nin KDV günü 01.01 dışarıda"}, "c7b-kdv-ozeti-donem-250.test.mjs UTC": {"exit": 1, "tests": 4, "pass": 2, "fail": 2, "cancelled": 0, "skipped": 0, "ilk": "Son 30 Gün (11.01–10.02): P2'nin KDV günü 01.01 dışarıda"}}
+M2-kilit-izinde-donem-yok {"defter-kaynak-iz-250.test.mjs Europe/Istanbul": {"exit": 1, "tests": 2, "pass": 1, "fail": 1, "cancelled": 0, "skipped": 0, "ilk": "kilit izinde OLMAYAN ve istisna listesinde de olmayan türetme sütunları (LOCK_SQL'e ekleyin ya da gerekçeyle istisnaya yazın): invoices.vat_period"}, "defter-kaynak-iz-250.test.mjs UTC": {"exit": 1, "tests": 2, "pass": 1, "fail": 1, "cancelled": 0, "skipped": 0, "ilk": "kilit izinde OLMAYAN ve istisna listesinde de olmayan türetme sütunları (LOCK_SQL'e ekleyin ya da gerekçeyle istisnaya yazın): invoices.vat_period"}, "c7b-goc52-kilit-izi-250.test.mjs Europe/Istanbul": {"exit": 1, "tests": 3, "pass": 2, "fail": 1, "cancelled": 0, "skipped": 0, "ilk": "kilitli faturanın KDV İndirim Dönemi: güncel kilit izi değişmeli'"}, "c7b-goc52-kilit-izi-250.test.mjs UTC": {"exit": 1, "tests": 3, "pass": 2, "fail": 1, "cancelled": 0, "skipped": 0, "ilk": "kilitli faturanın KDV İndirim Dönemi: güncel kilit izi değişmeli'"}}
+M2b-ek-surume-bagli-degil {"c7b-goc52-kilit-izi-250.test.mjs Europe/Istanbul": {"exit": 1, "tests": 3, "pass": 2, "fail": 1, "cancelled": 0, "skipped": 0, "ilk": "kilitli faturanın KDV İndirim Dönemi: 2.5.1 tanımının izi değişmemeli"}, "c7b-goc52-kilit-izi-250.test.mjs UTC": {"exit": 1, "tests": 3, "pass": 2, "fail": 1, "cancelled": 0, "skipped": 0, "ilk": "kilitli faturanın KDV İndirim Dönemi: 2.5.1 tanımının izi değişmemeli"}}
+M3-sifirla-mahsubu-silmez {"c7b-sifirla-kdv-mahsup-250.test.mjs Europe/Istanbul": {"exit": 1, "tests": 2, "pass": 0, "fail": 2, "cancelled": 0, "skipped": 0, "ilk": "movements: faturalar ve KDV mahsupları silindi"}, "c7b-sifirla-kdv-mahsup-250.test.mjs UTC": {"exit": 1, "tests": 2, "pass": 0, "fail": 2, "cancelled": 0, "skipped": 0, "ilk": "movements: faturalar ve KDV mahsupları silindi"}}
+M3b-yalniz-tumunu-sifirla {"c7b-sifirla-kdv-mahsup-250.test.mjs Europe/Istanbul": {"exit": 1, "tests": 2, "pass": 1, "fail": 1, "cancelled": 0, "skipped": 0, "ilk": "movements: faturalar ve KDV mahsupları silindi"}, "c7b-sifirla-kdv-mahsup-250.test.mjs UTC": {"exit": 1, "tests": 2, "pass": 1, "fail": 1, "cancelled": 0, "skipped": 0, "ilk": "movements: faturalar ve KDV mahsupları silindi"}}
+M4-b8-iade-sizar {"acilis-onarimi-hiz-250.test.mjs Europe/Istanbul": {"exit": 0, "tests": 3, "pass": 3, "fail": 0, "cancelled": 0, "skipped": 0, "ilk": ""}, "acilis-onarimi-hiz-250.test.mjs UTC": {"exit": 0, "tests": 3, "pass": 3, "fail": 0, "cancelled": 0, "skipped": 0, "ilk": ""}}
+M4b-b8-tahsilat-sizar {"acilis-onarimi-hiz-250.test.mjs Europe/Istanbul": {"exit": 0, "tests": 3, "pass": 3, "fail": 0, "cancelled": 0, "skipped": 0, "ilk": ""}, "acilis-onarimi-hiz-250.test.mjs UTC": {"exit": 0, "tests": 3, "pass": 3, "fail": 0, "cancelled": 0, "skipped": 0, "ilk": ""}}
+YAKALANDI {"M1-ozet-belge-ayi": true, "M1b-ozet-basliklar-belge-tarihi": true, "M1c-suzgec-belge-tarihi": true, "M1d-ay-sonu-gunu": true, "M2-kilit-izinde-donem-yok": true, "M2b-ek-surume-bagli-degil": true, "M3-sifirla-mahsubu-silmez": true, "M3b-yalniz-tumunu-sifirla": true, "M4-b8-iade-sizar": false, "M4b-b8-tahsilat-sizar": false}
+## M4 / M4b B-8'in kendi testinde (c7b-gecis-gunu-250; aynı mutant kopyası)
+M4-b8-iade-sizar c7b-gecis-gunu-250 Europe/Istanbul exit 1 {'tests': '2', 'pass': '0', 'fail': '2'} ilk: geçiş gününde / öncesinde iade KDV'si eski yönde
+M4-b8-iade-sizar c7b-gecis-gunu-250 UTC exit 1 {'tests': '2', 'pass': '0', 'fail': '2'} ilk: geçiş gününde / öncesinde iade KDV'si eski yönde
+M4b-b8-tahsilat-sizar c7b-gecis-gunu-250 Europe/Istanbul exit 1 {'tests': '2', 'pass': '1', 'fail': '1'} ilk: KG-3: geçiş gününde ve öncesinde 602, sonraki gün 336.90
+M4b-b8-tahsilat-sizar c7b-gecis-gunu-250 UTC exit 1 {'tests': '2', 'pass': '1', 'fail': '1'} ilk: KG-3: geçiş gününde ve öncesinde 602, sonraki gün 336.90
+## betik
+# Ç7b tur 2e — karşı mutantlar (DEĞERLE; her mutant 2 koşu: Europe/Istanbul + UTC). Kullanım: python3 -I mutant.py <mutant kopyası> <çıktı klasörü>
+import json, os, re, subprocess, sys, time
+
+ROOT, OUT = sys.argv[1], sys.argv[2]
+os.makedirs(OUT, exist_ok=True)
+
+MUTANTS = [
+    ("M1-ozet-belge-ayi", "server/routes/report-center.mjs",
+     "? \"(CASE WHEN i.kind = 'purchase' AND i.vat_period <> '' AND i.vat_period <> substr(i.issue_date, 1, 7) THEN i.vat_period || '-01' ELSE i.issue_date END)\"",
+     "? \"i.issue_date\"", ["test/c7b-kdv-ozeti-donem-250.test.mjs"]),
+    ("M1b-ozet-basliklar-belge-tarihi", "server/routes/report-center.mjs",
+     "FROM invoices i WHERE i.status = 'issued' AND (? = '' OR ${vatDay} >= ?) AND (? = '' OR ${vatDay} <= ?)`",
+     "FROM invoices i WHERE i.status = 'issued' AND (? = '' OR i.issue_date >= ?) AND (? = '' OR i.issue_date <= ?)`", ["test/c7b-kdv-ozeti-donem-250.test.mjs"]),
+    ("M1c-suzgec-belge-tarihi", "server/routes/report-center.mjs",
+     "WHERE (? = '' OR ${vatDay} >= ?) AND (? = '' OR ${vatDay} <= ?) GROUP BY month",
+     "WHERE (? = '' OR i.issue_date >= ?) AND (? = '' OR i.issue_date <= ?) GROUP BY month", ["test/c7b-kdv-ozeti-donem-250.test.mjs"]),
+    ("M1d-ay-sonu-gunu", "server/routes/report-center.mjs",
+     "THEN i.vat_period || '-01' ELSE",
+     "THEN i.vat_period || '-28' ELSE", ["test/c7b-kdv-ozeti-donem-250.test.mjs"]),
+    ("M2-kilit-izinde-donem-yok", "server/lib/integrity.mjs",
+     "  invoices_vat_period_lock: { requires: [\"invoices.vat_period\"], since: \"2.5.2\", sql: \"SELECT id, vat_period FROM invoices WHERE status <> 'draft' AND vat_period <> '' AND issue_date <= ?1 ORDER BY id\" },\n",
+     "", ["test/defter-kaynak-iz-250.test.mjs", "test/c7b-goc52-kilit-izi-250.test.mjs"]),
+    ("M2b-ek-surume-bagli-degil", "server/lib/integrity.mjs",
+     "invoices_vat_period_lock: { requires: [\"invoices.vat_period\"], since: \"2.5.2\",",
+     "invoices_vat_period_lock: { requires: [\"invoices.vat_period\"], since: \"2.5.0\",", ["test/c7b-goc52-kilit-izi-250.test.mjs"]),
+    ("M3-sifirla-mahsubu-silmez", "server/app.mjs",
+     "    \"doubtful_receivables\", \"doubtful_provisions\",\n",
+     "    \"doubtful_receivables\", \"doubtful_provisions\"];\n  const _MUTANT_ = [\n", ["test/c7b-sifirla-kdv-mahsup-250.test.mjs"]),
+    ("M3b-yalniz-tumunu-sifirla", "server/app.mjs",
+     "    \"vat_offsets\"];\n  const CARD_TABLES = [\"accounts\",",
+     "    ];\n  const CARD_TABLES = [\"vat_offsets\", \"accounts\",", ["test/c7b-sifirla-kdv-mahsup-250.test.mjs"]),
+    ("M4-b8-iade-sizar", "server/lib/ledger-rule-shift.mjs",
+     "export function oldReturnVat(shift, date) {\n  if (oldCollection(shift, date)) return true;",
+     "export function oldReturnVat(shift, date) {\n  return false;\n  if (oldCollection(shift, date)) return true;", ["test/acilis-onarimi-hiz-250.test.mjs"]),
+    ("M4b-b8-tahsilat-sizar", "server/lib/ledger-rule-shift.mjs",
+     "  const through = shift?.through || \"\";\n  return Boolean(through) && String(date || \"\") <= through;",
+     "  return false;", ["test/acilis-onarimi-hiz-250.test.mjs"]),
+]
+
+def run(test, tz, tag):
+    env = dict(os.environ, TZ=tz, HUKUK_LICENSE_URL="http://127.0.0.1:9")
+    path = os.path.join(OUT, f"{tag}-{tz.replace('/', '-')}.out")
+    with open(path, "w") as fh:
+        p = subprocess.run(["timeout", "-k", "5", "900", "node", "--test", test], cwd=ROOT, env=env, stdout=fh, stderr=subprocess.STDOUT)
+    text = open(path, encoding="utf-8", errors="replace").read()
+    nums = {k: int(v) for k, v in re.findall(r"^# (tests|pass|fail|cancelled|skipped) (\d+)", text, re.M)}
+    first = re.search(r"error: (?:\|-\n\s+)?'?(.{0,200})", text)
+    return {"exit": p.returncode, **nums, "ilk": first.group(1).strip() if first else ""}
+
+results = {}
+for name, rel, old, new, tests in MUTANTS:
+    file = os.path.join(ROOT, rel)
+    src = open(file, encoding="utf-8").read()
+    if src.count(old) != 1:
+        results[name] = {"hata": f"desen {src.count(old)} kez"}
+        continue
+    open(file, "w", encoding="utf-8").write(src.replace(old, new))
+    try:
+        results[name] = {}
+        for test in tests:
+            for tz in ("Europe/Istanbul", "UTC"):
+                tag = f"{name}-{os.path.basename(test).split('.')[0]}"
+                results[name][f"{os.path.basename(test)} {tz}"] = run(test, tz, tag)
+    finally:
+        open(file, "w", encoding="utf-8").write(src)
+    print(name, json.dumps(results[name], ensure_ascii=False), flush=True)
+json.dump(results, open(os.path.join(OUT, "ozet.json"), "w"), ensure_ascii=False, indent=1)
+# Hüküm: her mutant her koşuda kırmızı (exit ≠ 0, fail > 0).
+caught = {n: all(v.get("exit", 0) != 0 and v.get("fail", 0) > 0 for v in r.values()) if r and "hata" not in r else False for n, r in results.items()}
+print("YAKALANDI", json.dumps(caught, ensure_ascii=False))

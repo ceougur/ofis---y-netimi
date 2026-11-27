@@ -1,0 +1,32 @@
+{
+  "ad": "s231-kahin-cari-yeni-UTC",
+  "komut": "npm run test:kahin-cari",
+  "commit": "e32985e6291dee5016bc1a6d940524dd44d8d9f7",
+  "dal": "HEAD",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-21T03:53:03.378Z",
+  "sure_sn": 408,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 17648,
+    "gecen": 17648,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s231-a5ab/2026-11-21/s231-kahin-cari-yeni-UTC.log",
+  "klasor": "/dev/shm/s231-a5ab/yeni",
+  "ham_cikti_sha256": "e6d3d5aeced310c898c0990eda86480bfdb3495bab0c89f72afa702d24d3b797",
+  "ham_cikti_bayt": 72924
+}

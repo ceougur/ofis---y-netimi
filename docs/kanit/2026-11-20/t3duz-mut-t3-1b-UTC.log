@@ -1,0 +1,11 @@
+taban: 32 geçti / 0 kaldı (çıkış 0)
+M10 YAKALANDI — yeni tahsilatta yazım sonrası sınır denetimi atlanır (31 geçti / 1 kaldı; değer iletisi var; çökme yok) düşen: 
+M11 YAKALANDI — düzeltmede yazım sonrası sınır denetimi atlanır (31 geçti / 1 kaldı; değer iletisi var; çökme yok) düşen: 
+M12 YAKALANDI — kesitin aynı gün kuralı kalkar (ayırıcının işlediği alacak yerine kuyruğun anahtarı) (31 geçti / 1 kaldı; değer iletisi var; çökme yok) düşen: 
+M13 YAKALANDI — kart haritası (cari kümesi) silinmiş kartı da alır (31 geçti / 1 kaldı; değer iletisi var; çökme yok) düşen: 
+M14 YAKALANDI — kart haritası (cari kümesi) kart tahsilatlarını okumaz (31 geçti / 1 kaldı; değer iletisi var; çökme yok) düşen: 
+M15 YAKALANDI — S25 (b) yerine fazlası da şüpheliden (pay sınırı kalkar) (27 geçti / 5 kaldı; değer iletisi var; çökme yok) düşen: 
+M16 YAKALANDI — B1 gerilemesi: aynı gün alacak sırası yazım sırası yerine kimlik (anahtar) sırası (31 geçti / 1 kaldı; değer iletisi var; çökme yok) düşen: 
+M18 YAKALANDI — S212 gerilemesi: kesit satırı kuyruğa girmez (bağ hedefini kapatmaz, bağsız ödeme serbest kalmaz) (29 geçti / 3 kaldı; değer iletisi var; çökme yok) düşen: 
+M17 YAKALANDI — B1 gerilemesi (yalnız SQL yükleyicisi): alacak satırının yazım sırası okunmaz (31 geçti / 1 kaldı; değer iletisi var; çökme yok) düşen: 
+SONUÇ: 9 geçti, 0 kaldı (9 mutasyonun 9'i yakalandı)

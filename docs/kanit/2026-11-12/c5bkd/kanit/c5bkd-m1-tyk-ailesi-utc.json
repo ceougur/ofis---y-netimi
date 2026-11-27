@@ -1,0 +1,32 @@
+{
+  "ad": "c5bkd-m1-tyk-ailesi-utc",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/tyk-250.test.mjs test/tyk-api-250.test.mjs test/tyk-fark-v249-250.test.mjs test/tyk-goc-249-250.test.mjs test/tyk-kilit-taksitli-250.test.mjs test/tyk-onbellek-250.test.mjs test/tyk-son-250.test.mjs test/tyk-tur2a-250.test.mjs test/tyk-tur2b1-250.test.mjs test/tyk-tur2b2-250.test.mjs test/tyk-kapanis-250.test.mjs",
+  "commit": "0c9d10697b7c5a0289b2c48263b018ff8d195151",
+  "dal": "worktree-agent-a511c161b54069067",
+  "kirli": 11,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-12T18:41:59.725Z",
+  "sure_sn": 31.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 170,
+    "gecen": 170,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkd-kanit/2026-11-12/c5bkd-m1-tyk-ailesi-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a511c161b54069067",
+  "ham_cikti_sha256": "23fd1566d6fdc48394d096ff47788c690a16da29f55cfdb96f49d94db5106251",
+  "ham_cikti_bayt": 78290
+}

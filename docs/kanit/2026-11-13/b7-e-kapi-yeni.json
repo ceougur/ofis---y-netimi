@@ -1,0 +1,112 @@
+[
+ {
+  "deneme": "kontrol: dolu liste, dokunulmadı",
+  "gitStatusTemiz": true,
+  "kapiGecti": false,
+  "neden": [
+   "YAPIM AŞAMASI listesi boş değil: 1 kayıt (paketlere göre: Ç5-A 1) — cari kâhini ↔ program farkları kapanmadan "
+  ],
+  "not": ""
+ },
+ {
+  "deneme": "skip-worktree + çalışma ağacında boş liste",
+  "gitStatusTemiz": true,
+  "kapiGecti": false,
+  "neden": [
+   "YAPIM AŞAMASI listesi çalışma ağacında commit'tekinden FARKLI (commit'te 1, çalışma ağacında 0 kayıt) — değişi",
+   "YAPIM AŞAMASI listesi commit'te boş değil: 1 kayıt — cari kâhini ↔ program farkları kapanmadan yayın adayı olm"
+  ],
+  "not": ""
+ },
+ {
+  "deneme": "assume-unchanged + çalışma ağacında boş liste",
+  "gitStatusTemiz": true,
+  "kapiGecti": false,
+  "neden": [
+   "YAPIM AŞAMASI listesi çalışma ağacında commit'tekinden FARKLI (commit'te 1, çalışma ağacında 0 kayıt) — değişi",
+   "YAPIM AŞAMASI listesi commit'te boş değil: 1 kayıt — cari kâhini ↔ program farkları kapanmadan yayın adayı olm"
+  ],
+  "not": ""
+ },
+ {
+  "deneme": "dosyayı sil",
+  "gitStatusTemiz": false,
+  "kapiGecti": false,
+  "neden": [
+   "YAPIM AŞAMASI listesi okunamadı (YAPIM-ASAMASI.json: ENOENT) — okunamayan liste boş sayılmaz"
+  ],
+  "not": ""
+ },
+ {
+  "deneme": "git rm --cached + .gitignore + commit (listesiz commit), ağaçta boş liste",
+  "gitStatusTemiz": true,
+  "kapiGecti": false,
+  "neden": [
+   "YAPIM AŞAMASI listesi commit'ten okunamadı (git show HEAD:test/bagimsiz/cari/YAPIM-ASAMASI.json) — okunamayan "
+  ],
+  "not": ""
+ },
+ {
+  "deneme": "boş liste ağaçta, commit edilmedi",
+  "gitStatusTemiz": false,
+  "kapiGecti": false,
+  "neden": [
+   "YAPIM AŞAMASI listesi çalışma ağacında commit'tekinden FARKLI (commit'te 1, çalışma ağacında 0 kayıt) — değişi",
+   "YAPIM AŞAMASI listesi commit'te boş değil: 1 kayıt — cari kâhini ↔ program farkları kapanmadan yayın adayı olm"
+  ],
+  "not": ""
+ },
+ {
+  "deneme": "boş liste commit edildi (CI kapısı ayrıca gerekir)",
+  "gitStatusTemiz": true,
+  "kapiGecti": true,
+  "neden": [],
+  "not": ""
+ },
+ {
+  "deneme": "ayrık HEAD (dolu commit'te)",
+  "gitStatusTemiz": true,
+  "kapiGecti": false,
+  "neden": [
+   "YAPIM AŞAMASI listesi boş değil: 1 kayıt (paketlere göre: Ç5-A 1) — cari kâhini ↔ program farkları kapanmadan "
+  ],
+  "not": ""
+ },
+ {
+  "deneme": "başka dal: boş listeli dal checkout, HEAD = o dal",
+  "gitStatusTemiz": true,
+  "kapiGecti": true,
+  "neden": [],
+  "not": ""
+ },
+ {
+  "deneme": "git replace (HEAD'deki liste blob'u boş liste blob'uyla değiştirildi) + skip-worktree + ağaçta boş",
+  "gitStatusTemiz": true,
+  "kapiGecti": false,
+  "neden": [
+   "YAPIM AŞAMASI listesi çalışma ağacında commit'tekinden FARKLI (commit'te 1, çalışma ağacında 0 kayıt) — değişi",
+   "YAPIM AŞAMASI listesi commit'te boş değil: 1 kayıt — cari kâhini ↔ program farkları kapanmadan yayın adayı olm"
+  ],
+  "not": "blob d0a1bbb → 61f8e05"
+ },
+ {
+  "deneme": "git replace (yalnız) + ağaçta boş",
+  "gitStatusTemiz": false,
+  "kapiGecti": false,
+  "neden": [
+   "YAPIM AŞAMASI listesi çalışma ağacında commit'tekinden FARKLI (commit'te 1, çalışma ağacında 0 kayıt) — değişi",
+   "YAPIM AŞAMASI listesi commit'te boş değil: 1 kayıt — cari kâhini ↔ program farkları kapanmadan yayın adayı olm"
+  ],
+  "not": ""
+ },
+ {
+  "deneme": "ağaçta aynı içerik, farklı anahtar sırası (JSON eşit sayılmalı mı)",
+  "gitStatusTemiz": false,
+  "kapiGecti": false,
+  "neden": [
+   "YAPIM AŞAMASI listesi boş değil: 1 kayıt (paketlere göre: Ç5-A 1) — cari kâhini ↔ program farkları kapanmadan ",
+   "YAPIM AŞAMASI listesi çalışma ağacında commit'tekinden FARKLI (commit'te 1, çalışma ağacında 1 kayıt) — değişi"
+  ],
+  "not": ""
+ }
+]

@@ -1,0 +1,5 @@
+#!/bin/bash
+# Komşu testleri (ders 10; liste komsu2.txt — değişen dosyaları adıyla / API yoluyla anan + Ç5-A testleri) iki TZ. Çağrı: flock -s -n <olcum.lock> timeout -k 5 7000 bash komsu.sh <kök> <ad>
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+mapfile -t LIST < $S/c5a1f-is/komsu2.txt
+bash $S/c5a1f-is/kos.sh "$1" "$2" "${LIST[@]}"

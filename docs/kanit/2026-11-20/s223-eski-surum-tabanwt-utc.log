@@ -1,0 +1,143 @@
+3.69 5.47 5.55 4/142 11896
+TAP version 13
+# (node:11939) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: S223 / S228 — kabul D: v2.4.9'un verisinde Türkçe harf katlamalı eşleşme (sınıf listesi)
+    # Subtest: v2.4.9'da hata VAR (elle beklenen): büyük harfli cari Excel çift cari, taksit Excel çift cari + kart, çek bağlanmaz
+    ok 1 - v2.4.9'da hata VAR (elle beklenen): büyük harfli cari Excel çift cari, taksit Excel çift cari + kart, çek bağlanmaz
+      ---
+      duration_ms: 1.643386
+      type: 'test'
+      ...
+    # Subtest: C1–C3 cari Excel: tek aday büyük harf → var; v2.4.9'un çiftinde birebir yazım bugünkü carisi, iki adaylı yazım yeni cari; yok aday yeni cari
+    not ok 2 - C1–C3 cari Excel: tek aday büyük harf → var; v2.4.9'un çiftinde birebir yazım bugünkü carisi, iki adaylı yazım yeni cari; yok aday yeni cari
+      ---
+      duration_ms: 31.483375
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s223-k1/tabanwt/test/s223-eski-surum-sinif-250.test.mjs:101:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            'Bu cari zaten var',
+            'Bu cari zaten var',
+        -   'Bu cari zaten var'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'Bu cari zaten var'
+        1: 'Bu cari zaten var'
+        2: 'Bu cari zaten var'
+      actual:
+        0: 'Bu cari zaten var'
+        1: 'Bu cari zaten var'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s223-k1/tabanwt/test/s223-eski-surum-sinif-250.test.mjs:105:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: C4–C7 taksit Excel: tek aday büyük harf / boşluk → var olan cari; çift caride bugünkü bağ; iki adaylı yazım atlanır; yok aday yeni cari
+    not ok 3 - C4–C7 taksit Excel: tek aday büyük harf / boşluk → var olan cari; çift caride bugünkü bağ; iki adaylı yazım atlanır; yok aday yeni cari
+      ---
+      duration_ms: 44.8302
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s223-k1/tabanwt/test/s223-eski-surum-sinif-250.test.mjs:112:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            'Aynı adla açık kart var',
+        -   'Aynı adlı birden çok kişi var; telefonunu ekleyip yeniden yükleyin'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'Aynı adla açık kart var'
+        1: 'Aynı adlı birden çok kişi var; telefonunu ekleyip yeniden yükleyin'
+      actual:
+        0: 'Aynı adla açık kart var'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s223-k1/tabanwt/test/s223-eski-surum-sinif-250.test.mjs:116:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: C8–C10 çek / senet: tek aday büyük harf bağlanır; çift caride birebir yazım kendi carisine; iki adaylı ve tanınmayan ad carisiz
+    not ok 4 - C8–C10 çek / senet: tek aday büyük harf bağlanır; çift caride birebir yazım kendi carisine; iki adaylı ve tanınmayan ad carisiz
+      ---
+      duration_ms: 23.187085
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s223-k1/tabanwt/test/s223-eski-surum-sinif-250.test.mjs:129:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+        +   '',
+        -   'account-600d92d2-c12a-4043-bcf3-b18bdc3e98f4',
+            'account-075f5d96-3b28-4b2b-8016-ee1ad8fcf9d5',
+        +   'account-075f5d96-3b28-4b2b-8016-ee1ad8fcf9d5',
+        +   'account-075f5d96-3b28-4b2b-8016-ee1ad8fcf9d5',
+        -   'account-1c0a12e5-d71d-4cf3-a6a0-28ec11c5be89',
+            '',
+        -   ''
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'account-600d92d2-c12a-4043-bcf3-b18bdc3e98f4'
+        1: 'account-075f5d96-3b28-4b2b-8016-ee1ad8fcf9d5'
+        2: 'account-1c0a12e5-d71d-4cf3-a6a0-28ec11c5be89'
+        3: ''
+        4: ''
+      actual:
+        0: ''
+        1: 'account-075f5d96-3b28-4b2b-8016-ee1ad8fcf9d5'
+        2: 'account-075f5d96-3b28-4b2b-8016-ee1ad8fcf9d5'
+        3: 'account-075f5d96-3b28-4b2b-8016-ee1ad8fcf9d5'
+        4: ''
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s223-k1/tabanwt/test/s223-eski-surum-sinif-250.test.mjs:133:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..4
+not ok 1 - S223 / S228 — kabul D: v2.4.9'un verisinde Türkçe harf katlamalı eşleşme (sınıf listesi)
+  ---
+  duration_ms: 1121.258022
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s223-k1/tabanwt/test/s223-eski-surum-sinif-250.test.mjs:47:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 4
+# suites 1
+# pass 1
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1537.314601
+
+[kanit] başarısız testler (3):
+  ✖ S223 / S228 — kabul D: v2.4.9'un verisinde Türkçe harf katlamalı eşleşme (sınıf listesi) › C1–C3 cari Excel: tek aday büyük harf → var; v2.4.9'un çiftinde birebir yazım bugünkü carisi, iki adaylı yazım yeni cari; yok aday yeni cari [test/s223-eski-surum-sinif-250.test.mjs:101:3] — Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )
+  ✖ S223 / S228 — kabul D: v2.4.9'un verisinde Türkçe harf katlamalı eşleşme (sınıf listesi) › C4–C7 taksit Excel: tek aday büyük harf / boşluk → var olan cari; çift caride bugünkü bağ; iki adaylı yazım atlanır; yok aday yeni cari [test/s223-eski-surum-sinif-250.test.mjs:112:3] — Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )
+  ✖ S223 / S228 — kabul D: v2.4.9'un verisinde Türkçe harf katlamalı eşleşme (sınıf listesi) › C8–C10 çek / senet: tek aday büyük harf bağlanır; çift caride birebir yazım kendi carisine; iki adaylı ve tanınmayan ad carisiz [test/s223-eski-surum-sinif-250.test.mjs:129:3] — Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )
+
+[kanit] s223-eski-surum-tabanwt-utc: BAŞARISIZ (çıkış 1; 3 başarısız, 0 iptal) · çıkış 1 · 1/4 geçti, 3 başarısız, 0 iptal, 0 atlanan · commit df7e93c +2 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4

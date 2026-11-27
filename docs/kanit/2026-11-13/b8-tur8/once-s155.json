@@ -1,0 +1,66 @@
+{
+ "1 bugün tarihli tahsilat 300": {
+  "durum": 200,
+  "kod": "",
+  "ileti": "",
+  "bakiye": 700
+ },
+ "2 şüpheli günü tahsilat 300": {
+  "durum": 200,
+  "kod": "",
+  "ileti": "",
+  "bakiye": 700
+ },
+ "3 bir gün öncesi tahsilat 300": {
+  "durum": 409,
+  "kod": "ledger-integrity",
+  "ileti": "İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Şüpheli Alacak — Carinin Normal Alacağı Eksi Değil (120 = kart − açık şüpheli ≥ 0)). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.",
+  "bakiye": 1000
+ },
+ "4 borcun yettiği eski tarih tahsilat 100": {
+  "durum": 200,
+  "kod": "",
+  "ileti": "",
+  "bakiye": 900
+ },
+ "5 sonradan yeni borç 500 varken önceye tahsilat 300": {
+  "durum": 200,
+  "kod": "",
+  "ileti": "",
+  "bakiye": 1200
+ },
+ "6 önceye Alacak Yaz 300": {
+  "durum": 409,
+  "kod": "ledger-integrity",
+  "ileti": "İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Şüpheli Alacak — Carinin Normal Alacağı Eksi Değil (120 = kart − açık şüpheli ≥ 0)). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.",
+  "bakiye": 1000
+ },
+ "7 önceye çek 300": {
+  "durum": 409,
+  "kod": "ledger-integrity",
+  "ileti": "İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Şüpheli Alacak — Carinin Normal Alacağı Eksi Değil (120 = kart − açık şüpheli ≥ 0)). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.",
+  "bakiye": 1000
+ },
+ "8 borç silme (önceki Borç 200 silinir; şüpheliye ek 150 alınmıştı)": {
+  "durum": 409,
+  "kod": "ledger-integrity",
+  "ileti": "İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Şüpheli Alacak — Carinin Normal Alacağı Eksi Değil (120 = kart − açık şüpheli ≥ 0)). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.",
+  "bakiye": 1200
+ },
+ "10 önceye faturasız stok iadesi 300": {
+  "durum": 409,
+  "kod": "ledger-integrity",
+  "ileti": "İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Şüpheli Alacak — Carinin Normal Alacağı Eksi Değil (120 = kart − açık şüpheli ≥ 0)). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.",
+  "bakiye": 1000
+ },
+ "9 Silinenler öğeleri": [
+  "trash:trash-0c00f60f-28e4-4119-860f-a4669f043e39|DK S155 geri yükleme|₺300,00 · 20.09.2026 · Tahsilat · Tahsilat"
+ ],
+ "9 bakiye (ayrı kurgu)": 1000,
+ "9 Silinenler'den geri yükleme (önceye tahsilat 300, şüpheliden ÖNCE silinmişti)": {
+  "durum": 409,
+  "kod": "ledger-integrity",
+  "ileti": "İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Şüpheli Alacak — Carinin Normal Alacağı Eksi Değil (120 = kart − açık şüpheli ≥ 0)). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.",
+  "bakiye": 1000
+ }
+}

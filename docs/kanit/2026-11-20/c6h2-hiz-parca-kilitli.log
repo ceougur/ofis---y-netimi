@@ -1,0 +1,10 @@
+başta yük 2.37 2.24 2.19 4/125 30815 · 11:27:51 · kod /home/user/ofis---y-netimi/.claude/worktrees/agent-a7236347e0f8b6e8c
+kilit ('2026-06-30',)
+donma 9976 ms · kapsam 2026-06-30
+yük (başta) 2.04 2.16 2.17
+tekrar 1: build 2415 ms · cariListesi 730 ms · beklenen 362 ms · checkTamami 3697 ms · book 1748 ms · kuralFarki 228 ms · degerlemeGirdi 519 ms · gtBuYil 126 ms · gtOncekiDortYil 195 ms · balanceSheetSaf 798 ms · madde 153803, canlı 153803
+tekrar 2: build 2588 ms · cariListesi 1050 ms · beklenen 330 ms · checkTamami 3174 ms · book 1836 ms · kuralFarki 176 ms · degerlemeGirdi 372 ms · gtBuYil 124 ms · gtOncekiDortYil 243 ms · balanceSheetSaf 885 ms · madde 153803, canlı 153803
+tekrar 3: build 2628 ms · cariListesi 898 ms · beklenen 388 ms · checkTamami 3499 ms · book 1920 ms · kuralFarki 164 ms · degerlemeGirdi 432 ms · gtBuYil 91 ms · gtOncekiDortYil 197 ms · balanceSheetSaf 830 ms · madde 153803, canlı 153803
+yük (sonda) 1.63 2.05 2.13
+çıkış 0
+sonda yük 1.63 2.05 2.13 2/130 31096 · 11:29:05

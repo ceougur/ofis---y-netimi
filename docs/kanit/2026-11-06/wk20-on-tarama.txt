@@ -1,0 +1,9 @@
+senaryo 389, hata 0
+a | SW3-03-silme-talebi-ayni-donem-elenir-sonraki-donem-gider-silinen-telefon-kullanilmaz | T2 | C | telefonsuz | True
+b | S35-01-talep-aninda-kapanir-ayni-donem-yeni-gonderim-gider-meta-bekletti-gec-teslim | T3/D | silme_talebi | delivered
+c | S37-01-talep-sonrasi-hatirlatma-yeniden-dene-ve-yine-de-gonder-karttan-gider | T1/RB | mobil | Sonucu Belirsiz | None
+c | S37-02-bir-yil-sonra-hatirlatma-yeniden-dene-ve-yine-de-gonder-karttan-gider | T1/HB | mobil | Sonucu Belirsiz | None
+c | S42-02-gonderiliyor-talep-yanit-yok-belirsiz-iz-ayni-donem-elenir | T2/HY | mobil | Sonucu Belirsiz | None
+b | S59-01-talep-atlandi-meta-bekletti-gec-teslim-teslim-edildi-iptal-ile-karsilastirma | T1/D | silme_talebi | delivered
+b | S59-02-teslim-talepten-once-ve-sonra-iki-sira-teslim-edildi-ay-donumu | T1/D | silme_talebi | delivered
+a | S61-02-telefon-yok-e2-nedenlerinden-once-yeni-gonderimle-ayni-sira | T3 | RD | telefonsuz | False

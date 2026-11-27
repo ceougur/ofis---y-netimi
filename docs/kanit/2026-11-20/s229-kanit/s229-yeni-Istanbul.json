@@ -1,0 +1,32 @@
+{
+  "ad": "s229-yeni-Istanbul",
+  "komut": "node --test test/s229-acik-fatura-kart-payi-250.test.mjs",
+  "commit": "6e28069e80dfcc957d82f0d38582f2e7afb79adb",
+  "dal": "worktree-agent-a343eda2c3de7a0a1",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-20T23:33:28.283Z",
+  "sure_sn": 3.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 13,
+    "gecen": 13,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s229-a343/kanit/2026-11-20/s229-yeni-Istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a343eda2c3de7a0a1",
+  "ham_cikti_sha256": "e7a9c969792aaf182b3653d4384d398453754670e6c9bb385ee120f113fd69e1",
+  "ham_cikti_bayt": 4325
+}

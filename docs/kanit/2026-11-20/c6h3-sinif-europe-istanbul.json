@@ -1,0 +1,32 @@
+{
+  "ad": "c6h3-sinif-europe-istanbul",
+  "komut": "node --test test/c6h-v249-sinif.test.mjs",
+  "commit": "00416203affab0bccc289494e67b54ba828a8aba",
+  "dal": "worktree-agent-ab54e5fc492a09964",
+  "kirli": 0,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-20T14:37:54.907Z",
+  "sure_sn": 71.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 1,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h3-ana/kanit/2026-11-20/c6h3-sinif-europe-istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ab54e5fc492a09964",
+  "ham_cikti_sha256": "1cdafe9d1bacd8fcca76e0619bde2eeea6ab98d071742ec617760644633e595e",
+  "ham_cikti_bayt": 14189
+}

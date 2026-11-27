@@ -3,6 +3,12 @@
 // zaten yumuşak silinir (verisi durur); onlar kendi tablolarından listelenir (server/routes/trash.mjs).
 import { randomUUID } from "node:crypto";
 import { systemClock } from "./clock.mjs";
+import { hiddenKeyOf, saveHidden } from "./cash-opening.mjs";
+
+// Birleşik tur 8 (DK-B7 ORTA-1): tek satırlık para öğesinin Silinenler özeti (kimlik → tarih|kuruş) — geri yükleme yalnız silinirkenki hâliyle dönen satırı açıklar
+// (lib/cash-opening.mjs restoringCash). Satırın tablosu Kasa uyarısının kimliğiyle aynı (cash-opening TABLE_OF_SOURCE).
+const ROW_TABLES = { payment: "payments", cash: "cash_entries", "plan-entry": "plan_entries", "account-entry": "account_entries" };
+const sigOf = row => `${row?.date || ""}|${Math.round((Number(row?.amount) || 0) * 100)}`;
 
 export function createTrash(store, { now: clock = systemClock } = {}) {
   const now = () => clock().toISOString();
@@ -20,6 +26,12 @@ export function createTrash(store, { now: clock = systemClock } = {}) {
       user?.id || "",
       now(),
     );
+    const table = ROW_TABLES[kind];
+    if (table && ref) {
+      const rows = { [`${table}:${ref}`]: sigOf(payload) };
+      if (payload?.twin?.id) rows[`${table}:${payload.twin.id}`] = sigOf(payload.twin);
+      saveHidden(store, hiddenKeyOf("trash", id), rows);
+    }
     return id;
   }
   const open = () => store.all("SELECT t.*, COALESCE(u.display_name, '') AS actor_name FROM trash t LEFT JOIN users u ON u.id = t.deleted_by WHERE t.restored_at IS NULL ORDER BY t.deleted_at DESC LIMIT 1000");

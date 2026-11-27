@@ -1,0 +1,207 @@
+EFFFFFF.............F....................F.FF.F...............F......................................................................................F................................................
+======================================================================
+ERROR: test_S127_tek_yazim_degismezi (__main__.Bakim12.test_S127_tek_yazim_degismezi)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh12-kirmizi-ist/muhasebe/test_model.py", line 1069, in test_S127_tek_yazim_degismezi
+    self.assertEqual(r["degismezler"]["canli"]["s127_tek_yazim"], [])
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+KeyError: 's127_tek_yazim'
+
+======================================================================
+FAIL: test_S175_KG19_valorlu_transfer_islem_gunu (__main__.Bakim12.test_S175_KG19_valorlu_transfer_islem_gunu)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh12-kirmizi-ist/muhasebe/test_model.py", line 1020, in test_S175_KG19_valorlu_transfer_islem_gunu
+    self.assertEqual([satirlar(m) for m in r["raporlar"]["yev"] if m["tarih"] == "2026-02-27"], [{"102.B2": 500, "102.B1": -500}])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [{'108.90': 500, '102.B1': -500}] != [{'102.B2': 500, '102.B1': -500}]
+
+First differing element 0:
+{'108.90': 500, '102.B1': -500}
+{'102.B2': 500, '102.B1': -500}
+
+- [{'102.B1': -500, '108.90': 500}]
+?                      ^ ^^
+
++ [{'102.B1': -500, '102.B2': 500}]
+?                      ^ ^^
+
+
+======================================================================
+FAIL: test_S179_K14_sinir_en_gec_banka_acilisi (__main__.Bakim12.test_S179_K14_sinir_en_gec_banka_acilisi)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh12-kirmizi-ist/muhasebe/test_model.py", line 1032, in test_S179_K14_sinir_en_gec_banka_acilisi
+    self.sus(ac + [o("hesapsiz_hareket", "2026-03-05", cari="C1", yon="tahsilat", tutar=70)], "S179")
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh12-kirmizi-ist/muhasebe/test_model.py", line 1012, in sus
+    with self.assertRaises(AssertionError) as c:
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: AssertionError not raised
+
+======================================================================
+FAIL: test_S179_K15_iki_okuma (__main__.Bakim12.test_S179_K15_iki_okuma)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh12-kirmizi-ist/muhasebe/test_model.py", line 1047, in test_S179_K15_iki_okuma
+    self.assertEqual([satirlar(m) for m in yev if m["sinif"] == 1], [{"320|T1": 20, "519": -20}, {"320|T1": 30, "519": -30}, {"320|T1": 40, "309.KK1": -40}])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [{'320|T1': 20, '309.KK1': -20}, {'320|T1': 30, '309.KK2':[33 chars]-40}] != [{'320|T1': 20, '519': -20}, {'320|T1': 30, '519': -30}, {[25 chars]-40}]
+
+First differing element 0:
+{'320|T1': 20, '309.KK1': -20}
+{'320|T1': 20, '519': -20}
+
+- [{'309.KK1': -20, '320|T1': 20},
+-  {'309.KK2': -30, '320|T1': 30},
++ [{'320|T1': 20, '519': -20},
++  {'320|T1': 30, '519': -30},
+   {'309.KK1': -40, '320|T1': 40}]
+
+======================================================================
+FAIL: test_S179_silinmis_acilis_susar (__main__.Bakim12.test_S179_silinmis_acilis_susar)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh12-kirmizi-ist/muhasebe/test_model.py", line 1038, in test_S179_silinmis_acilis_susar
+    self.sus([o("banka_acilis", "2026-01-01", banka="B1", tutar=1000), o("banka_acilis", "2026-03-01", id="BA2", banka="B2", tutar=500), o("sil", kaynak="BA2"),
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+              o("hesapsiz_hareket", "2026-02-10", cari="C1", yon="tahsilat", tutar=70)], "S179")
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh12-kirmizi-ist/muhasebe/test_model.py", line 1012, in sus
+    with self.assertRaises(AssertionError) as c:
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: AssertionError not raised
+
+======================================================================
+FAIL: test_S181_S168_bagli_tahsilat (__main__.Bakim12.test_S181_S168_bagli_tahsilat)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh12-kirmizi-ist/muhasebe/test_model.py", line 1084, in test_S181_S168_bagli_tahsilat
+    self.assertEqual((s["128|C1"]["bakiye"], s["120|C1"]["bakiye"], s["101.01"]["bakiye"]), (1000, 0, 500))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Tuples differ: (1000, -400, 900) != (1000, 0, 500)
+
+First differing element 1:
+-400
+0
+
+- (1000, -400, 900)
+?        ---   ^
+
++ (1000, 0, 500)
+?           ^
+
+
+======================================================================
+FAIL: test_S183_kilitten_sonra_acilis_susar (__main__.Bakim12.test_S183_kilitten_sonra_acilis_susar)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh12-kirmizi-ist/muhasebe/test_model.py", line 1056, in test_S183_kilitten_sonra_acilis_susar
+    self.sus([o("kart_borcuna_aktar", "2026-02-15", cari="T1", kart="KK1", tutar=30), kl, o("kart_acilis", "2026-03-01", kart="KK1", tutar=1000)], "S183")
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh12-kirmizi-ist/muhasebe/test_model.py", line 1012, in sus
+    with self.assertRaises(AssertionError) as c:
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: AssertionError not raised
+
+======================================================================
+FAIL: test_senaryo_ve_beklenen_dosyalari_guncel (__main__.Dosyalar.test_senaryo_ve_beklenen_dosyalari_guncel)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh12-kirmizi-ist/muhasebe/test_model.py", line 1361, in test_senaryo_ve_beklenen_dosyalari_guncel
+    self.assertEqual(UB.main(denetle=True), 0, "python3 test/bagimsiz/muhasebe/uret_beklenen.py ile yeniden yazın")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : python3 test/bagimsiz/muhasebe/uret_beklenen.py ile yeniden yazın
+
+======================================================================
+FAIL: test_s110_s179_hesapsiz_sinir_en_gec_acilis (__main__.ElleSenaryolar.test_s110_s179_hesapsiz_sinir_en_gec_acilis)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh12-kirmizi-ist/muhasebe/test_model.py", line 1122, in test
+    self.assertEqual(gercek, bek, f"{s['ad']} [{et}] {yol}")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: -30000 != -60000 : s110-s179-hesapsiz-sinir-en-gec-acilis [A] mz2/satirlar/519/bakiye
+
+======================================================================
+FAIL: test_s112_s181_bagli_tahsilat_120_siniri (__main__.ElleSenaryolar.test_s112_s181_bagli_tahsilat_120_siniri)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh12-kirmizi-ist/muhasebe/test_model.py", line 1122, in test
+    self.assertEqual(gercek, bek, f"{s['ad']} [{et}] {yol}")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: -40000 != 0 : s112-s181-bagli-tahsilat-120-siniri [A] mz/satirlar/120|C1/bakiye
+
+======================================================================
+FAIL: test_s113_s87_r8_geri_alma (__main__.ElleSenaryolar.test_s113_s87_r8_geri_alma)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh12-kirmizi-ist/muhasebe/test_model.py", line 1122, in test
+    self.assertEqual(gercek, bek, f"{s['ad']} [{et}] {yol}")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [] != ['KASA_ACILIS_SONRA']
+
+Second list contains 1 additional elements.
+First extra element 0:
+'KASA_ACILIS_SONRA'
+
+- []
++ ['KASA_ACILIS_SONRA'] : s113-s87-r8-geri-alma [A] redler
+
+======================================================================
+FAIL: test_s12_banka_islemleri (__main__.ElleSenaryolar.test_s12_banka_islemleri)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh12-kirmizi-ist/muhasebe/test_model.py", line 1122, in test
+    self.assertEqual(gercek, bek, f"{s['ad']} [{et}] {yol}")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 278500 != 328500 : s12-banka-islemleri [A] bil/detay/I.A/102.B2
+
+======================================================================
+FAIL: test_s27_devir_yoldaki_supheli_evrak_taksit (__main__.ElleSenaryolar.test_s27_devir_yoldaki_supheli_evrak_taksit)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh12-kirmizi-ist/muhasebe/test_model.py", line 1122, in test
+    self.assertEqual(gercek, bek, f"{s['ad']} [{et}] {yol}")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 100000 != 0 : s27-devir-yoldaki-supheli-evrak-taksit [A] devir/arsiv_kapanis/108.90
+
+======================================================================
+FAIL: test_K02_K14_K07 (__main__.OlayMaddeleri.test_K02_K14_K07)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh12-kirmizi-ist/muhasebe/test_model.py", line 175, in test_K02_K14_K07
+    self.assertEqual([satirlar(m) for m in yev], [{"770.90": 50, "100": -50}, {"120|C1": 70, "519": -70}, {"102.B1": 1000, "519": -1000},
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                                 {"102.B2": 500, "102.B1": -500}])
+                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [{'77[83 chars] {'108.90': 500, '102.B1': -500}, {'102.B2': 5[15 chars]500}] != [{'77[83 chars] {'102.B2': 500, '102.B1': -500}]
+
+First differing element 3:
+{'108.90': 500, '102.B1': -500}
+{'102.B2': 500, '102.B1': -500}
+
+First list contains 1 additional elements.
+First extra element 4:
+{'102.B2': 500, '108.90': -500}
+
+  [{'100': -50, '770.90': 50},
+   {'120|C1': 70, '519': -70},
+   {'102.B1': 1000, '519': -1000},
+-  {'102.B1': -500, '108.90': 500},
+?                      ^ ^^       ^
+
++  {'102.B1': -500, '102.B2': 500}]
+?                      ^ ^^       ^
+
+-  {'102.B2': 500, '108.90': -500}]
+
+----------------------------------------------------------------------
+Ran 198 tests in 15.893s
+
+FAILED (failures=13, errors=1)
+ESKİ: senaryolar/s12-banka-islemleri.json, senaryolar/s27-devir-yoldaki-supheli-evrak-taksit.json, senaryolar/s74-s25-ab-kismi-ve-fazla.json, senaryolar/beklenen/s74-s25-ab-kismi-ve-fazla.json, senaryolar/s110-s179-hesapsiz-sinir-en-gec-acilis.json (yok), senaryolar/beklenen/s110-s179-hesapsiz-sinir-en-gec-acilis.json (yok), senaryolar/s111-s174-s180-kural-farki-kendi-yilinda.json (yok), senaryolar/beklenen/s111-s174-s180-kural-farki-kendi-yilinda.json (yok), senaryolar/s112-s181-bagli-tahsilat-120-siniri.json (yok), senaryolar/beklenen/s112-s181-bagli-tahsilat-120-siniri.json (yok), senaryolar/s113-s87-r8-geri-alma.json (yok), senaryolar/beklenen/s113-s87-r8-geri-alma.json (yok)
+# tests 198
+# pass 184
+# fail 14
+# skipped 0

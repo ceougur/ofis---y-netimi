@@ -1,0 +1,44 @@
+(node:26960) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+B1
+  11-20 bakiye 600 gecikmiş 0 MT ok | kartlar active:900/T300/K600[10-05:300/0 12-05:600/600] | [01:sale_return:cancelled:cancelled:0/-/- 01:sale:issued:installment:0/600/600]
+  11-21 bakiye 600 gecikmiş 0 MT ok | kartlar active:900/T300/K600[10-05:300/0 12-05:600/600] | [01:sale_return:cancelled:cancelled:0/-/- 01:sale:issued:installment:0/600/600]
+B1k
+  11-20 bakiye 600 gecikmiş 600 MT ok | kartlar closed:900/T300/K600[09-04:300/0 09-04:600/600] | [01:sale_return:cancelled:cancelled:0/-/- 01:sale:issued:installment:0/600/600]
+  11-21 bakiye 600 gecikmiş 600 MT ok | kartlar closed:900/T300/K600[09-04:300/0 09-04:600/600] | [01:sale_return:cancelled:cancelled:0/-/- 01:sale:issued:installment:0/600/600]
+B2
+  11-20 bakiye -300 gecikmiş 0 MT ok | kartlar active:600/T300/K300[10-05:300/0 11-05:300/0] | [01:sale_return:issued:return:0/-/- 01:sale:issued:paid:0/-/-]
+B2k
+  11-20 bakiye -300 gecikmiş 0 MT ok | kartlar closed:600/T300/K300[09-04:300/0 09-04:300/0] | [01:sale_return:issued:return:0/-/- 01:sale:issued:paid:0/-/-]
+OWN2
+  11-20 bakiye -300 gecikmiş 0 MT ok | kartlar active:600/T600/K0[10-05:300/0 11-05:300/0] | [01:sale_return:issued:return:300/-/- 01:sale:issued:paid:0/-/-]
+OWN2k
+  11-20 bakiye -300 gecikmiş 0 MT ok | kartlar closed:600/T600/K0[09-04:300/0 09-04:300/0] | [01:sale_return:issued:return:300/-/- 01:sale:issued:paid:0/-/-]
+OWN1
+  11-20 bakiye 600 gecikmiş 0 MT ok | kartlar active:900/T300/K600[10-05:300/0 12-05:600/600] | [01:sale_return:cancelled:cancelled:0/-/- 01:sale:issued:installment:600/-/-]
+  11-21 bakiye 600 gecikmiş 0 MT ok | kartlar active:900/T300/K600[10-05:300/0 12-05:600/600] | [01:sale_return:cancelled:cancelled:0/-/- 01:sale:issued:installment:600/-/-]
+OWN1k
+  11-20 bakiye 600 gecikmiş 600 MT ok | kartlar closed:900/T300/K600[09-04:300/0 09-04:600/600] | [01:sale_return:cancelled:cancelled:0/-/- 01:sale:issued:overdue:600/-/-]
+  11-21 bakiye 600 gecikmiş 600 MT ok | kartlar closed:900/T300/K600[09-04:300/0 09-04:600/600] | [01:sale_return:cancelled:cancelled:0/-/- 01:sale:issued:overdue:600/-/-]
+T8acik
+  10-08 bakiye 900 gecikmiş 300 MT ok | kartlar active:600/T0/K600[11-10:300/300 12-10:300/300] , active:300/T0/K300[10-20:100/0 11-20:100/0 12-20:100/0] | [01:sale_return:issued:return:0/-/- 02:sale:issued:overdue:300/-/- 01:sale:issued:installment:0/600/600]
+  10-09 bakiye 900 gecikmiş 300 MT ok | kartlar active:600/T0/K600[11-10:300/300 12-10:300/300] , active:300/T0/K300[10-20:100/0 11-20:100/0 12-20:100/0] | [01:sale_return:issued:return:0/-/- 02:sale:issued:overdue:300/-/- 01:sale:issued:installment:0/600/600]
+T8sonra
+  10-08 bakiye 900 gecikmiş 300 MT ok | kartlar closed:600/T0/K600[10-08:300/300 10-08:300/300] , active:300/T0/K300[10-20:100/0 11-20:100/0 12-20:100/0] | [01:sale_return:issued:return:0/-/- 02:sale:issued:overdue:300/-/- 01:sale:issued:installment:0/600/600]
+  10-09 bakiye 900 gecikmiş 900 MT ok | kartlar closed:600/T0/K600[10-08:300/300 10-08:300/300] , active:300/T0/K300[10-20:100/0 11-20:100/0 12-20:100/0] | [01:sale_return:issued:return:0/-/- 02:sale:issued:overdue:300/-/- 01:sale:issued:installment:0/600/600]
+S239
+  09-10 bakiye 600 gecikmiş 0 MT ok | kartlar active:600/T0/K600[10-05:200/200 11-05:200/200 12-05:200/200] | [01:sale_return:issued:return:0/-/- 01:sale:issued:installment:0/600/600]
+  10-06 bakiye 600 gecikmiş 200 MT ok | kartlar active:600/T0/K600[10-05:200/200 11-05:200/200 12-05:200/200] | [01:sale_return:issued:return:0/-/- 01:sale:issued:installment:0/600/600]
+S240
+  09-10 bakiye 600 gecikmiş 0 MT ok | kartlar active:900/T300/K600[10-05:300/0 11-05:200/200 12-05:400/400] | [01:sale_return:issued:return:0/-/- 01:sale:issued:installment:0/600/600]
+D1
+  09-10 bakiye 300 gecikmiş 0 MT ok | kartlar active:900/T0/K900[10-05:300/300 11-05:300/0 12-05:300/0] | [01:sale:issued:installment:0/300/300] | edit 200
+  11-06 bakiye 300 gecikmiş 300 MT ok | kartlar active:900/T0/K900[10-05:300/300 11-05:300/0 12-05:300/0] | [01:sale:issued:installment:0/300/300] | edit 200
+D1k
+  09-10 bakiye 300 gecikmiş 300 MT ok | kartlar closed:900/T0/K900[09-04:300/300 09-04:300/0 09-04:300/0] | [01:sale:issued:installment:0/300/300] | edit 200
+  11-06 bakiye 300 gecikmiş 300 MT ok | kartlar closed:900/T0/K900[09-04:300/300 09-04:300/0 09-04:300/0] | [01:sale:issued:installment:0/300/300] | edit 200
+D2a
+  09-10 bakiye -300 gecikmiş 0 MT ok | kartlar active:900/T300/K600[10-05:300/0 11-05:300/0 12-05:300/0] | [01:sale:issued:paid:0/-/-] | edit 200
+D2b
+  09-10 bakiye 900 gecikmiş 600 MT ok | kartlar active:300/T0/K300[10-05:100/100 11-05:100/100 12-05:100/100] | [01:sale:issued:overdue:600/900/300] | edit 200
+  10-06 bakiye 900 gecikmiş 700 MT ok | kartlar active:300/T0/K300[10-05:100/100 11-05:100/100 12-05:100/100] | [01:sale:issued:overdue:600/900/300] | edit 200

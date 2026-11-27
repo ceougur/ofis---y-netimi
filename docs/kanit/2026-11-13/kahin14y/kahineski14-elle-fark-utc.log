@@ -1,0 +1,10 @@
+d38-c5-s128-ozge-kalemli-kart.json: 4 elle beklenti değişti
+    elleBelirsiz kalktı    ["cari M14 tanımsız", "SK-26"]: "" → ""
+    elleBelirsiz kalktı    ["cari M15 tanımsız", "SK-26"]: "" → ""
+    elleBelirsiz eklendi   ["cari M14 tanımsız", "SK-26", "BİLİNEN SINIR", "S131 = C"]: "" → ""
+    elleBelirsiz eklendi   ["cari M15 tanımsız", "SK-26", "BİLİNEN SINIR", "S131 = C"]: "" → ""
+yeni elle senaryo: d39-c5-s130-supheli-kalemleri.json, d40-c5-s130-sus-bilinen-sinir.json
+# tests 92
+# pass 92
+# fail 0
+92/92 denetim geçti

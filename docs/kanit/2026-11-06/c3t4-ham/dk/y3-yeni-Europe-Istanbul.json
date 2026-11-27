@@ -1,0 +1,399 @@
+{
+ "kok": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a8eba3f64140fc5f1",
+ "results": {
+  "C1": {
+   "adimlar": [
+    {
+     "gun": "kaldır",
+     "durum": 200,
+     "kod": null,
+     "ileti": null,
+     "ms": 5009,
+     "sonra_kilit": "",
+     "kosu_sayisi": 2,
+     "kilit_izi": 2,
+     "temizlik": {
+      "running": true,
+      "removed": 5
+     }
+    },
+    {
+     "gun": "2026-12-31",
+     "durum": 409,
+     "kod": "ledger-cleanup-running",
+     "ileti": "Önceki dönemin defter temizliği sürüyor; temizlik bitince yeniden kilitleyin. İlerleme bu kartta görünür.",
+     "ms": 5005,
+     "sonra_kilit": "",
+     "kosu_sayisi": 2,
+     "kilit_izi": 2,
+     "temizlik": {
+      "running": true,
+      "removed": 5
+     }
+    },
+    {
+     "gun": "2026-12-31",
+     "durum": 200,
+     "kod": null,
+     "ileti": null,
+     "ms": 409,
+     "sonra_kilit": "2026-12-31",
+     "kosu_sayisi": 3,
+     "kilit_izi": 3,
+     "temizlik": {
+      "running": false,
+      "removed": 0
+     }
+    }
+   ],
+   "gorunum_409_sonrasi": {
+    "running": false,
+    "phase": "tamam",
+    "done": 84,
+    "total": 84,
+    "run": 1,
+    "error": "",
+    "coverage": "",
+    "cleanup": {
+     "running": true,
+     "removed": 5
+    },
+    "pending": null,
+    "active": true
+   },
+   "kosular": [
+    [
+     1,
+     "freeze",
+     "done",
+     "",
+     "2026-12-31",
+     "2.5.0",
+     "lock",
+     84
+    ],
+    [
+     2,
+     "thaw",
+     "done",
+     "2026-12-31",
+     "",
+     "",
+     "lock",
+     0
+    ],
+    [
+     3,
+     "freeze",
+     "done",
+     "",
+     "2026-12-31",
+     "2.5.0",
+     "lock",
+     84
+    ]
+   ],
+   "butunluk": {
+    "kapsam": "2026-12-31",
+    "kilit": "2026-12-31",
+    "gorunen": 84,
+    "kayitli": 84,
+    "canli": 84,
+    "donmus_eq_canli": true,
+    "tutarli": true
+   }
+  },
+  "C2": {
+   "adimlar": [
+    {
+     "gun": "2026-03-31",
+     "durum": 200,
+     "kod": null,
+     "ileti": null,
+     "ms": 5002,
+     "sonra_kilit": "2026-03-31",
+     "kosu_sayisi": 2,
+     "kilit_izi": 2,
+     "temizlik": {
+      "running": true,
+      "removed": 5
+     }
+    },
+    {
+     "gun": "2026-12-31",
+     "durum": 409,
+     "kod": "ledger-cleanup-running",
+     "ileti": "Önceki dönemin defter temizliği sürüyor; temizlik bitince yeniden kilitleyin. İlerleme bu kartta görünür.",
+     "ms": 5003,
+     "sonra_kilit": "2026-03-31",
+     "kosu_sayisi": 2,
+     "kilit_izi": 2,
+     "temizlik": {
+      "running": true,
+      "removed": 5
+     }
+    },
+    {
+     "gun": "2026-06-30",
+     "durum": 409,
+     "kod": "ledger-cleanup-running",
+     "ileti": "Önceki dönemin defter temizliği sürüyor; temizlik bitince yeniden kilitleyin. İlerleme bu kartta görünür.",
+     "ms": 5004,
+     "sonra_kilit": "2026-03-31",
+     "kosu_sayisi": 2,
+     "kilit_izi": 2,
+     "temizlik": {
+      "running": true,
+      "removed": 5
+     }
+    },
+    {
+     "gun": "2026-01-31",
+     "durum": 200,
+     "kod": null,
+     "ileti": null,
+     "ms": 5003,
+     "sonra_kilit": "2026-01-31",
+     "kosu_sayisi": 3,
+     "kilit_izi": 3,
+     "temizlik": {
+      "running": true,
+      "removed": 5
+     }
+    },
+    {
+     "gun": "2026-02-28",
+     "durum": 409,
+     "kod": "ledger-cleanup-running",
+     "ileti": "Önceki dönemin defter temizliği sürüyor; temizlik bitince yeniden kilitleyin. İlerleme bu kartta görünür.",
+     "ms": 5004,
+     "sonra_kilit": "2026-01-31",
+     "kosu_sayisi": 3,
+     "kilit_izi": 3,
+     "temizlik": {
+      "running": true,
+      "removed": 5
+     }
+    },
+    {
+     "gun": "2026-12-31",
+     "durum": 200,
+     "kod": null,
+     "ileti": null,
+     "ms": 375,
+     "sonra_kilit": "2026-12-31",
+     "kosu_sayisi": 4,
+     "kilit_izi": 4,
+     "temizlik": {
+      "running": false,
+      "removed": 0
+     }
+    }
+   ],
+   "kosular": [
+    [
+     1,
+     "freeze",
+     "done",
+     "",
+     "2026-06-30",
+     "2.5.0",
+     "lock",
+     46
+    ],
+    [
+     2,
+     "thaw",
+     "done",
+     "2026-06-30",
+     "2026-03-31",
+     "",
+     "lock",
+     0
+    ],
+    [
+     3,
+     "thaw",
+     "done",
+     "2026-03-31",
+     "2026-01-31",
+     "",
+     "lock",
+     0
+    ],
+    [
+     4,
+     "freeze",
+     "done",
+     "2026-01-31",
+     "2026-12-31",
+     "2.5.0",
+     "lock",
+     76
+    ]
+   ],
+   "butunluk": {
+    "kapsam": "2026-12-31",
+    "kilit": "2026-12-31",
+    "gorunen": 84,
+    "kayitli": 84,
+    "canli": 84,
+    "donmus_eq_canli": true,
+    "tutarli": true
+   }
+  },
+  "C3": {
+   "adimlar": [
+    {
+     "gun": "2026-03-31",
+     "durum": 200,
+     "kod": null,
+     "ileti": null,
+     "ms": 5003,
+     "sonra_kilit": "2026-03-31",
+     "kosu_sayisi": 2,
+     "kilit_izi": 2,
+     "temizlik": {
+      "running": true,
+      "removed": 5
+     }
+    },
+    {
+     "gun": "2026-03-31",
+     "durum": 200,
+     "kod": null,
+     "ileti": null,
+     "ms": 5007,
+     "sonra_kilit": "2026-03-31",
+     "kosu_sayisi": 2,
+     "kilit_izi": 3,
+     "temizlik": {
+      "running": true,
+      "removed": 5
+     }
+    }
+   ],
+   "kosular": [
+    [
+     1,
+     "freeze",
+     "done",
+     "",
+     "2026-06-30",
+     "2.5.0",
+     "lock",
+     46
+    ],
+    [
+     2,
+     "thaw",
+     "done",
+     "2026-06-30",
+     "2026-03-31",
+     "",
+     "lock",
+     0
+    ]
+   ],
+   "butunluk": {
+    "kapsam": "2026-03-31",
+    "kilit": "2026-03-31",
+    "gorunen": 24,
+    "kayitli": 24,
+    "canli": 24,
+    "donmus_eq_canli": true,
+    "tutarli": true
+   }
+  },
+  "C4": {
+   "adimlar": [
+    {
+     "gun": "2026-11-30",
+     "durum": 409,
+     "kod": "ledger-cleanup-running",
+     "ileti": "Önceki dönemin defter temizliği sürüyor; temizlik bitince yeniden kilitleyin. İlerleme bu kartta görünür.",
+     "ms": 5002,
+     "sonra_kilit": "2026-12-31",
+     "kosu_sayisi": 1,
+     "kilit_izi": 1,
+     "temizlik": {
+      "running": true,
+      "removed": 5
+     }
+    },
+    {
+     "gun": "2026-11-30",
+     "durum": 200,
+     "kod": null,
+     "ileti": null,
+     "ms": 245,
+     "sonra_kilit": "2026-11-30",
+     "kosu_sayisi": 2,
+     "kilit_izi": 2,
+     "temizlik": {
+      "running": false,
+      "removed": 0
+     }
+    }
+   ],
+   "onkosul": {
+    "bekleyen": {
+     "no": 1,
+     "from": "",
+     "through": "2026-12-31",
+     "rule": "2.5.0",
+     "reason": "lock"
+    },
+    "yazilan": 15
+   },
+   "ilk_yanit": 200,
+   "bekleyen_409_sonrasi": {
+    "no": 1,
+    "from": "",
+    "through": "2026-12-31",
+    "rule": "2.5.0",
+    "reason": "lock"
+   },
+   "butunluk_kilit": {
+    "kapsam": "2026-12-31",
+    "kilit": "2026-12-31",
+    "gorunen": 84,
+    "kayitli": 84,
+    "canli": 84,
+    "donmus_eq_canli": true,
+    "tutarli": true
+   },
+   "kosular": [
+    [
+     1,
+     "freeze",
+     "done",
+     "",
+     "2026-12-31",
+     "2.5.0",
+     "lock",
+     84
+    ],
+    [
+     2,
+     "thaw",
+     "done",
+     "2026-12-31",
+     "2026-11-30",
+     "",
+     "lock",
+     0
+    ]
+   ],
+   "butunluk": {
+    "kapsam": "2026-11-30",
+    "kilit": "2026-11-30",
+    "gorunen": 78,
+    "kayitli": 78,
+    "canli": 78,
+    "donmus_eq_canli": true,
+    "tutarli": true
+   }
+  }
+ }
+}

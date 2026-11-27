@@ -25,7 +25,7 @@ const messageRow = row => ({
   createdAt: row.created_at,
 });
 
-export function createChat({ store, events = null, audit = () => {}, roles = null, now = () => new Date().toISOString() }) {
+export function createChat({ store, events = null, audit = () => {}, roles = null, now = () => new Date().toISOString(), canWrite = () => true }) {
   const sent = new Map();
   const onlineIds = () => new Set(events?.online() || []);
   const userRow = id => store.get("SELECT id, display_name AS name, role, active, created_at FROM users WHERE id = ?", id);
@@ -41,6 +41,8 @@ export function createChat({ store, events = null, audit = () => {}, roles = nul
 
   // Ofis kanalına ilk bakışta üyelik açılır; hesap açıldıktan sonra yazılanlar okunmamış sayılır.
   function ensureOfficeMember(user) {
+    // BS-7: yeni şemalı şirkette üyelik yazılmaz (ofis kanalı üyeliksiz de listelenir; okunmamış sayısı hesap açılışından sayılır).
+    if (!canWrite()) return;
     const created = userRow(user.id)?.created_at || now();
     store.run("INSERT OR IGNORE INTO chat_members (conversation_id, user_id, joined_at, last_read_at) VALUES (?, ?, ?, ?)", OFFICE_CONVERSATION, user.id, now(), created);
   }

@@ -1,0 +1,32 @@
+{
+  "ad": "bs7-yesil-guncelleme-akisi",
+  "komut": "node --test test/update-flow.test.mjs",
+  "commit": "631abb1e5a3e29250483aa52fc99aa64496f3d68",
+  "dal": "worktree-agent-a03e5f6803e8339cb",
+  "kirli": 0,
+  "izlenmeyen": 8,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T17:23:39.007Z",
+  "sure_sn": 17.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 6,
+    "gecen": 6,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/bs7-yesil-guncelleme-akisi.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a03e5f6803e8339cb",
+  "ham_cikti_sha256": "376b2797aba89607844f9a104dca6be4ef4d3742e29641a4d53baba59d6a42d3",
+  "ham_cikti_bayt": 2115
+}

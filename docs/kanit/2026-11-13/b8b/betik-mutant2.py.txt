@@ -1,0 +1,27 @@
+# Birleşik tur 8b (ek: 30 / 90 Gün) mutantları: yeni overview.mjs'ten (overview.mjs.yeni) her mutant için ayrı dosya üretir.
+# Kullanım: python3 -I mutant2.py <mutant kopyası kökü> <ad>  → server/routes/overview.mjs'i o mutantla yazar ("yeni" = mutantsız).
+import sys
+root, name = sys.argv[1], sys.argv[2]
+src = open(f"{root}/server/routes/overview.mjs.yeni", encoding="utf-8").read()
+near = 'const nearWithLate = ["today", "next7", "next30", "next90"].includes(preset) && presetOnly && late;'
+keep = 'keep: row => row.date <= to || row.state === "overdue" }), to }\n        : dueList'
+MUT = {
+    "yeni": [],
+    # İstenen üç mutant
+    "m8-yalniz-bugun-7gun": [(near, 'const nearWithLate = ["today", "next7"].includes(preset) && presetOnly && late;')],
+    "m9-yalniz-30gun": [(near, 'const nearWithLate = ["next30"].includes(preset) && presetOnly && late;')],
+    "m3-elle-aralik": [(near, 'const nearWithLate = (["today", "next7", "next30", "next90"].includes(preset) || !preset) && late;')],
+    # Öncekiler (yeni kapsamla yinelenir)
+    "m1-yalniz-gosterge": [(keep, 'keep: row => row.date <= to || row.state === "overdue" }), to, __m1: true }\n        : dueList'),
+                           ('    if (needle) dormant =', '    if (result.__m1) result.rows = result.rows.filter(row => row.date <= to);\n    if (needle) dormant =')],
+    "m2-yalniz-tahsilat": [("? { ...dueList({ today: day, from, to: \"\", late, items: items.filter(matches), keep: row => row.date <= to",
+                            "? { ...dueList({ today: day, from, to: \"\", late, items: items.filter(matches).filter(item => item.direction !== \"out\" || item.date <= to), keep: row => row.date <= to")],
+    "m4-late-kapali": [(near, 'const nearWithLate = ["today", "next7", "next30", "next90"].includes(preset) && presetOnly;')],
+    "m10-yalniz-90gun-eksik": [(near, 'const nearWithLate = ["today", "next7", "next30"].includes(preset) && presetOnly && late;')],
+}
+out = src
+for old, new in MUT[name]:
+    assert out.count(old) == 1, (name, old[:60], out.count(old))
+    out = out.replace(old, new)
+open(f"{root}/server/routes/overview.mjs", "w", encoding="utf-8").write(out)
+print(name, "yazıldı", len(MUT[name]), "değişiklik")

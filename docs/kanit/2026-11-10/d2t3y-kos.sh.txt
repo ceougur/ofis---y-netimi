@@ -1,0 +1,35 @@
+#!/bin/bash
+# Ana oturum yeniden koşusu: D2 tur 3 + Ç5-K tur 2 (sınama ağacı = ana dal 17afb7dc + c2d5689d)
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+A=$S/d2t3-ya-ag; E=$S/d2t3y-eski; M=$S/d2t3y-mut; K=$S/d2t3y-kanit
+R=/home/user/ofis---y-netimi
+mkdir -p "$K" "$E" "$M" || exit 1
+export HUKUK_LICENSE_URL=http://127.0.0.1:9 PLAYWRIGHT_BROWSERS_PATH=$S/pw-1194 KANIT_DIR=$K
+YENI="test/kasa-acilis-uyari-250.test.mjs test/kasa-acilis-iz-250.test.mjs test/devir-arsiv-wal-250.test.mjs"
+NT="node --disable-warning=ExperimentalWarning --test --test-concurrency=1"
+echo "başladı $(date -u +%H:%M:%S) yük $(cat /proc/loadavg)"
+cd "$A" || exit 1
+for tz in UTC Europe/Istanbul; do n=$(echo $tz | tr '/' '-'); TZ=$tz node tools/kanit.mjs kos d2t3y-yeni-$n -- $NT $YENI > "$K/yeni-$n.out" 2>&1; echo "yeni $tz çıkış $?"; done
+# eski kod (ders 23): ad9f8769 ayrı kopya + yalnız yeni testler ve yardımcı
+git -C "$R" archive ad9f8769 | tar -x -C "$E" || exit 1
+ln -sfn "$R/node_modules" "$E/node_modules"
+cp $YENI "$E/test/" && cp test/fixtures/devir-arsiv-wal-isci.mjs "$E/test/fixtures/" || exit 1
+cd "$E" || exit 1
+for tz in UTC Europe/Istanbul; do n=$(echo $tz | tr '/' '-'); TZ=$tz node tools/kanit.mjs kos d2t3y-eski-$n -- $NT $YENI > "$K/eski-$n.out" 2>&1; echo "eski $tz çıkış $?"; done
+cd "$A" || exit 1
+node tools/kanit.mjs kos d2t3y-ekran-yeni -- node --disable-warning=ExperimentalWarning test/e2e/senaryo-kasa-acilis-uyari-250.mjs > "$K/ekran-yeni.out" 2>&1; echo "ekran yeni çıkış $?"
+DEPO=$E node tools/kanit.mjs kos d2t3y-ekran-eski -- node --disable-warning=ExperimentalWarning test/e2e/senaryo-kasa-acilis-uyari-250.mjs > "$K/ekran-eski.out" 2>&1; echo "ekran eski çıkış $?"
+# kaynak tarayanlar
+node tools/kanit.mjs kos d2t3y-kaynak -- $NT test/ci-kapi-listesi.test.mjs test/kanit-araci.test.mjs test/platform-tasinabilirlik.test.mjs test/yazim-duzeni.test.mjs test/lisans-servisi-izolasyonu.test.mjs > "$K/kaynak.out" 2>&1; echo "kaynak çıkış $?"
+# komşu ekran senaryoları
+for s in senaryo-226 senaryo-iz1-kasa-acilis senaryo-donem-kilidi-ilerleme-250 senaryo-duzeltme-kilidi-tur3-250 senaryo-tablodan-aktar; do
+  node tools/kanit.mjs kos d2t3y-$s -- node --disable-warning=ExperimentalWarning test/e2e/$s.mjs > "$K/$s.out" 2>&1; echo "$s çıkış $?"
+done
+node tools/kanit.mjs kos d2t3y-kilavuz-metin -- node --disable-warning=ExperimentalWarning docs/kilavuz/ekran-banka.mjs --denetim > "$K/kilavuz-metin.out" 2>&1; echo "kilavuz-metin çıkış $?"
+# mutasyon (ayrı kopya = sınama ağacının HEAD'i)
+git -C "$A" archive HEAD | tar -x -C "$M" || exit 1
+ln -sfn "$R/node_modules" "$M/node_modules"
+cd "$M" || exit 1
+node --disable-warning=ExperimentalWarning test/kasa-acilis-tur2-250-mutasyon.mjs --kopya "$M" > "$K/mut-c5k-tur2.out" 2>&1; echo "mut c5k-tur2 çıkış $?"
+node --disable-warning=ExperimentalWarning test/devir-d2-250-mutasyon.mjs --kopya "$M" --yalniz 30,40,41,42,43,44,45,46,47 > "$K/mut-d2-tur3.out" 2>&1; echo "mut d2-tur3 çıkış $?"
+echo "bitti $(date -u +%H:%M:%S) yük $(cat /proc/loadavg)"

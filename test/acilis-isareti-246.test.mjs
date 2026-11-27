@@ -16,6 +16,7 @@ import { after, before, describe, it, test } from "node:test";
 import { createClock } from "../server/lib/clock.mjs";
 import { LATEST_VERSION } from "../server/lib/migrations.mjs";
 import { ADMIN_PASSWORD, loginAdmin, startTestServer } from "./helpers.mjs";
+import { trialAs250Defter } from "./fixtures/c5a-acilis.mjs";
 import { CURRENT, bootVersion, tagsAvailable } from "./guvenilirlik/surumler.mjs";
 
 const NOW = "2026-10-20T12:00:00+03:00";
@@ -193,7 +194,8 @@ describe("2.4.6 madde 12 göç v35: v2.4.5 verisi (gerçek kod) güncel kodla �
         assert.equal(card.totals.balance, before_.cards[name].balance, `${name}: bakiye v2.4.5 ile aynı`);
         assert.deepEqual(card.entries.map(row => [row.id, row.kind, row.amount, row.date, row.note]), before_.cards[name].entries, `${name}: hareketler aynı`);
       }
-      assert.deepEqual((await must("mizan", api.get("/api/workspace/ledger"))).trial, before_.ledger, "mizan v2.4.5 ile aynı");
+      // 2.5.0 Ç5-A (G3: C5-ACILIS-TASARIM §2.2 / §11; M-01 … M-07, S47): v2.4.5'in 500'ü (açılışlar) yeni kuralda AYNEN 519; öbür hesaplar aynı.
+      assert.deepEqual((await must("mizan", api.get("/api/workspace/ledger"))).trial, trialAs250Defter(before_.ledger), "mizan v2.4.5 ile aynı (yalnız 500 → 519)");
       // Göçten sonra açıklama değişir → açılış kalır (A).
       const aCard = await must("A kart", api.get(`/api/workspace/accounts/${ids[names[0]]}`));
       const aOpening = aCard.entries.find(row => row.id === aCard.openingEntryId);

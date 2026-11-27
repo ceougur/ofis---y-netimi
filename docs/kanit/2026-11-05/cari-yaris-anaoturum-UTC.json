@@ -1,0 +1,32 @@
+{
+  "ad": "cari-yaris-anaoturum-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/cari-duzeltme-yaris-250.test.mjs",
+  "commit": "965a01968cb22cb5709d74b987f18844a257be10",
+  "dal": "claude/epic-thompson-w0lc2l",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T22:43:14.523Z",
+  "sure_sn": 4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 4,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/cari-yaris-anaoturum-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "287c5aa8ed28133e256f7ca72c5e3bb9cea030fe3810b30275b019ab588d706d",
+  "ham_cikti_bayt": 2010
+}

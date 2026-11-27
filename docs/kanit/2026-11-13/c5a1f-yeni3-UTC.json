@@ -1,0 +1,32 @@
+{
+  "ad": "c5a1f-yeni3-UTC",
+  "komut": "node --test --test-reporter=tap test/defter-kaynak-iz-250.test.mjs test/kilit-izi-alanlar-250.test.mjs test/kural-farki-kapi-disi-250.test.mjs test/kural-farki-alarm-250.test.mjs test/donmus-defter-250.test.mjs test/banka-210-kapi-kapsam.test.mjs test/goc-243-stok-acilis.test.mjs test/banka-210-goc.test.mjs",
+  "commit": "71d4d946f402ac68f648eb96a56110b5d8649abe",
+  "dal": "worktree-agent-af550e32f1aedd444",
+  "kirli": 3,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v445 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-13T06:50:52.609Z",
+  "sure_sn": 60.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 127,
+    "gecen": 127,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1f-kanit/2026-11-13/c5a1f-yeni3-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-af550e32f1aedd444",
+  "ham_cikti_sha256": "f5bb510aa5b74a4fe89cc16c3687a1cfb77fe0627f5417414346b38336ff01d9",
+  "ham_cikti_bayt": 74846
+}

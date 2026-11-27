@@ -1,0 +1,32 @@
+{
+  "ad": "c4-dusuk-e2e-e2e",
+  "komut": "npm run test:e2e",
+  "commit": "a55fe1fe81d26e7aa7bce0f4ce4cc26136aee1f3",
+  "dal": "worktree-agent-a02dbfbff8be96ea9",
+  "kirli": 0,
+  "izlenmeyen": 27,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T20:49:51.607Z",
+  "sure_sn": 184.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "e2e-run",
+    "toplam": 50,
+    "gecen": 50,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/c4-dusuk-e2e-e2e.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a02dbfbff8be96ea9",
+  "ham_cikti_sha256": "9d2ebfa6b0e0abcd122ff6d1824936f3aaba9277db9b68ac151b22724446b2eb",
+  "ham_cikti_bayt": 5699
+}

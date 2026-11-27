@@ -1,0 +1,27 @@
+2.5.0 MUHASEBE SÜRÜCÜSÜ — KANIT (05.11.2026, sürücü ajanı; worktree dalı worktree-agent-a64680bb6bb82a79e)
+
+Sürücü: test/bagimsiz/muhasebe-surucu/ (program.mjs → karsilastir.py → kos.mjs; siniflama.json elle sınıflar).
+Kâhin: test/bagimsiz/muhasebe/ (5e37f0ee) — DEĞİŞTİRİLMEDİ; model yalnız içe aktarıldı (bayt kodu yazılmadı), senaryonun devirsiz eşdeğeriyle koşuldu.
+Dal: KG3=SORU (ana oturum 05.11 iletisi: ürün sahibinin KG-3 kararı), öbür maddeler A. BUGÜN görünümü: KG6=B, KG7=B, KG15=B + belgeli hesap değişimleri.
+Python 3 (-I), Node v22.23.4, linux x64. Makine paylaşımlı (öbür ajanlar çalışıyordu; yük ortalaması 2–3,5 / 4 çekirdek).
+
+1) surucu-muhasebe-bugun  (commit 7981a056 kodu; 43 senaryo × TZ UTC + Europe/Istanbul; --paralel 3)
+   node tools/kanit.mjs kos surucu-muhasebe-bugun -- node test/bagimsiz/muhasebe-surucu/kos.mjs --paralel 3 --cikti docs/kanit/2026-11-05/surucu-muhasebe-bugun --veri <not defteri>
+   Sonuç: AYNI 2426 · U 662 · P 48 · K 420 · R 178 · SINIFLANMADI 0 · red farkı 0 · sınıfsız adım farkı 0 · değişmez 0 · öz denetim bozuk 0 · koşu hatası 0
+   (# tests 3734 / # pass 3088 / # fail 646 — "fail" = elle sınıflanmış P / K / R satırları; çıkış 1 bilinçli: farklar giderilmeden yeşil denmez)
+   İki saat diliminde senaryo başına sonuç BİREBİR aynı (tz farkı 0).
+   Rastgele senaryoların program.json'ları .gz (karsilastir.py .gz okur).
+
+2) surucu-muhasebe-v249  (ESKİ KOD: v2.4.9 = ccf0b0ca, `git archive ccf0b0ca server client tools package.json test/helpers.mjs` ayrı kopya — ders 23)
+   ... kos.mjs --paralel 3 --program <kopya> --cikti docs/kanit/2026-11-05/surucu-muhasebe-v249
+   Sonuç sayıları 1) ile aynı. fark.json'lar son karşılaştırıcıyla yeniden üretildi: 86 koşunun 82'si birebir, 4'ü (s26a/s26b × 2 TZ) yalnız
+   rastgele kimlik (openingEntryId) farkı → BÜTÜN farklar v2.4.9'da da var, gerileme YOK. (ozet.json'daki U etiket sayımı eski karşılaştırıcıdan.)
+
+3) surucu-muhasebe-olcum  (ÖLÇÜM; rastgele-1..3, TZ Europe/Istanbul, --paralel 1, --adim 0 = olay başına okuma YOK)
+   Yalnız süre ve olay döngüsü için. --adim 0'da adım farkı olmadığından kök neden sınıfı kurulamaz: rapor satırlarındaki "SINIFLANMADI 227"
+   bu koşuda GEÇERSİZDİR (aynı farklar 1)'de sınıflı). Olay döngüsü en çok 75–80 ms (POST /invoices en çok 62–65 ms; test kipi: her yazımda tam
+   mutabakat kapısı — gateVerify — üretimden ağır); koşu 28–33 sn / ~830 olay.
+
+4) surucu-muhasebe-mutasyon  (TESTİN DİŞİ; HEAD kodunun ayrı kopyasında iki bilinçli hata)
+   M1 general-ledger.mjs:220 Kasa girişi 649 → 602  ⇒ s11 SINIFLANMADI (adım 3 + 6 rapor satırı) — YAKALANDI
+   M2 general-ledger.mjs:260 cari tahsilat tutarı − 1  ⇒ s01 RED #3 (program kendi kapısı 409 ledger-integrity) SINIFLANMADI — YAKALANDI

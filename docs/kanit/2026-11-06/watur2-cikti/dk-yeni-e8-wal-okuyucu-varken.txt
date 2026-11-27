@@ -1,0 +1,20 @@
+{
+ "talepten_once": [
+  "+905321112233 @ /destekofis.sqlite",
+  "+905321112233 @ /destekofis.sqlite-wal",
+  "+905321112233 @ /whatsapp-gonderim.sqlite-wal"
+ ],
+ "okuyucu": 2,
+ "talep": 200,
+ "talep_aninda_okuyucu_acik": [
+  "+905321112233 @ /destekofis.sqlite",
+  "+905321112233 @ /destekofis.sqlite-wal"
+ ],
+ "okuyucu_kapandi": [
+  "+905321112233 @ /destekofis.sqlite",
+  "+905321112233 @ /destekofis.sqlite-wal"
+ ],
+ "bakim_turu_1": [],
+ "olagan_yazim": [],
+ "bakim_turu_2": []
+}

@@ -1,0 +1,32 @@
+küçüldü 34
+küçüldü 23
+küçüldü 21
+küçüldü 20
+küçüldü 15
+küçüldü 13
+küçüldü 11
+küçüldü 10
+küçüldü 7
+küçüldü 6
+EN KÜÇÜK 6 adım
+  {"id": "c-e", "islem": "cari_ac", "ad": "E", "isim": "Rastgele Epsilon 7", "tarih": "2026-03-01", "acilis": "1143,94", "acilisVade": "2026-05-05"}
+  {"id": "s011", "islem": "stok_iade", "cari": "E", "tutar": "1979,82", "tarih": "2026-03-16"}
+  {"id": "s015", "islem": "borc", "cari": "E", "tutar": "1800,00", "tarih": "2026-03-21", "vade": "2026-04-28"}
+  {"id": "s022", "islem": "odeme", "cari": "E", "tutar": "1979,82", "tarih": "2026-03-31"}
+  {"id": "s023", "islem": "fatura", "ad": "G3", "cari": "E", "tutar": "100,00", "tarih": "2026-04-01"}
+  {"id": "s024", "islem": "tahsilat", "cari": "E", "tutar": "1649,04", "tarih": "2026-04-01"}
+  {"id": "k1", "islem": "kontrol"}
+  fark k1:fatura:G3:acik P= 10000 K= 0 | 2.5.0 kararıyla değişen | C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme günü
+  fark k1:fatura:G3:gosterilen P= 10000 K= 0 | 2.5.0 kararıyla değişen | §35 Y23-4: kartın almadığı faturanın gösterilen açığı = kendi açığı
+  fark k1:fatura:G3:liste:gosterilen P= 10000 K= 0 | 2.5.0 kararıyla değişen | §35 Y23-4: kartın almadığı faturanın gösterilen açığı = kendi açığı
+  fark k1:hareket:acilis:E:kalan P= 0 K= 114394 | 2.5.0 kararıyla değişen | C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde aç
+  fark k1:hareket:s015:kalan P= 129490 K= 25096 | 2.5.0 kararıyla değişen | C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde aç
+  fark k1:projeksiyon:cari P= 1 K= 2 | 2.5.0 kararıyla değişen | KS10 madde 11: Nakit Akış Projeksiyonu cari vadeli kalemleri KATAR (2.4.5 BİLİNE
+  fark k1:projeksiyon:hareket:acilis:E P= "yok" K= {"amount": 114394, "date": "2026-05-05", "direction": "in"} | 2.5.0 kararıyla değişen | KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa 
+  fark k1:projeksiyon:hareket:s015 P= {"amount": 129490, "date": "2026-04-28", "direction": "in"} K= {"amount": 25096, "date": "2026-04-28", "direction": "in"} | 2.5.0 kararıyla değişen | KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa 
+  fark k1:takvim:cariKalemSayisi P= 1 K= 2 | 2.5.0 kararıyla değişen | K6.3 takvimdeki cari kalemlerinin sayısı
+  fark k1:takvim:fatura:G3 P= {"amount": 10000, "direction": "in"} K= "yok" | 2.5.0 kararıyla değişen | madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık)
+  fark k1:takvim:hareket:acilis:E P= "yok" K= {"amount": 114394, "cari": "E", "days": -56, "direction": "in", "dueDate": "2026-05-05", "label": "Tahsil Edilecek Borç", "person": "Rastgele Epsilon  | 2.5.0 kararıyla değişen | K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = B
+  fark k1:takvim:hareket:s015 P= {"amount": 129490, "cari": "E", "days": -63, "direction": "in", "dueDate": "2026-04-28", "label": "Tahsil Edilecek Borç", "person": "Rastgele Epsilon  K= {"amount": 25096, "cari": "E", "days": -63, "direction": "in", "dueDate": "2026-04-28", "label": "Tahsil Edilecek Borç", "person": "Rastgele Epsilon 7 | 2.5.0 kararıyla değişen | K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = B
+  fark k1:vadeTakip:hareket:acilis:E P= "yok" K= {"amount": 114394, "date": "2026-05-05", "direction": "in"} | 2.5.0 kararıyla değişen | K6.3 Vade Takip (Anlık Durum) aynı kalemleri gösterir
+  fark k1:vadeTakip:hareket:s015 P= {"amount": 129490, "date": "2026-04-28", "direction": "in"} K= {"amount": 25096, "date": "2026-04-28", "direction": "in"} | 2.5.0 kararıyla değişen | K6.3 Vade Takip (Anlık Durum) aynı kalemleri gösterir

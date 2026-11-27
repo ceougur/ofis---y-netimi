@@ -1,0 +1,22 @@
+WhatsApp tur 3 HIZ düzeltmesi — kanıt dizini (11.11.2026; dal worktree-agent-a70a580bda07d5ebe; taban sinama-wa3 028e1b76; kod 7cae5134, senaryo / fikstür 37dfcf31)
+
+DAVRANIŞ DEĞİŞİKLİĞİ: YOK (eşdeğerlik testi tur 3'ün gerçek koduna karşı; tur 3'ün testleri beklenti değişmeden yeşil).
+
+ÖLÇÜM (100.000 iş + 100.000 defter; şablon scratchpad/watur3-olcum/sablon; betik scratchpad/watur3-betik/olcum.mjs kopyası; flock -x; her koşu taze veri):
+  wa3hiz-olcum-ham-1.txt  sıra çalışma → tur 3 → yeni → çalışma → tur 3 → yeni (görev metnindeki sıra)
+  wa3hiz-olcum-ham-2.txt  ek dört çift çalışma / yeni (ilk turda bir çift 1.000-ayrı ölçümünde %17,6 fark gösterdi — oynama mı gerçek mi diye)
+  wa3hiz-olcum-tablo.txt  özet tablo (yük > 2 olan koşu GEÇERSİZ: calisma1 3,15; tur3_1 2,10)
+  wa3hiz-olcum.sh.txt     koşu betiği
+SINAMA (tools/kanit.mjs kos):
+  wa3hiz-degisen-son-{UTC,Europe-Istanbul}  değişen alan + yeni test (37dfcf31): 142/142, 142/142
+  wa3hiz-degisen-{UTC,Europe-Istanbul}      aynı, 7cae5134 (ilk fikstürle)
+  wa3hiz-komsu-{UTC,Europe-Istanbul}        test/whatsapp-*.test.mjs hepsi (7cae5134; ürün kodu 37dfcf31 ile aynı): 655/655, 655/655
+  wa3hiz-e2e-senaryo-whatsapp               45/45
+  wa3hiz-e2e-senaryo-whatsapp-gonder-248    189/189
+  wa3hiz-mutasyon-UTC                       tur 3'ün 20 mutantı + 6 yeni (ilk senaryo): tur 3'ün 20'si 20/20 YAKALANDI; yeni 3 KAÇTI → senaryo güçlendirildi
+  wa3hiz-mutasyon-MH-UTC                    yeni mutantlar güçlendirilmiş senaryoyla: 6/7 (MH1-kendisi-de-atlanir W3H-E'den kaçar, W3T-70c yakalar — aynı koşuda)
+  wa3hiz-mutasyon.mjs.txt                   mutasyon betiği (tur 3'ünkü + M70-yalniz-eski-sira find uyarlaması + MH mutantları)
+ESKİ KOD KIRMIZISI (yeni test + yardımcı + fikstür eski kopyalara, ders 51):
+  wa3hiz-kirmizi-tur3-028e1b76-UTC.log      W3H-E 3/3 yeşil (fikstür o koddan), W3H-K1 kırmızı (küme düşürme yok), W3H-K2 kırmızı (12 bildirimde 12 cari okuması)
+  wa3hiz-kirmizi-calisma-4a2e1d6c-UTC.log   5/5 kırmızı; W3H-E nedeni S70 yok (zincir işi Atlandı kalıyor)
+FİKSTÜR: test/fixtures/wa3hiz-250/tur3-028e1b76.json — test/wa3hiz-250/uret.mjs tur 3 kopyasında TZ=UTC; aynı üretim TZ=Europe/Istanbul ile: wa3hiz-fikstur-iki-tz-fark.txt (3 tohum, fark 0).

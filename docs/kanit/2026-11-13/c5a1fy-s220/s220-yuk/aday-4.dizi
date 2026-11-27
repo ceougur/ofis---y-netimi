@@ -1,0 +1,11 @@
+      1 + div#hof-notices.hof-notices
+      2 + div#hof-search-panel.hof-search-panel
+      1 + div#hof-toasts.hof-toasts
+      1 + div.hof-modal-backdrop "Excel’den Yükle: Kolonları Eşle"
+      6 + div.hof-modal-backdrop "Raporlar"
+      1 + div.hof-modal-backdrop "Taksit Kartlarını Toplu Yükle"
+      1 + div.hof-modal-backdrop "Taksitler"
+      1 + div.hof-modal-backdrop "Veri okunuyor"
+      1 + div.hof-modal-backdrop "Verinizi tanıyoruz"
+      1 + div.hof-modal-backdrop "Yeni veri: baslangic.xlsx"
+      1 metin hof-toasts: taksit-odenen.xlsx okunuyor…×

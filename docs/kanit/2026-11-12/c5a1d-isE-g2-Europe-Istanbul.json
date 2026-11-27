@@ -1,0 +1,32 @@
+{
+  "ad": "c5a1d-isE-g2-Europe-Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/acilis-519-250.test.mjs test/acilis-isareti-246.test.mjs test/asama0-226-saat.test.mjs test/asama0-226.test.mjs test/banka-210-altin.test.mjs test/banka-210-ariza.test.mjs test/banka-210-defter.test.mjs test/banka-210-dun-bugun.test.mjs test/banka-210-fis.test.mjs test/banka-210-gg-cari.test.mjs test/banka-210-gg-eski.test.mjs test/banka-210-gg-geri-yukle.test.mjs test/banka-210-gg-kapi.test.mjs test/banka-210-gg-tarama.test.mjs test/banka-210-gg-turler.test.mjs test/banka-210-gg2-hiz.test.mjs test/banka-210-goc-zinciri.test.mjs test/banka-210-goc.test.mjs test/banka-210-hesap.test.mjs test/banka-210-hiz-esdegerlik.test.mjs test/banka-210-ileri-tarihli-eski.test.mjs test/banka-210-kabul-mizan.test.mjs test/banka-210-kapi-kapsam.test.mjs test/banka-210-kapi.test.mjs test/banka-210-onarim.test.mjs test/banka-210-post.test.mjs test/banka-210-raporlar.test.mjs test/banka-210-saat.test.mjs test/banka-210-sihirbaz.test.mjs test/banka-210-tek-kaynak.test.mjs test/banka-210-ters-kayit.test.mjs test/banka-220-pos-iz3.test.mjs test/banka-220-pos-kabul.test.mjs test/banka-220-senet-121.test.mjs test/banka-220-tahsile-ver-dogrulama.test.mjs test/banka-220-tahsile-ver-tur2.test.mjs test/banka-220-tahsile-ver.test.mjs test/banka-230-supheli-bozma.test.mjs test/banka-230-supheli.test.mjs test/banka-onarim-kayit-250.test.mjs test/birlesik-tur2-yaris-250.test.mjs test/cari-bilgi-222.test.mjs test/cari-tur-222.test.mjs test/cari-vade-245.test.mjs test/defter-213.test.mjs test/defter-243-raporlar.test.mjs test/defter-243-vergi.test.mjs test/defter-hiz-esdegerlik-250.test.mjs test/defter-turu-c4.test.mjs test/devir-d2-bakim-250.test.mjs test/donem-213.test.mjs test/donmus-defter-250.test.mjs test/donmus-defter-bellek-250.test.mjs test/donmus-defter-kilit-ucu-250.test.mjs test/donmus-defter-tur1-250.test.mjs test/donmus-defter-tur3-250.test.mjs test/donmus-defter-tur4-250.test.mjs test/donmus-defter-yasam-250.test.mjs test/ebelge-243-gonderim.test.mjs test/ebelge-244-secilenleri-gonder.test.mjs test/einvoice-edm.test.mjs test/ertelenen-224.test.mjs test/fatura-215.test.mjs test/fatura-230-ayarlar-banka.test.mjs test/fatura-244-numara-tarih-onay.test.mjs test/fis-defteri-250.test.mjs test/fis-defteri-kayit-250.test.mjs test/fis-defteri-koruma-250.test.mjs test/fis-defteri-yasam-250.test.mjs test/gg243-dar-kontrol-gonderim.test.mjs test/gg243-dar2-gonderim.test.mjs test/gg243-dar3.test.mjs test/gg243-gonderim.test.mjs test/goc-243-iade-ref.test.mjs test/goc-243-stok-acilis.test.mjs test/goc-243-stok-kdv.test.mjs test/goc-244-esmm-gonderim.test.mjs test/goc-244-iptal-suresi.test.mjs test/goc-246-iade-bagi.test.mjs test/hakem-k3-kasa-istek-kimligi.test.mjs test/hakem-k4-yineleme-sirasi.test.mjs test/hesap-plani-sinif-250.test.mjs test/iade-210-fazla-tahsilat.test.mjs test/iade-210-onarim.test.mjs test/iade-210.test.mjs test/iade-geri-odeme-246.test.mjs test/ice-aktarma-istek-kimligi-248.test.mjs test/inceleme-222.test.mjs test/inceleme-226-2.test.mjs test/inceleme-226.test.mjs test/istek-kimligi-222.test.mjs test/iz1-kasa-acilis.test.mjs test/kapali-kart-ekstre-tarihi-250.test.mjs test/kapama-ks7-245.test.mjs test/kapi-para-245.test.mjs test/kasa-acilis-iz-250.test.mjs test/kasa-acilis-mutant-b6-250.test.mjs test/kasa-acilis-once-250.test.mjs test/kasa-acilis-uyari-250.test.mjs test/kasa-acilis-uyari-artis-250.test.mjs test/kasa-acilis-vergi-s94-250.test.mjs test/koruma-taban-ailesi-250.test.mjs test/kural-farki-alarm-250.test.mjs test/mm-smm-244.test.mjs test/mutabakat-213.test.mjs test/personel-ozluk-244.test.mjs test/raporlar-209.test.mjs test/raporlar-210-banka.test.mjs test/s127-tek-kez-250.test.mjs test/silinenler-donem-kilidi-244.test.mjs test/stok-alis-iadesi-246.test.mjs test/stopaj-tevkifat-iade-244.test.mjs test/tablodan-aktar-244.test.mjs test/tyk-api-250.test.mjs test/tyk-goc-249-250.test.mjs test/tyk-kilit-taksitli-250.test.mjs test/ux18-cek-fatura-244.test.mjs test/yevmiye-sira-244.test.mjs",
+  "commit": "b884ca5b5e97dd8e4cc82bdc611920f3b47e6729",
+  "dal": "worktree-agent-ac0e51d0f24e4542e",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-12T13:58:26.604Z",
+  "sure_sn": 873.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1348,
+    "gecen": 1348,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1d-kanit/2026-11-12/c5a1d-isE-g2-Europe-Istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ac0e51d0f24e4542e",
+  "ham_cikti_sha256": "549938f328b4da99e25e134a1deef80f3d96a94188069ecef94d2490f64a3e99",
+  "ham_cikti_bayt": 555572
+}

@@ -1,0 +1,12 @@
+(node:4521) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:4521) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+kilit yanıtı: YOK 30004 ms — İSTEMCİ ZAMAN AŞIMI (30 sn): Sunucu zamanında yanıt vermedi. (client-timeout) · olay döngüsü en çok 280 ms
+dondurma bitti: 82458 ms (uç işleyicisi bitti - ms) · 2741312 donmuş satır · kapsam 2025-12-31 · olay döngüsü en çok 280 ms · yoklama 52 (en uzun 47 ms)
+50 ms'yi aşan boşluk: 2 (en büyükler: 280 ms @23 ms; 56 ms @26412 ms)
+para satırı 2254506 · cekirdek · açılış - ms · yük 4.07 3.73 3.50 → 4.08 3.87 3.57
+
+# tests 1
+# pass 1
+# fail 0

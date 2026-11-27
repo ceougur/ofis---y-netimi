@@ -1,0 +1,32 @@
+{
+  "ad": "c7bfix-yeni-europeistanbul",
+  "komut": "node --test test/c7bfix-kart-kapat-kuyruk-250.test.mjs test/c7b-kart-kapat-onay-250.test.mjs",
+  "commit": "43679a95e882037ac6308552261b647c025e8dec",
+  "dal": "worktree-agent-aa660861cba7cd284",
+  "kirli": 1,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-20T23:46:30.658Z",
+  "sure_sn": 2.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 12,
+    "gecen": 12,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7bfix-a66/kanit/2026-11-20/c7bfix-yeni-europeistanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa660861cba7cd284",
+  "ham_cikti_sha256": "089019ef9dc280fca10a0fb3d3789ba4d0c7be86a489a3af3956e5f2f791d154",
+  "ham_cikti_bayt": 4057
+}

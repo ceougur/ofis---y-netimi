@@ -1,0 +1,16 @@
+başladı 06:20:36 yük 2.31 2.57 2.40 6/167 15818 · ağaç e4b0a57f · 0 kirli
+utc cari-oz çıkış 0 · [kanit] kahin8y-cari-oz-utc: GEÇTİ · çıkış 0 · 4050/4050 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit e4b0a57 · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+utc cari-mutasyon çıkış 0 · [kanit] kahin8y-cari-mutasyon-utc: GEÇTİ · çıkış 0 · 227/227 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit e4b0a57 · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+utc esdeger-cari çıkış 0 · [kanit] kahin8y-esdeger-cari-utc: GEÇTİ · çıkış 0 · 540/540 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit e4b0a57 · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+utc elle-yeni-cari çıkış 0 · [kanit] kahin8y-elle-yeni-cari-utc: GEÇTİ · çıkış 0 · 204/204 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit e4b0a57 · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+utc kirmizi-eski-cari çıkış 0 · [kanit] kahin8y-kirmizi-eski-cari-utc: GEÇTİ · çıkış 0 · 112/112 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit e4b0a57 · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+utc g1-tara çıkış 0 · [kanit] kahin8y-g1-tara-utc: GEÇTİ · çıkış 0 · 88/88 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit e4b0a57 · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+utc genis-tarama çıkış 0 · [kanit] kahin8y-genis-tarama-utc: GEÇTİ · çıkış 0 · 2201/2201 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit e4b0a57 · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+ist cari-oz çıkış 0 · [kanit] kahin8y-cari-oz-ist: GEÇTİ · çıkış 0 · 4050/4050 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit e4b0a57 · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+ist cari-mutasyon çıkış 0 · [kanit] kahin8y-cari-mutasyon-ist: GEÇTİ · çıkış 0 · 227/227 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit e4b0a57 · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+ist esdeger-cari çıkış 0 · [kanit] kahin8y-esdeger-cari-ist: GEÇTİ · çıkış 0 · 540/540 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit e4b0a57 · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+ist elle-yeni-cari çıkış 0 · [kanit] kahin8y-elle-yeni-cari-ist: GEÇTİ · çıkış 0 · 204/204 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit e4b0a57 · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+ist kirmizi-eski-cari çıkış 0 · [kanit] kahin8y-kirmizi-eski-cari-ist: GEÇTİ · çıkış 0 · 112/112 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit e4b0a57 · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+ist g1-tara çıkış 0 · [kanit] kahin8y-g1-tara-ist: GEÇTİ · çıkış 0 · 88/88 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit e4b0a57 · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+ist genis-tarama çıkış 0 · [kanit] kahin8y-genis-tarama-ist: GEÇTİ · çıkış 0 · 2201/2201 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit e4b0a57 · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+bitti 06:25:29 yük 4.10 3.37 2.78 8/194 19492

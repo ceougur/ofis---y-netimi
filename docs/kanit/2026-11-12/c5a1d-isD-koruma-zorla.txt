@@ -1,0 +1,2 @@
+test/koruma-taban-ailesi-250.test.mjs · kip bitir · 19 örnek · ön koşul GERÇEKLEŞTİ · test YEŞİL · tests 20 pass 20 fail 0
+test/koruma-taban-ailesi-250.test.mjs · kip tut · 19 örnek · ön koşul GERÇEKLEŞMEDİ · test YEŞİL · tests 20 pass 20 fail 0

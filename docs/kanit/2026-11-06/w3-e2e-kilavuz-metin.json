@@ -1,0 +1,32 @@
+{
+  "ad": "w3-e2e-kilavuz-metin",
+  "komut": "npm run test:kilavuz-metin",
+  "commit": "75f1aad98e85abd49c1e17ade334b149504dd01f",
+  "dal": "worktree-agent-a049637a49bdad154",
+  "kirli": 10,
+  "izlenmeyen": 6,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T10:40:33.152Z",
+  "sure_sn": 197.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 930,
+    "gecen": 930,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-kanit/2026-11-06/w3-e2e-kilavuz-metin.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a049637a49bdad154",
+  "ham_cikti_sha256": "9e85103478dcf5c09af1b5e60a73a916e8b9b37b24c658af1d1a1252ca780cd9",
+  "ham_cikti_bayt": 30879
+}

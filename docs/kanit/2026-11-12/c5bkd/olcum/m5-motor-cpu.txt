@@ -1,0 +1,5 @@
+girdi 1484 (yakalanan 1484; kartlı 848) · yük 1.25 1.27 1.21
+once     en iyi hepsi 5612 · kartlı 5243 · kartsız 369 | ortanca hepsi 5734 · kartlı 5315 · kartsız 412 | kalem 37732 · Σ kalan (kuruş) -11169496107 · ön ödeme geçişi toplam 0, 12'den çok geçişli cari 0 (0 ms), en çok 0, güvenli kapanış 0
+bugun    en iyi hepsi 6817 · kartlı 6446 · kartsız 371 | ortanca hepsi 7137 · kartlı 6664 · kartsız 448 | kalem 39534 · Σ kalan (kuruş) -11456462593 · ön ödeme geçişi toplam 0, 12'den çok geçişli cari 0 (0 ms), en çok 0, güvenli kapanış 0
+benim    en iyi hepsi 6735 · kartlı 6283 · kartsız 390 | ortanca hepsi 7125 · kartlı 6730 · kartsız 413 | kalem 39534 · Σ kalan (kuruş) -11456462593 · ön ödeme geçişi toplam 0, 12'den çok geçişli cari 0 (0 ms), en çok 0, güvenli kapanış 0
+çıkış 0

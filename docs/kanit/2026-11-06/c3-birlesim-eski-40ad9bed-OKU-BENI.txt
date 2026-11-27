@@ -1,0 +1,8 @@
+Ç3 birleşimi — ana oturum kırmızı denetimi (ders 7, 38, 23)
+Kopya: git archive 40ad9bed | tar -x → scratchpad/c3birlesim-eski-40ad9bed (+ node_modules bağı; yeni test ve 9d507460'ın eklediği fikstürler kopyalandı)
+Komut: TZ=UTC HUKUK_LICENSE_URL=http://127.0.0.1:9 node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/donmus-defter-bellek-250.test.mjs
+Sonuç: tests 5, pass 1, fail 4, cikis=1 (ham çıktı c3-birlesim-eski-40ad9bed-bellek.log)
+B3 KIRMIZI beklenen nedenle: 'güncel kural: kaynak sorguları store.all'a düşmemeli' (11 kaynak sorgusu)
+B5 KIRMIZI beklenen nedenle: 'buildRule249 sıkı depo olmadan çağrılıyor: ledger-freeze-worker.mjs:31, ledger-snapshots.mjs:136'
+B1, B2 KIRMIZI lean-rows.mjs olmadığı için (koruma testleri; kanıt sayılmaz, ders 38); B4 eski kodda YEŞİL (koruma)
+Yeni kodda (2ba5ac0b) aynı dosya 5/5 — c3-birlesim-yeni-utc / c3-birlesim-yeni-istanbul (25/25, üç dosya)

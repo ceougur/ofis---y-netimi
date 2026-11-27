@@ -1,0 +1,32 @@
+{
+  "ad": "ana-dkfix-tam",
+  "komut": "npm test",
+  "commit": "6554ff54ea752f959780ca4a32e06ceff7ad9a24",
+  "dal": "dkfix-sinama",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-21T12:12:57.592Z",
+  "sure_sn": 4172.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 5985,
+    "gecen": 5985,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-dkfix-sinama/kanit/2026-11-21/ana-dkfix-tam.log.gz",
+  "klasor": "/dev/shm/dkfix-sinama",
+  "ham_cikti_sha256": "21769b979af94babbee682acd50af885f1ca79d020a28d3ffb613faa4e2de2d3",
+  "ham_cikti_bayt": 2348471
+}

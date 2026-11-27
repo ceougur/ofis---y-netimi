@@ -1,0 +1,21 @@
+{
+ "SK28b": {
+  "bakiye": 1000,
+  "gecikmisKart": 100,
+  "gecikmisListe": 100,
+  "vadeGecikmis": 100,
+  "zilGecikmis": 100,
+  "vadeTakip": [
+   "account:in:100@2026-06-02"
+  ],
+  "zil": [
+   "account:100:overdue"
+  ],
+  "kalan": [
+   "X500:500→500"
+  ],
+  "kartlar": [],
+  "sigma": true,
+  "mutabakat": true
+ }
+}

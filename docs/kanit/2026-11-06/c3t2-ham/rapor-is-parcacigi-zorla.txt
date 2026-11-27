@@ -1,0 +1,48 @@
+# Ç3 tur 2 — banka-210-rapor-is-parcacigi-kapanis H2 ZORLA (ders 20). Komut: 8 x 'timeout 40 node -e "for(;;){}"' (4 çekirdek) + TZ=Europe/Istanbul node --test --test-name-pattern='H2: zaman' test/banka-210-rapor-is-parcacigi-kapanis.test.mjs
+# Komşu İstanbul koşusunda (yük 13-15) tek kırmızı: 'sorgusu süren iş parçacığı yuvada: 0'. Son kod: çalışma ağacı (4af0aafc); eski: git archive 40473f17 kopyası c3t2-eski-40473f17.
+
+===== SON KOD zorla 1
+      error: 'sorgusu süren iş parçacığı yuvada: 0'
+not ok 1 - rapor iş parçacığı (doğrudan): kapanış nedeni, zaman aşımında yuva ve tanıtıcı, beklenmeyen hata
+  error: '1 subtest failed'
+# tests 1
+# pass 0
+# fail 1
+
+===== SON KOD zorla 2
+      error: 'sorgusu süren iş parçacığı yuvada: 0'
+not ok 1 - rapor iş parçacığı (doğrudan): kapanış nedeni, zaman aşımında yuva ve tanıtıcı, beklenmeyen hata
+  error: '1 subtest failed'
+# tests 1
+# pass 0
+# fail 1
+
+===== SON KOD zorla 3
+ok 1 - rapor iş parçacığı (doğrudan): kapanış nedeni, zaman aşımında yuva ve tanıtıcı, beklenmeyen hata
+# tests 1
+# pass 1
+# fail 0
+
+===== ESKİ 40473f17 zorla 1
+      error: 'sorgusu süren iş parçacığı yuvada: 0'
+not ok 1 - rapor iş parçacığı (doğrudan): kapanış nedeni, zaman aşımında yuva ve tanıtıcı, beklenmeyen hata
+  error: '1 subtest failed'
+# tests 1
+# pass 0
+# fail 1
+
+===== ESKİ 40473f17 zorla 2
+      error: 'sorgusu süren iş parçacığı yuvada: 0'
+not ok 1 - rapor iş parçacığı (doğrudan): kapanış nedeni, zaman aşımında yuva ve tanıtıcı, beklenmeyen hata
+  error: '1 subtest failed'
+# tests 1
+# pass 0
+# fail 1
+
+===== ESKİ 40473f17 zorla 3
+      error: 'sorgusu süren iş parçacığı yuvada: 0'
+not ok 1 - rapor iş parçacığı (doğrudan): kapanış nedeni, zaman aşımında yuva ve tanıtıcı, beklenmeyen hata
+  error: '1 subtest failed'
+# tests 1
+# pass 0
+# fail 1

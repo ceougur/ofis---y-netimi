@@ -1,0 +1,8 @@
+(node:25414) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+YAN-A Kasa açılışı: A (yalnız tarih) → 200  · son {"amount":5000,"date":"2026-08-31"} · B SESSİZCE EZİLDİ
+YAN-A' boş form (form açılışında açılış yok): B 3.000 girdi, A 7.000 gönderdi → 200  · son {"amount":7000} · B SESSİZCE EZİLDİ
+YAN-B taksit: A (yalnız vade) → 200  · son {"amount":500,"dueDate":"2026-11-03"} · B SESSİZCE EZİLDİ
+3a kart (plans PUT): A (yalnız not) → 200  · son {"total":1000,"note":"A'nın notu"} · B SESSİZCE EZİLDİ
+3a stok kartı (stock_items PUT): A (yalnız not) → 200  · son {"salePrice":15,"note":"A'nın notu"} · B SESSİZCE EZİLDİ
+3a stok kartı / alım: alımdan sonra birim fiyat 12; A (yalnız not) → 200  · son {"unitPrice":10} · ALIM FİYATI SESSİZCE EZİLDİ

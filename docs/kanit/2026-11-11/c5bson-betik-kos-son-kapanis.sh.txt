@@ -1,0 +1,8 @@
+#!/bin/bash
+# Ç5-B SON TUR — son commit (yalnız test: geri yükleme adımı) sonrası: değişen + yeni testler iki TZ → mutasyon (son uç).
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+B=$S/c5bson-betik
+echo "KAPANIŞ ZİNCİRİ · uç $(git -C /home/user/ofis---y-netimi/.claude/worktrees/agent-ac2cc1e4fd632460d rev-parse --short HEAD) · başta $(cat /proc/loadavg) · $(date -u +%H:%M) · disk $(df -h / | tail -1 | awk '{print $4}')"
+bash $B/kos-zincir4.sh test
+bash $B/kos-zincir4.sh mutasyon
+echo "KAPANIŞ ZİNCİRİ BİTTİ $(date -u +%H:%M) · yük $(cat /proc/loadavg)"

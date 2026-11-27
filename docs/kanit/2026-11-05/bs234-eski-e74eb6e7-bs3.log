@@ -1,0 +1,154 @@
+TAP version 13
+# Subtest: 2.5.0 BS-3 — düzeltme gövdesi yoldayken kayıt silinirse 404 + kayıt bulunamadı iletisi; hiçbir tablo yazılmaz
+    # Subtest: (d) stok hareketi düzeltmesi: hareket silinmişse 404 "Stok hareketi bulunamadı. Başka biri silmiş olabilir." (önceden 409 ledger-integrity)
+    not ok 1 - (d) stok hareketi düzeltmesi: hareket silinmişse 404 "Stok hareketi bulunamadı. Başka biri silmiş olabilir." (önceden 409 ledger-integrity)
+      ---
+      duration_ms: 415.048845
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bs234-eski-e74eb6e7/test/bs3-silinmis-kayit-250.test.mjs:88:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        stok hareketi düzeltmesi: yazım reddedilmeli (404) — yanıt 409 {"ok":false,"error":"İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Stok hareketi silinmiş cari satırı). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.","code":"ledger-integrity | ileti “İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Stok hareketi silinmiş cari satırı). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.” (beklenen “Stok hareketi bulunamadı. Başka biri silmiş olabilir.”) | hiçbir tablo yazılmamalı — değişen: integrity_log 0:e3b0c44298fc1c14 → 1:2eac98b68d86e89d
+        + actual - expected
+        
+        + [
+        +   'yazım reddedilmeli (404) — yanıt 409 {"ok":false,"error":"İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Stok hareketi silinmiş cari satırı). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.","code":"ledger-integrity',
+        +   'ileti “İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Stok hareketi silinmiş cari satırı). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.” (beklenen “Stok hareketi bulunamadı. Başka biri silmiş olabilir.”)',
+        +   'hiçbir tablo yazılmamalı — değişen: integrity_log 0:e3b0c44298fc1c14 → 1:2eac98b68d86e89d'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'yazım reddedilmeli (404) — yanıt 409 {"ok":false,"error":"İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Stok hareketi silinmiş cari satırı). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.","code":"ledger-integrity'
+        1: 'ileti “İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Stok hareketi silinmiş cari satırı). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.” (beklenen “Stok hareketi bulunamadı. Başka biri silmiş olabilir.”)'
+        2: 'hiçbir tablo yazılmamalı — değişen: integrity_log 0:e3b0c44298fc1c14 → 1:2eac98b68d86e89d'
+      operator: 'deepStrictEqual'
+      stack: |-
+        assertRefused (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bs234-eski-e74eb6e7/test/bs3-silinmis-kayit-250.test.mjs:85:12)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bs234-eski-e74eb6e7/test/bs3-silinmis-kayit-250.test.mjs:103:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: (f) taksit kartı tahsilatı düzeltmesi: tahsilat silinmişse 404 "Hareket bulunamadı. Başka biri silmiş olabilir." (önceden 200)
+    not ok 2 - (f) taksit kartı tahsilatı düzeltmesi: tahsilat silinmişse 404 "Hareket bulunamadı. Başka biri silmiş olabilir." (önceden 200)
+      ---
+      duration_ms: 424.885482
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bs234-eski-e74eb6e7/test/bs3-silinmis-kayit-250.test.mjs:108:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        tahsilat düzeltmesi: yazım reddedilmeli (404) — yanıt 200 {"ok":true,"data":{"id":"plan-697d52aa-37a1-4480-a07c-621bbf064bea","accountId":"account-c43f3707-1276-495b-a25f-24f37c4e6188","refNo":"1","registeredOn":"2026-10-08","caseKey":"","caseSource":"","cas | ileti “undefined” (beklenen “Hareket bulunamadı. Başka biri silmiş olabilir.”) | hiçbir tablo yazılmamalı — değişen: audit_events 9:6b453192317a3a19 → 10:2d9284502e70dcc4
+        + actual - expected
+        
+        + [
+        +   'yazım reddedilmeli (404) — yanıt 200 {"ok":true,"data":{"id":"plan-697d52aa-37a1-4480-a07c-621bbf064bea","accountId":"account-c43f3707-1276-495b-a25f-24f37c4e6188","refNo":"1","registeredOn":"2026-10-08","caseKey":"","caseSource":"","cas',
+        +   'ileti “undefined” (beklenen “Hareket bulunamadı. Başka biri silmiş olabilir.”)',
+        +   'hiçbir tablo yazılmamalı — değişen: audit_events 9:6b453192317a3a19 → 10:2d9284502e70dcc4'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'yazım reddedilmeli (404) — yanıt 200 {"ok":true,"data":{"id":"plan-697d52aa-37a1-4480-a07c-621bbf064bea","accountId":"account-c43f3707-1276-495b-a25f-24f37c4e6188","refNo":"1","registeredOn":"2026-10-08","caseKey":"","caseSource":"","cas'
+        1: 'ileti “undefined” (beklenen “Hareket bulunamadı. Başka biri silmiş olabilir.”)'
+        2: 'hiçbir tablo yazılmamalı — değişen: audit_events 9:6b453192317a3a19 → 10:2d9284502e70dcc4'
+      operator: 'deepStrictEqual'
+      stack: |-
+        assertRefused (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bs234-eski-e74eb6e7/test/bs3-silinmis-kayit-250.test.mjs:85:12)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bs234-eski-e74eb6e7/test/bs3-silinmis-kayit-250.test.mjs:123:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (g) taksit düzeltmesi: taksit silinmişse 404 "Taksit bulunamadı. Başka biri silmiş olabilir." (önceden 200)
+    not ok 3 - (g) taksit düzeltmesi: taksit silinmişse 404 "Taksit bulunamadı. Başka biri silmiş olabilir." (önceden 200)
+      ---
+      duration_ms: 384.047456
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bs234-eski-e74eb6e7/test/bs3-silinmis-kayit-250.test.mjs:126:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        taksit düzeltmesi: yazım reddedilmeli (404) — yanıt 200 {"ok":true,"data":{"id":"plan-4e825325-ab0e-453d-858d-0129361fc81e","accountId":"account-074ce151-ac17-4998-8798-ae31e9400c34","refNo":"2","registeredOn":"2026-10-08","caseKey":"","caseSource":"","cas | ileti “undefined” (beklenen “Taksit bulunamadı. Başka biri silmiş olabilir.”) | hiçbir tablo yazılmamalı — değişen: audit_events 13:2ad2622a8b1a4458 → 14:26e465f09d8181d5
+        + actual - expected
+        
+        + [
+        +   'yazım reddedilmeli (404) — yanıt 200 {"ok":true,"data":{"id":"plan-4e825325-ab0e-453d-858d-0129361fc81e","accountId":"account-074ce151-ac17-4998-8798-ae31e9400c34","refNo":"2","registeredOn":"2026-10-08","caseKey":"","caseSource":"","cas',
+        +   'ileti “undefined” (beklenen “Taksit bulunamadı. Başka biri silmiş olabilir.”)',
+        +   'hiçbir tablo yazılmamalı — değişen: audit_events 13:2ad2622a8b1a4458 → 14:26e465f09d8181d5'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'yazım reddedilmeli (404) — yanıt 200 {"ok":true,"data":{"id":"plan-4e825325-ab0e-453d-858d-0129361fc81e","accountId":"account-074ce151-ac17-4998-8798-ae31e9400c34","refNo":"2","registeredOn":"2026-10-08","caseKey":"","caseSource":"","cas'
+        1: 'ileti “undefined” (beklenen “Taksit bulunamadı. Başka biri silmiş olabilir.”)'
+        2: 'hiçbir tablo yazılmamalı — değişen: audit_events 13:2ad2622a8b1a4458 → 14:26e465f09d8181d5'
+      operator: 'deepStrictEqual'
+      stack: |-
+        assertRefused (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bs234-eski-e74eb6e7/test/bs3-silinmis-kayit-250.test.mjs:85:12)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bs234-eski-e74eb6e7/test/bs3-silinmis-kayit-250.test.mjs:141:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: yarış yokken aynı üç düzeltme yazar; silinmiş kayda doğrudan düzeltme de aynı 404 iletisini alır (isteğin başındaki denetim)
+    not ok 4 - yarış yokken aynı üç düzeltme yazar; silinmiş kayda doğrudan düzeltme de aynı 404 iletisini alır (isteğin başındaki denetim)
+      ---
+      duration_ms: 208.067065
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bs234-eski-e74eb6e7/test/bs3-silinmis-kayit-250.test.mjs:144:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          [
+            404,
+        +   'Taksit bulunamadı.'
+        -   'Taksit bulunamadı. Başka biri silmiş olabilir.'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 404
+        1: 'Taksit bulunamadı. Başka biri silmiş olabilir.'
+      actual:
+        0: 404
+        1: 'Taksit bulunamadı.'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bs234-eski-e74eb6e7/test/bs3-silinmis-kayit-250.test.mjs:160:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..4
+not ok 1 - 2.5.0 BS-3 — düzeltme gövdesi yoldayken kayıt silinirse 404 + kayıt bulunamadı iletisi; hiçbir tablo yazılmaz
+  ---
+  duration_ms: 1984.382143
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bs234-eski-e74eb6e7/test/bs3-silinmis-kayit-250.test.mjs:49:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 4
+# suites 1
+# pass 0
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2376.744001

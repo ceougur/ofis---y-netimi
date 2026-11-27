@@ -1,0 +1,32 @@
+{
+  "ad": "e2e-senaryo-c7b-kabul-250",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-c7b-kabul-250.mjs",
+  "commit": "7e03669e8daeb5dac158e2b559dd727c0b745720",
+  "dal": "worktree-agent-ab2301e43d5e0964a",
+  "kirli": 0,
+  "izlenmeyen": 7,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-21T09:19:33.510Z",
+  "sure_sn": 24.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 39,
+    "gecen": 39,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-21/dkfix-kos/2026-11-21/e2e-senaryo-c7b-kabul-250.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ab2301e43d5e0964a",
+  "ham_cikti_sha256": "97628e8597153c5fa77b7ca3ffe8a098b6315af33f60777576a5edcb66401215",
+  "ham_cikti_bayt": 6003
+}

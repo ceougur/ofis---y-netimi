@@ -1,0 +1,43 @@
+{
+  "ad": "c2t1-eski-surum-v249-taban-2ba5ac0b",
+  "komut": "node --disable-warning=ExperimentalWarning /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t1-eski-2ba5ac0b/test/fis-defteri-eski-surum-250.mjs --eski /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t1-v249",
+  "commit": "2d81e8fdc652ecdea9353c8ad7805d59c8909510",
+  "dal": "worktree-agent-a916111504e511b77",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T03:13:15.055Z",
+  "sure_sn": 1.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 17,
+    "gecen": 15,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "yeni kod: şema 47, fiş 2",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "eski kod dosyayı göç ettirmedi (şema 46 kaldı)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t1-kanit/2026-11-06/c2t1-eski-surum-v249-taban-2ba5ac0b.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a916111504e511b77",
+  "ham_cikti_sha256": "7e679fcd6b8580c99e38f68c80a2daa50afe882defa9c4d0d5f54e5670bfee67",
+  "ham_cikti_bayt": 1316
+}

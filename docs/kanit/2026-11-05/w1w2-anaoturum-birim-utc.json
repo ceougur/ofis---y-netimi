@@ -1,0 +1,32 @@
+{
+  "ad": "w1w2-anaoturum-birim-utc",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=300000 test/whatsapp-w1a-belirtec-suresi-250.test.mjs test/whatsapp-w2-kaldir-250.test.mjs test/whatsapp-w2-veri-248.test.mjs",
+  "commit": "885a5dbe1c6bbe68c0795ffcc86177e0507a7cf1",
+  "dal": "claude/epic-thompson-w0lc2l",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T18:36:36.620Z",
+  "sure_sn": 17,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 28,
+    "gecen": 28,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/w1w2-anaoturum-birim-utc.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "1e081647c8c75a40d8ed86b0fd6b13e7d84270c188db24dc6242e0401c65f46b",
+  "ham_cikti_bayt": 14043
+}

@@ -1,0 +1,28 @@
+başladı 01:33:09 yük 0.34 0.77 0.93 2/114 2273
+kahin-cari ESKİ listeyle çıkış 1
+ÖZET [2.5.0]: 79 senaryo, 12700 denetim, 21 fark (BULGU 0), 7 bilinen sınır (BILINEN.json; başarısız sayılmaz), 492 yapım aşaması (YAPIM-ASAMASI.json; paketlere göre: eşleme 7, Ç5-A 228, Ç5-B tur 2 257; 485 denetim + 7 okuma hatası; geçti de başarısız da sayılmaz — yayın adayında liste BOŞ olmalı), 0 ok
+yaz çıkış 0
+YAPIM-ASAMASI.json YAZILDI (test/bagimsiz/cari/YAPIM-ASAMASI.json): 495 kayıt (7 okuma hatası) — paketlere göre: Ç5-A 228, Ç5-B tur 2 260, eşleme 7. Bu bir denetim sonucu DEĞİLDİR; liste varsayılan koşuyla denetlenir.
+önce 513 → sonra 495; yeni 0, kapanan 18, değeri değişen 3
+  KAPANAN d30-c5-s101-bitti-kart k1:cari:Q3:gecikmis | kâhin 0 | program 20000 | Ç5-B tur 2
+  KAPANAN d30-c5-s101-bitti-kart k1:cari:Q8b:gecikmis | kâhin 30000 | program 60000 | Ç5-B tur 2
+  KAPANAN d30-c5-s101-bitti-kart k1:cari:Q9:gecikmis | kâhin 70000 | program 100000 | Ç5-B tur 2
+  KAPANAN d30-c5-s101-bitti-kart k1:projeksiyon:cariToplam:Q4 | kâhin 10000 | program 20000 | Ç5-B tur 2
+  KAPANAN d30-c5-s101-bitti-kart k1:takvim:cariToplam:Q8b | kâhin 30000 | program 60000 | Ç5-B tur 2
+  KAPANAN d30-c5-s101-bitti-kart k1:takvim:cariToplam:Q9 | kâhin 70000 | program 100000 | Ç5-B tur 2
+  KAPANAN d30-c5-s101-bitti-kart k1:vadeTakip:cariToplam:Q4 | kâhin {"catal": [0, 10000]} | program 20000 | Ç5-B tur 2
+  KAPANAN d31-c5-s101-taksit-vade-gu k1:projeksiyon:cari | kâhin 0 | program 2 | Ç5-B tur 2
+  KAPANAN d31-c5-s101-taksit-vade-gu k1:projeksiyon:cariToplam:Q4 | kâhin 10000 | program 20000 | Ç5-B tur 2
+  KAPANAN d31-c5-s101-taksit-vade-gu k1:takvim:cariKalemSayisi | kâhin 0 | program 2 | Ç5-B tur 2
+  KAPANAN d31-c5-s101-taksit-vade-gu k1:takvim:cariToplam:Q4 | kâhin 10000 | program 20000 | Ç5-B tur 2
+  KAPANAN d31-c5-s101-taksit-vade-gu k1:vadeTakip:cariToplam:Q4 | kâhin 10000 | program 20000 | Ç5-B tur 2
+  KAPANAN d32-c5-s101-taksit-ertesi- k1:cari:Q4:gecikmis | kâhin 10000 | program 20000 | Ç5-B tur 2
+  KAPANAN d32-c5-s101-taksit-ertesi- k1:projeksiyon:cari | kâhin 0 | program 2 | Ç5-B tur 2
+  KAPANAN d32-c5-s101-taksit-ertesi- k1:projeksiyon:cariToplam:Q4 | kâhin 10000 | program 20000 | Ç5-B tur 2
+  KAPANAN d32-c5-s101-taksit-ertesi- k1:takvim:cariKalemSayisi | kâhin 0 | program 2 | Ç5-B tur 2
+  KAPANAN d32-c5-s101-taksit-ertesi- k1:takvim:cariToplam:Q4 | kâhin 10000 | program 20000 | Ç5-B tur 2
+  KAPANAN d32-c5-s101-taksit-ertesi- k1:vadeTakip:cariToplam:Q4 | kâhin 10000 | program 20000 | Ç5-B tur 2
+  DEĞİŞEN d30-c5-s101-bitti-kart k1:cari:Q4:gecikmis | kâhin 0 | program 10000 (önce 20000) | Ç5-B tur 2
+  DEĞİŞEN d30-c5-s101-bitti-kart k1:takvim:cariToplam:Q4 | kâhin 0 | program 10000 (önce 20000) | Ç5-B tur 2
+  DEĞİŞEN d31-c5-s101-taksit-vade-gu k1:cari:Q4:gecikmis | kâhin 0 | program 10000 (önce 20000) | Ç5-B tur 2
+sonra paket dağılımı: {'Ç5-A': 228, 'Ç5-B tur 2': 260, 'eşleme': 7}

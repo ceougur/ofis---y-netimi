@@ -1,0 +1,17 @@
+1) ön koşul: ileti isteği sahte Meta'da kapıda (held 1), satır sending, deneme 1
+2) imzalı 'delivered' (iş kimliğiyle) uygulandı: applied 1 · satır delivered
+3) ileti isteği yanıtsız sonuçlandı (zaman aşımı) → satır delivered · wamid wamid.SAHTE0001 · neden ""
+4) defter: deneme sonuçları [1:uncertain] · teslim satırı 1
+5) Bu Ay (teslim) 1
+6) yeni ekstre önizlemesi: Daha Önce Gönderildi · uncertainOpen -
+7) toplu iş done · ekranda iş "Teslim Edildi" · neden ""
+8) Yine de Gönder (onaylı): HTTP 409 {"ok":false,"error":"Yalnız sonucu belirsiz ileti yeniden gönderilir.","code":"whatsapp-job-state"}
+   bakım turundan sonra satır delivered
+9) sonraki imzasız 'read' (aynı wamid): applied 1 · satır read
+# tests 1
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# sonuç: satır teslim bilgisini korudu

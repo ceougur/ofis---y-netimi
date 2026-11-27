@@ -1,0 +1,32 @@
+{
+  "ad": "kahin3-eski-model-kirmizi",
+  "komut": "python3 test/bagimsiz/muhasebe/test_model.py",
+  "commit": "cb57123f959758ce52f1d9510946347f7d3e6a68",
+  "dal": "worktree-agent-a99413a50237f8d87",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T04:00:02.604Z",
+  "sure_sn": 13.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 117,
+    "gecen": 112,
+    "basarisiz": 5,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 5 başarısız, 0 iptal",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin3-kanit/2026-11-06/kahin3-eski-model-kirmizi.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a99413a50237f8d87",
+  "ham_cikti_sha256": "05985f9d4d0c0b18ba978fc1320da4fe8b1b87b66604f51dc03b6ea350cc92ba",
+  "ham_cikti_bayt": 4709
+}

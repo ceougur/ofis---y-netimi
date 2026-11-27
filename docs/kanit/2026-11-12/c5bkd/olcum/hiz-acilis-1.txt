@@ -1,0 +1,8 @@
+AÇILIŞ · 20:27:30 · başta 1.36 1.24 1.21 1/114 4248
+bugun tur 1: açılış 20534 ms · yük 1.36 1.24 1.21 · bölümler [["plans",11264],["ledger",2613],["links",955],["bank",720],["accounts",719],["stock",321],["cheques",289]]
+benim tur 1: açılış 19898 ms · yük 1.24 1.22 1.20 · bölümler [["plans",10838],["ledger",2426],["links",891],["bank",750],["accounts",653],["stock",286],["cheques",247]]
+benim tur 2: açılış 19510 ms · yük 1.17 1.21 1.19 · bölümler [["plans",10721],["ledger",2397],["links",1009],["bank",722],["accounts",609],["stock",305],["cheques",256]]
+bugun tur 2: açılış 19913 ms · yük 1.24 1.22 1.20 · bölümler [["plans",11078],["ledger",2381],["links",940],["accounts",716],["bank",701],["stock",294],["cheques",256]]
+bugun tur 3: açılış 19438 ms · yük 1.24 1.22 1.20 · bölümler [["plans",10792],["ledger",2295],["links",879],["bank",717],["accounts",703],["stock",302],["cheques",221]]
+benim tur 3: açılış 19793 ms · yük 1.17 1.21 1.19 · bölümler [["plans",10843],["ledger",2377],["links",1058],["bank",789],["accounts",662],["stock",333],["cheques",232]]
+bitti 20:29:36 · 1.12 1.19 1.19 1/113 4833

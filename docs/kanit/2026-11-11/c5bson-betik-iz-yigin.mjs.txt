@@ -1,0 +1,32 @@
+// Kart tahsilatı yazımında bütün carilerin izi (accountPrints) kaç kez, NEREDEN taranıyor? (ROOT = kod kökü)
+import { boot, day } from "./h.mjs";
+const h = await boot();
+try {
+  const a = await h.account("İz Yığın");
+  await h.entry(a, { kind: "debt", amount: "900", date: day(-49) });
+  const k = await h.must("kart", h.api.post("/api/workspace/plans", { name: a.name, registeredOn: day(-40), total: "900", accountId: a.id, mode: "auto", count: "3", firstDue: day(-10), coversBalance: true }));
+  await h.api.get("/api/workspace/dues");
+  const store = h.store;
+  const original = store.all;
+  let n = 0;
+  store.all = (sql, ...args) => {
+    if (/FROM account_entries GROUP BY account_id/.test(String(sql))) {
+      n += 1;
+      console.log(`tarama ${n} · işlem içinde: ${store.inTransaction} ·`, new Error().stack.split("\n").slice(2, 10).map(l => l.trim().replace(/file:\/\/.*\/server\//, "server/").replace(/^at /, "")).join(" ← "));
+    }
+    return original.call(store, sql, ...args);
+  };
+  const steps = [
+    ["YAZIM", () => h.api.post(`/api/workspace/plans/${k.id}/entries`, { kind: "in", amount: "300", date: day(-5), method: "cash", cashForce: true, similarOk: true })],
+    ["kart GET", () => h.api.get(`/api/workspace/plans/${k.id}`)],
+    ["zil", () => h.api.get("/api/workspace/dues")],
+  ];
+  for (const [label, call] of steps) {
+    const before = n;
+    const res = await call();
+    console.log(`${label}: ${res.status} · tarama ${n - before}`);
+  }
+  store.all = original;
+} finally {
+  await h.server.close();
+}

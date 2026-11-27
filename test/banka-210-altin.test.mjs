@@ -12,6 +12,8 @@
 // Tek fark izni: oluşturma saati (PDF/Excel damgası) ve 649'un adı — Aşama 4'te (Banka Fişi 649'a yazmaya başlayınca; bilerek güncellendi)
 // Tekdüzen adı "Diğer Olağan Gelir ve Kârlar" (plan §3.11; tutarı aynı). Hesap Planı Mizanı PDF'inde adın uzunluğu kolon genişliğini,
 // dolayısıyla satır kırılımını değiştirir (o PDF'te kırılım boşluk sayılır). Aşama 2'de (gözden geçirme D3) ad 2.0.26'daki gibi kalmıştı.
+// 2.5.0 Ç1 (bilerek): 770'in adı da Tekdüzen adı "Genel Yönetim Giderleri" (önceden "Genel Giderler ve Alış Faturaları"); iki ad aynı belirtece
+// (defter-olgulari normDocumentNames), tutar ve kod birebir karşılaştırılır.
 // Veri: (1) zincir fikstürü surum-2.0.26-zincir (2.0.16 → 2.0.26 gerçek sürüm koduyla, 4 şirket); (2) v2.0.26'nın KENDİ koduyla
 // mutabakat motoruyla (test/mutabakat/motor.mjs) bu test sırasında üretilen veri: 120 güne yayılmış rastgele işlemler (Kasa, cari,
 // stok, taksit, çek/senet, fatura, iade, iptal, transfer, dönem kilidi).
@@ -35,7 +37,8 @@ import { localDay, pdfText, unwrap, xlsxSheets } from "./banka-210-ortak.mjs";
 import { fixtureExists, unpackFixture } from "./guvenilirlik/fikstur.mjs";
 import { CURRENT, bootVersion, tagsAvailable } from "./guvenilirlik/surumler.mjs";
 import { runReconciliation } from "./mutabakat/motor.mjs";
-import { foldDocumentRows, foldIntegrityChecks, foldReconciliation, foldTrialAccounts, hasDocumentSplit, legacyBankBox, legacyBankPos, legacyCashFlow, normDocumentNames } from "./guvenilirlik/defter-olgulari.mjs";
+import { c5aIntegrity, c5aMizanReport, c5aReconciliationChecks, c5aOpeningFold, c5aReconciliationReport, c5aTrialAccounts, foldDocumentRows, foldIntegrityChecks, foldReconciliation, foldTrialAccounts, hasDocumentSplit, legacyBankBox, legacyBankPos, legacyCashFlow, normDocumentNames } from "./guvenilirlik/defter-olgulari.mjs";
+import { CHART } from "../server/lib/general-ledger.mjs";
 import { invoiceStates, k1Check } from "./guvenilirlik/kapama-k1-fark.mjs";
 import { settleInvoices as settleK1Oncesi } from "./guvenilirlik/kapama-k1-oncesi.mjs";
 import { LATEST_VERSION } from "../server/lib/migrations.mjs";
@@ -138,8 +141,57 @@ function requests() {
 // (Gerçek Banka + Hesabı Atanmamış = eski Banka / POS) ayrıca denetlenir. İç hareketi olan Banka ve POS Hareketleri dönemlerinin PDF/Excel'i
 // eski dosyayla değil, aynı dönemin ekranıyla karşılaştırılır (özet ve açıklama biçimi bilerek değişti).
 const k10Problems = [];
+// 2.5.0 Ç5-A (bilerek değişen defter kuralı; C5-ACILIS-TASARIM §12.2): seçili şirketin katlaması (defter-olgulari c5aOpeningFold) — compare() şirket başına kurar; yeni tarafın
+// Ana Defter / Mutabakat Testi / Hesap Planı Mizanı / Defter Mutabakatı JSON'u karar numaralı katlamayla eski düzende; dosyaları (PDF / Excel) yeni ekranla karşılaştırılır.
+let c5aFold = null;
+const c5aTally = { folded: 0, selfChecked: 0 };
+function legacyOpenings(url, data) {
+  if (!c5aFold) return data;
+  const base = url.split("?")[0];
+  if (base === "/api/workspace/ledger") {
+    if (!c5aFold.delta.size) return data;
+    c5aTally.folded += 1;
+    const debit = [...c5aFold.delta.values()].reduce((sum, row) => sum + row.debit, 0);
+    const credit = [...c5aFold.delta.values()].reduce((sum, row) => sum + row.credit, 0);
+    const tl = value => Math.round(value) / 100;
+    const c = value => Math.round(Number(value || 0) * 100);
+    return { ...data, entryCount: data.entryCount + c5aFold.entryDelta, reconciliation: { ...data.reconciliation, checks: c5aReconciliationChecks(data.reconciliation.checks, c5aFold) }, trial: { ...data.trial, accounts: c5aTrialAccounts(data.trial.accounts, c5aFold, CHART), totals: { ...data.trial.totals, debit: tl(c(data.trial.totals.debit) + debit), credit: tl(c(data.trial.totals.credit) + credit), difference: tl(c(data.trial.totals.difference) + debit - credit) } } };
+  }
+  if (base === "/api/workspace/ledger/integrity") return c5aIntegrity(data, c5aFold);
+  if (base === "/api/workspace/report-center/hesap-mizani" && url.includes("from=2000-01-01")) return c5aMizanReport(data, c5aFold, CHART);
+  if (base === "/api/workspace/report-center/defter-mutabakati") return c5aReconciliationReport(data, c5aFold);
+  return data;
+}
 const unbilledTally = { count: 0 }; // 2.4.3 MM5: normalleştirmede çıkarılan faturasız cari alacağı kalemi sayısı (günlüğe yazılır)
 const roundCents = value => Math.round((Number(value) || 0) * 100) / 100;
+// BEKLENTİ BİLEREK DEĞİŞTİ — S230 = A (kullanıcı 20.11.2026 "önerini uygula"; BAŞ MİMAR YORUMU: "Anlık Durum'daki açık / vadesi geçen fatura toplamları Açık Faturalar raporuyla aynı listeden
+// okunur → S229 = A'yı izler"; Ç7b DK + S229 ALTIN turu, docs/erp/C7B-FATURA-TASARIM.md §18.5 (b)): ANLIK DURUM'un invoices.openSale / overdueSale'i Mevcut Borç kartının aldığı kısmı faturadan
+// düşer (GÖSTERİLEN açık). v2.0.26 faturanın kendi açığını topluyordu. Yeni tarafta, kart payı olan her satış faturasının (satış / serbest meslek; kendi kartı olmayan) düşülen kısmı
+// (kendi açık ownOpen − gösterilen açık open; overdueSale'de vadesi bugünden önce olanlar) geri eklenir; katlanan tutar sayılır (günlüğe yazılır). Öbür her alan birebir.
+const s230Tally = { folded: 0, open: 0, overdue: 0 };
+async function s230OverviewFold(api, data) {
+  if (!data?.invoices || !data.today) return data;
+  let open = 0;
+  let overdue = 0;
+  for (let offset = 0; ; offset += 5000) {
+    const page = await apiLike(api).get(`/api/workspace/invoices?tab=all&limit=5000&offset=${offset}`);
+    if (page.status !== 200) throw new Error(`S230 katlaması: fatura listesi ${page.status}`);
+    for (const doc of page.data.invoices || []) {
+      if (doc.status !== "issued" || !["sale", "smm"].includes(doc.kind) || doc.planId || !(Number(doc.inPlan) > 0.005) || doc.ownOpen === undefined) continue;
+      const cut = Math.round((Number(doc.ownOpen) - Number(doc.open)) * 100);
+      if (!(cut > 0)) continue;
+      open += cut;
+      if ((doc.dueDate || doc.issueDate) < data.today) overdue += cut;
+    }
+    if (!page.data.hasMore) break;
+  }
+  if (!open) return data;
+  s230Tally.folded += 1;
+  s230Tally.open += open;
+  s230Tally.overdue += overdue;
+  const add = (value, cents) => Math.round(Math.round((Number(value) || 0) * 100) + cents) / 100;
+  return { ...data, invoices: { ...data.invoices, openSale: add(data.invoices.openSale, open), overdueSale: add(data.invoices.overdueSale, overdue) } };
+}
 // company: yeni taraf PDF'inin şirket satırındaki unvan (2.2.0 İz 1.1); eski taraf aynı satırı (varsa) atar.
 async function fetchOne(api, request, side = "eski", company = null) {
   if (request.kind === "json") {
@@ -148,10 +200,10 @@ async function fetchOne(api, request, side = "eski", company = null) {
     if (side === "yeni" && response.status === 200 && request.url.split("?")[0] === "/api/workspace/overview") {
       const { box, k10 } = await legacyBankBox(apiLike(api), data);
       if (k10 && k10.realBank + k10.unassigned + k10.unassignedFuture !== k10.legacyAll) k10Problems.push(`K10: Gerçek Banka ${k10.realBank} + Hesabı Atanmamış ${k10.unassigned} + ileri tarihli ${k10.unassignedFuture} ≠ eski Banka / POS ${k10.legacyAll}`);
-      data = { ...data, cash: { ...data.cash, bank: box } };
+      data = await s230OverviewFold(api, { ...data, cash: { ...data.cash, bank: box } });
     }
     if (side === "yeni" && response.status === 200 && request.url.includes("/report-center/banka-pos-hareketleri")) data = legacyBankPos(data);
-    if (side === "yeni" && response.status === 200) data = legacyDocuments(request.url, data);
+    if (side === "yeni" && response.status === 200) data = legacyDocuments(request.url, legacyOpenings(request.url, data));
     // 2.3.0 İz 3.3 (plan §8.9, eşleme 301; bilerek): Vade Takip'e "bank" kaynağı (planlı banka işlemleri) geldi; eski veride planlı işlem yok, satırlar aynı.
     // 2.4.5 madde 6 (K6.3; bilerek): "account" kaynağı (carinin vadeli borç kaydı) geldi; 2.0.26 verisinde vade alanı yok (göçle boş), satırlar aynı.
     if (side === "yeni" && response.status === 200 && request.url.split("?")[0] === "/api/workspace/overview/vade-takip" && Array.isArray(data.allowed)) {
@@ -339,8 +391,10 @@ async function bankPosSelfCheck(api, request) {
 async function documentSelfCheck(api, request) {
   if (!/\/report-center\/(hesap-mizani|defter-mutabakati)\//.test(request.url)) return null;
   const json = unwrap(await api.client.get(request.url.replace(/\/(pdf|xlsx)(\?|$)/, "$2")));
-  if (json.status !== 200 || !hasDocumentSplit(json.data.rows.map(row => row[0]))) return null;
-  documentTally.selfChecked += 1;
+  const opening = Boolean(c5aFold?.active);
+  if (json.status !== 200 || !(hasDocumentSplit(json.data.rows.map(row => row[0])) || opening)) return null;
+  if (opening) c5aTally.selfChecked += 1;
+  else documentTally.selfChecked += 1;
   const cells = [...json.data.rows.flat(), ...(json.data.footer || [])].filter(cell => MONEY_CELL.test(String(cell)));
   const codes = json.data.rows.map(row => String(row[0])).filter(code => /^\d{3}$/.test(code));
   const response = await api.client.raw("GET", request.url);
@@ -373,6 +427,12 @@ async function compare(oldServer, newServer, { companies, label, skip = () => fa
       const b = await login(newServer, who);
       // Şirket seçimi kullanıcı başına sunucuda saklanır: 001 de açıkça seçilir (K1 karşılaştırması aynı sunucuya ikinci kez girer).
       for (const api of [a, b]) assert.equal((await api.post("/api/companies/select", { id: company.id })).status, 200, `${company.code} seçilemedi`);
+      // 2.5.0 Ç5-A: şirket örneği ilk istekte açılır; bekleyen 2.4.9 göç koşusu burada donar → katlama (donmuş dönemin kural farkı dahil) kurulur; sorunları fark sayılır.
+      assert.equal((await b.get("/api/workspace/ledger/lock")).status, 200);
+      const ctx = (newServer.app.openCompany(company.id) || newServer.app).context;
+      await ctx.ledger.snapshots.runPending();
+      c5aFold = c5aOpeningFold(ctx.ledger, ctx.store);
+      problems.push(...c5aFold.problems.slice(0, 10).map(text => `${label} · ${company.code} · Ç5-A katlaması: ${text}`));
       for (const request of requests().filter(item => (item.who || "admin") === who && !skip(item.url))) {
         const where = `${label} · ${company.code} · ${who} · ${request.kind} ${request.url}`;
         if (request.kind !== "json" && request.url.includes("/banka-pos-hareketleri/")) {
@@ -387,7 +447,7 @@ async function compare(oldServer, newServer, { companies, label, skip = () => fa
           const self = await documentSelfCheck(b, request);
           if (self) {
             compared += 1;
-            if (self.length) problems.push(`${where}: yeni dosya (senet hesapları) ekranla aynı değil: ${self.slice(0, 5).join("; ")}`);
+            if (self.length) problems.push(`${where}: yeni dosya (senet hesapları / Ç5-A) ekranla aynı değil: ${self.slice(0, 5).join("; ")}`);
             continue;
           }
         }
@@ -447,7 +507,8 @@ async function sideBySide(sourceData, sourceBackups, label, companies) {
     for (const company of companies) {
       const [legacyApi, currentApi] = [await newServer.login(), await currentServer.login()];
       for (const api of [legacyApi, currentApi]) assert.equal((await api.post("/api/companies/select", { id: company.id })).status, 200, `${company.code} seçilemedi`);
-      const check = await k1Check(await invoiceStates(legacyApi), currentApi);
+      // 2.5.0 Ç5-B: K1'in sınırı kapama defteri kuralında (ekran durumu Tek Yükümlülük Kuyruğu görünümü — S2 / S50 / M1e ile iadesi olmayan caride de bilerek değişir).
+      const check = await k1Check(await invoiceStates(legacyApi), currentApi, { ledgerStates: ids => (currentServer.app.openCompany(company.id) || currentServer.app).context.invoices.repairScreen(ids) });
       result.k1Changed += check.changed.length;
       result.problems.push(...check.problems.map(text => `${label} · ${company.code} · K1: ${text}`));
     }
@@ -476,7 +537,7 @@ describe("altın test: v2.0.26 ile bu dal aynı veride aynı Kasa, Banka ve POS,
       }
       assert.ok(companies.length >= 4, `şirketler: ${JSON.stringify(companies)}`);
       const { problems, compared, k1Changed } = await sideBySide(fixture.dataDir, fixture.backupDir, "zincir", companies);
-      console.log(`K1 zincir: durumu değişen belge ${k1Changed}; karşılaştırılan yanıt ${compared}; senet katlaması (2.2.0 İz 4.2) ${documentTally.folded} yanıt, ekranla karşılaştırılan dosya ${documentTally.selfChecked}; Nakit Akışı faturasız kalem (2.4.3 MM5) ${unbilledTally.count}`);
+      console.log(`K1 zincir: durumu değişen belge ${k1Changed}; karşılaştırılan yanıt ${compared}; senet katlaması (2.2.0 İz 4.2) ${documentTally.folded} yanıt, ekranla karşılaştırılan dosya ${documentTally.selfChecked}; Nakit Akışı faturasız kalem (2.4.3 MM5) ${unbilledTally.count}; ANLIK DURUM S230 katlaması ${s230Tally.folded} yanıt, açık ${s230Tally.open / 100} TL, vadesi geçen ${s230Tally.overdue / 100} TL`);
       assert.ok(compared >= 280, `karşılaştırılan yanıt sayısı ${compared}`);
       assert.deepEqual(problems, [], `${problems.length} fark:\n${problems.slice(0, 8).join("\n\n")}`);
     } finally {
@@ -528,7 +589,7 @@ describe("altın test: v2.0.26 ile bu dal aynı veride aynı Kasa, Banka ve POS,
         await old.close();
       }
       const { problems, compared, k1Changed } = await sideBySide(dataDir, backupDir, "motor", [{ id: "sirket-001", code: "001" }]);
-      console.log(`K1 motor: durumu değişen belge ${k1Changed}; karşılaştırılan yanıt ${compared}; senet katlaması (2.2.0 İz 4.2, toplam) ${documentTally.folded} yanıt, ekranla karşılaştırılan dosya ${documentTally.selfChecked}; Nakit Akışı faturasız kalem (2.4.3 MM5) ${unbilledTally.count}`);
+      console.log(`K1 motor: durumu değişen belge ${k1Changed}; karşılaştırılan yanıt ${compared}; senet katlaması (2.2.0 İz 4.2, toplam) ${documentTally.folded} yanıt, ekranla karşılaştırılan dosya ${documentTally.selfChecked}; Nakit Akışı faturasız kalem (2.4.3 MM5) ${unbilledTally.count}; ANLIK DURUM S230 katlaması (toplam) ${s230Tally.folded} yanıt, açık ${s230Tally.open / 100} TL, vadesi geçen ${s230Tally.overdue / 100} TL`);
       assert.ok(compared >= 75, `karşılaştırılan yanıt sayısı ${compared}`);
       assert.deepEqual(problems, [], `${problems.length} fark:\n${problems.slice(0, 8).join("\n\n")}`);
     } finally {

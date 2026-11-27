@@ -1,0 +1,32 @@
+{
+  "ad": "c5bson-taban-degisen-Europe-Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/tyk-tur2b2-250.test.mjs test/tyk-250.test.mjs test/tyk-onbellek-250.test.mjs test/tyk-tur2b1-250.test.mjs test/tyk-kilit-taksitli-250.test.mjs test/tyk-fark-v249-250.test.mjs test/bulgu-223.test.mjs test/cari-vade-245.test.mjs test/iade-geri-odeme-246.test.mjs test/plans.test.mjs test/ux18-cek-fatura-244.test.mjs test/whatsapp-onizleme-olcek-248.test.mjs",
+  "commit": "86276ce41c29b0298f0f576a909d2df1d262ce44",
+  "dal": "worktree-agent-ac2cc1e4fd632460d",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-11T17:00:39.093Z",
+  "sure_sn": 46.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 239,
+    "gecen": 239,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bson-kanit/2026-11-11/c5bson-taban-degisen-Europe-Istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ac2cc1e4fd632460d",
+  "ham_cikti_sha256": "361fc946b4a427ce470cf9985bc8b3e0917984e1d65f291a5af63ac1c3137ed5",
+  "ham_cikti_bayt": 98087
+}

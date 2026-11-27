@@ -1,0 +1,53 @@
+# Ç5-A tur 1e — dar kontrolün betikleri (dk-c5a1-x9; kendi kopyam c5a1e-is) taban (c5a1e-taban kopyası) → tur 1e, TZ UTC
+
+## kd.mjs (fikstür surum-2.0.26-zincir, kilit 2026-10-05; kapı dışı yazım ayrı bağlantıyla)
+taban  cash-flag      hedef=True satır-içi bulgu=[] günlük=+0 zil=[] kural farkı=45/128363.57
+yeni   cash-flag      hedef=True satır-içi bulgu=['ledger:snapshot', 'period-lock'] günlük=+1 zil=[['ledger:snapshot', 'period-lock']] kural farkı=45/128363.57
+taban  acct-flag      hedef=True satır-içi bulgu=[] günlük=+0 zil=[] kural farkı=45/132895.04
+yeni   acct-flag      hedef=True satır-içi bulgu=['ledger:snapshot', 'period-lock'] günlük=+1 zil=[['ledger:snapshot', 'period-lock']] kural farkı=45/132895.04
+taban  acct-unflag    hedef=True satır-içi bulgu=[] günlük=+0 zil=[] kural farkı=44/127800
+yeni   acct-unflag    hedef=True satır-içi bulgu=['ledger:snapshot', 'period-lock'] günlük=+1 zil=[['ledger:snapshot', 'period-lock']] kural farkı=44/127800
+taban  review-reject  hedef=False satır-içi bulgu=[] günlük=+0 zil=[] kural farkı=44/127800
+yeni   review-reject  hedef=False satır-içi bulgu=[] günlük=+0 zil=[] kural farkı=44/127800
+taban  cheque-flag    hedef=False satır-içi bulgu=[] günlük=+0 zil=[] kural farkı=44/127800
+yeni   cheque-flag    hedef=False satır-içi bulgu=[] günlük=+0 zil=[] kural farkı=44/127800
+taban  plan-import    hedef=True satır-içi bulgu=[] günlük=+0 zil=[] kural farkı=45/155800
+yeni   plan-import    hedef=True satır-içi bulgu=['ledger:snapshot', 'period-lock'] günlük=+1 zil=[['ledger:snapshot', 'period-lock']] kural farkı=45/155800
+
+## s51.mjs (v2.4.9 gerçek kodu → güncel; aday → onay → sil → geri al)
+taban  göç=candidate ['120:30000/0 519:0/30000'] · onay=confirmed ['120:30000/0 519:0/30000'] · geri al='' ['120:30000/0 602:0/30000'] · Mutabakat failures=[]
+yeni   göç=candidate ['120:30000/0 519:0/30000'] · onay=confirmed ['120:30000/0 519:0/30000'] · geri al='confirmed' ['120:30000/0 519:0/30000'] · Mutabakat failures=[]
+
+## bosluk2.mjs (bosluk.mjs + kodun kendi ön süzgeç kümesi; taban → tur 1e)
+--- taban
+"Açılış" göç48-sql 1 göç48-js true aday true v2.4.9-açılış true
+"  Açılış" göç48-sql 1 göç48-js true aday true v2.4.9-açılış true
+" Açılış" göç48-sql 1 göç48-js true aday true v2.4.9-açılış true
+" Açılış" göç48-sql 0 göç48-js true aday false v2.4.9-açılış true
+"﻿Açılış" göç48-sql 0 göç48-js true aday false v2.4.9-açılış true
+"　Açılış" göç48-sql 0 göç48-js true aday false v2.4.9-açılış true
+" Açılış" göç48-sql 0 göç48-js true aday false v2.4.9-açılış true
+"AÇILIŞ" göç48-sql 1 göç48-js true aday true v2.4.9-açılış false
+--- yeni
+"Açılış" göç48-sql 1 göç48-js true aday true v2.4.9-açılış true
+"  Açılış" göç48-sql 1 göç48-js true aday true v2.4.9-açılış true
+" Açılış" göç48-sql 1 göç48-js true aday true v2.4.9-açılış true
+" Açılış" göç48-sql 1 göç48-js true aday true v2.4.9-açılış true
+"﻿Açılış" göç48-sql 1 göç48-js true aday true v2.4.9-açılış true
+"　Açılış" göç48-sql 1 göç48-js true aday true v2.4.9-açılış true
+" Açılış" göç48-sql 1 göç48-js true aday true v2.4.9-açılış true
+"AÇILIŞ" göç48-sql 1 göç48-js true aday true v2.4.9-açılış false
+
+## Yeni testler eski kodda (c5a1e-taban kopyası + yeni test dosyaları; iki TZ)
+eski-acilis-sinir-250-Europe-Istanbul.out: ℹ tests 4 ℹ pass 4 ℹ fail 0 ℹ cancelled 0 :: 
+eski-acilis-sinir-250-UTC.out: ℹ tests 4 ℹ pass 4 ℹ fail 0 ℹ cancelled 0 :: 
+eski-goc48-Europe-Istanbul.out: ℹ tests 3 ℹ pass 0 ℹ fail 3 ℹ cancelled 0 :: AssertionError [ERR_ASSERTION]: göç 48'in ön süzgeç kümesi (OPENING_TRIM_CODES) yok ‖ AssertionError [ERR_ASSERTION]: ön süzgeç kuralın kümesini atmalı: "  Açılış" ‖ AssertionError [ERR_ASSERTION]: göç 48'in aday kümesi kuralın kümesiyle aynı olmalı
+eski-goc48-UTC.out: ℹ tests 3 ℹ pass 0 ℹ fail 3 ℹ cancelled 0 :: AssertionError [ERR_ASSERTION]: göç 48'in ön süzgeç kümesi (OPENING_TRIM_CODES) yok ‖ AssertionError [ERR_ASSERTION]: ön süzgeç kuralın kümesini atmalı: "  Açılış" ‖ AssertionError [ERR_ASSERTION]: göç 48'in aday kümesi kuralın kümesiyle aynı olmalı
+eski-goc48-bosluk-250-Europe-Istanbul.out: ℹ tests 1 ℹ pass 0 ℹ fail 1 ℹ cancelled 0 :: SyntaxError: The requested module '../server/lib/migrations.mjs' does not provide an export named 'OPENING_TRIM_CODES'
+eski-goc48-bosluk-250-UTC.out: ℹ tests 1 ℹ pass 0 ℹ fail 1 ℹ cancelled 0 :: SyntaxError: The requested module '../server/lib/migrations.mjs' does not provide an export named 'OPENING_TRIM_CODES'
+eski-kg16-Europe-Istanbul.out: ℹ tests 6 ℹ pass 0 ℹ fail 6 ℹ cancelled 0 :: AssertionError [ERR_ASSERTION]: onay bilgisi korunur (kapının kopyasıyla) ‖ AssertionError [ERR_ASSERTION]: rejected: silinmeden önceki durum ‖ AssertionError [ERR_ASSERTION]: B8: aday
+eski-kg16-UTC.out: ℹ tests 6 ℹ pass 0 ℹ fail 6 ℹ cancelled 0 :: AssertionError [ERR_ASSERTION]: onay bilgisi korunur (kapının kopyasıyla) ‖ AssertionError [ERR_ASSERTION]: rejected: silinmeden önceki durum ‖ AssertionError [ERR_ASSERTION]: B8: aday
+eski-kg16-geri-alma-250-Europe-Istanbul.out: ℹ tests 6 ℹ pass 0 ℹ fail 0 ℹ cancelled 6 :: Error: no such column: opening_review_gate
+eski-kg16-geri-alma-250-UTC.out: ℹ tests 6 ℹ pass 0 ℹ fail 0 ℹ cancelled 6 :: Error: no such column: opening_review_gate
+eski-kural-farki-kapi-disi-250-Europe-Istanbul.out: ℹ tests 18 ℹ pass 0 ℹ fail 18 ℹ cancelled 0 :: AssertionError [ERR_ASSERTION]: satır içi — Kasa satırının açılış işareti 0→1: ledger:snapshot bulunmalı: [] ‖ AssertionError [ERR_ASSERTION]: arka plan — Kasa satırının açılış işareti 0→1: ledger:snapshot bulunmalı: [] ‖ AssertionError [ERR_ASSERTION]: satır içi — cari satırının açılış işareti 0→1: ledger:snapshot bulunmalı: []
+eski-kural-farki-kapi-disi-250-UTC.out: ℹ tests 18 ℹ pass 0 ℹ fail 18 ℹ cancelled 0 :: AssertionError [ERR_ASSERTION]: satır içi — Kasa satırının açılış işareti 0→1: ledger:snapshot bulunmalı: [] ‖ AssertionError [ERR_ASSERTION]: arka plan — Kasa satırının açılış işareti 0→1: ledger:snapshot bulunmalı: [] ‖ AssertionError [ERR_ASSERTION]: satır içi — cari satırının açılış işareti 0→1: ledger:snapshot bulunmalı: []

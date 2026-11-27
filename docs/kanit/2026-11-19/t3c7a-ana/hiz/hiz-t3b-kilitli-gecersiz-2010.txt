@@ -1,0 +1,57 @@
+HIZ t3b · kilitli · tekrar 5 · başta 3.80 2.30 1.68 1/115 26580 · 20:02:46
+kilit ('2026-06-30',)
+=== taban · başta 3.80 2.30 1.68 1/116 26588 · GEÇERSİZ (yük > 2)
+{"yukBasta":"2.76 2.20 1.67","yukSonda":"1.54 1.95 1.62"}
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-hiz/taban · yük 2.76 2.20 1.67
+  karttan tahsilat yazımı: durum 200 · en iyi 1217.3 ms · ortanca 1252.8 ms · olay döngüsü en çok 1284.5 ms
+  Cari Listesi (yazımdan sonra ilk): durum 200 · en iyi 1693 ms · ortanca 1892.4 ms · olay döngüsü en çok 2000.7 ms
+  Cari Listesi (ılık): durum 200 · en iyi 1679.1 ms · ortanca 1831.8 ms · olay döngüsü en çok 1824.5 ms
+  cari kartı (kalabalık): durum 200 · en iyi 257.1 ms · ortanca 270.4 ms · olay döngüsü en çok 262.8 ms
+  Taksitler listesi: durum 200 · en iyi 1843.2 ms · ortanca 1891.1 ms · olay döngüsü en çok 1836.1 ms
+  Vade Takip: durum 200 · en iyi 2622.9 ms · ortanca 2749.3 ms · olay döngüsü en çok 2766.1 ms
+  zil / takvim: durum 200 · en iyi 2959.5 ms · ortanca 3073.4 ms · olay döngüsü en çok 2900.4 ms
+  fatura kaydı: durum 200 · en iyi 197.6 ms · ortanca 211.3 ms · olay döngüsü en çok 279.4 ms
+  Cari Listesi (fatura yazımından sonra ilk): durum 200 · en iyi 1812.7 ms · ortanca 1950.3 ms · olay döngüsü en çok 1894.8 ms
+çıkış 0 · sonda 1.54 1.95 1.62 1/122 26676
+kilit ('2026-06-30',)
+=== aday · başta 1.54 1.95 1.62 1/122 26682 
+{"yukBasta":"1.38 1.86 1.60","yukSonda":"1.11 1.66 1.55"}
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-ya-ag · yük 1.38 1.86 1.60
+  karttan tahsilat yazımı: durum 200 · en iyi 1056.4 ms · ortanca 1140.4 ms · olay döngüsü en çok 1138.8 ms
+  Cari Listesi (yazımdan sonra ilk): durum 200 · en iyi 1726.5 ms · ortanca 1769.3 ms · olay döngüsü en çok 1831.9 ms
+  Cari Listesi (ılık): durum 200 · en iyi 1697.3 ms · ortanca 1711.7 ms · olay döngüsü en çok 1880.1 ms
+  cari kartı (kalabalık): durum 200 · en iyi 189.7 ms · ortanca 211.8 ms · olay döngüsü en çok 248.4 ms
+  Taksitler listesi: durum 200 · en iyi 1753.6 ms · ortanca 1815.6 ms · olay döngüsü en çok 1845.5 ms
+  Vade Takip: durum 200 · en iyi 2525.7 ms · ortanca 2725.5 ms · olay döngüsü en çok 2751.5 ms
+  zil / takvim: durum 200 · en iyi 2977.1 ms · ortanca 3042.4 ms · olay döngüsü en çok 3032.5 ms
+  fatura kaydı: durum 200 · en iyi 81.2 ms · ortanca 84.9 ms · olay döngüsü en çok 95.6 ms
+  Cari Listesi (fatura yazımından sonra ilk): durum 200 · en iyi 1794 ms · ortanca 1930.9 ms · olay döngüsü en çok 2176.8 ms
+çıkış 0 · sonda 1.11 1.66 1.55 1/122 26719
+kilit ('2026-06-30',)
+=== taban · başta 1.11 1.66 1.55 1/122 26725 
+{"yukBasta":"1.06 1.60 1.53","yukSonda":"1.10 1.50 1.50"}
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-hiz/taban · yük 1.06 1.60 1.53
+  karttan tahsilat yazımı: durum 200 · en iyi 1220.5 ms · ortanca 1255.9 ms · olay döngüsü en çok 1256.2 ms
+  Cari Listesi (yazımdan sonra ilk): durum 200 · en iyi 1688 ms · ortanca 1736.8 ms · olay döngüsü en çok 1827.7 ms
+  Cari Listesi (ılık): durum 200 · en iyi 1717.4 ms · ortanca 1761.7 ms · olay döngüsü en çok 1818.2 ms
+  cari kartı (kalabalık): durum 200 · en iyi 262.9 ms · ortanca 284.5 ms · olay döngüsü en çok 282.6 ms
+  Taksitler listesi: durum 200 · en iyi 1796.1 ms · ortanca 1928.1 ms · olay döngüsü en çok 2067.8 ms
+  Vade Takip: durum 200 · en iyi 2512.9 ms · ortanca 2762.5 ms · olay döngüsü en çok 3238 ms
+  zil / takvim: durum 200 · en iyi 2848.9 ms · ortanca 3116.9 ms · olay döngüsü en çok 3292.5 ms
+  fatura kaydı: durum 200 · en iyi 191 ms · ortanca 216.8 ms · olay döngüsü en çok 219.2 ms
+  Cari Listesi (fatura yazımından sonra ilk): durum 200 · en iyi 1818.3 ms · ortanca 1973.1 ms · olay döngüsü en çok 2225.1 ms
+çıkış 0 · sonda 1.10 1.50 1.50 1/120 26767
+kilit ('2026-06-30',)
+=== aday · başta 1.10 1.50 1.50 1/120 26773 
+{"yukBasta":"1.25 1.49 1.50","yukSonda":"1.45 1.46 1.49"}
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-ya-ag · yük 1.25 1.49 1.50
+  karttan tahsilat yazımı: durum 200 · en iyi 1119.9 ms · ortanca 1157 ms · olay döngüsü en çok 1258.3 ms
+  Cari Listesi (yazımdan sonra ilk): durum 200 · en iyi 1812.1 ms · ortanca 1863.3 ms · olay döngüsü en çok 2018.5 ms
+  Cari Listesi (ılık): durum 200 · en iyi 1833.4 ms · ortanca 1933.2 ms · olay döngüsü en çok 2112.9 ms
+  cari kartı (kalabalık): durum 200 · en iyi 194 ms · ortanca 201.3 ms · olay döngüsü en çok 203.6 ms
+  Taksitler listesi: durum 200 · en iyi 1776.3 ms · ortanca 1999.4 ms · olay döngüsü en çok 2067.8 ms
+  Vade Takip: durum 200 · en iyi 2753.4 ms · ortanca 2843.8 ms · olay döngüsü en çok 3022 ms
+  zil / takvim: durum 200 · en iyi 2960.2 ms · ortanca 3378 ms · olay döngüsü en çok 3426.7 ms
+  fatura kaydı: durum 200 · en iyi 86.1 ms · ortanca 91.1 ms · olay döngüsü en çok 99.9 ms
+  Cari Listesi (fatura yazımından sonra ilk): durum 200 · en iyi 1818.4 ms · ortanca 2024.6 ms · olay döngüsü en çok 2271.2 ms
+çıkış 0 · sonda 1.45 1.46 1.49 1/120 26808

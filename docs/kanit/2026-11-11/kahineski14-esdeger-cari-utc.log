@@ -1,0 +1,40 @@
+ÜRETİCİ: 20/20 aynı dizi (tur s1 + ux18, tohum 1–10 × 120 işlem)
+ADIMLAR: eski kopyadaki 92 elle senaryonun 0'inin adımları değişti: yok · yeni elle senaryo: d39-c5-s130-supheli-kalemleri, d40-c5-s130-sus-bilinen-sinir
+EŞDEĞERLİK (2.4.9 / 2.4.6 / 2.4.5 / --legacy; eski kopyanın 92 elle + yeni kopyanın yeni 2 elle + 20 rastgele senaryo × 4 kip): 456/456 bayt bayt aynı
+G3 (kural 2.5.0; 114 senaryo — eski kopyanın 92 elle senaryosu + yeni elle + 20 rastgele): eski 48957 denetim · yeni 48973 denetim · değişen / kalkan / yeni toplam 141 · BEKLENMEYEN 0 · yalnız etiketi değişen 5
+  S130-alan      degisen     37
+      örn. c7-ks7-bagsiz-kapaticilar k3:projeksiyon:hareket:acilis:D: {"amount": 100000, "date": "2026-05-31", "direction": "in"} → {"amount": 30000, "date": "2026-05-31", "direction": "in"}
+      örn. c7-ks7-bagsiz-kapaticilar k3:takvim:fatura:F1: {"amount": 20000, "direction": "in"} → "yok"
+      örn. c7-ks7-bagsiz-kapaticilar k3:takvim:hareket:acilis:D: {"amount": 100000, "dueDate": "2026-05-31", "direction": "in", "label": "Tahsil Edilecek Borç", "state": "over → {"amount": 30000, "dueDate": "2026-05-31", "direction": "in", "label": "Tahsil Edilecek Borç", "state": "overd
+      örn. c7-ks7-bagsiz-kapaticilar k3:vadeTakip:hareket:acilis:D: {"amount": 100000, "date": "2026-05-31", "direction": "in"} → {"amount": 30000, "date": "2026-05-31", "direction": "in"}
+  S130-alan      yeni        59
+      örn. d39-c5-s130-supheli-kalemleri k1:projeksiyon:cariToplam:N1: "(denetim yok)" → 80000
+      örn. d39-c5-s130-supheli-kalemleri k1:projeksiyon:cariToplam:N10: "(denetim yok)" → 50000
+      örn. d39-c5-s130-supheli-kalemleri k1:projeksiyon:cariToplam:N11: "(denetim yok)" → 0
+      örn. d39-c5-s130-supheli-kalemleri k1:projeksiyon:cariToplam:N12: "(denetim yok)" → 40000
+  S130-genel     degisen      2
+      örn. d39-c5-s130-supheli-kalemleri k1:projeksiyon:cari: 17 → 14
+      örn. d39-c5-s130-supheli-kalemleri k1:takvim:cariKalemSayisi: 17 → 14
+  S130-sus       kalkan      16
+      örn. d40-c5-s130-sus-bilinen-sinir k1:projeksiyon:hareket:q1bx: {"amount": 60000, "date": "2026-06-30", "direction": "in"} → "(denetim yok)"
+      örn. d40-c5-s130-sus-bilinen-sinir k1:projeksiyon:hareket:q1x: {"amount": 60000, "date": "2026-06-30", "direction": "in"} → "(denetim yok)"
+      örn. d40-c5-s130-sus-bilinen-sinir k1:projeksiyon:hareket:q2x: {"amount": 50000, "date": "2026-06-02", "direction": "in"} → "(denetim yok)"
+      örn. d40-c5-s130-sus-bilinen-sinir k1:projeksiyon:hareket:q4o: {"amount": 20000, "date": "2026-06-02", "direction": "in"} → "(denetim yok)"
+  S133-sus       kalkan      13
+      örn. d40-c5-s130-sus-bilinen-sinir k1:cari:Q5:acikEsitBakiye: false → "(denetim yok)"
+      örn. d40-c5-s130-sus-bilinen-sinir k1:cari:Q5:acikToplam: 50000 → "(denetim yok)"
+      örn. d40-c5-s130-sus-bilinen-sinir k1:cari:Q5:gecikmis: 100000 → "(denetim yok)"
+      örn. d40-c5-s130-sus-bilinen-sinir k1:hareket:q5x:beklenen: "" → "(denetim yok)"
+  S134-sus       kalkan      14
+      örn. d40-c5-s130-sus-bilinen-sinir k1:cari:Q6:acikEsitBakiye: true → "(denetim yok)"
+      örn. d40-c5-s130-sus-bilinen-sinir k1:cari:Q6:acikToplam: -30000 → "(denetim yok)"
+      örn. d40-c5-s130-sus-bilinen-sinir k1:cari:Q6:gecikmis: 0 → "(denetim yok)"
+      örn. d40-c5-s130-sus-bilinen-sinir k1:hareket:q6a:kalan: 30000 → "(denetim yok)"
+G3 senaryo senaryo (sınıf/tür: adet; listede olmayan senaryoda fark 0):
+  c7-ks7-bagsiz-kapaticilar                S130-alan/degisen 4
+  d39-c5-s130-supheli-kalemleri            S130-alan/degisen 33 · S130-alan/yeni 59 · S130-genel/degisen 2
+  d40-c5-s130-sus-bilinen-sinir            S130-sus/kalkan 16 · S133-sus/kalkan 13 · S134-sus/kalkan 14
+# tests 569
+# pass 569
+# fail 0
+569/569 denetim geçti

@@ -2,6 +2,11 @@
 
 Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar.
 
+## 2.5.0 — Ana Defter Çekirdeği ve Açılış Düzeni
+
+- Yeni: Ana Defter'in temeli — Tekdüzen hesap planı ve alt hesaplar, saklanan yevmiye fişleri, şirket başına Defter Türü, kilitli dönemin defteri donar (güncelleme kilitli ayların raporlarını değiştirmez; fark Kural Farkı Düzeltme fişiyle), açılışlar 519 Eşleştirilecek Açılış Bakiyeleri'nde toplanır ve Açılış Eşleştirme ile sermayeye dağıtılır; alış faturasında KDV İndirim Dönemi.
+- İyileştirmeler: taksit kartı ve fatura tahsilatları tek borç sırasıyla kapanır (gecikmiş borç ve açık faturalar her ekranda aynı); WhatsApp bağlantı süresi izlenir, Bağlantıyı Kaldır Meta'daki aboneliği de kaldırır, gönderim kayıtları için saklama süresi. Ayrıntı: docs/2.5.0-DEGISIKLIKLER.md.
+
 ## 2.4.9 — Cari Silme Kuralı ve İyileştirmeler
 
 - Yeni: hareketi olan cari artık silinmez, Pasife Al önerilir (hareketsiz, yanlış açılmış cari silinir); müşteriye kredi kartıyla yapılmış ödemenin iadesi için Kredi Kartına İade; veri dosyası bozuk şirket ikinci onayla Yedeksiz Sil ile silinir.

@@ -1,0 +1,19 @@
+#!/bin/bash
+# Ana oturum: senaryo-220 kırmızısının ÖN KOŞULU ZORLANIR (ders 20, 39): depodaki pencere yarışı ön yüklemesi (HOF_ZORLA=div —
+# pencereden sonra gövdeye boş div) + tanı kopyası; ANA DAL KODUNDA (kâhin ağacım) ve ADAYDA (sınama ağacı) birer kez.
+# Çağrı: flock -s -n olcum.lock timeout 1500 bash s220-zorla.sh
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+K=$S/c5a1fy-kanit2/s220-zorla
+export HUKUK_LICENSE_URL=http://127.0.0.1:9 PLAYWRIGHT_BROWSERS_PATH=$S/pw-1194
+mkdir -p $K || exit 1
+echo "başladı $(date -u +%T) yük $(cut -d' ' -f1-3 /proc/loadavg)"
+for ad in ana aday; do
+  case $ad in aday) W=$S/d2t3-ya-ag;; ana) W=$S/kahin8y-ag;; esac
+  cp $S/senaryo-220-tani.mjs $W/test/e2e/senaryo-220-tani.mjs || exit 1
+  ( cd $W && HOF_ZORLA=div timeout 600 node --disable-warning=ExperimentalWarning --import ./test/e2e/pencere-yaris-zorla.mjs test/e2e/senaryo-220-tani.mjs > $K/$ad.out 2>&1; echo "$ad ($(git rev-parse --short HEAD)) çıkış $? · yük $(cut -d' ' -f1 /proc/loadavg)" )
+  grep -E "pencere-zorla" $K/$ad.out | head -6 | cut -c1-200
+  grep -E "beklenmeyen hata|geçti, .* kaldı|Timeout|waiting for" $K/$ad.out | head -5 | cut -c1-300
+  grep -E "TANI" $K/$ad.out | cut -c1-900
+  rm $W/test/e2e/senaryo-220-tani.mjs
+done
+echo "bitti $(date -u +%T) · aday ağacı temiz mi: $(git -C $S/d2t3-ya-ag status -s | grep -v node_modules | wc -l) · ana kod ağacı: $(git -C $S/kahin8y-ag status -s | grep -v node_modules | wc -l)"

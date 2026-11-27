@@ -1,0 +1,32 @@
+{
+  "ad": "kahineski12-cari-mutasyon-utc",
+  "komut": "flock -s -n /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olcum.lock python3 -I -B docs/kanit/2026-11-11/kahineski12-arac/mutasyon-tara.py --model test/bagimsiz/cari",
+  "commit": "7e50f5af993660538dc0a5d4e6ac00b60708cbcc",
+  "dal": "worktree-agent-ac2c907e15b53a16a",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-12T04:12:26.410Z",
+  "sure_sn": 81.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 246,
+    "gecen": 246,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahineski12-kanit/2026-11-12/kahineski12-cari-mutasyon-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ac2c907e15b53a16a",
+  "ham_cikti_sha256": "f7a26bb0ca5754fb3fae7deee0a285c64a533782259628b133a70371c295a761",
+  "ham_cikti_bayt": 44569
+}

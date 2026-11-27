@@ -1,0 +1,47 @@
+// Tur 2b-1 ORTA-1 komşuları: kilitten ÖNCE kurulmuş bağın kilitten SONRA (e) yalnız tutar / (f) yalnız vade (tahsilatta açıklama) / (g) bağ başka faturaya / (h) bağ kaldırılır —
+// çek ↔ cari tahsilatı. Kurgu o1-kilit ile aynı: F1 1.000 (−60, vade +10) · F2 500 (−50) · P bağsız 500 (−45) · D Borç Yaz 300 (−35, vade −25) · F3 300 (−55, vade −55; g için)
+// · evrak / tahsilat 300 (−30) F2'ye bağlı · kilit −40.
+// Kullanım: ROOT=<kod> node o1-ek.mjs
+import { boot, day, NOW } from "./h.mjs";
+
+const h = await boot({ now: { time: NOW, fixed: false } });
+const out = {};
+const adv = () => h.server.clock.advance({ seconds: 5 });
+const AUD = { id: "dk", role: "admin", permissions: [] };
+const view = acc => {
+  const r = h.ctx.invoices.obligationsFor(acc.id, h.ctx.accounts.detail(acc.id, AUD, { withRemaining: false }).ledger);
+  const cached = h.ctx.invoices.allObligations().get(acc.id);
+  return `gecikmiş ${r.overdue("2026-10-20").amount} (önbellek ${cached?.overdue("2026-10-20").amount}) · ${[...r.invoices].map(([, v]) => `${v.payable}:${v.state}:${v.open}`).join(" ")}`;
+};
+try {
+  const kinds = ["e", "f", "g", "h"];
+  const sets = {};
+  for (const k of kinds) for (const via of ["cek", "tah"]) sets[`${k}-${via}`] = { acc: await h.account(`O1E ${k} ${via}`) };
+  for (const s of Object.values(sets)) { s.F1 = await h.sale(s.acc, day(-60), 1000, day(10)); adv(); }
+  for (const s of Object.values(sets)) { s.F3 = await h.sale(s.acc, day(-55), 300, day(-55)); adv(); }
+  for (const s of Object.values(sets)) { s.F2 = await h.sale(s.acc, day(-50), 500, day(-50)); adv(); }
+  for (const [key, s] of Object.entries(sets)) {
+    const via = key.split("-")[1];
+    await h.entry(s.acc, { kind: "in", amount: "500", date: day(-45) }); adv();
+    await h.entry(s.acc, { kind: "debt", amount: "300", date: day(-35), dueDate: day(-25) }); adv();
+    if (via === "cek") s.ch = await h.must("çek", h.api.post("/api/workspace/cheques", { direction: "in", instrument: "cheque", amount: "300", issueDate: day(-30), dueDate: day(40), serialNo: `O1E-${key}`, accountId: s.acc.id, invoiceId: s.F2 }));
+    else s.p = await h.entry(s.acc, { kind: "in", amount: "300", date: day(-30), invoiceId: s.F2 });
+    adv();
+  }
+  out.oncesi = Object.fromEntries(Object.entries(sets).map(([k, s]) => [k, view(s.acc)]));
+  await h.lock(day(-40));
+  adv();
+  const bodies = { e: () => ({ amount: "250" }), f: () => ({ dueDate: day(50) }), g: s => ({ invoiceId: s.F3 }), h: () => ({ invoiceId: "" }) };
+  out.duzeltme = {};
+  for (const [key, s] of Object.entries(sets)) {
+    const [k, via] = key.split("-");
+    const body = bodies[k](s);
+    const res = via === "cek" ? await h.api.put(`/api/workspace/cheques/${s.ch.id}`, body) : await h.api.put(`/api/workspace/accounts/${s.acc.id}/entries/${s.p.id}`, { ...(body.dueDate ? { note: "yalnız açıklama" } : body), cashForce: true });
+    out.duzeltme[key] = `${res.status}${res.status === 200 ? "" : " " + JSON.stringify(res.data).slice(0, 160)}`;
+    adv();
+  }
+  out.sonra = Object.fromEntries(Object.entries(sets).map(([k, s]) => [k, view(s.acc)]));
+} finally {
+  await h.server.close();
+}
+console.log(JSON.stringify(out, null, 1));

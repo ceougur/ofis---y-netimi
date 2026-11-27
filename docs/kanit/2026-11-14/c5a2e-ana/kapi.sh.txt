@@ -1,0 +1,65 @@
+#!/bin/bash
+# Ana oturum: Ç5-A TUR 2e — KÜÇÜK ADAY KAPISI (sınama ağacı d2t3-ya-ag, dal sinama-c5a2e = çalışma dalı ucu + tur 2e dalı). Depo değişkeni YOK (ders 54).
+# Çağrı: flock -s -n olcum.lock timeout 7100 bash kapi.sh
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+A=$S/ana-c5a2e; W=$S/d2t3-ya-ag; K=$A/kanit; R=/home/user/ofis---y-netimi; L=test/bagimsiz/cari/YAPIM-ASAMASI.json
+B=worktree-agent-a43a9593927943672; ANA=claude/epic-thompson-w0lc2l
+export KANIT_DIR=$K HUKUK_LICENSE_URL=http://127.0.0.1:9 PLAYWRIGHT_BROWSERS_PATH=$S/pw-1194
+G="git -c user.name=ana -c user.email=ana@yerel"
+say() { grep -E "^# (tests|pass|fail|cancelled|skipped)" "$1" | tr '\n' ' '; }
+mkdir -p $K || exit 1
+cd $W || exit 1
+[ -z "$(git status -s | grep -v node_modules)" ] || { echo "sınama ağacı temiz değil"; exit 1; }
+git checkout -q -B sinama-c5a2e $ANA || exit 1
+$G merge -q --no-ff --no-edit $B || { echo "birleşim çakıştı"; git merge --abort; exit 1; }
+echo "başladı $(date -u +%T) yük $(cut -d' ' -f1-3 /proc/loadavg) · aday $(git rev-parse --short HEAD) = ana $(git rev-parse --short $ANA) + tur 2e $(git rev-parse --short $B)"
+YENI="test/kural-farki-yil-250.test.mjs test/acilis-olabilir-yetki-250.test.mjs test/kural-farki-duzeltme-250.test.mjs test/s160-kilitli-tahsilat-bagi-250.test.mjs"
+for tz in UTC Europe/Istanbul; do m=${tz//\//-}
+  TZ=$tz timeout 2400 node tools/kanit.mjs kos c5a2e-yeni-$m -- node --disable-warning=ExperimentalWarning --test --test-concurrency=1 $YENI > $K/yeni-$m.out 2>&1; echo "yeni testler $tz çıkış $? $(say $K/yeni-$m.out)"
+done
+# TABAN KIRMIZISI (v2.4.9 etiketi gerekir → worktree --detach)
+[ -d $A/taban ] || git -C $R worktree add -q --detach $A/taban c5a2e-taban || exit 1
+ln -sfn $R/node_modules $A/taban/node_modules
+for f in kural-farki-yil-250 acilis-olabilir-yetki-250 kural-farki-duzeltme-250; do
+  cp $W/test/$f.test.mjs $A/taban/test/
+  (cd $A/taban && TZ=Europe/Istanbul timeout 1500 node --disable-warning=ExperimentalWarning --test test/$f.test.mjs > $K/taban-$f.out 2>&1; echo "taban $f çıkış $? $(say $K/taban-$f.out)")
+  grep -E "^not ok|^    not ok" $K/taban-$f.out | head -8 | cut -c1-200
+  grep -E "error:|actual:|expected:|!==|AssertionError" $K/taban-$f.out | head -6 | cut -c1-220
+done
+git -C $A/taban checkout -q -- test; git -C $A/taban clean -q -f test
+# MUTASYON (ajanın betiği, kendi kopyamda)
+[ -d $A/mutag ] || git -C $R worktree add -q --detach $A/mutag $B || exit 1
+ln -sfn $R/node_modules $A/mutag/node_modules
+TZ=Europe/Istanbul timeout 3000 python3 -I $A/mutant.py > $K/mutant.out 2>&1; echo "mutasyon çıkış $?"; tail -22 $K/mutant.out | cut -c1-200
+echo "mutag temiz mi: $(git -C $A/mutag status -s | grep -v node_modules | wc -l)"
+# LİSTE
+TZ=UTC timeout 3000 node test/bagimsiz/cari/kos.mjs --yapim-asamasi-yaz > $K/liste-uret.out 2>&1; echo "liste üretimi çıkış $? · fark (BOŞ olmalı): [$(git status -s -- $L)]"
+git checkout -q -- $L
+# KÂHİN ADIMLARI
+grep -oE "kanit\.mjs kos kahin-[A-Za-z0-9_-]+ .*$" .github/workflows/ci.yml | sed 's/^kanit\.mjs kos //' > $K/kahin-liste.txt
+echo "ci.yml'deki kâhin adımı sayısı $(wc -l < $K/kahin-liste.txt)"
+while read -r ad komut; do
+  case "$ad" in kahin-cari|kahin-defter) tzs="UTC Europe/Istanbul";; *) tzs="UTC";; esac
+  for tz in $tzs; do m=${tz//\//-}
+    TZ=$tz timeout 3000 node tools/kanit.mjs kos c5a2e-$ad-$m -- $komut > "$K/$ad-$m.out" 2>&1 < /dev/null; c=$?
+    echo "$c $ad $tz :: $(grep -E '^\[kanit\]' "$K/$ad-$m.out" | tail -1 | cut -c1-150)"
+  done
+done < $K/kahin-liste.txt
+timeout 900 node --test test/yapim-asamasi-kapisi.test.mjs test/platform-tasinabilirlik.test.mjs test/kanit-araci.test.mjs test/ci-kapi-listesi.test.mjs > $K/dort-test.out 2>&1; echo "dört kapı testi çıkış $? $(say $K/dort-test.out)"
+# KOMŞULAR (taramayla — ders 10)
+git diff --name-only $ANA HEAD -- server client | xargs -n1 basename | sort -u > $K/degisen.txt
+grep -r -l -F -f $K/degisen.txt test --include='*.test.mjs' | grep -v -E '^test/(bagimsiz|e2e)/' | sort -u > $K/komsu.txt
+echo "değişen ürün dosyası $(wc -l < $K/degisen.txt) · komşu test dosyası $(wc -l < $K/komsu.txt)"
+for tz in UTC Europe/Istanbul; do m=${tz//\//-}
+  TZ=$tz timeout 5400 node tools/kanit.mjs kos c5a2e-komsu-$m -- node --disable-warning=ExperimentalWarning --test --test-concurrency=1 $(tr '\n' ' ' < $K/komsu.txt) > $K/komsu-$m.out 2>&1; echo "komşular $tz çıkış $? $(say $K/komsu-$m.out)"
+  grep -E "^not ok" $K/komsu-$m.out | sort -u | head -6 | cut -c1-200
+done
+# EKRAN SENARYOLARI (tur 2'nin üçü + kâhinsiz komşu: Açılış ile ilgili hepsi ci.yml'den)
+grep -oE "kanit\.mjs kos e2e-[A-Za-z0-9_-]+ npm run [A-Za-z0-9:_-]+" .github/workflows/ci.yml | awk '{print $3, $6}' | grep -i acilis > $K/e2e-liste.txt; echo "ekran senaryosu: $(cat $K/e2e-liste.txt | tr '\n' ';')"
+while read ad betik; do
+  for tz in UTC Europe/Istanbul; do m=${tz//\//-}
+    TZ=$tz timeout 1800 node tools/kanit.mjs kos c5a2e-$ad-$m -- npm run $betik > "$K/$ad-$m.out" 2>&1 < /dev/null; c=$?
+    echo "$c $ad $tz $(tail -1 "$K/$ad-$m.out" | grep -oP '\d+/\d+ geçti, \d+ başarısız')"
+  done
+done < $K/e2e-liste.txt
+echo "bitti $(date -u +%T) yük $(cut -d' ' -f1-3 /proc/loadavg) · aday $(git rev-parse --short HEAD) · temiz mi: $(git status -s | grep -v node_modules | wc -l) · disk $(df -h / | awk 'NR==2{print $4}')"

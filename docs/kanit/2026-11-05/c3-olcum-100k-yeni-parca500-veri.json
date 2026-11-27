@@ -1,0 +1,119 @@
+{
+ "kod": "/home/user/ofis---y-netimi/.claude/worktrees/agent-af0fd5a610216d3a2",
+ "veri": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3-olcum-veri/n-100000-v46",
+ "now": "2026-10-08T12:00:00+03:00",
+ "kilit": "2025-12-31",
+ "tur": 1,
+ "parca": 500,
+ "node": "v22.23.4",
+ "cpu": 4,
+ "yuk": [
+  2.14,
+  1.96,
+  2.78
+ ],
+ "olcumler": {
+  "once.yevmiyeKilitliYil": {
+   "msMedyan": 2863,
+   "loopMaxMs": 2852,
+   "ms": [
+    2863
+   ]
+  },
+  "once.yevmiyeAcikDonem": {
+   "msMedyan": 2786,
+   "loopMaxMs": 2778,
+   "ms": [
+    2786
+   ]
+  },
+  "once.hesapMizaniKilitliYil": {
+   "msMedyan": 3787,
+   "loopMaxMs": 3781,
+   "ms": [
+    3787
+   ]
+  },
+  "once.ledgerTumu": {
+   "msMedyan": 4767,
+   "loopMaxMs": 4758,
+   "ms": [
+    4767
+   ]
+  },
+  "kilit": {
+   "ms": 9573,
+   "loopMaxMs": 30,
+   "yanit": {
+    "lockedUntil": "2025-12-31",
+    "frozenThrough": "2025-12-31",
+    "freeze": {
+     "running": false,
+     "phase": "tamam",
+     "done": 274616,
+     "total": 274616,
+     "run": 1,
+     "error": "",
+     "coverage": "2025-12-31"
+    }
+   }
+  },
+  "sonra.yevmiyeKilitliYil": {
+   "msMedyan": 905,
+   "loopMaxMs": 897,
+   "ms": [
+    905
+   ]
+  },
+  "sonra.yevmiyeAcikDonem": {
+   "msMedyan": 2640,
+   "loopMaxMs": 2631,
+   "ms": [
+    2640
+   ]
+  },
+  "sonra.hesapMizaniKilitliYil": {
+   "msMedyan": 4295,
+   "loopMaxMs": 4288,
+   "ms": [
+    4295
+   ]
+  },
+  "sonra.ledgerTumu": {
+   "msMedyan": 4006,
+   "loopMaxMs": 3999,
+   "ms": [
+    4006
+   ]
+  },
+  "yazimKilittenSonra": {
+   "ms": 23,
+   "loopMaxMs": 18,
+   "status": 200
+  },
+  "kilitGeriCek": {
+   "ms": 2251,
+   "loopMaxMs": 61,
+   "status": 200
+  }
+ },
+ "acilisMs": 106115,
+ "paraSatiri": 226734,
+ "donmus": {
+  "kapsam": "2025-12-31",
+  "satir": 274616,
+  "kosu": [
+   {
+    "kind": "freeze",
+    "state": "done",
+    "lines": 274616,
+    "entries": 123058
+   }
+  ]
+ },
+ "yukSonra": [
+  4.26,
+  2.9,
+  3.01
+ ]
+}

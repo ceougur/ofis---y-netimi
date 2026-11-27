@@ -1,0 +1,32 @@
+{
+  "ad": "d2c5k-c5k-ist",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/kasa-acilis-once-250.test.mjs",
+  "commit": "695f3d44c140fae0f3536f40b0a6ef01deb12f47",
+  "dal": "d2c5k-birlesim",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T17:27:17.001Z",
+  "sure_sn": 18.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 41,
+    "gecen": 41,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../scratchpad/d2c5k-kanit/2026-11-06/d2c5k-c5k-ist.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/d2c5k-ag",
+  "ham_cikti_sha256": "4d85e4c2b4a2fc47ed7214b94577925f5d884b7bd4ab24f2a80cab6221eabf0b",
+  "ham_cikti_bayt": 17628
+}

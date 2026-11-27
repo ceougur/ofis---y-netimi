@@ -1,0 +1,28 @@
+(node:21440) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:21440) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ok 1 - bu kod: 31.12.2026'ya kadar dondu
+ok 2 - bu kod: Kasa girişleri 649'da
+ok 3 - bu kod: Mutabakat Testi tutarlı
+ok 4 - yeni kural: kilitli yılın Yevmiye Defteri birebir aynı (12 satır)
+ok 5 - yeni kural: kilitli yılın Hesap Planı Mizanı birebir aynı
+ok 6 - yeni kural: açık dönem (02.01.2027) yeni kuralla (642)
+ok 7 - yeni kural: Mutabakat Testi "Kural Değişikliği Farkı" uyarısı, 4 madde ({"code":"ledger:rule-diff","name":"Kural Değişikliği Farkı (Kilitli Dönem: 31.12.2026 ve öncesi)","ok":false,"count":4,"difference":2030,"sample":["cash:cash-6ae8f640-4674-46eb-beae-6b4415c1cd16 (10.02.2026)","cash:cash-1a3f7107-3f05-47a9-84ac-12c83afe4c5f (20.05.2026)","cash:cash-e59b739d-a6a7-4e42-8963-199682fdd9d1 (09.09.2026)","cash:cash-c0caacba-f2be-4805-8876-0765937526bd (31.12.2026)"],"breakdown":[{"account":"642","frozenMinor":0,"liveMinor":-203000,"differenceMinor":-203000},{"account":"649","frozenMinor":-203000,"liveMinor":0,"differenceMinor":203000}],"severity":"warning","hint":"Defter kuralı program sürümüyle değişti. Kilitli dönemin raporları donmuş defterden okunur, değişmez; fark Kural Farkı Düzeltme Fişi ile ilk açık güne alınır."})
+ok 8 - yeni kural: Defter Mutabakatı hesap bazında fark satırları (642, 649)
+ok 9 - yeni kural: Defter Mutabakatı alt başlığı (Defter kuralı program sürümüyle değişti (aşağıda “Kural Değişikliği Farkı”). Kilitli dönemin raporları donmuş defterden okunur, değişmez; yeni işlemler engellenmez. Fark Kural Farkı Düzeltme Fişi ile ilk açık güne alınır.)
+ok 10 - yeni kural: ruleDiff tutarları ([[2026,"642",-203000],[2026,"649",203000]])
+ok 11 - yeni kural: açık döneme yazım engellenmez
+(node:21440) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ok 12 - yeni kilit: kural etiketleri ([{"rule":"2.5.0","first":"2026-01-05","last":"2026-12-31"},{"rule":"2.5.0-deneme","first":"2027-01-02","last":"2027-01-02"}])
+(node:21440) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:21440) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ok 13 - yeniden kilit: 01.07–31.12 yeni kuralla yeniden dondu
+ok 14 - yeniden kilit: fark yalnız 30.06'ya kadarki 2 maddede ({"code":"ledger:rule-diff","name":"Kural Değişikliği Farkı (Kilitli Dönem: 31.12.2026 ve öncesi)","ok":false,"count":2,"difference":1500,"sample":["cash:cash-6ae8f640-4674-46eb-beae-6b4415c1cd16 (10.02.2026)","cash:cash-1a3f7107-3f05-47a9-84ac-12c83afe4c5f (20.05.2026)"],"breakdown":[{"account":"642","frozenMinor":0,"liveMinor":-150000,"differenceMinor":-150000},{"account":"649","frozenMinor":-150000,"liveMinor":0,"differenceMinor":150000}],"severity":"warning","hint":"Defter kuralı program sürümüyle değişti. Kilitli dönemin raporları donmuş defterden okunur, değişmez; fark Kural Farkı Düzeltme Fişi ile ilk açık güne alınır."})
+
+# tests 14
+# pass 14
+# fail 0

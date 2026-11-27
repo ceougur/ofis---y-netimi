@@ -1,0 +1,9 @@
+yük 1.43 1.40 2.29 · /dev/shm/c6h5-sql/v/data/destekofis.sqlite
+  dışarı kaba, voucher süzülü (A): en iyi 378 · ortanca 389 ms · satır 2675
+  A NOT INDEXED: en iyi 378 · ortanca 387 ms · satır 2675
+  A anahtar sırası account, sub, party, yıl: en iyi 392 · ortanca 425 ms · satır 2675
+  A entry_id NOT GLOB: en iyi 356 · ortanca 383 ms · satır 2675
+  yıl başına (2025) ifadesiz anahtar: en iyi 92 · ortanca 93 ms · satır 785
+  yıl dağılımı: en iyi 76 · ortanca 79 ms · satır 5
+  cari boş mu (party = '') oranı: en iyi 160 · ortanca 161 ms · satır 2
+yük (sonda) 1.33 1.38 2.27

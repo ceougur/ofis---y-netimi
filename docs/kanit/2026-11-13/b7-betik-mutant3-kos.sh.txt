@@ -1,0 +1,15 @@
+#!/bin/bash
+# Birleşik tur 7 İş 3 mutant koşusu (yük kilidiyle): test/vade-takip-soz-b7-250.test.mjs, TZ=UTC.
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+M=$S/b7-mut
+OUT=$S/b7-kanit/b7-is3-mutant.txt
+export HUKUK_LICENSE_URL=http://127.0.0.1:9
+: > $OUT
+for m in M3a-tarihten M3b-dengeleme M3c-taksit M3d-fatura; do
+  python3 -I $S/b7-is/mutant3.py $M $m >> $OUT || exit 1
+  ( cd $M && TZ=UTC timeout -k 5 900 node --test test/vade-takip-soz-b7-250.test.mjs > $S/b7-kanit/b7-is3-mut-$m.tap 2>&1 )
+  echo "$m çıkış $? $(grep -E '^# (tests|pass|fail)' $S/b7-kanit/b7-is3-mut-$m.tap | tr '\n' ' ')" >> $OUT
+  grep -E '^    not ok' $S/b7-kanit/b7-is3-mut-$m.tap | sed 's/^/   /' | cut -c1-150 >> $OUT
+done
+python3 -I $S/b7-is/mutant3.py $M orijinal || exit 1
+echo BITTI >> $OUT

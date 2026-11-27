@@ -1,0 +1,46 @@
+TAP version 13
+# Subtest: S231 — Çek / Senet eşleme penceresinin metni
+    # Subtest: yeni cümle var (cümle düzeni), eski 'birebir aynı olan tek cari' yok
+    not ok 1 - yeni cümle var (cümle düzeni), eski 'birebir aynı olan tek cari' yok
+      ---
+      duration_ms: 1.701063
+      type: 'test'
+      location: '/dev/shm/s231-a5ab/eski/test/s231-cek-pencere-metni-250.test.mjs:12:3'
+      failureType: 'testCodeFailure'
+      error: 'metin: intro: `${preview.rows} satır bulundu. Program başlıkları tanıdı; yanlışsa değiştirin. Keşideci adı birebir aynı olan tek cari varsa evrak o cariye bağlanır.`,'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/s231-a5ab/eski/test/s231-cek-pencere-metni-250.test.mjs:16:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:466:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:435:3)
+        node:internal/per_context/primordials:466:9
+        Array.map (<anonymous>)
+      ...
+    1..1
+not ok 1 - S231 — Çek / Senet eşleme penceresinin metni
+  ---
+  duration_ms: 3.436782
+  type: 'suite'
+  location: '/dev/shm/s231-a5ab/eski/test/s231-cek-pencere-metni-250.test.mjs:11:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 1
+# suites 1
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 74.252584

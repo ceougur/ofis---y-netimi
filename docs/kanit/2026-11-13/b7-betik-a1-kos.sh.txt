@@ -1,0 +1,12 @@
+#!/bin/bash
+# dar kontrolün a1.mjs'i (alarm düzenli ifadesi yeni iletiyi de tanır: a1b.mjs) yeni kod ve taban kopyada, iki TZ.
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+export HUKUK_LICENSE_URL=http://127.0.0.1:9
+sed 's#/uyarısı arttı/#/uyarısı arttı|uyarısına yeni hareket girdi/#' $S/b7-is/betik/a1.mjs > $S/b7-is/betik/a1b.mjs || exit 1
+for tz in UTC Europe/Istanbul; do
+  t=${tz//\//-}
+  for kod in yeni:/home/user/ofis---y-netimi/.claude/worktrees/agent-a6c349be9d3823fef taban:$S/b7-taban; do
+    ad=${kod%%:*}; yol=${kod#*:}
+    TZ=$tz ROOT=$yol timeout -k 5 900 node --disable-warning=ExperimentalWarning $S/b7-is/betik/a1b.mjs > $S/b7-kanit/b7-a1-$ad-$t.json 2> $S/b7-kanit/b7-a1-$ad-$t.err; echo "a1 $ad $tz çıkış $?"
+  done
+done

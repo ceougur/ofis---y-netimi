@@ -1,0 +1,32 @@
+{
+  "ad": "tarih-c4-eski-surum-sonra-zorla",
+  "komut": "node --import /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/tarih-supurme-a7187/saat-on-yukle.mjs test/defter-turu-c4-eski-surum.mjs",
+  "commit": "9215357158176a87126fff1e4d291a15a59609d6",
+  "dal": "worktree-agent-a7187c0e87f23820b",
+  "kirli": 14,
+  "izlenmeyen": 13,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T23:11:47.389Z",
+  "sure_sn": 2.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 7,
+    "gecen": 7,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/tarih-c4-eski-surum-sonra-zorla.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a7187c0e87f23820b",
+  "ham_cikti_sha256": "4bf4afb3ff4b77d69d538efb2205d47d70b9dd3f817e1c1fc68d431c6dffdaad",
+  "ham_cikti_bayt": 584
+}

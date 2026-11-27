@@ -1,0 +1,29 @@
+KIRMIZI (HATA) S23-01-sinirda-bekleyen-yeniden-basma-elle-sayilir-pencere-acilinca-gider: ValueError: KULLANICIYA SORULMALI S7-e (README §19.4): belirsizlik onayıyla bekleyen (elle işaretsiz) işte gönderim anı gelmeden şüpheli kaydı açıkken yeniden Yine de Gönder — S22 ↔ F1, kodlanmadı
+KIRMIZI (HATA) S23-02-duraklatildi-yeniden-basma-elle-devam-et-ile-gider-kayitsiz-zaten-kuyrukta: ValueError: KULLANICIYA SORULMALI S7-e (README §19.4): belirsizlik onayıyla bekleyen (elle işaretsiz) işte gönderim anı gelmeden şüpheli kaydı açıkken yeniden Yine de Gönder — S22 ↔ F1, kodlanmadı
+KIRMIZI (HATA) S23-03-zincirdeki-yeniden-deneme-beklerken-yeniden-basma-elle-gider: ValueError: KULLANICIYA SORULMALI S7-e (README §19.4): belirsizlik onayıyla bekleyen (elle işaretsiz) işte gönderim anı gelmeden şüpheli kaydı açıkken yeniden Yine de Gönder — S22 ↔ F1, kodlanmadı
+KIRMIZI (HATA) S23-04-meta-bekletti-beklerken-yeniden-basma-ikinci-denemede-gider: ValueError: KULLANICIYA SORULMALI S7-e (README §19.4): belirsizlik onayıyla bekleyen (elle işaretsiz) işte gönderim anı gelmeden şüpheli kaydı açıkken yeniden Yine de Gönder — S22 ↔ F1, kodlanmadı
+KIRMIZI (HATA) S23-05-yeniden-basmada-suphesiz-tutar-yok-iki-okuma-ileti-gitmez: ValueError: KULLANICIYA SORULMALI S7-e (README §19.4): belirsizlik onayıyla bekleyen (elle işaretsiz) işte gönderim anı gelmeden şüpheli kaydı açıkken yeniden Yine de Gönder — S22 ↔ F1, kodlanmadı
+KIRMIZI (DEĞER) SW3-01-bir-yil-siniri-iki-yani-sure-dolunca-ayni-donem-daha-once-gonderildi: 5 fark
+    * [{}…] kontroller.K1.icerik: elle {"T1/A": {"telefon": "+905321112233", "degiskenler": ["Ayşe Yılmaz", "Deneme Ticaret Ltd. Şti.", "01.10.2026 – 31.10.2026", "1.250,00 TL"], "pdf": {"cari_ad": " ≠ model "<YOK>"
+    * [{}…] kontroller.K2.icerik: elle {"T1/A": {"telefon": null, "degiskenler": null, "pdf": null, "dosya_adi": null, "icerik_silindi": true}, "T1/B": {"telefon": null, "degiskenler": null, "pdf": n ≠ model "<YOK>"
+    * [{}…] kontroller.K3.icerik: elle {"T1/A": {"telefon": null, "degiskenler": null, "pdf": null, "dosya_adi": null, "icerik_silindi": true}, "T1/B": {"telefon": null, "degiskenler": null, "pdf": n ≠ model "<YOK>"
+    * [{}…] isler.T1/A.icerik_silindi: elle true ≠ model "<YOK>"
+    * [{}…] isler.T1/A.telefon: elle null ≠ model "+905321112233"
+KIRMIZI (DEĞER) SW3-02-gece-yarisi-yerel-gun-utc-farkli-bir-yil-siniri: 3 fark
+    * [{}…] kontroller.K1.icerik: elle {"T1/A": {"telefon": "+905321112233", "degiskenler": ["Ayşe Yılmaz", "Deneme Ticaret Ltd. Şti.", "01.10.2026 – 31.10.2026", "1.250,00 TL"], "pdf": {"cari_ad": " ≠ model "<YOK>"
+    * [{}…] kontroller.K2.icerik: elle {"T1/A": {"telefon": null, "degiskenler": null, "pdf": null, "dosya_adi": null, "icerik_silindi": true}} ≠ model "<YOK>"
+    * [{}…] isler.T1/A.icerik_silindi: elle true ≠ model "<YOK>"
+KIRMIZI (HATA) SW3-03-silme-talebi-ayni-donem-elenir-sonraki-donem-gider-silinen-telefon-kullanilmaz: ValueError: bilinmeyen olay: kvkk_sil
+KIRMIZI (DEĞER) SW3-04-geri-yukleme-bir-yildan-eski-icerik-donunce-silinir: 3 fark
+    * [{}…] kontroller.K1.icerik: elle {"T1/A": {"telefon": null, "degiskenler": null, "pdf": null, "dosya_adi": null, "icerik_silindi": true}} ≠ model "<YOK>"
+    * [{}…] kontroller.K2.icerik: elle {"T1/A": {"telefon": null, "degiskenler": null, "pdf": null, "dosya_adi": null, "icerik_silindi": true}} ≠ model "<YOK>"
+    * [{}…] isler.T1/A.icerik_silindi: elle true ≠ model "<YOK>"
+KIRMIZI (HATA) SW3-05-silme-talebinden-once-alinan-yedek-geri-yuklenir-icerik-susuyor-r3-kesin: ValueError: bilinmeyen olay: kvkk_sil
+yeni 10 senaryo: 10 KIRMIZI (7 hata, 3 değer), 0 AYNI
+1..10
+# tests 10
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

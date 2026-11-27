@@ -1,0 +1,7 @@
+kilitVeDondurma: 2174 ms, olay döngüsü en çok 146 ms, tepe RSS 324 MB · 50 ms'yi aşan boşluk 1 (en büyükler: 146 ms @kilit)
+para satırı 226734 · ana yığın sınırı 248 MB · node --max-old-space-size=200 --disable-warning=ExperimentalWarning · yük 1.64 1.75 1.93 → 1.59 1.74 1.92
+HATA: dondurma tamamlanmadı: {"running":false,"phase":"hata","done":0,"total":0,"run":4,"error":"Worker terminated due to reaching memory limit: JS heap out of memory","coverage":""}
+
+# tests 1
+# pass 0
+# fail 1

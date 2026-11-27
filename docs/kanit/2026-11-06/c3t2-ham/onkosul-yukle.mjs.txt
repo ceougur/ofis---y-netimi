@@ -1,0 +1,23 @@
+// Ç3 tur 2 — ders 20 ön koşul sayacı (yalnız ölçüm; ürüne ve teste dokunmaz). node --import ile yüklenir; globalThis.fetch'i sarar ve her
+// PUT /api/admin/period-lock yanıtının freeze.active değerini ONKOSUL_DOSYA'ya bir satır yazar (dosya adı, durum, active, pending, ms).
+import { appendFileSync } from "node:fs";
+
+const FILE = process.env.ONKOSUL_DOSYA;
+const original = globalThis.fetch;
+if (FILE && original) {
+  globalThis.fetch = async (input, init = {}) => {
+    const url = String(input?.url || input);
+    const method = String(init?.method || input?.method || "GET").toUpperCase();
+    if (method !== "PUT" || !url.includes("/api/admin/period-lock")) return original(input, init);
+    const t0 = Date.now();
+    const response = await original(input, init);
+    try {
+      const body = await response.clone().json();
+      const freeze = body?.data?.freeze || body?.freeze || null; // ok(): { ok: true, data }
+      appendFileSync(FILE, `${JSON.stringify({ test: process.argv[1] || "", status: response.status, active: freeze ? freeze.active : null, pending: Boolean(freeze?.pending), ms: Date.now() - t0 })}\n`);
+    } catch {
+      appendFileSync(FILE, `${JSON.stringify({ test: process.argv[1] || "", status: response.status, active: "okunamadi", ms: Date.now() - t0 })}\n`);
+    }
+    return response;
+  };
+}

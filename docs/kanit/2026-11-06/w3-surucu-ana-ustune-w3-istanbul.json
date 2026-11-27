@@ -1,0 +1,143 @@
+{
+  "ad": "w3-surucu-ana-ustune-w3-istanbul",
+  "komut": "node test/bagimsiz/whatsapp-248/surucu.mjs --senaryo SW3*,S30*,S31*,S32*,S35*,S36*,S37*,S38*,S42* --uc hizli --tz Europe/Istanbul --cikti /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-kanit/surucu-ana-ustune-w3",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T11:01:54.981Z",
+  "sure_sn": 1464.6,
+  "cikis_kodu": null,
+  "sinyal": "SIGTERM",
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 24,
+    "gecen": 1,
+    "basarisiz": 22,
+    "iptal": 0,
+    "atlanan": 1
+  },
+  "hukum": "YARIDA",
+  "neden": "sinyal SIGTERM",
+  "basarisiz_testler": [
+    {
+      "ad": "SW3-01-bir-yil-siniri-iki-yani-sure-dolunca-ayni-donem-daha-once-gonderildi [hizli] (6 fark; davranış farkı 0; gösterim: G1-borclu-eki 6)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "SW3-02-gece-yarisi-yerel-gun-utc-farkli-bir-yil-siniri [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "SW3-03-silme-talebi-ayni-donem-elenir-sonraki-donem-gider-silinen-telefon-kullanilmaz [hizli] (10 fark; davranış farkı 1; gösterim: G1-borclu-eki 9)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "SW3-05-silme-talebinden-once-alinan-yedek-geri-yuklenir-icerik-susuyor-r3-kesin [hizli] (7 fark; davranış farkı 1; gösterim: G1-borclu-eki 6)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "S30-01-talep-duraklatildi-meta-bekletti-zincir-gonderilmez-belirsiz-iz-eler [hizli] (16 fark; davranış farkı 9; gösterim: G1-borclu-eki 7)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "S30-03-bir-yil-dolumu-bekleyen-isler-gonderilmez-belirsiz-iz-eler [hizli] (6 fark; davranış farkı 0; gösterim: G1-borclu-eki 6)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "S31-01-talep-sonrasi-basarisizlari-yeniden-dene-silinmis-ekstre-elenir-yeni-gonderim-gider [hizli] (5 fark; davranış farkı 0; gösterim: G1-borclu-eki 5)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "S31-02-bir-yil-sonra-silinmis-ekstre-yeniden-dene-ve-yine-de-gonder-kapali [hizli] (4 fark; davranış farkı 0; gösterim: G1-borclu-eki 4)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "S32-01-talepten-once-ve-sonra-alinan-iki-yedek-icerik-gelmez-sonraki-icerik-kalir [hizli] (8 fark; davranış farkı 3; gösterim: G1-borclu-eki 5)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "S32-02-talepten-once-yedekte-basarisiz-ve-belirsiz-geri-yukleme-sonrasi-silinmis [hizli] (3 fark; davranış farkı 1; gösterim: G1-borclu-eki 2)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "S35-01-talep-aninda-kapanir-ayni-donem-yeni-gonderim-gider-meta-bekletti-gec-teslim [hizli] (22 fark; davranış farkı 15; gösterim: G1-borclu-eki 7)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "S35-02-hatirlatma-talep-sonrasi-ayni-gun-yeni-gonderim-gece-yarisi-belirsiz-yerel-gun [hizli] (9 fark; davranış farkı 2; gösterim: G1-borclu-eki 7)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "S36-01-silinmis-belirsiz-ekstre-ayni-donem-yol-yok-sonraki-donem-gider [hizli] (4 fark; davranış farkı 0; gösterim: G1-borclu-eki 4)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "S36-02-silinmis-belirsiz-son-3-ay-yedi-gun-icinde-yol-yok-sonra-gider [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2, G4-liste-icinde-ozel-yaprak 2)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "S37-01-talep-sonrasi-hatirlatma-yeniden-dene-ve-yine-de-gonder-karttan-gider [hizli] (15 fark; davranış farkı 8; gösterim: G1-borclu-eki 7)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "S37-02-bir-yil-sonra-hatirlatma-yeniden-dene-ve-yine-de-gonder-karttan-gider [hizli] (6 fark; davranış farkı 0; gösterim: G1-borclu-eki 6)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "S38-01-tasima-oncesi-talep-yeni-bilgisayarda-geri-yuklemede-uygulanir [hizli] (9 fark; davranış farkı 4; gösterim: G1-borclu-eki 5)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "S38-02-tasima-sonrasi-talep-ve-zincirleme-tasima [hizli] (8 fark; davranış farkı 4; gösterim: G1-borclu-eki 4)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "S42-01-gonderiliyor-talep-kabul-gonderildi-izi-ayni-donem-daha-once [hizli] (1 fark; davranış farkı 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "S42-02-gonderiliyor-talep-yanit-yok-belirsiz-iz-ayni-donem-elenir [hizli] (1 fark; davranış farkı 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "S42-03-gonderiliyor-talep-yeniden-gonderim-gerektiren-yanit-atlandi-kesin-olumsuz-basarisiz [hizli] (1 fark; davranış farkı 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "S42-04-gonderiliyor-talep-gece-yarisi-yerel-gun-iz-gonderim-aninda [hizli] (1 fark; davranış farkı 1)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../w3-kanit/2026-11-06/w3-surucu-ana-ustune-w3-istanbul.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-ana-5620b55c",
+  "ham_cikti_sha256": "25b3165adea7db2cee30048a3d47786b6d27e0cc3f10fdc293effaac837693e0",
+  "ham_cikti_bayt": 8516
+}

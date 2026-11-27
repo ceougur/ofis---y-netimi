@@ -1,0 +1,533 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""Cari kâhininin programsız öz denetimi (2.5.0 Ç5 bakımı; KARARLAR.md §13). Program AÇILMAZ.
+
+  python3 -I test/bagimsiz/cari/oz-test.py
+
+1. Elle tablolar: senaryolar/*.json içindeki `elleBeklenen` (elle hesaplanmış beklenenler, kuruş) ↔ 2.5.0 kâhininin çıktısı; `elleCatal`: ÇATAL denetimlerin dalları.
+   Bakım 2 (§14): hiçbir denetim SK-4 ÇATAL'ı taşımaz (S68 = A — ikinci dal yok). Bakım 3 (§15): hiçbir denetim SK-5 ÇATAL'ı taşımaz (S69 = A).
+2. Mutantlar 200–223 (kâhinin dişi): her biri en az bir elle senaryoda 2.5.0 çıktısını DEĞERLE değiştirmeli (çökme de yakalandı sayılır — kos.mjs düzeni).
+   Bakım 3 mutantları 219–223 (S69 B + sınır kaymaları) daha sıkı: çökmeden, bir `elleBeklenen` değerini değiştirerek yakalanmalı (elle tablo kırmızı).
+3. Çapraz denetim: tek yükümlülük kuyruğu (C13.4 (2)(3)(4)) "saf" bir zaman çizelgesi simülasyonuyla — yalnız fatura / elle Borç / borçlu Açılış / tahsilat (bağlı ya da bağsız)
+   olan carilerde (kart, iade, evrak, kapatıcı, ödeme, şüpheli YOK) — model.py'nin açık / Kalan değerleri bire bir aynı olmalı. Senaryolar: elle /3 dosyaları + uretici.py
+   rastgele s1 ve ux18 (tohum 1–3 × 60).
+4. 2.4.9 eşitliği: kartsız, vadesiz (vade alanı boş) carilerde 2.5.0 ve 2.4.9 açık / Kalan değerleri aynı olmalı (ANINDA = HAVUZ, tarih sıralı alanda; C13.4 (4)).
+5. Bakım 4 (§16; S91 / S92 / S93): `elleBelirsiz` — kâhinin SUSTUĞU (net görünümü tanımsız) carinin `belirsiz` kaydı; mutantlar 224–233 DEĞERLE; iki yönlü tek kuyruğun (C16.2 / C16.3)
+   "saf" (model.py'den ayrı yazılmış: tek aşama, gün içinde önce kalemler sonra ödemeler, karşı satırlar vade → belge → yazım) simülasyonuyla çapraz denetimi — yalnız fatura / elle
+   kayıt / Açılış / tahsilat / ödeme olan carilerde, modelin okuma birliği bulduğu yerde net kalanlar ve verilen avans satırları bire bir aynı olmalı; karşı yönlü kalemi OLMAYAN caride
+   iki yönlü kuyruk = kendi tarafının kuyruğu (§13–§15 değişmedi); gecikmiş için EK-1 §1 (i) 0 ≤ gecikmiş ≤ max(0, bakiye) ve net kuyrukta (ii) Σ açık borç − Σ açık alacak = bakiye.
+6. Bakım 5 (§17; S95 / S96 / S97 / S98): saf simülasyon kararların birlikte okunuşuyla (Y5-1: gün içinde önce kalemler, bağsız ödeme önce kendi tarafını kapatır — önceki günlerin
+   netleşmesi geri alınır, ödemenin günündeki kesin; verilen avans tek vade sırasında kalemdir); karşı yönlü kalemi olmayan caride iki yönlü kuyruk kendi tarafının kuyruğundan
+   yalnız S98 yüzünden ayrışabilir (sayılır); mutantlar 234–240 DEĞERLE; `elleYok` / `elleBelirsiz` Y5-7 susmaları.
+7. Bakım 6 (§18; S99 / S101 / S102–S105 + SK-13): saf simülasyon S102 A ile (önceki günlerin netleşmesi en yeniden geri alınır, açılan karşı kalem o gün yeniden uygulanır) ve taksitli
+   faturanın taksitleriyle; faturanın belge durumu saf simülasyonun netleşmesiz koşusuyla (S99 A — SK-13); hiçbir senaryoda SK-9 … SK-13 susması kalmaz; mutantlar 241–250 DEĞERLE;
+   `elleYok` / `elleBelirsiz` SK-14 … SK-17 susmaları.
+8. Bakım 7 (§19; G1 / G2): bütün elle senaryolarda seriden numara alan belgeler (satış faturası — taslak dahil — ve iade) senaryo içinde tarih sırasıyla (Y7-1); elle Mevcut Borç kartının
+   reddi (Y7-3) yalnız 2.5.0'da — 2.4.9'da aynı adım kabul; mutantlar 251–255 DEĞERLE; `elleYok` / `elleBelirsiz` SK-18 susması.
+9. Bakım 8 (§20; S110): kart açılırken açık borç kart tutarından fazlaysa kart kendi borcunu taşır — d34 elle tablosu; mutantlar 256–260 DEĞERLE; `elleYok` / `elleBelirsiz` SK-19 susması.
+10. Bakım 9 (§21; S120): elle kart tek bir elle borca denk gelmiyorsa yalnız elle borçları eskiden yeniye içine alır — d35 elle tablosu (d34 E11–E13 ve d8 A artık değerle); mutantlar 261–264
+   DEĞERLE; `elleYok` / `elleBelirsiz` SK-20 … SK-23 susmaları.
+11. Bakım 10 (§22; S122 A, S123 / S124 / S125 = C): birden çok elle borcu içine alan karta gelen ödeme elle borçların Kalan'ını içine alma sırasıyla, eskiden yeniye düşürür — d36 elle tablosu
+   (d35 H10 / H11 artık değerle); mutantlar 265–269 DEĞERLE; `elleYok` / `elleBelirsiz` Y10-4 (S125 = C) ve SK-20 / SK-22 / SK-23 (BİLİNEN SINIR) susmaları.
+12. Bakım 11 (§23; S126 A): bakiye kadar açılan, içine fatura da giren Taksitler kartına gelen ödeme kalemleri fatura dahil içine alma sırasıyla, eskiden yeniye düşürür — d37 elle tablosu
+   (d36 J13 artık değerle); mutantlar 270–274 DEĞERLE; `elleYok` / `elleBelirsiz` Y11-8 (S125 = C) ve SK-25 susmaları.
+13. Bakım 12 (§24; S128 A): bakiye kadar açılan Taksitler kartının içinde stok veresiye satışı / karşılıksız kalemi de varsa ödeme kalemleri türüne bakılmadan içine alma sırasıyla, eskiden yeniye
+   düşürür — d38 elle tablosu (d37 L14 artık değerle); mutantlar 275–279 DEĞERLE; `elleYok` / `elleBelirsiz` Y12-8 (S125 = C) ve SK-18 + SK-26 (başka kartın / taksitli faturanın taksiti) susmaları.
+14. Bakım 14 (§25; TOPLU — S130 A, S129 A onay, S131 / S133 / S134 / S135 = C): Şüpheli Alacağa alınmış, Değersiz yazılmamış, tahsil edilmemiş tutar 'Tahsil Edilecek' kalemlerinden tek
+   yükümlülük kuyruğunun sırasıyla en eskiden düşer (bakiye / Kalan / fatura açığı değişmez; görünüm toplamı = bakiye − R) — d39 elle tablosu (S129'un iki örneği dahil); SUS alanları ve BİLİNEN
+   SINIRLAR d40 (SK-27 / SK-28, S133, S134, S135); d38 M14 / M15 SK-26 susması S131 = C; mutantlar 280–285 DEĞERLE.
+15. Bakım 15 (§26; TOPLU — S136 / S139 / S140 / S145 / S151, S148 onay, S137 / S138 / S141 / S143 / S144 / S149 = C): şüpheliye alınan tutar taksitlerden ve verilen avanstan da düşer, şüpheli
+   kayıtlı caride gecikmiş görünen kalemlerden (d39 / d40 güncellendi; d41), satış kartı iadeyle kendi satışını taşır ve 'Tahsil Edilen' iadeyi saymaz (d42), şüpheli tarihinden önceye tahsilat
+   o tarihte borcu aşırıyorsa RET (d39 N11, d41); BİLİNEN SINIRLAR DEĞER'den SUS'a (d43; d12 F2, d30 KQ1 / KQ3, d34 KE10); mutantlar 286–298 DEĞERLE.
+16. Bakım 16 (§27; S155 A, S158 A, S156 / S157 = C, S154 bilgi): Şüpheli Alacak kuralının ölçüsü TOPLAM borç — türü fark etmez, adımdan sonra borç açık şüpheli tutarın altına düşüyorsa RET
+   (d44 X1 … X14: kararın iki örneği AYNEN + çek / Alacak Yaz / borç silme / stok iadesi / geri yükleme / tarih değişikliği / bağlı tahsilat; d41 S7 / S8 / S9 artık değerle); SK-35 SUS
+   (d44 X12 / X13); 'iade tahsilat değildir' her kartta (d42 T7 — kararın örneği; d44 Y2 / Y4 / Y5); mutantlar 299–302 (293–296 yeni anlamıyla) DEĞERLE.
+17. Bakım 17 (§28; S159 A, kart tahsilatı 'Fazlasını Avans Yaz' seçeneği — S118 B sınırı, S154 B; S162 = B / S163 = C susması): açık şüpheli kalmadıysa S155 bağlamaz (d44 X12 artık değerle — kabul,
+   bakiye −100; d45 Z2 … Z5); kartın KENDİ kalanını aşan Taksit Tahsilatı seçenekle kabul, seçeneksiz RET, sınır bölgesinde seçeneksiz SUS SK-36 (d45 A1 … A6B; d43 U1 / U2 ve d30 Q1 / Q3 / Q5 seçenekli);
+   S162 / S163 BİLİNEN SINIR susmaları (d45 B1 / C1 / C3, d42 T7, d44 Y4; satış kartı SK-37 d42 T6); mutantlar 303–307 DEĞERLE.
+18. Bakım 18 (§29; S165 A, S118 B OKUMASI, S166 = B): kart tahsilatının sınırı TEK sayı K — avansla ödenmiş kısım ve para dışı pay küçültmez (SK-36 kalktı; d45 A6 artık değerle — KABUL, bakiye 400;
+   d46 A7 / A8 S165'in örneği, Q7 / Q8 / Q9 SK-36 (a) sınıfı, R1 / R2 / R3 S118'in kendi örneği); S154 B para dışı paylı kartta (d46 A8); S166 = B satış kartı kolu BİLİNEN SINIR (d42 T6 metni);
+   mutantlar 308 / 309 DEĞERLE.
+19. Bakım 19 (§30; S162 = B'nin ölçütü iadenin YAZILDIĞI an — BAŞ MİMAR KARARI; S170 = B; S157 = C kart toplamı; madde 4 türetilmiş toplamlar): d45 B2 karşılaştırma örneği doğru sırayla (değerle),
+   B3 iade önce / borç sonra SUS, B4 borcun yazımı önce / tarihi sonra (değerle), B5 başka borcun vadesi ilk taksitten önce (değerle), B6 borç iadeden sonra silindi (değerle); d42 T1 / T2 / T3
+   (S170), T4 / T5 / T8 (S157), d30 Q7 (S170) kart toplamı SUS; pencere toplamları S162 / S166 / S149 carilerinde SUS (d42 T6 / T7, d43 U4 / U6, d44 Y4, d45 B1 / B3); mutantlar 310 / 311 / 312 DEĞERLE.
+20. Bakım 20 (§31; S168 = B, S181 = B): faturaya bağlı tahsilat / evrak faturanın kuyrukta şüpheli sayılan payı kadar şüpheliden düşer, 120'ye düşen kısım şüpheli dışı borcu aşarsa RET — d47 elle
+   tablosu (Z1 / Z3 / Z7 / Z8 değerle KABUL, Z2 / Z6 RET; Z4 SK-38 (d), Z5 SK-38 (c) SUS), d44 X9 artık KABUL; mutantlar 313 / 314 / 315 DEĞERLE, 316 (SUS kuralı) elle tablonun `elleYok` /
+   `elleBelirsiz` satırıyla.
+21. Bakım 21 (§32; C1 KG-3 = A, C2 geçiş günü, C4 S15, C5 S25): kayıt tahsilatı B 100 / A 336 — d48 elle tablosu (sonradan konan kilit, yeniden açılış, kilit aç-kapa geçiş koymaz; 602 `elleYok`);
+   Mevcut Borç kartlı faturanın iptali (bakiye, SUS) ve S25 (b) fazlası 120'ye — d49 elle tablosu; mutantlar 317–322 DEĞERLE.
+22. Bakım 21b (§33; C6 S206 = A, kesik girdinin tam metni — C1 B1 kolları, C4 S15 asıl durum, C5 S25 (c)): Mevcut Borç kartının içine aldığı faturanın iptalinde kart kapanır, tahsilatı avans (d50 I1 —
+   kararın örneği; d49 A1 artık tanımlı, kapanmış kartın göstergeleri SUS); çok kalemli / tahsilatsız kart SUS (SK-41 (a) / (b) — d50 I2 / I3); faturaya bağlı havale / nakit şüpheliden payı kadar
+   (d50 H1 … H3); B1 kolları (d50 G1); taksitli faturanın iptalinde S50 tahsilatı avans (d50 I4); mutantlar 323 / 325 DEĞERLE, 324 (SUS kuralı) `elleYok` / `elleBelirsiz` satırıyla.
+23. Bakım 23 (§35; S229 = A, S230 = A, S200 = A): Mevcut Borç kartının içine aldığı faturanın GÖSTERİLEN açığı (kart ve liste) = kendi açığı − kartın aldığı kısım, tamamı alınan 'Taksitte'; S200 sırası
+   (önce elle borçlar, eksik kısım faturalardan eskiden yeniye) — d52 elle tablosu (S229'un kendi örneği P1; kısmi / tam / iki kart / kartsız / alış / S110 kendi borcu / iki fatura), d35 H8 artık değerle,
+   d36 J14 SK-23; mutantlar 329–333 DEĞERLE (9. madde düzeni — her biri bir elle beklenen değerini değiştirmeli).
+24. Bakım 24 (§36; S234 = A, S237 = A, karar (4) 2B-S3 = A, KAPSAM (a)–(f)): Kartı Kapat 'Borçta Kalsın' dil eki ve kart küçülmesi — d53 (kapanmış kart: S234 / S237 örnekleri, iade iptali, Düzenle,
+   kendi kartlı fatura, iki kart, Yeniden Aç), d54 (açık kart — aynı senaryolar), d55 (iade iptalinde geri gelen taksit kendi vadesiyle; küçülmenin fazlası avans) elle tabloları; mutantlar 334–340 DEĞERLE.
+25. Bakım 25 (§37; S238 / S239 / S240 / S241 / S242 = A, §3): d56 (S238 kapanmış kartta, S239 kısmen kartta faturaya iade — dış önce, S240 çok kalemli kart, §3 seçilmeyen faturanın iadesi / iptali; SK-45 / SK-46 SUS)
+   ve d57 (Düzenle — S241 fazlası avans açık / kapanmış / kendi kartı, S242 artış kartı değiştirmez) elle tabloları; mutantlar 341–347 (344 yok — bağdaştırıcı mutantı kos.mjs'te) DEĞERLE.
+26. Bakım 26 (§38; S246 = B, S235 = B, §2 SUS (SK-48), S243 = A, S244 / S245 / S247 / S248 = C): d56 N1 / N2 (S243 = A — en eski fatura kartta; SK-45 SUS kalktı), d57 K3 (SK-48 SUS) / P1 (S246 = B — kendi kartı yeni tutarla)
+   ve d58 (kendi kartında Düzenle: R1 ödemeli artış — okuma Y26-3, R2 S235 = B kararın örneği, R3 / R4 SK-49 SUS, T1 / T2 SK-48 SUS, T3 açık tahsilatsız azaltma §36 KAPSAM (b) + (e); N3 S243 elle borçlu kolu) elle tabloları;
+   mutantlar 348–354 DEĞERLE (351 / 353 / 354 SUS kuralı — `elleYok` / `elleBelirsiz` ile); 347 kaldırıldı; V1 / V2 S245 = C SUS.
+27. Bakım 27 (§39; S249 = A, S251 = A, S250 = C): d57 K3 (S249 = A kararın örneği — kart 3 × 100, fazla 300 avans), d58 T1 / T2 / T3 (S249 (a) / (b) / (c) — kart Düzenle'nin planıyla yeniden kurulur) ve R4 (S251 = A — Düzenle
+   ret, sayılar değişmez), yeni d59 (U1 / U2 / U4 S249 kolları, U3 SK-51 SUS, U5 / U6 S251 Mevcut Borç kartlı / kartsız, U7 iade iptalinden sonra olağan kural) elle tabloları; mutantlar 351 (S249 B) ve 354 (S251 B) yeni
+   anlamıyla DEĞERLE (SUS kuralı DEĞİL artık), 355 / 356 DEĞERLE, 357 (SK-51 SUS kuralı) `elleYok` / `elleBelirsiz` ile.
+28. Bakım 28 (§40; S255 = A, S254 = C): yeni d60 (V1 … V12 — Mevcut Borç kartının içine aldığı faturaya bağlı ödeme önce gösterilen açığı, fazlası tek kuyruğa; bağsız karşılaştırma, tamamı kartta, iade / iade iptalinden
+   sonra, sil / geri yükle, kart öncesi bağlı ödeme bugünkü kural; Q1 / Q2 S254 SUS) elle tablosu; mutantlar 358 (S255 B) / 359 (fazlası en son taksite) / 360 (S255 yok — bakım 27) DEĞERLE, 361 (S254 SUS kuralı) `elleYok` /
+   `elleBelirsiz` ile.
+29. Bakım 29 (§41; S266 = A, S265 = C): yeni d61 (U1 KS8 carisinde S104'ün örneği — Alacak açık, verilen avans yok; U2 KS8 alacak yönlü kalemsiz — iade geri ödemesi önce, fazlası avansı kapatır; U3 şüpheli / değersiz
+   kayıtlı cari; U4 SK-54 SUS; U5 Alacak'ın vadesi avanstan önce; U7 S265 SUS; U8 S265 bileşimsiz — DENETLENİR) elle tablosu; mutantlar 362 (S266 yok) / 363 (S104 B) / 365 (S265 susması taşar) DEĞERLE, 364 (SK-54 SUS yok) /
+   366 (S265 SUS yok) SUS kuralı `elleYok` / `elleBelirsiz` ile.
+Çıktı: TAP benzeri sayılar + son satır "N/M denetim geçti". Çıkış 0 yalnız hepsi geçerse.
+"""
+import importlib.util
+import json
+import os
+import subprocess
+import sys
+from collections import defaultdict
+
+BURASI = os.path.dirname(os.path.abspath(__file__))
+_spec = importlib.util.spec_from_file_location("kahin_cari_model_oz", os.path.join(BURASI, "model.py"))
+M = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(M)
+
+
+def yukle(p):
+    with open(p, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def calistir(sen, mut=0, kural="2.5.0"):
+    m = M.Model(sen, mut, kural)
+    sonuc = m.kos()
+    m.son_belirsiz = sonuc["belirsiz"]
+    return m, sonuc["denetimler"]
+
+
+def saf_tyk(m, cari):
+    """C13.4'ün saf okuması (model.py'den bağımsız yazıldı): olay listesi tarih → (borç kalemleri önce) → yazım sırası; bağlı tahsilat önce kendi faturasını kapatır,
+    fazlası kendi tarihinde bağsız; bağsız para o anda açık kalemlere vade → belge → yazım sırasıyla; artan avans sonra doğan kaleme. Dönüş {kalem: kalan}."""
+    kalem = {}
+    for ad, f in m.faturalar.items():
+        if f["cari"] == cari and f["durum"] == "kesildi" and f["tur"] == "satis":
+            kalem[ad] = [f["tarih"], f["tarih"], f["seq"], f["tutar"]]
+    for hn, h in m.hareketler.items():
+        if h["cari"] == cari and h["aktif"] and (h["tur"] == "borc" or (h["tur"] == "acilis" and h["yon"] == "borc")):
+            kalem[hn] = [h["tarih"], h.get("vade") or h["tarih"], h["seq"], h["tutar"]]
+    for en, e in m.evraklar.items():
+        # bakım 2 C14.3 (S66 A + S1 A): carisiz evrakın karşılıksızında seçilen carinin ayrı borç kalemi — belge günü = vade = karşılıksız günü
+        if e["durum"] == "karsiliksiz" and e.get("karsiliksizCari") == cari:
+            kalem["kars:" + en] = [e["karsiliksizTarih"], e["karsiliksizTarih"], e["karsiliksizSeq"], e["tutar"]]
+    para = []
+    bagli = defaultdict(list)
+    for tn, t in m.tahsilatlar.items():
+        if t["cari"] != cari or not t["aktif"]:
+            continue
+        if t["fatura"] and t["fatura"] in kalem:
+            bagli[t["fatura"]].append((t["tarih"], t["seq"], t["tutar"]))
+        else:
+            para.append((t["tarih"], t["seq"], t["tutar"]))
+    for e in m.evraklar.values():
+        if e["cari"] != cari or e["durum"] in ("silindi", "karsiliksiz"):
+            continue  # karşılıksız evrak kapatıcı değil (S8 / B2.2)
+        if e["fatura"] and e["fatura"] in kalem:
+            bagli[e["fatura"]].append((e["tarih"], e["seq"], e["tutar"]))
+        else:
+            para.append((e["tarih"], e["seq"], e["tutar"]))
+    for f, liste in bagli.items():
+        for tarih, seq, tutar in sorted(liste):
+            x = min(kalem[f][3], tutar)
+            kalem[f][3] -= x
+            if tutar > x:
+                para.append((tarih, seq, tutar - x))
+    olaylar = sorted([(v[0], 0, v[2], ad) for ad, v in kalem.items()] + [(p[0], 1, p[1], i) for i, p in enumerate(para)])
+    acik, avans = [], 0
+    for tarih, sinif, _seq, ref in olaylar:
+        if sinif == 0:
+            acik.append(ref)
+        else:
+            avans += para[ref][2]
+        for ad in sorted(acik, key=lambda a: (kalem[a][1], kalem[a][0], kalem[a][2])):
+            x = min(kalem[ad][3], avans)
+            kalem[ad][3] -= x
+            avans -= x
+    return {ad: v[3] for ad, v in kalem.items()}
+
+
+def _ay_sonra(iso, n):
+    """Bakım 6 saf yardımcı (model.py'den ayrı): iso tarihin n ay sonrası, gün ay sonuna kırpılır."""
+    y, a, g = (int(x) for x in iso.split("-"))
+    a0 = a - 1 + n
+    y, a = y + a0 // 12, a0 % 12 + 1
+    son = [31, 29 if (y % 4 == 0 and (y % 100 != 0 or y % 400 == 0)) else 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][a - 1]
+    return "%04d-%02d-%02d" % (y, a, min(g, son))
+
+
+def saf_net(m, cari, netles=True):
+    """C16.2 / C16.3 + bakım 5 (§17 Y5-1) + bakım 6 (§18 Y6-1 / Y6-2 / Y6-3)'ün saf okuması (model.py'den bağımsız yazıldı). Bakım 6: S102 A — ödeme önceki GÜNLERİN netleşmesini
+    en yeniden başlayarak geri alır, aynı günün netleşmesi kalır; açılan karşı kalem ödeme bitince o gün açık karşı satırlara uygulanır (bakım 5'in K1 "en sonda yeniden kur" okuması
+    S102 B'dir — kaldırıldı); S103 A — verilen avansın kalemle kapanışı kesin (geri alınan yalnız iki kalemin netleşmesi); S104 A — tek vade sırası; S99 A — taksitli faturanın
+    taksitleri borç yönlü kalem (vade = taksit tarihi; eşit tutar, artık sonda, ilk vadeden ayda bir). netles=False: iki yükümlülük kalemi netleşmez (faturanın belge görünümü — (5)).
+    Satırlar TEK listede, iki yönde: yükümlülük kalemleri (satış / alış faturası, taksit, elle Borç / Alacak, Açılış, stok veresiye) ve ödeme satırları (tahsilat, Ödeme). Bağlı tahsilat /
+    ödeme önce kendi faturasını kapatır (zamandan bağımsız), artanı kendi gününde bağsız. Olaylar gün → (önce o günün kalemleri, sonra ödemeleri — S97) → yazım sırası; gelen satır o anda
+    açık KARŞI yönlü satırlara vade → belge günü → yazım sırasıyla (ödeme satırında vade = gün; S98) uygulanır. Dönüş ({kalem: kalan}, [(gün, kalan)] açık borç yönlü ödeme satırları,
+    Σ açık borç yönlü − Σ açık alacak yönlü, {fatura: belge açığı (taksitli: taksitlerinin toplamı)})."""
+    S = []  # [yön (+1 cari borçlanır / −1 alacaklanır), kalem mi, gün, vade, yazım sırası, kalan, ad, bağ hedefi, taksitin faturası]
+    for ad, f in m.faturalar.items():
+        if not (f["cari"] == cari and f["durum"] == "kesildi" and f["tur"] in ("satis", "alis")):
+            continue
+        if f["tur"] == "satis" and f["taksitli"]:
+            plan = f.get("taksit") or {}
+            n, ilk = int(plan.get("sayi", 1)), plan.get("ilkVade") or f["tarih"]
+            for i in range(n):
+                tutar = f["tutar"] // n + (f["tutar"] - (f["tutar"] // n) * n if i == n - 1 else 0)
+                S.append([1, True, f["tarih"], _ay_sonra(ilk, i), (f["seq"], i + 1), tutar, "%s#%d" % (ad, i + 1), None, ad])
+            continue
+        S.append([1 if f["tur"] == "satis" else -1, True, f["tarih"], f["tarih"], (f["seq"], 0), f["tutar"], ad, None, None])
+    for hn, h in m.hareketler.items():
+        if h["cari"] == cari and h["aktif"] and h["tur"] in ("borc", "alacak", "acilis"):
+            S.append([1 if h["yon"] == "borc" else -1, True, h["tarih"], h.get("vade") or h["tarih"], (h["seq"], 0), h["tutar"], hn, None, None])
+    for xn, x in m.kapaticilar.items():
+        if x["cari"] == cari and x["aktif"] and x["tur"] == "stok_satis":
+            S.append([1, True, x["tarih"], x["tarih"], (x["seq"], 0), x["tutar"], xn, None, None])  # stok veresiye (KS7.1): borç yönlü yükümlülük kalemi
+    for tn, t in m.tahsilatlar.items():
+        if t["cari"] == cari and t["aktif"]:
+            S.append([-1, False, t["tarih"], t["tarih"], (t["seq"], 0), t["tutar"], tn, t["fatura"], None])
+    for on, o in m.odemeler.items():
+        if o["cari"] == cari and o["aktif"]:
+            S.append([1, False, o["tarih"], o["tarih"], (o["seq"], 0), o["tutar"], on, o["fatura"], None])
+    kalem = {s[6]: s for s in S if s[1]}
+    for s in sorted((x for x in S if not x[1] and x[7] in kalem), key=lambda x: (x[2], x[4])):
+        hedef = kalem[s[7]]
+        if hedef[0] == s[0] or s[7] not in m.faturalar:
+            continue  # bağ yalnız karşı yönlü (taksitsiz) faturaya (tahsilat → satış, ödeme → alış)
+        x = min(hedef[5], s[5])
+        hedef[5] -= x
+        s[5] -= x
+    sira = sorted(range(len(S)), key=lambda i: (S[i][2], 0 if S[i][1] else 1, S[i][4]))
+    r = {i: S[i][5] for i in range(len(S))}
+    gelen, defter = [], []  # defter: [i, j, tutar, gün, iki kalem mi]
+
+    def anahtar(j):
+        return (S[j][3] if S[j][1] else S[j][2], S[j][2], S[j][4])
+
+    def uygula(i, gun):
+        for j in sorted((j for j in gelen if S[j][0] != S[i][0] and r[j] > 0), key=anahtar):
+            if r[i] <= 0:
+                return
+            iki = S[i][1] and S[j][1]
+            if iki and not netles:
+                continue
+            x = min(r[i], r[j])
+            r[i] -= x
+            r[j] -= x
+            defter.append([i, j, x, gun, iki])
+
+    for i in sira:
+        if r[i] <= 0:
+            gelen.append(i)
+            continue
+        gun = S[i][2]
+        if S[i][1]:
+            uygula(i, gun)
+            gelen.append(i)
+            continue
+        acilan = []
+        for j in sorted((j for j in gelen if S[j][0] != S[i][0]), key=anahtar):
+            if r[i] <= 0:
+                break
+            geri = [e for e in defter if j in (e[0], e[1]) and e[4] and e[3] < gun and e[2] > 0]  # S95 + S97 + S102: yalnız ÖNCEKİ günlerin iki kalem netleşmesi
+            al = min(r[i], r[j] + sum(e[2] for e in geri))
+            if al <= 0:
+                continue
+            acik_kisim = min(al, r[j])
+            r[j] -= acik_kisim
+            kalan_al = al - acik_kisim
+            for e in reversed(geri):  # en yeni netleşme önce geri alınır (S102: önceki günün karşı kalemi açılır)
+                if kalan_al <= 0:
+                    break
+                u = min(kalan_al, e[2])
+                e[2] -= u
+                kalan_al -= u
+                karsi = e[1] if e[0] == j else e[0]
+                r[karsi] += u
+                acilan.append(karsi)
+            r[i] -= al
+        gelen.append(i)
+        for k in sorted(set(acilan), key=lambda k: (S[k][2], S[k][4])):
+            if r[k] > 0:
+                uygula(k, gun)
+    belge = {}
+    for i in range(len(S)):
+        if S[i][1] and (S[i][6] in m.faturalar or S[i][8]):
+            f = S[i][8] or S[i][6]
+            belge[f] = belge.get(f, 0) + r[i]
+    return ({S[i][6]: r[i] for i in range(len(S)) if S[i][1]}, sorted((S[i][2], r[i]) for i in range(len(S)) if not S[i][1] and S[i][0] == 1 and r[i] > 0),
+            sum(S[i][0] * r[i] for i in range(len(S))), belge)
+
+
+def yalin_saf(m, cari):
+    """saf_net'in alanı: yalnız fatura (satış — bakım 6: taksitli dahil — / alış), elle kayıt, Açılış, stok veresiye, tahsilat, ödeme — kart, evrak, iade / değersiz kapatıcı, şüpheli, tablo bağı YOK."""
+    if m.cariler[cari].get("kayit") is not None or any(kt["cari"] == cari for kt in m.kartlar.values()):
+        return False
+    if any(f["cari"] == cari and (f.get("planTutar") is not None or f.get("artis") or f.get("duzFazla")) for f in m.faturalar.values()):
+        return False  # bakım 25 (§37): Düzenle görmüş fatura saf simülasyonun alanı dışında (artış / fazla avans / plan tutarı — 2.5.1'e)
+    if any(f["cari"] == cari and f["durum"] == "kesildi" and f["tur"] not in ("satis", "alis") for f in m.faturalar.values()):
+        return False
+    if any(e["cari"] == cari or e.get("ciroCari") == cari or e.get("karsiliksizCari") == cari for e in m.evraklar.values()):
+        return False
+    if any(x["cari"] == cari and x["tur"] != "stok_satis" for x in m.kapaticilar.values()) or any(sp["cari"] == cari for sp in m.supheliler.values()):
+        return False
+    return True
+
+
+def basit(m, cari):
+    if any(kt["cari"] == cari for kt in m.kartlar.values()):
+        return False
+    if any(f["cari"] == cari and f["durum"] == "kesildi" and (f["tur"] != "satis" or f["taksitli"]) for f in m.faturalar.values()):
+        return False
+    if any(e.get("ciroCari") == cari for e in m.evraklar.values()):
+        return False
+    if any(x["cari"] == cari for x in m.kapaticilar.values()) or any(sp["cari"] == cari for sp in m.supheliler.values()):
+        return False
+    if any(o["cari"] == cari for o in m.odemeler.values()):
+        return False
+    if any(h["cari"] == cari and h["aktif"] and (h["tur"] == "alacak" or (h["tur"] == "acilis" and h["yon"] == "alacak")) for h in m.hareketler.values()):
+        return False
+    return True
+
+
+def main():
+    gecen, kalan, satirlar = 0, 0, []
+
+    def denetle(ad, ok, ayrinti=""):
+        nonlocal gecen, kalan
+        if ok:
+            gecen += 1
+        else:
+            kalan += 1
+            satirlar.append("  ✗ %s %s" % (ad, ayrinti))
+
+    d = os.path.join(BURASI, "senaryolar")
+    elle = [os.path.join(d, f) for f in sorted(os.listdir(d)) if f.endswith(".json")]
+    v3 = [p for p in elle if yukle(p).get("dil") == M.DIL]
+    # 1. elle tablolar
+    tabanlar = {}
+    for p in v3:
+        sen = yukle(p)
+        ad = os.path.basename(p)
+        try:
+            _m, out = calistir(sen)
+        except SystemExit as e:
+            denetle("%s çalıştı" % ad, False, str(e))
+            continue
+        tabanlar[p] = out
+        for k, b in (sen.get("elleBeklenen") or {}).items():
+            g = out.get(k, {}).get("b", "ANAHTAR YOK")
+            denetle("%s %s" % (ad, k), g == b, "elle %s · kâhin %s" % (json.dumps(b, ensure_ascii=False), json.dumps(g, ensure_ascii=False)))
+        for k in sen.get("elleYok") or []:
+            denetle("%s %s yok (tanımsız — kâhin kurmaz)" % (ad, k), k not in out, json.dumps(out.get(k), ensure_ascii=False))
+        for parca in sen.get("elleBelirsiz") or []:
+            # bakım 4: kâhinin sustuğu durum `belirsiz`'e yazılmış olmalı (sessizce atlanmaz) — parça listesinin HEPSİ aynı kayıtta geçer
+            parcalar = parca if isinstance(parca, list) else [parca]
+            denetle("%s belirsiz: %s" % (ad, " + ".join(parcalar)), any(all(x in b for x in parcalar) for b in _m.son_belirsiz), json.dumps(_m.son_belirsiz, ensure_ascii=False)[:300])
+        for k, alanlar in (sen.get("elleCatal") or {}).items():
+            g = out.get(k, {}).get("b")
+            dallar = g.get("catal") if isinstance(g, dict) else None
+            ok = isinstance(dallar, list) and len(dallar) >= 2
+            if ok:
+                for alan, beklenen in alanlar.items():
+                    degerler = [x.get(alan) for x in dallar]
+                    ok = ok and (sorted(degerler) == sorted(beklenen) if isinstance(beklenen, list) else all(x == beklenen for x in degerler))
+            denetle("%s %s ÇATAL" % (ad, k), ok, json.dumps(g, ensure_ascii=False)[:300])
+        sk4 = [k for k, v in out.items() if "ÇATAL SK-4" in v.get("k", "")]
+        denetle("%s SK-4 ÇATAL yok (S68 = A)" % ad, not sk4, ",".join(sk4[:5]))
+        sk5 = [k for k, v in out.items() if "ÇATAL SK-5" in v.get("k", "")]
+        denetle("%s SK-5 ÇATAL yok (S69 = A)" % ad, not sk5, ",".join(sk5[:5]))
+        # bakım 6 (§18 Y6-1): S102–S105 = A — SK-9 … SK-12 okuma ayrışması ve SK-13 belge susması kalmadı (yalnız SK-14 … SK-17 ve Y5-7 / tanım alanı)
+        eski_sk = [b for b in _m.son_belirsiz if "SK-9 … SK-12" in b or "(SK-13;" in b]
+        denetle("%s SK-9 … SK-13 susması yok (S102–S105 A, S99 A)" % ad, not eski_sk, json.dumps(eski_sk[:2], ensure_ascii=False))
+    # 2. mutantlar 200–223 (… bakım 20: 313–316)
+    SUSMA_MUTANTLARI = {316, 324, 353, 357, 361, 364, 366}  # bakım 29 (§41 — SK-54 / S265): 364 / 366 da SUS kuralı · bakım 20 (§31 C10x) / bakım 21b (§33 C10z) / bakım 26 (§38 — SK-47; 347 KALDIRILDI — S243 = A ile kural oldu) / bakım 27 (§39 — SK-51; 351 / 354 S249 / S251 ile DEĞERLE) / bakım 28 (§40 — S254): SUS kuralını değere çeviren mutant — `elleYok` / `elleBelirsiz` ile yakalanır
+    for n, ad in M.MUTASYONLAR.items():
+        if n < 200:
+            continue
+        if n >= 219:
+            # bakım 3: değerle — çökmeden, elle hesaplanmış bir beklenen kırmızıya döner
+            degerle = []
+            for p in v3:
+                sen = yukle(p)
+                if p not in tabanlar or not sen.get("elleBeklenen"):
+                    continue
+                try:
+                    _m, out = calistir(sen, n)
+                except Exception as e:  # noqa: BLE001 — çökme değerle yakalama sayılmaz
+                    denetle("mutasyon %d çökmedi (%s)" % (n, os.path.basename(p)), False, repr(e)[:200])
+                    continue
+                kirmizi = [k for k, b in sen["elleBeklenen"].items() if out.get(k, {}).get("b", "ANAHTAR YOK") != b]
+                if n in SUSMA_MUTANTLARI:
+                    # bakım 20 (§31 C10x): SUS kuralının mutantı değeri yazar — elle tablonun `elleYok` / `elleBelirsiz` satırı kırmızıya döner (elle tablo yine kırmızı)
+                    kirmizi += [k for k in (sen.get("elleYok") or []) if k in out]
+                    kirmizi += ["belirsiz:" + "+".join(x if isinstance(x, list) else [x]) for x in (sen.get("elleBelirsiz") or [])
+                                if not any(all(y in bb for y in (x if isinstance(x, list) else [x])) for bb in _m.son_belirsiz)]
+                if kirmizi:
+                    degerle.append("%s:%s" % (os.path.basename(p), kirmizi[0]))
+            denetle("mutasyon %d DEĞERLE yakalandı (elle tablo)" % n, bool(degerle), ad)
+            print("  mutasyon %d (%s): %s" % (n, ad, ("DEĞERLE YAKALANDI (%d elle senaryo; ilk: %s)" % (len(degerle), degerle[0])) if degerle else "YAKALANMADI"))
+            continue
+        yakalayan = []
+        for p in v3:
+            if p not in tabanlar:
+                continue
+            try:
+                _m, out = calistir(yukle(p), n)
+                fark = {k: v["b"] for k, v in out.items()} != {k: v["b"] for k, v in tabanlar[p].items()}
+            except Exception:
+                fark = True
+            if fark:
+                yakalayan.append(os.path.basename(p))
+            if len(yakalayan) >= 3:
+                break
+        denetle("mutasyon %d yakalandı" % n, bool(yakalayan), ad)
+        print("  mutasyon %d (%s): %s" % (n, ad, ("YAKALANDI (%s)" % ", ".join(yakalayan)) if yakalayan else "YAKALANMADI"))
+    # 3. + 4. çapraz denetim (saf simülasyon) ve tarih sıralı alanda 2.4.9 eşitliği
+    rastgele = []
+    for tur in ("s1", "ux18"):
+        for t in (1, 2, 3):
+            r = subprocess.run([sys.executable, "-I", os.path.join(BURASI, "uretici.py"), "--tur", tur, "--tohum", str(t), "--islem", "60"], capture_output=True, check=True)
+            rastgele.append(("rastgele-%s-%d" % (tur, t), json.loads(r.stdout)))
+    capraz, esit249 = 0, 0
+    for ad, sen in [(os.path.basename(p), yukle(p)) for p in v3] + rastgele:
+        if sen.get("dil") != M.DIL and not ad.startswith("rastgele-ux18"):
+            continue
+        try:
+            m, _ = calistir(sen)
+            m249, _ = calistir(sen, 0, "2.4.9")
+        except SystemExit:
+            continue
+        for cari, c in m.cariler.items():
+            if c.get("silindi") or not basit(m, cari):
+                continue
+            beklenen = saf_tyk(m, cari)
+            model_acik = dict(m.aciklar(cari))
+            model_acik.update(m.kalanlar(cari))
+            model_acik.update({k_: v_ for k_, v_ in m.tyk250(cari)["kuyruk"].items() if k_.startswith("kars:")})  # bakım 2 C14.3 kalemi
+            for kad, v in beklenen.items():
+                capraz += 1
+                denetle("%s %s %s saf TYK" % (ad, cari, kad), model_acik.get(kad) == v, "saf %s · model %s" % (v, model_acik.get(kad)))
+            vadesiz = not any(h["cari"] == cari and h.get("vade") for h in m.hareketler.values()) \
+                and not any(e.get("karsiliksizCari") == cari for e in m.evraklar.values())  # C14.3 yalnız 2.5.0'da (2.4.9'da yok)
+            if vadesiz:
+                a249 = dict(m249.aciklar(cari))
+                a249.update(m249.kalanlar(cari))
+                for kad, v in beklenen.items():
+                    esit249 += 1
+                    denetle("%s %s %s 2.4.9 = 2.5.0 (vadesiz)" % (ad, cari, kad), a249.get(kad) == model_acik.get(kad),
+                            "2.4.9 %s · 2.5.0 %s" % (a249.get(kad), model_acik.get(kad)))
+    print("  çapraz denetim (saf TYK): %d kalem · tarih sıralı alanda 2.4.9 = 2.5.0: %d kalem" % (capraz, esit249))
+    # 5. bakım 4 (§16): iki yönlü tek kuyruk — saf simülasyon ↔ model (net250), tek yönde = kendi tarafının kuyruğu, gecikmiş değişmezleri
+    rastgele4 = list(rastgele)
+    for t in (4, 5, 6, 7, 8):
+        r = subprocess.run([sys.executable, "-I", os.path.join(BURASI, "uretici.py"), "--tur", "s1", "--tohum", str(t), "--islem", "60"], capture_output=True, check=True)
+        rastgele4.append(("rastgele-s1-%d" % t, json.loads(r.stdout)))
+    say = {"net": 0, "tek": 0, "avans": 0, "gecikmis": 0, "ii": 0, "ayrisan": 0, "disarida": 0, "s98": 0, "taksit": 0, "belge": 0}
+    for ad, sen in [(os.path.basename(p), yukle(p)) for p in v3] + rastgele4:
+        if sen.get("dil") != M.DIL:
+            continue
+        # son durum + her kontrol anı: kontrol adımlarında modelin o andaki durumu denetlenir (zaman içinde değişen kuyruk)
+        adimlar = sen["adimlar"]
+        kesimler = [i + 1 for i, a in enumerate(adimlar) if a["islem"] == "kontrol"][-3:] or [len(adimlar)]
+        for kesim in kesimler:
+            try:
+                m, _ = calistir(dict(sen, adimlar=adimlar[:kesim]))
+            except SystemExit:
+                continue
+            for cari, c in m.cariler.items():
+                if c.get("silindi"):
+                    continue
+                nd = m.net_durum(cari)
+                yalin = m._net_uygun(cari)[0]
+                if nd[0] == "tanimsiz":
+                    say["ayrisan" if yalin else "disarida"] += 1
+                if yalin:
+                    N = m.net250(cari)
+                    if N["birlik"]:
+                        # (ii) net kuyrukta Σ açık borç yönlü − Σ açık alacak yönlü = bakiye; iki yön birlikte açık kalmaz
+                        b_acik = sum(r["kalan"] for r in N["satirlar"] if r["yon"] == "B")
+                        a_acik = sum(r["kalan"] for r in N["satirlar"] if r["yon"] == "A")
+                        say["ii"] += 1
+                        denetle("%s@%d %s net kuyruk (ii) Σ açık = bakiye, tek yön açık" % (ad, kesim, cari), b_acik - a_acik == m.bakiye(cari) and min(b_acik, a_acik) == 0,
+                                "borç yönlü %s · alacak yönlü %s · bakiye %s" % (b_acik, a_acik, m.bakiye(cari)))
+                    if N["birlik"] and yalin_saf(m, cari):
+                        saf_kalan, saf_avans, saf_bakiye, _b = saf_net(m, cari)
+                        denetle("%s@%d %s saf net bakiye" % (ad, kesim, cari), saf_bakiye == m.bakiye(cari), "saf %s · model %s" % (saf_bakiye, m.bakiye(cari)))
+                        for kad, v in saf_kalan.items():
+                            say["net" if nd[0] == "net" else "tek"] += 1
+                            say["taksit"] += "#" in kad
+                            denetle("%s@%d %s %s saf net (iki yönlü tek kuyruk)" % (ad, kesim, cari, kad), N["kalan"].get(kad) == v, "saf %s · model %s" % (v, N["kalan"].get(kad)))
+                        say["avans"] += 1
+                        denetle("%s@%d %s saf net verilen avans satırları" % (ad, kesim, cari), N["avans"] == saf_avans, "saf %s · model %s" % (saf_avans, N["avans"]))
+                        if not m.belge_tanimsiz(cari):
+                            # bakım 6 Y6-2 / Y6-3 [S99 A; SK-13]: faturanın belge durumu = verilen avansı kalem sayan tek kuyruk, iki kalem netleşmeden (taksitli: taksitlerinin toplamı)
+                            _k, _a, _t, saf_belge = saf_net(m, cari, netles=False)
+                            mb = m.belge250(cari)
+                            for f, v in saf_belge.items():
+                                say["belge"] += 1
+                                denetle("%s@%d %s %s saf belge durumu (S99 A)" % (ad, kesim, cari, f), mb.get(f) == v, "saf %s · model %s" % (v, mb.get(f)))
+                    if N["birlik"] and nd[0] == "net" and nd[1].get("kaynak") == "S98":
+                        say["s98"] += 1  # bakım 5: karşı yönlü kalemsiz yalın caride S98 (verilen avans kalem) kendi tarafının kuyruğundan ayrıştı
+                    if N["birlik"] and nd[0] == "tek":
+                        # karşı yönlü kalemi olmayan yalın caride iki yönlü kuyruk = kendi tarafının kuyruğu (§13–§15 değişmedi)
+                        taraf = dict(m.kuyruk(cari))
+                        taraf.update(m.kuyruk_borc(cari))
+                        taraf.update({k_: v_ for k_, v_ in m.tyk250(cari)["kuyruk"].items() if k_.startswith("kars:")})
+                        # bakım 6 (S99 A): taksitli faturanın taksitleri kendi tarafının kuyruğunda da "<fatura>#<n>" adıyla
+                        taraf.update({k_: v_ for k_, v_ in m.tyk250(cari)["kuyruk"].items() if k_.split("#")[0] in m.faturalar})
+                        taraf.update({k_: v_ for k_, v_ in m.tyk250(cari)["kuyruk"].items() if k_.startswith("artis:")})  # bakım 25 (§37 Y25-6): taksitli faturanın Düzenle artışı
+                        for kad, v in N["kalan"].items():
+                            say["tek"] += 1
+                            denetle("%s@%d %s %s tek yönde net = kendi tarafı" % (ad, kesim, cari, kad), taraf.get(kad) == v, "kendi tarafı %s · net %s" % (taraf.get(kad), v))
+                if not m.tyk250(cari)["neden"] and not any(sp["cari"] == cari for sp in m.supheliler.values()):
+                    g = m.gecikmis250(cari)
+                    if g is not None:
+                        say["gecikmis"] += 1
+                        denetle("%s@%d %s gecikmiş (i) 0 ≤ gecikmiş ≤ max(0, bakiye)" % (ad, kesim, cari), 0 <= g <= max(0, m.bakiye(cari)), "gecikmiş %s · bakiye %s" % (g, m.bakiye(cari)))
+    print("  bakım 4 + 5 + 6 çapraz denetim: saf net %d kalem (karşı yönlü kalemli caride) + %d kalem (tek yönde; %d taksit) · saf belge durumu %d fatura · avans %d cari · (ii) %d cari ·"
+          " gecikmiş (i) %d cari · susulan: okuma ayrışan (SK-17) %d, tanım alanı dışı %d · S98 ile kendi tarafından ayrışan %d cari"
+          % (say["net"], say["tek"], say["taksit"], say["belge"], say["avans"], say["ii"], say["gecikmis"], say["ayrisan"], say["disarida"], say["s98"]))
+    denetle("bakım 4 çapraz denetim boş değil (karşı yönlü kalemli caride saf net kalemi var)", say["net"] > 0 and say["tek"] > 0 and say["gecikmis"] > 0, json.dumps(say))
+    # 8. bakım 7 (§19 Y7-1, G1): elle senaryolarda seriden numara alan belgeler (satış faturası — taslak dahil — ve iade) senaryo içinde tarih sırasıyla (eşit / artan); tarih yoksa `bugun`
+    seri_say = 0
+    for p in elle:
+        sen = yukle(p)
+        en_buyuk, ihlal = None, []
+        for a in sen["adimlar"]:
+            if a["islem"] == "iade" or (a["islem"] == "fatura" and a.get("tur", "satis") != "alis"):
+                t = a.get("tarih") or sen["bugun"]
+                seri_say += 1
+                if en_buyuk is not None and t < en_buyuk:
+                    ihlal.append("%s %s < %s" % (a["id"], t, en_buyuk))
+                en_buyuk = t if en_buyuk is None or t > en_buyuk else en_buyuk
+        denetle("%s G1 seriden numara alan belgeler tarih sırasıyla" % os.path.basename(p), not ihlal, "; ".join(ihlal))
+    print("  G1 (bakım 7): %d elle senaryo, %d seriden numara alan belge adımı tarih sırasıyla denetlendi" % (len(elle), seri_say))
+    # 9. bakım 7 (§19 Y7-3): elle Mevcut Borç kartının reddi yalnız 2.5.0'da; 2.4.9'da aynı senaryo kartı kabul eder (≤ 2.4.9 AYNEN)
+    for p in v3:
+        sen = yukle(p)
+        ret250 = [k for k, v in tabanlar.get(p, {}).items() if k.startswith("adim:") and k.endswith(":durum") and v["b"] == "ret" and v["e"] == "BAŞ MİMAR" and "C19 Y7-3" in v["k"]]
+        if ret250:
+            _m249, out249 = calistir(sen, 0, "2.4.9")
+            denetle("%s Y7-3 reddi yalnız 2.5.0'da (2.4.9 kabul)" % os.path.basename(p), all(out249.get(k, {}).get("b") == "ok" for k in ret250), ",".join(ret250))
+    toplam = gecen + kalan
+    if satirlar:
+        print("BAŞARISIZ:")
+        print("\n".join(satirlar[:80]))
+    print("# tests %d" % toplam)
+    print("# pass %d" % gecen)
+    print("# fail %d" % kalan)
+    print("%d/%d denetim geçti" % (gecen, toplam))
+    return 0 if kalan == 0 else 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

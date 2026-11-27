@@ -1,0 +1,38 @@
+{
+  "ad": "ya-mobil-yazma-oz-commit-utc",
+  "komut": "python3 -I -B test/bagimsiz/mobil-yazma/kahin_test.py",
+  "commit": "e0f6806b3acba7513e935c1f02ff6e5b3372d153",
+  "dal": "worktree-agent-ad614648682496b49",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v338 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-10T18:37:36.329Z",
+  "sure_sn": 236.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 152,
+    "gecen": 151,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "H2 mevcut cari kâhini model tek başına: kendi mutasyon taraması (model.py --mutasyon-tara, elle senaryoları) — yakalanmayan mutant 0",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ya-kanit/2026-11-10/ya-mobil-yazma-oz-commit-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad614648682496b49",
+  "ham_cikti_sha256": "c252e9a31a5b75953e1b67bbac6caaed838d89c0755c63cef3f7d41396a544b5",
+  "ham_cikti_bayt": 28983
+}

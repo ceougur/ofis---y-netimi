@@ -1,0 +1,27 @@
+
+> destekofis@2.4.9 test:fatura-243-daha-fazla-yaris
+> node --disable-warning=ExperimentalWarning test/e2e/fatura-243-daha-fazla-yaris.mjs
+
+Tur 1
+    ön koşul: oluştu (Daha Fazla isteği 2, Daha Fazla sürerken yazılan yenileme 1)
+  ✓ Daha Fazla satır getirdi (5191 ms; 400 satır)
+  ✓ liste = sunucunun ilk 400 satırı (çift 0)
+Tur 2
+    ön koşul: oluştu (Daha Fazla isteği 2, Daha Fazla sürerken yazılan yenileme 1)
+  ✓ Daha Fazla satır getirdi (5229 ms; 400 satır)
+  ✓ liste = sunucunun ilk 400 satırı (çift 0)
+Tur 3
+    ön koşul: oluştu (Daha Fazla isteği 2, Daha Fazla sürerken yazılan yenileme 1)
+  ✓ Daha Fazla satır getirdi (5260 ms; 400 satır)
+  ✓ liste = sunucunun ilk 400 satırı (çift 0)
+Tur 4
+    ön koşul: oluştu (Daha Fazla isteği 2, Daha Fazla sürerken yazılan yenileme 1)
+  ✓ Daha Fazla satır getirdi (5263 ms; 400 satır)
+  ✓ liste = sunucunun ilk 400 satırı (çift 0)
+  ✓ sayfa hatası yok
+
+ön koşulu oluşmayan deneme: 0
+
+✓ fatura-243-daha-fazla-yaris: 9 geçti, 0 kaldı
+
+[kanit] c5a1ey-e2e-fatura-243-daha-fazla-yaris: GEÇTİ · çıkış 0 · 9/9 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit fe2bca2 +1 izlenmeyen · linux 6.18.44-fc-v378 x64 · Node v22.23.4

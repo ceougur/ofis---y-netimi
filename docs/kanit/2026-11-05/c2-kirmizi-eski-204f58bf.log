@@ -1,0 +1,598 @@
+TAP version 13
+# Subtest: 2.5.0 Ç2 — saklanan fiş defteri
+    # Subtest: N12 (tohum): fiş yokken Defter Mutabakatı'nda Fiş Defteri denetimi görünmez, yevmiyede fiş maddesi yok
+    not ok 1 - N12 (tohum): fiş yokken Defter Mutabakatı'nda Fiş Defteri denetimi görünmez, yevmiyede fiş maddesi yok
+      ---
+      duration_ms: 1.462251
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-250.test.mjs:48:3'
+      failureType: 'testCodeFailure'
+      error: 'fiş defteri yok'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-250.test.mjs:49:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: N1–N3: dengesiz, sıfır, iki taraflı, eksi, kesirli satır; planda olmayan hesap, yabancı alt hesap, kontrol dışı cari → 400, hiçbir satır yazılmaz
+    not ok 2 - N1–N3: dengesiz, sıfır, iki taraflı, eksi, kesirli satır; planda olmayan hesap, yabancı alt hesap, kontrol dışı cari → 400, hiçbir satır yazılmaz
+      ---
+      duration_ms: 0.297471
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-250.test.mjs:57:3'
+      failureType: 'testCodeFailure'
+      error: 'fiş defteri yok'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-250.test.mjs:58:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: N4: aynı istek kimliği — aynı içerik aynı fişi döndürür (yeni fiş yok), farklı içerik 409; numara tüketilmez
+    not ok 3 - N4: aynı istek kimliği — aynı içerik aynı fişi döndürür (yeni fiş yok), farklı içerik 409; numara tüketilmez
+      ---
+      duration_ms: 0.2021
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-250.test.mjs:78:3'
+      failureType: 'testCodeFailure'
+      error: 'fiş defteri yok'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-250.test.mjs:79:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: N7 ileri tarih 400; N6 kilitli tarihe fiş 409 period-locked, hiçbir satır yazılmaz
+    not ok 4 - N7 ileri tarih 400; N6 kilitli tarihe fiş 409 period-locked, hiçbir satır yazılmaz
+      ---
+      duration_ms: 0.296241
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-250.test.mjs:93:3'
+      failureType: 'testCodeFailure'
+      error: 'fiş defteri yok'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-250.test.mjs:94:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: N8: fiş ve satırı UPDATE / DELETE / INSERT OR REPLACE / UPSERT ile değişmez; kapanmış fişe satır eklenmez; fişsiz satır eklenmez
+    not ok 5 - N8: fiş ve satırı UPDATE / DELETE / INSERT OR REPLACE / UPSERT ile değişmez; kapanmış fişe satır eklenmez; fişsiz satır eklenmez
+      ---
+      duration_ms: 0.267971
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-250.test.mjs:111:3'
+      failureType: 'testCodeFailure'
+      error: 'fiş defteri yok'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-250.test.mjs:112:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: N9–N10: ters kayıt aynalar, mizan sıfırlanır, iki madde de yevmiyede; ikinci ters kayıt, ters kaydın tersi ve asıldan önce tarih reddedilir; kilitli asıl tarihe ters kayıt 409
+    not ok 6 - N9–N10: ters kayıt aynalar, mizan sıfırlanır, iki madde de yevmiyede; ikinci ters kayıt, ters kaydın tersi ve asıldan önce tarih reddedilir; kilitli asıl tarihe ters kayıt 409
+      ---
+      duration_ms: 0.466881
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-250.test.mjs:131:3'
+      failureType: 'testCodeFailure'
+      error: 'fiş defteri yok'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-250.test.mjs:132:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: N9 (HTTP): aynı istek kimliğiyle eşzamanlı iki ters kayıt → tek fiş (biri yinelenen); farklı kimlikle eşzamanlı iki ters kayıt → biri 200, biri 409
+    not ok 7 - N9 (HTTP): aynı istek kimliğiyle eşzamanlı iki ters kayıt → tek fiş (biri yinelenen); farklı kimlikle eşzamanlı iki ters kayıt → biri 200, biri 409
+      ---
+      duration_ms: 0.402823
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-250.test.mjs:163:3'
+      failureType: 'testCodeFailure'
+      error: 'fiş defteri yok'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-250.test.mjs:164:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: N13: aynı gün sırası — açılış fişi günün en başında, olağan fiş Banka Fişi'nden sonra, dönem sonu KDV mahsubundan sonra, kapanış günün en sonunda; sınıf içinde yazım sırası
+    not ok 8 - N13: aynı gün sırası — açılış fişi günün en başında, olağan fiş Banka Fişi'nden sonra, dönem sonu KDV mahsubundan sonra, kapanış günün en sonunda; sınıf içinde yazım sırası
+      ---
+      duration_ms: 2.159296
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-250.test.mjs:185:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        ["cash:k1","bank:ev1","vat-offset:m1"]
+        + actual - expected
+        
+          [
+        -   'voucher-open:acilis-1',
+        -   'voucher-open:acilis-2',
+            'cash:k1',
+            'bank:ev1',
+        -   'voucher:olagan',
+            'vat-offset:m1',
+        -   'voucher-end:donem-sonu',
+        -   'voucher-close:kapanis-1',
+        -   'voucher-close:kapanis-2'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'voucher-open:acilis-1'
+        1: 'voucher-open:acilis-2'
+        2: 'cash:k1'
+        3: 'bank:ev1'
+        4: 'voucher:olagan'
+        5: 'vat-offset:m1'
+        6: 'voucher-end:donem-sonu'
+        7: 'voucher-close:kapanis-1'
+        8: 'voucher-close:kapanis-2'
+      actual:
+        0: 'cash:k1'
+        1: 'bank:ev1'
+        2: 'vat-offset:m1'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-250.test.mjs:195:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: N14: kapanış fişleri ve kilit AYNI işlemde (lockThrough); biri düşerse fiş de kilit de yazılmaz; yalnız kapanış türleri, fiş ≤ kilit
+    not ok 9 - N14: kapanış fişleri ve kilit AYNI işlemde (lockThrough); biri düşerse fiş de kilit de yazılmaz; yalnız kapanış türleri, fiş ≤ kilit
+      ---
+      duration_ms: 0.803998
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-250.test.mjs:201:3'
+      failureType: 'testCodeFailure'
+      error: 'fiş defteri yok'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-250.test.mjs:202:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: N20: 31.12 ve 01.01 — numara yılı ayrı, 31.12 kapanışı yılın son maddesi, 01.01 açılışı yeni yılın ilk maddesi, mizan devri
+    not ok 10 - N20: 31.12 ve 01.01 — numara yılı ayrı, 31.12 kapanışı yılın son maddesi, 01.01 açılışı yeni yılın ilk maddesi, mizan devri
+      ---
+      duration_ms: 0.527695
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-250.test.mjs:229:3'
+      failureType: 'testCodeFailure'
+      error: 'fiş defteri yok'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-250.test.mjs:230:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: N21: kontrol (alt defter) hesabına yazan fiş kapıda geri alınır (Defter Mutabakatı farkı); numara tüketilmez
+    not ok 11 - N21: kontrol (alt defter) hesabına yazan fiş kapıda geri alınır (Defter Mutabakatı farkı); numara tüketilmez
+      ---
+      duration_ms: 0.181867
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-250.test.mjs:251:3'
+      failureType: 'testCodeFailure'
+      error: 'fiş defteri yok'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-250.test.mjs:252:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: N23: uçlar yalnız system.manage — Muhasebe ve Personel 403
+    not ok 12 - N23: uçlar yalnız system.manage — Muhasebe ve Personel 403
+      ---
+      duration_ms: 0.2372
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-250.test.mjs:261:3'
+      failureType: 'testCodeFailure'
+      error: 'fiş defteri yok'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-250.test.mjs:262:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Fiş Defteri denetimi: fiş varken Defter Mutabakatı'nda tutarlı satır; yapısı bozulan fişi (store dışı) tam tarama yakalar
+    not ok 13 - Fiş Defteri denetimi: fiş varken Defter Mutabakatı'nda tutarlı satır; yapısı bozulan fişi (store dışı) tam tarama yakalar
+      ---
+      duration_ms: 0.285207
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-250.test.mjs:272:3'
+      failureType: 'testCodeFailure'
+      error: 'fiş defteri yok'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-250.test.mjs:273:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..13
+not ok 1 - 2.5.0 Ç2 — saklanan fiş defteri
+  ---
+  duration_ms: 512.716855
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-250.test.mjs:28:1'
+  failureType: 'subtestsFailed'
+  error: '13 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 Ç2 — N22: kilitli dönemdeki fiş store dışından silinirse tam tarama "Kapanmış dönem" der
+    # Subtest: kilit izi fiş satırlarını içerir
+    not ok 1 - kilit izi fiş satırlarını içerir
+      ---
+      duration_ms: 75.30066
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-250.test.mjs:294:3'
+      failureType: 'testCodeFailure'
+      error: 'fiş defteri yok'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-250.test.mjs:297:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 2 - 2.5.0 Ç2 — N22: kilitli dönemdeki fiş store dışından silinirse tam tarama "Kapanmış dönem" der
+  ---
+  duration_ms: 362.973723
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-250.test.mjs:288:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 Ç2 — fiş defteri: iki şirket, yedek → geri yükle, Şirket Verisini Sıfırla
+    # Subtest: N15: 001'e yazılan fiş 002'de yok; numaralar şirket başına ayrı; 002'nin defterinde yalnız kendi fişi
+    not ok 1 - N15: 001'e yazılan fiş 002'de yok; numaralar şirket başına ayrı; 002'nin defterinde yalnız kendi fişi
+      ---
+      duration_ms: 2.297106
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-yasam-250.test.mjs:55:3'
+      failureType: 'testCodeFailure'
+      error: 'fiş defteri yok (ledger.vouchers)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: '=='
+      stack: |-
+        vouchersOf (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-yasam-250.test.mjs:35:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-yasam-250.test.mjs:56:17)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: N16: 002 yedeği → yeni fiş → geri yükle: yedekteki fişler ve tetikleyiciler döner, numara yedeğin devamı
+    not ok 2 - N16: 002 yedeği → yeni fiş → geri yükle: yedekteki fişler ve tetikleyiciler döner, numara yedeğin devamı
+      ---
+      duration_ms: 47.839078
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-yasam-250.test.mjs:71:3'
+      failureType: 'testCodeFailure'
+      error: 'fiş defteri yok (ledger.vouchers)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: '=='
+      stack: |-
+        vouchersOf (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-yasam-250.test.mjs:35:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-yasam-250.test.mjs:73:5)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: N17: Şirket Verisini Sıfırla (movements) fişleri ve satırları siler, tetikleyiciler yeniden kurulu, numara 1'den
+    not ok 3 - N17: Şirket Verisini Sıfırla (movements) fişleri ve satırları siler, tetikleyiciler yeniden kurulu, numara 1'den
+      ---
+      duration_ms: 1.074673
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-yasam-250.test.mjs:87:5'
+      failureType: 'testCodeFailure'
+      error: 'fiş defteri yok (ledger.vouchers)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: '=='
+      stack: |-
+        vouchersOf (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-yasam-250.test.mjs:35:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-yasam-250.test.mjs:88:17)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: N17: Şirket Verisini Sıfırla (all) fişleri ve satırları siler, tetikleyiciler yeniden kurulu, numara 1'den
+    not ok 4 - N17: Şirket Verisini Sıfırla (all) fişleri ve satırları siler, tetikleyiciler yeniden kurulu, numara 1'den
+      ---
+      duration_ms: 0.391463
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-yasam-250.test.mjs:87:5'
+      failureType: 'testCodeFailure'
+      error: 'fiş defteri yok (ledger.vouchers)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: '=='
+      stack: |-
+        vouchersOf (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-yasam-250.test.mjs:35:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-yasam-250.test.mjs:88:17)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..4
+not ok 3 - 2.5.0 Ç2 — fiş defteri: iki şirket, yedek → geri yükle, Şirket Verisini Sıfırla
+  ---
+  duration_ms: 780.369053
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-yasam-250.test.mjs:39:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 Ç2 — N18: eski sürüm (fiş defterini bilmeyen kod) Şirket Verisini Sıfırla yaptıysa artakalan fiş açılışta kaldırılır
+    # Subtest: izi olmayan fiş + sıfırlama izi → kaldırılır (Mutabakat Günlüğü 'repair', işlem geçmişi); sonra yazılan fiş kalır; sıfırlama izi yoksa dokunulmaz
+    not ok 1 - izi olmayan fiş + sıfırlama izi → kaldırılır (Mutabakat Günlüğü 'repair', işlem geçmişi); sonra yazılan fiş kalır; sıfırlama izi yoksa dokunulmaz
+      ---
+      duration_ms: 321.972106
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-yasam-250.test.mjs:124:3'
+      failureType: 'testCodeFailure'
+      error: 'fiş defteri yok (ledger.vouchers)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: '=='
+      stack: |-
+        vouchersOf (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-yasam-250.test.mjs:35:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-yasam-250.test.mjs:129:11)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 4 - 2.5.0 Ç2 — N18: eski sürüm (fiş defterini bilmeyen kod) Şirket Verisini Sıfırla yaptıysa artakalan fiş açılışta kaldırılır
+  ---
+  duration_ms: 326.303759
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-yasam-250.test.mjs:106:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 Ç2 — N19: eski sürüm verisinden göç (v2.4.3 fikstürü, iki şirket) 46'ya; kilit izi ve defter değişmez
+    # Subtest: iki şirketin dosyası son şemaya çıkar, tablolar ve tetikleyiciler kurulu, kilit izi (2.4.9 tanımı = güncel tanım), Mutabakat tutarlı; ikinci açılışta göç yok
+    not ok 1 - iki şirketin dosyası son şemaya çıkar, tablolar ve tetikleyiciler kurulu, kilit izi (2.4.9 tanımı = güncel tanım), Mutabakat tutarlı; ikinci açılışta göç yok
+      ---
+      duration_ms: 415.194014
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-yasam-250.test.mjs:179:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + []
+        - [
+        -   'ledger_voucher_lines_closed',
+        -   'ledger_voucher_lines_no_delete',
+        -   'ledger_voucher_lines_no_update',
+        -   'ledger_vouchers_no_delete',
+        -   'ledger_vouchers_no_replace',
+        -   'ledger_vouchers_no_update'
+        - ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'ledger_voucher_lines_closed'
+        1: 'ledger_voucher_lines_no_delete'
+        2: 'ledger_voucher_lines_no_update'
+        3: 'ledger_vouchers_no_delete'
+        4: 'ledger_vouchers_no_replace'
+        5: 'ledger_vouchers_no_update'
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-yasam-250.test.mjs:199:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 5 - 2.5.0 Ç2 — N19: eski sürüm verisinden göç (v2.4.3 fikstürü, iki şirket) 46'ya; kilit izi ve defter değişmez
+  ---
+  duration_ms: 438.957605
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-yasam-250.test.mjs:173:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 Ç2 — N11 süreç öldürme / disk dolu ve N5 eşzamanlı iki süreç (ayrı bağlantılar)
+    # Subtest: N11a: fiş yazılırken (işlem açık) süreç öldürülürse yarım fiş yok — başlık, satır ve iz yok; dosya sağlam
+    not ok 1 - N11a: fiş yazılırken (işlem açık) süreç öldürülürse yarım fiş yok — başlık, satır ve iz yok; dosya sağlam
+      ---
+      duration_ms: 3.257531
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-yasam-250.test.mjs:241:3'
+      failureType: 'testCodeFailure'
+      error: 'no such table: ledger_vouchers'
+      code: 'ERR_SQLITE_ERROR'
+      stack: |-
+        prepare (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/server/lib/db.mjs:71:22)
+        Object.get (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/server/lib/db.mjs:330:28)
+        countOf (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-yasam-250.test.mjs:33:41)
+        look (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-yasam-250.test.mjs:235:26)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-yasam-250.test.mjs:243:20)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+      ...
+    # Subtest: N11b: disk dolu (sayfa sınırı) → fiş yazılamaz, hiçbir satır kalmaz; yer açılınca aynı istek kimliğiyle yazılır
+    not ok 2 - N11b: disk dolu (sayfa sınırı) → fiş yazılamaz, hiçbir satır kalmaz; yer açılınca aynı istek kimliğiyle yazılır
+      ---
+      duration_ms: 0.990853
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-yasam-250.test.mjs:259:3'
+      failureType: 'testCodeFailure'
+      error: "Cannot find module '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/server/lib/ledger-vouchers.mjs' imported from /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-yasam-250.test.mjs"
+      code: 'ERR_MODULE_NOT_FOUND'
+      stack: |-
+        finalizeResolution (node:internal/modules/esm/resolve:275:11)
+        moduleResolve (node:internal/modules/esm/resolve:865:10)
+        defaultResolve (node:internal/modules/esm/resolve:989:11)
+        #cachedDefaultResolve (node:internal/modules/esm/loader:747:20)
+        ModuleLoader.resolve (node:internal/modules/esm/loader:724:38)
+        ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:320:38)
+        onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:680:36)
+        TracingChannel.tracePromise (node:diagnostics_channel:350:14)
+        ModuleLoader.import (node:internal/modules/esm/loader:679:21)
+        defaultImportModuleDynamicallyForModule (node:internal/modules/esm/utils:222:31)
+      ...
+    # Subtest: N5: iki ayrı süreç aynı anda aynı istek kimliğiyle fiş yazar → tek fiş; biri yeni, öbürü yinelenen (aynı kimlik)
+    not ok 3 - N5: iki ayrı süreç aynı anda aynı istek kimliğiyle fiş yazar → tek fiş; biri yeni, öbürü yinelenen (aynı kimlik)
+      ---
+      duration_ms: 57.230819
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-yasam-250.test.mjs:283:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        işçi 1: node:internal/modules/esm/resolve:275
+            throw new ERR_MODULE_NOT_FOUND(
+                  ^
+        
+        Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/server/lib/ledger-vouchers.mjs' imported from /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fixtures/fis-defteri-isci.mjs
+            at finalizeResolution (node:internal/modules/esm/resolve:275:11)
+            at moduleResolve (node:internal/modules/esm/resolve:865:10)
+            at defaultResolve (node:internal/modules/esm/resolve:989:11)
+            at #cachedDefaultResolve (node:internal/modules/esm/loader:747:20)
+            at ModuleLoader.resolve (node:internal/modules/esm/loader:724:38)
+            at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:320:38)
+            at ModuleJob._link (node:internal/modules/esm/module_job:182:49) {
+          code: 'ERR_MODULE_NOT_FOUND',
+          url: 'file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/server/lib/ledger-vouchers.mjs'
+        }
+        
+        Node.js v22.23.4
+        
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        finalizeResolution (node:internal/modules/esm/resolve:275:11)
+        moduleResolve (node:internal/modules/esm/resolve:865:10)
+        defaultResolve (node:internal/modules/esm/resolve:989:11)
+        #cachedDefaultResolve (node:internal/modules/esm/loader:747:20)
+        ModuleLoader.resolve (node:internal/modules/esm/loader:724:38)
+        ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:320:38)
+        ModuleJob._link (node:internal/modules/esm/module_job:182:49) {
+        ChildProcess.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-yasam-250.test.mjs:292:83)
+        Object.onceWrapper (node:events:634:26)
+        ChildProcess.emit (node:events:519:28)
+        ChildProcess._handle.onexit (node:internal/child_process:293:12)
+        Process.callbackTrampoline (node:internal/async_hooks:130:17)
+      ...
+    1..3
+not ok 6 - 2.5.0 Ç2 — N11 süreç öldürme / disk dolu ve N5 eşzamanlı iki süreç (ayrı bağlantılar)
+  ---
+  duration_ms: 366.55682
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-kirmizi-204f58bf/test/fis-defteri-yasam-250.test.mjs:217:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..6
+# tests 23
+# suites 6
+# pass 0
+# fail 23
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3696.381339

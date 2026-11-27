@@ -1,0 +1,8 @@
+2.5.0 KARARIYLA DEĞİŞEN BEKLENTİ (KARARLAR.md §13; 2.4.9 kâhinine göre): 3697 denetim, 95 senaryo · programla farkların 0'i bu sınıfta, 2'i SINIF DIŞI
+ÖZET [2.5.0]: 96 senaryo, 17582 denetim, 2 fark (BULGU 2), 7 bilinen sınır (BILINEN.json; başarısız sayılmaz), 0 yapım aşaması (YAPIM-ASAMASI.json; paketlere göre: yok; 0 denetim + 0 okuma hatası; geçti de başarısız da sayılmaz — yayın adayında liste BOŞ olmalı), 0 okuma hatası, 0 yakalanmayan mutasyon, 12 atlanan senaryo. Ham çıktı: /tmp/kahin-cari-nPAjsE
+BİLİNEN SINIRLAR (7): b3y-taahhut-alacak-bakiye k1:k4:akis; b3y-taahhut-alacak-bakiye k1:k4:kisiler; b3y-taahhut-alacak-bakiye k1:k4:vade; b3y-taahhut-alacak-bakiye k1:rapor:2026/1012:borc; b3y-taahhut-alacak-bakiye k1:rapor:2026/1012:grup; b3y-taahhut-alacak-bakiye k1:rapor:2026/1013:borc; b3y-taahhut-alacak-bakiye k1:rapor:2026/1013:grup
+17580/17582 denetim geçti (7 bilinen sınır dahil)
+[kanit] başarısız testler (2):
+  ✖ [BULGU PLAN · SINIF DIŞI] k1:kart:KI2:toplam: program 30000 · kâhin 90000 (B1.3 kart tutarı = tablodaki kalan)
+  ✖ [BULGU PLAN · SINIF DIŞI] k1:kart:KI3:toplam: program 0 · kâhin 90000 (B1.3 kart tutarı = tablodaki kalan)
+[kanit] c7b3b-yeni-cari-UTC: BAŞARISIZ (çıkış 1; 2 başarısız, 0 iptal) · çıkış 1 · 17580/17582 geçti, 2 başarısız, 0 iptal, 0 atlanan · commit a5b4f6a +1 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4

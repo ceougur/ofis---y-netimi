@@ -1,0 +1,1 @@
+001 Yol 1 imzasız teslim=200; 002 (Yol 2, imzalı bildirim yok) işi 30 gün + 2 sa sonra: expired; 002 kişisi önizlemede: okunamadı (önizleme: 403 {"ok":false,"error":"Lisans doğrulanamadı. Program salt okunur çal)

@@ -1,0 +1,47 @@
+
+> destekofis@2.4.9 test:senaryo-ux18-244
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-ux18-244.mjs
+
+
+■ S1 Fatura kartı → + Tahsilat Ekle → Çek / Senet: evrak bu faturayı kapatır (en eskiyi değil)
+  ✓ tahsilat yolları: Nakit, Havale / EFT, POS, Çek / Senet (portföye alınır)
+  ✓ açıklama yola göre: “Açık tutar ₺800,00. Cariden çek / senet alındı: evrak formu açılır; evrak portföye girer, carinin bakiyesinden düşer, Kasa değişmez. Bu faturaya bağlı kapatılır (fazlası carinin vadesi en önce gelen açık borcuna gider).”
+  ✓ evrak formu açıldı: Çek / Senet Al
+  ✓ Kapatılacak Fatura bu fatura: {"value":"invoice-072203c8-1222-4ee3-a496-7ed4ff44f9fd","disabled":false,"options":["","invoice-072203c8-1222-4ee3-a496-7ed4ff44f9fd","invoice-f3b7f457-a975-45ea-a845-5719fa4e402b"]}
+  ✓ tutar 800, cari UX18 Ekran Müşteri
+  ✓ veri tabanı: {"id":"cheque-b640889d-8079-431b-8599-50bcf4170d89","own":"","status":"portfolio","deletedAt":null,"bond":"invoice-072203c8-1222-4ee3-a496-7ed4ff44f9fd"}
+  ✓ bu fatura kapandı (800), eski fatura açık (1.000)
+  ✓ fatura kartı kendiliğinden yenilendi: kapatanlarda evrak
+
+■ S2 Cari → + Tahsilat → Kapatılacak Fatura (yeni) → Çek / Senet: seçim evrak formunda korunur
+  ✓ evrak formunda Kapatılacak Fatura korundu: {"value":"invoice-58e268a8-006c-4926-bdbc-d4548bd8a3bd","disabled":false,"options":["","invoice-58e268a8-006c-4926-bdbc-d4548bd8a3bd","invoice-e6db23b1-4997-4d7a-bd94-b6dd7df8601e"]}
+  ✓ veri tabanı bağı: {"id":"cheque-5c514891-8eff-43b0-a188-8eb44ded470f","own":"","status":"portfolio","deletedAt":null,"bond":"invoice-58e268a8-006c-4926-bdbc-d4548bd8a3bd"}
+  ✓ seçilen yeni fatura kapandı, en eski açık
+
+■ S3 + S4 Evrak kartı: Kapatılacak Fatura bağlantısı; Düzenle → Otomatik → bağ düşer
+  ✓ kartta:  Vade28.12.2026 45 gün kaldı Alış Tarihi13.11.2026 CariUX18 Ekran Cari Kapatılacak FaturaFIS2026000000004 
+  ✓ düzenle formunda bağ: {"value":"invoice-58e268a8-006c-4926-bdbc-d4548bd8a3bd","disabled":false,"options":["","invoice-58e268a8-006c-4926-bdbc-d4548bd8a3bd","invoice-e6db23b1-4997-4d7a-bd94-b6dd7df8601e"]}
+  ✓ bağ kaldırıldı
+  ✓ Otomatik: 700 en eski faturayı (500) ve yeninin 200'ünü kapattı
+
+■ S5 Taksite Say ile Kapatılacak Fatura birlikte seçilmez (biri seçilince öbürü boşalır)
+  ✓ açılışta bağ: {"value":"invoice-58e268a8-006c-4926-bdbc-d4548bd8a3bd","disabled":false,"options":["","invoice-58e268a8-006c-4926-bdbc-d4548bd8a3bd"]}
+  ✓ Taksite Say seçilince Kapatılacak Fatura boşaldı (Otomatik): “”
+  ✓ Kapatılacak Fatura seçilince Taksite Say boşaldı: “”
+
+■ S6 Alış faturası → + Ödeme Yap → Çek / Senet (verilir): alış faturası kapanır
+  ✓ ödeme yolları: Nakit, Havale / EFT, Kredi Kartı, Çek / Senet (verilir)
+  ✓ Kapatılacak Fatura alış faturası: {"value":"invoice-2875fe53-863e-4e6b-bac0-2ce570648391","disabled":false,"options":["","invoice-2875fe53-863e-4e6b-bac0-2ce570648391"]}
+  ✓ verilen evrak alış faturasını kapattı
+
+■ S7 Çek / Senet İşlemleri yetkisi olmayan kullanıcı faturada Çek / Senet yolunu görmez
+  ✓ yollar: Nakit, Havale / EFT, POS
+
+■ S8 Fatura iptal: evrak portföyde kalır, kartında bağ yok; Mutabakat Testi temiz
+  ✓ evrak: {"id":"cheque-b640889d-8079-431b-8599-50bcf4170d89","own":"","status":"portfolio","deletedAt":null,"bond":""}
+  ✓ kartta Kapatılacak Fatura yok
+  ✓ evrak (800) artık en eski faturadan düştü: 1.000 − 800
+  ✓ Mutabakat Testi temiz
+  ✓ sayfa hatası yok
+
+27 geçti, 0 kaldı

@@ -1,0 +1,13 @@
+asil cikis=0 # tests 26 # pass 26 # fail 0 
+M1-kart-atlanir cikis=1 # tests 26 # pass 21 # fail 5 
+M2-sira-ters cikis=1 # tests 26 # pass 25 # fail 1 
+M3-iptal-iade-sayilir cikis=0 # tests 26 # pass 26 # fail 0 
+M4-fazla-yok-sayilir cikis=0 # tests 26 # pass 26 # fail 0 
+M5-kirli-yok cikis=0 # tests 26 # pass 26 # fail 0 
+M6-ust-sinir-yok cikis=0 # tests 26 # pass 26 # fail 0 
+M7-giris-sayilir cikis=0 # tests 26 # pass 26 # fail 0 
+M8-geri-odeme-eksik cikis=1 # tests 26 # pass 25 # fail 1 
+M10-eleme-yanlis-alan cikis=1 # tests 26 # pass 20 # fail 6 
+M11-parca-siniri cikis=1 # tests 26 # pass 25 # fail 1 
+B1-run-denetimi-yok cikis=1 # tests 26 # pass 25 # fail 1 
+B2-savepoint-denetimi-yok cikis=1 # tests 26 # pass 25 # fail 1 

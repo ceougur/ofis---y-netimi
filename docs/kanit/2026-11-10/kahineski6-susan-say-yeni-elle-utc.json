@@ -1,0 +1,32 @@
+{
+  "ad": "kahineski6-susan-say-yeni-elle-utc",
+  "komut": "python3 -I -B /home/user/ofis---y-netimi/.claude/worktrees/agent-a465471c0e1816b16/docs/kanit/2026-11-10/kahineski6-arac/susan-say.py --eski /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahineski6-k6/eski/test/bagimsiz/cari --yeni /home/user/ofis---y-netimi/.claude/worktrees/agent-a465471c0e1816b16/test/bagimsiz/cari --senaryolar /home/user/ofis---y-netimi/.claude/worktrees/agent-a465471c0e1816b16/test/bagimsiz/cari/senaryolar --yalniz d25,d26,d27,d28,d29,d30,d31,d32,d33 --tohum 0",
+  "commit": "f909a0f551f9c9f3f29f4028c6b353d2a9bc7b85",
+  "dal": "worktree-agent-a465471c0e1816b16",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v338 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-10T19:22:26.101Z",
+  "sure_sn": 0.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 1,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahineski6-k6/kanit/2026-11-10/kahineski6-susan-say-yeni-elle-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a465471c0e1816b16",
+  "ham_cikti_sha256": "fcb8136c23630cb408ffae21d526164673920b656de7ed9bcf78da70eff291b3",
+  "ham_cikti_bayt": 1594
+}

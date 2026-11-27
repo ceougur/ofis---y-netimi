@@ -1553,7 +1553,321 @@ export const MIGRATIONS = [
       store.run("UPDATE wa_jobs SET pdf_blob = NULL WHERE pdf_blob IS NOT NULL");
     },
   },
+  {
+    version: 46,
+    name: "v2.5.0 Ç2 saklanan fiş defteri (kapanış / açılış / eşleştirme / ters kayıt fişleri)",
+    up(store) {
+      // 2.5.0 Ç2 (docs/erp/C2-FIS-DEFTERI-TASARIM.md; docs/erp/MUHASEBE-CEKIRDEGI-PLANI.md §3; lib/ledger-vouchers.mjs): satırları yazım anında saklanan fişler
+      // (bank_lines gibi; journal() aynen alır). YALNIZ EKLEYİCİ: boş iki tablo + indeksler + tetikleyiciler; mevcut satırlara ve ayarlara dokunulmaz. Eski sürüm (2.4.9)
+      // tabloları görmez; tetikleyiciler dosyanın parçasıdır, eski kod da değiştiremez / silemez.
+      store.exec(LEDGER_VOUCHERS_SCHEMA_V46);
+      store.exec(LEDGER_VOUCHER_TRIGGERS_V46);
+    },
+  },
+  {
+    version: 47,
+    name: "v2.5.0 Ç3 kilitli dönemin donmuş defteri (koşular + donmuş yevmiye satırları)",
+    up(store, { now = systemClock } = {}) {
+      // 2.5.0 Ç3 (docs/erp/C3-DONDURMA-TASARIM.md §2, §6; lib/ledger-snapshots.mjs): YALNIZ EKLEYİCİ — iki tablo + indeks + tetikleyiciler. Dönem kilidi varsa BEKLEYEN koşu
+      // yazılır (kural "2.4.9", neden migration): türetme göçte YAPILMAZ (1.000.000 satırda ~1 dk açılışı ve 002'nin tembel açılışını bekletirdi); açılıştan sonra iş
+      // parçacığında 2.4.9 kopyasıyla (lib/ledger-rule-249) donar, arada raporlar kilitli dönemi aynı kuralla canlı okur. Eski sürüm (2.4.9) tabloları görmez.
+      store.exec(LEDGER_SNAPSHOTS_SCHEMA_V47);
+      store.exec(LEDGER_SNAPSHOT_TRIGGERS_V47);
+      const lock = columnExists(store, "settings", "value") ? String(store.get("SELECT value FROM settings WHERE key = 'ledger.lockedUntil'")?.value || "") : "";
+      // Yeniden koşan göç (tablolar zaten var; ör. sürüm numarası elle düşürülmüş dosya): koşu eklenmez — kapsam ↔ kilit farkını açılış onarımı giderir.
+      if (!isFullDate(lock) || store.get("SELECT 1 AS found FROM ledger_snapshot_runs LIMIT 1")) return;
+      const at = now().toISOString();
+      store.run(
+        "INSERT INTO ledger_snapshot_runs (no, id, kind, state, from_date, through, rule_version, reason, created_by, created_at) VALUES (1, ?, 'freeze', 'pending', '', ?, '2.4.9', 'migration', 'system', ?)",
+        `lsr-${randomUUID()}`, lock, at,
+      );
+    },
+  },
+  {
+    version: 48,
+    name: "v2.5.0 Ç5-A KG-16 'Açılış Olabilir' adayları (account_entries.opening_review; para dışı)",
+    up(store) {
+      // 2.5.0 Ç5-A (docs/erp/C5-ACILIS-TASARIM.md §2.4; kural kitabı KG-16 = A; KULLANICI S47 = A; BAŞ MİMAR B6, B7, B8, K8-1): 2.4.9'a kadar cari açılışı AÇIKLAMADAN
+      // tanınıyordu (`/^açılış/i`); 2.5.0'da işaretten (is_opening). Göçte, açılış işaretsiz elle Borç / Alacak Yaz satırlarından açıklaması — baştaki boşluk atılıp Türkçe
+      // küçük harf + ç→c, ı→i, ş→s katlamasıyla — "acilis" ile BAŞLAYAN her satır ADAY olur (opening_review = 'candidate'): "AÇILIŞ", "Açilış", "Acilis", ikinci "Açılış
+      // bakiyesi" dahil; "Devir" / "Devreden" ve ortada geçen "açılış" GİRMEZ (S65 = A). Aday onaya kadar defterde açılıştır (519; S47), onay → M-02 / M-03, ret → C-01 / C-02.
+      // YALNIZ GÖÇTE: göçten sonra elle girilen "Açılış…" açıklamalı Borç Yaz aday OLMAZ (K8-1). Göç öncesi yedeğin geri yüklenmesi bu göçü yeniden koşar (B8).
+      // Para alanı DEĞİL: tutar, yön, tarih değişmez; sütun kilit izine (integrity.mjs LOCK_SQL) girmez (K8-2: kilitli satırda kapıdan geçerek değişir) — kapı dışı değişikliği
+      // göç 50'nin gölge sütunuyla bulunur (Ç5-A tur 1e).
+      // Eşgüçlü: sütun varsa eklenmez; yalnız durumu boş ('') satırlar aday yapılır (onay / ret yeniden koşuda bozulmaz). Hız (ders 47): ön süzgeç SQL'de (baştaki boşluk
+      // sonrası ilk harf A / a), katlama JS'te tek geçiş, yazım tek UPDATE (json_each). Ç5-A tur 1e (dar kontrol ORTA-3): ön süzgecin attığı baştaki boşluk kümesi kuralın
+      // (isOpeningCandidateNote — String.prototype.trimStart) kümesiyle AYNI (OPENING_TRIM_CODES; önceden yalnız boşluk, sekme, satır sonu ve bölünmez boşluk — başında U+2003,
+      // U+FEFF, U+3000, U+2028 … olan "Açılış…" ön süzgeçte eleniyordu, 2.4.9 ve kural onları açılış sayar).
+      store.raw("migration.v48", () => {
+        if (!store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'account_entries'")) return;
+        addColumn(store, "account_entries", "opening_review", "TEXT NOT NULL DEFAULT ''");
+        if (!columnExists(store, "account_entries", "is_opening")) return;
+        const ids = store
+          .all(`SELECT id, note FROM account_entries WHERE source = '' AND kind IN ('debt', 'credit') AND is_opening = 0 AND opening_review = '' AND ltrim(note, ${OPENING_TRIM_SQL}) LIKE 'a%'`)
+          .filter(row => isOpeningCandidateNote(row.note))
+          .map(row => row.id);
+        if (ids.length) store.run("UPDATE account_entries SET opening_review = 'candidate' WHERE id IN (SELECT value FROM json_each(?))", JSON.stringify(ids));
+      });
+    },
+  },
+  {
+    version: 49,
+    name: "v2.5.0 Ç5-A açılış evrakının işareti (cheques.is_opening; para dışı)",
+    up(store) {
+      // 2.5.0 Ç5-A (§2.5; BAŞ MİMAR B4; M-08 / M-09; 30.10 (1)): Excel / Sheets'ten "carilere dokunmadan" yüklenen evrak AÇILIŞ portföyüdür (defter B 101 / A 519, verilen B 519 /
+      // A 103 — 602 / 770'e yazılmaz). Yeni yüklemede işaret yazılır (routes/cheques.mjs insertCheque); eski veride ilk olayının notundan doldurulur ("Açılış portföyü
+      // (Excel/Sheets)" — v2.0.13'ten beri programın yazdığı metin, routes/cheques.mjs OPENING_PORTFOLIO_NOTE). Para alanı DEĞİL. Ç5-A tur 1e'den: işaret kilit izinde (integrity.mjs
+      // LOCK_SQL cheques_opening_lock — B4'ün sınırı kaldırıldı; C5-ACILIS-TASARIM §15). Eşgüçlü.
+      store.raw("migration.v49", () => {
+        if (!store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'cheques'")) return;
+        addColumn(store, "cheques", "is_opening", "INTEGER NOT NULL DEFAULT 0");
+        if (!store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'cheque_events'")) return;
+        store.run(
+          `UPDATE cheques SET is_opening = 1 WHERE is_opening = 0 AND id IN (
+             SELECT ev.cheque_id FROM cheque_events ev WHERE ev.note = ? AND ev.rowid = (SELECT MIN(x.rowid) FROM cheque_events x WHERE x.cheque_id = ev.cheque_id))`,
+          OPENING_PORTFOLIO_NOTE,
+        );
+      });
+    },
+  },
+  {
+    version: 50,
+    name: "v2.5.0 Ç5-A tur 1e KG-16 durumunun kapının yazdığı kopyası (account_entries.opening_review_gate; para dışı)",
+    up(store) {
+      // 2.5.0 Ç5-A tur 1e (dar kontrol G-1; docs/erp/C5-ACILIS-TASARIM.md §15.2 (2)): KG-16 durumu (opening_review) kilitli satırda da kapıdan geçerek değişir (K8-2) — kilit izine
+      // giremez. Onun yerine satır başına KAPININ YAZDIĞI durum tutulur: durumu yazan her program yolu (göç 48 + bu göç, KG-16 kararı lib/ledger-opening.mjs decide, Silinenler'den
+      // geri alma routes/accounts.mjs restoreEntry) iki sütunu AYNI işlemde yazar; tam tarama (lib/integrity.mjs "opening:review") ikisi farklı satırları kapı dışı değişiklik diye
+      // bulur. Göçte gölge durumun kopyasıdır (göçten önceki durum programın yazdığıdır). Para alanı değil; kilit izine girmez. Eşgüçlü (yeniden koşan göç farkları yeniden eşitler).
+      store.raw("migration.v50", () => {
+        if (!store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'account_entries'")) return;
+        if (!columnExists(store, "account_entries", "opening_review")) return;
+        addColumn(store, "account_entries", "opening_review_gate", "TEXT NOT NULL DEFAULT ''");
+        store.run("UPDATE account_entries SET opening_review_gate = opening_review WHERE opening_review_gate <> opening_review");
+      });
+    },
+  },
+  {
+    version: 51,
+    name: "v2.5.0 Ç7b kural geçiş günü ve eski KDV mahsuplarının kural sürümü (yalnız işaret; para dışı)",
+    up(store, { now = systemClock } = {}) {
+      // 2.5.0 Ç7b tur 2c (docs/erp/C7B-FATURA-TASARIM.md §13; BAŞ MİMAR KARARI 19.11 04:35 B-6 ve 05:07 B-8 = A; lib/ledger-rule-shift.mjs): KG-3 (kayıt tahsilatı 336.90) ve KG-8 / F-08
+      // (iade KDV'si 191 ↔ 391) yeni yönü KURAL GEÇİŞ GÜNÜ'nden sonraki kayıtlara. YALNIZ İŞARET — tutar, yön, tarih DEĞİŞMEZ (saklı KDV mahsubu dahil: verilmiş beyan ile defter aynı kalır).
+      //   (1) settings 'ledger.ruleShiftThrough' = o anki dönem kilidi (tam tarih değilse '' — kilitsiz dosyada geçiş yok). INSERT OR IGNORE: yeniden koşan göç var olan değeri DEĞİŞTİRMEZ
+      //       (sonradan konan / taşınan kilit geçiş günü olmaz — tek tanım).
+      //   (2) vat_offsets.rule_version ('' = güncel kural; sütunun varsayılanı, yazım yolu değişmez). Sütun BU GÖÇTE eklendiyse var olan bütün mahsuplar (etkin + geri alınmış) '2.4.9'
+      //       — güncellemeden önce yazılmıştır; yeniden koşuda (sütun var) işaretlenmez (yeni mahsup eski sayılmaz).
+      // Göç öncesi (≤ 50) yedeğin geri yüklenmesi bu göçü o yedeğin kilidiyle yeniden koşar. Kilit izine girmez (lib/integrity.mjs; kapı dışı değişiklik kilitli dönemde Kural Değişikliği
+      // Farkı olarak görünür). Eşgüçlü.
+      store.raw("migration.v51", () => {
+        if (columnExists(store, "settings", "value")) {
+          const lock = String(store.get("SELECT value FROM settings WHERE key = 'ledger.lockedUntil'")?.value || "");
+          store.run("INSERT OR IGNORE INTO settings (key, value, updated_at) VALUES ('ledger.ruleShiftThrough', ?, ?)", isFullDate(lock) ? lock : "", now().toISOString());
+        }
+        if (!store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'vat_offsets'") || columnExists(store, "vat_offsets", "rule_version")) return;
+        addColumn(store, "vat_offsets", "rule_version", "TEXT NOT NULL DEFAULT ''");
+        store.run("UPDATE vat_offsets SET rule_version = '2.4.9'");
+      });
+    },
+  },
+  {
+    version: 52,
+    name: "v2.5.0 Ç7b KG-7 alış faturasının KDV İndirim Dönemi (invoices.vat_period; boş = belge ayı; para dışı)",
+    up(store) {
+      // 2.5.0 Ç7b tur 2d (KG-7 = A, KDVK 29/3; EK-1 M8 (1); docs/erp/C7B-FATURA-TASARIM.md §2.6, §14.1): alış faturasının 191'inin hangi ayın KDV mahsubuna girdiği. YYYY-AA; '' = belge ayı.
+      // Yalnız ekleyici: var olan faturalara değer YAZILMAZ ('' = bugünkü davranış — mahsup tutarları göçten önceki gibi). Defter maddesi okumaz (191 belge tarihinde); okuyan routes/tax.mjs
+      // figureTable. Eşgüçlü (sütun varsa dokunulmaz).
+      store.raw("migration.v52", () => {
+        if (!store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'invoices'") || columnExists(store, "invoices", "vat_period")) return;
+        addColumn(store, "invoices", "vat_period", "TEXT NOT NULL DEFAULT ''");
+      });
+    },
+  },
+  {
+    version: 53,
+    name: "v2.5.0 Ç7b Kartı Kapat kuralının kart başına işareti (plans.close_rule; var olan kapalı kartlar eski kural; para dışı)",
+    up(store) {
+      // 2.5.0 Ç7b tur 3b (karar (6) 2B-S5 / S10 = A "Borçta Kalsın", KG-23 = A, B-11 = A; docs/erp/C7B-FATURA-TASARIM.md §17.1): Kartı Kapat artık kalanı carinin borcundan DÜŞMEZ
+      // (madde yok); "önceden kapatılmış kartlar olduğu gibi kalır" → sütun BU göçte eklendiyse var olan kapalı kartlar (silinmişler dahil — Silinenler'den dönen kart da eski kuralla)
+      // '2.4.9' = eski kural (kalan düşülmüş; cari ekstresinde "kalan düşüldü", defterde 689). '' = Borçta Kalsın (sütunun varsayılanı; Kartı Kapat / Yeniden Aç yazar). YALNIZ İŞARET —
+      // tutar, tarih, durum DEĞİŞMEZ. Okuyucular TEK yardımcıdan (lib/accounts.mjs waivesRemaining / waivedOf / waivesSql). Kilit izine girer (lib/integrity.mjs plans_close_rule_lock).
+      // Eşgüçlü: yeniden koşuda (sütun var) dokunulmaz — sonradan Borçta Kalsın ile kapatılmış kart eski sayılmaz.
+      store.raw("migration.v53", () => {
+        if (!store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'plans'") || columnExists(store, "plans", "close_rule")) return;
+        addColumn(store, "plans", "close_rule", "TEXT NOT NULL DEFAULT ''");
+        store.run("UPDATE plans SET close_rule = '2.4.9' WHERE status = 'closed'");
+      });
+    },
+  },
+  {
+    version: 54,
+    name: "v2.5.0 Ç6-HESAP kilitli dönemin değerleme kartları (ledger_valuation_cards; S236 = A; para dışı)",
+    up(store) {
+      // 2.5.0 Ç6-HESAP tur 4 (S236 = A; docs/erp/C6-HESAP-TASARIM.md §11.3, docs/erp/C3-DONDURMA-TASARIM.md §21): kilitli dönemin stok değerlemesi kilit anında dondurulur — ürün kartının
+      // değerlemeye giren alanları (tür, kart alış fiyatı, silinme) dondurma koşusu açılırken koşu başına saklanır (lib/ledger-snapshots.mjs insertRun → freezeValuationCards). YALNIZ EKLEYİCİ:
+      // tablo + tetikleyiciler; var olan tablolara / satırlara dokunulmaz. Kartı OLMAYAN her bırakılmamış freeze koşusuna (v2.4.9'dan göç 47'nin 'migration' koşusu dahil) GÖÇ ANININ kartı
+      // yazılır (eski sürüm kilit anının kartını saklamadı; BİLİNEN SINIR) — tetikleyicilerden ÖNCE. Yeniden koşan göçte (tablo var) yazılmaz. Eski sürüm (2.4.9) tabloyu görmez.
+      store.raw("migration.v54", () => {
+        const existed = Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = 'ledger_valuation_cards'"));
+        store.exec(LEDGER_VALUATION_CARDS_SCHEMA_V54);
+        const table = name => Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = ?", name));
+        if (!existed && table("ledger_snapshot_runs") && table("stock_items")) {
+          const kind = columnExists(store, "stock_items", "kind") ? "i.kind" : "'product'";
+          store.run(
+            `INSERT INTO ledger_valuation_cards (run, item_id, kind, unit_price, deleted_at)
+             SELECT r.no, i.id, ${kind}, CAST(i.unit_price AS REAL), i.deleted_at FROM ledger_snapshot_runs r CROSS JOIN stock_items i
+             WHERE r.kind = 'freeze' AND r.state <> 'abandoned'`,
+          );
+        }
+        store.exec(LEDGER_VALUATION_CARDS_TRIGGERS_V54);
+      });
+    },
+  },
 ];
+/** Excel / Sheets "Açılış portföyü" evrakının ilk olay notu (routes/cheques.mjs OPENING_PORTFOLIO_NOTE ile AYNI metin; göç 49). */
+const OPENING_PORTFOLIO_NOTE = "Açılış portföyü (Excel/Sheets)";
+/**
+ * Kuralın (isOpeningCandidateNote: String.prototype.trimStart) baştan attığı karakterler — ECMAScript WhiteSpace + LineTerminator (sekme, satır sonları, boşluk, bölünmez boşluk,
+ * U+1680, U+2000–U+200A, U+2028, U+2029, U+202F, U+205F, U+3000, U+FEFF). Göç 48'in SQL ön süzgeci (ltrim) AYNI kümeyi atar (Ç5-A tur 1e, dar kontrol ORTA-3); kalıcı test
+ * (test/goc48-bosluk-250.test.mjs) kümenin trimStart ile kod noktası kod noktası aynı olduğunu denetler.
+ */
+export const OPENING_TRIM_CODES = Object.freeze([0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x20, 0xa0, 0x1680, 0x2000, 0x2001, 0x2002, 0x2003, 0x2004, 0x2005, 0x2006, 0x2007, 0x2008, 0x2009, 0x200a, 0x2028, 0x2029, 0x202f, 0x205f, 0x3000, 0xfeff]);
+const OPENING_TRIM_SQL = `char(${OPENING_TRIM_CODES.join(", ")})`;
+/**
+ * KG-16 aday kuralı (BAŞ MİMAR B6; S65 = A): açıklama — baştaki boşluk atılıp Türkçe küçük harf (İ → i, I → ı) ve ç → c, ı → i, ş → s katlamasıyla — "acilis" ile BAŞLAR.
+ * ğ / ö / ü katlanmaz ("açılış" sözcüğünde yok). lib/ledger-opening.mjs aynı işlevi Silinenler'den dönen satır için kullanır (B8).
+ */
+export function isOpeningCandidateNote(note) {
+  const folded = String(note ?? "").trimStart().toLocaleLowerCase("tr-TR").replace(/ç/g, "c").replace(/ı/g, "i").replace(/ş/g, "s");
+  return folded.startsWith("acilis");
+}
+// 2.5.0 Ç3: kilitli dönemin donmuş defteri. Tutarlar kuruş.
+//   ledger_snapshot_runs: kilit her değiştiğinde bir koşu — freeze (kapsam → through; pending → done) ya da thaw (kapsam through'a iner; done doğar). KAPSAM = state 'done' olan
+//                         son koşunun through'u. state_*: koşudan sonra görünen bütün donmuş satırların toplamları (sağlama). source_digest: through'daki kilit izi
+//                         (lib/integrity.mjs lockDigestOf, digest_version tanımıyla).
+//   ledger_snapshots:     donmuş yevmiye satırı (run, run_seq = koşu içindeki yevmiye sırası). Okuma ORDER BY date, run, run_seq = dondurma anındaki sıra (koşu aralıkları
+//                         ayrık ve ardışık). source / text yalnız maddenin ilk satırında.
+export const LEDGER_SNAPSHOTS_SCHEMA_V47 = `
+  CREATE TABLE IF NOT EXISTS ledger_snapshot_runs (
+    no INTEGER PRIMARY KEY, id TEXT NOT NULL UNIQUE,
+    kind TEXT NOT NULL CHECK (kind IN ('freeze', 'thaw')), state TEXT NOT NULL CHECK (state IN ('pending', 'done', 'abandoned')),
+    from_date TEXT NOT NULL DEFAULT '', through TEXT NOT NULL DEFAULT '', rule_version TEXT NOT NULL DEFAULT '', reason TEXT NOT NULL DEFAULT '',
+    line_count INTEGER NOT NULL DEFAULT 0, entry_count INTEGER NOT NULL DEFAULT 0, debit_minor INTEGER NOT NULL DEFAULT 0, credit_minor INTEGER NOT NULL DEFAULT 0,
+    state_lines INTEGER NOT NULL DEFAULT 0, state_debit INTEGER NOT NULL DEFAULT 0, state_credit INTEGER NOT NULL DEFAULT 0, state_weight INTEGER NOT NULL DEFAULT 0,
+    source_digest TEXT NOT NULL DEFAULT '', digest_version TEXT NOT NULL DEFAULT '',
+    created_by TEXT NOT NULL, created_at TEXT NOT NULL, finished_at TEXT NOT NULL DEFAULT '',
+    CHECK (kind = 'freeze' OR state = 'done')
+  ) STRICT;
+  CREATE TABLE IF NOT EXISTS ledger_snapshots (
+    run INTEGER NOT NULL, run_seq INTEGER NOT NULL, entry_id TEXT NOT NULL, line_no INTEGER NOT NULL, date TEXT NOT NULL, cls INTEGER NOT NULL, seq INTEGER,
+    account TEXT NOT NULL, sub TEXT NOT NULL DEFAULT '', party TEXT NOT NULL DEFAULT '', debit_minor INTEGER NOT NULL DEFAULT 0, credit_minor INTEGER NOT NULL DEFAULT 0,
+    source TEXT NOT NULL DEFAULT '', text TEXT NOT NULL DEFAULT '', rule_version TEXT NOT NULL,
+    PRIMARY KEY (run, run_seq)
+  ) STRICT, WITHOUT ROWID;
+  CREATE INDEX IF NOT EXISTS idx_ledger_snapshots_date ON ledger_snapshots(date, run, run_seq);
+`;
+// Değişmezlik (Ç2 deseni; lib/ledger-snapshots.mjs): satır değiştirilemez; kapsam içindeki ve dondurma izi olan satır silinemez (2.4.9'un Şirket Verisini Sıfırla'sı önce
+// audit_events'i siler: iz gidince silme geçer, 2.5.0 açılışında onarılır); satır yalnız EN SON bekleyen freeze koşusuna, aralığı içinde eklenir ve aynı (run, run_seq) ikinci
+// kez yazılamaz (INSERT OR REPLACE silme tetikleyicisini çalıştırmadan satır değiştirirdi). Koşu silinemez; yalnız pending → done | abandoned; yeni koşu bekleyen koşu yokken,
+// freeze kapsamdan başlar ve kapsamın üstünde bayat satır yokken, thaw kapsamı indirir. Tetikleyicileri yalnız Şirket Verisini Sıfırla aynı işlemde kaldırıp kurar
+// (clearSnapshots). Ç2'nin withTriggersLifted'i yalnız fiş tetikleyicilerini (adlarıyla) kaldırır; bunlara dokunmaz.
+const COVERAGE_V47 = "COALESCE((SELECT r.through FROM ledger_snapshot_runs r WHERE r.state = 'done' ORDER BY r.no DESC LIMIT 1), '')";
+export const LEDGER_SNAPSHOT_TRIGGER_NAMES = Object.freeze(["ledger_snapshot_runs_no_delete", "ledger_snapshot_runs_no_replace", "ledger_snapshot_runs_state", "ledger_snapshots_insert", "ledger_snapshots_no_delete", "ledger_snapshots_no_update"]);
+export const LEDGER_SNAPSHOT_TRIGGERS_V47 = `
+  CREATE TRIGGER IF NOT EXISTS ledger_snapshots_no_update BEFORE UPDATE ON ledger_snapshots BEGIN SELECT RAISE(ABORT, 'ledger_snapshots değiştirilemez: donmuş defter'); END;
+  CREATE TRIGGER IF NOT EXISTS ledger_snapshots_no_delete BEFORE DELETE ON ledger_snapshots
+    WHEN OLD.date <= ${COVERAGE_V47} AND EXISTS (SELECT 1 FROM audit_events a WHERE a.entity_id = 'ledger-snapshot-run:' || OLD.run AND a.type = 'ledger.snapshot.frozen')
+    BEGIN SELECT RAISE(ABORT, 'ledger_snapshots silinemez: donmuş defter (kilit geri çekilmeden)'); END;
+  CREATE TRIGGER IF NOT EXISTS ledger_snapshots_insert BEFORE INSERT ON ledger_snapshots
+    WHEN NOT EXISTS (SELECT 1 FROM ledger_snapshot_runs r WHERE r.no = NEW.run AND r.kind = 'freeze' AND r.state = 'pending' AND r.no = (SELECT MAX(no) FROM ledger_snapshot_runs)
+                       AND NEW.date > r.from_date AND NEW.date <= r.through)
+      OR EXISTS (SELECT 1 FROM ledger_snapshots s WHERE s.run = NEW.run AND s.run_seq = NEW.run_seq)
+    BEGIN SELECT RAISE(ABORT, 'ledger_snapshots: satır eklenemez (koşu kapalı, aralık dışı ya da aynı satır)'); END;
+  CREATE TRIGGER IF NOT EXISTS ledger_snapshot_runs_no_delete BEFORE DELETE ON ledger_snapshot_runs BEGIN SELECT RAISE(ABORT, 'ledger_snapshot_runs silinemez'); END;
+  CREATE TRIGGER IF NOT EXISTS ledger_snapshot_runs_state BEFORE UPDATE ON ledger_snapshot_runs
+    WHEN NOT (OLD.state = 'pending' AND NEW.state IN ('done', 'abandoned') AND NEW.no = OLD.no AND NEW.id = OLD.id AND NEW.kind = OLD.kind AND NEW.from_date = OLD.from_date
+              AND NEW.through = OLD.through AND NEW.rule_version = OLD.rule_version AND NEW.reason = OLD.reason AND NEW.created_by = OLD.created_by AND NEW.created_at = OLD.created_at)
+    BEGIN SELECT RAISE(ABORT, 'ledger_snapshot_runs değiştirilemez (yalnız bekleyen koşu tamamlanır ya da bırakılır)'); END;
+  CREATE TRIGGER IF NOT EXISTS ledger_snapshot_runs_no_replace BEFORE INSERT ON ledger_snapshot_runs
+    WHEN EXISTS (SELECT 1 FROM ledger_snapshot_runs WHERE no = NEW.no OR id = NEW.id)
+      OR EXISTS (SELECT 1 FROM ledger_snapshot_runs WHERE state = 'pending')
+      OR (NEW.kind = 'freeze' AND (NEW.state <> 'pending' OR NEW.from_date <> ${COVERAGE_V47} OR NEW.through <= NEW.from_date
+                                   OR EXISTS (SELECT 1 FROM ledger_snapshots s WHERE s.date > ${COVERAGE_V47})))
+      OR (NEW.kind = 'thaw' AND (NEW.state <> 'done' OR NEW.from_date <> ${COVERAGE_V47} OR NEW.through >= NEW.from_date))
+    BEGIN SELECT RAISE(ABORT, 'ledger_snapshot_runs: koşu yazılamaz (aynı koşu, bekleyen koşu, kapsam ya da bayat satır)'); END;
+`;
+// 2.5.0 Ç6-HESAP tur 4 (S236 = A): kilitli dönemin değerleme kartları — koşu başına ürün kartının değerlemeye giren alanları (tür, kart alış fiyatı, silinme). Kilit anında (koşu açılırken) yazılır.
+// Değişmezlik (Ç3 deseni): satır değiştirilemez; yalnız EN SON bekleyen freeze koşusuna eklenir, aynı (run, item_id) ikinci kez yazılamaz (INSERT OR REPLACE); tamamlanmış ve kapsam içindeki
+// koşunun satırı silinemez. Tetikleyicileri yalnız Şirket Verisini Sıfırla (lib/ledger-snapshots.mjs clearSnapshots) aynı işlemde kaldırıp kurar.
+export const LEDGER_VALUATION_CARDS_SCHEMA_V54 = `
+  CREATE TABLE IF NOT EXISTS ledger_valuation_cards (
+    run INTEGER NOT NULL, item_id TEXT NOT NULL, kind TEXT NOT NULL DEFAULT 'product', unit_price REAL NOT NULL DEFAULT 0, deleted_at TEXT,
+    PRIMARY KEY (run, item_id)
+  ) STRICT, WITHOUT ROWID;
+`;
+export const LEDGER_VALUATION_CARDS_TRIGGER_NAMES = Object.freeze(["ledger_valuation_cards_no_update", "ledger_valuation_cards_no_delete", "ledger_valuation_cards_insert"]);
+export const LEDGER_VALUATION_CARDS_TRIGGERS_V54 = `
+  CREATE TRIGGER IF NOT EXISTS ledger_valuation_cards_no_update BEFORE UPDATE ON ledger_valuation_cards BEGIN SELECT RAISE(ABORT, 'ledger_valuation_cards değiştirilemez: donmuş değerleme kartı'); END;
+  CREATE TRIGGER IF NOT EXISTS ledger_valuation_cards_no_delete BEFORE DELETE ON ledger_valuation_cards
+    WHEN EXISTS (SELECT 1 FROM ledger_snapshot_runs r WHERE r.no = OLD.run AND r.state = 'done' AND r.from_date < ${COVERAGE_V47})
+    BEGIN SELECT RAISE(ABORT, 'ledger_valuation_cards silinemez: donmuş değerleme kartı (kilit geri çekilmeden)'); END;
+  CREATE TRIGGER IF NOT EXISTS ledger_valuation_cards_insert BEFORE INSERT ON ledger_valuation_cards
+    WHEN NOT EXISTS (SELECT 1 FROM ledger_snapshot_runs r WHERE r.no = NEW.run AND r.kind = 'freeze' AND r.state = 'pending' AND r.no = (SELECT MAX(no) FROM ledger_snapshot_runs))
+      OR EXISTS (SELECT 1 FROM ledger_valuation_cards s WHERE s.run = NEW.run AND s.item_id = NEW.item_id)
+    BEGIN SELECT RAISE(ABORT, 'ledger_valuation_cards: satır eklenemez (koşu kapalı ya da aynı satır)'); END;
+`;
+// 2.5.0 Ç2: saklanan fiş defteri. Tutarlar kuruş. Fiş başlığı satır sayısını ve borç (= alacak) toplamını taşır; satırlar başlıkla aynı işlemde yazılır.
+//   year / no     : fişin tarihinin yılı ve o yıldaki sıra (fin_events.no'dan ayrı; lib/ledger-vouchers.mjs nextNo)
+//   type          : closing | opening | opening-match | reversal | prior-year-result (KG-12) | rule-diff-correction (KG-15) | manual (2.5.1)
+//   journal_class : yevmiyede aynı günün sırası — opening (günün başı) | ordinary | period-end (dönem sonu) | closing (günün sonu); ters kayıt asıl fişinkini alır
+//   request_key   : istek kimliği (TEKİL): aynı kimlik ikinci kez fiş yazmaz
+//   reversal_of   : ters kaydın asıl fişi (TEKİL: bir fiş bir kez ters kaydedilir); yalnız type = 'reversal'de dolu
+export const LEDGER_VOUCHERS_SCHEMA_V46 = `
+  CREATE TABLE IF NOT EXISTS ledger_vouchers (
+    id TEXT PRIMARY KEY, year INTEGER NOT NULL CHECK (year BETWEEN 1000 AND 9999), no INTEGER NOT NULL CHECK (no >= 1),
+    date TEXT NOT NULL CHECK (length(date) = 10),
+    type TEXT NOT NULL CHECK (type IN ('closing', 'opening', 'opening-match', 'reversal', 'prior-year-result', 'rule-diff-correction', 'manual')),
+    journal_class TEXT NOT NULL CHECK (journal_class IN ('opening', 'ordinary', 'period-end', 'closing')),
+    description TEXT NOT NULL DEFAULT '', source TEXT NOT NULL DEFAULT '', request_key TEXT NOT NULL UNIQUE,
+    reversal_of TEXT REFERENCES ledger_vouchers(id),
+    line_count INTEGER NOT NULL CHECK (line_count >= 2), total_minor INTEGER NOT NULL CHECK (total_minor > 0),
+    created_by TEXT NOT NULL, created_at TEXT NOT NULL,
+    UNIQUE (year, no),
+    CHECK ((type = 'reversal') = (reversal_of IS NOT NULL))
+  ) STRICT;
+  CREATE UNIQUE INDEX IF NOT EXISTS idx_ledger_vouchers_reversal ON ledger_vouchers(reversal_of) WHERE reversal_of IS NOT NULL;
+  CREATE INDEX IF NOT EXISTS idx_ledger_vouchers_date ON ledger_vouchers(date);
+  CREATE INDEX IF NOT EXISTS idx_ledger_vouchers_source ON ledger_vouchers(source) WHERE source <> '';
+  CREATE TABLE IF NOT EXISTS ledger_voucher_lines (
+    voucher_id TEXT NOT NULL REFERENCES ledger_vouchers(id), seq INTEGER NOT NULL CHECK (seq >= 1),
+    account TEXT NOT NULL CHECK (length(account) = 3), sub TEXT NOT NULL DEFAULT '', party TEXT NOT NULL DEFAULT '',
+    debit_minor INTEGER NOT NULL DEFAULT 0 CHECK (debit_minor >= 0), credit_minor INTEGER NOT NULL DEFAULT 0 CHECK (credit_minor >= 0),
+    note TEXT NOT NULL DEFAULT '',
+    CHECK ((debit_minor > 0 AND credit_minor = 0) OR (credit_minor > 0 AND debit_minor = 0)),
+    PRIMARY KEY (voucher_id, seq)
+  ) STRICT;
+`;
+// Değişmezlik (edoc_usage deseni): fiş ve satırı değiştirilemez, silinemez; düzeltme yalnız ters kayıt fişiyle. INSERT OR REPLACE çakışan satırı silme tetikleyicisini
+// çalıştırmadan değiştirir (recursive_triggers kapalı) — bu yüzden ekleme de denetlenir: aynı kimlik / istek kimliği / numarayla başlık eklenemez, başlığın satır sayısı
+// dolduktan sonra satır eklenemez (kapanmış fişe satır eklenmez; satırlar başlıkla aynı işlemde yazılır). Tetikleyicileri yalnız şirket sıfırlaması ve eski sürüm
+// sıfırlamasının açılış onarımı aynı işlemde kaldırıp yeniden kurar (lib/ledger-vouchers.mjs withTriggersLifted).
+// Ç2 tur 1 (dar kontrol DÜŞÜK-2, ders 47; 2.5.0 yayımlanmadığı için göç 46 YERİNDE değişti): "kapanmış fiş" denetimi satır sayımı (her eklemede fişin bütün satırlarını
+// COUNT(*) — n satırlık fişte O(n²): 16.000 satır 4 sn, 100.000 satır ≈ 2,5 dk olay döngüsü kilidi) yerine iki birincil anahtar aramasıyla: satırın sırası (seq) başlığın
+// satır sayısını aşamaz (fiş yoksa 0) ve aynı (fiş, sıra) ikinci kez eklenemez (INSERT OR REPLACE / UPSERT / OR IGNORE). Satırlar 1..line_count yazıldığından tam fişte
+// her yeni satır ya sırası aşan ya da var olan sıradır → eski kuralla aynı sonuç (12 atlatma denemesi; test/fis-defteri-koruma-250.test.mjs).
+export const LEDGER_VOUCHER_TRIGGER_NAMES = Object.freeze(["ledger_vouchers_no_update", "ledger_vouchers_no_delete", "ledger_vouchers_no_replace", "ledger_voucher_lines_no_update", "ledger_voucher_lines_no_delete", "ledger_voucher_lines_closed"]);
+export const LEDGER_VOUCHER_TRIGGERS_V46 = `
+  CREATE TRIGGER IF NOT EXISTS ledger_vouchers_no_update BEFORE UPDATE ON ledger_vouchers BEGIN SELECT RAISE(ABORT, 'ledger_vouchers değiştirilemez: düzeltme ters kayıt fişiyle'); END;
+  CREATE TRIGGER IF NOT EXISTS ledger_vouchers_no_delete BEFORE DELETE ON ledger_vouchers BEGIN SELECT RAISE(ABORT, 'ledger_vouchers silinemez: düzeltme ters kayıt fişiyle'); END;
+  CREATE TRIGGER IF NOT EXISTS ledger_vouchers_no_replace BEFORE INSERT ON ledger_vouchers
+    WHEN EXISTS (SELECT 1 FROM ledger_vouchers WHERE id = NEW.id OR request_key = NEW.request_key OR (year = NEW.year AND no = NEW.no))
+    BEGIN SELECT RAISE(ABORT, 'ledger_vouchers: aynı fiş ikinci kez yazılamaz'); END;
+  CREATE TRIGGER IF NOT EXISTS ledger_voucher_lines_no_update BEFORE UPDATE ON ledger_voucher_lines BEGIN SELECT RAISE(ABORT, 'ledger_voucher_lines değiştirilemez: düzeltme ters kayıt fişiyle'); END;
+  CREATE TRIGGER IF NOT EXISTS ledger_voucher_lines_no_delete BEFORE DELETE ON ledger_voucher_lines BEGIN SELECT RAISE(ABORT, 'ledger_voucher_lines silinemez: düzeltme ters kayıt fişiyle'); END;
+  CREATE TRIGGER IF NOT EXISTS ledger_voucher_lines_closed BEFORE INSERT ON ledger_voucher_lines
+    WHEN NEW.seq > COALESCE((SELECT line_count FROM ledger_vouchers WHERE id = NEW.voucher_id), 0)
+      OR EXISTS (SELECT 1 FROM ledger_voucher_lines WHERE voucher_id = NEW.voucher_id AND seq = NEW.seq)
+    BEGIN SELECT RAISE(ABORT, 'ledger_voucher_lines: fiş kapalı (satır sayısı dolu ya da fiş yok)'); END;
+`;
 // routes/accounts.mjs OPENING_NOTE ile aynı (programın açılış satırına yazdığı açıklama; v35 göçü yalnız eski satırları işaretlerken okur).
 const OPENING_ENTRY_NOTE = "Açılış bakiyesi";
 
@@ -1931,6 +2245,13 @@ const BANK_SCHEMA_V20 = `
 
 export const LATEST_VERSION = MIGRATIONS.at(-1).version;
 
+// 2.5.0 BS-7 (şema sürüm kapısı; docs/devir/DEVIR-PLANI.md G6): veri dosyası bu programdan YENİ bir sürümle açılmışsa (user_version > LATEST_VERSION) eski kod
+// onu göç ettirmez ve yazmaz — bilmediği kolon / tablo / kuralı bozabilir. Şirket yalnız görüntülenir (server/app.mjs kapısı). Kaynak: bootstrap'ın açılamayan
+// sürümden eski sürüme dönüşü; başarısız güncellemenin geri alması (supervisor + update-orchestrator, 001 dışındaki şirketler de güncelleme öncesi yedeğe döner).
+export const SCHEMA_AHEAD_CODE = "SCHEMA_AHEAD";
+export const SCHEMA_AHEAD_MESSAGE = "Bu şirketin verisi programın daha yeni bir sürümüyle açılmış. Programı güncelleyin; o zamana kadar veri yalnız görüntülenir.";
+export const isSchemaAhead = version => Number.isInteger(version) && version > LATEST_VERSION;
+
 /**
  * v20'nin Aşama 4 eklemeleri (yalnız ekleyici; idempotent): İşlem Kartı'nın işlem geçmişi indeksi, Planlı İşlemlerin ek alanı ve vade indeksi.
  * 2.1.0 yayımlanmadan önce bu dalda v20'ye geçmiş geliştirme dosyaları da açılışta tamamlanır (runMigrations her açılışta çağırır).
@@ -1952,6 +2273,11 @@ export function ensureBankSchema(store) {
 // now: iş saati (config.now) — göç damgaları (meta.schema.v20At) sahte saatte de iş gününü taşır.
 export function runMigrations(store, { backupDir, keep = 30, log, company = null, now = systemClock } = {}) {
   const current = store.get("PRAGMA user_version").user_version;
+  // BS-7: yeni şemalı dosyada hiçbir göç adımı (ensureBankSchema'nın indeks / kolon eklemeleri dahil) koşmaz; dosya olduğu gibi kalır.
+  if (isSchemaAhead(current)) {
+    log?.warn?.(`Veri dosyası programın daha yeni bir sürümüyle açılmış (şema ${current} > ${LATEST_VERSION}); göç yapılmadı, şirket yalnız görüntülenir.`);
+    return { from: current, to: current, applied: [], backup: null, ahead: true };
+  }
   const pending = MIGRATIONS.filter(item => item.version > current);
   if (!pending.length) {
     if (current >= 20) store.raw("migration.v20.ensure", () => ensureBankSchema(store));

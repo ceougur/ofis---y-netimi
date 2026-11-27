@@ -1,4 +1,5 @@
 // 2.4.3 göç v30 (MM4: stok açılışı işareti) — ESKİ SÜRÜMÜN GERÇEK KODUYLA üretilen veri (test kuralı): v2.4.2 etiketi açılır, API'sinden ürün kartında
+// 2.5.0 Ç5-A tur 1 — BEKLENTİ BİLEREK DEĞİŞTİ (G3: docs/erp/C5-ACILIS-TASARIM.md §2.2 / §11; KG-1, M-01 / M-04 / M-05 / M-07, B3): açılışların karşı hesabı 500 değil 519 "Eşleştirilecek Açılış Bakiyeleri" (banka fişinde saklı kod 500 kalır, türetmede 519). Tutarlar AYNI; yalnız hesap kodu.
 // açılış stoku, Excel'den ürün (miktarlı), Kasa'dan peşin İlk Alım, yalnız miktar girişi ve satış girilir; Eylül kilitlenir. Aynı veri dosyası güncel
 // kodla açılır. Beklenen (kullanıcı kararı 18.10.2026: eski verideki açılışlar da mizana gelir): programın yazdığı açılış hareketleri işaretlenir;
 // 153 ve 500 açılış toplamı kadar değişir, başka hiçbir hesap değişmez; kilit izi değişmez (kapı "kapanmış dönem" demez); Mutabakat Testi temiz
@@ -16,6 +17,14 @@ import { lockDigestOf } from "../server/lib/integrity.mjs";
 import { CURRENT, bootVersion } from "./guvenilirlik/surumler.mjs";
 
 const OLD = "v2.4.2";
+/** Mutabakat Testi: tek sonuç kilitli Masa açılışının (15.09, 4 × 1.250) Kural Değişikliği Farkı — yalnız 500 (+5.000) ↔ 519 (−5.000); başka sapma yok. */
+function assertOnlyOpeningRuleDiff(integrity) {
+  const others = integrity.failures.filter(item => item.code !== "ledger:rule-diff");
+  assert.deepEqual(others, [], JSON.stringify(others).slice(0, 400));
+  const diff = integrity.failures.find(item => item.code === "ledger:rule-diff");
+  assert.ok(diff, `kilitli açılışın kural farkı görünmeli: ${JSON.stringify(integrity.failures).slice(0, 300)}`);
+  assert.deepEqual(diff.breakdown.map(row => [row.account, row.differenceMinor]).sort(), [["500", 500000], ["519", -500000]], JSON.stringify(diff.breakdown));
+}
 const NOW = "2026-10-20T12:00:00+03:00";
 
 describe(`göç v30: ${OLD} verisindeki stok açılışları Ana Defter'e gelir (B 153 / A 500)`, () => {
@@ -49,7 +58,9 @@ describe(`göç v30: ${OLD} verisindeki stok açılışları Ana Defter'e gelir 
         accounts: Object.fromEntries(ledger.trial.accounts.map(row => [row.code, row.balance])),
         stock: stock.items.map(item => ({ name: item.name, qty: item.qty, value: item.value })).sort((a, b) => a.name.localeCompare(b.name)),
         value: stock.totals.value,
-        digest: lockDigestOf(old.app.store, "2026-09-30"),
+        // 2.5.0 Ç5-A tur 1f: iz iki tarafta da AYNI tanımla (2.4.2'ninki) — sürümsüz çağrı eski şemada sütunu zaten olan 2.5.0 girdilerini de (transfer bağı, cari kaynağı, stok
+        // nedeni, fatura kırılımı …) sayar, göçten sonraki 2.4.2 tanımlı izle karşılaştırılamazdı (docs/erp/C5-ACILIS-TASARIM.md §16.8).
+        digest: lockDigestOf(old.app.store, "2026-09-30", { version: "2.4.2" }),
       };
       assert.equal(old.app.store.all("PRAGMA table_info(stock_moves)").some(column => column.name === "is_opening"), false, `${OLD} şemasında kolon yok`);
     } finally {
@@ -65,15 +76,20 @@ describe(`göç v30: ${OLD} verisindeki stok açılışları Ana Defter'e gelir 
       assert.deepEqual(flagged.map(row => [row.name, row.qty, row.price]), [["Masa", 4, 1250], ["Sandalye", 12, 300]], "yalnız programın yazdığı açılışlar işaretli");
       const ledger = (await api.get("/api/workspace/ledger")).data;
       const after = Object.fromEntries(ledger.trial.accounts.map(row => [row.code, row.balance]));
-      assert.equal((after["153"] ?? 0) - (before.accounts["153"] ?? 0), 8600, "153 açılış kadar arttı (kâhin 8.600)");
-      assert.equal((after["500"] ?? 0) - (before.accounts["500"] ?? 0), -8600, "500 açılış kadar azaldı");
-      for (const code of new Set([...Object.keys(before.accounts), ...Object.keys(after)])) if (!["153", "500"].includes(code)) assert.equal(after[code] ?? 0, before.accounts[code] ?? 0, `${code} değişmemeli`);
+      // 2.5.0 Ç5-A (G3: C5-ACILIS-TASARIM §2.2 + §3.1): açılışların karşı hesabı güncel kuralda 519, kilitli dönemde (göç 47 — 2.4.9 kuralı, bekleyen koşu / donmuş) 500; bu veri kilitli
+      // (30.09.2026) → 500 + 519 birlikte açılış kadar azalır; ayrım kilide bağlı (kanıt c5a1-v249: kilitli dönem bayt bayt 2.4.9).
+      assert.equal((after["500"] ?? 0) + (after["519"] ?? 0) - (before.accounts["500"] ?? 0), -8600, "500 + 519 açılış kadar azaldı");
+      for (const code of new Set([...Object.keys(before.accounts), ...Object.keys(after)])) if (!["153", "500", "519"].includes(code)) assert.equal(after[code] ?? 0, before.accounts[code] ?? 0, `${code} değişmemeli`);
       assert.equal(ledger.trial.balanced, true);
       assert.equal(lockDigestOf(current.app.store, "2026-09-30", { version: "2.4.2" }), before.digest, "kilit izi göç öncesiyle aynı");
       const stock = (await api.get("/api/workspace/stock")).data;
       assert.deepEqual(stock.items.map(item => ({ name: item.name, qty: item.qty, value: item.value })).sort((a, b) => a.name.localeCompare(b.name)), before.stock, "stok miktarı ve değeri aynı");
+      // 2.5.0 Ç5-A tur 2 (dar kontrol 1f DÜŞÜK-1; ders 20): ön koşul ÜRÜNÜN DURUMUNDAN — açılışta bekleyen dondurma (kilit 30.09, 2.4.9 kuralıyla) beklenir; sonuç
+      // dondurmanın bitiş anına bağlı değildir. Donmuş dönemle güncel kural arasındaki tek fark kilitli Masa açılışının karşı hesabıdır (500 → 519, 5.000; Kural Değişikliği Farkı
+      // UYARISI — C5-ACILIS-TASARIM §3.1); başka hiçbir denetim sapmaz. Önceden `failures` boş beklenirdi: dondurma GET'ten önce biterse kırmızı (zorlama: DONDURMA_YARIS=bitir).
+      await current.app.ledger.snapshots.runPending();
       const integrity = (await api.get("/api/workspace/ledger/integrity")).data;
-      assert.deepEqual(integrity.failures, [], JSON.stringify(integrity.failures).slice(0, 400));
+      assertOnlyOpeningRuleDiff(integrity);
       assert.equal(integrity.checks.find(item => item.code === "stock:opening")?.ok, true);
       // Açık dönemde yeni açılış (güncel kod) da gelir; kapı temiz.
       const res = await api.post("/api/workspace/stock", { name: "Askılık", unit: "Adet", unitPrice: "150", openingQty: "2", openingDate: "2026-10-05" });
@@ -96,7 +112,8 @@ describe(`göç v30: ${OLD} verisindeki stok açılışları Ana Defter'e gelir 
     try {
       const api = await again.login();
       assert.equal(again.app.store.get("SELECT m.is_opening AS f FROM stock_moves m JOIN stock_items i ON i.id = m.item_id WHERE i.name = 'Geri Dönüş Ürünü'").f, 0);
-      assert.deepEqual((await api.get("/api/workspace/ledger/integrity")).data.failures, []);
+      await again.app.ledger.snapshots.runPending();
+      assertOnlyOpeningRuleDiff((await api.get("/api/workspace/ledger/integrity")).data);
     } finally {
       await again.close();
     }

@@ -1,0 +1,13 @@
+=== tur 1 · eski · kilitli · başta yük 1.07 1.05 1.07 · GEÇERLİ · 23:12:25
+kod /dev/shm/ana-c6h4-eski · kip kilitli · yük (başta) 1.05 1.05 1.07 · TZ UTC
+  donma (bekleyen koşu): 8537.4 ms · kapsam 2026-06-30
+  kilitli Bilanço 2026-12-31: ilk 5095 · en iyi 5052.7 · ortanca 5298.8 · en kötü 5417.8 ms · olay döngüsü en çok 16.8 ms (n=5) · özet fd666a02827294c7 · {"kesinDegil":["smm-tahmini","kural-farki","kapanmamis-yil","bilgi-amacli"],"bilgi":null,"dnk":4776835620}
+  kilitli GT yıl 2026: ilk 2969.1 · en iyi 2983.2 · ortanca 3080.7 · en kötü 3155.4 ms · olay döngüsü en çok 11 ms (n=5) · özet 37887e50bcbad9cf · {"kesinDegil":["smm-tahmini","kural-farki","bilgi-amacli"],"bilgi":null,"dnk":4776835620}
+  kilitli GT ilk yarı 2026: ilk 3012.9 · en iyi 3020.1 · ortanca 3102.9 · en kötü 3307.3 ms · olay döngüsü en çok 110.9 ms (n=5) · özet e5e9e4cc674f6603 · {"kesinDegil":["smm-tahmini","kural-farki","bilgi-amacli"],"bilgi":null,"dnk":2811665034}
+  fiş 200 2026-07-01 no 1 · Yönetim önce 14 satır, dışlanan 7
+  fişten sonra Bilanço 2026-12-31: ilk 5345.6 · en iyi 5210.7 · ortanca 5285.7 · en kötü 5467.4 ms · olay döngüsü en çok 20.5 ms (n=5) · özet 8af954ca6db507d8 · {"kesinDegil":["tamamlanmamis-acilis","smm-tahmini","kural-farki","kapanmamis-yil","bilgi-amacli"],"bilgi":null,"dnk":4776835620}
+  fişten sonra GT yıl 2026 (fiş içinde): ilk 2968.8 · en iyi 3033.2 · ortanca 3183.6 · en kötü 3335.5 ms · olay döngüsü en çok 12.6 ms (n=5) · özet 10795064cd5922c1 · {"kesinDegil":["smm-tahmini","kural-farki","bilgi-amacli"],"bilgi":null,"dnk":4776835620}
+  fişten sonra GT ikinci yarı 2026 (fiş içinde): ilk 3249.7 · en iyi 3138.7 · ortanca 3298.8 · en kötü 3355.5 ms · olay döngüsü en çok 10.5 ms (n=5) · özet 9b1d25ac1fdd892d · {"kesinDegil":["smm-tahmini","kural-farki","bilgi-amacli"],"bilgi":null,"dnk":1965170586}
+  fişten sonra GT ilk yarı 2026 (fiş dışında): ilk 3148.2 · en iyi 3031.3 · ortanca 3090.3 · en kötü 3200.1 ms · olay döngüsü en çok 9.3 ms (n=5) · özet e5e9e4cc674f6603 · {"kesinDegil":["smm-tahmini","kural-farki","bilgi-amacli"],"bilgi":null,"dnk":2811665034}
+  bellek (rss) 1244 MB · yük (sonda) 1.14 1.16 1.11
+çıkış 0 · sonda yük 1.14 1.16 1.11 · 23:15:57

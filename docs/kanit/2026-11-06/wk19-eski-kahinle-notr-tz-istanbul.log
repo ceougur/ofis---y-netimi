@@ -1,0 +1,45 @@
+ok 1 - [notr] S30-01-talep-duraklatildi-meta-bekletti-zincir-gonderilmez-belirsiz-iz-eler: KIRMIZI (değerle) — beklenen deger
+  # tam sonuç farklı (elle aynı — yalnız elle dışı yaprak değişti)
+ok 2 - [notr] S35-01-talep-aninda-kapanir-ayni-donem-yeni-gonderim-gider-meta-bekletti-gec-teslim: KIRMIZI (değerle) — beklenen deger
+  # elle: S35-01-talep-aninda-kapanir-ayni-donem-yeni-gonderim-gider-meta-bekletti-gec-teslim * [{}…] kontroller.K3.isler.T3/D: elle "Teslim Edildi" ≠ model "Atlandı"
+ok 3 - [notr] S37-01-talep-sonrasi-hatirlatma-yeniden-dene-ve-yine-de-gonder-karttan-gider: KIRMIZI (değerle) — beklenen deger
+  # elle: S37-01-talep-sonrasi-hatirlatma-yeniden-dene-ve-yine-de-gonder-karttan-gider * [{}…] yeniden.Y1: elle {"elenen": {"RT": "telefonsuz"}, "alinan": ["RF"], "oneri": null} ≠ model {"elenen": {}, "alinan":
+ok 4 - [notr] S42-03-gonderiliyor-talep-yeniden-gonderim-gerektiren-yanit-atlandi-kesin-olumsuz-basarisiz: KIRMIZI (değerle) — beklenen deger
+  # tam sonuç farklı (elle aynı — yalnız elle dışı yaprak değişti)
+ok 5 - [notr] S58-01-yol-1-den-yol-2-ye-teslim-suresinden-once-isaret-sifirlanir-sure-dolmaz: KIRMIZI (değerle) — beklenen deger
+  # elle: S58-01-yol-1-den-yol-2-ye-teslim-suresinden-once-isaret-sifirlanir-sure-dolmaz * [{}…] kontroller.K1.isler: elle {"T1/A": "Teslim Edildi", "T1/B": "Meta Kabul Etti"} ≠ model {"T1/A": "Teslim Edildi", 
+ok 6 - [notr] S58-02-yol-2-den-yol-1-e-teslim-suresinden-sonra-sure-doldu-kalir-yeni-yolun-ilk-bildirimi: KIRMIZI (değerle) — beklenen deger
+  # elle: S58-02-yol-2-den-yol-1-e-teslim-suresinden-sonra-sure-doldu-kalir-yeni-yolun-ilk-bildirimi * [{}…] kontroller.K3.isler: elle {"T1/A": "Teslim Edildi", "T1/B": "Süresi Doldu", "T2/C": "Meta Kabul Etti"
+ok 7 - [notr] S58-03-geri-donus-yol-1-yol-2-yol-1-her-degisim-sifirlar-eski-isaret-gelmez: KIRMIZI (değerle) — beklenen deger
+  # elle: S58-03-geri-donus-yol-1-yol-2-yol-1-her-degisim-sifirlar-eski-isaret-gelmez * [{}…] kontroller.K1.isler: elle {"T1/A": "Teslim Edildi", "T1/B": "Meta Kabul Etti"} ≠ model {"T1/A": "Teslim Edildi", "T1
+ok 8 - [notr] S59-01-talep-atlandi-meta-bekletti-gec-teslim-teslim-edildi-iptal-ile-karsilastirma: KIRMIZI (değerle) — beklenen deger
+  # elle: S59-01-talep-atlandi-meta-bekletti-gec-teslim-teslim-edildi-iptal-ile-karsilastirma * [{}…] kontroller.K2.isler: elle {"T1/D": "Teslim Edildi", "T2/E": {"secenek": ["İptal", "Teslim Edildi"], "susuyor
+ok 9 - [notr] S59-02-teslim-talepten-once-ve-sonra-iki-sira-teslim-edildi-ay-donumu: KIRMIZI (değerle) — beklenen deger
+  # elle: S59-02-teslim-talepten-once-ve-sonra-iki-sira-teslim-edildi-ay-donumu * [{}…] kontroller.K2.medya_silme: elle 2 ≠ model 1
+ok 10 - [notr] S60-01-atlandi-meta-bekletti-ve-s42-pdf-silinir-belirsiz-silinmez: KIRMIZI (değerle) — beklenen deger
+  # elle: S60-01-atlandi-meta-bekletti-ve-s42-pdf-silinir-belirsiz-silinmez * [{}…] kontroller.K1.medya_silme: elle 2 ≠ model 0
+ok 11 - [notr] S60-02-iptal-pdf-susuyor-atlandi-silinir-teslim-sonra-talep-bir-kez: KIRMIZI (değerle) — beklenen deger
+  # elle: S60-02-iptal-pdf-susuyor-atlandi-silinir-teslim-sonra-talep-bir-kez * [{}…] isler.T1/Y.medya_silme: elle 1 ≠ model 0
+ok 12 - [notr] S61-01-hatirlatma-telefonsuz-alinmaz-is-basarisiz-ekstre-icerik-silindi-telefon-girilince-gider: KIRMIZI (değerle) — beklenen deger
+  # elle: S61-01-hatirlatma-telefonsuz-alinmaz-is-basarisiz-ekstre-icerik-silindi-telefon-girilince-gider * [{}…] yeniden.Y1: elle {"elenen": {"TK": "telefonsuz", "TY": "telefonsuz"}, "alinan": [], "oneri": nul
+ok 13 - [notr] S61-02-telefon-yok-e2-nedenlerinden-once-yeni-gonderimle-ayni-sira: KIRMIZI (değerle) — beklenen deger
+  # elle: S61-02-telefon-yok-e2-nedenlerinden-once-yeni-gonderimle-ayni-sira * [{}…] yeniden.Y1: elle {"elenen": {"RD": "telefonsuz", "RS": "telefonsuz"}, "alinan": [], "oneri": null} ≠ model {"elenen": {"RD": 
+ok 14 - [notr] S62-01-salt-okunurda-talep-acik-lisans-bekleyen-atlandi-belirsiz-iz-geri-yuklemede-uygulanir: KIRMIZI (değerle) — beklenen deger
+  # elle: S62-01-salt-okunurda-talep-acik-lisans-bekleyen-atlandi-belirsiz-iz-geri-yuklemede-uygulanir * [{}…] kontroller.K3.medya_silme: elle 3 ≠ model 2
+ok 15 - [notr] S62-02-salt-okunurda-talep-sinir-lisans-atlandi-yeni-gonderim-baslamaz-lisans-donunce-gider: AYNI — beklenen ayni
+  # tam sonuç da aynı
+ok 16 - [notr] S62-03-salt-okunurda-bir-yil-supurmesi-surer-bekleyen-atlandi: AYNI — beklenen ayni
+  # tam sonuç da aynı
+ok 17 - [notr] S63-01-iki-uygulama-once-a-sonra-b-kaydolur-teslim-bilgisi-iki-sirkette-isaret-ayri: KIRMIZI (değerle) — beklenen deger
+  # elle: S63-01-iki-uygulama-once-a-sonra-b-kaydolur-teslim-bilgisi-iki-sirkette-isaret-ayri * [{}…] kontroller.K1.isler: elle {"T1/A1": "Teslim Edildi", "T2/B1": "Meta Kabul Etti", "T3/A2": "Teslim Edildi"} ≠
+ok 18 - [notr] S63-02-iki-uygulama-sira-degisimi-once-b-sonra-a-kaydolur: KIRMIZI (değerle) — beklenen deger
+  # elle: S63-02-iki-uygulama-sira-degisimi-once-b-sonra-a-kaydolur * [{}…] kontroller.K1.isler: elle {"T1/B1": "Teslim Edildi", "T2/A1": "Meta Kabul Etti", "T3/B2": "Teslim Edildi"} ≠ model {"T1/B1": "Teslim E
+ok 19 - [notr] S63-03-ayni-uygulama-iki-sirket-tek-kayit-isaret-yine-ayri: KIRMIZI (değerle) — beklenen deger
+  # elle: S63-03-ayni-uygulama-iki-sirket-tek-kayit-isaret-yine-ayri * [{}…] kontroller.K1.isler: elle {"T1/A1": "Teslim Edildi", "T2/B1": "Meta Kabul Etti", "T3/A2": "Teslim Edildi"} ≠ model {"T1/A1": "Teslim 
+1..19
+# tests 19
+# pass 19
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

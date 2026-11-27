@@ -1,0 +1,3277 @@
+{
+ "adim_farklari": [
+  {
+   "degisim": {
+    "ana": {
+     "120": -1,
+     "391": 1
+    },
+    "cari": {
+     "C4": -1
+    }
+   },
+   "durum": "yapildi",
+   "id": "F42",
+   "kod": "K1-TEVKIFAT-YUVARLAMA",
+   "no": 71,
+   "olay_turu": "satis_faturasi",
+   "sinif": "K",
+   "tarih": "2026-01-27",
+   "tur": "satis_faturasi"
+  },
+  {
+   "degisim": {
+    "ana": {
+     "360": 1,
+     "391": -1
+    }
+   },
+   "durum": "yapildi",
+   "id": "",
+   "kod": "K1-TEVKIFAT-YUVARLAMA/SONUC",
+   "no": 85,
+   "olay_turu": "kdv_mahsup",
+   "sinif": "K",
+   "tarih": "2026-01-31",
+   "tur": "kdv_mahsup"
+  },
+  {
+   "degisim": {
+    "ana": {
+     "120": -893,
+     "391": 894,
+     "610": -1
+    },
+    "cari": {
+     "C4": -893
+    }
+   },
+   "durum": "yapildi",
+   "id": "I49",
+   "kod": "K2-IADE-KDV-SIFIR",
+   "no": 86,
+   "olay_turu": "satis_iade_faturasi",
+   "sinif": "K",
+   "tarih": "2026-02-01",
+   "tur": "satis_iade_faturasi"
+  },
+  {
+   "degisim": {
+    "alt": {
+     "102.B1": -241080,
+     "108.POS1": 246000
+    },
+    "ana": {
+     "102": -241080,
+     "108": 246000,
+     "653": -4920
+    }
+   },
+   "durum": "yapildi",
+   "id": "",
+   "kod": "K3-POS-VALOR-HAFTASONU",
+   "no": "151g",
+   "olay_turu": "gun→kdv_mahsup",
+   "sinif": "K",
+   "tarih": "2026-03-01",
+   "tur": "gun"
+  },
+  {
+   "degisim": {
+    "ana": {
+     "360": 894,
+     "391": -894
+    }
+   },
+   "durum": "yapildi",
+   "id": "",
+   "kod": "K1-TEVKIFAT-YUVARLAMA/SONUC",
+   "no": 151,
+   "olay_turu": "kdv_mahsup",
+   "sinif": "K",
+   "tarih": "2026-02-28",
+   "tur": "kdv_mahsup"
+  },
+  {
+   "degisim": {
+    "alt": {
+     "102.B1": 241080,
+     "108.POS1": -246000
+    },
+    "ana": {
+     "102": 241080,
+     "108": -246000,
+     "653": 4920
+    }
+   },
+   "durum": "yapildi",
+   "id": "",
+   "kod": "K3-POS-VALOR-HAFTASONU",
+   "no": "156g",
+   "olay_turu": "gun→tahsilat",
+   "sinif": "K",
+   "tarih": "2026-03-02",
+   "tur": "gun"
+  },
+  {
+   "degisim": {
+    "ana": {
+     "120": -22685,
+     "391": 22686,
+     "610": -1
+    },
+    "cari": {
+     "C2": -22685
+    }
+   },
+   "durum": "yapildi",
+   "id": "I125",
+   "kod": "K2-IADE-KDV-SIFIR",
+   "no": 191,
+   "olay_turu": "satis_iade_faturasi",
+   "sinif": "K",
+   "tarih": "2026-03-17",
+   "tur": "satis_iade_faturasi"
+  },
+  {
+   "degisim": {
+    "ana": {
+     "120": -1,
+     "391": 1
+    },
+    "cari": {
+     "C4": -1
+    }
+   },
+   "durum": "yapildi",
+   "id": "F131",
+   "kod": "K1-TEVKIFAT-YUVARLAMA",
+   "no": 197,
+   "olay_turu": "satis_faturasi",
+   "sinif": "K",
+   "tarih": "2026-03-20",
+   "tur": "satis_faturasi"
+  },
+  {
+   "degisim": {
+    "ana": {
+     "120": -2866,
+     "391": 2866
+    },
+    "cari": {
+     "C5": -2866
+    }
+   },
+   "durum": "yapildi",
+   "id": "I136",
+   "kod": "K2-IADE-KDV-SIFIR",
+   "no": 204,
+   "olay_turu": "satis_iade_faturasi",
+   "sinif": "K",
+   "tarih": "2026-03-24",
+   "tur": "satis_iade_faturasi"
+  },
+  {
+   "degisim": {
+    "ana": {
+     "360": 25553,
+     "391": -25553
+    }
+   },
+   "durum": "yapildi",
+   "id": "",
+   "kod": "K1-TEVKIFAT-YUVARLAMA/SONUC",
+   "no": 227,
+   "olay_turu": "kdv_mahsup",
+   "sinif": "K",
+   "tarih": "2026-03-31",
+   "tur": "kdv_mahsup"
+  },
+  {
+   "degisim": {
+    "alt": {
+     "102.B1": -279104,
+     "108.POS1": 284800
+    },
+    "ana": {
+     "102": -279104,
+     "108": 284800,
+     "653": -5696
+    }
+   },
+   "durum": "yapildi",
+   "id": "",
+   "kod": "K3-POS-VALOR-HAFTASONU",
+   "no": "236g",
+   "olay_turu": "gun→tahsilat",
+   "sinif": "K",
+   "tarih": "2026-04-05",
+   "tur": "gun"
+  },
+  {
+   "degisim": {
+    "alt": {
+     "102.B1": 279104,
+     "108.POS1": -284800
+    },
+    "ana": {
+     "102": 279104,
+     "108": -284800,
+     "653": 5696
+    }
+   },
+   "durum": "yapildi",
+   "id": "",
+   "kod": "K3-POS-VALOR-HAFTASONU",
+   "no": "239g",
+   "olay_turu": "gun→alis_faturasi",
+   "sinif": "K",
+   "tarih": "2026-04-06",
+   "tur": "gun"
+  },
+  {
+   "degisim": {
+    "alt": {
+     "102.B1": -428770,
+     "108.POS1": 437520
+    },
+    "ana": {
+     "102": -428770,
+     "108": 437520,
+     "653": -8750
+    }
+   },
+   "durum": "yapildi",
+   "id": "",
+   "kod": "K3-POS-VALOR-HAFTASONU",
+   "no": "316g",
+   "olay_turu": "gun→kasa_giris",
+   "sinif": "K",
+   "tarih": "2026-05-16",
+   "tur": "gun"
+  },
+  {
+   "degisim": {
+    "alt": {
+     "102.B1": 428770,
+     "108.POS1": -437520
+    },
+    "ana": {
+     "102": 428770,
+     "108": -437520,
+     "653": 8750
+    }
+   },
+   "durum": "yapildi",
+   "id": "",
+   "kod": "K3-POS-VALOR-HAFTASONU",
+   "no": "323g",
+   "olay_turu": "gun→odeme",
+   "sinif": "K",
+   "tarih": "2026-05-18",
+   "tur": "gun"
+  },
+  {
+   "degisim": {
+    "ana": {
+     "120": -5100,
+     "391": 5100
+    },
+    "cari": {
+     "C3": -5100
+    }
+   },
+   "durum": "yapildi",
+   "id": "I278",
+   "kod": "K2-IADE-KDV-SIFIR",
+   "no": 423,
+   "olay_turu": "satis_iade_faturasi",
+   "sinif": "K",
+   "tarih": "2026-07-02",
+   "tur": "satis_iade_faturasi"
+  },
+  {
+   "degisim": {
+    "ana": {
+     "120": 81025,
+     "128": -81025
+    }
+   },
+   "durum": "yapildi",
+   "id": "I279",
+   "kod": "K2-IADE-KDV-SIFIR,R1-SUPHELI-CARI-ALACAK",
+   "no": 425,
+   "olay_turu": "satis_iade_faturasi",
+   "sinif": "K/R",
+   "tarih": "2026-07-02",
+   "tur": "satis_iade_faturasi"
+  },
+  {
+   "degisim": {
+    "ana": {
+     "120": 109200,
+     "128": -109200
+    }
+   },
+   "durum": "yapildi",
+   "id": "P286",
+   "kod": "R1-SUPHELI-CARI-ALACAK",
+   "no": 434,
+   "olay_turu": "tahsilat",
+   "sinif": "R",
+   "tarih": "2026-07-07",
+   "tur": "tahsilat"
+  },
+  {
+   "degisim": {
+    "ana": {
+     "120": -3942,
+     "391": 3942
+    },
+    "cari": {
+     "C5": -3942
+    }
+   },
+   "durum": "yapildi",
+   "id": "I294",
+   "kod": "K2-IADE-KDV-SIFIR",
+   "no": 444,
+   "olay_turu": "satis_iade_faturasi",
+   "sinif": "K",
+   "tarih": "2026-07-13",
+   "tur": "satis_iade_faturasi"
+  },
+  {
+   "degisim": {
+    "ana": {
+     "120": -1,
+     "391": 1
+    },
+    "cari": {
+     "C2": -1
+    }
+   },
+   "durum": "yapildi",
+   "id": "F295",
+   "kod": "K1-TEVKIFAT-YUVARLAMA",
+   "no": 446,
+   "olay_turu": "satis_faturasi",
+   "sinif": "K",
+   "tarih": "2026-07-14",
+   "tur": "satis_faturasi"
+  },
+  {
+   "degisim": {
+    "ana": {
+     "320": 1,
+     "360": -1
+    },
+    "cari": {
+     "T1": 1
+    }
+   },
+   "durum": "yapildi",
+   "id": "A300",
+   "kod": "K1-TEVKIFAT-YUVARLAMA",
+   "no": 453,
+   "olay_turu": "alis_faturasi",
+   "sinif": "K",
+   "tarih": "2026-07-17",
+   "tur": "alis_faturasi"
+  },
+  {
+   "degisim": {
+    "ana": {
+     "120": 17900,
+     "128": -17900
+    }
+   },
+   "durum": "yapildi",
+   "id": "",
+   "kod": "R1-SUPHELI-CARI-ALACAK",
+   "no": 467,
+   "olay_turu": "alacak_yaz",
+   "sinif": "R",
+   "tarih": "2026-07-25",
+   "tur": "alacak_yaz"
+  },
+  {
+   "degisim": {
+    "ana": {
+     "360": 9043,
+     "391": -9043
+    }
+   },
+   "durum": "yapildi",
+   "id": "",
+   "kod": "K1-TEVKIFAT-YUVARLAMA/SONUC",
+   "no": 475,
+   "olay_turu": "kdv_mahsup",
+   "sinif": "K",
+   "tarih": "2026-07-31",
+   "tur": "kdv_mahsup"
+  },
+  {
+   "degisim": {
+    "ana": {
+     "120": 39600,
+     "128": -39600,
+     "129": 38752,
+     "644": -38752
+    }
+   },
+   "durum": "yapildi",
+   "id": "P347",
+   "kod": "R1-SUPHELI-CARI-ALACAK",
+   "no": 531,
+   "olay_turu": "tahsilat",
+   "sinif": "R",
+   "tarih": "2026-08-25",
+   "tur": "tahsilat"
+  },
+  {
+   "degisim": {
+    "ana": {
+     "120": 38000,
+     "128": -38000,
+     "129": 38000,
+     "644": -38000
+    }
+   },
+   "durum": "yapildi",
+   "id": "P354",
+   "kod": "R1-SUPHELI-CARI-ALACAK",
+   "no": 537,
+   "olay_turu": "tahsilat",
+   "sinif": "R",
+   "tarih": "2026-08-28",
+   "tur": "tahsilat"
+  },
+  {
+   "degisim": {
+    "alt": {
+     "102.B1": -338688,
+     "108.POS1": 345600
+    },
+    "ana": {
+     "102": -338688,
+     "108": 345600,
+     "653": -6912
+    }
+   },
+   "durum": "yapildi",
+   "id": "",
+   "kod": "K3-POS-VALOR-HAFTASONU",
+   "no": "577g",
+   "olay_turu": "gun→satis_faturasi",
+   "sinif": "K",
+   "tarih": "2026-09-19",
+   "tur": "gun"
+  },
+  {
+   "degisim": {
+    "alt": {
+     "102.B1": 338688,
+     "108.POS1": -345600
+    },
+    "ana": {
+     "102": 338688,
+     "108": -345600,
+     "653": 6912
+    }
+   },
+   "durum": "yapildi",
+   "id": "",
+   "kod": "K3-POS-VALOR-HAFTASONU",
+   "no": "581g",
+   "olay_turu": "gun→tahsilat",
+   "sinif": "K",
+   "tarih": "2026-09-21",
+   "tur": "gun"
+  },
+  {
+   "degisim": {
+    "ana": {
+     "120": -22080,
+     "391": 22080
+    },
+    "cari": {
+     "C3": -22080
+    }
+   },
+   "durum": "yapildi",
+   "id": "I401",
+   "kod": "K2-IADE-KDV-SIFIR",
+   "no": 617,
+   "olay_turu": "satis_iade_faturasi",
+   "sinif": "K",
+   "tarih": "2026-10-08",
+   "tur": "satis_iade_faturasi"
+  },
+  {
+   "degisim": {
+    "ana": {
+     "120": -2376,
+     "391": 2376
+    },
+    "cari": {
+     "C5": -2376
+    }
+   },
+   "durum": "yapildi",
+   "id": "I410",
+   "kod": "K2-IADE-KDV-SIFIR",
+   "no": 635,
+   "olay_turu": "satis_iade_faturasi",
+   "sinif": "K",
+   "tarih": "2026-10-18",
+   "tur": "satis_iade_faturasi"
+  },
+  {
+   "degisim": {
+    "ana": {
+     "120": 32285,
+     "128": -35512,
+     "129": 35512,
+     "391": 3228,
+     "610": -1,
+     "644": -35512
+    },
+    "cari": {
+     "C4": -3227
+    }
+   },
+   "durum": "yapildi",
+   "id": "I412",
+   "kod": "K2-IADE-KDV-SIFIR,R1-SUPHELI-CARI-ALACAK",
+   "no": 638,
+   "olay_turu": "satis_iade_faturasi",
+   "sinif": "K/R",
+   "tarih": "2026-10-20",
+   "tur": "satis_iade_faturasi"
+  },
+  {
+   "degisim": {
+    "ana": {
+     "360": 27684,
+     "391": -27684
+    }
+   },
+   "durum": "yapildi",
+   "id": "",
+   "kod": "K1-TEVKIFAT-YUVARLAMA/SONUC",
+   "no": 660,
+   "olay_turu": "kdv_mahsup",
+   "sinif": "K",
+   "tarih": "2026-10-31",
+   "tur": "kdv_mahsup"
+  },
+  {
+   "degisim": {
+    "ana": {
+     "120": -7320,
+     "391": 7320
+    },
+    "cari": {
+     "C3": -7320
+    }
+   },
+   "durum": "yapildi",
+   "id": "I448",
+   "kod": "K2-IADE-KDV-SIFIR",
+   "no": 689,
+   "olay_turu": "satis_iade_faturasi",
+   "sinif": "K",
+   "tarih": "2026-11-19",
+   "tur": "satis_iade_faturasi"
+  },
+  {
+   "degisim": {
+    "ana": {
+     "120": -1,
+     "391": 1
+    },
+    "cari": {
+     "C3": -1
+    }
+   },
+   "durum": "yapildi",
+   "id": "F453",
+   "kod": "K1-TEVKIFAT-YUVARLAMA",
+   "no": 696,
+   "olay_turu": "satis_faturasi",
+   "sinif": "K",
+   "tarih": "2026-11-22",
+   "tur": "satis_faturasi"
+  },
+  {
+   "degisim": {
+    "ana": {
+     "360": 7321,
+     "391": -7321
+    }
+   },
+   "durum": "yapildi",
+   "id": "",
+   "kod": "K1-TEVKIFAT-YUVARLAMA/SONUC",
+   "no": 714,
+   "olay_turu": "kdv_mahsup",
+   "sinif": "K",
+   "tarih": "2026-11-30",
+   "tur": "kdv_mahsup"
+  },
+  {
+   "degisim": {
+    "alt": {
+     "102.B1": -437708,
+     "108.POS1": 446640
+    },
+    "ana": {
+     "102": -437708,
+     "108": 446640,
+     "653": -8932
+    }
+   },
+   "durum": "yapildi",
+   "id": "",
+   "kod": "K3-POS-VALOR-HAFTASONU",
+   "no": "719g",
+   "olay_turu": "gun→alis_faturasi",
+   "sinif": "K",
+   "tarih": "2026-12-05",
+   "tur": "gun"
+  },
+  {
+   "degisim": {
+    "alt": {
+     "102.B1": 437708,
+     "108.POS1": -446640
+    },
+    "ana": {
+     "102": 437708,
+     "108": -446640,
+     "653": 8932
+    }
+   },
+   "durum": "yapildi",
+   "id": "",
+   "kod": "K3-POS-VALOR-HAFTASONU",
+   "no": "720g",
+   "olay_turu": "gun→alis_faturasi",
+   "sinif": "K",
+   "tarih": "2026-12-07",
+   "tur": "gun"
+  },
+  {
+   "degisim": {
+    "ana": {
+     "320": 1,
+     "360": -1
+    },
+    "cari": {
+     "T1": 1
+    }
+   },
+   "durum": "yapildi",
+   "id": "A536",
+   "kod": "K1-TEVKIFAT-YUVARLAMA",
+   "no": 842,
+   "olay_turu": "alis_faturasi",
+   "sinif": "K",
+   "tarih": "2027-02-01",
+   "tur": "alis_faturasi"
+  }
+ ],
+ "bugun_dal": "KG3=SORU,KG6=B,KG7=B,KG15=B",
+ "dal": "KG3=SORU",
+ "degismezler": {
+  "kahin_mizan_toplam_sifir": true,
+  "program_her_adimda_dengeli": true,
+  "program_her_adimda_mutabakat": true,
+  "program_mizan_toplam_sifir": true,
+  "program_mutabakat_testi": true
+ },
+ "etiketler": {
+  "C1-ALT-90": {
+   "dayanak": "çekirdek planı §13 / kitap §2: '.90' alt hesapları (600.90, 610.90, 602.90, 770.90, 649.90) bugün yok; §1 'Alt hesap: banka 102.NN …'",
+   "is": "Ç1"
+  },
+  "C5-ACILIS-519": {
+   "dayanak": "çekirdek planı §6 Ç5: 'Bütün modül açılışlarının karşı hesabı 500 yerine GEÇİCİ AÇILIŞ HESABI'; §1 bugün 500",
+   "is": "Ç5"
+  },
+  "C5-CARI-ACIKLAMA": {
+   "dayanak": "çekirdek planı §1: 'CARİ AÇILIŞI ise AÇIKLAMADAN (/^açılış/i …)' — açılış işareti yalnız cari açılırken; önceden açık caride açılış Borç / Alacak Yaz satırıdır (açıklaması 'Açılış' değilse 602 / 770)",
+   "is": "Ç5"
+  },
+  "C5-EVRAK-ACILIS": {
+   "dayanak": "çekirdek planı §1: 'Cariye işlenmemiş evrak (Excel \"Açılış portföyü\") 602 / 770'e (gelir / gider) gider'; §6 'geçici hesaba'",
+   "is": "Ç5"
+  },
+  "C5-EVRAK-KARSILIKSIZ": {
+   "dayanak": "çekirdek planı §1 'Cariye işlenmemiş evrak (Excel \"Açılış portföyü\") 602 / 770'e (gelir / gider) gider' + 30.10 (1) 'açılış çekleri gelir / gidere yazılmaz' (Ç5); kitap Ç-07 'Müşteri yeniden borçlanır' — bugün karşılıksız açılış çeki 770'e (cariye borç yazılmaz)",
+   "is": "Ç5 (planda karşılıksız tarafı AÇIK YAZMIYOR — Ç5 ajanına not)"
+  },
+  "F06-GIDER-TURU": {
+   "dayanak": "kitap F-06: 'Gider türü → hesap eşlemesi Ç1'de yazılır (DOĞRULANMADI)' — finansman 780",
+   "is": "Ç1"
+  },
+  "K14-HESAPSIZ": {
+   "dayanak": "kitap K-14 / K-15: 'Hesapsız (Açılıştan Önce)' ve açılıştan önceki Kart Borcuna Aktar'da banka / kart tarafı yerine G; bugün BANKA-MODULU-PLAN K11 / §10: '102.00 ve 108.00 Hesabı Atanmamış Eski Hareketler'",
+   "is": "Ç5 kapsamına yakın (iş kodu atanmamış)"
+  },
+  "KG15-DUZELTME": {
+   "dayanak": "kitap KG-15 A / iş listesi D (10): Kural Farkı Düzeltme Fişi",
+   "is": "Ç3 / KG-15"
+  },
+  "KG16-ACIKLAMA": {
+   "dayanak": "çekirdek planı §1: \"'Açılış bakiyesi' açıklamalı elle borç defterde hâlâ 500'e gider\"; KG-16 A 'Açılış Olabilir' listesi",
+   "is": "KG-16 / Ç5"
+  },
+  "KG19-YOLDAKI": {
+   "dayanak": "kitap KG-19 A (K değil): valörlü transferde 108.90 Yoldaki Transferler; B 'çıkış günü doğrudan alıcı hesaba'",
+   "is": "KG-19 (iş kodu atanmamış)"
+  },
+  "KG2-H03": {
+   "dayanak": "kitap H-03 / KG-2 A (ürün sahibi 05.11 'hepsi A'): taksit Yeni Borç 600.90; bugün CHART 602 'Taksitli Satış'",
+   "is": "KG-2 (D bölümü (2); iş kodu atanmamış)"
+  },
+  "KG24-IHRACAT": {
+   "dayanak": "kitap KG-24 A (K değil): ihracat 601; B 600 (bugün CHART'ta 601 yok — çekirdek §1)",
+   "is": "Ç1 + türetme (iş kodu atanmamış)"
+  },
+  "KG3-KAYIT": {
+   "dayanak": "iş listesi D (3): 'KG-3 kayıt (dosya) tahsilatı gelir değil → Sınıflandırılmamış Tahsilatlar'; bugün CHART 602 'Kayıt Tahsilatları'",
+   "is": "KG-3 (iş kodu atanmamış)"
+  },
+  "KG5-EXCEL": {
+   "dayanak": "iş listesi D (4): 'KG-5 Excel'den yüklenen taksit kartı açılış alacağı (519 karşılıklı), gelir değil'; bugün kart toplamı 602, Ödenen 500 (çekirdek §1 'taksit … açılış 500')",
+   "is": "KG-5 / Ç5"
+  },
+  "KG6-POS-TARIH": {
+   "dayanak": "iş listesi D (5): 'KG-6 POS komisyonu satış günü'; kitap KG-6 B = valör günü (D-01, bugünkü)",
+   "is": "KG-6 (iş kodu atanmamış; D 'ETKİ: banka modülü')"
+  },
+  "KG7-INDIRIM": {
+   "dayanak": "iş listesi D (6): 'KG-7 alış faturasında KDV İndirim Dönemi'; kitap KG-7 B = hep belge ayı (bugünkü)",
+   "is": "KG-7 (iş kodu atanmamış; kesme çizgisinde 2.5.1'e kayabilir)"
+  },
+  "KG8-IADE-KDV": {
+   "dayanak": "kitap KG-8 (K değil; 'baş mimar + mali müşavir A'): satıştan iade KDV'si B 191; B seçeneği 391",
+   "is": "KG-8 (iş kodu atanmamış)"
+  }
+ },
+ "olay_durumlari": {
+  "api_yok": 5,
+  "rapor": 8,
+  "red": 1,
+  "uygulanmadi": 1,
+  "yapildi": 1146
+ },
+ "oz_denetim": {
+  "raporlar_ayni": true,
+  "redler_ayni": true
+ },
+ "ozet": {
+  "AYNI": 156,
+  "K": 70,
+  "P": 0,
+  "R": 34,
+  "SINIFLANMADI": 0,
+  "U": 49,
+  "adim_sinifsiz": 0
+ },
+ "raporlar": {
+  "bil_arsiv": {
+   "dosya": "arsiv",
+   "ozet": {
+    "AYNI": 19,
+    "K": 10,
+    "P": 0,
+    "R": 4,
+    "SINIFLANMADI": 0,
+    "U": 3
+   },
+   "program_dengeli": true,
+   "satirlar": [
+    {
+     "alan": "ana",
+     "anahtar": "100",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "101",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "102",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "103",
+     "sinif": "AYNI"
+    },
+    {
+     "aciklama": "kök neden (adım): K1-TEVKIFAT-YUVARLAMA, K2-IADE-KDV-SIFIR, K2-IADE-KDV-SIFIR,R1-SUPHELI-CARI-ALACAK, R1-SUPHELI-CARI-ALACAK",
+     "alan": "ana",
+     "anahtar": "120",
+     "bugun": 6564955,
+     "etiket": [
+      "C1-ALT-90",
+      "C5-ACILIS-519",
+      "KG2-H03",
+      "KG24-IHRACAT"
+     ],
+     "kahin": 6564955,
+     "program": 6815699,
+     "sinif": "K/K/R/R"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "121",
+     "sinif": "AYNI"
+    },
+    {
+     "aciklama": "kök neden (adım): K2-IADE-KDV-SIFIR,R1-SUPHELI-CARI-ALACAK, R1-SUPHELI-CARI-ALACAK",
+     "alan": "ana",
+     "anahtar": "128",
+     "bugun": 835889,
+     "kahin": 835889,
+     "program": 514652,
+     "sinif": "K/R/R"
+    },
+    {
+     "aciklama": "kök neden (adım): K2-IADE-KDV-SIFIR,R1-SUPHELI-CARI-ALACAK, R1-SUPHELI-CARI-ALACAK",
+     "alan": "ana",
+     "anahtar": "129",
+     "bugun": -626916,
+     "kahin": -626916,
+     "program": -514652,
+     "sinif": "K/R/R"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "153",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "191",
+     "bugun": 0,
+     "etiket": [
+      "F06-GIDER-TURU"
+     ],
+     "kahin": 17082,
+     "program": 0,
+     "sinif": "U"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "193",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "255",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "300",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "309",
+     "sinif": "AYNI"
+    },
+    {
+     "aciklama": "kök neden (adım): K1-TEVKIFAT-YUVARLAMA",
+     "alan": "ana",
+     "anahtar": "320",
+     "bugun": 2582179,
+     "etiket": [
+      "C5-ACILIS-519",
+      "F06-GIDER-TURU",
+      "KG24-IHRACAT"
+     ],
+     "kahin": 2582179,
+     "program": 2582180,
+     "sinif": "K"
+    },
+    {
+     "aciklama": "kök neden (adım): K1-TEVKIFAT-YUVARLAMA, K1-TEVKIFAT-YUVARLAMA/SONUC",
+     "alan": "ana",
+     "anahtar": "360",
+     "bugun": -3261959,
+     "etiket": [
+      "F06-GIDER-TURU"
+     ],
+     "kahin": -3279041,
+     "program": -3191464,
+     "sinif": "K"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "500",
+     "bugun": -5101467,
+     "etiket": [
+      "C5-ACILIS-519"
+     ],
+     "kahin": 0,
+     "program": -5101467,
+     "sinif": "U"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "519",
+     "bugun": 0,
+     "etiket": [
+      "C5-ACILIS-519",
+      "C5-EVRAK-ACILIS"
+     ],
+     "kahin": -5114367,
+     "program": 0,
+     "sinif": "U"
+    },
+    {
+     "alan": "alt",
+     "anahtar": "101.01",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "alt",
+     "anahtar": "102.B1",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "alt",
+     "anahtar": "102.B2",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "alt",
+     "anahtar": "121.01",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "alt",
+     "anahtar": "121.02",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "alt",
+     "anahtar": "300.KR1",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "alt",
+     "anahtar": "309.KK1",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "cari",
+     "anahtar": "C1",
+     "sinif": "AYNI"
+    },
+    {
+     "aciklama": "kök neden (adım): K1-TEVKIFAT-YUVARLAMA, K2-IADE-KDV-SIFIR",
+     "alan": "cari",
+     "anahtar": "C2",
+     "bugun": 1500726,
+     "etiket": [
+      "C1-ALT-90",
+      "KG2-H03",
+      "KG24-IHRACAT"
+     ],
+     "kahin": 1500726,
+     "program": 1478040,
+     "sinif": "K"
+    },
+    {
+     "aciklama": "kök neden (adım): K1-TEVKIFAT-YUVARLAMA, K2-IADE-KDV-SIFIR",
+     "alan": "cari",
+     "anahtar": "C3",
+     "bugun": 1190204,
+     "etiket": [
+      "C1-ALT-90",
+      "C5-ACILIS-519",
+      "KG2-H03",
+      "KG24-IHRACAT"
+     ],
+     "kahin": 1190204,
+     "program": 1155703,
+     "sinif": "K"
+    },
+    {
+     "aciklama": "kök neden (adım): K1-TEVKIFAT-YUVARLAMA, K2-IADE-KDV-SIFIR, K2-IADE-KDV-SIFIR,R1-SUPHELI-CARI-ALACAK",
+     "alan": "cari",
+     "anahtar": "C4",
+     "bugun": 3587634,
+     "etiket": [
+      "C1-ALT-90",
+      "KG24-IHRACAT"
+     ],
+     "kahin": 3587634,
+     "program": 3583512,
+     "sinif": "K/K/R"
+    },
+    {
+     "aciklama": "kök neden (adım): K2-IADE-KDV-SIFIR",
+     "alan": "cari",
+     "anahtar": "C5",
+     "bugun": 23570,
+     "etiket": [
+      "C1-ALT-90",
+      "KG24-IHRACAT"
+     ],
+     "kahin": 23570,
+     "program": 14386,
+     "sinif": "K"
+    },
+    {
+     "aciklama": "kök neden (adım): K1-TEVKIFAT-YUVARLAMA",
+     "alan": "cari",
+     "anahtar": "T1",
+     "bugun": 2622751,
+     "etiket": [
+      "C5-ACILIS-519",
+      "F06-GIDER-TURU",
+      "KG24-IHRACAT"
+     ],
+     "kahin": 2622751,
+     "program": 2622752,
+     "sinif": "K"
+    },
+    {
+     "alan": "cari",
+     "anahtar": "T2",
+     "sinif": "AYNI"
+    }
+   ],
+   "tur": "bilanco",
+   "uygulanmadi": "Bilanço (Ç6): kalemler, hesaplanmış Dönem Net Kârı, ters bakiye, Kesin Değil yok — yalnız 1–5 sınıfı hesap bakiyeleri karşılaştırıldı"
+  },
+  "bil_canli_K": {
+   "dosya": "canli",
+   "ozet": {
+    "AYNI": 19,
+    "K": 10,
+    "P": 0,
+    "R": 4,
+    "SINIFLANMADI": 0,
+    "U": 3
+   },
+   "program_dengeli": true,
+   "satirlar": [
+    {
+     "alan": "ana",
+     "anahtar": "100",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "101",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "102",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "103",
+     "sinif": "AYNI"
+    },
+    {
+     "aciklama": "kök neden (adım): K1-TEVKIFAT-YUVARLAMA, K2-IADE-KDV-SIFIR, K2-IADE-KDV-SIFIR,R1-SUPHELI-CARI-ALACAK, R1-SUPHELI-CARI-ALACAK",
+     "alan": "ana",
+     "anahtar": "120",
+     "bugun": 6564955,
+     "etiket": [
+      "C1-ALT-90",
+      "C5-ACILIS-519",
+      "KG2-H03",
+      "KG24-IHRACAT"
+     ],
+     "kahin": 6564955,
+     "program": 6815699,
+     "sinif": "K/K/R/R"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "121",
+     "sinif": "AYNI"
+    },
+    {
+     "aciklama": "kök neden (adım): K2-IADE-KDV-SIFIR,R1-SUPHELI-CARI-ALACAK, R1-SUPHELI-CARI-ALACAK",
+     "alan": "ana",
+     "anahtar": "128",
+     "bugun": 835889,
+     "kahin": 835889,
+     "program": 514652,
+     "sinif": "K/R/R"
+    },
+    {
+     "aciklama": "kök neden (adım): K2-IADE-KDV-SIFIR,R1-SUPHELI-CARI-ALACAK, R1-SUPHELI-CARI-ALACAK",
+     "alan": "ana",
+     "anahtar": "129",
+     "bugun": -626916,
+     "kahin": -626916,
+     "program": -514652,
+     "sinif": "K/R/R"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "153",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "191",
+     "bugun": 0,
+     "etiket": [
+      "F06-GIDER-TURU"
+     ],
+     "kahin": 17082,
+     "program": 0,
+     "sinif": "U"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "193",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "255",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "300",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "309",
+     "sinif": "AYNI"
+    },
+    {
+     "aciklama": "kök neden (adım): K1-TEVKIFAT-YUVARLAMA",
+     "alan": "ana",
+     "anahtar": "320",
+     "bugun": 2582179,
+     "etiket": [
+      "C5-ACILIS-519",
+      "F06-GIDER-TURU",
+      "KG24-IHRACAT"
+     ],
+     "kahin": 2582179,
+     "program": 2582180,
+     "sinif": "K"
+    },
+    {
+     "aciklama": "kök neden (adım): K1-TEVKIFAT-YUVARLAMA, K1-TEVKIFAT-YUVARLAMA/SONUC",
+     "alan": "ana",
+     "anahtar": "360",
+     "bugun": -3261959,
+     "etiket": [
+      "F06-GIDER-TURU"
+     ],
+     "kahin": -3279041,
+     "program": -3191464,
+     "sinif": "K"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "500",
+     "bugun": -5101467,
+     "etiket": [
+      "C5-ACILIS-519"
+     ],
+     "kahin": 0,
+     "program": -5101467,
+     "sinif": "U"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "519",
+     "bugun": 0,
+     "etiket": [
+      "C5-ACILIS-519",
+      "C5-EVRAK-ACILIS"
+     ],
+     "kahin": -5114367,
+     "program": 0,
+     "sinif": "U"
+    },
+    {
+     "alan": "alt",
+     "anahtar": "101.01",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "alt",
+     "anahtar": "102.B1",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "alt",
+     "anahtar": "102.B2",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "alt",
+     "anahtar": "121.01",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "alt",
+     "anahtar": "121.02",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "alt",
+     "anahtar": "300.KR1",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "alt",
+     "anahtar": "309.KK1",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "cari",
+     "anahtar": "C1",
+     "sinif": "AYNI"
+    },
+    {
+     "aciklama": "kök neden (adım): K1-TEVKIFAT-YUVARLAMA, K2-IADE-KDV-SIFIR",
+     "alan": "cari",
+     "anahtar": "C2",
+     "bugun": 1500726,
+     "etiket": [
+      "C1-ALT-90",
+      "KG2-H03",
+      "KG24-IHRACAT"
+     ],
+     "kahin": 1500726,
+     "program": 1478040,
+     "sinif": "K"
+    },
+    {
+     "aciklama": "kök neden (adım): K1-TEVKIFAT-YUVARLAMA, K2-IADE-KDV-SIFIR",
+     "alan": "cari",
+     "anahtar": "C3",
+     "bugun": 1190204,
+     "etiket": [
+      "C1-ALT-90",
+      "C5-ACILIS-519",
+      "KG2-H03",
+      "KG24-IHRACAT"
+     ],
+     "kahin": 1190204,
+     "program": 1155703,
+     "sinif": "K"
+    },
+    {
+     "aciklama": "kök neden (adım): K1-TEVKIFAT-YUVARLAMA, K2-IADE-KDV-SIFIR, K2-IADE-KDV-SIFIR,R1-SUPHELI-CARI-ALACAK",
+     "alan": "cari",
+     "anahtar": "C4",
+     "bugun": 3587634,
+     "etiket": [
+      "C1-ALT-90",
+      "KG24-IHRACAT"
+     ],
+     "kahin": 3587634,
+     "program": 3583512,
+     "sinif": "K/K/R"
+    },
+    {
+     "aciklama": "kök neden (adım): K2-IADE-KDV-SIFIR",
+     "alan": "cari",
+     "anahtar": "C5",
+     "bugun": 23570,
+     "etiket": [
+      "C1-ALT-90",
+      "KG24-IHRACAT"
+     ],
+     "kahin": 23570,
+     "program": 14386,
+     "sinif": "K"
+    },
+    {
+     "aciklama": "kök neden (adım): K1-TEVKIFAT-YUVARLAMA",
+     "alan": "cari",
+     "anahtar": "T1",
+     "bugun": 2622751,
+     "etiket": [
+      "C5-ACILIS-519",
+      "F06-GIDER-TURU",
+      "KG24-IHRACAT"
+     ],
+     "kahin": 2622751,
+     "program": 2622752,
+     "sinif": "K"
+    },
+    {
+     "alan": "cari",
+     "anahtar": "T2",
+     "sinif": "AYNI"
+    }
+   ],
+   "tur": "bilanco",
+   "uygulanmadi": "Bilanço (Ç6): kalemler, hesaplanmış Dönem Net Kârı, ters bakiye, Kesin Değil yok — yalnız 1–5 sınıfı hesap bakiyeleri karşılaştırıldı"
+  },
+  "bil_yeni": {
+   "dosya": "canli",
+   "ozet": {
+    "AYNI": 21,
+    "K": 10,
+    "P": 0,
+    "R": 4,
+    "SINIFLANMADI": 0,
+    "U": 4
+   },
+   "program_dengeli": true,
+   "satirlar": [
+    {
+     "alan": "ana",
+     "anahtar": "100",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "101",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "102",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "103",
+     "sinif": "AYNI"
+    },
+    {
+     "aciklama": "kök neden (adım): K1-TEVKIFAT-YUVARLAMA, K2-IADE-KDV-SIFIR, K2-IADE-KDV-SIFIR,R1-SUPHELI-CARI-ALACAK, R1-SUPHELI-CARI-ALACAK",
+     "alan": "ana",
+     "anahtar": "120",
+     "bugun": 5308007,
+     "etiket": [
+      "C1-ALT-90",
+      "C5-ACILIS-519",
+      "KG2-H03",
+      "KG24-IHRACAT"
+     ],
+     "kahin": 5308007,
+     "program": 5558751,
+     "sinif": "K/K/R/R"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "121",
+     "sinif": "AYNI"
+    },
+    {
+     "aciklama": "kök neden (adım): K2-IADE-KDV-SIFIR,R1-SUPHELI-CARI-ALACAK, R1-SUPHELI-CARI-ALACAK",
+     "alan": "ana",
+     "anahtar": "128",
+     "bugun": 835889,
+     "kahin": 835889,
+     "program": 514652,
+     "sinif": "K/R/R"
+    },
+    {
+     "aciklama": "kök neden (adım): K2-IADE-KDV-SIFIR,R1-SUPHELI-CARI-ALACAK, R1-SUPHELI-CARI-ALACAK",
+     "alan": "ana",
+     "anahtar": "129",
+     "bugun": -626916,
+     "kahin": -626916,
+     "program": -514652,
+     "sinif": "K/R/R"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "153",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "190",
+     "bugun": 0,
+     "etiket": [
+      "KG6-POS-TARIH",
+      "KG7-INDIRIM"
+     ],
+     "kahin": 19421,
+     "program": 0,
+     "sinif": "U"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "191",
+     "bugun": 46624,
+     "etiket": [
+      "F06-GIDER-TURU"
+     ],
+     "kahin": 38624,
+     "program": 46624,
+     "sinif": "U"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "193",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "255",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "300",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "309",
+     "sinif": "AYNI"
+    },
+    {
+     "aciklama": "kök neden (adım): K1-TEVKIFAT-YUVARLAMA",
+     "alan": "ana",
+     "anahtar": "320",
+     "bugun": 2345221,
+     "etiket": [
+      "C5-ACILIS-519",
+      "F06-GIDER-TURU",
+      "KG24-IHRACAT"
+     ],
+     "kahin": 2345221,
+     "program": 2345223,
+     "sinif": "K"
+    },
+    {
+     "aciklama": "kök neden (adım): K1-TEVKIFAT-YUVARLAMA, K1-TEVKIFAT-YUVARLAMA/SONUC",
+     "alan": "ana",
+     "anahtar": "360",
+     "bugun": -3287892,
+     "etiket": [
+      "F06-GIDER-TURU"
+     ],
+     "kahin": -3299313,
+     "program": -3217398,
+     "sinif": "K"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "391",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "500",
+     "bugun": -5101467,
+     "etiket": [
+      "C5-ACILIS-519"
+     ],
+     "kahin": 0,
+     "program": -5101467,
+     "sinif": "U"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "519",
+     "bugun": 0,
+     "etiket": [
+      "C5-ACILIS-519",
+      "C5-EVRAK-ACILIS"
+     ],
+     "kahin": -5114367,
+     "program": 0,
+     "sinif": "U"
+    },
+    {
+     "alan": "alt",
+     "anahtar": "101.01",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "alt",
+     "anahtar": "101.02",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "alt",
+     "anahtar": "102.B1",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "alt",
+     "anahtar": "102.B2",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "alt",
+     "anahtar": "121.01",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "alt",
+     "anahtar": "121.02",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "alt",
+     "anahtar": "300.KR1",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "alt",
+     "anahtar": "309.KK1",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "cari",
+     "anahtar": "C1",
+     "sinif": "AYNI"
+    },
+    {
+     "aciklama": "kök neden (adım): K1-TEVKIFAT-YUVARLAMA, K2-IADE-KDV-SIFIR",
+     "alan": "cari",
+     "anahtar": "C2",
+     "bugun": 878406,
+     "etiket": [
+      "C1-ALT-90",
+      "KG2-H03",
+      "KG24-IHRACAT"
+     ],
+     "kahin": 878406,
+     "program": 855720,
+     "sinif": "K"
+    },
+    {
+     "aciklama": "kök neden (adım): K1-TEVKIFAT-YUVARLAMA, K2-IADE-KDV-SIFIR",
+     "alan": "cari",
+     "anahtar": "C3",
+     "bugun": 1361629,
+     "etiket": [
+      "C1-ALT-90",
+      "C5-ACILIS-519",
+      "KG2-H03",
+      "KG24-IHRACAT"
+     ],
+     "kahin": 1361629,
+     "program": 1327128,
+     "sinif": "K"
+    },
+    {
+     "aciklama": "kök neden (adım): K1-TEVKIFAT-YUVARLAMA, K2-IADE-KDV-SIFIR, K2-IADE-KDV-SIFIR,R1-SUPHELI-CARI-ALACAK",
+     "alan": "cari",
+     "anahtar": "C4",
+     "bugun": 2663672,
+     "etiket": [
+      "C1-ALT-90",
+      "KG2-H03",
+      "KG24-IHRACAT"
+     ],
+     "kahin": 2663672,
+     "program": 2659550,
+     "sinif": "K/K/R"
+    },
+    {
+     "aciklama": "kök neden (adım): K2-IADE-KDV-SIFIR",
+     "alan": "cari",
+     "anahtar": "C5",
+     "bugun": 0,
+     "etiket": [
+      "C1-ALT-90",
+      "KG24-IHRACAT"
+     ],
+     "kahin": 0,
+     "program": -9184,
+     "sinif": "K"
+    },
+    {
+     "aciklama": "kök neden (adım): K1-TEVKIFAT-YUVARLAMA",
+     "alan": "cari",
+     "anahtar": "T1",
+     "bugun": 2682943,
+     "etiket": [
+      "C5-ACILIS-519",
+      "F06-GIDER-TURU",
+      "KG24-IHRACAT"
+     ],
+     "kahin": 2682943,
+     "program": 2682945,
+     "sinif": "K"
+    },
+    {
+     "alan": "cari",
+     "anahtar": "T3",
+     "sinif": "AYNI"
+    }
+   ],
+   "tur": "bilanco",
+   "uygulanmadi": "Bilanço (Ç6): kalemler, hesaplanmış Dönem Net Kârı, ters bakiye, Kesin Değil yok — yalnız 1–5 sınıfı hesap bakiyeleri karşılaştırıldı"
+  },
+  "gt_arsiv": {
+   "dosya": "arsiv",
+   "ozet": {
+    "AYNI": 6,
+    "K": 2,
+    "P": 0,
+    "R": 2,
+    "SINIFLANMADI": 0,
+    "U": 5
+   },
+   "satirlar": [
+    {
+     "alan": "ana",
+     "anahtar": "600",
+     "bugun": -33242690,
+     "etiket": [
+      "C1-ALT-90",
+      "KG2-H03",
+      "KG24-IHRACAT"
+     ],
+     "kahin": -31763790,
+     "program": -33242690,
+     "sinif": "U"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "601",
+     "bugun": 0,
+     "etiket": [
+      "KG24-IHRACAT"
+     ],
+     "kahin": -1651000,
+     "program": 0,
+     "sinif": "U"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "602",
+     "bugun": -284000,
+     "etiket": [
+      "C1-ALT-90",
+      "C5-EVRAK-ACILIS",
+      "KG2-H03"
+     ],
+     "kahin": -99000,
+     "program": -284000,
+     "sinif": "U"
+    },
+    {
+     "aciklama": "kök neden (adım): K2-IADE-KDV-SIFIR, K2-IADE-KDV-SIFIR,R1-SUPHELI-CARI-ALACAK",
+     "alan": "ana",
+     "anahtar": "610",
+     "bugun": 615555,
+     "etiket": [
+      "C1-ALT-90"
+     ],
+     "kahin": 615555,
+     "program": 615552,
+     "sinif": "K/K/R"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "642",
+     "sinif": "AYNI"
+    },
+    {
+     "aciklama": "kök neden (adım): K2-IADE-KDV-SIFIR,R1-SUPHELI-CARI-ALACAK, R1-SUPHELI-CARI-ALACAK",
+     "alan": "ana",
+     "anahtar": "644",
+     "bugun": 0,
+     "kahin": 0,
+     "program": -112264,
+     "sinif": "K/R/R"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "649",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "653",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "654",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "659",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "760",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "770",
+     "bugun": 3629800,
+     "etiket": [
+      "C1-ALT-90",
+      "F06-GIDER-TURU"
+     ],
+     "kahin": 2357500,
+     "program": 3629800,
+     "sinif": "U"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "780",
+     "bugun": 14800,
+     "etiket": [
+      "F06-GIDER-TURU"
+     ],
+     "kahin": 1287100,
+     "program": 14800,
+     "sinif": "U"
+    }
+   ],
+   "tur": "gelir_tablosu",
+   "uygulanmadi": "Gelir Tablosu (Ç6): kalemler, tahmini SMM, Kesin Değil yok — yalnız 6/7 hesap hareketleri karşılaştırıldı"
+  },
+  "gt_canli": {
+   "dosya": "canli",
+   "ozet": {
+    "AYNI": 6,
+    "K": 2,
+    "P": 0,
+    "R": 2,
+    "SINIFLANMADI": 0,
+    "U": 5
+   },
+   "satirlar": [
+    {
+     "alan": "ana",
+     "anahtar": "600",
+     "bugun": -33242690,
+     "etiket": [
+      "C1-ALT-90",
+      "KG2-H03",
+      "KG24-IHRACAT"
+     ],
+     "kahin": -31763790,
+     "program": -33242690,
+     "sinif": "U"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "601",
+     "bugun": 0,
+     "etiket": [
+      "KG24-IHRACAT"
+     ],
+     "kahin": -1651000,
+     "program": 0,
+     "sinif": "U"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "602",
+     "bugun": -284000,
+     "etiket": [
+      "C1-ALT-90",
+      "C5-EVRAK-ACILIS",
+      "KG2-H03"
+     ],
+     "kahin": -99000,
+     "program": -284000,
+     "sinif": "U"
+    },
+    {
+     "aciklama": "kök neden (adım): K2-IADE-KDV-SIFIR, K2-IADE-KDV-SIFIR,R1-SUPHELI-CARI-ALACAK",
+     "alan": "ana",
+     "anahtar": "610",
+     "bugun": 615555,
+     "etiket": [
+      "C1-ALT-90"
+     ],
+     "kahin": 615555,
+     "program": 615552,
+     "sinif": "K/K/R"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "642",
+     "sinif": "AYNI"
+    },
+    {
+     "aciklama": "kök neden (adım): K2-IADE-KDV-SIFIR,R1-SUPHELI-CARI-ALACAK, R1-SUPHELI-CARI-ALACAK",
+     "alan": "ana",
+     "anahtar": "644",
+     "bugun": 0,
+     "kahin": 0,
+     "program": -112264,
+     "sinif": "K/R/R"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "649",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "653",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "654",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "659",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "760",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "770",
+     "bugun": 3629800,
+     "etiket": [
+      "C1-ALT-90",
+      "F06-GIDER-TURU"
+     ],
+     "kahin": 2357500,
+     "program": 3629800,
+     "sinif": "U"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "780",
+     "bugun": 14800,
+     "etiket": [
+      "F06-GIDER-TURU"
+     ],
+     "kahin": 1287100,
+     "program": 14800,
+     "sinif": "U"
+    }
+   ],
+   "tur": "gelir_tablosu",
+   "uygulanmadi": "Gelir Tablosu (Ç6): kalemler, tahmini SMM, Kesin Değil yok — yalnız 6/7 hesap hareketleri karşılaştırıldı"
+  },
+  "gt_yeni": {
+   "dosya": "canli",
+   "ozet": {
+    "AYNI": 6,
+    "K": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "U": 3
+   },
+   "satirlar": [
+    {
+     "alan": "ana",
+     "anahtar": "600",
+     "bugun": -1767010,
+     "etiket": [
+      "C1-ALT-90",
+      "KG2-H03",
+      "KG24-IHRACAT"
+     ],
+     "kahin": -1709210,
+     "program": -1767010,
+     "sinif": "U"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "601",
+     "bugun": 0,
+     "etiket": [
+      "KG24-IHRACAT"
+     ],
+     "kahin": -166800,
+     "program": 0,
+     "sinif": "U"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "602",
+     "bugun": -119900,
+     "etiket": [
+      "C1-ALT-90",
+      "C5-EVRAK-ACILIS",
+      "KG2-H03"
+     ],
+     "kahin": -10900,
+     "program": -119900,
+     "sinif": "U"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "610",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "642",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "649",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "653",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "760",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "770",
+     "sinif": "AYNI"
+    }
+   ],
+   "tur": "gelir_tablosu",
+   "uygulanmadi": "Gelir Tablosu (Ç6): kalemler, tahmini SMM, Kesin Değil yok — yalnız 6/7 hesap hareketleri karşılaştırıldı"
+  },
+  "mz_arsiv": {
+   "brut": {
+    "kahin": {
+     "alacak": 112328581,
+     "borc": 112328581
+    },
+    "program": {
+     "alacak": 111786734,
+     "borc": 111786734
+    }
+   },
+   "dosya": "arsiv",
+   "ozet": {
+    "AYNI": 25,
+    "K": 12,
+    "P": 0,
+    "R": 6,
+    "SINIFLANMADI": 0,
+    "U": 8
+   },
+   "program_dengeli": true,
+   "program_mutabakat": true,
+   "satirlar": [
+    {
+     "alan": "ana",
+     "anahtar": "100",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "101",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "102",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "103",
+     "sinif": "AYNI"
+    },
+    {
+     "aciklama": "kök neden (adım): K1-TEVKIFAT-YUVARLAMA, K2-IADE-KDV-SIFIR, K2-IADE-KDV-SIFIR,R1-SUPHELI-CARI-ALACAK, R1-SUPHELI-CARI-ALACAK",
+     "alan": "ana",
+     "anahtar": "120",
+     "bugun": 6564955,
+     "etiket": [
+      "C1-ALT-90",
+      "C5-ACILIS-519",
+      "KG2-H03",
+      "KG24-IHRACAT"
+     ],
+     "kahin": 6564955,
+     "program": 6815699,
+     "sinif": "K/K/R/R"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "121",
+     "sinif": "AYNI"
+    },
+    {
+     "aciklama": "kök neden (adım): K2-IADE-KDV-SIFIR,R1-SUPHELI-CARI-ALACAK, R1-SUPHELI-CARI-ALACAK",
+     "alan": "ana",
+     "anahtar": "128",
+     "bugun": 835889,
+     "kahin": 835889,
+     "program": 514652,
+     "sinif": "K/R/R"
+    },
+    {
+     "aciklama": "kök neden (adım): K2-IADE-KDV-SIFIR,R1-SUPHELI-CARI-ALACAK, R1-SUPHELI-CARI-ALACAK",
+     "alan": "ana",
+     "anahtar": "129",
+     "bugun": -626916,
+     "kahin": -626916,
+     "program": -514652,
+     "sinif": "K/R/R"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "153",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "191",
+     "bugun": 0,
+     "etiket": [
+      "F06-GIDER-TURU"
+     ],
+     "kahin": 17082,
+     "program": 0,
+     "sinif": "U"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "193",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "255",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "300",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "309",
+     "sinif": "AYNI"
+    },
+    {
+     "aciklama": "kök neden (adım): K1-TEVKIFAT-YUVARLAMA",
+     "alan": "ana",
+     "anahtar": "320",
+     "bugun": 2582179,
+     "etiket": [
+      "C5-ACILIS-519",
+      "F06-GIDER-TURU",
+      "KG24-IHRACAT"
+     ],
+     "kahin": 2582179,
+     "program": 2582180,
+     "sinif": "K"
+    },
+    {
+     "aciklama": "kök neden (adım): K1-TEVKIFAT-YUVARLAMA, K1-TEVKIFAT-YUVARLAMA/SONUC",
+     "alan": "ana",
+     "anahtar": "360",
+     "bugun": -3261959,
+     "etiket": [
+      "F06-GIDER-TURU"
+     ],
+     "kahin": -3279041,
+     "program": -3191464,
+     "sinif": "K"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "500",
+     "bugun": -5101467,
+     "etiket": [
+      "C5-ACILIS-519"
+     ],
+     "kahin": 0,
+     "program": -5101467,
+     "sinif": "U"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "519",
+     "bugun": 0,
+     "etiket": [
+      "C5-ACILIS-519",
+      "C5-EVRAK-ACILIS"
+     ],
+     "kahin": -5114367,
+     "program": 0,
+     "sinif": "U"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "600",
+     "bugun": -33242690,
+     "etiket": [
+      "C1-ALT-90",
+      "KG2-H03",
+      "KG24-IHRACAT"
+     ],
+     "kahin": -31763790,
+     "program": -33242690,
+     "sinif": "U"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "601",
+     "bugun": 0,
+     "etiket": [
+      "KG24-IHRACAT"
+     ],
+     "kahin": -1651000,
+     "program": 0,
+     "sinif": "U"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "602",
+     "bugun": -284000,
+     "etiket": [
+      "C1-ALT-90",
+      "C5-EVRAK-ACILIS",
+      "KG2-H03"
+     ],
+     "kahin": -99000,
+     "program": -284000,
+     "sinif": "U"
+    },
+    {
+     "aciklama": "kök neden (adım): K2-IADE-KDV-SIFIR, K2-IADE-KDV-SIFIR,R1-SUPHELI-CARI-ALACAK",
+     "alan": "ana",
+     "anahtar": "610",
+     "bugun": 615555,
+     "etiket": [
+      "C1-ALT-90"
+     ],
+     "kahin": 615555,
+     "program": 615552,
+     "sinif": "K/K/R"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "642",
+     "sinif": "AYNI"
+    },
+    {
+     "aciklama": "kök neden (adım): K2-IADE-KDV-SIFIR,R1-SUPHELI-CARI-ALACAK, R1-SUPHELI-CARI-ALACAK",
+     "alan": "ana",
+     "anahtar": "644",
+     "bugun": 0,
+     "kahin": 0,
+     "program": -112264,
+     "sinif": "K/R/R"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "649",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "653",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "654",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "659",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "760",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "770",
+     "bugun": 3629800,
+     "etiket": [
+      "C1-ALT-90",
+      "F06-GIDER-TURU"
+     ],
+     "kahin": 2357500,
+     "program": 3629800,
+     "sinif": "U"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "780",
+     "bugun": 14800,
+     "etiket": [
+      "F06-GIDER-TURU"
+     ],
+     "kahin": 1287100,
+     "program": 14800,
+     "sinif": "U"
+    },
+    {
+     "alan": "alt",
+     "anahtar": "101.01",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "alt",
+     "anahtar": "102.B1",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "alt",
+     "anahtar": "102.B2",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "alt",
+     "anahtar": "121.01",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "alt",
+     "anahtar": "121.02",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "alt",
+     "anahtar": "300.KR1",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "alt",
+     "anahtar": "309.KK1",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "cari",
+     "anahtar": "C1",
+     "sinif": "AYNI"
+    },
+    {
+     "aciklama": "kök neden (adım): K1-TEVKIFAT-YUVARLAMA, K2-IADE-KDV-SIFIR",
+     "alan": "cari",
+     "anahtar": "C2",
+     "bugun": 1500726,
+     "etiket": [
+      "C1-ALT-90",
+      "KG2-H03",
+      "KG24-IHRACAT"
+     ],
+     "kahin": 1500726,
+     "program": 1478040,
+     "sinif": "K"
+    },
+    {
+     "aciklama": "kök neden (adım): K1-TEVKIFAT-YUVARLAMA, K2-IADE-KDV-SIFIR",
+     "alan": "cari",
+     "anahtar": "C3",
+     "bugun": 1190204,
+     "etiket": [
+      "C1-ALT-90",
+      "C5-ACILIS-519",
+      "KG2-H03",
+      "KG24-IHRACAT"
+     ],
+     "kahin": 1190204,
+     "program": 1155703,
+     "sinif": "K"
+    },
+    {
+     "aciklama": "kök neden (adım): K1-TEVKIFAT-YUVARLAMA, K2-IADE-KDV-SIFIR, K2-IADE-KDV-SIFIR,R1-SUPHELI-CARI-ALACAK",
+     "alan": "cari",
+     "anahtar": "C4",
+     "bugun": 3587634,
+     "etiket": [
+      "C1-ALT-90",
+      "KG24-IHRACAT"
+     ],
+     "kahin": 3587634,
+     "program": 3583512,
+     "sinif": "K/K/R"
+    },
+    {
+     "aciklama": "kök neden (adım): K2-IADE-KDV-SIFIR",
+     "alan": "cari",
+     "anahtar": "C5",
+     "bugun": 23570,
+     "etiket": [
+      "C1-ALT-90",
+      "KG24-IHRACAT"
+     ],
+     "kahin": 23570,
+     "program": 14386,
+     "sinif": "K"
+    },
+    {
+     "aciklama": "kök neden (adım): K1-TEVKIFAT-YUVARLAMA",
+     "alan": "cari",
+     "anahtar": "T1",
+     "bugun": 2622751,
+     "etiket": [
+      "C5-ACILIS-519",
+      "F06-GIDER-TURU",
+      "KG24-IHRACAT"
+     ],
+     "kahin": 2622751,
+     "program": 2622752,
+     "sinif": "K"
+    },
+    {
+     "alan": "cari",
+     "anahtar": "T2",
+     "sinif": "AYNI"
+    }
+   ],
+   "tur": "mizan"
+  },
+  "mz_yeni": {
+   "brut": {
+    "kahin": {
+     "alacak": 9763532,
+     "borc": 9763532
+    },
+    "program": {
+     "alacak": 9721269,
+     "borc": 9721269
+    }
+   },
+   "dosya": "canli",
+   "ozet": {
+    "AYNI": 27,
+    "K": 12,
+    "P": 0,
+    "R": 6,
+    "SINIFLANMADI": 0,
+    "U": 9
+   },
+   "program_dengeli": true,
+   "program_mutabakat": true,
+   "satirlar": [
+    {
+     "alan": "ana",
+     "anahtar": "100",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "101",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "102",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "103",
+     "sinif": "AYNI"
+    },
+    {
+     "aciklama": "kök neden (adım): K1-TEVKIFAT-YUVARLAMA, K2-IADE-KDV-SIFIR, K2-IADE-KDV-SIFIR,R1-SUPHELI-CARI-ALACAK, R1-SUPHELI-CARI-ALACAK",
+     "alan": "ana",
+     "anahtar": "120",
+     "bugun": 5308007,
+     "etiket": [
+      "C1-ALT-90",
+      "C5-ACILIS-519",
+      "KG2-H03",
+      "KG24-IHRACAT"
+     ],
+     "kahin": 5308007,
+     "program": 5558751,
+     "sinif": "K/K/R/R"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "121",
+     "sinif": "AYNI"
+    },
+    {
+     "aciklama": "kök neden (adım): K2-IADE-KDV-SIFIR,R1-SUPHELI-CARI-ALACAK, R1-SUPHELI-CARI-ALACAK",
+     "alan": "ana",
+     "anahtar": "128",
+     "bugun": 835889,
+     "kahin": 835889,
+     "program": 514652,
+     "sinif": "K/R/R"
+    },
+    {
+     "aciklama": "kök neden (adım): K2-IADE-KDV-SIFIR,R1-SUPHELI-CARI-ALACAK, R1-SUPHELI-CARI-ALACAK",
+     "alan": "ana",
+     "anahtar": "129",
+     "bugun": -626916,
+     "kahin": -626916,
+     "program": -514652,
+     "sinif": "K/R/R"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "153",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "190",
+     "bugun": 0,
+     "etiket": [
+      "KG6-POS-TARIH",
+      "KG7-INDIRIM"
+     ],
+     "kahin": 19421,
+     "program": 0,
+     "sinif": "U"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "191",
+     "bugun": 46624,
+     "etiket": [
+      "F06-GIDER-TURU"
+     ],
+     "kahin": 38624,
+     "program": 46624,
+     "sinif": "U"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "193",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "255",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "300",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "309",
+     "sinif": "AYNI"
+    },
+    {
+     "aciklama": "kök neden (adım): K1-TEVKIFAT-YUVARLAMA",
+     "alan": "ana",
+     "anahtar": "320",
+     "bugun": 2345221,
+     "etiket": [
+      "C5-ACILIS-519",
+      "F06-GIDER-TURU",
+      "KG24-IHRACAT"
+     ],
+     "kahin": 2345221,
+     "program": 2345223,
+     "sinif": "K"
+    },
+    {
+     "aciklama": "kök neden (adım): K1-TEVKIFAT-YUVARLAMA, K1-TEVKIFAT-YUVARLAMA/SONUC",
+     "alan": "ana",
+     "anahtar": "360",
+     "bugun": -3287892,
+     "etiket": [
+      "F06-GIDER-TURU"
+     ],
+     "kahin": -3299313,
+     "program": -3217398,
+     "sinif": "K"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "391",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "500",
+     "bugun": -5101467,
+     "etiket": [
+      "C5-ACILIS-519"
+     ],
+     "kahin": 0,
+     "program": -5101467,
+     "sinif": "U"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "519",
+     "bugun": 0,
+     "etiket": [
+      "C5-ACILIS-519",
+      "C5-EVRAK-ACILIS"
+     ],
+     "kahin": -5114367,
+     "program": 0,
+     "sinif": "U"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "600",
+     "bugun": -35009700,
+     "etiket": [
+      "C1-ALT-90",
+      "KG2-H03",
+      "KG24-IHRACAT"
+     ],
+     "kahin": -33473000,
+     "program": -35009700,
+     "sinif": "U"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "601",
+     "bugun": 0,
+     "etiket": [
+      "KG24-IHRACAT"
+     ],
+     "kahin": -1817800,
+     "program": 0,
+     "sinif": "U"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "602",
+     "bugun": -403900,
+     "etiket": [
+      "C1-ALT-90",
+      "C5-EVRAK-ACILIS",
+      "KG2-H03"
+     ],
+     "kahin": -109900,
+     "program": -403900,
+     "sinif": "U"
+    },
+    {
+     "aciklama": "kök neden (adım): K2-IADE-KDV-SIFIR, K2-IADE-KDV-SIFIR,R1-SUPHELI-CARI-ALACAK",
+     "alan": "ana",
+     "anahtar": "610",
+     "bugun": 621930,
+     "etiket": [
+      "C1-ALT-90"
+     ],
+     "kahin": 621930,
+     "program": 621927,
+     "sinif": "K/K/R"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "642",
+     "sinif": "AYNI"
+    },
+    {
+     "aciklama": "kök neden (adım): K2-IADE-KDV-SIFIR,R1-SUPHELI-CARI-ALACAK, R1-SUPHELI-CARI-ALACAK",
+     "alan": "ana",
+     "anahtar": "644",
+     "bugun": 0,
+     "kahin": 0,
+     "program": -112264,
+     "sinif": "K/R/R"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "649",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "653",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "654",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "659",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "760",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "770",
+     "bugun": 3915550,
+     "etiket": [
+      "C1-ALT-90",
+      "F06-GIDER-TURU"
+     ],
+     "kahin": 2643250,
+     "program": 3915550,
+     "sinif": "U"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "780",
+     "bugun": 14800,
+     "etiket": [
+      "F06-GIDER-TURU"
+     ],
+     "kahin": 1287100,
+     "program": 14800,
+     "sinif": "U"
+    },
+    {
+     "alan": "alt",
+     "anahtar": "101.01",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "alt",
+     "anahtar": "101.02",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "alt",
+     "anahtar": "102.B1",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "alt",
+     "anahtar": "102.B2",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "alt",
+     "anahtar": "121.01",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "alt",
+     "anahtar": "121.02",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "alt",
+     "anahtar": "300.KR1",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "alt",
+     "anahtar": "309.KK1",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "cari",
+     "anahtar": "C1",
+     "sinif": "AYNI"
+    },
+    {
+     "aciklama": "kök neden (adım): K1-TEVKIFAT-YUVARLAMA, K2-IADE-KDV-SIFIR",
+     "alan": "cari",
+     "anahtar": "C2",
+     "bugun": 878406,
+     "etiket": [
+      "C1-ALT-90",
+      "KG2-H03",
+      "KG24-IHRACAT"
+     ],
+     "kahin": 878406,
+     "program": 855720,
+     "sinif": "K"
+    },
+    {
+     "aciklama": "kök neden (adım): K1-TEVKIFAT-YUVARLAMA, K2-IADE-KDV-SIFIR",
+     "alan": "cari",
+     "anahtar": "C3",
+     "bugun": 1361629,
+     "etiket": [
+      "C1-ALT-90",
+      "C5-ACILIS-519",
+      "KG2-H03",
+      "KG24-IHRACAT"
+     ],
+     "kahin": 1361629,
+     "program": 1327128,
+     "sinif": "K"
+    },
+    {
+     "aciklama": "kök neden (adım): K1-TEVKIFAT-YUVARLAMA, K2-IADE-KDV-SIFIR, K2-IADE-KDV-SIFIR,R1-SUPHELI-CARI-ALACAK",
+     "alan": "cari",
+     "anahtar": "C4",
+     "bugun": 2663672,
+     "etiket": [
+      "C1-ALT-90",
+      "KG2-H03",
+      "KG24-IHRACAT"
+     ],
+     "kahin": 2663672,
+     "program": 2659550,
+     "sinif": "K/K/R"
+    },
+    {
+     "aciklama": "kök neden (adım): K2-IADE-KDV-SIFIR",
+     "alan": "cari",
+     "anahtar": "C5",
+     "bugun": 0,
+     "etiket": [
+      "C1-ALT-90",
+      "KG24-IHRACAT"
+     ],
+     "kahin": 0,
+     "program": -9184,
+     "sinif": "K"
+    },
+    {
+     "aciklama": "kök neden (adım): K1-TEVKIFAT-YUVARLAMA",
+     "alan": "cari",
+     "anahtar": "T1",
+     "bugun": 2682943,
+     "etiket": [
+      "C5-ACILIS-519",
+      "F06-GIDER-TURU",
+      "KG24-IHRACAT"
+     ],
+     "kahin": 2682943,
+     "program": 2682945,
+     "sinif": "K"
+    },
+    {
+     "alan": "cari",
+     "anahtar": "T3",
+     "sinif": "AYNI"
+    }
+   ],
+   "tur": "mizan"
+  }
+ },
+ "redler": [
+  {
+   "aciklama": "Kâhin SENARYOSU: Devri Yenile düzeltmesi GEC2, 30.12 tarihli SATIŞ faturası, 31.12 tarihli satış faturasından SONRA kesiliyor; program belge sıra / tarih kuralıyla reddeder (409 chronology 'FIS serisinde son belge … 31.12.2026 tarihli; yeni belge daha eski tarihli kaydedilemez'). Geç gelen ALIŞ faturası (GEC1) kabul edilir. Kitap N-14 / G7 yıl sonu düzeltmesinde satış belgesinin sıra kuralını anmıyor. v2.4.9 aynı.",
+   "id": "",
+   "kahin": null,
+   "no": 857,
+   "program": {
+    "ileti": "FIS serisinde son belge FIS2026000000168 31.12.2026 tarihli; yeni belge daha eski tarihli kaydedilemez (numara ve tarih sırası uyuşmalı). Belge tarihini 31.12.2026 ya da sonrası yapın.",
+    "kod": "chronology",
+    "status": 400
+   },
+   "sinif": "K",
+   "sonuc": "PROGRAM_REDDETTI",
+   "tur": "devri_yenile"
+  }
+ ],
+ "senaryo": "rastgele-1",
+ "son": [
+  {
+   "alan": "ana",
+   "anahtar": "100",
+   "sinif": "AYNI"
+  },
+  {
+   "alan": "ana",
+   "anahtar": "101",
+   "sinif": "AYNI"
+  },
+  {
+   "alan": "ana",
+   "anahtar": "102",
+   "sinif": "AYNI"
+  },
+  {
+   "alan": "ana",
+   "anahtar": "103",
+   "sinif": "AYNI"
+  },
+  {
+   "aciklama": "kök neden (adım): K1-TEVKIFAT-YUVARLAMA, K2-IADE-KDV-SIFIR, K2-IADE-KDV-SIFIR,R1-SUPHELI-CARI-ALACAK, R1-SUPHELI-CARI-ALACAK",
+   "alan": "ana",
+   "anahtar": "120",
+   "bugun": 5308007,
+   "etiket": [
+    "C1-ALT-90",
+    "C5-ACILIS-519",
+    "KG2-H03",
+    "KG24-IHRACAT"
+   ],
+   "kahin": 5308007,
+   "program": 5558751,
+   "sinif": "K/K/R/R"
+  },
+  {
+   "alan": "ana",
+   "anahtar": "121",
+   "sinif": "AYNI"
+  },
+  {
+   "aciklama": "kök neden (adım): K2-IADE-KDV-SIFIR,R1-SUPHELI-CARI-ALACAK, R1-SUPHELI-CARI-ALACAK",
+   "alan": "ana",
+   "anahtar": "128",
+   "bugun": 835889,
+   "kahin": 835889,
+   "program": 514652,
+   "sinif": "K/R/R"
+  },
+  {
+   "aciklama": "kök neden (adım): K2-IADE-KDV-SIFIR,R1-SUPHELI-CARI-ALACAK, R1-SUPHELI-CARI-ALACAK",
+   "alan": "ana",
+   "anahtar": "129",
+   "bugun": -626916,
+   "kahin": -626916,
+   "program": -514652,
+   "sinif": "K/R/R"
+  },
+  {
+   "alan": "ana",
+   "anahtar": "153",
+   "sinif": "AYNI"
+  },
+  {
+   "alan": "ana",
+   "anahtar": "190",
+   "bugun": 0,
+   "etiket": [
+    "KG6-POS-TARIH",
+    "KG7-INDIRIM"
+   ],
+   "kahin": 19421,
+   "program": 0,
+   "sinif": "U"
+  },
+  {
+   "alan": "ana",
+   "anahtar": "191",
+   "bugun": 46624,
+   "etiket": [
+    "F06-GIDER-TURU"
+   ],
+   "kahin": 38624,
+   "program": 46624,
+   "sinif": "U"
+  },
+  {
+   "alan": "ana",
+   "anahtar": "193",
+   "sinif": "AYNI"
+  },
+  {
+   "alan": "ana",
+   "anahtar": "255",
+   "sinif": "AYNI"
+  },
+  {
+   "alan": "ana",
+   "anahtar": "300",
+   "sinif": "AYNI"
+  },
+  {
+   "alan": "ana",
+   "anahtar": "309",
+   "sinif": "AYNI"
+  },
+  {
+   "aciklama": "kök neden (adım): K1-TEVKIFAT-YUVARLAMA",
+   "alan": "ana",
+   "anahtar": "320",
+   "bugun": 2345221,
+   "etiket": [
+    "C5-ACILIS-519",
+    "F06-GIDER-TURU",
+    "KG24-IHRACAT"
+   ],
+   "kahin": 2345221,
+   "program": 2345223,
+   "sinif": "K"
+  },
+  {
+   "aciklama": "kök neden (adım): K1-TEVKIFAT-YUVARLAMA, K1-TEVKIFAT-YUVARLAMA/SONUC",
+   "alan": "ana",
+   "anahtar": "360",
+   "bugun": -3287892,
+   "etiket": [
+    "F06-GIDER-TURU"
+   ],
+   "kahin": -3299313,
+   "program": -3217398,
+   "sinif": "K"
+  },
+  {
+   "alan": "ana",
+   "anahtar": "391",
+   "sinif": "AYNI"
+  },
+  {
+   "alan": "ana",
+   "anahtar": "500",
+   "bugun": -5101467,
+   "etiket": [
+    "C5-ACILIS-519"
+   ],
+   "kahin": 0,
+   "program": -5101467,
+   "sinif": "U"
+  },
+  {
+   "alan": "ana",
+   "anahtar": "519",
+   "bugun": 0,
+   "etiket": [
+    "C5-ACILIS-519",
+    "C5-EVRAK-ACILIS"
+   ],
+   "kahin": -5114367,
+   "program": 0,
+   "sinif": "U"
+  },
+  {
+   "alan": "ana",
+   "anahtar": "600",
+   "bugun": -35009700,
+   "etiket": [
+    "C1-ALT-90",
+    "KG2-H03",
+    "KG24-IHRACAT"
+   ],
+   "kahin": -33473000,
+   "program": -35009700,
+   "sinif": "U"
+  },
+  {
+   "alan": "ana",
+   "anahtar": "601",
+   "bugun": 0,
+   "etiket": [
+    "KG24-IHRACAT"
+   ],
+   "kahin": -1817800,
+   "program": 0,
+   "sinif": "U"
+  },
+  {
+   "alan": "ana",
+   "anahtar": "602",
+   "bugun": -403900,
+   "etiket": [
+    "C1-ALT-90",
+    "C5-EVRAK-ACILIS",
+    "KG2-H03"
+   ],
+   "kahin": -109900,
+   "program": -403900,
+   "sinif": "U"
+  },
+  {
+   "aciklama": "kök neden (adım): K2-IADE-KDV-SIFIR, K2-IADE-KDV-SIFIR,R1-SUPHELI-CARI-ALACAK",
+   "alan": "ana",
+   "anahtar": "610",
+   "bugun": 621930,
+   "etiket": [
+    "C1-ALT-90"
+   ],
+   "kahin": 621930,
+   "program": 621927,
+   "sinif": "K/K/R"
+  },
+  {
+   "alan": "ana",
+   "anahtar": "642",
+   "sinif": "AYNI"
+  },
+  {
+   "aciklama": "kök neden (adım): K2-IADE-KDV-SIFIR,R1-SUPHELI-CARI-ALACAK, R1-SUPHELI-CARI-ALACAK",
+   "alan": "ana",
+   "anahtar": "644",
+   "bugun": 0,
+   "kahin": 0,
+   "program": -112264,
+   "sinif": "K/R/R"
+  },
+  {
+   "alan": "ana",
+   "anahtar": "649",
+   "sinif": "AYNI"
+  },
+  {
+   "alan": "ana",
+   "anahtar": "653",
+   "sinif": "AYNI"
+  },
+  {
+   "alan": "ana",
+   "anahtar": "654",
+   "sinif": "AYNI"
+  },
+  {
+   "alan": "ana",
+   "anahtar": "659",
+   "sinif": "AYNI"
+  },
+  {
+   "alan": "ana",
+   "anahtar": "760",
+   "sinif": "AYNI"
+  },
+  {
+   "alan": "ana",
+   "anahtar": "770",
+   "bugun": 3915550,
+   "etiket": [
+    "C1-ALT-90",
+    "F06-GIDER-TURU"
+   ],
+   "kahin": 2643250,
+   "program": 3915550,
+   "sinif": "U"
+  },
+  {
+   "alan": "ana",
+   "anahtar": "780",
+   "bugun": 14800,
+   "etiket": [
+    "F06-GIDER-TURU"
+   ],
+   "kahin": 1287100,
+   "program": 14800,
+   "sinif": "U"
+  },
+  {
+   "alan": "alt",
+   "anahtar": "101.01",
+   "sinif": "AYNI"
+  },
+  {
+   "alan": "alt",
+   "anahtar": "101.02",
+   "sinif": "AYNI"
+  },
+  {
+   "alan": "alt",
+   "anahtar": "102.B1",
+   "sinif": "AYNI"
+  },
+  {
+   "alan": "alt",
+   "anahtar": "102.B2",
+   "sinif": "AYNI"
+  },
+  {
+   "alan": "alt",
+   "anahtar": "121.01",
+   "sinif": "AYNI"
+  },
+  {
+   "alan": "alt",
+   "anahtar": "121.02",
+   "sinif": "AYNI"
+  },
+  {
+   "alan": "alt",
+   "anahtar": "300.KR1",
+   "sinif": "AYNI"
+  },
+  {
+   "alan": "alt",
+   "anahtar": "309.KK1",
+   "sinif": "AYNI"
+  },
+  {
+   "alan": "cari",
+   "anahtar": "C1",
+   "sinif": "AYNI"
+  },
+  {
+   "aciklama": "kök neden (adım): K1-TEVKIFAT-YUVARLAMA, K2-IADE-KDV-SIFIR",
+   "alan": "cari",
+   "anahtar": "C2",
+   "bugun": 878406,
+   "etiket": [
+    "C1-ALT-90",
+    "KG2-H03",
+    "KG24-IHRACAT"
+   ],
+   "kahin": 878406,
+   "program": 855720,
+   "sinif": "K"
+  },
+  {
+   "aciklama": "kök neden (adım): K1-TEVKIFAT-YUVARLAMA, K2-IADE-KDV-SIFIR",
+   "alan": "cari",
+   "anahtar": "C3",
+   "bugun": 1361629,
+   "etiket": [
+    "C1-ALT-90",
+    "C5-ACILIS-519",
+    "KG2-H03",
+    "KG24-IHRACAT"
+   ],
+   "kahin": 1361629,
+   "program": 1327128,
+   "sinif": "K"
+  },
+  {
+   "aciklama": "kök neden (adım): K1-TEVKIFAT-YUVARLAMA, K2-IADE-KDV-SIFIR, K2-IADE-KDV-SIFIR,R1-SUPHELI-CARI-ALACAK",
+   "alan": "cari",
+   "anahtar": "C4",
+   "bugun": 2663672,
+   "etiket": [
+    "C1-ALT-90",
+    "KG2-H03",
+    "KG24-IHRACAT"
+   ],
+   "kahin": 2663672,
+   "program": 2659550,
+   "sinif": "K/K/R"
+  },
+  {
+   "aciklama": "kök neden (adım): K2-IADE-KDV-SIFIR",
+   "alan": "cari",
+   "anahtar": "C5",
+   "bugun": 0,
+   "etiket": [
+    "C1-ALT-90",
+    "KG24-IHRACAT"
+   ],
+   "kahin": 0,
+   "program": -9184,
+   "sinif": "K"
+  },
+  {
+   "aciklama": "kök neden (adım): K1-TEVKIFAT-YUVARLAMA",
+   "alan": "cari",
+   "anahtar": "T1",
+   "bugun": 2682943,
+   "etiket": [
+    "C5-ACILIS-519",
+    "F06-GIDER-TURU",
+    "KG24-IHRACAT"
+   ],
+   "kahin": 2682943,
+   "program": 2682945,
+   "sinif": "K"
+  },
+  {
+   "alan": "cari",
+   "anahtar": "T3",
+   "sinif": "AYNI"
+  }
+ ],
+ "tz": "UTC",
+ "uyarilar": [
+  {
+   "no": 71,
+   "tur": "satis_faturasi",
+   "uyari": "tevkifat 1125 ≠ yuvarlama(2251 × 5/10) = 1126"
+  },
+  {
+   "no": 453,
+   "tur": "alis_faturasi",
+   "uyari": "tevkifat 2566 ≠ yuvarlama(12834 × 2/10) = 2567"
+  },
+  {
+   "no": 696,
+   "tur": "satis_faturasi",
+   "uyari": "tevkifat 1687 ≠ yuvarlama(3375 × 5/10) = 1688"
+  },
+  {
+   "no": 760,
+   "tur": "alis_faturasi",
+   "uyari": "KG-7 KDV İndirim Dönemi alanı programda yok (gönderilmedi)"
+  },
+  {
+   "no": 765,
+   "tur": "alis_faturasi",
+   "uyari": "KG-7 KDV İndirim Dönemi alanı programda yok (gönderilmedi)"
+  },
+  {
+   "no": 842,
+   "tur": "alis_faturasi",
+   "uyari": "tevkifat 2992 ≠ yuvarlama(14964 × 2/10) = 2993"
+  }
+ ],
+ "uygulanamayan": [
+  {
+   "aciklama": "EKSİK YOL: kitap D-07 'Kart faizi / gecikme bedeli | 780 | 309.NN'; program kredi kartı hesabına Faiz Gideri ya da Masraf fişi kabul etmiyor (400 bank-account-invalid 'faiz gideri Vadesiz, Ticari ya da Diğer TL hesaptan girilir'); kart ekstresindeki faiz programa girilemez → 309 kart borcu ekstreden eksik kalır. Olay uygulanmadığı için kâhin de o olaysız koşulur. v2.4.9 aynı.",
+   "durum": "api_yok",
+   "id": "",
+   "is": null,
+   "neden": "kart faizi (D-07): kart hesabına faiz / masraf fişi girilemiyor — faiz 400 Garanti BBVA · Şirket Kartı (Kredi Kartı): faiz gideri Vadesiz, Ticari ya da Diğer TL hesaptan girilir.; masraf 400 Garanti BBVA · Şirket Kartı (Kredi Kartı): banka masrafı Vadesiz, Ticari ya da Diğer TL hesaptan girilir.",
+   "no": 77,
+   "sinif": "P",
+   "tur": "kart_faiz"
+  },
+  {
+   "aciklama": "EKSİK YOL: kitap D-07 'Kart faizi / gecikme bedeli | 780 | 309.NN'; program kredi kartı hesabına Faiz Gideri ya da Masraf fişi kabul etmiyor (400 bank-account-invalid 'faiz gideri Vadesiz, Ticari ya da Diğer TL hesaptan girilir'); kart ekstresindeki faiz programa girilemez → 309 kart borcu ekstreden eksik kalır. Olay uygulanmadığı için kâhin de o olaysız koşulur. v2.4.9 aynı.",
+   "durum": "api_yok",
+   "id": "",
+   "is": null,
+   "neden": "kart faizi (D-07): kart hesabına faiz / masraf fişi girilemiyor — faiz 400 Garanti BBVA · Şirket Kartı (Kredi Kartı): faiz gideri Vadesiz, Ticari ya da Diğer TL hesaptan girilir.; masraf 400 Garanti BBVA · Şirket Kartı (Kredi Kartı): banka masrafı Vadesiz, Ticari ya da Diğer TL hesaptan girilir.",
+   "no": 103,
+   "sinif": "P",
+   "tur": "kart_faiz"
+  },
+  {
+   "aciklama": "EKSİK YOL: kitap D-07 'Kart faizi / gecikme bedeli | 780 | 309.NN'; program kredi kartı hesabına Faiz Gideri ya da Masraf fişi kabul etmiyor (400 bank-account-invalid 'faiz gideri Vadesiz, Ticari ya da Diğer TL hesaptan girilir'); kart ekstresindeki faiz programa girilemez → 309 kart borcu ekstreden eksik kalır. Olay uygulanmadığı için kâhin de o olaysız koşulur. v2.4.9 aynı.",
+   "durum": "api_yok",
+   "id": "",
+   "is": null,
+   "neden": "kart faizi (D-07): kart hesabına faiz / masraf fişi girilemiyor — faiz 400 Garanti BBVA · Şirket Kartı (Kredi Kartı): faiz gideri Vadesiz, Ticari ya da Diğer TL hesaptan girilir.; masraf 400 Garanti BBVA · Şirket Kartı (Kredi Kartı): banka masrafı Vadesiz, Ticari ya da Diğer TL hesaptan girilir.",
+   "no": 193,
+   "sinif": "P",
+   "tur": "kart_faiz"
+  },
+  {
+   "aciklama": "EKSİK YOL: kitap D-07 'Kart faizi / gecikme bedeli | 780 | 309.NN'; program kredi kartı hesabına Faiz Gideri ya da Masraf fişi kabul etmiyor (400 bank-account-invalid 'faiz gideri Vadesiz, Ticari ya da Diğer TL hesaptan girilir'); kart ekstresindeki faiz programa girilemez → 309 kart borcu ekstreden eksik kalır. Olay uygulanmadığı için kâhin de o olaysız koşulur. v2.4.9 aynı.",
+   "durum": "api_yok",
+   "id": "",
+   "is": null,
+   "neden": "kart faizi (D-07): kart hesabına faiz / masraf fişi girilemiyor — faiz 400 Garanti BBVA · Şirket Kartı (Kredi Kartı): faiz gideri Vadesiz, Ticari ya da Diğer TL hesaptan girilir.; masraf 400 Garanti BBVA · Şirket Kartı (Kredi Kartı): banka masrafı Vadesiz, Ticari ya da Diğer TL hesaptan girilir.",
+   "no": 488,
+   "sinif": "P",
+   "tur": "kart_faiz"
+  },
+  {
+   "aciklama": "EKSİK YOL: kitap D-07 'Kart faizi / gecikme bedeli | 780 | 309.NN'; program kredi kartı hesabına Faiz Gideri ya da Masraf fişi kabul etmiyor (400 bank-account-invalid 'faiz gideri Vadesiz, Ticari ya da Diğer TL hesaptan girilir'); kart ekstresindeki faiz programa girilemez → 309 kart borcu ekstreden eksik kalır. Olay uygulanmadığı için kâhin de o olaysız koşulur. v2.4.9 aynı.",
+   "durum": "api_yok",
+   "id": "",
+   "is": null,
+   "neden": "kart faizi (D-07): kart hesabına faiz / masraf fişi girilemiyor — faiz 400 Garanti BBVA · Şirket Kartı (Kredi Kartı): faiz gideri Vadesiz, Ticari ya da Diğer TL hesaptan girilir.; masraf 400 Garanti BBVA · Şirket Kartı (Kredi Kartı): banka masrafı Vadesiz, Ticari ya da Diğer TL hesaptan girilir.",
+   "no": 545,
+   "sinif": "P",
+   "tur": "kart_faiz"
+  },
+  {
+   "durum": "uygulanmadi",
+   "id": "",
+   "is": "D2–D4",
+   "neden": "yıl sonu devri (arşiv + yeni yıl açılışı)",
+   "no": 813,
+   "sinif": "U",
+   "tur": "devir"
+  }
+ ]
+}

@@ -1,0 +1,24 @@
+{"adim":"kilit 31.12.2025","ms":5009,"olayDongusuEnCokMs":136,"status":200,"active":true,"frozenThrough":"","hata":""}
+{"adim":"dondurmanın bitişi","ms":10719,"olayDongusuEnCokMs":81,"view":"2025-12-31"}
+{"adim":"Kilidi Aç","ms":3139,"olayDongusuEnCokMs":45,"status":200,"active":false,"frozenThrough":"","hata":""}
+{"adim":"Yeniden Kilitle (hemen)","ms":5006,"olayDongusuEnCokMs":49,"status":200,"active":true,"frozenThrough":"","hata":""}
+{"adim":"dondurmanın bitişi","ms":9352,"olayDongusuEnCokMs":94,"view":"2025-12-31"}
+{
+ "SONUC": "TUTARLI",
+ "sonuc": {
+  "kapsam": "2025-12-31",
+  "gorunenDonmusSatir": 274616,
+  "kosununKayitliSatiri": 274616,
+  "canliTuretmeSatiri": 274616
+ },
+ "yuk": [
+  8.7,
+  8.72,
+  7.36
+ ],
+ "yukSonra": [
+  11.16,
+  9.79,
+  8.02
+ ]
+}

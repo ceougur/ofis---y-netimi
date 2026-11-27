@@ -1,0 +1,33 @@
+{
+ "depo": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/birlesik6-eski",
+ "cokSatir": "RED cash-before-opening",
+ "cokSatirIz": null,
+ "insertSelect": "RED cash-before-opening",
+ "s26": "KABUL",
+ "upsertOnce": {
+  "pRowid": 2
+ },
+ "upsertYalniz": "RED cash-before-opening",
+ "upsertYalnizIz": null,
+ "upsertS26": "RED cash-before-opening",
+ "upsertIz": null,
+ "silYeniden": "RED cash-before-opening",
+ "silYenidenRowid": {
+  "silinen": 5,
+  "yeni": null
+ },
+ "savepointS26": "KABUL",
+ "savepointYeni": "RED cash-before-opening",
+ "savepointIz": null,
+ "hamEklemeDuzeltme": "KABUL",
+ "hamIz": {
+  "inserted": {},
+  "born": {},
+  "unknown": ""
+ },
+ "acilisOncesiSatirlar": [
+  "ham-H",
+  "onceki-P",
+  "sonuncu-L"
+ ]
+}

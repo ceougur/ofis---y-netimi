@@ -1,0 +1,32 @@
+{
+  "ad": "c5bson-tykson-geri-yukleme-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/tyk-son-250.test.mjs",
+  "commit": "2c553ffca835d9a6eac5820d5f8aeed867745753",
+  "dal": "worktree-agent-ac2cc1e4fd632460d",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-12T11:15:38.693Z",
+  "sure_sn": 1.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 20,
+    "gecen": 20,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bson-kanit/2026-11-12/c5bson-tykson-geri-yukleme-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ac2cc1e4fd632460d",
+  "ham_cikti_sha256": "b61c479f5543dbf843c5d7c69dd12d664e4f4061877a6cab49b2cd7212074053",
+  "ham_cikti_bayt": 10047
+}

@@ -1,0 +1,25 @@
+■ B3 — kurumsal kart ödemesi, ikinci kart form AÇIKKEN (canlı olay yok)
+  ✓ ikinci kart varken birinci karta (Kurumsal Kart) SESSİZCE yazılmadı (yazılan kayıt yok, bakiyesi 0)
+  ✓ hata seçimi istiyor: “Kredi Kartı seçin: kartla ödeme hangi kredi kartından yapıldı (ya da iade hangi karta geldi)?”
+  ✓ hatadan sonra seçici yenilendi: iki kart (3)
+  ✓ yalnız Kurumsal Kart 2 −732 (Kurumsal Kart 2 -5132, Kurumsal Kart 0)
+
+■ C3 — havale tahsilatı, ikinci hesap form açılmadan ÖNCE (canlı olay yok)
+  ✓ form açılışında seçicide iki hesap (3 seçenek)
+  ✓ yalnız İkinci TL Hesabı +331 (İkinci TL Hesabı 51597, Ana TL Hesabı 100000)
+
+■ D3 — havale tahsilatı, ikinci hesap form AÇIKKEN (canlı olay yok)
+  ✓ ikinci hesap varken birinci hesaba (Ana TL Hesabı) SESSİZCE yazılmadı (yazılan kayıt yok, bakiyesi 100000)
+  ✓ hata seçimi istiyor: “Banka Hesabı seçin: havale/EFT hangi hesaba girdi ya da hangi hesaptan çıktı?”
+  ✓ hatadan sonra seçici yenilendi: iki hesap (3)
+  ✓ yalnız İkinci TL Hesabı +332 (İkinci TL Hesabı 51929, Ana TL Hesabı 100000)
+
+■ E3 — alış faturası Düzenle, peşin Kredi Kartı; ikinci kart form AÇIKKEN (canlı olay yok)
+  ✓ kayıt reddedildi, satır Ziraat'te kaldı (Ziraat)
+  ✓ hatadan sonra hücre iki kartlı seçiciye döndü (3 kart)
+  ✓ peşin satır Kurumsal Kart 2'de (K2 -5535, K1 0)
+  ✓ sayfa hatası yok
+
+ön koşulu oluşmayan deneme: 0; canlı olay isteği kesildi: 31
+
+✓ banka-210-kart-onbellek-yaris: 49 geçti, 0 kaldı

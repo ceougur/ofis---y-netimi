@@ -361,8 +361,8 @@
 
   const rangeBar = (state, presets) => `<div class="hof-rep-range" role="group" aria-label="Tarih aralığı">
       <div class="hof-rep-presets">${presets.map(([id, label]) => `<button type="button" class="hof-rep-chip ${state.preset === id ? "is-on" : ""}" data-preset="${id}">${esc(label)}</button>`).join("")}</div>
-      <label class="hof-rep-date"><span>Başlangıç</span><input type="date" data-range="from" value="${esc(state.preset === "all" ? "" : state.from)}"${state.preset === "all" ? ' title="Tüm zamanlar: ilk hareketten bugüne"' : ""}></label>
-      <label class="hof-rep-date"><span>Bitiş</span><input type="date" data-range="to" value="${esc(state.to)}"></label>
+      <span data-rep-dates style="display: contents"><label class="hof-rep-date"><span>Başlangıç</span><input type="date" data-range="from" value="${esc(state.preset === "all" ? "" : state.from)}"${state.preset === "all" ? ' title="Tüm zamanlar: ilk hareketten bugüne"' : ""}></label>
+      <label class="hof-rep-date"><span>Bitiş</span><input type="date" data-range="to" value="${esc(state.to)}"></label></span>
       <button type="button" class="hof-button hof-button-small" data-run>Raporu Getir</button>
     </div>`;
   // 2.4.4 (UI11): rapor düğmeleri tek ad "PDF" / "Excel" (ortak görünüm HOF.outputButton); ne indirdiği erişilebilir adda ve ipucunda (what).
@@ -443,7 +443,7 @@
   const state = () => report[report.tab];
   const query = (params = {}) => new URLSearchParams(Object.fromEntries(Object.entries(params).filter(([, value]) => value !== "" && value !== null && value !== undefined && value !== false))).toString();
 
-  function renderReport() {
+  function renderReport({ background = false } = {}) {
     const node = root();
     if (!node) return;
     const s = state();
@@ -469,7 +469,10 @@
     else if (report.tab === "vade") content = vadeView(s);
     else if (report.tab === "flow") content = flowView(s);
     else content = chequeView(s);
-    HOF.swap(node, tabBar + content);
+    // Birleşik tur 7 (DK-B6 DÜŞÜK-4 ailesi; süzgeç tarih kutuları taraması): canlı yenileme (başka oturumun kaydı → run({ quiet })) yazılmakta olan Başlangıç / Bitiş
+    // kutularını yeniden kurmaz — kutu yeni düğüm olunca imleç ilk bölüme düşüyor, yazılan tarih "0026-07-20" oluyordu (Cari Mizanı, Vade Takip, Nakit Akış, Çek / Senet).
+    // Kullanıcının kendi değişikliğinde yalnız odak kutulardayken korunur (HOF.swapKeeping; birleşik tur 6'nın POS kalıbı).
+    HOF.swapKeeping(node, tabBar + content, "[data-rep-dates]", { pending: background });
     if (report.tab === "flow" && s.data) wireChart(node.querySelector("[data-chart]"), s.data);
   }
 
@@ -680,7 +683,7 @@
       .map(([id, label]) => `<button type="button" class="hof-rep-chip ${s.direction === id ? "is-on" : ""}" data-direction="${id}">${label}</button>`)
       .join("")}</div>
       <select data-field="status" aria-label="Durum"><option value="open" ${s.status === "open" ? "selected" : ""}>Açık (portföyde / ödenecek)</option><option value="overdue" ${s.status === "overdue" ? "selected" : ""}>Vadesi Geçmiş</option><option value="soon" ${s.status === "soon" ? "selected" : ""}>7 Gün İçinde</option><option value="" ${!s.status ? "selected" : ""}>Tüm Durumlar</option><option value="collected" ${s.status === "collected" ? "selected" : ""}>Tahsil Edildi</option><option value="endorsed" ${s.status === "endorsed" ? "selected" : ""}>Ciro Edildi</option><option value="paid" ${s.status === "paid" ? "selected" : ""}>Ödendi</option><option value="bounced" ${s.status === "bounced" ? "selected" : ""}>Karşılıksız / İade</option></select>
-      <label class="hof-rep-date"><span>Vade Başı</span><input type="date" data-range="from" value="${esc(s.from)}"></label><label class="hof-rep-date"><span>Vade Sonu</span><input type="date" data-range="to" value="${esc(s.to)}"></label>
+      <span data-rep-dates style="display: contents"><label class="hof-rep-date"><span>Vade Başı</span><input type="date" data-range="from" value="${esc(s.from)}"></label><label class="hof-rep-date"><span>Vade Sonu</span><input type="date" data-range="to" value="${esc(s.to)}"></label></span>
       <button type="button" class="hof-button hof-button-small" data-run>Raporu Getir</button></div>
       ${exportButtons(`/api/workspace/cheques/liste.pdf?${query(params)}`, `/api/workspace/cheques/export.xlsx?${query(params)}`, "Çek / Senet Raporu")}</div>`;
     if (!s.data) return `${filters}<p class="hof-empty">Portföy hazırlanıyor…</p>`;
@@ -723,7 +726,7 @@
       if (node && report.tab === tab) node.querySelector(".hof-empty")?.replaceChildren(document.createTextNode(error.message));
       return;
     }
-    if (report && report.tab === tab) renderReport();
+    if (report && report.tab === tab) renderReport({ background: quiet });
   }
   // Vade takip satırı: kaynağı açılır. Tablodaki kayıt açık veri oturumundaysa pencere kapanır ve kayıt tabloda seçilir.
   // 2.4.5 madde 6a: taksit, çek / senet, fatura, planlı banka ve cari satırları Tahsilat Takvimi pil kartı ve zille AYNI yardımcıdan açılır (hof-promises.js

@@ -1,0 +1,11 @@
+d27-c5-s99-taksitli-avans.json: 43 elle denetim, 0 kırmızı
+d28-c5-s99-taksit-vade-gunu.json: 17 elle denetim, 0 kırmızı
+d29-c5-s99-taksit-ertesi-gun.json: 17 elle denetim, 0 kırmızı
+d30-c5-s101-bitti-kart.json: 136 elle denetim, 0 kırmızı
+d31-c5-s101-taksit-vade-gunu.json: 21 elle denetim, 0 kırmızı
+d32-c5-s101-taksit-ertesi-gun.json: 21 elle denetim, 0 kırmızı
+d33-c5-s102-s105-sinirlar.json: 76 elle denetim, 0 kırmızı
+# tests 331
+# pass 331
+# fail 0
+331/331 denetim geçti

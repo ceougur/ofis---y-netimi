@@ -1,0 +1,32 @@
+{
+  "ad": "c1-birlesim-sinif-Europe-Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/hesap-plani-sinif-250.test.mjs",
+  "commit": "4e142b57241a6dba2bc0052c06e5a1722238283f",
+  "dal": "claude/epic-thompson-w0lc2l",
+  "kirli": 0,
+  "izlenmeyen": 4,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T19:25:53.185Z",
+  "sure_sn": 0.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 8,
+    "gecen": 8,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/c1-birlesim-sinif-Europe-Istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "455954e48acc537613093d854bf17db442fe72cd6c3f6f0a0ef9806c525a5896",
+  "ham_cikti_bayt": 2886
+}

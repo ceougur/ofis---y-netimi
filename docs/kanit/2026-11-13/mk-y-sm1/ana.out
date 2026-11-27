@@ -1,0 +1,40 @@
+{
+ "adimlar": {
+  "tahsilat500": 200,
+  "fazla800Sorusuz": "409 plan-overpay",
+  "fazla800AvansYaz": 200
+ },
+ "kartPenceresi": {
+  "toplam": 1200,
+  "tahsilEdilen": 1300,
+  "kalan": 0,
+  "fazla": 100,
+  "durum": "active",
+  "satirlar": [
+   "öd 400|kal 0",
+   "öd 400|kal 0",
+   "öd 400|kal 0"
+  ]
+ },
+ "kartTotalsHam": {
+  "total": 1200,
+  "planned": 1200,
+  "unplanned": 0,
+  "paidIn": 1300,
+  "paidOut": 0,
+  "paid": 1300,
+  "remaining": 0,
+  "ownPaid": 1300,
+  "ownRemaining": 0,
+  "extra": 100,
+  "overdue": 0,
+  "overdueCount": 0,
+  "queueRemaining": 0,
+  "accountPaid": 0,
+  "overdueRest": 0,
+  "overdueExtras": [],
+  "ownOverdue": 0
+ },
+ "cariBakiye": -100,
+ "taksitlerListesi": "bulunamadı"
+}

@@ -1,0 +1,8 @@
+taban: 8 geçti / 0 kaldı (çıkış 0)
+ok 18 - KG-6: taksitli satışta yalnız ilk kalemin kesintisi: çıkış 1, 7 geçti / 1 kaldı — neden: POS tahsilatı 12.000: 409 {"ok":false,"error":"İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (108 Kredi Kartı Tahsilatları (POS): 280,00 TL fark). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.","code":"ledger-integri
+ok 19 - KG-6: gün fişinin 108 satırı netlenmez (brüt kalır): çıkış 1, 3 geçti / 5 kaldı — neden: onayla: 409 {"ok":false,"error":"İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Çift yönlü kayıt (borç = alacak)). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.","code":"ledger-integrity","failures":[{"code":"balance
+ok 21 - KG-6: iade kalemleri kümeden düşer (iade edilen kesinti iade gününe yazılmaz): çıkış 1, 7 geçti / 1 kaldı — neden: iade günü B 108.01 100 / A 653 100
+
+# tests 3
+# pass 3
+# fail 0

@@ -1,0 +1,32 @@
+{
+  "ad": "kahineski-cari-oz-Europe-Istanbul",
+  "komut": "python3 -I test/bagimsiz/cari/oz-test.py",
+  "commit": "a22ebbf560d434d28fa56eb3d2a4a469b1ab5e4d",
+  "dal": "worktree-agent-a6cbbc7468dfd488a",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T12:05:48.753Z",
+  "sure_sn": 3.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 282,
+    "gecen": 282,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "kahineski-cari-oz-Europe-Istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a6cbbc7468dfd488a",
+  "ham_cikti_sha256": "97d78dc5b041af7a8f77b7f0d671f7b1f990f3f399daeea29dd9080d9d93c80e",
+  "ham_cikti_bayt": 2205
+}

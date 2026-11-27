@@ -1,0 +1,149 @@
+[
+ {
+  "id": "M1",
+  "what": "TOKEN_REJECT_CODES'tan 0 çıkar",
+  "exit": 1,
+  "tests": 9,
+  "pass": 1,
+  "fail": 8,
+  "caught": true,
+  "failedTests": [
+   "Yol 2, kod 0 şablon okuması sırasında: bağlantı Süresi Doldu; iletisi gitmeyen kişi Başarısız DEĞİL, bekleyenl",
+   "Yol 2, kod 0 PDF yükleme sırasında: bağlantı Süresi Doldu; iletisi gitmeyen kişi Başarısız DEĞİL, bekleyenlerl",
+   "Yol 2, kod 0 ileti isteği sırasında: bağlantı Süresi Doldu; iletisi gitmeyen kişi Başarısız DEĞİL, bekleyenler",
+   "Yol 1 (sınanmış belirteç), ileti isteklerinin HEPSİ kod 0 (belirteç Meta'da iptal): bir kişi gitti, kalan üçü ",
+   "Yol 1: ileti isteği Meta'dayken belirteç değiştirildi ve ESKİ belirteç kod 0 aldı → bağlantı Süresi Doldu olma",
+   "Yol 2: ileti isteği Meta'dayken belirteç değiştirildi ve ESKİ belirteç kod 0 aldı → bağlantı Süresi Doldu olma",
+   "Bağlantıyı Kaldır: Meta'daki abonelik silme isteği kod 0 alırsa yerel kaldırma yapılır, neden 190'daki gibi 'e",
+   "geri yükleme (ilke 5): kod 0 alan kişi bekler → YEDEK → yeniden bağlan + Devam Et (gönderildi) → yedek geri yü"
+  ],
+  "other": []
+ },
+ {
+  "id": "M2",
+  "what": "noteMetaError yalnız 190 (bağlantı 0'da Süresi Doldu olmaz)",
+  "exit": 1,
+  "tests": 9,
+  "pass": 5,
+  "fail": 4,
+  "caught": true,
+  "failedTests": [
+   "Yol 2, kod 0 şablon okuması sırasında: bağlantı Süresi Doldu; iletisi gitmeyen kişi Başarısız DEĞİL, bekleyenl",
+   "Yol 2, kod 0 PDF yükleme sırasında: bağlantı Süresi Doldu; iletisi gitmeyen kişi Başarısız DEĞİL, bekleyenlerl",
+   "Yol 2, kod 0 ileti isteği sırasında: bağlantı Süresi Doldu; iletisi gitmeyen kişi Başarısız DEĞİL, bekleyenler",
+   "Yol 1 (sınanmış belirteç), ileti isteklerinin HEPSİ kod 0 (belirteç Meta'da iptal): bir kişi gitti, kalan üçü "
+  ],
+  "other": []
+ },
+ {
+  "id": "M3",
+  "what": "kuyruğun belirteç reddi dalı yalnız 190 (0 alan iş Başarısız)",
+  "exit": 1,
+  "tests": 9,
+  "pass": 2,
+  "fail": 7,
+  "caught": true,
+  "failedTests": [
+   "Yol 2, kod 0 şablon okuması sırasında: bağlantı Süresi Doldu; iletisi gitmeyen kişi Başarısız DEĞİL, bekleyenl",
+   "Yol 2, kod 0 PDF yükleme sırasında: bağlantı Süresi Doldu; iletisi gitmeyen kişi Başarısız DEĞİL, bekleyenlerl",
+   "Yol 2, kod 0 ileti isteği sırasında: bağlantı Süresi Doldu; iletisi gitmeyen kişi Başarısız DEĞİL, bekleyenler",
+   "Yol 1 (sınanmış belirteç), ileti isteklerinin HEPSİ kod 0 (belirteç Meta'da iptal): bir kişi gitti, kalan üçü ",
+   "Yol 1: ileti isteği Meta'dayken belirteç değiştirildi ve ESKİ belirteç kod 0 aldı → bağlantı Süresi Doldu olma",
+   "Yol 2: ileti isteği Meta'dayken belirteç değiştirildi ve ESKİ belirteç kod 0 aldı → bağlantı Süresi Doldu olma",
+   "geri yükleme (ilke 5): kod 0 alan kişi bekler → YEDEK → yeniden bağlan + Devam Et (gönderildi) → yedek geri yü"
+  ],
+  "other": []
+ },
+ {
+  "id": "M4",
+  "what": "satırdaki neden sabit 190",
+  "exit": 1,
+  "tests": 9,
+  "pass": 7,
+  "fail": 2,
+  "caught": true,
+  "failedTests": [
+   "Yol 2, kod 0 PDF yükleme sırasında: bağlantı Süresi Doldu; iletisi gitmeyen kişi Başarısız DEĞİL, bekleyenlerl",
+   "Yol 2, kod 0 ileti isteği sırasında: bağlantı Süresi Doldu; iletisi gitmeyen kişi Başarısız DEĞİL, bekleyenler"
+  ],
+  "other": []
+ },
+ {
+  "id": "M5",
+  "what": "kodsuz Meta hatası koruması kalkar (Number(null) = 0)",
+  "exit": 1,
+  "tests": 9,
+  "pass": 8,
+  "fail": 1,
+  "caught": true,
+  "failedTests": [
+   "kodsuz Meta hatası (error nesnesinde code yok) belirteç reddi SAYILMAZ: bağlantı Süresi Doldu olmaz (kod 0 ile"
+  ],
+  "other": []
+ },
+ {
+  "id": "M6",
+  "what": "Kaldır'da 0 nedeni 'hata kodu 0' (yalnız 190 süresi dolmuş)",
+  "exit": 1,
+  "tests": 9,
+  "pass": 8,
+  "fail": 1,
+  "caught": true,
+  "failedTests": [
+   "Bağlantıyı Kaldır: Meta'daki abonelik silme isteği kod 0 alırsa yerel kaldırma yapılır, neden 190'daki gibi 'e"
+  ],
+  "other": []
+ },
+ {
+  "id": "M7",
+  "what": "sharedWaba güncel okuma yerine ortak kaydın bellekteki özeti (eski yol)",
+  "exit": 1,
+  "tests": 11,
+  "pass": 9,
+  "fail": 2,
+  "caught": true,
+  "failedTests": [
+   "aynı WABA'lı ikinci şirket BAĞLANTISIZ yedekten geri yüklendi (ortak kayıtta hâlâ 'bağlı' görünüyor): 001'in K",
+   "ters yön: aynı WABA'lı ikinci şirket BAĞLANTILI yedekten geri yüklendi (ortak kayıtta 'bağlı değil' görünüyor)"
+  ],
+  "other": []
+ },
+ {
+  "id": "M8",
+  "what": "sharedWaba okunan özet yerine her zaman kayıttaki özet",
+  "exit": 0,
+  "tests": 11,
+  "pass": 11,
+  "fail": 0,
+  "caught": false,
+  "failedTests": [],
+  "other": []
+ },
+ {
+  "id": "M9",
+  "what": "sharedWaba silinen şirketleri de sayar (yalnız kayıt, exists yok)",
+  "exit": 1,
+  "tests": 11,
+  "pass": 9,
+  "fail": 2,
+  "caught": true,
+  "failedTests": [
+   "aynı WABA'lı ikinci şirket SİLİNDİ: kalan şirketin Kaldır'ı Meta'daki aboneliği siler (silinen şirket 'başka ş",
+   "aynı WABA'lı ikinci şirket BAĞLANTISIZ yedekten geri yüklendi (ortak kayıtta hâlâ 'bağlı' görünüyor): 001'in K"
+  ],
+  "other": []
+ },
+ {
+  "id": "M10",
+  "what": "meta-graph.mjs redact kaldırılır (Meta'nın metni arındırılmaz)",
+  "exit": 1,
+  "tests": 12,
+  "pass": 11,
+  "fail": 1,
+  "caught": true,
+  "failedTests": [
+   "toplu gönderim, hata ve durum uçlarının yanıtları, işlem geçmişi, günlük, şirket dosyası ve makine defteri bel"
+  ],
+  "other": []
+ }
+]

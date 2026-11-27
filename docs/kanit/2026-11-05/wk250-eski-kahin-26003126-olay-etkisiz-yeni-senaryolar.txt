@@ -1,0 +1,22 @@
+KIRMIZI HESAP-0: 5 fark — HESAP-0 * [{}…] kontroller.K1.isler: elle {"T1/A": "Teslim Edildi", "T1/B": "Duraklatıldı", "T1/C": "Duraklatıldı"} ≠ model {"T1/A": "Teslim Edildi", "T1/B": "Başarısız", "T1/C": "Duraklatıldı"}
+AYNI    J9-01-n3-iptal-sonrasi-ikinci-is-gec-teslim-iki-ileti
+AYNI    J9-02-n3-basarisiz-sonrasi-ikinci-is-gec-teslim-iki-ileti
+AYNI    SW1-01-gec-teslim-ikinci-is-beklerken-gelir-iki-ileti
+AYNI    SW1-02-gec-teslim-yedi-gun-sonra-iki-ileti
+AYNI    SW1-03-birinci-basarisiz-kalir-ikinci-gider-tek-ileti
+KIRMIZI SW2-01-suresi-doldu-pencerede-sayilmaz-yeni-is-gider: 2 fark — SW2-01-suresi-doldu-pencerede-sayilmaz-yeni-is-gider * [{}…] kontroller.K1.pencere_farkli_alici: elle {"W1": 0} ≠ model {"W1": 1}
+AYNI    SW2-02-ayni-aliciya-sayilan-baska-kabul-varsa-sayilir
+KIRMIZI SD1837-01-sure-dolunca-duraklar-yeniden-baglaninca-devam-yalniz-kalanlar: 8 fark — SD1837-01-sure-dolunca-duraklar-yeniden-baglaninca-devam-yalniz-kalanlar * [{}…] kontroller.K1.toplular: elle {"T1": "duraklatildi", "T2": "duraklatildi"} ≠ model {"T1": "aktif", "T2": "aktif"}
+KIRMIZI SD1837-02-yeniden-baglanmadan-devam-et-ileti-gitmez: 4 fark — SD1837-02-yeniden-baglanmadan-devam-et-ileti-gitmez * [{}…] kontroller.K1.toplular: elle {"T1": {"secenek": ["duraklatildi", "aktif"], "susuyor": "bağlantı Süresi Doldu iken (yeniden bağlanmadan) Devam Et: karar metni yalnız 'yeni
+KIRMIZI SD1837-03-sure-dolunca-yeni-gonderim-baslamaz: 3 fark — SD1837-03-sure-dolunca-yeni-gonderim-baslamaz * [{}…] baslamadi: elle {"T1": "baglanti_suresi_doldu"} ≠ model {}
+KIRMIZI SD1915-01-ileti-isteginde-190-bekleyenlere-doner: 10 fark — SD1915-01-ileti-isteginde-190-bekleyenlere-doner * [{}…] kontroller.K1.isler: elle {"T1/A": "Teslim Edildi", "T1/B": "Duraklatıldı", "T1/C": "Duraklatıldı"} ≠ model {"T1/A": "Teslim Edildi", "T1/B": "Başarısız", "T1/C": "Duraklatı
+KIRMIZI SD1915-02-pdf-yuklemesinde-190-bekleyenlere-doner: 6 fark — SD1915-02-pdf-yuklemesinde-190-bekleyenlere-doner * [{}…] kontroller.K1.isler: elle {"T1/A": "Teslim Edildi", "T1/B": "Duraklatıldı", "T1/C": "Duraklatıldı"} ≠ model {"T1/A": "Teslim Edildi", "T1/B": "Başarısız", "T1/C": "Duraklat
+KIRMIZI SD1915-03-meta-bekletti-ikinci-deneme-190-ilk-ileti-teslim-is-kapanir: 4 fark — SD1915-03-meta-bekletti-ikinci-deneme-190-ilk-ileti-teslim-is-kapanir * [{}…] kontroller.K1.isler: elle {"T1/A": "Duraklatıldı"} ≠ model {"T1/A": "Başarısız"}
+KIRMIZI SD1915-04-geri-yukleme-reddedilen-sayilmaz: 3 fark — SD1915-04-geri-yukleme-reddedilen-sayilmaz * [{}…] isler.T1/B.durum: elle "Durduruldu (Geri Yükleme)" ≠ model "Başarısız"
+KIRMIZI SD1915-05-tasima-reddedilen-sayilmaz-kod-0: 3 fark — SD1915-05-tasima-reddedilen-sayilmaz-kod-0 * [{}…] isler.T1/B.durum: elle "Taşınan Veri — Durduruldu" ≠ model "Başarısız"
+KIRMIZI SW4-01-kod-0-ayni-sirketin-oburu-toplu-isi-de-duraklar: 5 fark — SW4-01-kod-0-ayni-sirketin-oburu-toplu-isi-de-duraklar * [{}…] kontroller.K1.toplular: elle {"T1": "duraklatildi", "T2": "duraklatildi"} ≠ model {"T1": "duraklatildi", "T2": "aktif"}
+KIRMIZI SW4-02-kod-0-pdf-yuklemesinde: 6 fark — SW4-02-kod-0-pdf-yuklemesinde * [{}…] kontroller.K1.isler: elle {"T1/A": "Teslim Edildi", "T1/B": "Teslim Edildi", "T1/C": "Duraklatıldı"} ≠ model {"T1/A": "Teslim Edildi", "T1/B": "Teslim Edildi", "T1/C": "Başarısız"}
+AYNI    SW4-03-kod-102-bugunku-gibi
+KIRMIZI S7-01-supheli-alacakli-otomatik-listeye-girmez: 3 fark — S7-01-supheli-alacakli-otomatik-listeye-girmez * [{}…] elenen: elle {"T1": {"SA": "supheli_alacak", "VI": "supheli_alacak"}} ≠ model {}
+KIRMIZI S7-02-supheli-alacakli-elle-secilir-suphelisiz-tutar: 1 fark — S7-02-supheli-alacakli-elle-secilir-suphelisiz-tutar * [{}…] isler.T1/SA.degiskenler: elle ["Seda Şüpheli", "Deneme Ticaret Ltd. Şti.", "12.10.2026", "200,00 TL", {"plan_susuyor": "S7: şüpheli alacak kaydı açık caride Ödeme Hatırl
+# eski kâhinle: 14 KIRMIZI, 7 AYNI (toplam 21)

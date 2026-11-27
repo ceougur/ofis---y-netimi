@@ -1,0 +1,73 @@
+TAP version 13
+# Subtest: İzleyen tur 4 — S255 = A: iade / iade iptali / Düzenle / silme / Silinenler / kilit / raporlar / çek / önceden yazılmış bağ
+    # Subtest: B4a — iade 300 (kart dışındaki kısım) → bağlı 600: gösterilen açık 0 → tamamı kuyruğa: kart 600 / 600 / 0, bakiye 0
+    not ok 1 - B4a — iade 300 (kart dışındaki kısım) → bağlı 600: gösterilen açık 0 → tamamı kuyruğa: kart 600 / 600 / 0, bakiye 0
+      ---
+      duration_ms: 980.45172
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/izt4-ad3/mut/test/izt4-s255-bagli-odeme-250.test.mjs:184:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        faturanın bağlı kapatanı yalnız iade 300: [["Tahsilat",300,"linked"],["Fatura",200,"auto"],["Fatura",100,"auto"],["Tahsilat",100,"auto"],["Tahsilat",200,"auto"]]
+        + actual - expected
+        
+          [
+            [
+        +     'Tahsilat',
+        -     'Fatura',
+              300
+            ]
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          0: 'Fatura'
+          1: 300
+      actual:
+        0:
+          0: 'Tahsilat'
+          1: 300
+      operator: 'deepStrictEqual'
+      stack: |-
+        file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/izt4-ad3/mut/test/izt4-s255-bagli-odeme-250.test.mjs:195:14
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async world (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/izt4-ad3/mut/test/izt4-s255-bagli-odeme-250.test.mjs:37:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..1
+not ok 1 - İzleyen tur 4 — S255 = A: iade / iade iptali / Düzenle / silme / Silinenler / kilit / raporlar / çek / önceden yazılmış bağ
+  ---
+  duration_ms: 982.122129
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/izt4-ad3/mut/test/izt4-s255-bagli-odeme-250.test.mjs:183:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: İzleyen tur 4 — S255 = A: kart tahsilatıyla ödenmiş kart + bağlı ödeme + iade
+    # Subtest: B11 — kart tahsilatı 600 → bağlı 600 → iade 300: kart 600 / 600 / 0, bakiye −600
+    ok 1 - B11 — kart tahsilatı 600 → bağlı 600 → iade 300: kart 600 / 600 / 0, bakiye −600
+      ---
+      duration_ms: 768.779947
+      type: 'test'
+      ...
+    1..1
+ok 2 - İzleyen tur 4 — S255 = A: kart tahsilatıyla ödenmiş kart + bağlı ödeme + iade
+  ---
+  duration_ms: 774.991494
+  type: 'suite'
+  ...
+1..2
+# tests 2
+# suites 2
+# pass 1
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2292.690686

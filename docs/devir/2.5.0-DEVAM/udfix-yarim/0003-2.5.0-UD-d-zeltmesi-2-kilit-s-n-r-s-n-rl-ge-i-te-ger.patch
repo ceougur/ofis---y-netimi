@@ -1,0 +1,974 @@
+From fa87ae7b618c1e3d43cea5031db46032e3c61834 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Mon, 23 Nov 2026 01:00:53 +0000
+Subject: [PATCH 3/5] =?UTF-8?q?2.5.0=20UD=20d=C3=BCzeltmesi=202:=20kilit?=
+ =?UTF-8?q?=20s=C4=B1n=C4=B1r=C4=B1=20s=C4=B1n=C4=B1rl=C4=B1=20ge=C3=A7i?=
+ =?UTF-8?q?=C5=9Fte=20ger=C3=A7ek=20ba=C4=9Fs=C4=B1z=20kapan=C4=B1=C5=9Fa?=
+ =?UTF-8?q?=20iner=20(tohum=206)?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Karar (3)'ün sınırı (hedefin kilit gününe kadar bağsız kapanmış kısmı) bütün
+kilit bağları serbest sayılan ölçüm geçişinde ölçülüyor, son geçiş sınırlı
+kuruluyordu; sınırlı geçişte o bağsız para başka kaleme gidince taksit ne bağsız
+parayla ne bağıyla kapanıyor, taksitli faturanın açığı kartın kendi kalanını
+aşıyordu (mutabakat tohum 6: 1.224,58 > 781,40). Sınır sınırlı geçişte hedefi
+kilit gününe kadar gerçekten kapatan bağsız paraya indirilir (yalnız azalır,
+en çok 12 tur); sınırsız ölçüm yakınsamadıysa güvenli kapanış yolu aynen.
+Kalıcı test: tohum 6'nın 34 satırlık fikstürü (eski kodda açık 1.068,72 >
+781,40) + üretecide taksitli fatura tavanı; mutant KD4-b.
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01EhegDvmPQ9hx2ibfitm6og
+---
+ server/lib/obligation-queue.mjs         |  20 +-
+ test/fixtures/tyk-kilit-tohum6-250.json | 821 ++++++++++++++++++++++++
+ test/tyk-kilit-olcum-250.test.mjs       |  36 +-
+ test/tyk-mutasyon-250.mjs               |   1 +
+ 4 files changed, 876 insertions(+), 2 deletions(-)
+ create mode 100644 test/fixtures/tyk-kilit-tohum6-250.json
+
+diff --git a/server/lib/obligation-queue.mjs b/server/lib/obligation-queue.mjs
+index 004d980e..0b1fde95 100644
+--- a/server/lib/obligation-queue.mjs
++++ b/server/lib/obligation-queue.mjs
+@@ -307,9 +307,27 @@ function runQueue(input, mode, pieces) {
+     // kartın taşıdığı borcun bağsız parayla kapanmış kısmı kartın avansla ödenmiş kısmıdır — S101 = A); sınırda yakınsamazsa güvenli kapanış (settleExcess). Kilit izi
+     // olmayan ya da sınırlı geçişin ölçümü değiştirmediği caride sonuç önceki tek sınırlı geçişle AYNI (ilk ölçüm kararlı → döngü girmez). Sınırsız ölçüm zaten
+     // yakınsamadıysa (güvenli kapanış yolu) önceki gibi tek sınırlı geçiş güvenli kapanışla.
+-    if (!stable) return tagged(queueOnce(input, mode, caps, { pieces, forced, prepaid, settle: true }));
+     let capped = prepaid;
+     let cappedState = queueOnce(input, mode, caps, { pieces, forced, prepaid: capped });
++    // Aynı tutarsızlığın kilit sınırı yüzü (mutabakat tohum 6): sınır (hedefin kilit gününe kadar BAĞSIZ kapanmış kısmı) bütün kilit bağları SERBEST sayılan ölçüm geçişinde
++    // ölçülür; sınırlı geçişte o bağsız para başka kaleme gidebilir — taksit ne bağsız parayla ne bağıyla kapanır, taksitli faturanın açığı kartın kendi kalanını aşar. Karar (3)
++    // "kilitli dönemde bağsız KAPANMIŞ hedef açılmaz": sınır, sınırlı geçişte hedefi kilit gününe kadar GERÇEKTEN kapatan bağsız paraya indirilir (yalnız azalır → sonlu;
++    // bağ o kadar fazlasını kapatır). Sınırlı geçiş ölçümle uyuşuyorsa döngü girmez — sonuç önceki tek sınırlı geçişle AYNI. Tur sınırı (ders 47): her tur en az bir sınırı
++    // küçültür; en çok PREPAID_MIN_PASSES tur (sınırda bitmezse kalan fark önceki davranış).
++    for (let round = 0; round < Math.min(state.lockLinks.length, PREPAID_MIN_PASSES); round += 1) {
++      let changed = false;
++      for (const link of state.lockLinks) {
++        const target = cappedState.itemByKey.get(link.targetKey);
++        const actual = target ? target.freeClosures.filter(c => c.date <= link.lock).reduce((sum, c) => sum + c.amount, 0) : 0;
++        if (actual < caps.get(link.id)) {
++          caps.set(link.id, actual);
++          changed = true;
++        }
++      }
++      if (!changed) break;
++      cappedState = queueOnce(input, mode, caps, { pieces, forced, prepaid: capped });
++    }
++    if (!stable) return tagged(queueOnce(input, mode, caps, { pieces, forced, prepaid, settle: true }));
+     let cappedStable = false;
+     for (let round = 0; round < limit; round += 1) {
+       const next = prepaidOf(cappedState, capped);
+diff --git a/test/fixtures/tyk-kilit-tohum6-250.json b/test/fixtures/tyk-kilit-tohum6-250.json
+new file mode 100644
+index 00000000..703dff1c
+--- /dev/null
++++ b/test/fixtures/tyk-kilit-tohum6-250.json
+@@ -0,0 +1,821 @@
++{
++"aciklama": "2.5.0 UD mutabakat tohum 6 (5.000 işlem, aday e7934c5e): carinin gerçek programla yazılmış 149 satırlık kuyruk girdisinden satır grubu atılarak küçültüldü (test/tyk-kilit-olcum-250)",
++"today": "2026-11-23",
++"lock": [
++{
++"at": "2026-11-23T06:06:41.710Z",
++"value": "2026-08-30"
++},
++{
++"at": "2026-11-23T06:22:49.765Z",
++"value": "2026-10-15"
++},
++{
++"at": "2026-11-23T06:23:34.181Z",
++"value": ""
++}
++],
++"lines": [
++{
++"id": "aentry-0cb425fb-244b-4ba1-99d1-6c1bf52f2fdd",
++"origin": "invoice",
++"kind": "debt",
++"date": "2026-07-31",
++"at": "2026-11-23T06:00:19.216Z",
++"sourceId": "invoice-2efb39dd-3b08-4d5d-a441-543efc4337a3",
++"invoiceId": "",
++"doubtfulSkip": false,
++"doubtfulNormal": false,
++"method": "",
++"debit": 179720.6,
++"credit": 0
++},
++{
++"id": "aentry-0e2a24a8-0d0a-4cc4-96f5-5a8abe26bd77",
++"origin": "invoice",
++"kind": "in",
++"date": "2026-07-31",
++"at": "2026-11-23T06:00:19.216Z",
++"sourceId": "invoice-2efb39dd-3b08-4d5d-a441-543efc4337a3",
++"invoiceId": "",
++"doubtfulSkip": false,
++"doubtfulNormal": false,
++"method": "cash",
++"debit": 0,
++"credit": 51547.8
++},
++{
++"id": "aentry-7b176557-31f1-443f-b69f-ec3d7855f687",
++"origin": "invoice",
++"kind": "in",
++"date": "2026-07-31",
++"at": "2026-11-23T06:00:19.216Z",
++"sourceId": "invoice-2efb39dd-3b08-4d5d-a441-543efc4337a3",
++"invoiceId": "",
++"doubtfulSkip": false,
++"doubtfulNormal": false,
++"method": "card",
++"debit": 0,
++"credit": 48078.3
++},
++{
++"id": "aentry-66eef55c-87ab-43a8-a1a5-3328f82cbec5",
++"origin": "cheque",
++"kind": "credit",
++"date": "2026-07-31",
++"at": "2026-11-23T06:00:19.216Z",
++"sourceId": "cheque-7628dd84-856b-42b7-8b55-3211c2d6a8c7",
++"invoiceId": "",
++"doubtfulSkip": false,
++"doubtfulNormal": false,
++"method": "",
++"debit": 0,
++"credit": 29172
++},
++{
++"id": "aentry-b0e992bd-0fbf-40d5-beb4-d39f0c712121",
++"origin": "cheque",
++"kind": "credit",
++"date": "2026-07-31",
++"at": "2026-11-23T06:00:19.217Z",
++"sourceId": "cheque-79d5f0f4-fa71-4dc0-a1b9-4245a6798db4",
++"invoiceId": "",
++"doubtfulSkip": false,
++"doubtfulNormal": false,
++"method": "",
++"debit": 0,
++"credit": 9042.77
++},
++{
++"id": "aentry-f40c8042-691d-4252-abee-644aa0313693",
++"origin": "account",
++"kind": "out",
++"date": "2026-08-10",
++"at": "2026-11-23T06:01:19.546Z",
++"sourceId": "",
++"invoiceId": "",
++"doubtfulSkip": false,
++"doubtfulNormal": false,
++"method": "card",
++"debit": 8447.24,
++"credit": 0
++},
++{
++"id": "aentry-c70c14ea-a095-4297-a069-283630fd22e6",
++"origin": "account",
++"kind": "out",
++"date": "2026-08-14",
++"at": "2026-11-23T06:01:57.572Z",
++"sourceId": "",
++"invoiceId": "",
++"doubtfulSkip": false,
++"doubtfulNormal": false,
++"method": "card",
++"debit": 56538.23,
++"credit": 0
++},
++{
++"id": "aentry-eed4ea35-90a7-4218-ab0f-f118ce773bbf",
++"origin": "account",
++"kind": "debt",
++"date": "2026-08-17",
++"at": "2026-11-23T06:02:15.548Z",
++"sourceId": "",
++"invoiceId": "",
++"doubtfulSkip": false,
++"doubtfulNormal": false,
++"method": "",
++"debit": 54191.84,
++"credit": 0
++},
++{
++"id": "aentry-509e86e9-a8ec-41bc-b177-38130341e345",
++"origin": "invoice",
++"kind": "debt",
++"date": "2026-08-20",
++"at": "2026-11-23T06:02:40.173Z",
++"sourceId": "invoice-1b48e193-1d28-48ca-9b45-6d78b1a23a84",
++"invoiceId": "",
++"doubtfulSkip": false,
++"doubtfulNormal": false,
++"method": "",
++"debit": 7409.41,
++"credit": 0
++},
++{
++"id": "aentry-761f4305-1862-4628-bffc-4f948366cd36",
++"origin": "account",
++"kind": "credit",
++"date": "2026-08-27",
++"at": "2026-11-23T06:04:03.731Z",
++"sourceId": "",
++"invoiceId": "",
++"doubtfulSkip": false,
++"doubtfulNormal": false,
++"method": "",
++"debit": 0,
++"credit": 2590.79
++},
++{
++"id": "aentry-599a4ffd-58d0-4ff3-93fb-ea1b4ff642ef",
++"origin": "account",
++"kind": "in",
++"date": "2026-08-28",
++"at": "2026-11-23T06:04:16.443Z",
++"sourceId": "",
++"invoiceId": "",
++"doubtfulSkip": false,
++"doubtfulNormal": false,
++"method": "card",
++"debit": 0,
++"credit": 5398.27
++},
++{
++"id": "aentry-a5d3b989-ee39-4c10-8f76-fe76d9cd5204",
++"origin": "invoice",
++"kind": "debt",
++"date": "2026-08-29",
++"at": "2026-11-23T06:04:37.657Z",
++"sourceId": "invoice-f87e0f10-e5fd-4276-b12b-0588fc318bdf",
++"invoiceId": "",
++"doubtfulSkip": false,
++"doubtfulNormal": false,
++"method": "",
++"debit": 4580.88,
++"credit": 0
++},
++{
++"id": "aentry-bd49c7de-0195-4e88-ab6a-5a8ceced14a2",
++"origin": "account",
++"kind": "in",
++"date": "2026-08-29",
++"at": "2026-11-23T06:04:55.930Z",
++"sourceId": "",
++"invoiceId": "",
++"doubtfulSkip": false,
++"doubtfulNormal": false,
++"method": "cash",
++"debit": 0,
++"credit": 2440
++},
++{
++"id": "aentry-50140c74-977a-4094-a5db-0b2081ab2dda",
++"origin": "invoice",
++"kind": "debt",
++"date": "2026-08-31",
++"at": "2026-11-23T06:05:31.004Z",
++"sourceId": "invoice-9d7288d3-bc8b-4b65-93ad-82f41672ffd1",
++"invoiceId": "",
++"doubtfulSkip": false,
++"doubtfulNormal": false,
++"method": "",
++"debit": 2999.7,
++"credit": 0
++},
++{
++"id": "aentry-bbf2c2d5-3af5-49fd-a667-1fae1c4bee04",
++"origin": "invoice",
++"kind": "debt",
++"date": "2026-09-01",
++"at": "2026-11-23T06:05:42.484Z",
++"sourceId": "invoice-84572918-8040-4b53-8cbb-b99dcab9f298",
++"invoiceId": "",
++"doubtfulSkip": false,
++"doubtfulNormal": false,
++"method": "",
++"debit": 4012.8,
++"credit": 0
++},
++{
++"id": "aentry-ea135cea-e3f4-4285-a27d-9779a51fc02c",
++"origin": "invoice",
++"kind": "debt",
++"date": "2026-09-02",
++"at": "2026-11-23T06:05:51.548Z",
++"sourceId": "invoice-bcba05c6-a5ac-4e0b-923a-4ab1bc1fb42a",
++"invoiceId": "",
++"doubtfulSkip": false,
++"doubtfulNormal": false,
++"method": "",
++"debit": 239398.96,
++"credit": 0
++},
++{
++"id": "plan:plan-75406e83-4822-4b3c-8276-9b9e03137201",
++"origin": "plan",
++"planId": "plan-75406e83-4822-4b3c-8276-9b9e03137201",
++"kind": "plan",
++"covers": true,
++"coverTotal": 50415.3,
++"coverGross": 50415.3,
++"coverSource": "",
++"coverSale": "",
++"date": "2026-09-02",
++"at": "2026-11-23T06:05:51.549Z",
++"debit": 0,
++"credit": 0
++},
++{
++"id": "aentry-8965de4d-4455-4c59-b915-8ddd633e68ac",
++"origin": "account",
++"kind": "credit",
++"date": "2026-09-03",
++"at": "2026-11-23T06:06:06.185Z",
++"sourceId": "",
++"invoiceId": "",
++"doubtfulSkip": false,
++"doubtfulNormal": false,
++"method": "",
++"debit": 0,
++"credit": 51733
++},
++{
++"id": "aentry-20f4f7d8-8a52-4350-b550-6964e96210e3",
++"origin": "invoice",
++"kind": "debt",
++"date": "2026-09-04",
++"at": "2026-11-23T06:06:16.612Z",
++"sourceId": "invoice-cba6f07d-0b6a-448a-b7bc-19ae729a6ac7",
++"invoiceId": "",
++"doubtfulSkip": false,
++"doubtfulNormal": false,
++"method": "",
++"debit": 6097.98,
++"credit": 0
++},
++{
++"id": "aentry-4d57015e-de5e-45e3-90df-37bc5c6afe0d",
++"origin": "cheque",
++"kind": "credit",
++"date": "2026-09-04",
++"at": "2026-11-23T06:06:17.258Z",
++"sourceId": "cheque-2aa616fd-efcd-4708-835d-de9880c79501",
++"invoiceId": "",
++"doubtfulSkip": false,
++"doubtfulNormal": false,
++"method": "",
++"debit": 0,
++"credit": 3264.97
++},
++{
++"id": "aentry-07789a9f-2622-4192-9a1b-6ae55856c0b7",
++"origin": "account",
++"kind": "in",
++"date": "2026-09-08",
++"at": "2026-11-23T06:07:24.566Z",
++"sourceId": "",
++"invoiceId": "",
++"doubtfulSkip": false,
++"doubtfulNormal": false,
++"method": "cash",
++"debit": 0,
++"credit": 53710
++},
++{
++"id": "plan-entry:entry-72ae5c70-8874-430a-b676-dd25d157b72f",
++"origin": "plan",
++"planId": "plan-75406e83-4822-4b3c-8276-9b9e03137201",
++"kind": "plan-in",
++"opening": false,
++"itemId": "",
++"cheque": false,
++"date": "2026-09-15",
++"at": "2026-11-23T06:09:25.214Z",
++"debit": 0,
++"credit": 942.18
++},
++{
++"id": "plan-entry:entry-d4c8798a-94dc-4f5e-a19f-97260584b3a7",
++"origin": "plan",
++"planId": "plan-75406e83-4822-4b3c-8276-9b9e03137201",
++"kind": "plan-in",
++"opening": false,
++"itemId": "",
++"cheque": false,
++"date": "2026-09-22",
++"at": "2026-11-23T06:11:15.635Z",
++"debit": 0,
++"credit": 11683
++},
++{
++"id": "aentry-618a932b-f19a-4203-8a58-15d32d4baae8",
++"origin": "account",
++"kind": "in",
++"date": "2026-09-23",
++"at": "2026-11-23T06:11:39.434Z",
++"sourceId": "",
++"invoiceId": "",
++"doubtfulSkip": false,
++"doubtfulNormal": false,
++"method": "card",
++"debit": 0,
++"credit": 13358.59
++},
++{
++"id": "aentry-051ed88b-b7e3-4d23-a5b2-f676949abcb0",
++"origin": "account",
++"kind": "in",
++"date": "2026-09-25",
++"at": "2026-11-23T06:12:16.367Z",
++"sourceId": "",
++"invoiceId": "",
++"doubtfulSkip": false,
++"doubtfulNormal": false,
++"method": "card",
++"debit": 0,
++"credit": 25784.35
++},
++{
++"id": "aentry-50d40504-7bb0-4b39-a298-534241ad0046",
++"origin": "invoice",
++"kind": "debt",
++"date": "2026-09-27",
++"at": "2026-11-23T06:13:02.766Z",
++"sourceId": "invoice-923425e2-5f2d-48c4-8d58-ef8ab20f4903",
++"invoiceId": "",
++"doubtfulSkip": false,
++"doubtfulNormal": false,
++"method": "",
++"debit": 6370.77,
++"credit": 0
++},
++{
++"id": "aentry-84a028b7-be65-4acd-ad98-b2f615e7e123",
++"origin": "invoice",
++"kind": "in",
++"date": "2026-09-27",
++"at": "2026-11-23T06:13:02.766Z",
++"sourceId": "invoice-923425e2-5f2d-48c4-8d58-ef8ab20f4903",
++"invoiceId": "",
++"doubtfulSkip": false,
++"doubtfulNormal": false,
++"method": "card",
++"debit": 0,
++"credit": 6370.77
++},
++{
++"id": "aentry-854d4e6b-f9db-4dce-80cc-6823ab86a093",
++"origin": "stock",
++"kind": "debt",
++"date": "2026-10-03",
++"at": "2026-11-23T06:15:24.215Z",
++"sourceId": "smove-2d251688-4287-43d4-9691-678d9444db6c",
++"invoiceId": "",
++"doubtfulSkip": false,
++"doubtfulNormal": false,
++"method": "",
++"stockReason": "",
++"debit": 573.61,
++"credit": 0
++},
++{
++"id": "aentry-b7e636fe-510f-4f87-b424-11c826df61d0",
++"origin": "invoice",
++"kind": "credit",
++"date": "2026-10-07",
++"at": "2026-11-23T06:17:08.729Z",
++"sourceId": "invoice-0dc24161-58f0-46f9-b45c-cd0d32d1bb61",
++"invoiceId": "",
++"doubtfulSkip": false,
++"doubtfulNormal": false,
++"method": "",
++"debit": 0,
++"credit": 3051.56
++},
++{
++"id": "aentry-1ba9f369-2d2e-40a7-8536-78347d042ba2",
++"origin": "invoice",
++"kind": "debt",
++"date": "2026-10-07",
++"at": "2026-11-23T06:17:09.422Z",
++"sourceId": "invoice-77b1d5e1-0ed6-4cab-a379-39c8e43f694f",
++"invoiceId": "",
++"doubtfulSkip": false,
++"doubtfulNormal": false,
++"method": "",
++"debit": 6122.92,
++"credit": 0
++},
++{
++"id": "plan:plan-1d7b2df2-3892-48ec-8e53-c06e4ab2fc52",
++"origin": "plan",
++"planId": "plan-1d7b2df2-3892-48ec-8e53-c06e4ab2fc52",
++"kind": "plan",
++"covers": true,
++"coverTotal": 6122.92,
++"coverGross": 6122.92,
++"coverSource": "",
++"coverSale": "",
++"date": "2026-10-07",
++"at": "2026-11-23T06:17:09.422Z",
++"debit": 0,
++"credit": 0
++},
++{
++"id": "aentry-0803df7c-b36a-4cf5-ae60-c30e62cd7a7b",
++"origin": "account",
++"kind": "in",
++"date": "2026-10-08",
++"at": "2026-11-23T06:17:41.695Z",
++"sourceId": "",
++"invoiceId": "",
++"doubtfulSkip": false,
++"doubtfulNormal": false,
++"method": "card",
++"debit": 0,
++"credit": 19503.59
++},
++{
++"id": "aentry-6e6267b2-11ef-4da1-a8aa-db1ffe7d883b",
++"origin": "account",
++"kind": "in",
++"date": "2026-10-10",
++"at": "2026-11-23T06:18:39.243Z",
++"sourceId": "",
++"invoiceId": "",
++"doubtfulSkip": false,
++"doubtfulNormal": false,
++"method": "card",
++"debit": 0,
++"credit": 5471.37
++},
++{
++"id": "plan-entry:entry-2750fbf5-70b2-4b22-af2c-3c8132b693b0",
++"origin": "plan",
++"planId": "plan-1d7b2df2-3892-48ec-8e53-c06e4ab2fc52",
++"kind": "plan-in",
++"opening": false,
++"itemId": "",
++"cheque": false,
++"date": "2026-10-19",
++"at": "2026-11-23T06:23:28.057Z",
++"debit": 0,
++"credit": 5341.52
++}
++],
++"invoices": [
++{
++"id": "invoice-2efb39dd-3b08-4d5d-a441-543efc4337a3",
++"kind": "sale",
++"status": "issued",
++"payable": 179720.6,
++"originalId": "",
++"dueDate": "2026-08-30",
++"planId": "",
++"issuedAt": "2026-11-23T06:00:19.215Z",
++"coverCuts": null,
++"editCuts": null
++},
++{
++"id": "invoice-1b48e193-1d28-48ca-9b45-6d78b1a23a84",
++"kind": "sale",
++"status": "issued",
++"payable": 7409.41,
++"originalId": "",
++"dueDate": "2027-02-21",
++"planId": "plan-6034ff4e-f6cb-40be-91f3-7792562dad79",
++"issuedAt": "2026-11-23T06:02:40.171Z",
++"coverCuts": null,
++"editCuts": null,
++"planTotal": 1735.84,
++"schedule": [
++{
++"dueDate": "2026-12-21",
++"amount": 140.04
++},
++{
++"dueDate": "2027-01-21",
++"amount": 797.9
++},
++{
++"dueDate": "2027-02-21",
++"amount": 797.9
++}
++]
++},
++{
++"id": "invoice-f87e0f10-e5fd-4276-b12b-0588fc318bdf",
++"kind": "smm",
++"status": "issued",
++"payable": 4580.88,
++"originalId": "",
++"dueDate": "2026-10-25",
++"planId": "",
++"issuedAt": "2026-11-23T06:04:37.656Z",
++"coverCuts": null,
++"editCuts": null
++},
++{
++"id": "invoice-9d7288d3-bc8b-4b65-93ad-82f41672ffd1",
++"kind": "sale",
++"status": "issued",
++"payable": 2999.7,
++"originalId": "",
++"dueDate": "2026-10-10",
++"planId": "",
++"issuedAt": "2026-11-23T06:05:31.003Z",
++"coverCuts": null,
++"editCuts": null
++},
++{
++"id": "invoice-84572918-8040-4b53-8cbb-b99dcab9f298",
++"kind": "sale",
++"status": "issued",
++"payable": 4012.8,
++"originalId": "",
++"dueDate": "2026-09-01",
++"planId": "",
++"issuedAt": "2026-11-23T06:05:42.483Z",
++"coverCuts": null,
++"editCuts": null
++},
++{
++"id": "invoice-bcba05c6-a5ac-4e0b-923a-4ab1bc1fb42a",
++"kind": "sale",
++"status": "issued",
++"payable": 239398.96,
++"originalId": "",
++"dueDate": "2027-03-01",
++"planId": "plan-75406e83-4822-4b3c-8276-9b9e03137201",
++"issuedAt": "2026-11-23T06:05:51.547Z",
++"coverCuts": null,
++"editCuts": null,
++"planTotal": 50415.3,
++"schedule": [
++{
++"dueDate": "2026-10-01",
++"amount": 8402.55
++},
++{
++"dueDate": "2026-11-01",
++"amount": 8402.55
++},
++{
++"dueDate": "2026-12-01",
++"amount": 8402.55
++},
++{
++"dueDate": "2027-01-01",
++"amount": 8402.55
++},
++{
++"dueDate": "2027-02-01",
++"amount": 8402.55
++},
++{
++"dueDate": "2027-03-01",
++"amount": 8402.55
++}
++]
++},
++{
++"id": "invoice-cba6f07d-0b6a-448a-b7bc-19ae729a6ac7",
++"kind": "sale",
++"status": "issued",
++"payable": 6097.98,
++"originalId": "",
++"dueDate": "2026-09-04",
++"planId": "",
++"issuedAt": "2026-11-23T06:06:16.610Z",
++"coverCuts": null,
++"editCuts": null
++},
++{
++"id": "invoice-923425e2-5f2d-48c4-8d58-ef8ab20f4903",
++"kind": "sale",
++"status": "issued",
++"payable": 6370.77,
++"originalId": "",
++"dueDate": "2026-09-27",
++"planId": "",
++"issuedAt": "2026-11-23T06:13:02.765Z",
++"coverCuts": null,
++"editCuts": null
++},
++{
++"id": "invoice-0dc24161-58f0-46f9-b45c-cd0d32d1bb61",
++"kind": "sale_return",
++"status": "issued",
++"payable": 3051.56,
++"originalId": "invoice-1b48e193-1d28-48ca-9b45-6d78b1a23a84",
++"dueDate": "2026-10-07",
++"planId": "",
++"issuedAt": "2026-11-23T06:17:08.729Z",
++"coverCuts": null,
++"editCuts": null
++},
++{
++"id": "invoice-77b1d5e1-0ed6-4cab-a379-39c8e43f694f",
++"kind": "sale",
++"status": "issued",
++"payable": 6122.92,
++"originalId": "",
++"dueDate": "2027-03-01",
++"planId": "plan-1d7b2df2-3892-48ec-8e53-c06e4ab2fc52",
++"issuedAt": "2026-11-23T06:17:09.421Z",
++"coverCuts": null,
++"editCuts": null,
++"planTotal": 6122.92,
++"schedule": [
++{
++"dueDate": "2026-11-01",
++"amount": 1224.58
++},
++{
++"dueDate": "2026-12-01",
++"amount": 1224.58
++},
++{
++"dueDate": "2027-01-01",
++"amount": 1224.58
++},
++{
++"dueDate": "2027-02-01",
++"amount": 1224.58
++},
++{
++"dueDate": "2027-03-01",
++"amount": 1224.6
++}
++]
++}
++],
++"schedules": [
++[
++"plan-75406e83-4822-4b3c-8276-9b9e03137201",
++[
++{
++"id": "item-2cb95750-eacb-433b-8b83-3ca82b8fd463",
++"seq": 1,
++"dueDate": "2026-10-01",
++"amount": 8402.55
++},
++{
++"id": "item-6b43c54a-ce2e-4f52-b394-f45707f04643",
++"seq": 2,
++"dueDate": "2026-11-01",
++"amount": 8402.55
++},
++{
++"id": "item-db77c10e-bd01-48bd-855b-d28a0c8124e9",
++"seq": 3,
++"dueDate": "2026-12-01",
++"amount": 8402.55
++},
++{
++"id": "item-e092bd19-5f5b-4788-9a2d-91d34ffd8662",
++"seq": 4,
++"dueDate": "2027-01-01",
++"amount": 8402.55
++},
++{
++"id": "item-9646f72a-8c78-4340-82d5-3c4a4cbbcbea",
++"seq": 5,
++"dueDate": "2027-02-01",
++"amount": 8402.55
++},
++{
++"id": "item-c522caa2-f826-4535-9312-5261be6e5d58",
++"seq": 6,
++"dueDate": "2027-03-01",
++"amount": 8402.55
++}
++]
++],
++[
++"plan-1d7b2df2-3892-48ec-8e53-c06e4ab2fc52",
++[
++{
++"id": "item-c775fe5d-bc10-4632-a83b-556e0591a21c",
++"seq": 1,
++"dueDate": "2026-11-01",
++"amount": 1224.58
++},
++{
++"id": "item-697196c8-34bd-4933-bae5-6716bf95c6a9",
++"seq": 2,
++"dueDate": "2026-12-01",
++"amount": 1224.58
++},
++{
++"id": "item-854a3140-151e-4fdb-9e69-066df62a46e4",
++"seq": 3,
++"dueDate": "2027-01-01",
++"amount": 1224.58
++},
++{
++"id": "item-dbaf07cd-e276-4faf-8b51-89f8a09d923c",
++"seq": 4,
++"dueDate": "2027-02-01",
++"amount": 1224.58
++},
++{
++"id": "item-3a0131a2-c075-4315-85ff-8072bcdc75d2",
++"seq": 5,
++"dueDate": "2027-03-01",
++"amount": 1224.6
++}
++]
++]
++],
++"links": [
++[
++"aentry-0e2a24a8-0d0a-4cc4-96f5-5a8abe26bd77",
++"invoice-2efb39dd-3b08-4d5d-a441-543efc4337a3"
++],
++[
++"aentry-7b176557-31f1-443f-b69f-ec3d7855f687",
++"invoice-2efb39dd-3b08-4d5d-a441-543efc4337a3"
++],
++[
++"aentry-84a028b7-be65-4acd-ad98-b2f615e7e123",
++"invoice-923425e2-5f2d-48c4-8d58-ef8ab20f4903"
++],
++[
++"aentry-66eef55c-87ab-43a8-a1a5-3328f82cbec5",
++"invoice-2efb39dd-3b08-4d5d-a441-543efc4337a3"
++],
++[
++"aentry-b0e992bd-0fbf-40d5-beb4-d39f0c712121",
++"invoice-2efb39dd-3b08-4d5d-a441-543efc4337a3"
++],
++[
++"aentry-4d57015e-de5e-45e3-90df-37bc5c6afe0d",
++"invoice-bdaca1f3-9ca2-4b9d-a64f-799929b32db4"
++]
++],
++"chequeEvents": [
++[
++"aentry-66eef55c-87ab-43a8-a1a5-3328f82cbec5",
++"receive"
++],
++[
++"aentry-b0e992bd-0fbf-40d5-beb4-d39f0c712121",
++"receive"
++],
++[
++"aentry-4d57015e-de5e-45e3-90df-37bc5c6afe0d",
++"receive"
++]
++],
++"reversals": [],
++"linkMoments": [
++[
++"aentry-66eef55c-87ab-43a8-a1a5-3328f82cbec5",
++"2026-11-23T06:00:19.216Z"
++],
++[
++"aentry-b0e992bd-0fbf-40d5-beb4-d39f0c712121",
++"2026-11-23T06:00:19.217Z"
++],
++[
++"aentry-4d57015e-de5e-45e3-90df-37bc5c6afe0d",
++"2026-11-23T06:06:17.258Z"
++]
++],
++"linkTimes": [],
++"dueDates": [],
++"promises": [],
++"offsets": [],
++"doubtfulRecords": []
++}
+\ No newline at end of file
+diff --git a/test/tyk-kilit-olcum-250.test.mjs b/test/tyk-kilit-olcum-250.test.mjs
+index 23106003..50a8ecf4 100644
+--- a/test/tyk-kilit-olcum-250.test.mjs
++++ b/test/tyk-kilit-olcum-250.test.mjs
+@@ -5,6 +5,7 @@
+ // sınırlı geçişlerle de yakınsayana dek yinelenir (aynı S101 kuralı). Beklenen = Σ satır (borç − alacak): kuyruktan BAĞIMSIZ, girdiden hesaplanır (ders 5).
+ import assert from "node:assert/strict";
+ import { describe, it } from "node:test";
++import { readFileSync } from "node:fs";
+ import { buildObligations, lockAtOf } from "../server/lib/obligation-queue.mjs";
+ 
+ const balanceMinor = lines => Math.round(lines.reduce((sum, l) => sum + l.debit - l.credit, 0) * 100);
+@@ -59,13 +60,37 @@ describe("2.5.0 UD — dönem kilidi izi olan caride Mevcut Borç kartı: kaleml
+   });
+ });
+ 
++// Mutabakat tohum 6 (işlem 3560, Kartı Kapat): "Taksitli fatura … açık 1.224,58 > imzalı açık hedefi 781,40". Karar (3)'ün sınırı (hedefin kilit gününe kadar BAĞSIZ kapanmış kısmı)
++// SERBEST geçişte ölçülüyor, son geçiş SINIRLI kuruluyordu: sınırlı geçişte o bağsız para başka kaleme gidince taksit ne bağsız parayla ne kartın kendi tahsilatıyla kapanıyor,
++// fatura kartın kendi kalanından fazla açık görünüyordu. Düzeltme: sınır, sınırlı geçişte hedefi kilit gününe kadar GERÇEKTEN kapatan bağsız paraya indirilir (yalnız azalır).
++// Fikstür: gerçek programın (API) yazdığı 149 satırlık cariden satır grubu atılarak 34 satıra küçültüldü (kilit izi: 06:06 → 30.08, 06:22 → 15.10, 06:23 → kaldırıldı).
++const fromFixture = file => {
++  const raw = JSON.parse(readFileSync(new URL(`./fixtures/${file}`, import.meta.url), "utf8"));
++  const map = rows => new Map(rows);
++  return { lines: raw.lines, invoices: raw.invoices, schedules: map(raw.schedules), links: map(raw.links), chequeEvents: map(raw.chequeEvents), reversals: map(raw.reversals), linkMoments: map(raw.linkMoments), linkTimes: map(raw.linkTimes), dueDates: map(raw.dueDates), promises: map(raw.promises), offsets: raw.offsets, doubtfulRecords: raw.doubtfulRecords, today: raw.today, lockAt: lockAtOf(raw.lock) };
++};
++describe("2.5.0 UD — kilit sınırı sınırlı geçişte gerçek kapanışa iner: taksitli faturanın açığı kartın kendi kalanını aşmaz", () => {
++  it("tohum 6'nın en küçük örneği (34 satır): fatura açığı ≤ kartın kendi kalanı 781,40; Σ kalem = bakiye; kilit izi olmadan da aynı tavan", () => {
++    const input = fromFixture("tyk-kilit-tohum6-250.json");
++    const id = "invoice-77b1d5e1-0ed6-4cab-a379-39c8e43f694f";
++    const own = input.lines.filter(l => l.planId === "plan-1d7b2df2-3892-48ec-8e53-c06e4ab2fc52" && l.kind === "plan-in").reduce((sum, l) => sum + l.credit, 0);
++    assert.equal(Math.round(own * 100), 534152, "ön koşul: kartın kendi tahsilatı 5.341,52");
++    const r = buildObligations(input);
++    // Eski kod beklenen nedenle kırmızı: açık 1.068,72 > 781,40.
++    assert.ok(r.invoices.get(id).open <= 781.4 + 0.005, `taksitli fatura açığı ${r.invoices.get(id).open} > kartın kendi kalanı 781,40`);
++    assert.equal(sigmaMinor(r), balanceMinor(input.lines));
++    const free = buildObligations({ ...input, lockAt: undefined });
++    assert.equal(free.invoices.get(id).open, 781.4, "kilit izi olmadan açık = kartın kendi kalanı");
++  });
++});
++
+ // Tohumlu rastgele — mutabakat motorunun düzeni (çizelge geçmişten bugüne, dönem kilidi koşu ortasında konup kaldırılır; kilitliyken kilit gününe ya da öncesine yazım yok): taksitli
+ // satış, Mevcut Borç kartı, kart tahsilatı (kalanı aşan — avans), Alacak, Borç, tahsilat, stoktan satış. Sınıfı (kilit sınırlı geçişin ölçümü değiştirdiği cari) SAYILIR; hiç
+ // üretilmediyse test kırmızı (dişsiz kalmasın).
+ describe("2.5.0 UD — değişmez: kilit izli rastgele üretici, 40 tohum × 250 cari (10.000 cari)", () => {
+   const rng = seed => () => ((seed = (seed * 1103515245 + 12345) % 2147483648) / 2147483648);
+   const dayOf = n => new Date(Date.UTC(2026, 6, 1 + n)).toISOString().slice(0, 10);
+-  const total = { cari: 0, kilitli: 0, olcum: 0 };
++  const total = { cari: 0, kilitli: 0, olcum: 0, taksitli: 0 };
+   const generate = (r, seed, a) => {
+     const lines = [];
+     const invoices = [];
+@@ -159,6 +184,15 @@ describe("2.5.0 UD — değişmez: kilit izli rastgele üretici, 40 tohum × 250
+           const input = generate(r, seed, a);
+           const res = buildObligations(input);
+           assert.equal(sigmaMinor(res), balanceMinor(input.lines), `tohum ${seed} cari ${a}: Σ kalem ${sigmaMinor(res) / 100} ≠ bakiye ${balanceMinor(input.lines) / 100}`);
++          // Taksitli faturanın açığı kartın KENDİ kalanını aşamaz (mutabakat motorunun üst sınırı; S99 = A — tohum 6: kilitli dönemde kapanmış sayılan taksit sınırlı geçişte açık kalıyordu).
++          for (const invoice of input.invoices) {
++            if (!invoice.planId) continue;
++            const own = input.lines.filter(l => l.planId === invoice.planId && l.kind === "plan-in").reduce((sum, l) => sum + Math.round(l.credit * 100), 0);
++            const ceiling = Math.max(0, Math.round(invoice.payable * 100) - own);
++            const open = Math.round((res.invoices.get(invoice.id)?.open ?? 0) * 100);
++            assert.ok(open <= ceiling + 1, `tohum ${seed} cari ${a}: taksitli fatura ${invoice.id} açık ${open / 100} > kartın kendi kalanı ${ceiling / 100}`);
++            total.taksitli += 1;
++          }
+           total.cari += 1;
+           const free = buildObligations({ ...input, lockAt: undefined });
+           if (sigmaMinor(free) === balanceMinor(input.lines) && JSON.stringify(free.items.map(i => [i.key, i.remaining])) !== JSON.stringify(res.items.map(i => [i.key, i.remaining]))) total.kilitli += 1;
+diff --git a/test/tyk-mutasyon-250.mjs b/test/tyk-mutasyon-250.mjs
+index e45ed4bc..ce4eb918 100644
+--- a/test/tyk-mutasyon-250.mjs
++++ b/test/tyk-mutasyon-250.mjs
+@@ -177,6 +177,7 @@ const API_MUTANTS = [
+   ["KD2-c", "ORTA-2 — son ölçüm uygulanır ama güvenli kapanış yok", "server/lib/obligation-queue.mjs", "  if (!stable) state = queueOnce(input, mode, null, { pieces, forced, prepaid, settle: true });", "  if (!stable) state = queueOnce(input, mode, null, { pieces, forced, prepaid, settle: false });", ["test/tyk-kapanis-sigma-250.test.mjs"]],
+   ["KD2-d", "ORTA-2 — kilit ölçümlü yolda güvenli kapanış yok", "server/lib/obligation-queue.mjs", "if (!stable) return tagged(queueOnce(input, mode, caps, { pieces, forced, prepaid, settle: true }));", "if (!stable) return tagged(queueOnce(input, mode, caps, { pieces, forced, prepaid, settle: false }));", ["test/tyk-kapanis-sigma-250.test.mjs"]],
+   // 2.5.0 UD düzeltmesi (mutabakat tohum 2 / 3 / 7): kilit sınırlı geçişte S101 ölçümü yinelenmez (taban davranışı — kalemler bakiyeyi kart tutarı kadar aşar).
++  ["KD4-b", "UD — kilit sınırı sınırlı geçişte gerçek kapanışa inmez (taban; tohum 6)", "server/lib/obligation-queue.mjs", "        if (actual < caps.get(link.id)) {", "        if (false && actual < caps.get(link.id)) {", ["test/tyk-kilit-olcum-250.test.mjs"]],
+   ["KD4-a", "UD — kilit sınırlı geçişte ön ödeme ölçümü yinelenmez (taban)", "server/lib/obligation-queue.mjs", "    let cappedStable = false;\n    for (let round = 0; round < limit; round += 1) {", "    let cappedStable = true;\n    for (let round = 0; round < 0; round += 1) {", ["test/tyk-kilit-olcum-250.test.mjs"]],
+   ["KD2-e", "ORTA-2 — güvenli kapanışın serbest bıraktığı para dağıtılmaz (açık avans + açık borç birlikte; gecikmiş bakiyeyi aşar)", "server/lib/obligation-queue.mjs", "    schedule(item);\n  };", "  };", ["test/tyk-kapanis-sigma-250.test.mjs"]],
+   ["KD2-f", "ORTA-2 — geri alınan pay kadar taksit kırpılmaz (taksitin ödeneni şişer)", "server/lib/obligation-queue.mjs", "        inst.amount -= amount;\n        excess -= amount;\n        freed += amount;", "        excess -= amount;\n        freed += amount;", ["test/tyk-kapanis-sigma-250.test.mjs"]],
+-- 
+2.43.0
+

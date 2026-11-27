@@ -1,0 +1,14 @@
+eski senaryo 332: aynı 332, farklı 0, eksik 0; sıra korunuyor: True
+yeni senaryo toplam 342; yeni eklenen: 10 → S23-01-sinirda-bekleyen-yeniden-basma-elle-sayilir-pencere-acilinca-gider, S23-02-duraklatildi-yeniden-basma-elle-devam-et-ile-gider-kayitsiz-zaten-kuyrukta, S23-03-zincirdeki-yeniden-deneme-beklerken-yeniden-basma-elle-gider, S23-04-meta-bekletti-beklerken-yeniden-basma-ikinci-denemede-gider, S23-05-yeniden-basmada-suphesiz-tutar-yok-iki-okuma-ileti-gitmez, SW3-01-bir-yil-siniri-iki-yani-sure-dolunca-ayni-donem-daha-once-gonderildi, SW3-02-gece-yarisi-yerel-gun-utc-farkli-bir-yil-siniri, SW3-03-silme-talebi-ayni-donem-elenir-sonraki-donem-gider-silinen-telefon-kullanilmaz, SW3-04-geri-yukleme-bir-yildan-eski-icerik-donunce-silinir, SW3-05-silme-talebinden-once-alinan-yedek-geri-yuklenir-icerik-susuyor-r3-kesin
+üst alan 'kararlar' değişti: eklenen ['S23', 'SW3'], çıkan [], değişen []
+üst alan 'kaynak' aynı
+üst alan 'netlestirme' aynı
+üst alan 'sablonlar' aynı
+üst alan 'serbest_secimler' aynı
+1..333
+# tests 333
+# pass 333
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

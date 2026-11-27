@@ -1,0 +1,97 @@
+b210 — senaryo-banka-210 adım 14–15 zaman çizgisi (TANI; denetim değil). 10.11.2026, taban 62070e57 (düzeltmeden ÖNCEKİ ürün kodu), yerel Chromium 153.0.8010.12.
+Üretim: python3 -I docs/kanit/2026-11-10/b210-tani-yama.py test/e2e/senaryo-banka-210.mjs test/e2e/b210-tani.tmp.mjs
+        B210_TANI=1 HUKUK_LICENSE_URL=http://127.0.0.1:9 node --disable-warning=ExperimentalWarning test/e2e/b210-tani.tmp.mjs   (sonra geçici dosya silinir)
+Süreler adım 14'ün başından (ms; Node tarafında ölçüldü). "SÜZGEÇ ÇUBUĞU YENİDEN ÇİZİLDİ" = Hareketler süzgecindeki arama kutusu yeni düğüm (render()).
+
+OKUMA:
+  1403 ms  faiz kaydının yanıtı (POST /bank/vouchers) → 1475 ms pencerenin kendi yenilemesi çizdi.
+  1657 ms  sunucunun "overview.changed" canlı olayı geldi (kayıttan ~250 ms sonra; olay kaydı yapana da gider — server/routes/overview.mjs:65–78).
+  2038 ms  canlı olayın başlattığı ARKA PLAN yenilemesi (HOF.onLedger 350 ms; yerel + canlı olay birleşince yol silinir → hof-bank.js "refreshOpen.now()").
+  2074 ms  arka plan yenilemesi pencereyi YENİDEN ÇİZDİ.
+  2160 ms  adım 15'in fill(q, İşlem No) çağrısı BAŞLADI  →  yeniden çizim ile fill arası yalnız 86 ms.
+Yavaş koşucuda (CI) arka plan yenilemesinin 5 isteği uzar; çizim fill'in iki adımı (odak → Input.insertText) arasına düşerse metin hiçbir yere
+yazılmaz (CI #864 / #1056: arama kutusu boş, liste süzülmemiş). Zorla üretim: test/e2e/banka-210-arama-yaris.mjs (--kip odak).
+
+HAM ÇIKTI (adım 14–15; istek adreslerinden hofCompany / hofPage parametreleri çıkarıldı):
+■ 14. Faiz geliri 1.000 / %15 ekrandan: net 850, stopaj 150 (193), 642 = 1.000 · şirket 001
+    [tani    46 ms] istek GET /bank/summary
+    [tani    46 ms] istek GET /bank/accounts?status=all
+    [tani    46 ms] [tani] SÜZGEÇ ÇUBUĞU YENİDEN ÇİZİLDİ (eski kutu yok, yeni kutu "", odak BODY)
+    [tani    53 ms] yanıt /bank/summary
+    [tani    56 ms] yanıt /bank/accounts?status=all
+    [tani    65 ms] istek GET /bank/pos?status=
+    [tani    73 ms] yanıt /bank/pos?status=
+    [tani    80 ms] istek GET /bank/movements?account=bacc-594d589b-2052-48aa-96b0-bf7a66e8efa1
+    [tani    81 ms] yanıt /bank/movements?account=bacc-594d589b-2052-48aa-96b0-bf7a66e8efa1
+    [tani    82 ms] [tani] SÜZGEÇ ÇUBUĞU YENİDEN ÇİZİLDİ (eski kutu "", yeni kutu "", odak BODY)
+    [tani   273 ms] istek GET /bank/choices?date=2026-10-08
+    [tani   275 ms] yanıt /bank/choices?date=2026-10-08
+  ✓ hiç faiz yokken stopaj oranı önerisi boş (koda sabit oran yazılmaz)
+  ✓ önizleme: Bankaya Giren (Net) ₺850,00 · Stopaj ₺150,00 (193) · Faiz Geliri ₺1.000,00
+    [tani  1398 ms] istek POST /bank/vouchers
+    [tani  1403 ms] yanıt /bank/vouchers
+    [tani  1406 ms] [tani] yerel ledger:changed /api/workspace/bank/vouchers
+    [tani  1420 ms] istek GET /bank/summary
+    [tani  1420 ms] istek GET /bank/accounts?status=all
+    [tani  1421 ms] yanıt /bank/summary
+    [tani  1421 ms] yanıt /bank/accounts?status=all
+    [tani  1424 ms] istek GET /bank/voucher-meta
+    [tani  1424 ms] istek GET /bank/pos?status=
+    [tani  1436 ms] yanıt /bank/voucher-meta
+    [tani  1447 ms] yanıt /bank/pos?status=
+    [tani  1474 ms] istek GET /bank/movements?account=bacc-594d589b-2052-48aa-96b0-bf7a66e8efa1
+    [tani  1474 ms] istek GET /bank/badge?count=1
+    [tani  1475 ms] yanıt /bank/movements?account=bacc-594d589b-2052-48aa-96b0-bf7a66e8efa1
+    [tani  1475 ms] [tani] SÜZGEÇ ÇUBUĞU YENİDEN ÇİZİLDİ (eski kutu "", yeni kutu "", odak BODY)
+    [tani  1484 ms] yanıt /bank/badge?count=1
+  ✓ Ziraat 100.719,50 (+850)
+  ✓ mizan 642 = -1000, 193 = 150
+    [tani  1657 ms] [tani] canlı olay overview.changed geldi
+
+■ 15. Hareketler: satırlar ve yürüyen bakiye bağımsız beklenenle; süzgeçler (tür, arama, İşlem No, tutar); boş süzgeç · şirket 001
+  ✓ satır tutarları modelle aynı: 850, -120, -10.5, 100000, -100500, 100500, -100000, 100000
+  ✓ yürüyen bakiye her satırda bağımsız hesapla aynı (en üst 100719.5 = model 102.01 100719.5; en alttan önce 0)
+  ✓ tek hesap ve süzgeçsizken Bakiye kolonu var
+    [tani  1868 ms] istek GET /overview
+    [tani  2038 ms] istek GET /bank/summary
+    [tani  2038 ms] istek GET /bank/accounts?status=all
+    [tani  2038 ms] yanıt /bank/summary
+    [tani  2039 ms] yanıt /bank/accounts?status=all
+    [tani  2040 ms] istek GET /bank/pos?status=
+    [tani  2051 ms] yanıt /bank/pos?status=
+    [tani  2067 ms] istek GET /bank/movements?account=bacc-594d589b-2052-48aa-96b0-bf7a66e8efa1
+    [tani  2067 ms] yanıt /bank/movements?account=bacc-594d589b-2052-48aa-96b0-bf7a66e8efa1
+    [tani  2074 ms] [tani] SÜZGEÇ ÇUBUĞU YENİDEN ÇİZİLDİ (eski kutu "", yeni kutu "", odak BUTTON)
+    [tani  2094 ms] [tani] input type="fee"
+    [tani  2105 ms] [tani] change type="fee"
+    [tani  2105 ms] istek GET /bank/movements?account=bacc-594d589b-2052-48aa-96b0-bf7a66e8efa1&type=fee
+    [tani  2107 ms] yanıt /bank/movements?account=bacc-594d589b-2052-48aa-96b0-bf7a66e8efa1&type=fee
+  ✓ Masraf süzgeci: BSMV'li masraf + faturalı masrafın ödemesi; yürüyen bakiye yok (invoice_cash, fee)
+    [tani  2122 ms] [tani] input type="loan"
+    [tani  2123 ms] [tani] change type="loan"
+    [tani  2127 ms] istek GET /bank/movements?account=bacc-594d589b-2052-48aa-96b0-bf7a66e8efa1&type=loan
+    [tani  2129 ms] yanıt /bank/movements?account=bacc-594d589b-2052-48aa-96b0-bf7a66e8efa1&type=loan
+  ✓ boş süzgeç: boş durum metni
+    [tani  2156 ms] [tani] input type=""
+    [tani  2156 ms] [tani] change type=""
+    [tani  2156 ms] istek GET /bank/movements?account=bacc-594d589b-2052-48aa-96b0-bf7a66e8efa1
+    [tani  2160 ms] yanıt /bank/movements?account=bacc-594d589b-2052-48aa-96b0-bf7a66e8efa1
+    [tani  2160 ms] fill(q) BAŞLIYOR
+    [tani  2176 ms] [tani] input q="BNK-2026-000011"
+    [tani  2178 ms] fill(q) BİTTİ
+    [tani  2478 ms] istek GET /bank/movements?account=bacc-594d589b-2052-48aa-96b0-bf7a66e8efa1&q=BNK-2026-000011
+    [tani  2483 ms] yanıt /bank/movements?account=bacc-594d589b-2052-48aa-96b0-bf7a66e8efa1&q=BNK-2026-000011
+  ✓ İşlem No ile arama: yalnız BNK-2026-000011
+    [tani  2595 ms] [tani] input q=""
+    [tani  2608 ms] [tani] input min="100"
+    [tani  2625 ms] istek GET /bank/movements?account=bacc-594d589b-2052-48aa-96b0-bf7a66e8efa1&min=100
+    [tani  2664 ms] yanıt /bank/movements?account=bacc-594d589b-2052-48aa-96b0-bf7a66e8efa1&min=100
+  ✓ Tutar süzgeci (en az 100): 7 satır
+    [tani  2736 ms] [tani] input min="-5"
+    [tani  2760 ms] istek GET /bank/movements?account=bacc-594d589b-2052-48aa-96b0-bf7a66e8efa1&min=-5
+    [tani  2789 ms] yanıt /bank/movements?account=bacc-594d589b-2052-48aa-96b0-bf7a66e8efa1&min=-5
+  ✓ eksi tutar süzgeci ekranda hata: Liste alınamadı: En Az Tutar eksi olamaz. Yeniden Dene
+  ✓ hata alınca süzgeç alanları yerinde
+    [tani  2953 ms] [tani] input min=""
+    [tani  2968 ms] istek GET /bank/movements?account=bacc-594d589b-2052-48aa-96b0-bf7a66e8efa1
+    [tani  3019 ms] yanıt /bank/movements?account=bacc-594d589b-2052-48aa-96b0-bf7a66e8efa1

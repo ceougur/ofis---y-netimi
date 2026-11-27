@@ -1,0 +1,32 @@
+{
+  "ad": "kahin-tutar",
+  "komut": "npm run test:kahin-tutar",
+  "commit": "6ab19f011e8f5904fae7a13e0289e975f6a7394f",
+  "dal": "worktree-agent-a2ba3cc62b2d80923",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v445 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-13T11:57:36.316Z",
+  "sure_sn": 5.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 3559,
+    "gecen": 3559,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8-kanit/kahin-yeni-IST/2026-11-13/kahin-tutar.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a2ba3cc62b2d80923",
+  "ham_cikti_sha256": "540604a17a4429f6bc7e55a238528fa117caf437b5f143bf1da1a4cfb01dbecd",
+  "ham_cikti_bayt": 996
+}

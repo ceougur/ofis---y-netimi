@@ -1,0 +1,26 @@
+// ANA OTURUM (dar kontrol betiği değil): mobil yazma kâhini bakımının SM-1 sorusu — program BUGÜN ne gösteriyor?
+// Kart 1.200 / 3; karttan tahsilat 500; sonra karttan 800 "Fazlasını Avans Yaz" (kalan 700 → 100 avans). Kart penceresi + cari kartı okunur.
+import { boot, day, print } from "./k.mjs";
+const h = await boot({ now: { time: "2026-10-20T12:00:00+03:00", fixed: false } });
+const tick = () => h.server.clock.advance({ seconds: 30 });
+const { api } = h;
+const out = {};
+try {
+  const a = await h.account("SM1 Avans Karti");
+  await h.entry(a, { kind: "debt", amount: "1200", date: day(-70), note: "B1200" }); tick();
+  const p = await h.cardOpen(a, 1200, 3, { registeredOn: day(-65), firstDue: day(-40) }); tick();
+  const t1 = await api.post(`/api/workspace/plans/${p.id}/entries`, { kind: "in", amount: "500", date: day(-10), method: "cash", cashForce: true }); tick();
+  const t2a = await api.post(`/api/workspace/plans/${p.id}/entries`, { kind: "in", amount: "800", date: day(-5), method: "cash", cashForce: true }); tick();
+  const t2 = await api.post(`/api/workspace/plans/${p.id}/entries`, { kind: "in", amount: "800", date: day(-5), method: "cash", cashForce: true, overpay: true }); tick();
+  out.adimlar = { tahsilat500: t1.status, fazla800Sorusuz: `${t2a.status} ${t2a.data?.error?.code || t2a.data?.code || ""}`, fazla800AvansYaz: t2.status };
+  const kart = (await api.get(`/api/workspace/plans/${p.id}`)).data;
+  out.kartPenceresi = { toplam: kart.totals?.total, tahsilEdilen: kart.totals?.paid, kalan: kart.totals?.remaining, fazla: kart.totals?.extra ?? kart.totals?.overpaid, durum: kart.status, satirlar: (kart.items || []).map(i => `öd ${i.paid}|kal ${i.remaining}`) };
+  out.kartTotalsHam = kart.totals;
+  const cari = (await api.get(`/api/workspace/accounts/${a.id}`)).data;
+  out.cariBakiye = cari.totals?.balance;
+  const liste = (await api.get(`/api/workspace/plans`)).data;
+  const row = (liste.plans || liste.items || liste || []).find?.(x => x.id === p.id);
+  out.taksitlerListesi = row ? { tahsilEdilen: row.totals?.paid, kalan: row.totals?.remaining } : "bulunamadı";
+} catch (e) { out.HATA = String(e.stack || e.message).slice(0, 400); }
+await h.server.close();
+print(out);

@@ -1,0 +1,227 @@
+TAP version 13
+# Subtest: 2.5.0 AH — açılış onarımı: öğe başına ağır okuma yok, çıktı eski kodla birebir
+    # Subtest: öğe başına ağır okuma yok: ikinci onarım koşusunda carinin tam defteri yalnız onarım kararı çıkan adayda okunur, deyim sayısı küçük
+    not ok 1 - öğe başına ağır okuma yok: ikinci onarım koşusunda carinin tam defteri yalnız onarım kararı çıkan adayda okunur, deyim sayısı küçük
+      ---
+      duration_ms: 305.670076
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ah-taban/test/acilis-onarimi-hiz-250.test.mjs:40:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        carinin tam defteri (accounts.detail) 74 kez okundu; en çok onarım kararı sayısı (3) kadar olmalı — aday başına ağır okuma (ders 47)
+        veri tabanı deyimi 2299; bütçe 4 × 83 aday + 200 = 532
+        (sayım: {"statements":2299,"detail":74})
+        + actual - expected
+        
+        + [
+        +   'carinin tam defteri (accounts.detail) 74 kez okundu; en çok onarım kararı sayısı (3) kadar olmalı — aday başına ağır okuma (ders 47)',
+        +   'veri tabanı deyimi 2299; bütçe 4 × 83 aday + 200 = 532'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'carinin tam defteri (accounts.detail) 74 kez okundu; en çok onarım kararı sayısı (3) kadar olmalı — aday başına ağır okuma (ders 47)'
+        1: 'veri tabanı deyimi 2299; bütçe 4 × 83 aday + 200 = 532'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ah-taban/test/acilis-onarimi-hiz-250.test.mjs:79:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # sayım: {"statements":2299,"detail":74} · aday 83 · onarım kararı 3
+    # Subtest: eşdeğerlik: döküm taban kodun (eski) gerçek dökümüyle bölüm bölüm aynı; eleme değişmezi (toplu durum = cari başına durum) her adayda
+    not ok 2 - eşdeğerlik: döküm taban kodun (eski) gerçek dökümüyle bölüm bölüm aynı; eleme değişmezi (toplu durum = cari başına durum) her adayda
+      ---
+      duration_ms: 85.037045
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ah-taban/test/acilis-onarimi-hiz-250.test.mjs:82:3'
+      failureType: 'testCodeFailure'
+      error: 'eleme denetimi yeni kod ister (repairScreen yok)'
+      code: 'ERR_TEST_FAILURE'
+      stack: |-
+        dumpRepair (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ah-taban/test/guvenilirlik/onarim-dokum.mjs:51:39)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ah-taban/test/acilis-onarimi-hiz-250.test.mjs:83:24)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: parça parça eleme: carileri 7'şerli parçalarla okuyan eleme, tek parçalık elemeyle ve cari başına yolla her adayda aynı (parça sınırında cari düşmez)
+    not ok 3 - parça parça eleme: carileri 7'şerli parçalarla okuyan eleme, tek parçalık elemeyle ve cari başına yolla her adayda aynı (parça sınırında cari düşmez)
+      ---
+      duration_ms: 1.209152
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ah-taban/test/acilis-onarimi-hiz-250.test.mjs:100:3'
+      failureType: 'testCodeFailure'
+      error: 'invoices.repairScreen is not a function'
+      code: 'ERR_TEST_FAILURE'
+      name: 'TypeError'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ah-taban/test/acilis-onarimi-hiz-250.test.mjs:105:28)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 1 - 2.5.0 AH — açılış onarımı: öğe başına ağır okuma yok, çıktı eski kodla birebir
+  ---
+  duration_ms: 2097.819637
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ah-taban/test/acilis-onarimi-hiz-250.test.mjs:27:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: store.run / store.tx — derinlik > 0 iken bağlantıda işlem yoksa yazım yok, açık hata (2.5.0 BS-6)
+    # Subtest: (k1) iç işlemde SQLite işlemi kendiliğinden geri alır, çağıran yakalayıp sürer → sonraki yazımlar ERR_TX_LOST, yarım yazım yok; Linux'ta gerçek G/Ç hatası
+    not ok 1 - (k1) iç işlemde SQLite işlemi kendiliğinden geri alır, çağıran yakalayıp sürer → sonraki yazımlar ERR_TX_LOST, yarım yazım yok; Linux'ta gerçek G/Ç hatası
+      ---
+      duration_ms: 389.522072
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ah-taban/test/db-tx-kayip-250.test.mjs:103:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        k1 benzetim: derinlik > 0, işlem yokken store.run (para) YAZDI (hata yok) — ERR_TX_LOST beklenirdi
+        k1 benzetim: derinlik > 0, işlem yokken store.run (düz) YAZDI (hata yok) — ERR_TX_LOST beklenirdi
+        k1 benzetim: derinlik > 0, işlem yokken store.setSetting YAZDI (hata yok) — ERR_TX_LOST beklenirdi
+        k1 benzetim: derinlik > 0, işlem yokken iç store.tx YAZDI (hata yok) — ERR_TX_LOST beklenirdi
+        k1 benzetim: dış işlem "cannot commit - no transaction is active" ile düştü (ERR_TX_LOST beklenirdi)
+        k1 benzetim: yarım yazım — [["dış sonra",1],["iç tx sonra",1]]
+        k1 benzetim: yarım yazım — para satırı 'sonra'
+        k1 benzetim: yarım yazım — ayar 'bs6.sonra'
+        k1 gerçek (RLIMIT_FSIZE): derinlik > 0, işlem yokken store.run (para) YAZDI (hata yok) — ERR_TX_LOST beklenirdi
+        k1 gerçek (RLIMIT_FSIZE): derinlik > 0, işlem yokken store.run (düz) YAZDI (hata yok) — ERR_TX_LOST beklenirdi
+        k1 gerçek (RLIMIT_FSIZE): derinlik > 0, işlem yokken store.setSetting YAZDI (hata yok) — ERR_TX_LOST beklenirdi
+        k1 gerçek (RLIMIT_FSIZE): derinlik > 0, işlem yokken iç store.tx YAZDI (hata yok) — ERR_TX_LOST beklenirdi
+        k1 gerçek (RLIMIT_FSIZE): dış işlem "cannot commit - no transaction is active" ile düştü (ERR_TX_LOST beklenirdi)
+        k1 gerçek (RLIMIT_FSIZE): yarım yazım — [["dış sonra",1],["iç tx sonra",1]]
+        k1 gerçek (RLIMIT_FSIZE): yarım yazım — para satırı 'sonra'
+        k1 gerçek (RLIMIT_FSIZE): yarım yazım — ayar 'bs6.sonra'
+        k1 gerçek: iç işlemin satırları kaldı
+        + actual - expected
+        
+        + [
+        +   'k1 benzetim: derinlik > 0, işlem yokken store.run (para) YAZDI (hata yok) — ERR_TX_LOST beklenirdi',
+        +   'k1 benzetim: derinlik > 0, işlem yokken store.run (düz) YAZDI (hata yok) — ERR_TX_LOST beklenirdi',
+        +   'k1 benzetim: derinlik > 0, işlem yokken store.setSetting YAZDI (hata yok) — ERR_TX_LOST beklenirdi',
+        +   'k1 benzetim: derinlik > 0, işlem yokken iç store.tx YAZDI (hata yok) — ERR_TX_LOST beklenirdi',
+        +   'k1 benzetim: dış işlem "cannot commit - no transaction is active" ile düştü (ERR_TX_LOST beklenirdi)',
+        +   'k1 benzetim: yarım yazım — [["dış sonra",1],["iç tx sonra",1]]',
+        +   "k1 benzetim: yarım yazım — para satırı 'sonra'",
+        +   "k1 benzetim: yarım yazım — ayar 'bs6.sonra'",
+        +   'k1 gerçek (RLIMIT_FSIZE): derinlik > 0, işlem yokken store.run (para) YAZDI (hata yok) — ERR_TX_LOST beklenirdi',
+        +   'k1 gerçek (RLIMIT_FSIZE): derinlik > 0, işlem yokken store.run (düz) YAZDI (hata yok) — ERR_TX_LOST beklenirdi',
+        +   'k1 gerçek (RLIMIT_FSIZE): derinlik > 0, işlem yokken store.setSetting YAZDI (hata yok) — ERR_TX_LOST beklenirdi',
+        +   'k1 gerçek (RLIMIT_FSIZE): derinlik > 0, işlem yokken iç store.tx YAZDI (hata yok) — ERR_TX_LOST beklenirdi',
+        +   'k1 gerçek (RLIMIT_FSIZE): dış işlem "cannot commit - no transaction is active" ile düştü (ERR_TX_LOST beklenirdi)',
+        +   'k1 gerçek (RLIMIT_FSIZE): yarım yazım — [["dış sonra",1],["iç tx sonra",1]]',
+        +   "k1 gerçek (RLIMIT_FSIZE): yarım yazım — para satırı 'sonra'",
+        +   "k1 gerçek (RLIMIT_FSIZE): yarım yazım — ayar 'bs6.sonra'",
+        +   'k1 gerçek: iç işlemin satırları kaldı'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'k1 benzetim: derinlik > 0, işlem yokken store.run (para) YAZDI (hata yok) — ERR_TX_LOST beklenirdi'
+        1: 'k1 benzetim: derinlik > 0, işlem yokken store.run (düz) YAZDI (hata yok) — ERR_TX_LOST beklenirdi'
+        2: 'k1 benzetim: derinlik > 0, işlem yokken store.setSetting YAZDI (hata yok) — ERR_TX_LOST beklenirdi'
+        3: 'k1 benzetim: derinlik > 0, işlem yokken iç store.tx YAZDI (hata yok) — ERR_TX_LOST beklenirdi'
+        4: 'k1 benzetim: dış işlem "cannot commit - no transaction is active" ile düştü (ERR_TX_LOST beklenirdi)'
+        5: 'k1 benzetim: yarım yazım — [["dış sonra",1],["iç tx sonra",1]]'
+        6: "k1 benzetim: yarım yazım — para satırı 'sonra'"
+        7: "k1 benzetim: yarım yazım — ayar 'bs6.sonra'"
+        8: 'k1 gerçek (RLIMIT_FSIZE): derinlik > 0, işlem yokken store.run (para) YAZDI (hata yok) — ERR_TX_LOST beklenirdi'
+        9: 'k1 gerçek (RLIMIT_FSIZE): derinlik > 0, işlem yokken store.run (düz) YAZDI (hata yok) — ERR_TX_LOST beklenirdi'
+        10: 'k1 gerçek (RLIMIT_FSIZE): derinlik > 0, işlem yokken store.setSetting YAZDI (hata yok) — ERR_TX_LOST beklenirdi'
+        11: 'k1 gerçek (RLIMIT_FSIZE): derinlik > 0, işlem yokken iç store.tx YAZDI (hata yok) — ERR_TX_LOST beklenirdi'
+        12: 'k1 gerçek (RLIMIT_FSIZE): dış işlem "cannot commit - no transaction is active" ile düştü (ERR_TX_LOST beklenirdi)'
+        13: 'k1 gerçek (RLIMIT_FSIZE): yarım yazım — [["dış sonra",1],["iç tx sonra",1]]'
+        14: "k1 gerçek (RLIMIT_FSIZE): yarım yazım — para satırı 'sonra'"
+        15: "k1 gerçek (RLIMIT_FSIZE): yarım yazım — ayar 'bs6.sonra'"
+        16: 'k1 gerçek: iç işlemin satırları kaldı'
+      operator: 'deepStrictEqual'
+      stack: |-
+        report (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ah-taban/test/db-tx-kayip-250.test.mjs:64:35)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ah-taban/test/db-tx-kayip-250.test.mjs:151:5)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:466:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:435:3)
+        node:internal/per_context/primordials:466:9
+      ...
+    # Subtest: (k2) işlem kayboldu ama sonra yazım yok → en dış COMMIT asıl nedeni söyler ("cannot commit - no transaction is active" değil); iç düzeyde RELEASE de
+    not ok 2 - (k2) işlem kayboldu ama sonra yazım yok → en dış COMMIT asıl nedeni söyler ("cannot commit - no transaction is active" değil); iç düzeyde RELEASE de
+      ---
+      duration_ms: 49.758896
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ah-taban/test/db-tx-kayip-250.test.mjs:154:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        k2 COMMIT: "cannot commit - no transaction is active" (ERR_TX_LOST + ilk hata beklenirdi)
+        k2 COMMIT: asıl neden örtüldü: cannot commit - no transaction is active
+        k2 RELEASE: "no such savepoint: sp_1" (ERR_TX_LOST beklenirdi)
+        + actual - expected
+        
+        + [
+        +   'k2 COMMIT: "cannot commit - no transaction is active" (ERR_TX_LOST + ilk hata beklenirdi)',
+        +   'k2 COMMIT: asıl neden örtüldü: cannot commit - no transaction is active',
+        +   'k2 RELEASE: "no such savepoint: sp_1" (ERR_TX_LOST beklenirdi)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'k2 COMMIT: "cannot commit - no transaction is active" (ERR_TX_LOST + ilk hata beklenirdi)'
+        1: 'k2 COMMIT: asıl neden örtüldü: cannot commit - no transaction is active'
+        2: 'k2 RELEASE: "no such savepoint: sp_1" (ERR_TX_LOST beklenirdi)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        report (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ah-taban/test/db-tx-kayip-250.test.mjs:64:35)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ah-taban/test/db-tx-kayip-250.test.mjs:185:5)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: (k3) işlem canlıyken seçici yakalama bugünkü gibi: iç işlem geri alınır, dış işlem yazmayı sürdürür ve kesinleşir; işlem dışı yazım etkilenmez
+    ok 3 - (k3) işlem canlıyken seçici yakalama bugünkü gibi: iç işlem geri alınır, dış işlem yazmayı sürdürür ve kesinleşir; işlem dışı yazım etkilenmez
+      ---
+      duration_ms: 43.806119
+      type: 'test'
+      ...
+    1..3
+not ok 2 - store.run / store.tx — derinlik > 0 iken bağlantıda işlem yoksa yazım yok, açık hata (2.5.0 BS-6)
+  ---
+  duration_ms: 498.583579
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ah-taban/test/db-tx-kayip-250.test.mjs:102:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 6
+# suites 2
+# pass 1
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3302.492461

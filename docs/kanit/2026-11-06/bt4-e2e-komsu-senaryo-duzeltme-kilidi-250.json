@@ -1,0 +1,32 @@
+{
+  "ad": "bt4-e2e-komsu-senaryo-duzeltme-kilidi-250",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-duzeltme-kilidi-250.mjs",
+  "commit": "ccbf781250ace68169e882d99849dac774ebe79f",
+  "dal": "worktree-agent-a8e6f2114d96e812f",
+  "kirli": 4,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T06:59:20.140Z",
+  "sure_sn": 116.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 79,
+    "gecen": 79,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt4-kanit/2026-11-06/bt4-e2e-komsu-senaryo-duzeltme-kilidi-250.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a8e6f2114d96e812f",
+  "ham_cikti_sha256": "eaf6fcf7a0726fddd4c8d1bb7172674e9456a73592dd6b063c93a25353075820",
+  "ham_cikti_bayt": 9127
+}

@@ -1,0 +1,75 @@
+esd temiz · kaynak /dev/shm/c5a3c-k7/temiz · şimdi 2026-10-08T12:00:00+03:00 · başta 1.84 2.11 2.27 1/121 29300 · 08:11:26
+taban çıkış 0 · 655 sn · {"cariler":1890,"sirketler":[{"id":"sirket-001","cari":1484,"fatura":34026,"kartli":5406},{"id":"sirket-5a5ffa3a-674f-4df8-b2f6-5c43b11b61a8","cari":406,"fatura":3915,"kartli":522}],"satir":1892,"sha256":"1156b6466b5369814c0e03be4d341aeed5be817b4f92d0a7eb85e7ac8dc7b7a3"}
+yeni çıkış 0 · 669 sn · {"cariler":1890,"sirketler":[{"id":"sirket-001","cari":1484,"fatura":34026,"kartli":5406},{"id":"sirket-5a5ffa3a-674f-4df8-b2f6-5c43b11b61a8","cari":406,"fatura":3915,"kartli":522}],"satir":1892,"sha256":"1156b6466b5369814c0e03be4d341aeed5be817b4f92d0a7eb85e7ac8dc7b7a3"}
+SONUÇ temiz: BAYT BAYT AYNI (1892 satır; 499731234 bayt; sha256 50e217fd33e1769d)
+sonda 1.15 1.16 1.37 1/124 31721 · 08:33:32
+esd hazir · kaynak /dev/shm/c5a3c-k7/hazir · şimdi 2026-10-08T12:00:00+03:00 · başta 1.15 1.16 1.37 1/124 31725 · 08:33:32
+taban çıkış 0 · 660 sn · {"cariler":1891,"sirketler":[{"id":"sirket-001","cari":1485,"fatura":34046,"kartli":5406},{"id":"sirket-5a5ffa3a-674f-4df8-b2f6-5c43b11b61a8","cari":406,"fatura":3915,"kartli":522}],"satir":1893,"sha256":"3a6fc1ec5a490f0a54eb15e12f50bea1505c5ca836318e882ee1915dbf91de6d"}
+yeni çıkış 0 · 654 sn · {"cariler":1891,"sirketler":[{"id":"sirket-001","cari":1485,"fatura":34046,"kartli":5406},{"id":"sirket-5a5ffa3a-674f-4df8-b2f6-5c43b11b61a8","cari":406,"fatura":3915,"kartli":522}],"satir":1893,"sha256":"4770913ff315d5be4679f29919135b1760e0894b7f71d15bb443d23ebe7c7b27"}
+SONUÇ hazir: FARK VAR
+satır 1893 1893
+CARİ sirket-001 account-5c95b806-f343-4bac-a19d-08f90e6c5922 alan farkı 108
+    ('.onbellek.doubtful.amount', '9500', '5500')
+    ('.onbellek.doubtful.items[len]', 17, 10)
+    ('.onbellek.invoiceNet.[Map][0][1].doubtful', '600', '0')
+    ('.onbellek.invoiceNet.[Map][1][1].doubtful', '600', '0')
+    ('.onbellek.invoiceNet.[Map][5][1].doubtful', '600', '0')
+    ('.onbellek.invoiceNet.[Map][10][1].doubtful', '600', '0')
+    ('.onbellek.invoiceNet.[Map][12][1].doubtful', '600', '0')
+    ('.onbellek.invoiceNet.[Map][15][1].doubtful', '400', '0')
+    ('.onbellek.invoiceNet.[Map][18][1].doubtful', '600', '0')
+    ('.onbellek.items[10].doubtful', '600', '0')
+    ('.onbellek.items[11].doubtful', '600', '0')
+    ('.onbellek.items[12].doubtful', '600', '0')
+farklı satır 1
+sonda 2.93 1.84 1.54 6/158 4577 · 08:55:46
+esd tykv249 · kaynak /dev/shm/c5a3c-k7/fx-tyk-fark-v249 · şimdi 2026-10-20T12:00:00+03:00 · başta 2.93 1.84 1.54 4/158 4581 · 08:55:46
+taban çıkış 0 · 1 sn · {"cariler":50,"sirketler":[{"id":"sirket-001","cari":50,"fatura":15,"kartli":2}],"satir":51,"sha256":"a218bc51e23e2dd1cc438d70c27398eb3d4350f19cadf31db6130c90706961cf"}
+yeni çıkış 0 · 1 sn · {"cariler":50,"sirketler":[{"id":"sirket-001","cari":50,"fatura":15,"kartli":2}],"satir":51,"sha256":"a218bc51e23e2dd1cc438d70c27398eb3d4350f19cadf31db6130c90706961cf"}
+SONUÇ tykv249: BAYT BAYT AYNI (51 satır; 865801 bayt; sha256 e08707ecb96142cd)
+sonda 2.93 1.84 1.54 3/164 4635 · 08:55:48
+esd skv249 · kaynak /dev/shm/c5a3c-k7/fx-supheli-kuyruk-v249 · şimdi 2026-10-20T12:00:00+03:00 · başta 2.93 1.84 1.54 2/164 4639 · 08:55:48
+taban çıkış 0 · 1 sn · {"cariler":7,"sirketler":[{"id":"sirket-001","cari":7,"fatura":14,"kartli":0}],"satir":8,"sha256":"ed617b0ae6fe24b57955fcfadc25d057081cbdbee4b44623fe9d655d093c8cfd"}
+yeni çıkış 0 · 0 sn · {"cariler":7,"sirketler":[{"id":"sirket-001","cari":7,"fatura":14,"kartli":0}],"satir":8,"sha256":"0a2b80829ccb72530138d089150391078cf07ff177f273f277f94feb0ac3520a"}
+SONUÇ skv249: FARK VAR
+satır 8 8
+CARİ sirket-001 account-0385ef95-cb95-4505-8d64-0967d51b62a7 alan farkı 215
+    ('.onbellek.doubtful.amount', '600', '200')
+    ('.onbellek.doubtful.items[0].amount', '600', '200')
+    ('.onbellek.invoiceNet.[Map][1][1].doubtful', '600', '200')
+    ('.onbellek.items[0].doubtful', '600', '200')
+    ('.onbellek.overdue.d0.amount', '500', '900')
+    ('.onbellek.overdue.d0.count', '1', '2')
+    ('.onbellek.overdue.d0.items[len]', 1, 2)
+    ('.onbellek.overdue.d0.items[0].amount', '500', '1000')
+    ('.onbellek.overdue.d0.items[0].date', '2026-08-11', '2026-07-22')
+    ('.onbellek.overdue.d0.items[0].doubtful', '0', '200')
+    ('.onbellek.overdue.d0.items[0].invoiceId', 'invoice-5eb6a917-dd85-4a89-817d-59bdefce89fb', 'invoice-65117874-7329-4d69-a983-1c592372f092')
+    ('.onbellek.overdue.d0.items[0].key', 'inv:invoice-5eb6a917-dd85-4a89-817d-59bdefce89fb', 'inv:invoice-65117874-7329-4d69-a983-1c592372f092')
+CARİ sirket-001 account-598f8c5d-86ad-467c-abea-6e64b117c2bb alan farkı 80
+    ('.onbellek.doubtful.amount', '1000', '900')
+    ('.onbellek.doubtful.items[1].amount', '400', '300')
+    ('.onbellek.invoiceNet.[Map][0][1].doubtful', '400', '300')
+    ('.onbellek.items[1].doubtful', '400', '300')
+    ('.onbellek.overdue.d0.amount', '0', '100')
+    ('.onbellek.overdue.d0.count', '0', '1')
+    ('.onbellek.overdue.d0.items[len]', 0, 1)
+    ('.onbellek.overdue.d0.since', '', '2026-06-22')
+    ('.onbellek.overdue.dm30.amount', '0', '100')
+    ('.onbellek.overdue.dm30.count', '0', '1')
+    ('.onbellek.overdue.dm30.items[len]', 0, 1)
+    ('.onbellek.overdue.dm30.since', '', '2026-06-22')
+CARİ sirket-001 account-7247750e-012a-4eb8-93d8-8d10bb86ac75 alan farkı 215
+    ('.onbellek.doubtful.amount', '600', '200')
+    ('.onbellek.doubtful.items[0].amount', '600', '200')
+    ('.onbellek.invoiceNet.[Map][0][1].doubtful', '600', '200')
+    ('.onbellek.items[0].doubtful', '600', '200')
+    ('.onbellek.overdue.d0.amount', '500', '900')
+    ('.onbellek.overdue.d0.count', '1', '2')
+    ('.onbellek.overdue.d0.items[len]', 1, 2)
+    ('.onbellek.overdue.d0.items[0].amount', '500', '1000')
+    ('.onbellek.overdue.d0.items[0].date', '2026-01-13', '2025-12-24')
+    ('.onbellek.overdue.d0.items[0].doubtful', '0', '200')
+    ('.onbellek.overdue.d0.items[0].invoiceId', 'invoice-c668132f-52ec-41e0-be20-41fad09acd3e', 'invoice-b8ba3e60-7d87-4099-aa84-a54fb5f8a283')
+    ('.onbellek.overdue.d0.items[0].key', 'inv:invoice-c668132f-52ec-41e0-be20-41fad09acd3e', 'inv:invoice-b8ba3e60-7d87-4099-aa84-a54fb5f8a283')
+sonda 2.93 1.84 1.54 4/171 4688 · 08:55:49

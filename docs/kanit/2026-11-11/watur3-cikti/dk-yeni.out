@@ -1,0 +1,201 @@
+1) Yol 2: J1 accepted (wamid.SAHTE0001) → imzalı 'sent' → J1 sent; işaret="VAR" kip="embedded"; B yolu Meta'da kayıtlı
+2) Yol 1'e geçildi (kip manual); işaret="" kip=""
+3) Yol 1: J2 accepted (wamid.SAHTE0002)
+4) J1'in geç teslimi B (ESKİ yol — DestekOfis uygulaması) adresine: HTTP 200; J1 delivered; işaret="" kip=""
+5) 13,5 sa sonra: J2 accepted; Bora Demir önizlemesi: Daha Önce Gönderildi; işaret="" kip=""
+# SONUÇ (gec): J2 Meta Kabul Etti — işaret sayılmadı
+
+[kanit] watur3-dk-f1-yeni-gec-UTC: BELİRSİZ (özet satırı tanınmadı) · çıkış 0 · özet yok · commit undefined · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+1) Yol 2: J1 accepted (wamid.SAHTE0001) → imzalı 'sent' → J1 sent; işaret="VAR" kip="embedded"; B yolu Meta'da kayıtlı
+2) Yol 1'e geçildi (kip manual); işaret="" kip=""
+3) Yol 1: J2 accepted (wamid.SAHTE0002)
+4) (kontrol) geç bildirim yok
+5) 13,5 sa sonra: J2 accepted; Bora Demir önizlemesi: Daha Önce Gönderildi; işaret="" kip=""
+# SONUÇ (kontrol): J2 Meta Kabul Etti — işaret sayılmadı
+
+[kanit] watur3-dk-f1-yeni-kontrol-UTC: BELİRSİZ (özet satırı tanınmadı) · çıkış 0 · özet yok · commit undefined · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+1) Yol 2: J1 accepted (wamid.SAHTE0001) → imzalı 'sent' → J1 sent; işaret="VAR" kip="embedded"; B yolu Meta'da kayıtlı
+2) Yol 1'e geçildi (kip manual); işaret="" kip=""
+3) Yol 1: J2 accepted (wamid.SAHTE0002)
+4) J1'in geç teslimi A (Yol 1'in kendi) adresine: HTTP 200; J1 delivered; işaret="VAR" kip="manual"
+5) 13,5 sa sonra: J2 expired; Bora Demir önizlemesi: gönderilecek; işaret="VAR" kip="manual"
+# SONUÇ (yeni): J2 'Süresi Doldu' + kişi 'gönderilecek' — Yol 1'in bildirimi hiç gelmediği hâlde işaret geçerli sayıldı
+
+[kanit] watur3-dk-f1-yeni-yeni-UTC: BAŞARISIZ (özet satırı tanınmadı) · çıkış 1 · özet yok · commit undefined · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+1) ESKİ kod: talep HTTP 200; iş failed, içerik silindi true; hata metni: "Değerlerden biri geçersiz (ör. alıcı numarası). (Meta hata kodu 131009: Parameter value is not valid: to +90 532 111 22 33)"
+2) ESKİ kod kapandı — veri klasöründe "+90 532 111 22 33": ["destekofis.sqlite"]
+3) YENİ kod: açılış + iki bakım turu sonra hata metni: "Değerlerden biri geçersiz (ör. alıcı numarası). (Meta hata kodu 131009: Parameter value is not valid: to …)"
+4) YENİ kod kapandı — veri klasöründe "+90 532 111 22 33": []
+# SONUÇ: temizlendi
+
+[kanit] watur3-dk-f2-yeni-UTC: BELİRSİZ (özet satırı tanınmadı) · çıkış 0 · özet yok · commit undefined · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+1) ön koşul: ileti isteği sahte Meta'da kapıda (held 1), satır sending, deneme 1
+2) imzalı 'delivered' (iş kimliğiyle) uygulandı: applied 1 · satır delivered
+3) ileti isteği yanıtsız sonuçlandı (zaman aşımı) → satır delivered · wamid wamid.SAHTE0001 · neden ""
+4) defter: deneme sonuçları [1:uncertain] · teslim satırı 1
+5) Bu Ay (teslim) 1
+6) yeni ekstre önizlemesi: Daha Önce Gönderildi · uncertainOpen -
+7) toplu iş done · ekranda iş "Teslim Edildi" · neden ""
+8) Yine de Gönder (onaylı): HTTP 409 {"ok":false,"error":"Yalnız sonucu belirsiz ileti yeniden gönderilir.","code":"whatsapp-job-state"}
+   bakım turundan sonra satır delivered
+9) sonraki imzasız 'read' (aynı wamid): applied 1 · satır read
+# tests 1
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# sonuç: satır teslim bilgisini korudu
+
+[kanit] watur3-t16-urun-yeni-UTC: GEÇTİ · çıkış 0 · 1/1 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit undefined · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+1) Yol 2: J1 accepted (wamid.SAHTE0001) → imzalı 'sent' → J1 sent; işaret="VAR" kip="embedded"; B yolu Meta'da kayıtlı
+2) Yol 1'e geçildi (kip manual); işaret="" kip=""
+3) Yol 1: J2 accepted (wamid.SAHTE0002)
+4) J1'in geç teslimi B (ESKİ yol — DestekOfis uygulaması) adresine: HTTP 200; J1 delivered; işaret="" kip=""
+5) 13,5 sa sonra: J2 accepted; Bora Demir önizlemesi: Daha Önce Gönderildi; işaret="" kip=""
+# SONUÇ (gec): J2 Meta Kabul Etti — işaret sayılmadı
+
+[kanit] watur3-dk-f1-yeni-gec-Europe-Istanbul: BELİRSİZ (özet satırı tanınmadı) · çıkış 0 · özet yok · commit undefined · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+1) Yol 2: J1 accepted (wamid.SAHTE0001) → imzalı 'sent' → J1 sent; işaret="VAR" kip="embedded"; B yolu Meta'da kayıtlı
+2) Yol 1'e geçildi (kip manual); işaret="" kip=""
+3) Yol 1: J2 accepted (wamid.SAHTE0002)
+4) (kontrol) geç bildirim yok
+5) 13,5 sa sonra: J2 accepted; Bora Demir önizlemesi: Daha Önce Gönderildi; işaret="" kip=""
+# SONUÇ (kontrol): J2 Meta Kabul Etti — işaret sayılmadı
+
+[kanit] watur3-dk-f1-yeni-kontrol-Europe-Istanbul: BELİRSİZ (özet satırı tanınmadı) · çıkış 0 · özet yok · commit undefined · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+1) Yol 2: J1 accepted (wamid.SAHTE0001) → imzalı 'sent' → J1 sent; işaret="VAR" kip="embedded"; B yolu Meta'da kayıtlı
+2) Yol 1'e geçildi (kip manual); işaret="" kip=""
+3) Yol 1: J2 accepted (wamid.SAHTE0002)
+4) J1'in geç teslimi A (Yol 1'in kendi) adresine: HTTP 200; J1 delivered; işaret="VAR" kip="manual"
+5) 13,5 sa sonra: J2 expired; Bora Demir önizlemesi: gönderilecek; işaret="VAR" kip="manual"
+# SONUÇ (yeni): J2 'Süresi Doldu' + kişi 'gönderilecek' — Yol 1'in bildirimi hiç gelmediği hâlde işaret geçerli sayıldı
+
+[kanit] watur3-dk-f1-yeni-yeni-Europe-Istanbul: BAŞARISIZ (özet satırı tanınmadı) · çıkış 1 · özet yok · commit undefined · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+1) ESKİ kod: talep HTTP 200; iş failed, içerik silindi true; hata metni: "Değerlerden biri geçersiz (ör. alıcı numarası). (Meta hata kodu 131009: Parameter value is not valid: to +90 532 111 22 33)"
+2) ESKİ kod kapandı — veri klasöründe "+90 532 111 22 33": ["destekofis.sqlite"]
+3) YENİ kod: açılış + iki bakım turu sonra hata metni: "Değerlerden biri geçersiz (ör. alıcı numarası). (Meta hata kodu 131009: Parameter value is not valid: to …)"
+4) YENİ kod kapandı — veri klasöründe "+90 532 111 22 33": []
+# SONUÇ: temizlendi
+
+[kanit] watur3-dk-f2-yeni-Europe-Istanbul: BELİRSİZ (özet satırı tanınmadı) · çıkış 0 · özet yok · commit undefined · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+1) ön koşul: ileti isteği sahte Meta'da kapıda (held 1), satır sending, deneme 1
+2) imzalı 'delivered' (iş kimliğiyle) uygulandı: applied 1 · satır delivered
+3) ileti isteği yanıtsız sonuçlandı (zaman aşımı) → satır delivered · wamid wamid.SAHTE0001 · neden ""
+4) defter: deneme sonuçları [1:uncertain] · teslim satırı 1
+5) Bu Ay (teslim) 1
+6) yeni ekstre önizlemesi: Daha Önce Gönderildi · uncertainOpen -
+7) toplu iş done · ekranda iş "Teslim Edildi" · neden ""
+8) Yine de Gönder (onaylı): HTTP 409 {"ok":false,"error":"Yalnız sonucu belirsiz ileti yeniden gönderilir.","code":"whatsapp-job-state"}
+   bakım turundan sonra satır delivered
+9) sonraki imzasız 'read' (aynı wamid): applied 1 · satır read
+# tests 1
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# sonuç: satır teslim bilgisini korudu
+
+[kanit] watur3-t16-urun-yeni-Europe-Istanbul: GEÇTİ · çıkış 0 · 1/1 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit undefined · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+1) Yol 2: J1 accepted (wamid.SAHTE0001) → imzalı 'sent' → J1 sent; işaret="VAR" kip="embedded"; B yolu Meta'da kayıtlı
+2) Yol 1'e geçildi (kip manual); işaret="" kip=""
+3) Yol 1: J2 accepted (wamid.SAHTE0002)
+4) J1'in geç teslimi B (ESKİ yol — DestekOfis uygulaması) adresine: HTTP 200; J1 delivered; işaret="VAR" kip="manual"
+5) 13,5 sa sonra: J2 expired; Bora Demir önizlemesi: gönderilecek; işaret="VAR" kip="manual"
+# SONUÇ (gec): J2 'Süresi Doldu' + kişi 'gönderilecek' — Yol 1'in bildirimi hiç gelmediği hâlde işaret geçerli sayıldı
+
+[kanit] watur3-dk-f1-eski-gec-UTC: BAŞARISIZ (özet satırı tanınmadı) · çıkış 1 · özet yok · commit undefined · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+1) Yol 2: J1 accepted (wamid.SAHTE0001) → imzalı 'sent' → J1 sent; işaret="VAR" kip="embedded"; B yolu Meta'da kayıtlı
+2) Yol 1'e geçildi (kip manual); işaret="" kip=""
+3) Yol 1: J2 accepted (wamid.SAHTE0002)
+4) (kontrol) geç bildirim yok
+5) 13,5 sa sonra: J2 accepted; Bora Demir önizlemesi: Daha Önce Gönderildi; işaret="" kip=""
+# SONUÇ (kontrol): J2 Meta Kabul Etti — işaret sayılmadı
+
+[kanit] watur3-dk-f1-eski-kontrol-UTC: BELİRSİZ (özet satırı tanınmadı) · çıkış 0 · özet yok · commit undefined · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+1) Yol 2: J1 accepted (wamid.SAHTE0001) → imzalı 'sent' → J1 sent; işaret="VAR" kip="embedded"; B yolu Meta'da kayıtlı
+2) Yol 1'e geçildi (kip manual); işaret="" kip=""
+3) Yol 1: J2 accepted (wamid.SAHTE0002)
+4) J1'in geç teslimi A (Yol 1'in kendi) adresine: HTTP 200; J1 delivered; işaret="VAR" kip="manual"
+5) 13,5 sa sonra: J2 expired; Bora Demir önizlemesi: gönderilecek; işaret="VAR" kip="manual"
+# SONUÇ (yeni): J2 'Süresi Doldu' + kişi 'gönderilecek' — Yol 1'in bildirimi hiç gelmediği hâlde işaret geçerli sayıldı
+
+[kanit] watur3-dk-f1-eski-yeni-UTC: BAŞARISIZ (özet satırı tanınmadı) · çıkış 1 · özet yok · commit undefined · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+1) ESKİ kod: talep HTTP 200; iş failed, içerik silindi true; hata metni: "Değerlerden biri geçersiz (ör. alıcı numarası). (Meta hata kodu 131009: Parameter value is not valid: to +90 532 111 22 33)"
+2) ESKİ kod kapandı — veri klasöründe "+90 532 111 22 33": ["destekofis.sqlite"]
+3) YENİ kod: açılış + iki bakım turu sonra hata metni: "Değerlerden biri geçersiz (ör. alıcı numarası). (Meta hata kodu 131009: Parameter value is not valid: to +90 532 111 22 33)"
+4) YENİ kod kapandı — veri klasöründe "+90 532 111 22 33": ["destekofis.sqlite"]
+# SONUÇ: eski kodun silinmiş işe yazdığı numaralı metin yeni kodda KALIYOR
+
+[kanit] watur3-dk-f2-eski-UTC: BAŞARISIZ (özet satırı tanınmadı) · çıkış 1 · özet yok · commit undefined · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+1) ön koşul: ileti isteği sahte Meta'da kapıda (held 1), satır sending, deneme 1
+2) imzalı 'delivered' (iş kimliğiyle) uygulandı: applied 1 · satır delivered
+3) ileti isteği yanıtsız sonuçlandı (zaman aşımı) → satır uncertain · wamid wamid.SAHTE0001 · neden "Meta 1 saniyede yanıt vermedi; sonuç bilinmiyor."
+4) defter: deneme sonuçları [1:uncertain] · teslim satırı 1
+5) Bu Ay (teslim) 1
+6) yeni ekstre önizlemesi: Daha Önce Gönderildi · uncertainOpen -
+7) toplu iş done · ekranda iş "Sonucu Belirsiz" · neden "Meta 1 saniyede yanıt vermedi; sonuç bilinmiyor."
+8) Yine de Gönder (onaylı): HTTP 400 {"ok":false,"error":"Gönderilebilecek kişi yok (seçilenlerin hepsi elendi — Daha Önce Gönderildi: 1). Bu kişilere bu dönem daha önce gönderildi; yeniden göndermek için yeni gönderimde \"Yine de Gönder
+   bakım turundan sonra satır uncertain
+9) sonraki imzasız 'read' (aynı wamid): applied 1 · satır read
+# tests 1
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# sonuç: ÜRÜN YARIŞI VAR — teslim bilgisi gelmiş satır zaman aşımında 'Sonucu Belirsiz'e döndü
+
+[kanit] watur3-t16-urun-eski-UTC: BAŞARISIZ (çıkış 1; 1 başarısız, 0 iptal) · çıkış 1 · 0/1 geçti, 1 başarısız, 0 iptal, 0 atlanan · commit undefined · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+1) Yol 2: J1 accepted (wamid.SAHTE0001) → imzalı 'sent' → J1 sent; işaret="VAR" kip="embedded"; B yolu Meta'da kayıtlı
+2) Yol 1'e geçildi (kip manual); işaret="" kip=""
+3) Yol 1: J2 accepted (wamid.SAHTE0002)
+4) J1'in geç teslimi B (ESKİ yol — DestekOfis uygulaması) adresine: HTTP 200; J1 delivered; işaret="VAR" kip="manual"
+5) 13,5 sa sonra: J2 expired; Bora Demir önizlemesi: gönderilecek; işaret="VAR" kip="manual"
+# SONUÇ (gec): J2 'Süresi Doldu' + kişi 'gönderilecek' — Yol 1'in bildirimi hiç gelmediği hâlde işaret geçerli sayıldı
+
+[kanit] watur3-dk-f1-eski-gec-Europe-Istanbul: BAŞARISIZ (özet satırı tanınmadı) · çıkış 1 · özet yok · commit undefined · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+1) Yol 2: J1 accepted (wamid.SAHTE0001) → imzalı 'sent' → J1 sent; işaret="VAR" kip="embedded"; B yolu Meta'da kayıtlı
+2) Yol 1'e geçildi (kip manual); işaret="" kip=""
+3) Yol 1: J2 accepted (wamid.SAHTE0002)
+4) (kontrol) geç bildirim yok
+5) 13,5 sa sonra: J2 accepted; Bora Demir önizlemesi: Daha Önce Gönderildi; işaret="" kip=""
+# SONUÇ (kontrol): J2 Meta Kabul Etti — işaret sayılmadı
+
+[kanit] watur3-dk-f1-eski-kontrol-Europe-Istanbul: BELİRSİZ (özet satırı tanınmadı) · çıkış 0 · özet yok · commit undefined · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+1) Yol 2: J1 accepted (wamid.SAHTE0001) → imzalı 'sent' → J1 sent; işaret="VAR" kip="embedded"; B yolu Meta'da kayıtlı
+2) Yol 1'e geçildi (kip manual); işaret="" kip=""
+3) Yol 1: J2 accepted (wamid.SAHTE0002)
+4) J1'in geç teslimi A (Yol 1'in kendi) adresine: HTTP 200; J1 delivered; işaret="VAR" kip="manual"
+5) 13,5 sa sonra: J2 expired; Bora Demir önizlemesi: gönderilecek; işaret="VAR" kip="manual"
+# SONUÇ (yeni): J2 'Süresi Doldu' + kişi 'gönderilecek' — Yol 1'in bildirimi hiç gelmediği hâlde işaret geçerli sayıldı
+
+[kanit] watur3-dk-f1-eski-yeni-Europe-Istanbul: BAŞARISIZ (özet satırı tanınmadı) · çıkış 1 · özet yok · commit undefined · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+1) ESKİ kod: talep HTTP 200; iş failed, içerik silindi true; hata metni: "Değerlerden biri geçersiz (ör. alıcı numarası). (Meta hata kodu 131009: Parameter value is not valid: to +90 532 111 22 33)"
+2) ESKİ kod kapandı — veri klasöründe "+90 532 111 22 33": ["destekofis.sqlite"]
+3) YENİ kod: açılış + iki bakım turu sonra hata metni: "Değerlerden biri geçersiz (ör. alıcı numarası). (Meta hata kodu 131009: Parameter value is not valid: to +90 532 111 22 33)"
+4) YENİ kod kapandı — veri klasöründe "+90 532 111 22 33": ["destekofis.sqlite"]
+# SONUÇ: eski kodun silinmiş işe yazdığı numaralı metin yeni kodda KALIYOR
+
+[kanit] watur3-dk-f2-eski-Europe-Istanbul: BAŞARISIZ (özet satırı tanınmadı) · çıkış 1 · özet yok · commit undefined · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+1) ön koşul: ileti isteği sahte Meta'da kapıda (held 1), satır sending, deneme 1
+2) imzalı 'delivered' (iş kimliğiyle) uygulandı: applied 1 · satır delivered
+3) ileti isteği yanıtsız sonuçlandı (zaman aşımı) → satır uncertain · wamid wamid.SAHTE0001 · neden "Meta 1 saniyede yanıt vermedi; sonuç bilinmiyor."
+4) defter: deneme sonuçları [1:uncertain] · teslim satırı 1
+5) Bu Ay (teslim) 1
+6) yeni ekstre önizlemesi: Daha Önce Gönderildi · uncertainOpen -
+7) toplu iş done · ekranda iş "Sonucu Belirsiz" · neden "Meta 1 saniyede yanıt vermedi; sonuç bilinmiyor."
+8) Yine de Gönder (onaylı): HTTP 400 {"ok":false,"error":"Gönderilebilecek kişi yok (seçilenlerin hepsi elendi — Daha Önce Gönderildi: 1). Bu kişilere bu dönem daha önce gönderildi; yeniden göndermek için yeni gönderimde \"Yine de Gönder
+   bakım turundan sonra satır uncertain
+9) sonraki imzasız 'read' (aynı wamid): applied 1 · satır read
+# tests 1
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# sonuç: ÜRÜN YARIŞI VAR — teslim bilgisi gelmiş satır zaman aşımında 'Sonucu Belirsiz'e döndü
+
+[kanit] watur3-t16-urun-eski-Europe-Istanbul: BAŞARISIZ (çıkış 1; 1 başarısız, 0 iptal) · çıkış 1 · 0/1 geçti, 1 başarısız, 0 iptal, 0 atlanan · commit undefined · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+BITTI

@@ -1,0 +1,247 @@
+TAP version 13
+# Subtest: 2.5.0 BİRLEŞİK TUR 4 — taksit düzelt: 'değişiklik yok' kısa yolu
+    # Subtest: yanıtı kopan kendi düzeltmesi: aynı gövde (formun eski sürümü) ikinci kez → 200; tek yazım — Değişiklik Geçmişi 1, sürüm ilerlemez
+    not ok 1 - yanıtı kopan kendi düzeltmesi: aynı gövde (formun eski sürümü) ikinci kez → 200; tek yazım — Değişiklik Geçmişi 1, sürüm ilerlemez
+      ---
+      duration_ms: 109.045235
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt4-eski/test/birlesik-tur4-degisiklik-yok-250.test.mjs:86:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        aynı gövdenin yeniden gönderimi 200 almalı (gelen 409 plan-item-stale: Bu taksit siz açtıktan sonra başka biri tarafından değiştirildi; düzeltmeniz kaydedilmedi. Kartı yenileyip yeniden deneyin.)
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt4-eski/test/birlesik-tur4-degisiklik-yok-250.test.mjs:95:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: koruma bozulmaz: yanıt koptuktan sonra B FARKLI değer girer → A'nın aynı gövdeli yeniden gönderimi 409, B'nin değeri durur
+    ok 2 - koruma bozulmaz: yanıt koptuktan sonra B FARKLI değer girer → A'nın aynı gövdeli yeniden gönderimi 409, B'nin değeri durur
+      ---
+      duration_ms: 123.07206
+      type: 'test'
+      ...
+    # Subtest: aynı içerik: A formu açar, B taksiti 300 yapar, A da (eskimiş formla) 300 kaydeder → 200, A hiçbir şey yazmaz
+    not ok 3 - aynı içerik: A formu açar, B taksiti 300 yapar, A da (eskimiş formla) 300 kaydeder → 200, A hiçbir şey yazmaz
+      ---
+      duration_ms: 90.347262
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt4-eski/test/birlesik-tur4-degisiklik-yok-250.test.mjs:116:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        aynı içerik 200 (gelen 409 plan-item-stale)
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt4-eski/test/birlesik-tur4-degisiklik-yok-250.test.mjs:124:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: GÖVDE YOLDAYKEN: A'nın gövdesi formun açıldığı hâliyle AYNI, B arada değiştirir → 409 (kısa yol güncel taksitle karşılaştırır, isteğin başındakiyle değil)
+    ok 4 - GÖVDE YOLDAYKEN: A'nın gövdesi formun açıldığı hâliyle AYNI, B arada değiştirir → 409 (kısa yol güncel taksitle karşılaştırır, isteğin başındakiyle değil)
+      ---
+      duration_ms: 396.211957
+      type: 'test'
+      ...
+    # Subtest: her alan tek tek: eskimiş formda yalnız vade ya da yalnız açıklama farklıysa 409 (farklı içerik 'aynı' sayılmaz)
+    ok 5 - her alan tek tek: eskimiş formda yalnız vade ya da yalnız açıklama farklıysa 409 (farklı içerik 'aynı' sayılmaz)
+      ---
+      duration_ms: 62.441807
+      type: 'test'
+      ...
+    1..5
+not ok 1 - 2.5.0 BİRLEŞİK TUR 4 — taksit düzelt: 'değişiklik yok' kısa yolu
+  ---
+  duration_ms: 1930.801141
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt4-eski/test/birlesik-tur4-degisiklik-yok-250.test.mjs:78:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 BİRLEŞİK TUR 4 — taksit kartı: 'değişiklik yok' kısa yolu
+    # Subtest: yanıtı kopan kendi kaydı: aynı form ikinci kez → 200; tek yazım — Değişiklik Geçmişi 1, sürüm ilerlemez
+    not ok 1 - yanıtı kopan kendi kaydı: aynı form ikinci kez → 200; tek yazım — Değişiklik Geçmişi 1, sürüm ilerlemez
+      ---
+      duration_ms: 69.279359
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt4-eski/test/birlesik-tur4-degisiklik-yok-250.test.mjs:165:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        aynı formun yeniden gönderimi 200 almalı (gelen 409 plan-stale: Bu taksit kartı siz açtıktan sonra başka biri tarafından değiştirildi; değişikliğiniz kaydedilmedi. Kartı yenileyip yeniden deneyin.)
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt4-eski/test/birlesik-tur4-degisiklik-yok-250.test.mjs:173:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: koruma bozulmaz: yanıt koptuktan sonra B tutarı 1.200 yapar → A'nın yeniden gönderimi 409, 1.200 durur
+    ok 2 - koruma bozulmaz: yanıt koptuktan sonra B tutarı 1.200 yapar → A'nın yeniden gönderimi 409, 1.200 durur
+      ---
+      duration_ms: 84.312831
+      type: 'test'
+      ...
+    # Subtest: aynı içerik: B notu 'ortak' yapar, A da eskimiş formla 'ortak' kaydeder → 200, A yazmaz; Kartı Kapat iki kez → ikincisi yazmaz
+    not ok 3 - aynı içerik: B notu 'ortak' yapar, A da eskimiş formla 'ortak' kaydeder → 200, A yazmaz; Kartı Kapat iki kez → ikincisi yazmaz
+      ---
+      duration_ms: 48.274086
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt4-eski/test/birlesik-tur4-degisiklik-yok-250.test.mjs:193:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        aynı içerik 200 (gelen 409 plan-stale)
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt4-eski/test/birlesik-tur4-degisiklik-yok-250.test.mjs:200:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: GÖVDE YOLDAYKEN: A'nın formu açıldığı hâliyle AYNI, B arada tutarı değiştirir → 409
+    ok 4 - GÖVDE YOLDAYKEN: A'nın formu açıldığı hâliyle AYNI, B arada tutarı değiştirir → 409
+      ---
+      duration_ms: 367.513936
+      type: 'test'
+      ...
+    # Subtest: carisiz eski kart (göç öncesinden kalma): değişmemiş form da kısa yola girmez — ilk düzenlemede cari açılır (önceki davranış)
+    ok 5 - carisiz eski kart (göç öncesinden kalma): değişmemiş form da kısa yola girmez — ilk düzenlemede cari açılır (önceki davranış)
+      ---
+      duration_ms: 69.281064
+      type: 'test'
+      ...
+    # Subtest: her alan tek tek: B tutarı değiştirdi; A'nın eskimiş formu tutarı B'ninkiyle aynı, yalnız adı / telefonu / Sıra No'su farklı → 409
+    ok 6 - her alan tek tek: B tutarı değiştirdi; A'nın eskimiş formu tutarı B'ninkiyle aynı, yalnız adı / telefonu / Sıra No'su farklı → 409
+      ---
+      duration_ms: 51.973617
+      type: 'test'
+      ...
+    1..6
+not ok 2 - 2.5.0 BİRLEŞİK TUR 4 — taksit kartı: 'değişiklik yok' kısa yolu
+  ---
+  duration_ms: 1376.320517
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt4-eski/test/birlesik-tur4-degisiklik-yok-250.test.mjs:157:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 BİRLEŞİK TUR 4 — stok kartı: 'değişiklik yok' kısa yolu
+    # Subtest: yanıtı kopan kendi kaydı: aynı form ikinci kez → 200; tek yazım — Değişiklik Geçmişi 1, sürüm ilerlemez
+    not ok 1 - yanıtı kopan kendi kaydı: aynı form ikinci kez → 200; tek yazım — Değişiklik Geçmişi 1, sürüm ilerlemez
+      ---
+      duration_ms: 58.054252
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt4-eski/test/birlesik-tur4-degisiklik-yok-250.test.mjs:256:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        aynı formun yeniden gönderimi 200 almalı (gelen 409 stock-item-stale: Bu stok kartı siz açtıktan sonra başka biri tarafından değiştirildi; değişikliğiniz kaydedilmedi. Kartı yenileyip yeniden deneyin.)
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt4-eski/test/birlesik-tur4-degisiklik-yok-250.test.mjs:264:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: koruma bozulmaz: yanıt koptuktan sonra B fiyatlı ALIM girer (Alış Fiyatı 10 → 12) → A'nın yeniden gönderimi 409, 12 durur
+    ok 2 - koruma bozulmaz: yanıt koptuktan sonra B fiyatlı ALIM girer (Alış Fiyatı 10 → 12) → A'nın yeniden gönderimi 409, 12 durur
+      ---
+      duration_ms: 62.521528
+      type: 'test'
+      ...
+    # Subtest: aynı içerik: B Satış Fiyatı'nı 20 yapar, A da eskimiş formla 20 kaydeder → 200, A yazmaz
+    not ok 3 - aynı içerik: B Satış Fiyatı'nı 20 yapar, A da eskimiş formla 20 kaydeder → 200, A yazmaz
+      ---
+      duration_ms: 55.890107
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt4-eski/test/birlesik-tur4-degisiklik-yok-250.test.mjs:283:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        aynı içerik 200 (gelen 409 stock-item-stale)
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt4-eski/test/birlesik-tur4-degisiklik-yok-250.test.mjs:290:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: GÖVDE YOLDAYKEN: A'nın formu açıldığı hâliyle AYNI, B arada Satış Fiyatı'nı değiştirir → 409
+    ok 4 - GÖVDE YOLDAYKEN: A'nın formu açıldığı hâliyle AYNI, B arada Satış Fiyatı'nı değiştirir → 409
+      ---
+      duration_ms: 330.094419
+      type: 'test'
+      ...
+    # Subtest: her alan tek tek: B Satış Fiyatı'nı 20 yaptı; A'nın eskimiş formu 20 ile aynı, yalnız KDV oranı / Alış Fiyatı / not farklı → 409
+    ok 5 - her alan tek tek: B Satış Fiyatı'nı 20 yaptı; A'nın eskimiş formu 20 ile aynı, yalnız KDV oranı / Alış Fiyatı / not farklı → 409
+      ---
+      duration_ms: 55.162232
+      type: 'test'
+      ...
+    1..5
+not ok 3 - 2.5.0 BİRLEŞİK TUR 4 — stok kartı: 'değişiklik yok' kısa yolu
+  ---
+  duration_ms: 1201.088554
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt4-eski/test/birlesik-tur4-degisiklik-yok-250.test.mjs:248:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..3
+# tests 16
+# suites 3
+# pass 10
+# fail 6
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4964.176508

@@ -1,0 +1,7 @@
+[once] program 2000 satır: 83 ms (kapı 17 ms) · olay döngüsü en çok 84 ms
+[once] program 4000 satır: 306 ms (kapı 42 ms) · olay döngüsü en çok 311 ms
+[once] program 8000 satır: 964 ms (kapı 65 ms) · olay döngüsü en çok 964 ms
+[once] program 16000 satır: 3669 ms (kapı 162 ms) · olay döngüsü en çok 3672 ms
+[once] yalnız tetikleyiciler 4000 satır: 209 ms
+[once] yalnız tetikleyiciler 16000 satır: 3174 ms
+SONUC {"etiket":"once","kok":"/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t1-eski-2ba5ac0b","program":[{"satir":2000,"ms":83,"olayDongusuEnCokMs":84,"kapiMs":17},{"satir":4000,"ms":306,"olayDongusuEnCokMs":311,"kapiMs":42},{"satir":8000,"ms":964,"olayDongusuEnCokMs":964,"kapiMs":65},{"satir":16000,"ms":3669,"olayDongusuEnCokMs":3672,"kapiMs":162}],"bellek":[{"satir":4000,"ms":209},{"satir":16000,"ms":3174}]}

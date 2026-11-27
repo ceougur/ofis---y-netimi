@@ -1,0 +1,785 @@
+{
+ "aciklama": "v2.4.9 (fikstür v249.json) → bugünkü kod (Ç6-HESAP tur 3) farkları; her biri karar numarasıyla. Kilitli kopyada açılışlar 2.4.9 kuralıyla donar (Ç3 — 500 kalır); stok ve kâr farkları iki kipte aynı. Ç7b birleşimiyle (21.11): iade KDV yönü (KG-8 / F-08) ve taksit kartı Yeni Borç 600.90 (KG-2) farkları eklendi.",
+ "farklar": [
+  {
+   "sinif": "satis-fatura",
+   "kip": "kilitsiz",
+   "tarih": "2025-12-31",
+   "alan": "mizan.500",
+   "eski": "-150000",
+   "yeni": "0",
+   "karar": "K1 (KG-1 A, M-01…M-07, S47; 30.10 açılış düzeni)",
+   "not": "modül açılışlarının karşı hesabı 500 Açılış ve Devir Bakiyeleri → 519 Eşleştirilecek Açılış Bakiyeleri (Bilanço V.G, Kesin Değil 'Tamamlanmamış Açılış'); kilitli kopyada açılışlar donmuş dönemde (2.4.9 kuralıyla donar, Ç3) — fark yok"
+  },
+  {
+   "sinif": "satis-fatura",
+   "kip": "kilitsiz",
+   "tarih": "2025-12-31",
+   "alan": "mizan.519",
+   "eski": "0",
+   "yeni": "-150000",
+   "karar": "K1 (KG-1 A, M-01…M-07, S47; 30.10 açılış düzeni)",
+   "not": "modül açılışlarının karşı hesabı 500 Açılış ve Devir Bakiyeleri → 519 Eşleştirilecek Açılış Bakiyeleri (Bilanço V.G, Kesin Değil 'Tamamlanmamış Açılış'); kilitli kopyada açılışlar donmuş dönemde (2.4.9 kuralıyla donar, Ç3) — fark yok"
+  },
+  {
+   "sinif": "satis-fatura",
+   "kip": "kilitsiz",
+   "tarih": "2025-12-31",
+   "alan": "kar",
+   "eski": "20000",
+   "yeni": "10000",
+   "karar": "KG-11 A (YÜKSEK-1)",
+   "not": "v2.4.9'da satışların maliyeti yok (6 / 7 hareketi = kâr); 2.5.0 Gelir Tablosu satışların maliyeti tahminini düşer: fark = −smm"
+  },
+  {
+   "sinif": "satis-fatura",
+   "kip": "kilitsiz",
+   "tarih": "2025-12-31",
+   "alan": "smm",
+   "eski": "0",
+   "yeni": "10000",
+   "karar": "KG-11 A (YÜKSEK-1)",
+   "not": "v2.4.9'da satışların maliyeti yok (6 / 7 hareketi = kâr); 2.5.0 Gelir Tablosu satışların maliyeti tahminini düşer: fark = −smm"
+  },
+  {
+   "sinif": "satis-fatura",
+   "kip": "kilitsiz",
+   "tarih": "2026-06-30",
+   "alan": "mizan.500",
+   "eski": "-150000",
+   "yeni": "0",
+   "karar": "K1 (KG-1 A, M-01…M-07, S47; 30.10 açılış düzeni)",
+   "not": "modül açılışlarının karşı hesabı 500 Açılış ve Devir Bakiyeleri → 519 Eşleştirilecek Açılış Bakiyeleri (Bilanço V.G, Kesin Değil 'Tamamlanmamış Açılış'); kilitli kopyada açılışlar donmuş dönemde (2.4.9 kuralıyla donar, Ç3) — fark yok"
+  },
+  {
+   "sinif": "satis-fatura",
+   "kip": "kilitsiz",
+   "tarih": "2026-06-30",
+   "alan": "mizan.519",
+   "eski": "0",
+   "yeni": "-150000",
+   "karar": "K1 (KG-1 A, M-01…M-07, S47; 30.10 açılış düzeni)",
+   "not": "modül açılışlarının karşı hesabı 500 Açılış ve Devir Bakiyeleri → 519 Eşleştirilecek Açılış Bakiyeleri (Bilanço V.G, Kesin Değil 'Tamamlanmamış Açılış'); kilitli kopyada açılışlar donmuş dönemde (2.4.9 kuralıyla donar, Ç3) — fark yok"
+  },
+  {
+   "sinif": "satis-fatura",
+   "kip": "kilitsiz",
+   "tarih": "2026-06-30",
+   "alan": "kar",
+   "eski": "70000",
+   "yeni": "35000",
+   "karar": "KG-11 A (YÜKSEK-1)",
+   "not": "v2.4.9'da satışların maliyeti yok (6 / 7 hareketi = kâr); 2.5.0 Gelir Tablosu satışların maliyeti tahminini düşer: fark = −smm"
+  },
+  {
+   "sinif": "satis-fatura",
+   "kip": "kilitsiz",
+   "tarih": "2026-06-30",
+   "alan": "smm",
+   "eski": "0",
+   "yeni": "35000",
+   "karar": "KG-11 A (YÜKSEK-1)",
+   "not": "v2.4.9'da satışların maliyeti yok (6 / 7 hareketi = kâr); 2.5.0 Gelir Tablosu satışların maliyeti tahminini düşer: fark = −smm"
+  },
+  {
+   "sinif": "satis-fatura",
+   "kip": "kilitsiz",
+   "tarih": "2026-10-20",
+   "alan": "mizan.500",
+   "eski": "-150000",
+   "yeni": "0",
+   "karar": "K1 (KG-1 A, M-01…M-07, S47; 30.10 açılış düzeni)",
+   "not": "modül açılışlarının karşı hesabı 500 Açılış ve Devir Bakiyeleri → 519 Eşleştirilecek Açılış Bakiyeleri (Bilanço V.G, Kesin Değil 'Tamamlanmamış Açılış'); kilitli kopyada açılışlar donmuş dönemde (2.4.9 kuralıyla donar, Ç3) — fark yok"
+  },
+  {
+   "sinif": "satis-fatura",
+   "kip": "kilitsiz",
+   "tarih": "2026-10-20",
+   "alan": "mizan.519",
+   "eski": "0",
+   "yeni": "-150000",
+   "karar": "K1 (KG-1 A, M-01…M-07, S47; 30.10 açılış düzeni)",
+   "not": "modül açılışlarının karşı hesabı 500 Açılış ve Devir Bakiyeleri → 519 Eşleştirilecek Açılış Bakiyeleri (Bilanço V.G, Kesin Değil 'Tamamlanmamış Açılış'); kilitli kopyada açılışlar donmuş dönemde (2.4.9 kuralıyla donar, Ç3) — fark yok"
+  },
+  {
+   "sinif": "satis-fatura",
+   "kip": "kilitsiz",
+   "tarih": "2026-10-20",
+   "alan": "kar",
+   "eski": "75000",
+   "yeni": "40000",
+   "karar": "KG-11 A (YÜKSEK-1)",
+   "not": "v2.4.9'da satışların maliyeti yok (6 / 7 hareketi = kâr); 2.5.0 Gelir Tablosu satışların maliyeti tahminini düşer: fark = −smm"
+  },
+  {
+   "sinif": "satis-fatura",
+   "kip": "kilitsiz",
+   "tarih": "2026-10-20",
+   "alan": "smm",
+   "eski": "0",
+   "yeni": "35000",
+   "karar": "KG-11 A (YÜKSEK-1)",
+   "not": "v2.4.9'da satışların maliyeti yok (6 / 7 hareketi = kâr); 2.5.0 Gelir Tablosu satışların maliyeti tahminini düşer: fark = −smm"
+  },
+  {
+   "sinif": "satis-fatura",
+   "kip": "kilitli",
+   "tarih": "2025-12-31",
+   "alan": "kar",
+   "eski": "20000",
+   "yeni": "10000",
+   "karar": "KG-11 A (YÜKSEK-1)",
+   "not": "v2.4.9'da satışların maliyeti yok (6 / 7 hareketi = kâr); 2.5.0 Gelir Tablosu satışların maliyeti tahminini düşer: fark = −smm"
+  },
+  {
+   "sinif": "satis-fatura",
+   "kip": "kilitli",
+   "tarih": "2025-12-31",
+   "alan": "smm",
+   "eski": "0",
+   "yeni": "10000",
+   "karar": "KG-11 A (YÜKSEK-1)",
+   "not": "v2.4.9'da satışların maliyeti yok (6 / 7 hareketi = kâr); 2.5.0 Gelir Tablosu satışların maliyeti tahminini düşer: fark = −smm"
+  },
+  {
+   "sinif": "satis-fatura",
+   "kip": "kilitli",
+   "tarih": "2026-06-30",
+   "alan": "kar",
+   "eski": "70000",
+   "yeni": "35000",
+   "karar": "KG-11 A (YÜKSEK-1)",
+   "not": "v2.4.9'da satışların maliyeti yok (6 / 7 hareketi = kâr); 2.5.0 Gelir Tablosu satışların maliyeti tahminini düşer: fark = −smm"
+  },
+  {
+   "sinif": "satis-fatura",
+   "kip": "kilitli",
+   "tarih": "2026-06-30",
+   "alan": "smm",
+   "eski": "0",
+   "yeni": "35000",
+   "karar": "KG-11 A (YÜKSEK-1)",
+   "not": "v2.4.9'da satışların maliyeti yok (6 / 7 hareketi = kâr); 2.5.0 Gelir Tablosu satışların maliyeti tahminini düşer: fark = −smm"
+  },
+  {
+   "sinif": "satis-fatura",
+   "kip": "kilitli",
+   "tarih": "2026-10-20",
+   "alan": "kar",
+   "eski": "75000",
+   "yeni": "40000",
+   "karar": "KG-11 A (YÜKSEK-1)",
+   "not": "v2.4.9'da satışların maliyeti yok (6 / 7 hareketi = kâr); 2.5.0 Gelir Tablosu satışların maliyeti tahminini düşer: fark = −smm"
+  },
+  {
+   "sinif": "satis-fatura",
+   "kip": "kilitli",
+   "tarih": "2026-10-20",
+   "alan": "smm",
+   "eski": "0",
+   "yeni": "35000",
+   "karar": "KG-11 A (YÜKSEK-1)",
+   "not": "v2.4.9'da satışların maliyeti yok (6 / 7 hareketi = kâr); 2.5.0 Gelir Tablosu satışların maliyeti tahminini düşer: fark = −smm"
+  },
+  {
+   "sinif": "alis-fatura",
+   "kip": "kilitsiz",
+   "tarih": "2025-12-31",
+   "alan": "stok",
+   "eski": "65000",
+   "yeni": "60000",
+   "karar": "çekirdek §13 + kitap §5.1 (dönemsel ağırlıklı ortalama)",
+   "not": "v2.4.9'un stok değeri (Rapor Merkezi Stok Hareket Özeti) miktar × kartın (son alış) birim fiyatı; 2.5.0 dönem sonu değerlemesi (dönem başı + yılın alışları − alış iadeleri) / miktar"
+  },
+  {
+   "sinif": "alis-fatura",
+   "kip": "kilitsiz",
+   "tarih": "2026-06-30",
+   "alan": "stok",
+   "eski": "149500",
+   "yeni": "147000",
+   "karar": "çekirdek §13 + kitap §5.1 (dönemsel ağırlıklı ortalama)",
+   "not": "v2.4.9'un stok değeri (Rapor Merkezi Stok Hareket Özeti) miktar × kartın (son alış) birim fiyatı; 2.5.0 dönem sonu değerlemesi (dönem başı + yılın alışları − alış iadeleri) / miktar"
+  },
+  {
+   "sinif": "alis-fatura",
+   "kip": "kilitsiz",
+   "tarih": "2026-10-20",
+   "alan": "stok",
+   "eski": "136500",
+   "yeni": "134000",
+   "karar": "çekirdek §13 + kitap §5.1 (dönemsel ağırlıklı ortalama)",
+   "not": "v2.4.9'un stok değeri (Rapor Merkezi Stok Hareket Özeti) miktar × kartın (son alış) birim fiyatı; 2.5.0 dönem sonu değerlemesi (dönem başı + yılın alışları − alış iadeleri) / miktar"
+  },
+  {
+   "sinif": "alis-fatura",
+   "kip": "kilitli",
+   "tarih": "2025-12-31",
+   "alan": "stok",
+   "eski": "65000",
+   "yeni": "60000",
+   "karar": "çekirdek §13 + kitap §5.1 (dönemsel ağırlıklı ortalama)",
+   "not": "v2.4.9'un stok değeri (Rapor Merkezi Stok Hareket Özeti) miktar × kartın (son alış) birim fiyatı; 2.5.0 dönem sonu değerlemesi (dönem başı + yılın alışları − alış iadeleri) / miktar"
+  },
+  {
+   "sinif": "alis-fatura",
+   "kip": "kilitli",
+   "tarih": "2026-06-30",
+   "alan": "stok",
+   "eski": "149500",
+   "yeni": "147000",
+   "karar": "çekirdek §13 + kitap §5.1 (dönemsel ağırlıklı ortalama)",
+   "not": "v2.4.9'un stok değeri (Rapor Merkezi Stok Hareket Özeti) miktar × kartın (son alış) birim fiyatı; 2.5.0 dönem sonu değerlemesi (dönem başı + yılın alışları − alış iadeleri) / miktar"
+  },
+  {
+   "sinif": "alis-fatura",
+   "kip": "kilitli",
+   "tarih": "2026-10-20",
+   "alan": "stok",
+   "eski": "136500",
+   "yeni": "134000",
+   "karar": "çekirdek §13 + kitap §5.1 (dönemsel ağırlıklı ortalama)",
+   "not": "v2.4.9'un stok değeri (Rapor Merkezi Stok Hareket Özeti) miktar × kartın (son alış) birim fiyatı; 2.5.0 dönem sonu değerlemesi (dönem başı + yılın alışları − alış iadeleri) / miktar"
+  },
+  {
+   "sinif": "kasa",
+   "kip": "kilitsiz",
+   "tarih": "2025-12-31",
+   "alan": "mizan.500",
+   "eski": "-500000",
+   "yeni": "0",
+   "karar": "K1 (KG-1 A, M-01…M-07, S47; 30.10 açılış düzeni)",
+   "not": "modül açılışlarının karşı hesabı 500 Açılış ve Devir Bakiyeleri → 519 Eşleştirilecek Açılış Bakiyeleri (Bilanço V.G, Kesin Değil 'Tamamlanmamış Açılış'); kilitli kopyada açılışlar donmuş dönemde (2.4.9 kuralıyla donar, Ç3) — fark yok"
+  },
+  {
+   "sinif": "kasa",
+   "kip": "kilitsiz",
+   "tarih": "2025-12-31",
+   "alan": "mizan.519",
+   "eski": "0",
+   "yeni": "-500000",
+   "karar": "K1 (KG-1 A, M-01…M-07, S47; 30.10 açılış düzeni)",
+   "not": "modül açılışlarının karşı hesabı 500 Açılış ve Devir Bakiyeleri → 519 Eşleştirilecek Açılış Bakiyeleri (Bilanço V.G, Kesin Değil 'Tamamlanmamış Açılış'); kilitli kopyada açılışlar donmuş dönemde (2.4.9 kuralıyla donar, Ç3) — fark yok"
+  },
+  {
+   "sinif": "kasa",
+   "kip": "kilitsiz",
+   "tarih": "2026-06-30",
+   "alan": "mizan.500",
+   "eski": "-500000",
+   "yeni": "0",
+   "karar": "K1 (KG-1 A, M-01…M-07, S47; 30.10 açılış düzeni)",
+   "not": "modül açılışlarının karşı hesabı 500 Açılış ve Devir Bakiyeleri → 519 Eşleştirilecek Açılış Bakiyeleri (Bilanço V.G, Kesin Değil 'Tamamlanmamış Açılış'); kilitli kopyada açılışlar donmuş dönemde (2.4.9 kuralıyla donar, Ç3) — fark yok"
+  },
+  {
+   "sinif": "kasa",
+   "kip": "kilitsiz",
+   "tarih": "2026-06-30",
+   "alan": "mizan.519",
+   "eski": "0",
+   "yeni": "-500000",
+   "karar": "K1 (KG-1 A, M-01…M-07, S47; 30.10 açılış düzeni)",
+   "not": "modül açılışlarının karşı hesabı 500 Açılış ve Devir Bakiyeleri → 519 Eşleştirilecek Açılış Bakiyeleri (Bilanço V.G, Kesin Değil 'Tamamlanmamış Açılış'); kilitli kopyada açılışlar donmuş dönemde (2.4.9 kuralıyla donar, Ç3) — fark yok"
+  },
+  {
+   "sinif": "kasa",
+   "kip": "kilitsiz",
+   "tarih": "2026-10-20",
+   "alan": "mizan.500",
+   "eski": "-500000",
+   "yeni": "0",
+   "karar": "K1 (KG-1 A, M-01…M-07, S47; 30.10 açılış düzeni)",
+   "not": "modül açılışlarının karşı hesabı 500 Açılış ve Devir Bakiyeleri → 519 Eşleştirilecek Açılış Bakiyeleri (Bilanço V.G, Kesin Değil 'Tamamlanmamış Açılış'); kilitli kopyada açılışlar donmuş dönemde (2.4.9 kuralıyla donar, Ç3) — fark yok"
+  },
+  {
+   "sinif": "kasa",
+   "kip": "kilitsiz",
+   "tarih": "2026-10-20",
+   "alan": "mizan.519",
+   "eski": "0",
+   "yeni": "-500000",
+   "karar": "K1 (KG-1 A, M-01…M-07, S47; 30.10 açılış düzeni)",
+   "not": "modül açılışlarının karşı hesabı 500 Açılış ve Devir Bakiyeleri → 519 Eşleştirilecek Açılış Bakiyeleri (Bilanço V.G, Kesin Değil 'Tamamlanmamış Açılış'); kilitli kopyada açılışlar donmuş dönemde (2.4.9 kuralıyla donar, Ç3) — fark yok"
+  },
+  {
+   "sinif": "banka",
+   "kip": "kilitsiz",
+   "tarih": "2025-12-31",
+   "alan": "mizan.500",
+   "eski": "-2500000",
+   "yeni": "0",
+   "karar": "K1 (KG-1 A, M-01…M-07, S47; 30.10 açılış düzeni)",
+   "not": "modül açılışlarının karşı hesabı 500 Açılış ve Devir Bakiyeleri → 519 Eşleştirilecek Açılış Bakiyeleri (Bilanço V.G, Kesin Değil 'Tamamlanmamış Açılış'); kilitli kopyada açılışlar donmuş dönemde (2.4.9 kuralıyla donar, Ç3) — fark yok"
+  },
+  {
+   "sinif": "banka",
+   "kip": "kilitsiz",
+   "tarih": "2025-12-31",
+   "alan": "mizan.519",
+   "eski": "0",
+   "yeni": "-2500000",
+   "karar": "K1 (KG-1 A, M-01…M-07, S47; 30.10 açılış düzeni)",
+   "not": "modül açılışlarının karşı hesabı 500 Açılış ve Devir Bakiyeleri → 519 Eşleştirilecek Açılış Bakiyeleri (Bilanço V.G, Kesin Değil 'Tamamlanmamış Açılış'); kilitli kopyada açılışlar donmuş dönemde (2.4.9 kuralıyla donar, Ç3) — fark yok"
+  },
+  {
+   "sinif": "banka",
+   "kip": "kilitsiz",
+   "tarih": "2026-06-30",
+   "alan": "mizan.500",
+   "eski": "-2500000",
+   "yeni": "0",
+   "karar": "K1 (KG-1 A, M-01…M-07, S47; 30.10 açılış düzeni)",
+   "not": "modül açılışlarının karşı hesabı 500 Açılış ve Devir Bakiyeleri → 519 Eşleştirilecek Açılış Bakiyeleri (Bilanço V.G, Kesin Değil 'Tamamlanmamış Açılış'); kilitli kopyada açılışlar donmuş dönemde (2.4.9 kuralıyla donar, Ç3) — fark yok"
+  },
+  {
+   "sinif": "banka",
+   "kip": "kilitsiz",
+   "tarih": "2026-06-30",
+   "alan": "mizan.519",
+   "eski": "0",
+   "yeni": "-2500000",
+   "karar": "K1 (KG-1 A, M-01…M-07, S47; 30.10 açılış düzeni)",
+   "not": "modül açılışlarının karşı hesabı 500 Açılış ve Devir Bakiyeleri → 519 Eşleştirilecek Açılış Bakiyeleri (Bilanço V.G, Kesin Değil 'Tamamlanmamış Açılış'); kilitli kopyada açılışlar donmuş dönemde (2.4.9 kuralıyla donar, Ç3) — fark yok"
+  },
+  {
+   "sinif": "banka",
+   "kip": "kilitsiz",
+   "tarih": "2026-10-20",
+   "alan": "mizan.500",
+   "eski": "-2500000",
+   "yeni": "0",
+   "karar": "K1 (KG-1 A, M-01…M-07, S47; 30.10 açılış düzeni)",
+   "not": "modül açılışlarının karşı hesabı 500 Açılış ve Devir Bakiyeleri → 519 Eşleştirilecek Açılış Bakiyeleri (Bilanço V.G, Kesin Değil 'Tamamlanmamış Açılış'); kilitli kopyada açılışlar donmuş dönemde (2.4.9 kuralıyla donar, Ç3) — fark yok"
+  },
+  {
+   "sinif": "banka",
+   "kip": "kilitsiz",
+   "tarih": "2026-10-20",
+   "alan": "mizan.519",
+   "eski": "0",
+   "yeni": "-2500000",
+   "karar": "K1 (KG-1 A, M-01…M-07, S47; 30.10 açılış düzeni)",
+   "not": "modül açılışlarının karşı hesabı 500 Açılış ve Devir Bakiyeleri → 519 Eşleştirilecek Açılış Bakiyeleri (Bilanço V.G, Kesin Değil 'Tamamlanmamış Açılış'); kilitli kopyada açılışlar donmuş dönemde (2.4.9 kuralıyla donar, Ç3) — fark yok"
+  },
+  {
+   "sinif": "acilis",
+   "kip": "kilitsiz",
+   "tarih": "2025-12-31",
+   "alan": "mizan.500",
+   "eski": "-690000",
+   "yeni": "0",
+   "karar": "K1 (KG-1 A, M-01…M-07, S47; 30.10 açılış düzeni) + KG-16 A",
+   "not": "modül açılışlarının karşı hesabı 500 Açılış ve Devir Bakiyeleri → 519 Eşleştirilecek Açılış Bakiyeleri (Bilanço V.G, Kesin Değil 'Tamamlanmamış Açılış'); kilitli kopyada açılışlar donmuş dönemde (2.4.9 kuralıyla donar, Ç3) — fark yok; 'Açılış bakiyesi' açıklamalı işaretsiz elle borç 1.500,00 onay beklerken açılış sayılır (KG-16 A — S-Ç5-1)"
+  },
+  {
+   "sinif": "acilis",
+   "kip": "kilitsiz",
+   "tarih": "2025-12-31",
+   "alan": "mizan.519",
+   "eski": "0",
+   "yeni": "-690000",
+   "karar": "K1 (KG-1 A, M-01…M-07, S47; 30.10 açılış düzeni) + KG-16 A",
+   "not": "modül açılışlarının karşı hesabı 500 Açılış ve Devir Bakiyeleri → 519 Eşleştirilecek Açılış Bakiyeleri (Bilanço V.G, Kesin Değil 'Tamamlanmamış Açılış'); kilitli kopyada açılışlar donmuş dönemde (2.4.9 kuralıyla donar, Ç3) — fark yok; 'Açılış bakiyesi' açıklamalı işaretsiz elle borç 1.500,00 onay beklerken açılış sayılır (KG-16 A — S-Ç5-1)"
+  },
+  {
+   "sinif": "acilis",
+   "kip": "kilitsiz",
+   "tarih": "2026-06-30",
+   "alan": "mizan.500",
+   "eski": "-690000",
+   "yeni": "0",
+   "karar": "K1 (KG-1 A, M-01…M-07, S47; 30.10 açılış düzeni) + KG-16 A",
+   "not": "modül açılışlarının karşı hesabı 500 Açılış ve Devir Bakiyeleri → 519 Eşleştirilecek Açılış Bakiyeleri (Bilanço V.G, Kesin Değil 'Tamamlanmamış Açılış'); kilitli kopyada açılışlar donmuş dönemde (2.4.9 kuralıyla donar, Ç3) — fark yok; 'Açılış bakiyesi' açıklamalı işaretsiz elle borç 1.500,00 onay beklerken açılış sayılır (KG-16 A — S-Ç5-1)"
+  },
+  {
+   "sinif": "acilis",
+   "kip": "kilitsiz",
+   "tarih": "2026-06-30",
+   "alan": "mizan.519",
+   "eski": "0",
+   "yeni": "-690000",
+   "karar": "K1 (KG-1 A, M-01…M-07, S47; 30.10 açılış düzeni) + KG-16 A",
+   "not": "modül açılışlarının karşı hesabı 500 Açılış ve Devir Bakiyeleri → 519 Eşleştirilecek Açılış Bakiyeleri (Bilanço V.G, Kesin Değil 'Tamamlanmamış Açılış'); kilitli kopyada açılışlar donmuş dönemde (2.4.9 kuralıyla donar, Ç3) — fark yok; 'Açılış bakiyesi' açıklamalı işaretsiz elle borç 1.500,00 onay beklerken açılış sayılır (KG-16 A — S-Ç5-1)"
+  },
+  {
+   "sinif": "acilis",
+   "kip": "kilitsiz",
+   "tarih": "2026-10-20",
+   "alan": "mizan.500",
+   "eski": "-690000",
+   "yeni": "0",
+   "karar": "K1 (KG-1 A, M-01…M-07, S47; 30.10 açılış düzeni) + KG-16 A",
+   "not": "modül açılışlarının karşı hesabı 500 Açılış ve Devir Bakiyeleri → 519 Eşleştirilecek Açılış Bakiyeleri (Bilanço V.G, Kesin Değil 'Tamamlanmamış Açılış'); kilitli kopyada açılışlar donmuş dönemde (2.4.9 kuralıyla donar, Ç3) — fark yok; 'Açılış bakiyesi' açıklamalı işaretsiz elle borç 1.500,00 onay beklerken açılış sayılır (KG-16 A — S-Ç5-1)"
+  },
+  {
+   "sinif": "acilis",
+   "kip": "kilitsiz",
+   "tarih": "2026-10-20",
+   "alan": "mizan.519",
+   "eski": "0",
+   "yeni": "-690000",
+   "karar": "K1 (KG-1 A, M-01…M-07, S47; 30.10 açılış düzeni) + KG-16 A",
+   "not": "modül açılışlarının karşı hesabı 500 Açılış ve Devir Bakiyeleri → 519 Eşleştirilecek Açılış Bakiyeleri (Bilanço V.G, Kesin Değil 'Tamamlanmamış Açılış'); kilitli kopyada açılışlar donmuş dönemde (2.4.9 kuralıyla donar, Ç3) — fark yok; 'Açılış bakiyesi' açıklamalı işaretsiz elle borç 1.500,00 onay beklerken açılış sayılır (KG-16 A — S-Ç5-1)"
+  },
+  {
+   "sinif": "stok",
+   "kip": "kilitsiz",
+   "tarih": "2025-12-31",
+   "alan": "stok",
+   "eski": "118800",
+   "yeni": "110492",
+   "karar": "çekirdek §13 + kitap §5.1 (dönemsel ağırlıklı ortalama)",
+   "not": "v2.4.9'un stok değeri (Rapor Merkezi Stok Hareket Özeti) miktar × kartın (son alış) birim fiyatı; 2.5.0 dönem sonu değerlemesi (dönem başı + yılın alışları − alış iadeleri) / miktar"
+  },
+  {
+   "sinif": "stok",
+   "kip": "kilitsiz",
+   "tarih": "2025-12-31",
+   "alan": "kar",
+   "eski": "0",
+   "yeni": "30692",
+   "karar": "KG-11 A (YÜKSEK-1) + S-06",
+   "not": "v2.4.9'da satışların maliyeti yok (6 / 7 hareketi = kâr); 2.5.0 Gelir Tablosu satışların maliyeti tahminini düşer: fark = −smm; parasız giriş (sayım farkı) dönem sonu değerlemesine girer → 2025'te satışların maliyeti eksi"
+  },
+  {
+   "sinif": "stok",
+   "kip": "kilitsiz",
+   "tarih": "2025-12-31",
+   "alan": "smm",
+   "eski": "0",
+   "yeni": "-30692",
+   "karar": "KG-11 A (YÜKSEK-1) + S-06",
+   "not": "v2.4.9'da satışların maliyeti yok (6 / 7 hareketi = kâr); 2.5.0 Gelir Tablosu satışların maliyeti tahminini düşer: fark = −smm; parasız giriş (sayım farkı) dönem sonu değerlemesine girer → 2025'te satışların maliyeti eksi"
+  },
+  {
+   "sinif": "stok",
+   "kip": "kilitsiz",
+   "tarih": "2026-06-30",
+   "alan": "stok",
+   "eski": "72600",
+   "yeni": "67061",
+   "karar": "çekirdek §13 + kitap §5.1 (dönemsel ağırlıklı ortalama)",
+   "not": "v2.4.9'un stok değeri (Rapor Merkezi Stok Hareket Özeti) miktar × kartın (son alış) birim fiyatı; 2.5.0 dönem sonu değerlemesi (dönem başı + yılın alışları − alış iadeleri) / miktar"
+  },
+  {
+   "sinif": "stok",
+   "kip": "kilitsiz",
+   "tarih": "2026-06-30",
+   "alan": "kar",
+   "eski": "30000",
+   "yeni": "-3531",
+   "karar": "KG-11 A (YÜKSEK-1) + S-06",
+   "not": "v2.4.9'da satışların maliyeti yok (6 / 7 hareketi = kâr); 2.5.0 Gelir Tablosu satışların maliyeti tahminini düşer: fark = −smm; parasız giriş (sayım farkı) dönem sonu değerlemesine girer → 2025'te satışların maliyeti eksi"
+  },
+  {
+   "sinif": "stok",
+   "kip": "kilitsiz",
+   "tarih": "2026-06-30",
+   "alan": "smm",
+   "eski": "0",
+   "yeni": "33531",
+   "karar": "KG-11 A (YÜKSEK-1) + S-06",
+   "not": "v2.4.9'da satışların maliyeti yok (6 / 7 hareketi = kâr); 2.5.0 Gelir Tablosu satışların maliyeti tahminini düşer: fark = −smm; parasız giriş (sayım farkı) dönem sonu değerlemesine girer → 2025'te satışların maliyeti eksi"
+  },
+  {
+   "sinif": "stok",
+   "kip": "kilitsiz",
+   "tarih": "2026-10-20",
+   "alan": "stok",
+   "eski": "59400",
+   "yeni": "54868",
+   "karar": "çekirdek §13 + kitap §5.1 (dönemsel ağırlıklı ortalama)",
+   "not": "v2.4.9'un stok değeri (Rapor Merkezi Stok Hareket Özeti) miktar × kartın (son alış) birim fiyatı; 2.5.0 dönem sonu değerlemesi (dönem başı + yılın alışları − alış iadeleri) / miktar"
+  },
+  {
+   "sinif": "stok",
+   "kip": "kilitsiz",
+   "tarih": "2026-10-20",
+   "alan": "kar",
+   "eski": "52000",
+   "yeni": "6276",
+   "karar": "KG-11 A (YÜKSEK-1) + S-06",
+   "not": "v2.4.9'da satışların maliyeti yok (6 / 7 hareketi = kâr); 2.5.0 Gelir Tablosu satışların maliyeti tahminini düşer: fark = −smm; parasız giriş (sayım farkı) dönem sonu değerlemesine girer → 2025'te satışların maliyeti eksi"
+  },
+  {
+   "sinif": "stok",
+   "kip": "kilitsiz",
+   "tarih": "2026-10-20",
+   "alan": "smm",
+   "eski": "0",
+   "yeni": "45724",
+   "karar": "KG-11 A (YÜKSEK-1) + S-06",
+   "not": "v2.4.9'da satışların maliyeti yok (6 / 7 hareketi = kâr); 2.5.0 Gelir Tablosu satışların maliyeti tahminini düşer: fark = −smm; parasız giriş (sayım farkı) dönem sonu değerlemesine girer → 2025'te satışların maliyeti eksi"
+  },
+  {
+   "sinif": "stok",
+   "kip": "kilitli",
+   "tarih": "2025-12-31",
+   "alan": "stok",
+   "eski": "118800",
+   "yeni": "110492",
+   "karar": "çekirdek §13 + kitap §5.1 (dönemsel ağırlıklı ortalama)",
+   "not": "v2.4.9'un stok değeri (Rapor Merkezi Stok Hareket Özeti) miktar × kartın (son alış) birim fiyatı; 2.5.0 dönem sonu değerlemesi (dönem başı + yılın alışları − alış iadeleri) / miktar"
+  },
+  {
+   "sinif": "stok",
+   "kip": "kilitli",
+   "tarih": "2025-12-31",
+   "alan": "kar",
+   "eski": "0",
+   "yeni": "30692",
+   "karar": "KG-11 A (YÜKSEK-1) + S-06",
+   "not": "v2.4.9'da satışların maliyeti yok (6 / 7 hareketi = kâr); 2.5.0 Gelir Tablosu satışların maliyeti tahminini düşer: fark = −smm; parasız giriş (sayım farkı) dönem sonu değerlemesine girer → 2025'te satışların maliyeti eksi"
+  },
+  {
+   "sinif": "stok",
+   "kip": "kilitli",
+   "tarih": "2025-12-31",
+   "alan": "smm",
+   "eski": "0",
+   "yeni": "-30692",
+   "karar": "KG-11 A (YÜKSEK-1) + S-06",
+   "not": "v2.4.9'da satışların maliyeti yok (6 / 7 hareketi = kâr); 2.5.0 Gelir Tablosu satışların maliyeti tahminini düşer: fark = −smm; parasız giriş (sayım farkı) dönem sonu değerlemesine girer → 2025'te satışların maliyeti eksi"
+  },
+  {
+   "sinif": "stok",
+   "kip": "kilitli",
+   "tarih": "2026-06-30",
+   "alan": "stok",
+   "eski": "72600",
+   "yeni": "67061",
+   "karar": "çekirdek §13 + kitap §5.1 (dönemsel ağırlıklı ortalama)",
+   "not": "v2.4.9'un stok değeri (Rapor Merkezi Stok Hareket Özeti) miktar × kartın (son alış) birim fiyatı; 2.5.0 dönem sonu değerlemesi (dönem başı + yılın alışları − alış iadeleri) / miktar"
+  },
+  {
+   "sinif": "stok",
+   "kip": "kilitli",
+   "tarih": "2026-06-30",
+   "alan": "kar",
+   "eski": "30000",
+   "yeni": "-3531",
+   "karar": "KG-11 A (YÜKSEK-1) + S-06",
+   "not": "v2.4.9'da satışların maliyeti yok (6 / 7 hareketi = kâr); 2.5.0 Gelir Tablosu satışların maliyeti tahminini düşer: fark = −smm; parasız giriş (sayım farkı) dönem sonu değerlemesine girer → 2025'te satışların maliyeti eksi"
+  },
+  {
+   "sinif": "stok",
+   "kip": "kilitli",
+   "tarih": "2026-06-30",
+   "alan": "smm",
+   "eski": "0",
+   "yeni": "33531",
+   "karar": "KG-11 A (YÜKSEK-1) + S-06",
+   "not": "v2.4.9'da satışların maliyeti yok (6 / 7 hareketi = kâr); 2.5.0 Gelir Tablosu satışların maliyeti tahminini düşer: fark = −smm; parasız giriş (sayım farkı) dönem sonu değerlemesine girer → 2025'te satışların maliyeti eksi"
+  },
+  {
+   "sinif": "stok",
+   "kip": "kilitli",
+   "tarih": "2026-10-20",
+   "alan": "stok",
+   "eski": "59400",
+   "yeni": "54868",
+   "karar": "çekirdek §13 + kitap §5.1 (dönemsel ağırlıklı ortalama)",
+   "not": "v2.4.9'un stok değeri (Rapor Merkezi Stok Hareket Özeti) miktar × kartın (son alış) birim fiyatı; 2.5.0 dönem sonu değerlemesi (dönem başı + yılın alışları − alış iadeleri) / miktar"
+  },
+  {
+   "sinif": "stok",
+   "kip": "kilitli",
+   "tarih": "2026-10-20",
+   "alan": "kar",
+   "eski": "52000",
+   "yeni": "6276",
+   "karar": "KG-11 A (YÜKSEK-1) + S-06",
+   "not": "v2.4.9'da satışların maliyeti yok (6 / 7 hareketi = kâr); 2.5.0 Gelir Tablosu satışların maliyeti tahminini düşer: fark = −smm; parasız giriş (sayım farkı) dönem sonu değerlemesine girer → 2025'te satışların maliyeti eksi"
+  },
+  {
+   "sinif": "stok",
+   "kip": "kilitli",
+   "tarih": "2026-10-20",
+   "alan": "smm",
+   "eski": "0",
+   "yeni": "45724",
+   "karar": "KG-11 A (YÜKSEK-1) + S-06",
+   "not": "v2.4.9'da satışların maliyeti yok (6 / 7 hareketi = kâr); 2.5.0 Gelir Tablosu satışların maliyeti tahminini düşer: fark = −smm; parasız giriş (sayım farkı) dönem sonu değerlemesine girer → 2025'te satışların maliyeti eksi"
+  },
+  {
+   "sinif": "supheli",
+   "kip": "kilitsiz",
+   "tarih": "bugün",
+   "alan": "cari.musteri.borclu",
+   "eski": "150000",
+   "yeni": "0",
+   "karar": "BANKA-MODULU-PLAN §3.11b (12.10.2026)",
+   "not": "şüpheli alacağa alınan cari v2.4.9 Cari Listesi'nde borçlu; defterde iki sürümde de 128 → Bilanço I.C'de 128 satırında, 120 satırında değil (sayı aynı: 128 = 1.500,00)"
+  },
+  {
+   "sinif": "supheli",
+   "kip": "kilitsiz",
+   "tarih": "bugün",
+   "alan": "cari.musteri.borcluSayisi",
+   "eski": "1",
+   "yeni": "0",
+   "karar": "BANKA-MODULU-PLAN §3.11b (12.10.2026)",
+   "not": "şüpheli alacağa alınan cari v2.4.9 Cari Listesi'nde borçlu; defterde iki sürümde de 128 → Bilanço I.C'de 128 satırında, 120 satırında değil (sayı aynı: 128 = 1.500,00)"
+  },
+  {
+   "sinif": "supheli",
+   "kip": "kilitli",
+   "tarih": "bugün",
+   "alan": "cari.musteri.borclu",
+   "eski": "150000",
+   "yeni": "0",
+   "karar": "BANKA-MODULU-PLAN §3.11b (12.10.2026)",
+   "not": "şüpheli alacağa alınan cari v2.4.9 Cari Listesi'nde borçlu; defterde iki sürümde de 128 → Bilanço I.C'de 128 satırında, 120 satırında değil (sayı aynı: 128 = 1.500,00)"
+  },
+  {
+   "sinif": "supheli",
+   "kip": "kilitli",
+   "tarih": "bugün",
+   "alan": "cari.musteri.borcluSayisi",
+   "eski": "1",
+   "yeni": "0",
+   "karar": "BANKA-MODULU-PLAN §3.11b (12.10.2026)",
+   "not": "şüpheli alacağa alınan cari v2.4.9 Cari Listesi'nde borçlu; defterde iki sürümde de 128 → Bilanço I.C'de 128 satırında, 120 satırında değil (sayı aynı: 128 = 1.500,00)"
+  },
+  {
+   "sinif": "satis-fatura",
+   "kip": "kilitsiz",
+   "tarih": "2026-10-20",
+   "alan": "mizan.191",
+   "eski": "0",
+   "yeni": "2000",
+   "karar": "KG-8 / F-08 (Ç7b — iade KDV'si: satıştan iade KDV'si 191, alıştan iade KDV'si 391; BAŞ MİMAR KARARI 05.11 Ç7b, kural kitabı P2)",
+   "not": "v2.4.9'da satıştan iadenin KDV'si 391'i azaltıyordu; Ç7b'de 191 İndirilecek KDV'ye borç (iade 2026-07-15, kilit gününden sonra → kilitli kopyada da)"
+  },
+  {
+   "sinif": "satis-fatura",
+   "kip": "kilitsiz",
+   "tarih": "2026-10-20",
+   "alan": "mizan.391",
+   "eski": "-16000",
+   "yeni": "-18000",
+   "karar": "KG-8 / F-08 (Ç7b — iade KDV'si: satıştan iade KDV'si 191, alıştan iade KDV'si 391; BAŞ MİMAR KARARI 05.11 Ç7b, kural kitabı P2)",
+   "not": "v2.4.9'da satıştan iadenin KDV'si 391'i azaltıyordu; Ç7b'de 191 İndirilecek KDV'ye borç (iade 2026-07-15, kilit gününden sonra → kilitli kopyada da)"
+  },
+  {
+   "sinif": "satis-fatura",
+   "kip": "kilitli",
+   "tarih": "2026-10-20",
+   "alan": "mizan.191",
+   "eski": "0",
+   "yeni": "2000",
+   "karar": "KG-8 / F-08 (Ç7b — iade KDV'si: satıştan iade KDV'si 191, alıştan iade KDV'si 391; BAŞ MİMAR KARARI 05.11 Ç7b, kural kitabı P2)",
+   "not": "v2.4.9'da satıştan iadenin KDV'si 391'i azaltıyordu; Ç7b'de 191 İndirilecek KDV'ye borç (iade 2026-07-15, kilit gününden sonra → kilitli kopyada da)"
+  },
+  {
+   "sinif": "satis-fatura",
+   "kip": "kilitli",
+   "tarih": "2026-10-20",
+   "alan": "mizan.391",
+   "eski": "-16000",
+   "yeni": "-18000",
+   "karar": "KG-8 / F-08 (Ç7b — iade KDV'si: satıştan iade KDV'si 191, alıştan iade KDV'si 391; BAŞ MİMAR KARARI 05.11 Ç7b, kural kitabı P2)",
+   "not": "v2.4.9'da satıştan iadenin KDV'si 391'i azaltıyordu; Ç7b'de 191 İndirilecek KDV'ye borç (iade 2026-07-15, kilit gününden sonra → kilitli kopyada da)"
+  },
+  {
+   "sinif": "alis-fatura",
+   "kip": "kilitsiz",
+   "tarih": "2026-10-20",
+   "alan": "mizan.191",
+   "eski": "26800",
+   "yeni": "29400",
+   "karar": "KG-8 / F-08 (Ç7b — iade KDV'si: satıştan iade KDV'si 191, alıştan iade KDV'si 391; BAŞ MİMAR KARARI 05.11 Ç7b, kural kitabı P2)",
+   "not": "v2.4.9'da alıştan iadenin KDV'si 191'i azaltıyordu; Ç7b'de 391 Hesaplanan KDV'ye alacak (iade 2026-08-10, kilit gününden sonra → kilitli kopyada da)"
+  },
+  {
+   "sinif": "alis-fatura",
+   "kip": "kilitsiz",
+   "tarih": "2026-10-20",
+   "alan": "mizan.391",
+   "eski": "0",
+   "yeni": "-2600",
+   "karar": "KG-8 / F-08 (Ç7b — iade KDV'si: satıştan iade KDV'si 191, alıştan iade KDV'si 391; BAŞ MİMAR KARARI 05.11 Ç7b, kural kitabı P2)",
+   "not": "v2.4.9'da alıştan iadenin KDV'si 191'i azaltıyordu; Ç7b'de 391 Hesaplanan KDV'ye alacak (iade 2026-08-10, kilit gününden sonra → kilitli kopyada da)"
+  },
+  {
+   "sinif": "alis-fatura",
+   "kip": "kilitli",
+   "tarih": "2026-10-20",
+   "alan": "mizan.191",
+   "eski": "26800",
+   "yeni": "29400",
+   "karar": "KG-8 / F-08 (Ç7b — iade KDV'si: satıştan iade KDV'si 191, alıştan iade KDV'si 391; BAŞ MİMAR KARARI 05.11 Ç7b, kural kitabı P2)",
+   "not": "v2.4.9'da alıştan iadenin KDV'si 191'i azaltıyordu; Ç7b'de 391 Hesaplanan KDV'ye alacak (iade 2026-08-10, kilit gününden sonra → kilitli kopyada da)"
+  },
+  {
+   "sinif": "alis-fatura",
+   "kip": "kilitli",
+   "tarih": "2026-10-20",
+   "alan": "mizan.391",
+   "eski": "0",
+   "yeni": "-2600",
+   "karar": "KG-8 / F-08 (Ç7b — iade KDV'si: satıştan iade KDV'si 191, alıştan iade KDV'si 391; BAŞ MİMAR KARARI 05.11 Ç7b, kural kitabı P2)",
+   "not": "v2.4.9'da alıştan iadenin KDV'si 191'i azaltıyordu; Ç7b'de 391 Hesaplanan KDV'ye alacak (iade 2026-08-10, kilit gününden sonra → kilitli kopyada da)"
+  },
+  {
+   "sinif": "taksit",
+   "kip": "kilitsiz",
+   "tarih": "2025-12-31",
+   "alan": "donem.600",
+   "eski": "0",
+   "yeni": "-120000",
+   "karar": "KG-2 A (Ç7b — taksit kartı 'Yeni Borç' H-03: 602 → 600.90 Belgesiz Satışlar)",
+   "not": "v2.4.9'da elle açılan taksit kartının borcu 602 Diğer Gelirler; Ç7b'de 600.90 (Gelir Tablosu 600 satırı); kilitli kopyada donmuş dönem (2025) 2.4.9 kuralıyla kalır (Ç3)"
+  },
+  {
+   "sinif": "taksit",
+   "kip": "kilitsiz",
+   "tarih": "2025-12-31",
+   "alan": "donem.602",
+   "eski": "-120000",
+   "yeni": "0",
+   "karar": "KG-2 A (Ç7b — taksit kartı 'Yeni Borç' H-03: 602 → 600.90 Belgesiz Satışlar)",
+   "not": "v2.4.9'da elle açılan taksit kartının borcu 602 Diğer Gelirler; Ç7b'de 600.90 (Gelir Tablosu 600 satırı); kilitli kopyada donmuş dönem (2025) 2.4.9 kuralıyla kalır (Ç3)"
+  },
+  {
+   "sinif": "taksit",
+   "kip": "kilitsiz",
+   "tarih": "2026-10-20",
+   "alan": "donem.600",
+   "eski": "0",
+   "yeni": "-90000",
+   "karar": "KG-2 A (Ç7b — taksit kartı 'Yeni Borç' H-03: 602 → 600.90 Belgesiz Satışlar)",
+   "not": "v2.4.9'da elle açılan taksit kartının borcu 602 Diğer Gelirler; Ç7b'de 600.90 (Gelir Tablosu 600 satırı); kilitli kopyada donmuş dönem (2025) 2.4.9 kuralıyla kalır (Ç3)"
+  },
+  {
+   "sinif": "taksit",
+   "kip": "kilitsiz",
+   "tarih": "2026-10-20",
+   "alan": "donem.602",
+   "eski": "-90000",
+   "yeni": "0",
+   "karar": "KG-2 A (Ç7b — taksit kartı 'Yeni Borç' H-03: 602 → 600.90 Belgesiz Satışlar)",
+   "not": "v2.4.9'da elle açılan taksit kartının borcu 602 Diğer Gelirler; Ç7b'de 600.90 (Gelir Tablosu 600 satırı); kilitli kopyada donmuş dönem (2025) 2.4.9 kuralıyla kalır (Ç3)"
+  },
+  {
+   "sinif": "taksit",
+   "kip": "kilitli",
+   "tarih": "2026-10-20",
+   "alan": "donem.600",
+   "eski": "0",
+   "yeni": "-90000",
+   "karar": "KG-2 A (Ç7b — taksit kartı 'Yeni Borç' H-03: 602 → 600.90 Belgesiz Satışlar)",
+   "not": "v2.4.9'da elle açılan taksit kartının borcu 602 Diğer Gelirler; Ç7b'de 600.90 (Gelir Tablosu 600 satırı); kilitli kopyada donmuş dönem (2025) 2.4.9 kuralıyla kalır (Ç3)"
+  },
+  {
+   "sinif": "taksit",
+   "kip": "kilitli",
+   "tarih": "2026-10-20",
+   "alan": "donem.602",
+   "eski": "-90000",
+   "yeni": "0",
+   "karar": "KG-2 A (Ç7b — taksit kartı 'Yeni Borç' H-03: 602 → 600.90 Belgesiz Satışlar)",
+   "not": "v2.4.9'da elle açılan taksit kartının borcu 602 Diğer Gelirler; Ç7b'de 600.90 (Gelir Tablosu 600 satırı); kilitli kopyada donmuş dönem (2025) 2.4.9 kuralıyla kalır (Ç3)"
+  }
+ ]
+}

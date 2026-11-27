@@ -1,0 +1,11 @@
+2.5.0 BS-2 / BS-3 / BS-4 kanıtı (05.11.2026; dal worktree-agent-a43c8fa8274cd88ab; test f0850826, düzeltme 1abb2724).
+- bs234-eski-e74eb6e7-*: ESKİ kod, `git archive e74eb6e7` ayrı kopyası (scratchpad/bs234-eski-e74eb6e7) — json'daki "commit" aracı çağıran ağacın
+  commit'idir; koşulan kod komut satırındaki kopya yoludur (ders 23). bs3: 4/4 kırmızı, bs4: 3/4 kırmızı (beklenen nedenle); bs2 ve e2e kart-iade-gecmis
+  eski kodda YEŞİL (davranış doğruydu, test eksikti — dişi bs234-mutasyon M1/M2).
+- bs234-mutasyon: `git archive 1abb2724` kopyası (scratchpad/bs234-yeni-1abb2724); 10/10 beklenen nedenle yakalandı.
+- bs234-komsular-Europe-Istanbul: 696/697; tek kırmızı cheques-overview "ANLIK DURUM … rastgele 400 işlem" adım 50 — koşu yerel gece yarısını
+  geçtikten sonra (Europe/Istanbul 06.11 00:0x, UTC 05.11 21:0x); eski kodda AYNI sayılarla kırmızı (bs234-eski-e74eb6e7-cheques-overview-Europe-Istanbul),
+  yeni kodda UTC'de 22/22 (bs234-komsu-cheques-overview-UTC). Test TODAY'i UTC gününden (isoDay(new Date())) alıyor, sunucu yerel günle çalışıyor
+  (ders 13/22) — bu işle ilgisiz, mevcut.
+- bs3-form-iletisi.mjs: istemci formları (stok ✎, taksit kartı tahsilatı ✎, taksit ✎) 404 iletisini formda gösterir (6/6).
+- gozlem-cari-duzeltme-yaris.*: KAPSAM DIŞI yoklama — cari hareketi düzeltmesinde aynı yarış ailesi (silinmiş harekete PUT → 200).

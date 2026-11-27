@@ -1,0 +1,39 @@
+(node:1673) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+kurulum: şüpheli kayıt dbt-79ddff04-2652-46f7-b173-4c53007128a1 kalan 12355
+
+■ 1 Cari kartı — faturasız iade geri ödemesi (beklenen: Açılış Kalan 918,61, bakiye 1.389,50)
+  iade carisi:
+     TarihİşlemBorçAlacakBakiye
+     01.03.2026BorçAçılış bakiyesi₺1.483,45₺1.483,45Borçlu✎×
+     25.06.2026AlacakSatış iadesi: UD3 Malı 1 Adet × 1.914,34 TL₺1.914,34₺430,89Alacaklıstoktan
+     26.06.2026Tahsilat Nakit Makbuz 1₺564,84₺995,73AlacaklıMakbuz✎×
+     30.06.2026Ödeme Nakit₺2.385,23₺1.389,50BorçluMakbuz✎×
+     Toplam₺3.868,68₺2.479,18
+
+■ 2 Zil — iade carisinin kalemleri (beklenen: Ödeme avansı 'Tahsil Edilecek Borç' 470,89)
+     Tahsil Edilecek Borç · 2026-03-01 · 918.61
+     Tahsil Edilecek Borç · 2026-06-30 · 470.89
+
+■ 3 EKRANDAN (S269 P1): önce kısmi Değersiz 1.000 (insan hızı)
+  p1-adim1 — ipucu: En çok ₺123,55 (kalan şüpheli). | önerilen tutar 123,55 | tarih 2026-09-30
+  form hatası: ["Değersiz yazılacak tutar (1.000,00 TL) kalan şüpheli tutarı (123,55 TL) aşıyor."] · bildirim: []
+  veri tabanı: bakiye 3423.55 · open değersiz 0 kalan 12355 yazılabilir undefined
+
+■ 4 EKRANDAN (S269 P1 + S268): kayıt 'Değersiz Yazıldı' görünse de düğme var; ipucunun önerdiği tutarla kalan yazılır (beklenen bakiye 423,55)
+  p1-adim2 — ipucu: En çok ₺123,55 (kalan şüpheli). | önerilen tutar 123,55 | tarih 2026-09-30
+  form hatası: [] · bildirim: ["Değersiz alacak yazıldı: ₺123,55 · şüphelide kalan ₺0,00.×"]
+  veri tabanı: bakiye 3300 · writtenOff değersiz 12355 kalan 0 yazılabilir undefined
+  değersiz carisi:
+     TarihNoTürDurumTutarAçık
+     05.09.2026FIS2026000000001Satış FaturasıÖdendi₺2.900,00—
+     TarihNedenTutarKarşılıkTahsil EdilenDeğersizKalanDurum
+     17.09.2026BNK-2026-000004DavaDeğersiz 30.09.2026 · ₺123,55 · BNK-2026-000005 · Değersiz alacak ×₺3.000,00₺0,00₺2.876,45₺123,55₺0,00Değersiz Yazıldı×
+     TarihİşlemBorçAlacakBakiye
+     05.09.2026FaturaSatış Faturası FIS2026000000001₺2.900,00₺2.900,00BorçluFatura
+     11.09.2026BorçBorçVade 31.12.2026 · Kalan ₺3.300,00₺3.400,00₺6.300,00Borçlu✎×
+     17.09.2026Tahsilat Nakit Makbuz 2 Faturaya BağlıTahsilat₺2.876,45₺3.423,55BorçluMakbuz✎×
+     30.09.2026Değersiz AlacakDeğersiz alacak₺123,55₺3.300,00Borçluşüpheli alacaktan
+     Toplam₺6.300,00₺3.000,00
+
+sayfa hatası: yok

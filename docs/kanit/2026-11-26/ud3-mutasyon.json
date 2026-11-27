@@ -1,0 +1,32 @@
+{
+  "ad": "ud3-mutasyon",
+  "komut": "node test/tyk-mutasyon-250.mjs --yalniz UD3-a,UD3-b,S264-a,S264-c,S264-d --klasor /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud3-m8x4/mut",
+  "commit": "0c860fabb359000d8afc90151f7c3853d689327f",
+  "dal": "worktree-agent-acb2a64a5f6cdf8f2",
+  "kirli": 0,
+  "izlenmeyen": 8,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-26T09:38:45.214Z",
+  "sure_sn": 12.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 5,
+    "gecen": 5,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-26/ud3-mutasyon.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-acb2a64a5f6cdf8f2",
+  "ham_cikti_sha256": "ca307fa3fc19f5319470224d725f94dd62743eb61ead531957e785719a3b885a",
+  "ham_cikti_bayt": 2386
+}

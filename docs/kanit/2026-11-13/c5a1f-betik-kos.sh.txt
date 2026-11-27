@@ -1,0 +1,11 @@
+#!/bin/bash
+# kos.sh <kod kökü> <ad> <test...> — iki TZ, tools/kanit.mjs kos ile (sonuç gerçek çıkış kodu + sayılar). Yük kilidi çağıranda (flock -s -n).
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+ROOT=$1; NAME=$2; shift 2
+cd $ROOT || exit 1
+mkdir -p $S/c5a1f-kanit
+for tz in UTC Europe/Istanbul; do
+  t=$(echo $tz | tr '/' '-')
+  TZ=$tz HUKUK_LICENSE_URL=http://127.0.0.1:9 KANIT_DIR=$S/c5a1f-kanit timeout -k 5 3000 node tools/kanit.mjs kos c5a1f-$NAME-$t -- node --test --test-reporter=tap "$@" > $S/c5a1f-kanit/c5a1f-$NAME-$t.log 2>&1
+  echo "$NAME $tz çıkış $?: $(grep -E '^# (tests|pass|fail|cancelled|skipped)' $S/c5a1f-kanit/c5a1f-$NAME-$t.log | tr '\n' ' ')"
+done

@@ -1,0 +1,13 @@
+#!/bin/bash
+# Ç5-B kapanış dar kontrolünün gözlem betiği (kd-suzgec.mjs — Vade Takip × Ödeme Sözü) ve ana oturumun na.mjs'i (S130 × Nakit Akışı): yeni kod ve taban, iki TZ.
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+export HUKUK_LICENSE_URL=http://127.0.0.1:9
+cd $S/b7-is || exit 1
+for tz in UTC Europe/Istanbul; do
+  t=${tz//\//-}
+  for kod in yeni:/home/user/ofis---y-netimi/.claude/worktrees/agent-a6c349be9d3823fef taban:$S/b7-taban; do
+    ad=${kod%%:*}
+    TZ=$tz ROOT=${kod#*:} timeout -k 5 600 node --disable-warning=ExperimentalWarning betik/kd-suzgec.mjs > $S/b7-kanit/b7-kd-$ad-$t.json 2> $S/b7-kanit/b7-kd-$ad-$t.err; echo "kd $ad $tz çıkış $?"
+    TZ=$tz ROOT=${kod#*:} timeout -k 5 600 node --disable-warning=ExperimentalWarning betik/na.mjs > $S/b7-kanit/b7-na-$ad-$t.json 2> $S/b7-kanit/b7-na-$ad-$t.err; echo "na $ad $tz çıkış $?"
+  done
+done

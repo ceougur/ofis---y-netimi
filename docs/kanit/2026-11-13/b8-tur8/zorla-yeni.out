@@ -1,0 +1,114 @@
+[zil-zorla] takvim isteğinin yanıtı 6000 ms bekletilecek
+
+■ Kurulum (programın API'si): ürün + alım; stoktan veresiye satış + taksitlendir; taksitsiz Yeni Borç kartı
+  ✓ stoktan açılan kartın Kayıt Tarihi carinin Kayıt Tarihi (borçtan önce — Y-1 koşulu)
+[zil-zorla] 2.9 sn yanıt 200: 2 kalem, sürüm bPhrFkMRO373I8qIRWtAJr.1111 — 6000 ms bekletiliyor
+[zil-zorla] 3.7 sn yanıt 200: 2 kalem, sürüm bPhrFkMRO373I8qIRWtAJr.1111 — 6000 ms bekletiliyor
+
+■ E1 Taksitler: stoktan açılan kart 'Geciken' sekmesinde (Y-1; önceden 'Biten')
+  ✓ Geciken sekmesinde stok kartı (2 kart)
+  ✓ Biten sekmesinde değil
+
+■ E2 Kart penceresi: taksitler 500 / 500, 1. taksit Gecikti (Y-1)
+  ✓ iki taksit satırı (2)
+  ✓ kalanlar 500 / 500: ["₺500,00","₺500,00"]
+  ✓ 1. taksit Gecikti: “Gecikti”
+
+■ E3 Karttan Taksit Tahsilatı 200 (gerçek tıklama, insan hızı) → kart 300 / 500; kapatılıp yeniden açılınca aynı (O-2); veri tabanında 200
+[zil-zorla] 8.9 sn yanıt sayfaya verildi (2 kalem, sürüm bPhrFkMRO373I8qIRWtAJr.1111) — bekletildi
+[zil-zorla] 8.9 sn yanıt 200: 2 kalem, sürüm aZvvrvyA8NroTbRVsiCLhY.1111 — 6000 ms bekletiliyor
+  ✓ tahsilattan hemen sonra kart: ["₺300,00","₺500,00"]
+  ✓ veri tabanı: tahsilat {"amount":200,"date":"2026-10-20"}
+[zil-zorla] 9.7 sn yanıt sayfaya verildi (2 kalem, sürüm bPhrFkMRO373I8qIRWtAJr.1111) — bekletildi
+[zil-zorla] 9.7 sn yanıt 200: 2 kalem, sürüm aZvvrvyA8NroTbRVsiCLhY.1111 — 6000 ms bekletiliyor
+  ✓ yeniden açılınca aynı: [["₺300,00","Kısmen · Gecikti"],["₺500,00","Bekliyor"]]
+
+■ E4 Cari kartı Gecikmiş Borç (Y-1: 300 — 1. taksitin kalanı; önceden satışın tamamı)
+  ✓ ekranda: “₺300,00Gecikmiş Borç · 1 kalem”
+
+■ E5 Zil: stok kartının 1. taksiti; taksitsiz kartın 'Taksitlendirilmemiş Kalan' 1.000 (O-3)
+[zil-zorla] 14.9 sn yanıt sayfaya verildi (2 kalem, sürüm aZvvrvyA8NroTbRVsiCLhY.1111) — bekletildi
+[zil-zorla] 15.7 sn yanıt sayfaya verildi (2 kalem, sürüm aZvvrvyA8NroTbRVsiCLhY.1111) — bekletildi
+  zil: sayfanın takvimi sunucunun sürümüne 4954 ms'de yetişti
+  ✓ zilde stok kartı: ["10 gün geciktiEkran Stok Müşteri1. taksit · vade 10.10.2026 · ₺300,00 (kalan)✕Tahsilat GirTaksit Kartı"]
+  ✓ zilde taksitsiz kart: ["20 gün geciktiEkran Taksitsiz MüşteriTaksitlendirilmemiş Kalan · vade 30.09.2026 · ₺1.000,00✕Tahsilat GirTaksit Kartı"]
+  ✓ cari B Gecikmiş Borç 1.000 (1000)
+  ✓ Vade Takip (gecikmiş) taksitsiz kart 1.000 (1000)
+
+■ E6 Taksitsiz Mevcut Borç kartı 'Aktif' sekmesinde → + Taksit ile iki taksit (gerçek tıklama, insan hızı) → kart Gecikti 500 / 500; Gecikmiş Borç 500 (G-2)
+[zil-zorla] 17.3 sn yanıt 200: 3 kalem, sürüm 4g7Xo2IoZFbojrtWkFv5IQ.1111 — 6000 ms bekletiliyor
+  ✓ Aktif sekmesinde taksitsiz Mevcut Borç kartı (3 kart)
+  ✓ Biten sekmesinde değil (önceden açılır açılmaz 'Bitti')
+[zil-zorla] 20.2 sn yanıt 200: 4 kalem, sürüm nkLcIPtHSC7J9dTWXlA-2t.1111 — 6000 ms bekletiliyor
+  ✓ taksitler 500 / 500: ["₺500,00","₺500,00"]
+  ✓ 1. taksit Gecikti: “Gecikti”
+  ✓ veri tabanı: [{"d":"2026-10-10","amount":500},{"d":"2026-11-09","amount":500}]
+  ✓ cari kartı Gecikmiş Borç: “₺500,00Gecikmiş Borç · 1 kalem”
+[zil-zorla] 23.3 sn yanıt sayfaya verildi (3 kalem, sürüm 4g7Xo2IoZFbojrtWkFv5IQ.1111) — bekletildi
+[zil-zorla] 23.4 sn yanıt 200: 3 kalem, sürüm gjFJte4QtFEmmswLfgWlbV.1111 — 6000 ms bekletiliyor
+
+■ E7 Tedarikçiye stoktan Alış İadesi 300 → Vade Takip ve zilde 'Tahsil Edilecek Borç 300' (ORTA-2)
+  ✓ Gecikmiş Borç 300 (300)
+  ✓ Vade Takip: ["30.09.202620 gün geçtiEkran İade TedarikçiCari (vadeli)Tahsil Edilecek BorçAlış iadesi: Ekran Ürün 3 Adet × 100,00 TL · Kayıt 30.09.2026 · 300,00 TL₺300,00"]
+[zil-zorla] 26.2 sn yanıt sayfaya verildi (4 kalem, sürüm nkLcIPtHSC7J9dTWXlA-2t.1111) — bekletildi
+[zil-zorla] 26.3 sn yanıt 200: 4 kalem, sürüm 8HchzH7ZIsVIZlbEC7ujmg.1111 — 6000 ms bekletiliyor
+[zil-zorla] 29.4 sn yanıt sayfaya verildi (3 kalem, sürüm gjFJte4QtFEmmswLfgWlbV.1111) — bekletildi
+[zil-zorla] 32.3 sn yanıt sayfaya verildi (4 kalem, sürüm 8HchzH7ZIsVIZlbEC7ujmg.1111) — bekletildi
+  zil: sayfanın takvimi sunucunun sürümüne 5742 ms'de yetişti — UYARI: 5000 ms'yi aştı (ürünün canlı yenilemesi yavaş)
+[zil-zorla] 32.3 sn yanıt 200: değişmedi (sürüm 8HchzH7ZIsVIZlbEC7ujmg.1111) — 6000 ms bekletiliyor
+  ✓ zilde: ["20 gün geciktiEkran İade TedarikçiTahsil Edilecek Borç · Alış iadesi: Ekran Ürün 3 Adet × 100,00 TL · vade 30.09.2026 · ₺300,00✕Tahsilat GirCariyi Aç"]
+
+■ E8 Taksitsiz kart Gecikti: Geciken sekmesi, kart penceresinin Geciken kutusu, liste göstergesi (Y2)
+  ✓ Geciken sekmesinde taksitsiz kart (3 kart)
+  ✓ liste göstergesi taksitlendirilmemiş kalanı ayrı söyler: “₺2.800,00Kalan Alacak · 3 kart₺1.800,00Geciken · 2 taksit + taksitlendirilmemiş kalan ₺1.000,00₺800,00Bu Ay Beklenen₺200,00Tahsil Edilen”
+  ✓ Geciken kutusu: “₺1.000,00Geciken · 0 taksit · taksitlendirilmemiş kalan ₺1.000,00”
+
+■ E9 S110: stoktan taksitli satış + başka açık borç → kart kendi satışını taşır; Taksitler, cari kartı, Vade Takip, zil aynı sayı
+  ✓ kart 500 / 500, 1. taksit Gecikti: [["₺500,00","Gecikti"],["₺500,00","Bekliyor"]]
+  ✓ cari kartı Gecikmiş Borç: “₺1.000,00Gecikmiş Borç · 2 kalem”
+  ✓ Vade Takip gecikmiş 1.000 (1000)
+[zil-zorla] 38.3 sn yanıt sayfaya verildi (değişmedi (sürüm 8HchzH7ZIsVIZlbEC7ujmg.1111)) — bekletildi
+[zil-zorla] 38.3 sn yanıt 200: 6 kalem, sürüm e8Pj83Fu76tBnFL8B_5h10.1111 — 6000 ms bekletiliyor
+[zil-zorla] 44.3 sn yanıt sayfaya verildi (6 kalem, sürüm e8Pj83Fu76tBnFL8B_5h10.1111) — bekletildi
+  zil: sayfanın takvimi sunucunun sürümüne 7573 ms'de yetişti — UYARI: 5000 ms'yi aştı (ürünün canlı yenilemesi yavaş)
+  ✓ zilde: ["30 gün geciktiEkran S110 MüşteriTahsil Edilecek Borç · vade 20.09.2026 · ₺500,00✕Tahsilat GirCariyi Aç","10 gün geciktiEkran S110 Müşteri1. taksit · vade 10.10.2026 · ₺500,00✕Tahsilat GirTaksit Kartı"]
+
+■ E10 S118: taksit tahsilatı formu kartın KENDİ kalanını önerir (700,00) + bilgi notu (gerçek tıklama)
+  ✓ taksit satırı avans düşülmüş kalan 600: ["₺600,00"]
+  ✓ önerilen tutar kartın kendi kalanı: 700,00
+  ✓ bilgi notu: “Carinin avansı bu kartın 100,00 TL'sini kapatıyor.”
+[zil-zorla] 45.7 sn yanıt 200: değişmedi (sürüm e8Pj83Fu76tBnFL8B_5h10.1111) — 6000 ms bekletiliyor
+
+■ E11 S96: tedarikçiye verilen çek (karşılığı yok) Vade Takip ve zilde 'Tahsil Edilecek Borç 700'
+  ✓ Gecikmiş Borç 700 (700)
+  ✓ Vade Takip: ["10.10.202610 gün geçtiEkran Çek TedarikçiCari (vadeli)Tahsil Edilecek BorçÇek verildi · No EKR-T2B2 · vade 19.11.2026 · Kayıt 10.10.2026 · 700,00 TL₺700,00","19.11.202630 günEkran Çek TedarikçiÇekVerilen çek · No EKR-T2B2₺700,00"]
+[zil-zorla] 51.7 sn yanıt sayfaya verildi (değişmedi (sürüm e8Pj83Fu76tBnFL8B_5h10.1111)) — bekletildi
+[zil-zorla] 51.7 sn yanıt 200: 7 kalem, sürüm ZfoZ3S7g4-Po_bY68uWXid.1111 — 6000 ms bekletiliyor
+[zil-zorla] 57.7 sn yanıt sayfaya verildi (7 kalem, sürüm ZfoZ3S7g4-Po_bY68uWXid.1111) — bekletildi
+  zil: sayfanın takvimi sunucunun sürümüne 8051 ms'de yetişti — UYARI: 5000 ms'yi aştı (ürünün canlı yenilemesi yavaş)
+  ✓ zilde: ["10 gün geciktiEkran Çek TedarikçiTahsil Edilecek Borç · Çek verildi · No EKR-T2B2 · vade 19.11.2026 · vade 10.10.2026 · ₺700,00✕Tahsilat GirCariyi Aç"]
+
+■ E12 S98 × S99: verilen avanslı müşteride fatura durumu Vade Takip / zil ile aynı (fatura 100 açık, avans 50)
+  ✓ fatura durumu: “Vadesi Geçti”
+  ✓ fatura açığı 100 (100)
+[zil-zorla] 59.2 sn yanıt 200: 9 kalem, sürüm ouicReIfmPOcmaKPhM2eqJ.1111 — 6000 ms bekletiliyor
+[zil-zorla] 65.2 sn yanıt sayfaya verildi (9 kalem, sürüm ouicReIfmPOcmaKPhM2eqJ.1111) — bekletildi
+  zil: sayfanın takvimi sunucunun sürümüne 5971 ms'de yetişti — UYARI: 5000 ms'yi aştı (ürünün canlı yenilemesi yavaş)
+  ✓ zilde: ["12 gün geciktiEkran Avans Fatura · Cari No 8Tahsil Edilecek Borç · vade 08.10.2026 · ₺50,00 (kalan)✕Tahsilat GirCariyi Aç","11 gün geciktiEkran Avans FaturaTahsil Edilecek Fatura FIS2026000000001 · vade 09.10.2026 · ₺100,00✕Tahsilat GirFatura Kartını Aç"]
+
+■ E13 S129: kart penceresi Tahsil Edilen / Kalan / Ödenen tek kuyruktan; form kartın kendi kalanından ve satır durumuyla çelişmez (DÜŞÜK-4)
+  ✓ kart penceresi göstergeleri: “₺900,00Toplam Tutar₺500,00Tahsil Edilen · %56₺400,00Kalan₺100,00Geciken · 1 taksit”
+  ✓ satırlar Ödenen / Kalan: [["₺300,00","₺0,00"],["₺200,00","₺100,00"],["","₺300,00"]]
+  ✓ 1. taksit satırı: “Ödendi”
+  ✓ ₺ düğmesi kartın kendi hesabında açık her taksitte: [true,true,true]
+  ✓ önerilen tutar seçilen taksitin kartın kendi kalanı: 300,00
+  ✓ Hangi Taksite: “1. taksit · 10.09.2026 · kalan ₺300,00”
+  ✓ açıklama satır durumuyla çelişmiyor: “× Ekran S129 Müşteri Tahsilat Gir Kartın kendi tahsilatlarına göre kalanı ₺900,00 · sıradaki 1. taksit ₺300,00 (carinin avansıyla kapalı görünüyor). Tutar seçilen yola (nakit kasa, banka, kredi kartı) tahsilat olarak düşer; kalanı aşan tutar kaydedilmez (yönet”
+  ✓ bilgi notu: “Carinin avansı bu kartın 500,00 TL'sini kapatıyor.”
+[zil-zorla] 66.6 sn yanıt 200: 10 kalem, sürüm 8Kb6hKdFD91L-M__IedBhY.1111 — 6000 ms bekletiliyor
+  ✓ cari kartının taksit özeti Toplam / Tahsil Edilen / Kalan: ["₺900,00","₺500,00","₺400,00"]
+  ✓ cari kartı Taksitten Kalan 400,00: “₺900,00Borç Toplamı₺500,00Alacak Toplamı · Tahsil ₺500,00₺400,00Bakiye · Borçlu₺400,00Taksitten Kalan (bakiyeye dahil)₺100,00Gecikmiş Borç · 1 kalem”
+  ✓ karta tahsilat yazılmadı (yalnız bakıldı)
+  ✓ sayfa hatası yok
+
+SONUÇ: 51 geçti, 0 kaldı

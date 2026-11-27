@@ -1,0 +1,13 @@
+kip tutar; kod DEPO=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/birlesik6-eski; tarayıcı 153.0.8010.12; hazırlık: 5 hareket; aranacak İşlem No'lar BNK-2026-000005, BNK-2026-000004, BNK-2026-000003
+    [arama-zorla] ON-KOSUL: pencere odak alandayken, son tuştan 75 ms sonra yeniden çizildi (süzgeç çubuğu YENİDEN KURULDU); eski kutuda "10", şimdiki kutuda "10", odak kutuda
+✓ deneme 1 (ön koşul: odak alandayken, son tuştan 75 ms sonra yeniden çizim; o an kutuda "10"): yazılan "10"; kutu "10", odak kutuda, liste 4 satır [BNK-2026-000004, BNK-2026-000003, BNK-2026-000002, …], beklenen 4 satır, Süzgeçleri Temizle var
+    [arama-zorla] ON-KOSUL: pencere odak alandayken, son tuştan 56 ms sonra yeniden çizildi (süzgeç çubuğu YENİDEN KURULDU); eski kutuda "10", şimdiki kutuda "10", odak kutuda
+✓ deneme 2 (ön koşul: odak alandayken, son tuştan 56 ms sonra yeniden çizim; o an kutuda "10"): yazılan "10"; kutu "10", odak kutuda, liste 4 satır [BNK-2026-000004, BNK-2026-000003, BNK-2026-000002, …], beklenen 4 satır, Süzgeçleri Temizle var
+    [arama-zorla] ON-KOSUL: pencere odak alandayken, son tuştan 59 ms sonra yeniden çizildi (süzgeç çubuğu YENİDEN KURULDU); eski kutuda "10", şimdiki kutuda "10", odak kutuda
+✓ deneme 3 (ön koşul: odak alandayken, son tuştan 59 ms sonra yeniden çizim; o an kutuda "10"): yazılan "10"; kutu "10", odak kutuda, liste 4 satır [BNK-2026-000004, BNK-2026-000003, BNK-2026-000002, …], beklenen 4 satır, Süzgeçleri Temizle var
+    [arama-zorla] ON-KOSUL: pencere odak alandayken, son tuştan 76 ms sonra yeniden çizildi (süzgeç çubuğu YENİDEN KURULDU); eski kutuda "10", şimdiki kutuda "10", odak kutuda
+✓ deneme 4 (ön koşul: odak alandayken, son tuştan 76 ms sonra yeniden çizim; o an kutuda "10"): yazılan "10"; kutu "10", odak kutuda, liste 4 satır [BNK-2026-000004, BNK-2026-000003, BNK-2026-000002, …], beklenen 4 satır, Süzgeçleri Temizle var
+    [arama-zorla] ON-KOSUL: pencere odak alandayken, son tuştan 69 ms sonra yeniden çizildi (süzgeç çubuğu YENİDEN KURULDU); eski kutuda "10", şimdiki kutuda "10", odak kutuda
+✓ deneme 5 (ön koşul: odak alandayken, son tuştan 69 ms sonra yeniden çizim; o an kutuda "10"): yazılan "10"; kutu "10", odak kutuda, liste 4 satır [BNK-2026-000004, BNK-2026-000003, BNK-2026-000002, …], beklenen 4 satır, Süzgeçleri Temizle var
+
+TAMAM: 5 denetim geçti, 0 başarısız. (kip tutar; ön koşul 5/5 denemede oluştu; 0 sayılmadı)

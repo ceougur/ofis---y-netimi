@@ -1,0 +1,77 @@
+{
+ "veri": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3-olcum-veri/n-1000000",
+ "kilit": "2025-12-31",
+ "parca": 500,
+ "nodeSecenek": "--disable-warning=ExperimentalWarning",
+ "node": "v22.23.4",
+ "cpu": 4,
+ "bellekGb": 16,
+ "anaYiginSiniriMb": 2096,
+ "yuk": [
+  0.67,
+  1.59,
+  1.93
+ ],
+ "olcumler": {
+  "kilitVeDondurma": {
+   "ms": 83526,
+   "loopMaxMs": 457,
+   "tepeRssMb": 1744,
+   "durum": {
+    "running": false,
+    "phase": "tamam",
+    "done": 2741312,
+    "total": 2741312,
+    "run": 4,
+    "error": "",
+    "coverage": "2025-12-31"
+   },
+   "kapsam": "2025-12-31",
+   "donmusSatir": 2741312,
+   "bosluk50": 1,
+   "bosluklar": [
+    {
+     "ms": 457,
+     "at": 482,
+     "adim": "kilit"
+    }
+   ]
+  },
+  "donmusYilOkuma": {
+   "ms": 5408,
+   "loopMaxMs": 5419,
+   "tepeRssMb": 1295,
+   "madde": 384686
+  },
+  "donmusMizanIlk": {
+   "ms": 6563,
+   "loopMaxMs": 6558,
+   "tepeRssMb": 432
+  },
+  "donmusMizanOnbellek": {
+   "ms": 1,
+   "loopMaxMs": 1
+  },
+  "kilitGeriCek": {
+   "ms": 4588,
+   "loopMaxMs": 543,
+   "tepeRssMb": 432,
+   "silinen": 857820,
+   "kapsam": "2024-12-31",
+   "bosluk50": 1,
+   "bosluklar": [
+    {
+     "ms": 543,
+     "at": 563,
+     "adim": "kilit işlemi (thaw)"
+    }
+   ]
+  }
+ },
+ "satir": 2254506,
+ "yukSonra": [
+  2.3,
+  1.83,
+  1.98
+ ]
+}

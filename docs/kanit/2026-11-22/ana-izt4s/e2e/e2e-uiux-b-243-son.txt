@@ -1,0 +1,15 @@
+  ✓ Esc: ayarlardan listeye döndü, pencere açık ({"open":true,"h3":"","list":true})
+  ✓ değişiklik varken Esc: Kaydedilmemiş Değişiklik sorusu
+  ✓ Forma Dön: ayarlarda kalındı, yazılan duruyor
+  ✓ Kaydetmeden Kapat: listeye dönüldü, pencere açık ({"open":true,"list":true})
+  ✓ listede Esc pencereyi kapatır (eski davranış yerinde)
+J) UX14: Tümünü Gönder iletisinde teknik kod ve tekrarlanan neden yok
+  ✓ sonuç bildirimi geldi (Satış Faturası TEF2026379324012 kaydedildi. e-Fatura EDM'ye iletildi; GİB ve alıcı yanıtı Durum Sorgula ile alınır. | 0 belge gönderildi; 1 belge gönderilemedi: EDM'ye bağlanılamadı. İnternet bağlantısını ve servis adresini kontrol edin; birazdan yeniden deney)
+  ✓ bildirimde teknik kod yok
+  ✓ aynı neden iki kez yazılmadı
+K) UX3: gece yarısını geçen açık pencerede yeni fatura bugünün tarihini alır (31.12 → 01.01)
+  ✓ yeni formun tarihi 01.01.2027 ({"value":"2027-01-01","max":"2027-01-01"})
+  ✓ tarih sınırı da bugün (2027-01-01)
+  ✓ sayfa hatası yok
+
+✓ uiux-b-243: 58 geçti, 0 kaldı

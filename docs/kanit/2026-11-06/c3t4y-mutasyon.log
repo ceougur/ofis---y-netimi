@@ -1,0 +1,12 @@
+taban e2e: koşulmadı (seçilen mutantlarda e2e yok)
+taban: 67 geçti / 0 kaldı (çıkış 0)
+ok 401 - ORTA-1: açılış onarımının 'taşınan koşu' kararı yalnız kurala bakar (güncel kurallı plan dilimi bırakılır): çıkış 1, 10 geçti / 1 kaldı
+ok 402 - ORTA-1: lockChanged kilit değişmezken (aynı gün) bekleyen koşuyu bırakır: çıkış 1, 7 geçti / 4 kaldı
+ok 403 - ORTA-1: PUT süren dondurmayı kilit değişmezken de durdurur: çıkış 1, 9 geçti / 2 kaldı
+ok 404 - ORTA-1: lockNeedsCleanup kilit değişmezken de temizlik ister (409): çıkış 1, 10 geçti / 1 kaldı
+ok 901 - DÜŞÜK-1: yazım bayrağı iş parçacığı bitince, doğrulamadan önce kalkar: çıkış 1, 9 geçti / 2 kaldı
+ok 902 - DÜŞÜK-1: yazım bayrağı tablo doğrulaması başlarken kalkar: çıkış 1, 10 geçti / 1 kaldı
+
+# tests 6
+# pass 6
+# fail 0

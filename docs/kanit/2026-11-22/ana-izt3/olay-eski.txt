@@ -1,0 +1,6 @@
+(node:9410) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+yeni iade      kart 600 stock accounts@A plans
+düzelt 1→2 200 kart 300 stock cash accounts@A
+sil 200 kart 900 stock accounts@A
+geri yükle 200 kart 300 stock cash

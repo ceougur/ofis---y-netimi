@@ -1,0 +1,28 @@
+taban: 37 geçti / 0 kaldı (çıkış 0)
+ok 24 - ORTA-1: donmuş mizan önbelleği yine koşu numarasıyla (sıfırlamada 1'den başlar): çıkış 1, 11 geçti / 1 kaldı
+ok 25 - ORTA-2: açılış onarımı eksik donmuş satırı görmez: çıkış 1, 9 geçti / 3 kaldı
+ok 26 - ORTA-2: onarımın geri çekmesi toplamı 'önceki − kaldırılan'la (satırlar zaten silinmiş): çıkış 1, 11 geçti / 1 kaldı
+ok 27 - ORTA-2: sağlama noktası yok (her zaman baştan): çıkış 1, 11 geçti / 1 kaldı
+ok 28 - ORTA-3 ailesi: eski kurallı bekleyen koşu başka güne kilitte güncel kurala geçer: çıkış 1, 8 geçti / 4 kaldı
+ok 29 - ORTA-3 ailesi: koşunun içine çekilen kilit güncel kuralla: çıkış 1, 11 geçti / 1 kaldı
+ok 30 - ORTA-3 ailesi (eşzamanlı): kalan dönem güncel kural yerine GAP_RULE: çıkış 1, 11 geçti / 1 kaldı
+ok 31 - ORTA-3 ailesi: ilerletme izi okunmaz (kalan dönem GAP_RULE): çıkış 1, 10 geçti / 2 kaldı
+ok 32 - ORTA-3 ailesi: iş parçacığı yolunda kalan dönem açılmaz: çıkış 1, 10 geçti / 2 kaldı
+ok 33 - ORTA-3 ailesi: bilinmeyen kuralın nedeni ilerlemede görünmez: çıkış 1, 11 geçti / 1 kaldı
+ok 34 - ORTA-3 ailesi: bilinmeyen kural Mutabakat Testi'nde görünmez: çıkış 1, 11 geçti / 1 kaldı
+ok 35 - ORTA-3 ailesi (açılış): kilit ötesindeki eski kurallı koşu bırakılır: çıkış 1, 11 geçti / 1 kaldı
+ok 36 - K4: nedeni bilinmeyen ayrışma yine 'kural değişti': çıkış 1, 11 geçti / 1 kaldı
+ok 37 - K4: eksik satır 'kural değişikliği' diye adlandırılır: çıkış 1, 11 geçti / 1 kaldı
+ok 38 - K4: denetim adı Yazım düzeni dışında: çıkış 1, 10 geçti / 2 kaldı
+ok 39 - §5: kural geçmişinden sürüm silinir: çıkış 1, 11 geçti / 1 kaldı
+ok 40 - §5: kayıt defterinden 2.4.9 kuralı düşer: çıkış 1, 3 geçti / 9 kaldı
+ok 41 - DÜŞÜK-3: ara dilim her okumada yeniden kurulur: çıkış 1, 11 geçti / 1 kaldı
+ok 42 - DÜŞÜK-3: 'aynı' bilgisi güncel dilimin parmak izi sınanmadan kullanılır: çıkış 1, 11 geçti / 1 kaldı
+ok 43 - DÜŞÜK-3: dondurmanın kendi yazımları önbellek anahtarını değiştirir: çıkış 1, 11 geçti / 1 kaldı
+ok 44 - DÜŞÜK-3: kilitli yılın Yevmiye Defteri güncel türetmeyi de kurar: çıkış 1, 11 geçti / 1 kaldı
+ok 45 - DÜŞÜK-3: ara dilim from'dan önce bitse de kurulur: çıkış 1, 11 geçti / 1 kaldı
+ok 46 - DÜŞÜK-3: işlem içinde okunan ara dilim saklanır (GG2): çıkış 1, 11 geçti / 1 kaldı
+
+# tests 23
+# pass 23
+# fail 0

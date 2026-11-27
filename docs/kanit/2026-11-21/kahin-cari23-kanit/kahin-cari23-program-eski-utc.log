@@ -1,0 +1,266 @@
+b2-ux18-karsiliksiz: 121/121 tuttu
+  2.5.0 kararıyla değişen beklenti: 12 denetim · farkların 0/0'i bu sınıfta
+b2-ux18-retler: 94/94 tuttu
+  2.5.0 kararıyla değişen beklenti: 6 denetim · farkların 0/0'i bu sınıfta
+b2-ux18-sira: 101/101 tuttu
+  2.5.0 kararıyla değişen beklenti: 10 denetim · farkların 0/0'i bu sınıfta
+b2-ux18-temel: 207/207 tuttu
+  2.5.0 kararıyla değişen beklenti: 18 denetim · farkların 0/0'i bu sınıfta
+b3b-k1-k4-donem-raporlar: 47/47 tuttu
+  2.5.0 kararıyla değişen beklenti: 2 denetim · farkların 0/0'i bu sınıfta
+b3c-k2-donem-ayni-no: 36/36 tuttu
+  2.5.0 kararıyla değişen beklenti: 2 denetim · farkların 0/0'i bu sınıfta
+b3d-c3-kisi-gruplama: 70/70 tuttu
+  2.5.0 kararıyla değişen beklenti: 2 denetim · farkların 0/0'i bu sınıfta
+b3e-vergi-sutunu: 31/31 tuttu
+  2.5.0 kararıyla değişen beklenti: 2 denetim · farkların 0/0'i bu sınıfta
+b3k-vergi-tek-kolon: 31/31 tuttu
+  2.5.0 kararıyla değişen beklenti: 2 denetim · farkların 0/0'i bu sınıfta
+b3n-borc-kolonu-kisi-ozniteligi: 33/33 tuttu
+  2.5.0 kararıyla değişen beklenti: 2 denetim · farkların 0/0'i bu sınıfta
+b3o-seyrek-kalan: 36/36 tuttu
+  2.5.0 kararıyla değişen beklenti: 2 denetim · farkların 0/0'i bu sınıfta
+b3q-takvim-kalemi: 40/40 tuttu
+  2.5.0 kararıyla değişen beklenti: 2 denetim · farkların 0/0'i bu sınıfta
+b3r-kalan-sifir-eksi: 32/32 tuttu
+  2.5.0 kararıyla değişen beklenti: 2 denetim · farkların 0/0'i bu sınıfta
+b3s-soz-tutari-kalemi: 30/30 tuttu
+  2.5.0 kararıyla değişen beklenti: 2 denetim · farkların 0/0'i bu sınıfta
+b3t-sozlesme-tutari: 36/36 tuttu
+  2.5.0 kararıyla değişen beklenti: 2 denetim · farkların 0/0'i bu sınıfta
+b3u-sozlesme-tarihi-soz-basliklari: 36/36 tuttu
+  2.5.0 kararıyla değişen beklenti: 2 denetim · farkların 0/0'i bu sınıfta
+b3v-taahhut-soz-miktari: 38/38 tuttu
+  2.5.0 kararıyla değişen beklenti: 2 denetim · farkların 0/0'i bu sınıfta
+b3w-yalniz-soz-tutari: 36/36 tuttu
+  2.5.0 kararıyla değişen beklenti: 2 denetim · farkların 0/0'i bu sınıfta
+b3x-yalin-soz-ve-tutar: 40/40 tuttu
+  2.5.0 kararıyla değişen beklenti: 2 denetim · farkların 0/0'i bu sınıfta
+b3y-taahhut-alacak-bakiye: 27/34 tuttu · BİLİNEN 7
+  ≈ [BİLİNEN] k1:k4:akis: program 920000 · kâhin 850000 (DONDURMA 23.10.2026 (kullanıcı), 2.5.0 adayı 2: ek biçim 'Bakiyesi' (Kalan tanınması) — 'Taahhüt Bakiyesi' Kalan sayılmıyor (ürün v2.4.3 ve aday 22'de de tanımıyor); kâhin beklentisi DOĞRU kalır)
+  ≈ [BİLİNEN] k1:k4:kisiler: program 720000 · kâhin 1150000 (DONDURMA 23.10.2026 (kullanıcı), 2.5.0 adayı 2: ek biçim 'Bakiyesi' (Kalan tanınması) — 'Taahhüt Bakiyesi' Kalan sayılmıyor (ürün v2.4.3 ve aday 22'de de tanımıyor); kâhin beklentisi DOĞRU kalır)
+  ≈ [BİLİNEN] k1:k4:vade: program 920000 · kâhin 850000 (DONDURMA 23.10.2026 (kullanıcı), 2.5.0 adayı 2: ek biçim 'Bakiyesi' (Kalan tanınması) — 'Taahhüt Bakiyesi' Kalan sayılmıyor (ürün v2.4.3 ve aday 22'de de tanımıyor); kâhin beklentisi DOĞRU kalır)
+  ≈ [BİLİNEN] k1:rapor:2026/1012:borc: program 0 · kâhin 400000 (DONDURMA 23.10.2026 (kullanıcı), 2.5.0 adayı 2: ek biçim 'Bakiyesi' (Kalan tanınması) — 'Taahhüt Bakiyesi' Kalan sayılmıyor (ürün v2.4.3 ve aday 22'de de tanımıyor); kâhin beklentisi DOĞRU kalır)
+  ≈ [BİLİNEN] k1:rapor:2026/1012:grup: program [] · kâhin ["2026/1012"] (DONDURMA 23.10.2026 (kullanıcı), 2.5.0 adayı 2: ek biçim 'Bakiyesi' (Kalan tanınması) — 'Taahhüt Bakiyesi' Kalan sayılmıyor (ürün v2.4.3 ve aday 22'de de tanımıyor); kâhin beklentisi DOĞRU kalır)
+  ≈ [BİLİNEN] k1:rapor:2026/1013:borc: program 0 · kâhin 30000 (DONDURMA 23.10.2026 (kullanıcı), 2.5.0 adayı 2: ek biçim 'Bakiyesi' (Kalan tanınması) — 'Taahhüt Bakiyesi' Kalan sayılmıyor (ürün v2.4.3 ve aday 22'de de tanımıyor); kâhin beklentisi DOĞRU kalır)
+  ≈ [BİLİNEN] k1:rapor:2026/1013:grup: program [] · kâhin ["2026/1013"] (DONDURMA 23.10.2026 (kullanıcı), 2.5.0 adayı 2: ek biçim 'Bakiyesi' (Kalan tanınması) — 'Taahhüt Bakiyesi' Kalan sayılmıyor (ürün v2.4.3 ve aday 22'de de tanımıyor); kâhin beklentisi DOĞRU kalır)
+  2.5.0 kararıyla değişen beklenti: 2 denetim · farkların 0/0'i bu sınıfta
+b5-u1-nihai-tuketici: 36/36 tuttu
+  2.5.0 kararıyla değişen beklenti: 2 denetim · farkların 0/0'i bu sınıfta
+c1-kayit-tahsilat-kapisi: 170/170 tuttu
+  2.5.0 kararıyla değişen beklenti: 15 denetim · farkların 0/0'i bu sınıfta
+c10-ks10-projeksiyon-cari-vade: 479/479 tuttu
+  2.5.0 kararıyla değişen beklenti: 95 denetim · farkların 0/0'i bu sınıfta
+c11-ks81-sa-mevcut-borc-karti: 63/66 tuttu
+  2.5.0 kararıyla değişen beklenti: 6 denetim · farkların 0/3'i bu sınıfta — SINIF DIŞI 3
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k3:cari:M:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k3:cari:M:acikToplam: program 0 · kâhin 100000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k3:fatura:SA:acik: program 0 · kâhin 100000 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk · KS8 iade geri ödemesi (madde 9; K-b FIFO + KS8.1 artan): geri ödenen iade kapatıcı değil)
+c12-ks81-sb-kalan-dagilimi: 160/160 tuttu
+  2.5.0 kararıyla değişen beklenti: 11 denetim · farkların 0/0'i bu sınıfta
+c13-ks83-ayni-gun-sira: 125/125 tuttu
+  2.5.0 kararıyla değişen beklenti: 18 denetim · farkların 0/0'i bu sınıfta
+c14a-c1-hareket-turleri: 442/442 tuttu
+  2.5.0 kararıyla değişen beklenti: 51 denetim · farkların 0/0'i bu sınıfta
+c14b-c1-silinenler-ve-geri-yukleme: 258/258 tuttu
+  2.5.0 kararıyla değişen beklenti: 6 denetim · farkların 0/0'i bu sınıfta
+c14c-c1-silinmis-cariye-yazim: 99/99 tuttu
+  2.5.0 kararıyla değişen beklenti: 8 denetim · farkların 0/0'i bu sınıfta
+c14d-c1-ayni-ad: 110/110 tuttu
+  2.5.0 kararıyla değişen beklenti: 18 denetim · farkların 0/0'i bu sınıfta
+c14e-c1-pasife-al: 99/99 tuttu
+  2.5.0 kararıyla değişen beklenti: 27 denetim · farkların 0/0'i bu sınıfta
+c14f-c1-geri-al-y2: 273/273 tuttu
+  2.5.0 kararıyla değişen beklenti: 24 denetim · farkların 0/0'i bu sınıfta
+c14g-c1-kayit-tahsilati: 78/78 tuttu
+  2.5.0 kararıyla değişen beklenti: 6 denetim · farkların 0/0'i bu sınıfta
+c2-tablodan-aktar-kapisi: 157/157 tuttu
+  2.5.0 kararıyla değişen beklenti: 32 denetim · farkların 0/0'i bu sınıfta
+c4-uyari-kapisi: 54/54 tuttu
+  2.5.0 kararıyla değişen beklenti: 2 denetim · farkların 0/0'i bu sınıfta
+c6-cari-vade-fifo: 1041/1041 tuttu
+  2.5.0 kararıyla değişen beklenti: 175 denetim · farkların 0/0'i bu sınıfta
+c6b-cari-vade-dogrulama: 158/158 tuttu
+  2.5.0 kararıyla değişen beklenti: 20 denetim · farkların 0/0'i bu sınıfta
+c6c-mevcut-borc-karti: 128/128 tuttu
+  2.5.0 kararıyla değişen beklenti: 24 denetim · farkların 0/0'i bu sınıfta
+c7-ks7-bagsiz-kapaticilar: 209/209 tuttu
+  2.5.0 kararıyla değişen beklenti: 25 denetim · farkların 0/0'i bu sınıfta
+c7b-supheli-kalan: 48/48 tuttu
+  2.5.0 kararıyla değişen beklenti: 10 denetim · farkların 0/0'i bu sınıfta
+c8-ks8-iade-geri-odemesi: 592/592 tuttu
+  2.5.0 kararıyla değişen beklenti: 81 denetim · farkların 0/0'i bu sınıfta
+c8b-ks8-bagli-iade-odemesi: 66/66 tuttu
+  2.5.0 kararıyla değişen beklenti: 3 denetim · farkların 0/0'i bu sınıfta
+d1-c5-acilis-519: 65/65 tuttu
+  2.5.0 kararıyla değişen beklenti: 30 denetim · farkların 0/0'i bu sınıfta
+d10-c5-s67-soz-takvim: 137/137 tuttu
+  2.5.0 kararıyla değişen beklenti: 19 denetim · farkların 0/0'i bu sınıfta
+d11-c5-s66-carisiz-karsiliksiz: 62/62 tuttu
+  2.5.0 kararıyla değişen beklenti: 17 denetim · farkların 0/0'i bu sınıfta
+d12-c5-s69-soz-gunu-ve-gecmis: 196/196 tuttu
+  2.5.0 kararıyla değişen beklenti: 25 denetim · farkların 0/0'i bu sınıfta
+d13-c5-s69-soz-ertesi-gun: 198/198 tuttu
+  2.5.0 kararıyla değişen beklenti: 27 denetim · farkların 0/0'i bu sınıfta
+d14-c5-s91-vadesiz-kayit-gunu: 161/161 tuttu
+  2.5.0 kararıyla değişen beklenti: 68 denetim · farkların 0/0'i bu sınıfta
+d15-c5-s91-vadesiz-ertesi-gun: 161/161 tuttu
+  2.5.0 kararıyla değişen beklenti: 68 denetim · farkların 0/0'i bu sınıfta
+d16-c5-s92-net-gorunum: 288/288 tuttu
+  2.5.0 kararıyla değişen beklenti: 87 denetim · farkların 0/0'i bu sınıfta
+d17-c5-s93-verilen-avans: 149/149 tuttu
+  2.5.0 kararıyla değişen beklenti: 60 denetim · farkların 0/0'i bu sınıfta
+d18-c5-s93-avans-ertesi-gun: 149/149 tuttu
+  2.5.0 kararıyla değişen beklenti: 60 denetim · farkların 0/0'i bu sınıfta
+d19-c5-s92-okuma-ayrisan: 134/134 tuttu
+  2.5.0 kararıyla değişen beklenti: 40 denetim · farkların 0/0'i bu sınıfta
+d2-c5-kg5-excel-kart: 92/92 tuttu
+  2.5.0 kararıyla değişen beklenti: 26 denetim · farkların 0/0'i bu sınıfta
+d20-c5-s95-netlesme-sonrasi-odeme: 170/170 tuttu
+  2.5.0 kararıyla değişen beklenti: 41 denetim · farkların 0/0'i bu sınıfta
+d21-c5-s95-ertesi-ay: 173/173 tuttu
+  2.5.0 kararıyla değişen beklenti: 41 denetim · farkların 0/0'i bu sınıfta
+d22-c5-s96-avans-kalemi: 121/121 tuttu
+  2.5.0 kararıyla değişen beklenti: 52 denetim · farkların 0/0'i bu sınıfta
+d23-c5-s96-avans-ertesi-gun: 121/121 tuttu
+  2.5.0 kararıyla değişen beklenti: 52 denetim · farkların 0/0'i bu sınıfta
+d24-c5-s97-ayni-gun: 134/134 tuttu
+  2.5.0 kararıyla değişen beklenti: 39 denetim · farkların 0/0'i bu sınıfta
+d25-c5-s98-avans-sirasi: 87/87 tuttu
+  2.5.0 kararıyla değişen beklenti: 45 denetim · farkların 0/0'i bu sınıfta
+d26-c5-bakim5-susan: 132/132 tuttu
+  2.5.0 kararıyla değişen beklenti: 51 denetim · farkların 0/0'i bu sınıfta
+d27-c5-s99-taksitli-avans: 71/71 tuttu
+  2.5.0 kararıyla değişen beklenti: 22 denetim · farkların 0/0'i bu sınıfta
+d28-c5-s99-taksit-vade-gunu: 46/46 tuttu
+  2.5.0 kararıyla değişen beklenti: 17 denetim · farkların 0/0'i bu sınıfta
+d29-c5-s99-taksit-ertesi-gun: 46/46 tuttu
+  2.5.0 kararıyla değişen beklenti: 17 denetim · farkların 0/0'i bu sınıfta
+d3-c5-carisiz-evrak: 37/37 tuttu
+  2.5.0 kararıyla değişen beklenti: 8 denetim · farkların 0/0'i bu sınıfta
+d30-c5-s101-bitti-kart: 224/224 tuttu
+  2.5.0 kararıyla değişen beklenti: 65 denetim · farkların 0/0'i bu sınıfta
+d31-c5-s101-taksit-vade-gunu: 39/39 tuttu
+  2.5.0 kararıyla değişen beklenti: 16 denetim · farkların 0/0'i bu sınıfta
+d32-c5-s101-taksit-ertesi-gun: 39/39 tuttu
+  2.5.0 kararıyla değişen beklenti: 16 denetim · farkların 0/0'i bu sınıfta
+d33-c5-s102-s105-sinirlar: 204/204 tuttu
+  2.5.0 kararıyla değişen beklenti: 73 denetim · farkların 0/0'i bu sınıfta
+d34-c5-s110-kendi-borcu: 358/361 tuttu
+  2.5.0 kararıyla değişen beklenti: 111 denetim · farkların 0/3'i bu sınıfta — SINIF DIŞI 3
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:cari:E3:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:cari:E3:acikToplam: program 0 · kâhin 60000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)
+  ✗ [BULGU KULLANICI · SINIF DIŞI] k1:fatura:E3F:acik: program 0 · kâhin 60000 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta))
+d35-c5-s120-elle-borclar: 546/546 tuttu
+  2.5.0 kararıyla değişen beklenti: 216 denetim · farkların 0/0'i bu sınıfta
+d36-c5-s122-kart-odemesi: 569/572 tuttu
+  2.5.0 kararıyla değişen beklenti: 243 denetim · farkların 3/3'i bu sınıfta
+  ✗ [BULGU BAŞ MİMAR] k1:cari:J13:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))
+  ✗ [BULGU BAŞ MİMAR] k1:cari:J13:acikToplam: program 30000 · kâhin 60000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)
+  ✗ [BULGU BAŞ MİMAR] k1:fatura:J13F:acik: program 0 · kâhin 30000 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk)
+d37-c5-s126-faturali-kart: 503/534 tuttu
+  2.5.0 kararıyla değişen beklenti: 204 denetim · farkların 20/31'i bu sınıfta — SINIF DIŞI 11
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:cari:L11:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:cari:L11:acikToplam: program 30000 · kâhin 90000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)
+  ✗ [BULGU BAŞ MİMAR] k1:cari:L12:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))
+  ✗ [BULGU BAŞ MİMAR] k1:cari:L12:acikToplam: program 0 · kâhin 60000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)
+  ✗ [BULGU BAŞ MİMAR] k1:cari:L13c:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))
+  ✗ [BULGU BAŞ MİMAR] k1:cari:L13c:acikToplam: program 0 · kâhin 60000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)
+  ✗ [BULGU BAŞ MİMAR] k1:cari:L15:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))
+  ✗ [BULGU BAŞ MİMAR] k1:cari:L15:acikToplam: program 0 · kâhin 60000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)
+  ✗ [BULGU BAŞ MİMAR] k1:cari:L16a:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))
+  ✗ [BULGU BAŞ MİMAR] k1:cari:L16a:acikToplam: program 30000 · kâhin 60000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)
+  ✗ [BULGU BAŞ MİMAR] k1:cari:L1:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))
+  ✗ [BULGU BAŞ MİMAR] k1:cari:L1:acikToplam: program 30000 · kâhin 60000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)
+  ✗ [BULGU BAŞ MİMAR] k1:cari:L6:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))
+  ✗ [BULGU BAŞ MİMAR] k1:cari:L6:acikToplam: program 0 · kâhin 60000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)
+  ✗ [BULGU BAŞ MİMAR] k1:cari:L7:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))
+  ✗ [BULGU BAŞ MİMAR] k1:cari:L7:acikToplam: program 10000 · kâhin 60000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:cari:L8:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:cari:L8:acikToplam: program 30000 · kâhin 40000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)
+  ✗ [BULGU BAŞ MİMAR] k1:cari:L9:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))
+  ✗ [BULGU BAŞ MİMAR] k1:cari:L9:acikToplam: program 30000 · kâhin 60000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:fatura:L11F:acik: program 0 · kâhin 60000 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk)
+  ✗ [BULGU KULLANICI] k1:fatura:L12F1:acik: program 0 · kâhin 10000 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta))
+  ✗ [BULGU KULLANICI · SINIF DIŞI] k1:fatura:L12F2:acik: program 0 · kâhin 50000 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta))
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:fatura:L13CF:acik: program 0 · kâhin 60000 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk)
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:fatura:L15F:acik: program 0 · kâhin 60000 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk)
+  ✗ [BULGU BAŞ MİMAR] k1:fatura:L16aF:acik: program 0 · kâhin 30000 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk)
+  ✗ [BULGU BAŞ MİMAR] k1:fatura:L1F:acik: program 0 · kâhin 30000 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk)
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:fatura:L6F:acik: program 0 · kâhin 60000 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk)
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:fatura:L7F2:acik: program 0 · kâhin 50000 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk)
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:fatura:L8F:acik: program 0 · kâhin 10000 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk)
+  ✗ [BULGU BAŞ MİMAR] k1:fatura:L9F:acik: program 0 · kâhin 30000 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk)
+d38-c5-s128-ozge-kalemli-kart: 433/439 tuttu
+  2.5.0 kararıyla değişen beklenti: 83 denetim · farkların 6/6'i bu sınıfta
+  ✗ [BULGU BAŞ MİMAR] k1:cari:M18:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))
+  ✗ [BULGU BAŞ MİMAR] k1:cari:M18:acikToplam: program 30000 · kâhin 60000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)
+  ✗ [BULGU BAŞ MİMAR] k1:cari:M7:acikEsitBakiye: program false · kâhin true (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))
+  ✗ [BULGU BAŞ MİMAR] k1:cari:M7:acikToplam: program 30000 · kâhin 60000 (KS8.1: carinin açık kalemlerinin işaretli toplamı)
+  ✗ [BULGU BAŞ MİMAR] k1:fatura:M18F:acik: program 0 · kâhin 30000 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk)
+  ✗ [BULGU BAŞ MİMAR] k1:fatura:M7F:acik: program 0 · kâhin 30000 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk)
+d39-c5-s130-supheli-kalemleri: 358/358 tuttu
+  2.5.0 kararıyla değişen beklenti: 145 denetim · farkların 0/0'i bu sınıfta
+d4-c5-s50-tek-kuyruk: 54/54 tuttu
+  2.5.0 kararıyla değişen beklenti: 8 denetim · farkların 0/0'i bu sınıfta
+d40-c5-s130-sus-bilinen-sinir: 151/151 tuttu
+  2.5.0 kararıyla değişen beklenti: 21 denetim · farkların 0/0'i bu sınıfta
+d41-c5-s136-s139-s145-s148: 287/287 tuttu
+  2.5.0 kararıyla değişen beklenti: 83 denetim · farkların 0/0'i bu sınıfta
+d42-c5-s140-s151-satis-karti-iade: 106/106 tuttu
+  2.5.0 kararıyla değişen beklenti: 22 denetim · farkların 0/0'i bu sınıfta
+d43-c5-bilinen-sinir-sus15: 124/124 tuttu
+  2.5.0 kararıyla değişen beklenti: 19 denetim · farkların 0/0'i bu sınıfta
+d44-c5-s155-s158: 281/281 tuttu
+  2.5.0 kararıyla değişen beklenti: 100 denetim · farkların 0/0'i bu sınıfta
+d45-c5-s159-s154-s162-s163: 440/440 tuttu
+  2.5.0 kararıyla değişen beklenti: 116 denetim · farkların 0/0'i bu sınıfta
+d46-c5-s165-s118-sinir: 226/226 tuttu
+  2.5.0 kararıyla değişen beklenti: 99 denetim · farkların 0/0'i bu sınıfta
+d47-c5-s168-s181-bagli-tahsilat: 124/124 tuttu
+  2.5.0 kararıyla değişen beklenti: 70 denetim · farkların 0/0'i bu sınıfta
+d48-c5-kg3-kayit-tahsilati-336: 164/164 tuttu
+  2.5.0 kararıyla değişen beklenti: 15 denetim · farkların 0/0'i bu sınıfta
+d49-c5-s15-s25-iptal-ve-fazla: 60/60 tuttu
+  2.5.0 kararıyla değişen beklenti: 8 denetim · farkların 0/0'i bu sınıfta
+d5-c5-s2-vade-sirasi: 40/40 tuttu
+  2.5.0 kararıyla değişen beklenti: 12 denetim · farkların 0/0'i bu sınıfta
+d50-c5-s206-s25c-b1-iptal-havale: 115/115 tuttu
+  2.5.0 kararıyla değişen beklenti: 42 denetim · farkların 0/0'i bu sınıfta
+d51-c5-s210-s211-kart-kapanir: 56/56 tuttu
+  2.5.0 kararıyla değişen beklenti: 17 denetim · farkların 0/0'i bu sınıfta
+d6-c5-aninda: 92/92 tuttu
+d7-c5-s52-gecikmis: 80/80 tuttu
+  2.5.0 kararıyla değişen beklenti: 17 denetim · farkların 0/0'i bu sınıfta
+d8-c5-tanimsiz: 34/34 tuttu
+  2.5.0 kararıyla değişen beklenti: 13 denetim · farkların 0/0'i bu sınıfta
+d9-c5-s68-borc-tarafi-vade: 142/142 tuttu
+  2.5.0 kararıyla değişen beklenti: 48 denetim · farkların 0/0'i bu sınıfta
+rastgele-ux18-1: 771/771 tuttu
+  2.5.0 kararıyla değişen beklenti: 14 denetim · farkların 0/0'i bu sınıfta
+rastgele-s1-1: 540/540 tuttu
+  2.5.0 kararıyla değişen beklenti: 59 denetim · farkların 0/0'i bu sınıfta
+rastgele-ux18-2: 817/817 tuttu
+  2.5.0 kararıyla değişen beklenti: 14 denetim · farkların 0/0'i bu sınıfta
+rastgele-s1-2: 721/721 tuttu
+  2.5.0 kararıyla değişen beklenti: 107 denetim · farkların 0/0'i bu sınıfta
+  liste mutasyonu 1 (senaryo adı yok sayılır): YAKALANDI
+  liste mutasyonu 2 (alt dizgi (joker) eşleşmesi): YAKALANDI
+  liste mutasyonu 3 (program değeri karşılaştırılmaz): YAKALANDI
+  liste mutasyonu 4 (kapanan kayıt denetlenmez): YAKALANDI
+  liste mutasyonu 5 (kâhin beklentisi karşılaştırılmaz): YAKALANDI
+  yapım aşaması listesi mutasyonu 1 (senaryo adı yok sayılır): YAKALANDI
+  yapım aşaması listesi mutasyonu 2 (alt dizgi (joker) eşleşmesi): YAKALANDI
+  yapım aşaması listesi mutasyonu 3 (program değeri karşılaştırılmaz): YAKALANDI
+  yapım aşaması listesi mutasyonu 4 (kapanan kayıt denetlenmez): YAKALANDI
+  yapım aşaması listesi mutasyonu 5 (kâhin beklentisi karşılaştırılmaz): YAKALANDI
+
+GEÇERSİZ DENETİM (2.4.5 kararıyla; --legacy'de koşar — KARARLAR.md §8 C0): 276 denetim, 23 senaryo — b2-ux18-karsiliksiz 12, b2-ux18-retler 6, b2-ux18-sira 10, b2-ux18-temel 18, b3b-k1-k4-donem-raporlar 18, b3c-k2-donem-ayni-no 6, b3d-c3-kisi-gruplama 2, b3e-vergi-sutunu 2, b3k-vergi-tek-kolon 10, b3n-borc-kolonu-kisi-ozniteligi 14, b3o-seyrek-kalan 14, b3q-takvim-kalemi 16, b3r-kalan-sifir-eksi 11, b3s-soz-tutari-kalemi 9, b3t-sozlesme-tutari 13, b3u-sozlesme-tarihi-soz-basliklari 13, b3v-taahhut-soz-miktari 16, b3w-yalniz-soz-tutari 22, b3x-yalin-soz-ve-tutar 19, b3y-taahhut-alacak-bakiye 15, b5-u1-nihai-tuketici 2, rastgele-ux18-1 14, rastgele-ux18-2 14
+
+ATLANAN (2.4.5 kararıyla geçersiz — --legacy ile koşar): 12 — b1-5a-bayat-ve-yeniden, b1-5a-tasima, b1-5b-borc, b1-5c-rapor, b3-u2-tablo-borcu, b3f-kayit-anahtari, b3g-tablo-bag-surekliligi, b3h-dosya-no-ve-devam, b3i-devam-ayni-icerik, b3j-ayni-ad-takas, b3m-dosya-no-degisimi, b3p-ayni-ad-telefon
+
+2.5.0 KARARIYLA DEĞİŞEN BEKLENTİ (KARARLAR.md §13; 2.4.9 kâhinine göre): 3725 denetim, 96 senaryo · programla farkların 29'i bu sınıfta, 17'i SINIF DIŞI
+
+ÖZET [2.5.0]: 97 senaryo, 17648 denetim, 46 fark (BULGU 46), 7 bilinen sınır (BILINEN.json; başarısız sayılmaz), 0 yapım aşaması (YAPIM-ASAMASI.json; paketlere göre: yok; 0 denetim + 0 okuma hatası; geçti de başarısız da sayılmaz — yayın adayında liste BOŞ olmalı), 0 okuma hatası, 0 yakalanmayan mutasyon, 12 atlanan senaryo. Ham çıktı: /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin-cari23/program-eski-utc
+BİLİNEN SINIRLAR (7): b3y-taahhut-alacak-bakiye k1:k4:akis; b3y-taahhut-alacak-bakiye k1:k4:kisiler; b3y-taahhut-alacak-bakiye k1:k4:vade; b3y-taahhut-alacak-bakiye k1:rapor:2026/1012:borc; b3y-taahhut-alacak-bakiye k1:rapor:2026/1012:grup; b3y-taahhut-alacak-bakiye k1:rapor:2026/1013:borc; b3y-taahhut-alacak-bakiye k1:rapor:2026/1013:grup
+17602/17648 denetim geçti (7 bilinen sınır dahil)

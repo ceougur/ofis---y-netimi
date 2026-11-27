@@ -152,7 +152,7 @@ describe("T2 — tahsildeki evrak karşılıksız: tek madde, alacak 101.02", ()
     const free = await must("carisiz çek", api.post(CHEQUES, { direction: "in", instrument: "cheque", amount: "1.500", issueDate: "2026-10-02", dueDate: "2026-11-02", drawer: "Ahmet Yılmaz", serialNo: "F-1" }));
     await must("ver", act(api, free.id, { action: "bank-deposit", date: "2026-10-05", bankAccountId: t.acc.garanti.id }));
     await must("karşılıksız", act(api, free.id, { action: "bounce", date: "2026-10-07" }));
-    assert.deepEqual(await journalOf(api, "2026-10-07"), [["770", 1500, 0], ["101.02", 0, 1500]], "carisiz: B 770 / A 101.02 tek madde");
+    assert.deepEqual(await journalOf(api, "2026-10-07"), [["649.90", 1500, 0], ["101.02", 0, 1500]], "carisiz: B 649.90 / A 101.02 tek madde (2.5.0 Ç5-A G3: S66 = A; 2.4.9 770)");
     const plan = await must("taksit kartı", api.post("/api/workspace/plans", { name: "ABC Taksit", accountId: t.buyer.id, total: "900", mode: "auto", count: 1, firstDue: "2026-11-08", registeredOn: "2026-10-01" }));
     const planned = await receive(api, { serialNo: "TK-1", accountId: t.buyer.id, planId: plan.id, amount: "900", issueDate: "2026-10-04" });
     await must("ver", act(api, planned.id, { action: "bank-deposit", date: "2026-10-05", bankAccountId: t.acc.ziraat.id }));

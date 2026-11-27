@@ -1,0 +1,30 @@
+Sen DestekOfis projesinde İNCELEME + DÜZELTME ajanısın (2.5.0 — ara sıra kırmızı: senaryo-banka-210 adım 15 "İşlem No ile arama"). Kendi dalında commit edersin, PUSH YAPMAZSIN. Yanıtın Türkçe.
+
+## Hazırlık
+1. Worktree'de `git merge --ff-only 7a2b6efd` (çalışma dalı); olmazsa ve kendi commit'in yoksa `git reset --hard 7a2b6efd`.
+2. `ln -s /home/user/ofis---y-netimi/node_modules node_modules` (`npm ci` YOK). Tarayıcı: `PLAYWRIGHT_BROWSERS_PATH=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/pw-1194`.
+3. ÖNCE oku: `CLAUDE.md` (dersler 1–52; özellikle 6, 12, 20, 34, 38, 39, 48, 50, 52); `docs/GECMIS-KARARLAR.md` içinde "CI #864" geçen AÇIK maddesi (24.10.2026: aynı imza, 8 yerel koşu zorlanamadı; 4f9f909 tanı kancası + CPU_THROTTLE).
+
+## Olay (ana oturum okudu)
+- CI #1056 (a9d684e1, Uçtan uca Chromium, Linux Node 24): `senaryo-banka-210` 420/421, "beklenmeyen hata: page.waitForFunction: Timeout 10000ms exceeded · ekran: {"filters":{"account":"bacc-…","type":"","dir":"","status":"","from":"","to":"","min":"","max":"","q":""},"rows":["BNK-2026-000014:interest_in","BNK-2026-000012:invoice_cash","BNK-202…" (iletinin geri kalanı okunamadı — ders 4).
+- YENİ BİLGİ: zaman aşımı anında arama kutusu `q` BOŞ — yazılan İşlem No kutudan gitmiş ya da hiç yazılmamış; liste süzülmemiş.
+- Yerelde ana dal kodu 2 koşu 424/424 yeşil (kanıt değil, ders 20). Bu push'un kodu bankaya dokunmuyor (WhatsApp + defter dondurma) — eski ara sıra hata.
+
+## Yapılacak
+1. Adım 15'in testini ve ürün yolunu oku (test/e2e/senaryo-banka-210.mjs waitMoves :816 civarı, adım 15; client/assets'te banka hareketleri süzgeci, HOF.listGate, keepFocus, canlı yenileme / olay akışı yeniden çizimi). "q boşalır" için olası yolları yaz (canlı yenileme süzgeç alanını yeniden çiziyor, yazım sırasında liste isteği eski değerle dönüp alanı eziyor, odak kaybı, test yazımı sayfa hazır olmadan …).
+2. Ön koşulu BETİKLE ZORLA kur ve kırmızıyı üret (ders 20): örn. adım 15'te yazımla eşzamanlı canlı yenileme olayı tetikle / liste yanıtını geciktir / CPU kıs (senaryodaki CPU_THROTTLE kancası). Kırmızı yalnız beklenen nedenle (q boşaldı) görülünce kanıttır (ders 38).
+3. Kök neden ÜRÜNDE ise: en küçük düzeltme (kullanıcının yazdığı arama metni hiçbir yeniden çizimde kaybolmaz), zorla betikle eski kodda kırmızı / yeni kodda yeşil (en az 20 zorlanmış deneme), senaryo-banka-210 tam yeşil, komşu e2e (banka-210b, banka-210-temel, banka-210-daha-fazla, banka-210-ekran-aciklama, banka-220; `test/` taraması — ders 10). Kök neden TESTTE ise: test düzeltmesi + aynı zorla kanıt; ürünün kullanıcıya etkisi yoksa gerekçesiyle yaz (ders 34: test ürün davranışını gizlemez).
+4. Üretilemezse: denenen her yolu sayılarla yaz, "ZORLA ÜRETİLEMEDİ" de; uydurma düzeltme YAPMA.
+
+## Kurallar
+- Program başlatırken `HUKUK_LICENSE_URL=http://127.0.0.1:9`. Koşular `KANIT_DIR=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b210-kanit node tools/kanit.mjs kos b210-<ad> -- <komut>`; yük koşuları `flock -s /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olcum.lock` (kilit doluysa bekleme döngüsü kurma, ders 50).
+- Eski kod `git archive 7a2b6efd` ile `/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b210-eski` (ders 23, 25; ders 51: düzeltme testteyse eski kopyaya ESKİ test). İş bitince yalnız kendi tam yollarını sil.
+- Yazabileceğin: banka hareketleri ekranının istemci dosyası / ortak liste yardımcısı (değiştirirsen bütün çağıranlarını test/ taramasıyla koş), test/e2e/senaryo-banka-210*.mjs, yeni zorlama betiği, kanıt `docs/kanit/2026-11-06/b210-*`. Sunucu para yolu YAZILMAZ; gerekiyorsa DUR, ana oturuma sor.
+- `pkill` / joker `rm` YOK. Tam `npm test` YOK. Commit'e yalnız kendi yolların (ders 44). Kendi arka plan işin sürerken turunu rapor vermeden BİTİRME.
+- Commit iletisi sonunda tam olarak:
+  Co-Authored-By: Claude <noreply@anthropic.com>
+  Claude-Session: https://claude.ai/code/session_01EhegDvmPQ9hx2ibfitm6og
+  (model adı YOK).
+
+## Rapor
+Kök neden (dosya:satır), zorla üretme betiği + sayılar (eski / yeni, kaç denemede kaç kırmızı), düzeltme, komşu e2e sonuçları, Windows'a özgü risk, ana oturumun yeniden koşacağı komutlar + beklenen sayılar, DENENMEYEN, BİLİNEN SINIR.

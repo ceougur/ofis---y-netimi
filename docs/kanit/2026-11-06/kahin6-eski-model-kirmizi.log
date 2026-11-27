@@ -1,0 +1,150 @@
+...........F..............................................................................FF.............................FF.................
+======================================================================
+FAIL: test_senaryo_ve_beklenen_dosyalari_guncel (__main__.Dosyalar.test_senaryo_ve_beklenen_dosyalari_guncel)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin6-eski-7d6c6369/test/bagimsiz/muhasebe/test_model.py", line 753, in test_senaryo_ve_beklenen_dosyalari_guncel
+    self.assertEqual(UB.main(denetle=True), 0, "python3 test/bagimsiz/muhasebe/uret_beklenen.py ile yeniden yazın")
+                     ~~~~~~~^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin6-eski-7d6c6369/test/bagimsiz/muhasebe/uret_beklenen.py", line 54, in main
+    for yol, icerik in ((os.path.join(SEN, s["ad"] + ".json"), metin(s)), (os.path.join(BEK, s["ad"] + ".json"), metin(beklenen(s)))):
+                                                                                                                       ~~~~~~~~^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin6-eski-7d6c6369/test/bagimsiz/muhasebe/uret_beklenen.py", line 41, in beklenen
+    r = M.kos(s, M.Kurallar.etiketten(et))
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin6-eski-7d6c6369/test/bagimsiz/muhasebe/model.py", line 3437, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin6-eski-7d6c6369/test/bagimsiz/muhasebe/model.py", line 2333, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin6-eski-7d6c6369/test/bagimsiz/muhasebe/model.py", line 2358, in uygula
+    return self.kaynak(o, d)
+           ~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin6-eski-7d6c6369/test/bagimsiz/muhasebe/model.py", line 2368, in kaynak
+    self._denetle(tur, tarih, v, d, yedek)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin6-eski-7d6c6369/test/bagimsiz/muhasebe/model.py", line 2412, in _denetle
+    raise AssertionError("senaryo hatası: şüpheli caride faturaya bağlı Kredi Kartına İade (T-11) — S25 (c) yalnız nakit / havale / POS sayar; "
+                         "kâhin susar (README bakım 5 Z8, KULLANICIYA SORULMALI 1)")
+AssertionError: senaryo hatası: şüpheli caride faturaya bağlı Kredi Kartına İade (T-11) — S25 (c) yalnız nakit / havale / POS sayar; kâhin susar (README bakım 5 Z8, KULLANICIYA SORULMALI 1)
+
+======================================================================
+FAIL: test_s78_s39_kart_iade_supheli (__main__.ElleSenaryolar.test_s78_s39_kart_iade_supheli)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin6-eski-7d6c6369/test/bagimsiz/muhasebe/test_model.py", line 537, in test
+    r = M.kos(x, M.Kurallar.etiketten(et))
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin6-eski-7d6c6369/test/bagimsiz/muhasebe/model.py", line 3437, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin6-eski-7d6c6369/test/bagimsiz/muhasebe/model.py", line 2333, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin6-eski-7d6c6369/test/bagimsiz/muhasebe/model.py", line 2358, in uygula
+    return self.kaynak(o, d)
+           ~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin6-eski-7d6c6369/test/bagimsiz/muhasebe/model.py", line 2368, in kaynak
+    self._denetle(tur, tarih, v, d, yedek)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin6-eski-7d6c6369/test/bagimsiz/muhasebe/model.py", line 2412, in _denetle
+    raise AssertionError("senaryo hatası: şüpheli caride faturaya bağlı Kredi Kartına İade (T-11) — S25 (c) yalnız nakit / havale / POS sayar; "
+                         "kâhin susar (README bakım 5 Z8, KULLANICIYA SORULMALI 1)")
+AssertionError: senaryo hatası: şüpheli caride faturaya bağlı Kredi Kartına İade (T-11) — S25 (c) yalnız nakit / havale / POS sayar; kâhin susar (README bakım 5 Z8, KULLANICIYA SORULMALI 1)
+
+======================================================================
+FAIL: test_s79_s40_geri_yuklenen_kasa_tutar_disi_alan (__main__.ElleSenaryolar.test_s79_s40_geri_yuklenen_kasa_tutar_disi_alan)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin6-eski-7d6c6369/test/bagimsiz/muhasebe/model.py", line 2465, in _o_duzenle
+    self._kasa_acilis_oncesi(d, dg.get("tarih", k.tarih), lambda dd: self._duzelt(dd.kaynaklar[k.id], dg))
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin6-eski-7d6c6369/test/bagimsiz/muhasebe/model.py", line 2388, in _kasa_acilis_oncesi
+    raise Red("KASA_ACILIS_ONCE", f"Kasa hareketi {min(once)} < Kasa açılışı {a0}")
+model.Red: KASA_ACILIS_ONCE: Kasa hareketi 2026-01-10 < Kasa açılışı 2026-01-15
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin6-eski-7d6c6369/test/bagimsiz/muhasebe/test_model.py", line 537, in test
+    r = M.kos(x, M.Kurallar.etiketten(et))
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin6-eski-7d6c6369/test/bagimsiz/muhasebe/model.py", line 3437, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin6-eski-7d6c6369/test/bagimsiz/muhasebe/model.py", line 2333, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin6-eski-7d6c6369/test/bagimsiz/muhasebe/model.py", line 2359, in uygula
+    return getattr(self, "_o_" + tur)(o, d)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin6-eski-7d6c6369/test/bagimsiz/muhasebe/model.py", line 2473, in _o_duzenle
+    raise AssertionError(f"senaryo hatası: geri yüklenmiş, açılıştan önce tarihli Kasa kaydının tutar dışı alanı düzeltildi "
+                         f"({sorted(set(dg) - {'tarih', 'tutar'})}) — S26 yalnız tutar; kâhin susar (README bakım 5 Z10, KULLANICIYA SORULMALI 2)")
+AssertionError: senaryo hatası: geri yüklenmiş, açılıştan önce tarihli Kasa kaydının tutar dışı alanı düzeltildi (['aciklama']) — S26 yalnız tutar; kâhin susar (README bakım 5 Z10, KULLANICIYA SORULMALI 2)
+
+======================================================================
+FAIL: test_S39_kart_iade_s25_ile_ayni (__main__.OlayMaddeleri.test_S39_kart_iade_s25_ile_ayni)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin6-eski-7d6c6369/test/bagimsiz/muhasebe/test_model.py", line 368, in test_S39_kart_iade_s25_ile_ayni
+    r = M.kos(senaryo(bas + [o("supheliye_al", "2026-05-01", id="SB", cari="C3", tutar=10000),
+                             o("tahsilat", "2026-05-10", id="KI", cari="C3", yol="kart", kart="KK1", tutar=1000, fatura="F4"),
+                             E.R("sk", "supheli_kayitlari", cari="C3"), E.R("yev", "yevmiye", bas="2026-05-10", son="2026-05-10"),
+                             E.MZ("mz", "2026-01-01", "2026-06-30")]))
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin6-eski-7d6c6369/test/bagimsiz/muhasebe/model.py", line 3437, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin6-eski-7d6c6369/test/bagimsiz/muhasebe/model.py", line 2333, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin6-eski-7d6c6369/test/bagimsiz/muhasebe/model.py", line 2358, in uygula
+    return self.kaynak(o, d)
+           ~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin6-eski-7d6c6369/test/bagimsiz/muhasebe/model.py", line 2368, in kaynak
+    self._denetle(tur, tarih, v, d, yedek)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin6-eski-7d6c6369/test/bagimsiz/muhasebe/model.py", line 2412, in _denetle
+    raise AssertionError("senaryo hatası: şüpheli caride faturaya bağlı Kredi Kartına İade (T-11) — S25 (c) yalnız nakit / havale / POS sayar; "
+                         "kâhin susar (README bakım 5 Z8, KULLANICIYA SORULMALI 1)")
+AssertionError: senaryo hatası: şüpheli caride faturaya bağlı Kredi Kartına İade (T-11) — S25 (c) yalnız nakit / havale / POS sayar; kâhin susar (README bakım 5 Z8, KULLANICIYA SORULMALI 1)
+
+======================================================================
+FAIL: test_S40_kapsam_disi_kahin_susar (__main__.OlayMaddeleri.test_S40_kapsam_disi_kahin_susar)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin6-eski-7d6c6369/test/bagimsiz/muhasebe/model.py", line 2465, in _o_duzenle
+    self._kasa_acilis_oncesi(d, dg.get("tarih", k.tarih), lambda dd: self._duzelt(dd.kaynaklar[k.id], dg))
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin6-eski-7d6c6369/test/bagimsiz/muhasebe/model.py", line 2388, in _kasa_acilis_oncesi
+    raise Red("KASA_ACILIS_ONCE", f"Kasa hareketi {min(once)} < Kasa açılışı {a0}")
+model.Red: KASA_ACILIS_ONCE: Kasa hareketi 2026-01-25 < Kasa açılışı 2026-02-01
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin6-eski-7d6c6369/test/bagimsiz/muhasebe/test_model.py", line 401, in test_S40_kapsam_disi_kahin_susar
+    r = M.kos(senaryo(bas + [o("duzenle", kaynak="PY", degisiklik={"cari": "C3"}),
+                             o("duzenle", kaynak="KY", degisiklik={"aciklama": "sayım farkı"}),
+                             o("duzenle", kaynak="PB", degisiklik={"tutar": 400, "aciklama": "düzeltme"}),
+                             E.R("mu", "mutabakat_uyarilari", tarih="2026-02-28"), E.MZ("mz", "2026-01-01", "2026-02-28")]))
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin6-eski-7d6c6369/test/bagimsiz/muhasebe/model.py", line 3437, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin6-eski-7d6c6369/test/bagimsiz/muhasebe/model.py", line 2333, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin6-eski-7d6c6369/test/bagimsiz/muhasebe/model.py", line 2359, in uygula
+    return getattr(self, "_o_" + tur)(o, d)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin6-eski-7d6c6369/test/bagimsiz/muhasebe/model.py", line 2473, in _o_duzenle
+    raise AssertionError(f"senaryo hatası: geri yüklenmiş, açılıştan önce tarihli Kasa kaydının tutar dışı alanı düzeltildi "
+                         f"({sorted(set(dg) - {'tarih', 'tutar'})}) — S26 yalnız tutar; kâhin susar (README bakım 5 Z10, KULLANICIYA SORULMALI 2)")
+AssertionError: senaryo hatası: geri yüklenmiş, açılıştan önce tarihli Kasa kaydının tutar dışı alanı düzeltildi (['cari']) — S26 yalnız tutar; kâhin susar (README bakım 5 Z10, KULLANICIYA SORULMALI 2)
+
+----------------------------------------------------------------------
+Ran 140 tests in 16.437s
+
+FAILED (failures=5)
+# tests 140
+# pass 135
+# fail 5
+# skipped 0

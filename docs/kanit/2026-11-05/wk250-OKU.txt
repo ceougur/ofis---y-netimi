@@ -1,0 +1,21 @@
+WK 2.5.0 — WhatsApp kâhini güncellemesi 11 (SW1, SW2, SD1837, SD1915, SW4, S7) kanıtları. Taban commit 26003126 (kâhin dosyaları bu commit'teki hâliyle).
+Program kodu görülmedi, programa karşı koşulmadı. README: test/bagimsiz/whatsapp-248/README.md §16.
+
+wk250-senaryolar.{log,json}      node tools/kanit.mjs kos wk250-senaryolar -- python3 -I test/bagimsiz/whatsapp-248/kahin/senaryolar.py          (310/310 elle = model)
+wk250-kahin.{log,json}           node tools/kanit.mjs kos wk250-kahin -- python3 -I test/bagimsiz/whatsapp-248/kahin/kahin_test.py               (334/334; F mutasyon 188/188)
+wk250-kahin-tz-istanbul.{log,json}  aynı komut TZ=Europe/Istanbul                                                                           (334/334)
+
+wk250-eski-292-tam-sonuc-fark.txt
+  python3 -I wk250-araclar/fark.py <26003126 senaryolar.json kopyası> test/bagimsiz/whatsapp-248/kahin/senaryolar.json
+  → eski 292 senaryonun 280'i (girdi + elle + tam model sonucu) bayt bayt aynı; 12 değişen: HESAP-0 (SW4 + SD1915 + SD1837), J9-01/02 (yalnız bilinen_sinir n3 işareti — SW1),
+    9 senaryoda yalnız kontroller.*.pencere_farkli_alici (SW2: Süresi Doldu deneme sayılmaz).
+
+wk250-eski-kahin-26003126-yeni-senaryolar.txt
+  Eski kâhin (26003126 kahin.py, ayrı kopya — ders 23/25) + yeni senaryolar.py: python3 -I wk250-araclar/eski_ile_kos.py <kopya klasörü>
+  → 14 KIRMIZI (11'i "bilinmeyen olay" — zayıf kanıt), 7 AYNI.
+wk250-eski-kahin-26003126-olay-etkisiz-yeni-senaryolar.txt
+  Aynı eski kâhin, YALNIZ iki yeni olay (baglanti_suresi_doldu, yeniden_baglan) etkisiz tanıtıldı (olay() içinde `elif tur in (...): pass`; girdi biçimi, kural değil).
+  → 14 KIRMIZI, hepsinde beklenen neden görülüyor (190 / 0 alan Başarısız ↔ Duraklatıldı; süre dolunca toplu iş aktif ↔ duraklatildi; başlatma reddi yok; S7 elemesi yok;
+    {{4}} şüpheli dahil); 7 AYNI ve nedeni: J9-01/02 + SW1-01…03 (S-W1 = bugünkü davranış, kural değişmedi), SW4-03 (102 kararın dışında, değişmedi), SW2-02 (deneme başına
+    sayım — M187'yi yakalar; eski kâhinde de aynı alıcı A2 ile sayılıyordu).
+wk250-araclar/goster.py  seçili senaryoların tam model çıktısını yazar (gözle denetim için).

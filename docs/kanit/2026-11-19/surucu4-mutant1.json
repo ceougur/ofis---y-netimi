@@ -1,0 +1,32 @@
+{
+  "ad": "surucu4-mutant1",
+  "komut": "node --disable-warning=ExperimentalWarning test/bagimsiz/muhasebe-surucu/kos.mjs --cikti /dev/shm/surucu4-afb4/mutant1 --veri /dev/shm/surucu4-afb4/v-mutant1 --program /dev/shm/surucu4-afb4/kod-mutant1 --senaryo rastgele-1,rastgele-2,rastgele-3,s05,s08,s114,s28,s34,s45,s52,s57,s72",
+  "commit": "be7ff30d9cb328a01eb1ec9b56bea6108c90527a",
+  "dal": "worktree-agent-afb4030486d151db9",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v653 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-19T23:41:13.873Z",
+  "sure_sn": 316.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2202,
+    "gecen": 2036,
+    "basarisiz": 140,
+    "iptal": 0,
+    "atlanan": 26
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 140 başarısız, 0 iptal",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/surucu4-afb4/kanit/2026-11-19/surucu4-mutant1.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-afb4030486d151db9",
+  "ham_cikti_sha256": "89c56d6304d75ec277365670bb3a8969498da7dc3cba6586df5d48b51956affd",
+  "ham_cikti_bayt": 30695
+}

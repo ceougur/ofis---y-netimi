@@ -1,0 +1,27 @@
+
+> destekofis@2.4.9 test:sema-kapisi-bs7
+> node --disable-warning=ExperimentalWarning test/e2e/sema-kapisi-bs7.mjs
+
+
+■ Hazırlık: 001 ve 002 programın kendi API'siyle; 002'nin şeması 'yeni sürüm' benzetimiyle büyütülür
+
+■ 002 penceresi: şerit görünür, okuma çalışır
+2026-11-05T18:00:50.230Z [WARN] Veri dosyası programın daha yeni bir sürümüyle açılmış (şema 46 > 45); göç yapılmadı, şirket yalnız görüntülenir.
+  ✓ pencere 002'yi gösteriyor
+  ✓ uyarı şeridi görünür
+  ✓ şerit başlığı (Bu Şirket Yalnız GörüntülenirBu şirketin verisi programın da)
+  ✓ şerit Türkçe nedeni söyler
+  ✓ şerit ekran okuyucuya duyurulur (role=alert)
+
+■ Kayıt denemesi: sunucu reddeder, veri değişmez
+  ✓ kayıt 409 SCHEMA_AHEAD ({"status":409,"code":"SCHEMA_AHEAD","message":"Bu şirketin verisi programın daha yeni bir sürümüyle açılmış. Programı güncelleyin; o zamana kadar veri yalnız görüntülenir."})
+  ✓ hata iletisi Türkçe neden
+  ✓ şerit kayıt denemesinden sonra da görünür
+
+■ 001 penceresi: şerit yok
+  ✓ pencere 001'i gösteriyor
+  ✓ 001'de şerit yok
+  ✓ 002'nin Kasa satırı sayısı değişmedi (1)
+  ✓ sayfa hatası yok
+
+✓ sema-kapisi-bs7: 12 geçti, 0 kaldı

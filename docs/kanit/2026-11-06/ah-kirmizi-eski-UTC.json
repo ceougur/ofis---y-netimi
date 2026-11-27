@@ -1,0 +1,38 @@
+{
+  "ad": "ah-kirmizi-eski-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ah-taban/test/acilis-onarimi-hiz-250.test.mjs",
+  "commit": "f5b34f31ea68b6b3ce9e78552a2676e63aa98545",
+  "dal": "worktree-agent-ab0062d42feec8f21",
+  "kirli": 1,
+  "izlenmeyen": 9,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T06:09:56.938Z",
+  "sure_sn": 1.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 1,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.0 AH — açılış onarımı: öğe başına ağır okuma yok, çıktı eski kodla birebir › öğe başına ağır okuma yok: ikinci onarım koşusunda carinin tam defteri yalnız onarım kararı çıkan adayda okunur, deyim sayısı küçük",
+      "konum": "test/acilis-onarimi-hiz-250.test.mjs:40:3",
+      "hata": "carinin tam defteri (accounts.detail) 74 kez okundu; en çok onarım kararı sayısı (3) kadar olmalı — aday başına ağır okuma (ders 47) · veri tabanı deyimi 2299; bütçe 4 × 83 aday + 200 = 532 · (sayım: {\"statements\":2299,\"detail\":74}) (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ah-kanit/2026-11-06/ah-kirmizi-eski-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ab0062d42feec8f21",
+  "ham_cikti_sha256": "f03d921397fbe55dcec00a66e0db26d17956154f996b734d48a4739202e980db",
+  "ham_cikti_bayt": 3105
+}

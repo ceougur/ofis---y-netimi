@@ -92,6 +92,11 @@ export function planStatementPdf(plan, { officeName = "", officeLines = null, us
         card(page, doc, M + index * (cardWidth + gap), top, cardWidth, label, value, color),
       );
       top += 60;
+      // Birleşik tur 8 (S151 = B, S158 = A): faturasız iade / Değersiz Alacak ile kapanan kısım tahsilat sayılmaz, ayrı yazılır (Toplam = Tahsil edilen + Kalan + bu tutar).
+      if (Number(plan.totals.returned) > 0.005) {
+        page.text(M, top, `İade / değersiz ile kapanan: ${tl(plan.totals.returned)} (tahsilat sayılmaz)`, { size: 9, color: muted });
+        top += 16;
+      }
     } else {
       page.text(M, top + 10, `Taksit ekstresi · ${plan.name}`, { font: "bold", size: 9, color: muted });
       top += 22;
@@ -211,6 +216,8 @@ export function receiptPdf(plan, entry, { officeName = "", userName = "", now = 
     row("Toplam borç", tl(plan.totals.total));
     row("Tahsil edilen", tl(plan.totals.paid));
     row("Kalan borç", tl(plan.totals.remaining), { bold: true });
+    // Birleşik tur 8 (S151 = B, S158 = A): iade / Değersiz Alacak ile kapanan kısım ayrı (tahsilat sayılmaz).
+    if (Number(plan.totals.returned) > 0.005) row("İade / değersiz ile kapanan", tl(plan.totals.returned));
   }
   if (entry.actorName || userName) row("Tahsil eden", entry.actorName || userName);
   top += 18;

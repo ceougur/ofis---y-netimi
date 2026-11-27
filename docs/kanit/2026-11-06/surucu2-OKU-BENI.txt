@@ -1,0 +1,43 @@
+2.5.0 MUHASEBE SÜRÜCÜSÜ BAKIMI 2 (G5 gerileme koruması) — KANIT (06.11.2026 ~03:58 UTC, sürücü ajanı; worktree dalı worktree-agent-a95435ad22c7ff7a7)
+
+Taban: birleşik ağaç 2ba5ac0b (Ç1, Ç2, Ç3 dondurma, Ç4, BS, W, birleşik tur 1). Sürücü commit'leri f6a8355c (bakım 2) + fb8be143 (S11 / S12 = A kimlikleri).
+Kâhin: test/bagimsiz/muhasebe/ (bakım 2 birleşimi ed59e291; 66 senaryo + 66 beklenen) — DEĞİŞTİRİLMEDİ, yalnız içe aktarıldı (bayt kodu yazılmadı).
+Program kodu (server/, client/) DEĞİŞTİRİLMEDİ; eski kod / mutantlar not defterinde ayrı kopyada (git archive; ders 23, 25).
+Node v22.23.4, Python 3 (-I), linux x64; lisans servisi 127.0.0.1:9 (ders 30). Koşular tools/kanit.mjs kos (KANIT_DIR = not defteri; buraya kopyalandı).
+program.json dosyaları .gz (karsilastir.py ve gerileme.py .gz okur). Eski ağaç klasöründe yalnız program.json.gz + ozet.json (fark.json'lar bugun ile aynı sınıf).
+
+1) surucu2-bugun — birleşik ağaç (2ba5ac0b), 66 senaryo × TZ UTC + Europe/Istanbul, --paralel 3
+   node test/bagimsiz/muhasebe-surucu/kos.mjs --paralel 3 --cikti <..>/surucu2-bugun --veri <not defteri>
+   AYNI 3442 · U 1092 · P 64 · K 2 · R 2 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 10 · red farkı 0 · uygulanamayan 0 · sınıfsız adım 0 · değişmez 0 · öz denetim bozuk 0 · koşu hatası 0
+   (# tests 4612 / # pass 4534 / # fail 68 / # skipped 10 — "fail" = elle sınıflı P / K / R; çıkış 1 BİLİNÇLİ; "skipped" = ÖLÇÜLEMEDİ, geçti sayılmaz)
+   İki saat diliminde senaryo başına sonuç BİREBİR (tz farkı 0 / 66).
+   ozet.json "bekleyen": G5 BEKLEYEN KURAL FARKLARI (kimlik → senaryo / denetim sayısı, UTC).
+
+2) surucu2-eski-842e1d48 — AYNI sürücü, ESKİ ağaç 842e1d48 (önceki sürücü koşusunun ağacı; `git archive 842e1d48 server client tools package.json test/helpers.mjs test/fixtures`)
+   Sınıf sayıları 1) ile aynı.
+
+3) surucu2-gerileme — python3 -I test/bagimsiz/muhasebe-surucu/gerileme.py <eski> <bugun>
+   132 koşunun 132'si program çıktısı BİREBİR (olay durumu / HTTP / red kodu / olay başına mizan + alt hesap + cari farkı / bütün rapor okumaları / son durum /
+   Mutabakat Testi; rastgele kimlikler <id>, süreler ve yalnız yeni kodun yazdığı kilit alanları dışarıda) → GERİLEME YOK.
+   Kilitli dönemli 6 senaryo × 2 TZ (s07, s30, s38, s47, s49, s56): Ç3 donmuş okuma (GET /ledger karma) = eski kodun canlı türetmesi, birebir; frozenThrough = kilit;
+   ledger:snapshot / ledger:rule-diff tutmayan listesinde yok (API yalnız tutmayanı gösterir) → donmuş = güncel türetme.
+
+4) surucu2-v249-yeni-bulgular — v2.4.9 gerçek kodu (ccf0b0ca, ayrı kopya), yeni bulguların senaryoları s42, s43, s45, s58, rastgele-2 × 2 TZ
+   P5 (s43), K6 (s43), R5 (s58), R4 + K3 (rastgele-2 adımları), U-S2 (s45), U-M13 (s42) v2.4.9'da da aynı → gerileme değil, eski davranış.
+
+5) TESTİN DİŞİ (ayrı kopyada program kodu, 2ba5ac0b + tek satır):
+   M1  server/lib/plans.mjs:120 `days < 0` → `days <= 0` (vadesi BUGÜN olan taksit gecikmiş)
+       kâhin karşılaştırması YAKALAMADI (surucu2-mutasyon-M1: SINIFLANMADI 0; s33 gec0501'de mutant program 40.000 = kâhin 40.000 tesadüfen — AYNI'ya döndü);
+       GERİLEME DENETİMİ YAKALADI (surucu2-mutasyon-M1-gerileme: 2 / 132 FARKLI — s33 gec0501 cari kartı Geciken 0 → 40.000).
+       Kapsam boşluğu: aktif kartın vade günündeki gecikmiş raporu yalnız s33'te, orada da kâhin değeri tesadüfen eşit.
+   M1b server/lib/plans.mjs:120 `days < 0` → `days < -1` (gecikmiş bir gün geç başlar)
+       YAKALANDI: SINIFLANMADI 6 + ÖLÇÜLEMEDİ +4 (s58 g2b, s51, s52, s61, rastgele-2); gerileme 10 / 132 FARKLI.
+   M2  server/lib/ledger-snapshots.mjs:265 donmuş mizan `date <= ?2` → `date < ?2` (kilit gününün donmuş satırları düşer)
+       YAKALANDI: s07 ADIM 11 donem_kilitle {120 −96.000, 391 +16.000, 600 +80.000} + 14 SINIFLANMADI satır (2 TZ); gerileme 2 / 132 FARKLI (s07).
+       Öbür kilitli senaryolarda kilit gününde kayıt yok — yakalamaz.
+
+Yeniden koşu (ana oturum, ders 16; UTC):
+   node test/bagimsiz/muhasebe-surucu/kos.mjs --senaryo s58,s43,s57,s53,rastgele-2 --tz UTC --cikti <klasör>
+   beklenen (senaryo başına AYNI / U / P / K / R / SINIFLANMADI / ÖLÇÜLEMEDİ): s58 15 / 4 / 0 / 0 / 0 / 0 / 0 + 1 red farkı R (R5) · s43 18 / 8 / 8 / 0 / 0 / 0 / 0 + olay K6 ·
+   s57 14 / 9 / 0 / 0 / 0 / 0 / 0 · s53 23 / 6 / 0 / 0 / 0 / 0 / 0 (red 2, ikisi de kâhinle AYNI) · rastgele-2 198 / 78 / 0 / 0 / 0 / 0 / 0, adım farkı 16 (K3 2, R4 7, KG8 SONUÇ 7)
+   Toplam satırı: AYNI 268 · U 105 · P 12 (8 s43 + 4 kart_faiz olayı) · K 1 · R 1 · SINIFLANMADI 0.

@@ -1,0 +1,36 @@
+
+> destekofis@2.4.9 test:senaryo-donem-kilidi-ilerleme-250
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-donem-kilidi-ilerleme-250.mjs
+
+1) Dondurma sürerken: kilit hemen kondu, kart ilerlemeyi yazar ve yoklar
+  ✓ kilit dondurma bitmeden göründü (5119 ms)
+  ✓ sunucuda kilit 31.12.2026
+  ✓ kart: "31.12.2026 ve öncesi kilitli. Kilitli dönemin defteri donduruluyor (60 satır yazıldı)… Bu sırada çalışmaya devam edebilirsiniz."
+  ✓ sürerken uyarı rengi yok
+  ✓ kart dondurma sürerken yokluyor (3 istek / 3,5 sn)
+  ✓ yoklama seyrek (3 istek / 3,5 sn; ≤ 4)
+  ✓ dondurma sürerken açık döneme yazım 200
+  ✓ dondurma sürerken kilitli döneme yazım 409 (409)
+2) Bitince: kart temiz, bildirim, yoklama durur
+  ✓ kart: "31.12.2026 ve öncesi kilitli."
+  ✓ bildirim: Kilitli dönemin defteri donduruldu.
+  ✓ sunucu: kapsam 2026-12-31, bekleyen yok, süren iş yok
+  ✓ bitince yoklama durdu (sonraki 4 sn'de 0 istek)
+3) Dondurma düşerse: sarı uyarı, yoklama durur, kilit yerinde; yeniden Kilitle tamamlar
+  ✓ kart: "31.12.2026 ve öncesi kilitli. Kilitli dönemin defteri dondurulamadı (Disk dolu: database or disk is full (test)). Kilit yerinde; kilidi yeniden kaydedin ya da programı yeniden açın, dondurma yeniden denenir."
+  ✓ uyarı rengi (sarı)
+  ✓ hata görününce yoklama durdu (0 istek / 3,5 sn)
+  ✓ kilit yerinde
+  ✓ yeniden Kilitle → tamamlandı, uyarı kalktı
+  ✓ sunucuda kapsam = kilit
+4) Kancasız (kısa) dondurma: kaydetme bildirimi, kart temiz, yoklama durur
+  ✓ kaydetme bildirimi: ["30.06.2026 ve öncesi kilitlendi.×"]
+  ✓ kısa dondurmadan sonra yoklama yok (0 istek / 3,5 sn)
+  ✓ sunucuda kapsam 30.06.2026
+  ✓ sayfa hatası yok (—)
+
+senaryo-donem-kilidi-ilerleme-250: 22 geçti, 0 kaldı
+
+# tests 22
+# pass 22
+# fail 0

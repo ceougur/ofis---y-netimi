@@ -1,0 +1,621 @@
+TAP version 13
+# Subtest: Ç5-A tur 2c — v2.4.9 kilitli verisinde açılış düzeni (kabul D): sınıf listesi, aday → Kural Farkı → Düzeltildi → eşleştirme → ters kayıt
+    # Subtest: [1] güncelleme: iki aday (kilitli 1); Kural Farkı fişi aday varken pasif (B16); karar → pasiflik kalkar
+    ok 1 - [1] güncelleme: iki aday (kilitli 1); Kural Farkı fişi aday varken pasif (B16); karar → pasiflik kalkar
+      ---
+      duration_ms: 43.871948
+      type: 'test'
+      ...
+    # Subtest: [2] sınıf listesi: kilitli dönemdeki her açılış türü kural farkında (eski 500 / 602 → 519); açık dönemdekiler farkta YOK, defterde 519 (reddedilen aday 602)
+    ok 2 - [2] sınıf listesi: kilitli dönemdeki her açılış türü kural farkında (eski 500 / 602 → 519); açık dönemdekiler farkta YOK, defterde 519 (reddedilen aday 602)
+      ---
+      duration_ms: 5.070959
+      type: 'test'
+      ...
+    # Subtest: [3] Kural Farkı Düzeltme Fişi 01.07.2026: B 500 6.370 / B 602 2.800 / A 519 9.170; Düzeltildi; değişmez (1–5 karma = baştan)
+    ok 3 - [3] Kural Farkı Düzeltme Fişi 01.07.2026: B 500 6.370 / B 602 2.800 / A 519 9.170; Düzeltildi; değişmez (1–5 karma = baştan)
+      ---
+      duration_ms: 33.387506
+      type: 'test'
+      ...
+    # Subtest: [4] Açılış Eşleştirme 20.11.2026: 519 = 11.670 alacak (fiş 9.170 + açık dönem 2.500); A 500 10.000 + A 570 1.670 → 519 sıfır; Açılış Karşılığı tutarlı
+    ok 4 - [4] Açılış Eşleştirme 20.11.2026: 519 = 11.670 alacak (fiş 9.170 + açık dönem 2.500); A 500 10.000 + A 570 1.670 → 519 sıfır; Açılış Karşılığı tutarlı
+      ---
+      duration_ms: 32.548995
+      type: 'test'
+      ...
+    # Subtest: [5] Kural Farkı fişi ters kaydedilir → uyarı geri gelir (Mizan'da 519 9.170 borç — kural farkı düzeltilmemiş; canlı türetmede 519 = 0, bilgi satırı YOK); açık dönemde açılış silinir → 519 eşleştirmenin tersine geçer: ENGELLENMEZ, bilgi satırı
+    ok 5 - [5] Kural Farkı fişi ters kaydedilir → uyarı geri gelir (Mizan'da 519 9.170 borç — kural farkı düzeltilmemiş; canlı türetmede 519 = 0, bilgi satırı YOK); açık dönemde açılış silinir → 519 eşleştirmenin tersine geçer: ENGELLENMEZ, bilgi satırı
+      ---
+      duration_ms: 65.788717
+      type: 'test'
+      ...
+    1..5
+ok 1 - Ç5-A tur 2c — v2.4.9 kilitli verisinde açılış düzeni (kabul D): sınıf listesi, aday → Kural Farkı → Düzeltildi → eşleştirme → ters kayıt
+  ---
+  duration_ms: 2662.525512
+  type: 'suite'
+  ...
+# Subtest: Ç5-A tur 2c İş 1 — Açılış Eşleştirme Fişi
+    # Subtest: ön izleme verisi: 519'un gün sonu bakiyesi ve açılış türlerine göre dökümü (toplam = bakiye); izinli hedefler alt defter hesabı ve 519 içermez
+    ok 1 - ön izleme verisi: 519'un gün sonu bakiyesi ve açılış türlerine göre dökümü (toplam = bakiye); izinli hedefler alt defter hesabı ve 519 içermez
+      ---
+      duration_ms: 11.853778
+      type: 'test'
+      ...
+    # Subtest: ret: izinsiz hedef (102, 120, 600, 519) 400 ESLESTIRME_HESAP; 519'u büyüten 409; ters bakiye 409 ESLESTIRME_TERS (aynı gün açılışı dahil, ertesi gün açılışı hariç); fiş yazılmaz
+    ok 2 - ret: izinsiz hedef (102, 120, 600, 519) 400 ESLESTIRME_HESAP; 519'u büyüten 409; ters bakiye 409 ESLESTIRME_TERS (aynı gün açılışı dahil, ertesi gün açılışı hariç); fiş yazılmaz
+      ---
+      duration_ms: 39.877014
+      type: 'test'
+      ...
+    # Subtest: kısmi + ikinci fiş (iki hedef) + fazlası ret; Açılış Karşılığı fiş satırlarını görür; cari / Kasa / banka / stok bakiyesi değişmez; aynı istek iki kez tek fiş
+    ok 3 - kısmi + ikinci fiş (iki hedef) + fazlası ret; Açılış Karşılığı fiş satırlarını görür; cari / Kasa / banka / stok bakiyesi değişmez; aynı istek iki kez tek fiş
+      ---
+      duration_ms: 79.432868
+      type: 'test'
+      ...
+    # Subtest: fişten sonra açık dönemde açılış silinir → 519 ters bakiye: ENGELLENMEZ; Mutabakat'ta bilgi satırı (zil / günlük değişmez); ters kayıtla geri döner
+    ok 4 - fişten sonra açık dönemde açılış silinir → 519 ters bakiye: ENGELLENMEZ; Mutabakat'ta bilgi satırı (zil / günlük değişmez); ters kayıtla geri döner
+      ---
+      duration_ms: 57.972276
+      type: 'test'
+      ...
+    # Subtest: iki kişi aynı anda kalanın tamamını eşleştirir: biri yazılır, öbürü güncel bakiyeyle (0) 409; Muhasebe 403; ileri tarih 400; kilitli tarih 409
+    ok 5 - iki kişi aynı anda kalanın tamamını eşleştirir: biri yazılır, öbürü güncel bakiyeyle (0) 409; Muhasebe 403; ileri tarih 400; kilitli tarih 409
+      ---
+      duration_ms: 353.206736
+      type: 'test'
+      ...
+    1..5
+ok 2 - Ç5-A tur 2c İş 1 — Açılış Eşleştirme Fişi
+  ---
+  duration_ms: 1011.308572
+  type: 'suite'
+  ...
+# Subtest: Ç5-A tur 2c İş 3 — Açılış Olabilir Kayıtlar: sayfalama, zil sayısı, toplu karar, geri al, kilitli satır, yetki
+    # Subtest: sayfalama + toplam; sayfasız çağrı tur 1 çıktısı (kilit alanı yok); zil sayısı kilitli dönemdeki adayı ayrıca verir; geçersiz sayfa 400
+    ok 1 - sayfalama + toplam; sayfasız çağrı tur 1 çıktısı (kilit alanı yok); zil sayısı kilitli dönemdeki adayı ayrıca verir; geçersiz sayfa 400
+      ---
+      duration_ms: 23.203536
+      type: 'test'
+      ...
+    # Subtest: toplu karar (aynı adlı iki cari): ikisi de onaylanır, 519; listede olmayan kimlik varsa HİÇBİRİ yazılmaz (404); karar tutar / tarih / yön / işaret değiştirmez
+    ok 2 - toplu karar (aynı adlı iki cari): ikisi de onaylanır, 519; listede olmayan kimlik varsa HİÇBİRİ yazılmaz (404); karar tutar / tarih / yön / işaret değiştirmez
+      ---
+      duration_ms: 35.539938
+      type: 'test'
+      ...
+    # Subtest: geri al: kararlı satır yeniden onay bekler (S47: defterde yine 519); ret → geri al → onay; listede olmayan satırda 404; adayda değişiklik yok
+    ok 3 - geri al: kararlı satır yeniden onay bekler (S47: defterde yine 519); ret → geri al → onay; listede olmayan satırda 404; adayda değişiklik yok
+      ---
+      duration_ms: 56.511785
+      type: 'test'
+      ...
+    # Subtest: kilitli satır: karar verilir, kilit izi ve donmuş defter değişmez; Kural Farkı fişi aday varken pasif, neden aday ekranını söyler (B16); karar verilince pasiflik kalkar
+    ok 4 - kilitli satır: karar verilir, kilit izi ve donmuş defter değişmez; Kural Farkı fişi aday varken pasif, neden aday ekranını söyler (B16); karar verilince pasiflik kalkar
+      ---
+      duration_ms: 33.098215
+      type: 'test'
+      ...
+    # Subtest: yetki: personel 403 (liste, zil, tek, toplu, geri al); Muhasebe uçları kullanır (tur 1 yetkisi accounts.manage); iki kişi aynı anda — son karar geçerli, kopya aynı
+    ok 5 - yetki: personel 403 (liste, zil, tek, toplu, geri al); Muhasebe uçları kullanır (tur 1 yetkisi accounts.manage); iki kişi aynı anda — son karar geçerli, kopya aynı
+      ---
+      duration_ms: 216.203292
+      type: 'test'
+      ...
+    1..5
+ok 3 - Ç5-A tur 2c İş 3 — Açılış Olabilir Kayıtlar: sayfalama, zil sayısı, toplu karar, geri al, kilitli satır, yetki
+  ---
+  duration_ms: 1252.526166
+  type: 'suite'
+  ...
+# \# kaynak tarama: 30 sorgu, 188 sütun okunuyor; izde 128; istisna 27; istisna tablosu 19; rowid 16
+# Subtest: Ç5-A tur 1f — Ana Defter türetmesinin okuduğu her sütun kilit izinde ya da gerekçeli açık istisnada (kalıcı kaynak tarama; §16)
+    # Subtest: türetmenin okuduğu her sütun: kilitli satırda değişince iz değişir ya da açık istisnada; istisnalar güncel (hepsi türetmede okunuyor)
+    ok 1 - türetmenin okuduğu her sütun: kilitli satırda değişince iz değişir ya da açık istisnada; istisnalar güncel (hepsi türetmede okunuyor)
+      ---
+      duration_ms: 577.251974
+      type: 'test'
+      ...
+    # Subtest: kilit izinin önbelleği: aynı durumda aynı iz; bu bağlantının yazımı, başka bağlantının yazımı ve geri alınan işlem sonrası baştan hesaplanan izle aynı
+    ok 2 - kilit izinin önbelleği: aynı durumda aynı iz; bu bağlantının yazımı, başka bağlantının yazımı ve geri alınan işlem sonrası baştan hesaplanan izle aynı
+      ---
+      duration_ms: 32.402066
+      type: 'test'
+      ...
+    1..2
+ok 4 - Ç5-A tur 1f — Ana Defter türetmesinin okuduğu her sütun kilit izinde ya da gerekçeli açık istisnada (kalıcı kaynak tarama; §16)
+  ---
+  duration_ms: 1921.101921
+  type: 'suite'
+  ...
+# Subtest: göç v30: v2.4.2 verisindeki stok açılışları Ana Defter'e gelir (B 153 / A 500)
+    # Subtest: eski veride açılışlar işaretlenir; yalnız 153 / 500 değişir; kilit izi aynı; Mutabakat Testi temiz; geri dönüş çalışır
+    ok 1 - eski veride açılışlar işaretlenir; yalnız 153 / 500 değişir; kilit izi aynı; Mutabakat Testi temiz; geri dönüş çalışır
+      ---
+      duration_ms: 2380.315486
+      type: 'test'
+      ...
+    1..1
+ok 5 - göç v30: v2.4.2 verisindeki stok açılışları Ana Defter'e gelir (B 153 / A 500)
+  ---
+  duration_ms: 2387.08006
+  type: 'suite'
+  ...
+# Subtest: Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz
+    # Subtest: [1] satır içi tarama — Kasa ↔ Banka transferinin bağı temizlenir
+    ok 1 - [1] satır içi tarama — Kasa ↔ Banka transferinin bağı temizlenir
+      ---
+      duration_ms: 644.857051
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — Kasa ↔ Banka transferinin bağı temizlenir; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 2 - [2] arka plan taraması — Kasa ↔ Banka transferinin bağı temizlenir; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1292.455481
+      type: 'test'
+      ...
+    # Subtest: [1] satır içi tarama — cari satırının kaynağı (evrak → elle)
+    ok 3 - [1] satır içi tarama — cari satırının kaynağı (evrak → elle)
+      ---
+      duration_ms: 489.741102
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — cari satırının kaynağı (evrak → elle); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 4 - [2] arka plan taraması — cari satırının kaynağı (evrak → elle); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1170.602176
+      type: 'test'
+      ...
+    # Subtest: [1] satır içi tarama — cari satırının kaynağı (stok → elle; evrak olgusuna girmeyen kaynak)
+    ok 5 - [1] satır içi tarama — cari satırının kaynağı (stok → elle; evrak olgusuna girmeyen kaynak)
+      ---
+      duration_ms: 462.796619
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — cari satırının kaynağı (stok → elle; evrak olgusuna girmeyen kaynak); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 6 - [2] arka plan taraması — cari satırının kaynağı (stok → elle; evrak olgusuna girmeyen kaynak); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1218.947565
+      type: 'test'
+      ...
+    # Subtest: [1] satır içi tarama — cari satırının kaynak kimliği başka evrağa
+    ok 7 - [1] satır içi tarama — cari satırının kaynak kimliği başka evrağa
+      ---
+      duration_ms: 556.901443
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — cari satırının kaynak kimliği başka evrağa; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 8 - [2] arka plan taraması — cari satırının kaynak kimliği başka evrağa; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1210.462715
+      type: 'test'
+      ...
+    # Subtest: [1] satır içi tarama — şüpheli alacakta 'Normal Cariye İşlendi' işareti (128 → 120; sayı / tutar aynı)
+    ok 9 - [1] satır içi tarama — şüpheli alacakta 'Normal Cariye İşlendi' işareti (128 → 120; sayı / tutar aynı)
+      ---
+      duration_ms: 536.618341
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — şüpheli alacakta 'Normal Cariye İşlendi' işareti (128 → 120; sayı / tutar aynı); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 10 - [2] arka plan taraması — şüpheli alacakta 'Normal Cariye İşlendi' işareti (128 → 120; sayı / tutar aynı); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 2685.816681
+      type: 'test'
+      ...
+    # Subtest: [1] satır içi tarama — taksit satırının evrak bağı temizlenir
+    ok 11 - [1] satır içi tarama — taksit satırının evrak bağı temizlenir
+      ---
+      duration_ms: 503.30175
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — taksit satırının evrak bağı temizlenir; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 12 - [2] arka plan taraması — taksit satırının evrak bağı temizlenir; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1223.981167
+      type: 'test'
+      ...
+    # Subtest: [1] satır içi tarama — taksit satırının açılış alanı 0 → 1 (100 → 519)
+    ok 13 - [1] satır içi tarama — taksit satırının açılış alanı 0 → 1 (100 → 519)
+      ---
+      duration_ms: 511.116621
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — taksit satırının açılış alanı 0 → 1 (100 → 519); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 14 - [2] arka plan taraması — taksit satırının açılış alanı 0 → 1 (100 → 519); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1154.167852
+      type: 'test'
+      ...
+    # Subtest: [1] satır içi tarama — stok hareketinin nedeni (satış → alış iadesi; 600 → 153)
+    ok 15 - [1] satır içi tarama — stok hareketinin nedeni (satış → alış iadesi; 600 → 153)
+      ---
+      duration_ms: 498.512776
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — stok hareketinin nedeni (satış → alış iadesi; 600 → 153); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 16 - [2] arka plan taraması — stok hareketinin nedeni (satış → alış iadesi; 600 → 153); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1055.729567
+      type: 'test'
+      ...
+    # Subtest: [1] satır içi tarama — faturanın muhasebe kırılımı (600 → 602; tutar aynı, yalnız hesap dağılımı)
+    ok 17 - [1] satır içi tarama — faturanın muhasebe kırılımı (600 → 602; tutar aynı, yalnız hesap dağılımı)
+      ---
+      duration_ms: 467.548195
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — faturanın muhasebe kırılımı (600 → 602; tutar aynı, yalnız hesap dağılımı); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 18 - [2] arka plan taraması — faturanın muhasebe kırılımı (600 → 602; tutar aynı, yalnız hesap dağılımı); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1204.400073
+      type: 'test'
+      ...
+    # Subtest: [1] satır içi tarama — faturanın tevkifat tutarı
+    ok 19 - [1] satır içi tarama — faturanın tevkifat tutarı
+      ---
+      duration_ms: 590.704968
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — faturanın tevkifat tutarı; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 20 - [2] arka plan taraması — faturanın tevkifat tutarı; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1246.995997
+      type: 'test'
+      ...
+    # Subtest: [1] satır içi tarama — faturanın stopaj tutarı
+    ok 21 - [1] satır içi tarama — faturanın stopaj tutarı
+      ---
+      duration_ms: 770.373971
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — faturanın stopaj tutarı; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 22 - [2] arka plan taraması — faturanın stopaj tutarı; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1260.354272
+      type: 'test'
+      ...
+    # Subtest: [1] satır içi tarama — tahsil kaydının işlem başlığı (101.01 / 101.02 tutarı)
+    ok 23 - [1] satır içi tarama — tahsil kaydının işlem başlığı (101.01 / 101.02 tutarı)
+      ---
+      duration_ms: 446.197699
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — tahsil kaydının işlem başlığı (101.01 / 101.02 tutarı); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 24 - [2] arka plan taraması — tahsil kaydının işlem başlığı (101.01 / 101.02 tutarı); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1259.49577
+      type: 'test'
+      ...
+    # Subtest: [1] satır içi tarama — Kayıt Tarihi boş kartın oluşturma anı
+    ok 25 - [1] satır içi tarama — Kayıt Tarihi boş kartın oluşturma anı
+      ---
+      duration_ms: 1742.432172
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — Kayıt Tarihi boş kartın oluşturma anı; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 26 - [2] arka plan taraması — Kayıt Tarihi boş kartın oluşturma anı; [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 2302.34829
+      type: 'test'
+      ...
+    # Subtest: [1] satır içi tarama — kilitli karşılıksızı olan evrağın durumu (karşılıksız → portföyde)
+    ok 27 - [1] satır içi tarama — kilitli karşılıksızı olan evrağın durumu (karşılıksız → portföyde)
+      ---
+      duration_ms: 467.788461
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — kilitli karşılıksızı olan evrağın durumu (karşılıksız → portföyde); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 28 - [2] arka plan taraması — kilitli karşılıksızı olan evrağın durumu (karşılıksız → portföyde); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1231.148311
+      type: 'test'
+      ...
+    # Subtest: [1] satır içi tarama — aynı evrakta kilit SONRASI tarihli ikinci karşılıksız olayı (en son oluşturulan; madde kilitli dönemden çıkar)
+    ok 29 - [1] satır içi tarama — aynı evrakta kilit SONRASI tarihli ikinci karşılıksız olayı (en son oluşturulan; madde kilitli dönemden çıkar)
+      ---
+      duration_ms: 455.371938
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — aynı evrakta kilit SONRASI tarihli ikinci karşılıksız olayı (en son oluşturulan; madde kilitli dönemden çıkar); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 30 - [2] arka plan taraması — aynı evrakta kilit SONRASI tarihli ikinci karşılıksız olayı (en son oluşturulan; madde kilitli dönemden çıkar); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1280.343738
+      type: 'test'
+      ...
+    # Subtest: [1] satır içi tarama — carili evrağın carisi silinir (cariye işlenmemiş sayılır; çift madde)
+    ok 31 - [1] satır içi tarama — carili evrağın carisi silinir (cariye işlenmemiş sayılır; çift madde)
+      ---
+      duration_ms: 475.49124
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — carili evrağın carisi silinir (cariye işlenmemiş sayılır; çift madde); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 32 - [2] arka plan taraması — carili evrağın carisi silinir (cariye işlenmemiş sayılır; çift madde); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1209.732594
+      type: 'test'
+      ...
+    # Subtest: [1] satır içi tarama — stok kaynaklı cari satırının kaynak kimliği kilit sonrası tedarikçiye iadeye (600 → 153; satır kümesi aynı)
+    ok 33 - [1] satır içi tarama — stok kaynaklı cari satırının kaynak kimliği kilit sonrası tedarikçiye iadeye (600 → 153; satır kümesi aynı)
+      ---
+      duration_ms: 461.331146
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — stok kaynaklı cari satırının kaynak kimliği kilit sonrası tedarikçiye iadeye (600 → 153; satır kümesi aynı); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 34 - [2] arka plan taraması — stok kaynaklı cari satırının kaynak kimliği kilit sonrası tedarikçiye iadeye (600 → 153; satır kümesi aynı); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1288.185027
+      type: 'test'
+      ...
+    # Subtest: [1] satır içi tarama — evrak bağlı taksit satırının açılış alanı 0 → 1 (101 → 519; satır kümesi aynı)
+    ok 35 - [1] satır içi tarama — evrak bağlı taksit satırının açılış alanı 0 → 1 (101 → 519; satır kümesi aynı)
+      ---
+      duration_ms: 528.960725
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — evrak bağlı taksit satırının açılış alanı 0 → 1 (101 → 519; satır kümesi aynı); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 36 - [2] arka plan taraması — evrak bağlı taksit satırının açılış alanı 0 → 1 (101 → 519; satır kümesi aynı); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1181.408456
+      type: 'test'
+      ...
+    # Subtest: [1] satır içi tarama — carisiz kilitli karşılıksıza cari yazılır + kilit SONRASI tarihli karşılıksız borç satırı (carinin karşılıksız borcu var olur; evrak kümesi aynı)
+    ok 37 - [1] satır içi tarama — carisiz kilitli karşılıksıza cari yazılır + kilit SONRASI tarihli karşılıksız borç satırı (carinin karşılıksız borcu var olur; evrak kümesi aynı)
+      ---
+      duration_ms: 560.694795
+      type: 'test'
+      ...
+    # Subtest: [2] arka plan taraması — carisiz kilitli karşılıksıza cari yazılır + kilit SONRASI tarihli karşılıksız borç satırı (carinin karşılıksız borcu var olur; evrak kümesi aynı); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+    ok 38 - [2] arka plan taraması — carisiz kilitli karşılıksıza cari yazılır + kilit SONRASI tarihli karşılıksız borç satırı (carinin karşılıksız borcu var olur; evrak kümesi aynı); [3] program kapalıyken yapılan aynı yazım açılışta bulunur
+      ---
+      duration_ms: 1453.342817
+      type: 'test'
+      ...
+    # Subtest: [4] meşru olaylar sessiz, yanıt kodları tabandakiyle aynı: eski tarihli evrakın bugünkü tahsili / cirosu / karşılıksızı, tahsile verilmiş evrağın tahsili, açık dönem fatura iptali, kart kapatma, Silinenler'den geri alma, numaralama ve POS bağlama yazımları
+    ok 39 - [4] meşru olaylar sessiz, yanıt kodları tabandakiyle aynı: eski tarihli evrakın bugünkü tahsili / cirosu / karşılıksızı, tahsile verilmiş evrağın tahsili, açık dönem fatura iptali, kart kapatma, Silinenler'den geri alma, numaralama ve POS bağlama yazımları
+      ---
+      duration_ms: 3878.832669
+      type: 'test'
+      ...
+    # Subtest: [5] kilidi ilerletme / kaldırma / yeniden koyma, yedek → geri yükleme ve Şirket Verisini Sıfırla sessiz; yeniden kilitlenmiş dönemde kapı dışı yazım yine bulunur
+    ok 40 - [5] kilidi ilerletme / kaldırma / yeniden koyma, yedek → geri yükleme ve Şirket Verisini Sıfırla sessiz; yeniden kilitlenmiş dönemde kapı dışı yazım yine bulunur
+      ---
+      duration_ms: 2646.68505
+      type: 'test'
+      ...
+    # Subtest: [6] eski sürümün gerçek koduyla üretilmiş KİLİTLİ veriyle güncelleme (surum-2.0.26-zincir): ilk açılış + ilk tarama + ikinci açılış — yeni bulgu / günlük / zil yok
+    ok 41 - [6] eski sürümün gerçek koduyla üretilmiş KİLİTLİ veriyle güncelleme (surum-2.0.26-zincir): ilk açılış + ilk tarama + ikinci açılış — yeni bulgu / günlük / zil yok
+      ---
+      duration_ms: 2540.313037
+      type: 'test'
+      ...
+    # Subtest: [6] eski sürümün gerçek koduyla üretilmiş KİLİTLİ veriyle güncelleme (surum-2.4.9-s127): ilk açılış + ilk tarama + ikinci açılış — yeni bulgu / günlük / zil yok
+    ok 42 - [6] eski sürümün gerçek koduyla üretilmiş KİLİTLİ veriyle güncelleme (surum-2.4.9-s127): ilk açılış + ilk tarama + ikinci açılış — yeni bulgu / günlük / zil yok
+      ---
+      duration_ms: 713.665407
+      type: 'test'
+      ...
+    # Subtest: [7] kapıdan geçen (mağaza) yazım kilitli satırın yeni izlenen alanını değiştiremez: süzgeç de 'kilitli dönem' der → tam kapı reddeder (eşdeğerlik ihlali yok)
+    ok 43 - [7] kapıdan geçen (mağaza) yazım kilitli satırın yeni izlenen alanını değiştiremez: süzgeç de 'kilitli dönem' der → tam kapı reddeder (eşdeğerlik ihlali yok)
+      ---
+      duration_ms: 640.779099
+      type: 'test'
+      ...
+    # Subtest: [8] DÜŞÜK-A: kapı dışı KG-16 sapmasından sonra sıradan yazımlar REDDEDİLMEZ (denetim yalnız tam taramada); durumu tanımsız ama kopyası kararlı satıra karar verilebilir ve sapma kalkar
+    ok 44 - [8] DÜŞÜK-A: kapı dışı KG-16 sapmasından sonra sıradan yazımlar REDDEDİLMEZ (denetim yalnız tam taramada); durumu tanımsız ama kopyası kararlı satıra karar verilebilir ve sapma kalkar
+      ---
+      duration_ms: 926.941918
+      type: 'test'
+      ...
+    # Subtest: [9] kapıdan geçen iki adım: carisiz kilitli karşılıksıza cari yazımı kabul (iz aynı), ardından kilit SONRASI tarihli karşılıksız borç satırı RED (409 Kapanmış dönem; eşdeğerlik ihlali değil)
+    ok 45 - [9] kapıdan geçen iki adım: carisiz kilitli karşılıksıza cari yazımı kabul (iz aynı), ardından kilit SONRASI tarihli karşılıksız borç satırı RED (409 Kapanmış dönem; eşdeğerlik ihlali değil)
+      ---
+      duration_ms: 528.605107
+      type: 'test'
+      ...
+    # Subtest: [10] kaynaklı (stok) kilitli cari satırında 'Normal Cariye İşlendi' işareti kapı dışından 0 → 1: türetme değişmez (işaret yalnız tahsilatta anlamlı) ama iz alanın kendisini taşır — bulunur
+    ok 46 - [10] kaynaklı (stok) kilitli cari satırında 'Normal Cariye İşlendi' işareti kapı dışından 0 → 1: türetme değişmez (işaret yalnız tahsilatta anlamlı) ama iz alanın kendisini taşır — bulunur
+      ---
+      duration_ms: 6415.605986
+      type: 'test'
+      ...
+    # Subtest: [11] iz girdilerinin sürüm etiketi: v2.4.9'un GERÇEK kodunun kilit izi = güncel kodun 2.4.9 tanımıyla izi (aynı v2.4.9 deposu, göçten önce; kilitli dönemde kesilmiş fatura var)
+    ok 47 - [11] iz girdilerinin sürüm etiketi: v2.4.9'un GERÇEK kodunun kilit izi = güncel kodun 2.4.9 tanımıyla izi (aynı v2.4.9 deposu, göçten önce; kilitli dönemde kesilmiş fatura var)
+      ---
+      duration_ms: 0.302957
+      type: 'test'
+      ...
+    1..47
+ok 6 - Ç5-A tur 1f — türetmenin okuduğu alanların kilitli dönemdeki kapı dışı değişikliği bulunur; meşru olaylar sessiz
+  ---
+  duration_ms: 57143.743511
+  type: 'suite'
+  ...
+# Subtest: Ç5-A tur 2b İş 2 — Kural Farkı Düzeltme Fişi
+    # Subtest: [1] v2.4.9 verisi (kilit 31.12.2025, Excel kartları): fiş 01.01.2026; önceki yıl 602 farkı 681'e; Düzeltildi; ters kayıtla uyarı geri; ikinci fiş; değişmez
+    ok 1 - [1] v2.4.9 verisi (kilit 31.12.2025, Excel kartları): fiş 01.01.2026; önceki yıl 602 farkı 681'e; Düzeltildi; ters kayıtla uyarı geri; ikinci fiş; değişmez
+      ---
+      duration_ms: 6258.453911
+      type: 'test'
+      ...
+    # Subtest: [2] v2.0.26 verisi (kilit 05.10.2026; aynı yıl): yalnız 500 ↔ 519; gerçek eski sürüm satırı (ileri tarihli evrak) ayrı kalır; Muhasebe 403; iki kişi aynı anda
+    ok 2 - [2] v2.0.26 verisi (kilit 05.10.2026; aynı yıl): yalnız 500 ↔ 519; gerçek eski sürüm satırı (ileri tarihli evrak) ayrı kalır; Muhasebe 403; iki kişi aynı anda
+      ---
+      duration_ms: 9739.337454
+      type: 'test'
+      ...
+    # Subtest: [3] kilit bugün: ön izleme pasif + görünür neden, kayıt 400 ve fiş yok
+    ok 3 - [3] kilit bugün: ön izleme pasif + görünür neden, kayıt 400 ve fiş yok
+      ---
+      duration_ms: 8809.596305
+      type: 'test'
+      ...
+    # Subtest: [4] B16: kilitli dönemde onay bekleyen Açılış Olabilir kaydı varken fiş yazılmaz; karar verilince satırlar kararla değişir (onay 519, ret 602 / 770)
+    ok 4 - [4] B16: kilitli dönemde onay bekleyen Açılış Olabilir kaydı varken fiş yazılmaz; karar verilince satırlar kararla değişir (onay 519, ret 602 / 770)
+      ---
+      duration_ms: 4246.432755
+      type: 'test'
+      ...
+    # Subtest: [5] fazla düzeltme: fişten sonra kilit kaldırılır → uyarı (kilit olmasa da görünür); yeniden kilitlenir → yine fazla; ters kayıtla temiz
+    ok 5 - [5] fazla düzeltme: fişten sonra kilit kaldırılır → uyarı (kilit olmasa da görünür); yeniden kilitlenir → yine fazla; ters kayıtla temiz
+      ---
+      duration_ms: 2527.455167
+      type: 'test'
+      ...
+    # Subtest: [7] S164 = C: kilitli kaynağın kapı dışı değişikliği kural farkına karışırsa fişe sessizce girmez — alt defter hesabı farkı dışarıda, kaydı kaynak listesinde 'fişle düzeltilmez'
+    ok 6 - [7] S164 = C: kilitli kaynağın kapı dışı değişikliği kural farkına karışırsa fişe sessizce girmez — alt defter hesabı farkı dışarıda, kaydı kaynak listesinde 'fişle düzeltilmez'
+      ---
+      duration_ms: 750.05096
+      type: 'test'
+      ...
+    # Subtest: [8] S164 = C ikinci örnek: kilitli tahsilatın fatura bağı kapı dışından yazılınca 120 / 128 farkı kaynağıyla dışarıda; fiş yalnız gerçek kural farkı (500 → 519)
+    ok 7 - [8] S164 = C ikinci örnek: kilitli tahsilatın fatura bağı kapı dışından yazılınca 120 / 128 farkı kaynağıyla dışarıda; fiş yalnız gerçek kural farkı (500 → 519)
+      ---
+      duration_ms: 836.957224
+      type: 'test'
+      ...
+    # Subtest: [6] kilitsiz v2.4.9 verisi: ön izleme pasif (kilit yok), fiş yazılmaz, Mutabakat Testi çıktısı değişmez
+    ok 8 - [6] kilitsiz v2.4.9 verisi: ön izleme pasif (kilit yok), fiş yazılmaz, Mutabakat Testi çıktısı değişmez
+      ---
+      duration_ms: 132.837669
+      type: 'test'
+      ...
+    1..8
+ok 7 - Ç5-A tur 2b İş 2 — Kural Farkı Düzeltme Fişi
+  ---
+  duration_ms: 33302.722165
+  type: 'suite'
+  ...
+# Subtest: S160 = A — Banka'dan Ters Kaydet / Düzelt (KDV'li masrafın faturası): kilitli tahsilatın bağını düşüren iptal 409
+    # Subtest: Ters Kaydet 409 — tahsilat kilitli dönemde (05.10); banka olayı, fatura, bağ ve kilitli defter aynı
+    ok 1 - Ters Kaydet 409 — tahsilat kilitli dönemde (05.10); banka olayı, fatura, bağ ve kilitli defter aynı
+      ---
+      duration_ms: 12.749772
+      type: 'test'
+      ...
+    # Subtest: Ters Kaydet 409 — tahsilat tam kilit günü; banka olayı, fatura, bağ ve kilitli defter aynı
+    ok 2 - Ters Kaydet 409 — tahsilat tam kilit günü; banka olayı, fatura, bağ ve kilitli defter aynı
+      ---
+      duration_ms: 6.561789
+      type: 'test'
+      ...
+    # Subtest: Düzelt (Ters Kaydet'i çağırır) 409 — yeni işlem yazılmaz, banka olayı / fatura / bağ / kilitli defter aynı
+    ok 3 - Düzelt (Ters Kaydet'i çağırır) 409 — yeni işlem yazılmaz, banka olayı / fatura / bağ / kilitli defter aynı
+      ---
+      duration_ms: 7.918753
+      type: 'test'
+      ...
+    # Subtest: kilit DIŞINDAKİ tahsilat bağlıysa Ters Kaydet serbest (200): fatura iptal, bağ düşer, kilitli defter aynı
+    ok 4 - kilit DIŞINDAKİ tahsilat bağlıysa Ters Kaydet serbest (200): fatura iptal, bağ düşer, kilitli defter aynı
+      ---
+      duration_ms: 28.896652
+      type: 'test'
+      ...
+    # Subtest: ret yalnız TAHSİLAT yönünde: kilitli ÖDEME ve kilitli VERİLEN EVRAK bağlı faturada Ters Kaydet serbest (200); kilitli defter aynı
+    ok 5 - ret yalnız TAHSİLAT yönünde: kilitli ÖDEME ve kilitli VERİLEN EVRAK bağlı faturada Ters Kaydet serbest (200); kilitli defter aynı
+      ---
+      duration_ms: 43.621438
+      type: 'test'
+      ...
+    # Subtest: kilit kaldırılınca Ters Kaydet serbest; yeniden kilitleme çalışır ve öbür kilitli bağ yine korunur
+    ok 6 - kilit kaldırılınca Ters Kaydet serbest; yeniden kilitleme çalışır ve öbür kilitli bağ yine korunur
+      ---
+      duration_ms: 195.26651
+      type: 'test'
+      ...
+    1..6
+ok 8 - S160 = A — Banka'dan Ters Kaydet / Düzelt (KDV'li masrafın faturası): kilitli tahsilatın bağını düşüren iptal 409
+  ---
+  duration_ms: 1379.361413
+  type: 'suite'
+  ...
+# Subtest: S160 = A — e-Belge (e-Arşiv) iptal akışı: kilitli tahsilatın bağını düşüren iptal 409, EDM'ye hiç gidilmez
+    # Subtest: e-Arşiv iptali 409 — tahsilat kilitli dönemde (09.10); EDM'ye HİÇ istek yok; belge, bağ ve kilitli defter aynı
+    ok 1 - e-Arşiv iptali 409 — tahsilat kilitli dönemde (09.10); EDM'ye HİÇ istek yok; belge, bağ ve kilitli defter aynı
+      ---
+      duration_ms: 6.258715
+      type: 'test'
+      ...
+    # Subtest: e-Arşiv iptali 409 — tahsilat tam kilit günü; EDM'ye HİÇ istek yok; belge, bağ ve kilitli defter aynı
+    ok 2 - e-Arşiv iptali 409 — tahsilat tam kilit günü; EDM'ye HİÇ istek yok; belge, bağ ve kilitli defter aynı
+      ---
+      duration_ms: 7.777808
+      type: 'test'
+      ...
+    # Subtest: kilit DIŞINDAKİ tahsilat bağlıysa e-Arşiv iptali serbest (200): EDM'de iptal (CancelInvoice bir kez), bağ düşer
+    ok 3 - kilit DIŞINDAKİ tahsilat bağlıysa e-Arşiv iptali serbest (200): EDM'de iptal (CancelInvoice bir kez), bağ düşer
+      ---
+      duration_ms: 39.821841
+      type: 'test'
+      ...
+    # Subtest: kilit kaldırılınca e-Arşiv iptali serbest (EDM'de iptal); yeniden kilitleme çalışır ve öbür kilitli bağ yine korunur (EDM'ye gidilmeden)
+    ok 4 - kilit kaldırılınca e-Arşiv iptali serbest (EDM'de iptal); yeniden kilitleme çalışır ve öbür kilitli bağ yine korunur (EDM'ye gidilmeden)
+      ---
+      duration_ms: 195.370978
+      type: 'test'
+      ...
+    1..4
+ok 9 - S160 = A — e-Belge (e-Arşiv) iptal akışı: kilitli tahsilatın bağını düşüren iptal 409, EDM'ye hiç gidilmez
+  ---
+  duration_ms: 1016.230046
+  type: 'suite'
+  ...
+# Subtest: S160 = A — kilitli dönemdeki tahsilatın fatura bağını düşüren iptal / silme 409; kilitli defter değişmez
+    # Subtest: iptal 409 — şüpheli VAR; bağ, fatura ve kilitli defter aynı
+    ok 1 - iptal 409 — şüpheli VAR; bağ, fatura ve kilitli defter aynı
+      ---
+      duration_ms: 12.485962
+      type: 'test'
+      ...
+    # Subtest: iptal 409 — şüpheli YOK (kural şüpheliye bağlanmaz); bağ, fatura ve kilitli defter aynı
+    ok 2 - iptal 409 — şüpheli YOK (kural şüpheliye bağlanmaz); bağ, fatura ve kilitli defter aynı
+      ---
+      duration_ms: 8.340525
+      type: 'test'
+      ...
+    # Subtest: iptal 409 — tahsilat tam kilit günü; bağ, fatura ve kilitli defter aynı
+    ok 3 - iptal 409 — tahsilat tam kilit günü; bağ, fatura ve kilitli defter aynı
+      ---
+      duration_ms: 6.049938
+      type: 'test'
+      ...
+    # Subtest: silme (iptali çağırır) 409 — fatura silinmedi, bağ ve kilitli defter aynı
+    ok 4 - silme (iptali çağırır) 409 — fatura silinmedi, bağ ve kilitli defter aynı
+      ---
+      duration_ms: 6.179078
+      type: 'test'
+      ...
+    # Subtest: Kapatılacak Fatura ile bağlanmış KİLİTLİ alınan evrak: iptal 409 (evrakın bağı kalır)
+    ok 5 - Kapatılacak Fatura ile bağlanmış KİLİTLİ alınan evrak: iptal 409 (evrakın bağı kalır)
+      ---
+      duration_ms: 3.141487
+      type: 'test'
+      ...
+    # Subtest: kilit DIŞINDAKİ tahsilat bağlıysa iptal serbest (200)
+    ok 6 - kilit DIŞINDAKİ tahsilat bağlıysa iptal serbest (200)
+      ---
+      duration_ms: 24.743094
+      type: 'test'
+      ...
+    # Subtest: kilit kaldırılınca iptal serbest; yeniden kilitleme çalışır (yönetici yolu)
+    ok 7 - kilit kaldırılınca iptal serbest; yeniden kilitleme çalışır (yönetici yolu)
+      ---
+      duration_ms: 190.202618
+      type: 'test'
+      ...
+    1..7
+ok 10 - S160 = A — kilitli dönemdeki tahsilatın fatura bağını düşüren iptal / silme 409; kilitli defter değişmez
+  ---
+  duration_ms: 1154.647199
+  type: 'suite'
+  ...
+1..10
+# tests 90
+# suites 10
+# pass 90
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 107469.372594

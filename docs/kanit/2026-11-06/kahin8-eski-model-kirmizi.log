@@ -1,0 +1,361 @@
+FF...........E................F.............E....................................................EEE.EEEEF.FEE...E...........................EEEE.................
+======================================================================
+ERROR: test_senaryo_ve_beklenen_dosyalari_guncel (__main__.Dosyalar.test_senaryo_ve_beklenen_dosyalari_guncel)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/test_model.py", line 911, in test_senaryo_ve_beklenen_dosyalari_guncel
+    self.assertEqual(UB.main(denetle=True), 0, "python3 test/bagimsiz/muhasebe/uret_beklenen.py ile yeniden yazın")
+                     ~~~~~~~^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/uret_beklenen.py", line 54, in main
+    for yol, icerik in ((os.path.join(SEN, s["ad"] + ".json"), metin(s)), (os.path.join(BEK, s["ad"] + ".json"), metin(beklenen(s)))):
+                                                                                                                       ~~~~~~~~^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/uret_beklenen.py", line 41, in beklenen
+    r = M.kos(s, M.Kurallar.etiketten(et))
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 3528, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 2345, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 2371, in uygula
+    return getattr(self, "_o_" + tur)(o, d)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Model' object has no attribute '_o_acilis_onayla'
+
+======================================================================
+ERROR: test_s30_kilit_kural_farki_kg15 (__main__.ElleSenaryolar.test_s30_kilit_kural_farki_kg15)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/test_model.py", line 671, in test
+    r = M.kos(x, M.Kurallar.etiketten(et))
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 3528, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 2345, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 2371, in uygula
+    return getattr(self, "_o_" + tur)(o, d)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Model' object has no attribute '_o_acilis_onayla'
+
+======================================================================
+ERROR: test_s83_s47_b6_acilis_olabilir_bekleyis (__main__.ElleSenaryolar.test_s83_s47_b6_acilis_olabilir_bekleyis)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/test_model.py", line 671, in test
+    r = M.kos(x, M.Kurallar.etiketten(et))
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 3528, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 2345, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 2362, in uygula
+    return self.rapor(o)
+           ~~~~~~~~~~^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 2763, in rapor
+    raise KeyError(r)
+KeyError: 'acilis_olabilir'
+
+======================================================================
+ERROR: test_s84_s48_carisiz_acilis_evraki_karsiliksiz (__main__.ElleSenaryolar.test_s84_s48_carisiz_acilis_evraki_karsiliksiz)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/test_model.py", line 671, in test
+    r = M.kos(x, M.Kurallar.etiketten(et))
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 3528, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 2345, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 2370, in uygula
+    return self.kaynak(o, d)
+           ~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 2380, in kaynak
+    self._denetle(tur, tarih, v, d, yedek)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 2429, in _denetle
+    e = d.gecis().evrak.get(v["evrak"])
+        ~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 1683, in gecis
+    self._g, self._m, self._kq = Gecis(self, s14=plan).kos(), None, {}
+                                 ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 490, in kos
+    getattr(self, "_" + k.tur)(k)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 1023, in _evrak_karsiliksiz
+    self.madde(k, k.tarih, 1, [Bo(self.ch(c), t, c, k="karsiliksiz:" + k.id, tur="karsiliksiz", **ek),
+                                  ~~~~~~~^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 462, in ch
+    return CH_HESAP[self.d.tanim["cariler"][c]["tur"]]
+                    ~~~~~~~~~~~~~~~~~~~~~~~^^^
+KeyError: None
+
+======================================================================
+ERROR: test_s85_s49_formdan_carisiz_evrak (__main__.ElleSenaryolar.test_s85_s49_formdan_carisiz_evrak)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/test_model.py", line 671, in test
+    r = M.kos(x, M.Kurallar.etiketten(et))
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 3528, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 2345, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 2371, in uygula
+    return getattr(self, "_o_" + tur)(o, d)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Model' object has no attribute '_o_carisiz_evrak'
+
+======================================================================
+ERROR: test_s87_s51_geri_alinan_acilis (__main__.ElleSenaryolar.test_s87_s51_geri_alinan_acilis)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/test_model.py", line 671, in test
+    r = M.kos(x, M.Kurallar.etiketten(et))
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 3528, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 2345, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 2362, in uygula
+    return self.rapor(o)
+           ~~~~~~~~~~^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 2763, in rapor
+    raise KeyError(r)
+KeyError: 'acilis_olabilir'
+
+======================================================================
+ERROR: test_s88_s52_odeme_sozu (__main__.ElleSenaryolar.test_s88_s52_odeme_sozu)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/test_model.py", line 671, in test
+    r = M.kos(x, M.Kurallar.etiketten(et))
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 3528, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 2345, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 2371, in uygula
+    return getattr(self, "_o_" + tur)(o, d)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Model' object has no attribute '_o_odeme_sozu'
+
+======================================================================
+ERROR: test_s89_s53_kilitsiz_gecmis_yil (__main__.ElleSenaryolar.test_s89_s53_kilitsiz_gecmis_yil)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/test_model.py", line 671, in test
+    r = M.kos(x, M.Kurallar.etiketten(et))
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 3528, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 2345, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 2362, in uygula
+    return self.rapor(o)
+           ~~~~~~~~~~^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 2763, in rapor
+    raise KeyError(r)
+KeyError: 'defter_mutabakati_bilgi'
+
+======================================================================
+ERROR: test_s90_s53_kilitli_gecmis_yil (__main__.ElleSenaryolar.test_s90_s53_kilitli_gecmis_yil)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/test_model.py", line 671, in test
+    r = M.kos(x, M.Kurallar.etiketten(et))
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 3528, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 2345, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 2362, in uygula
+    return self.rapor(o)
+           ~~~~~~~~~~^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 2763, in rapor
+    raise KeyError(r)
+KeyError: 'defter_mutabakati_bilgi'
+
+======================================================================
+ERROR: test_B5_yerel_gun (__main__.OlayMaddeleri.test_B5_yerel_gun)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/test_model.py", line 643, in test_B5_yerel_gun
+    self.assertEqual(M.yerel_gun("2026-03-09T22:30:00Z"), "2026-03-10")
+                     ^^^^^^^^^^^
+AttributeError: module 'model' has no attribute 'yerel_gun'
+
+======================================================================
+ERROR: test_B6_kg16_eslesmesi (__main__.OlayMaddeleri.test_B6_kg16_eslesmesi)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/test_model.py", line 586, in test_B6_kg16_eslesmesi
+    self.assertTrue(M.kg16_aciklamasi(s), s)
+                    ^^^^^^^^^^^^^^^^^
+AttributeError: module 'model' has no attribute 'kg16_aciklamasi'
+
+======================================================================
+ERROR: test_EK2_4_1_ayni_gun_yazim_sirasi_sonucu_degistirmez (__main__.OlayMaddeleri.test_EK2_4_1_ayni_gun_yazim_sirasi_sonucu_degistirmez)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/test_model.py", line 579, in test_EK2_4_1_ayni_gun_yazim_sirasi_sonucu_degistirmez
+    self.assertEqual(ozet(x), ozet(y), s["ad"])
+                     ~~~~^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/test_model.py", line 559, in ozet
+    m.kos()
+    ~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 2345, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 2362, in uygula
+    return self.rapor(o)
+           ~~~~~~~~~~^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 2763, in rapor
+    raise KeyError(r)
+KeyError: 'acilis_olabilir'
+
+======================================================================
+ERROR: test_S47_W4_onay_kapsami (__main__.OlayMaddeleri.test_S47_W4_onay_kapsami)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/test_model.py", line 594, in test_S47_W4_onay_kapsami
+    M.kos(senaryo([aday, o("donem_kilitle", tarih="2026-01-31"), o("acilis_onayla", kaynak="BY", karar="onay")]))
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 3528, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 2345, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 2371, in uygula
+    return getattr(self, "_o_" + tur)(o, d)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Model' object has no attribute '_o_acilis_onayla'
+
+======================================================================
+ERROR: test_S48_S49_donmus_2_4_9 (__main__.OlayMaddeleri.test_S48_S49_donmus_2_4_9)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/test_model.py", line 608, in test_S48_S49_donmus_2_4_9
+    r = M.kos(senaryo([
+        o("evrak_acilis", "2026-01-01", evrak="CK2", evrak_turu="cek", yon="alinan", durum="portfoy", tutar=5000),
+    ...<2 lines>...
+        o("carisiz_evrak", "2026-03-02", evrak="CE3", evrak_turu="cek", yon="verilen", tutar=700, banka="B1"),
+        o("donem_kilitle", tarih="2026-03-31", kural="2.4.9"), E.R("f", "kural_farki")]))
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 3528, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 2345, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 2371, in uygula
+    return getattr(self, "_o_" + tur)(o, d)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Model' object has no attribute '_o_carisiz_evrak'
+
+======================================================================
+ERROR: test_S48_S49_kapsam_susma (__main__.OlayMaddeleri.test_S48_S49_kapsam_susma)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/test_model.py", line 629, in test_S48_S49_kapsam_susma
+    M.kos(senaryo(ols))
+    ~~~~~^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 3528, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 2345, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 2371, in uygula
+    return getattr(self, "_o_" + tur)(o, d)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Model' object has no attribute '_o_carisiz_evrak'
+
+======================================================================
+ERROR: test_S52_soz_kapsami (__main__.OlayMaddeleri.test_S52_soz_kapsami)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/test_model.py", line 636, in test_S52_soz_kapsami
+    M.kos(senaryo([f, o("odeme_sozu", "2026-03-10", cari="C1", soz_tarihi=st)]))
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 3528, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 2345, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/model.py", line 2371, in uygula
+    return getattr(self, "_o_" + tur)(o, d)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Model' object has no attribute '_o_odeme_sozu'
+
+======================================================================
+FAIL: test_B14_yalniz_alt_defter_red_ve_kesisen_susar (__main__.DegismezDenetcileri.test_B14_yalniz_alt_defter_red_ve_kesisen_susar)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/test_model.py", line 841, in test_B14_yalniz_alt_defter_red_ve_kesisen_susar
+    self.assertEqual([x["kod"] for x in m.redler], ["KURAL_FARKI_ALT_DEFTER"])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [] != ['KURAL_FARKI_ALT_DEFTER']
+
+Second list contains 1 additional elements.
+First extra element 0:
+'KURAL_FARKI_ALT_DEFTER'
+
+- []
++ ['KURAL_FARKI_ALT_DEFTER']
+
+======================================================================
+FAIL: test_B5_pencere_modul_defter (__main__.DegismezDenetcileri.test_B5_pencere_modul_defter)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/test_model.py", line 829, in test_B5_pencere_modul_defter
+    self.assertEqual(d.bakiyeler("2026-03-01").get(("120", "C1"), 0), 0)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2000 != 0
+
+======================================================================
+FAIL: test_s17_cari_duzeltme_kg16 (__main__.ElleSenaryolar.test_s17_cari_duzeltme_kg16)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/test_model.py", line 674, in test
+    self.assertEqual(gercek, bek, f"{s['ad']} [{et}] {yol}")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: -205000 != -245000 : s17-cari-duzeltme-kg16 [A] mz/satirlar/519/bakiye
+
+======================================================================
+FAIL: test_s91_b5_kg5_yukleme_yerel_gunu (__main__.ElleSenaryolar.test_s91_b5_kg5_yukleme_yerel_gunu)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/test_model.py", line 674, in test
+    self.assertEqual(gercek, bek, f"{s['ad']} [{et}] {yol}")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2000 != 0 : s91-b5-kg5-yukleme-yerel-gunu [A] mz0/satirlar/120|C1/bakiye
+
+======================================================================
+FAIL: test_s93_b14_alt_defter_kural_farki (__main__.ElleSenaryolar.test_s93_b14_alt_defter_kural_farki)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-eski/test/bagimsiz/muhasebe/test_model.py", line 674, in test
+    self.assertEqual(gercek, bek, f"{s['ad']} [{et}] {yol}")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {} != {'120|C1': 4000, '128|C1': -4000}
+- {}
++ {'120|C1': 4000, '128|C1': -4000} : s93-b14-alt-defter-kural-farki [A] fark1
+
+----------------------------------------------------------------------
+Ran 162 tests in 13.034s
+
+FAILED (failures=5, errors=16)
+# tests 162
+# pass 141
+# fail 21
+# skipped 0

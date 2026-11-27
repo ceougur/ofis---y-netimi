@@ -1,0 +1,45 @@
+taban: 13 geçti / 0 kaldı (çıkış 0)
+ok 1 - Kasa açılışı 500'e döner (M-01): çıkış 1, 10 geçti / 3 kaldı
+ok 2 - cari açılışı açıklamadan tanınır (P1 geri): çıkış 1, 7 geçti / 6 kaldı
+ok 3 - KG-16 katlamasında Türkçe ı / ç / ş katlanmaz (B6): çıkış 1, 10 geçti / 3 kaldı
+ok 4 - adaylık göç dışında da verilir (yeni 'Açılış…' Borç Yaz açılış sayılır; K8-1): çıkış 1, 8 geçti / 5 kaldı
+ok 5 - açılış portföyü 602 / 770'te kalır (M-08 / M-09): çıkış 1, 9 geçti / 4 kaldı
+ok 6 - formdan carisiz evrak 519'a (S49 B): çıkış 1, 10 geçti / 3 kaldı
+ok 7 - ikinci yükleyiciden KG-5 düşer: çıkış 1, 11 geçti / 2 kaldı
+ok 8 - KG-5: P maddeye eklenir (açılış satırı ayrıca yazılır): çıkış 1, 5 geçti / 0 kaldı
+ok 9 - KG-5 tarihi kartın Kayıt Tarihi (yükleme günü değil; B5): çıkış 1, 12 geçti / 1 kaldı
+ok 10 - açılış sınıfı yazılmaz (B9): çıkış 1, 9 geçti / 4 kaldı
+ok 11 - banka açılışı türetmede 500 kalır (B3): çıkış 1, 9 geçti / 4 kaldı
+not ok 12 - KG-16 onayı is_opening'e yazılır (B7): çıkış 0, 13 geçti / 0 kaldı — beklenen neden görülmedi (/deepStrictEqual|Expected values to be strictly deep-equal/)
+
+not ok 13 - S48: seçilen cari evraka bağlanmaz (çift karşılıksız): çıkış 1, 5 geçti / 0 kaldı — beklenen neden görülmedi (/free-bounce|cari seçilen|610/)
+    not ok 1 - modül açılışları tek madde, karşı hesap 519, açılış sınıfı (M-01, M-02 / M-03, M-04, M-05, M-07; KG-1); 500 Sermaye'ye hiçbir olay yazmaz
+      error: 'test did not finish before its parent and was cancelled'
+    not ok 2 - açılış İŞARETTEN tanınır: göçten sonra yazılmış 'AÇILIŞ BAKİYESİ' Borç Yaz 602, 'Açılış bakiyesi' Alacak Yaz 770 (C-01 / C-02; P1, K8-1)
+      error: 'test did not finish before its parent and was cancelled'
+    not ok 3 - açılış evrakı 519 (M-08 / M-09: 602 / 770'e yazılmaz); formdan carisiz evrak 649.90 / 770.90 (S49); karşılıksız: açılışta B 519 / A 101, carisizde B 649.90 / A 101, cari seçilince cari borçlanır (S48, S66)
+      error: 'test did not finish before its parent and was cancelled'
+    not ok 4 - KG-5: yüklenen kart TEK madde B CH (T − P) / A 519, P maddesiz, tarih yüklemenin YEREL günü; P = 0 → T; P = T → madde yok (H-06, B5)
+      error: 'test did not finish before its parent and was cancelled'
+    not ok 5 - açılış sınıfı yalnız SIRAYI değiştirir: aynı gün Kasa açılışı olağan Kasa girişinden önce; borç = alacak her maddede
+      error: 'test did not finish before its parent and was cancelled'
+    not ok 6 - Mutabakat Testi: 'Açılış Karşılığı' (519 / 500) denetimi temiz ve ikinci yükleyici = defter (B2); stock:opening 519'a göre; expected() 519'u içermez (K6)
+      error: 'test did not finish before its parent and was cancelled'
+ok 14 - stock:opening denetimi 500'e bakar: çıkış 1, 5 geçti / 0 kaldı
+ok 15 - S53 uyarısı kilitli yılda da çıkar: çıkış 1, 12 geçti / 1 kaldı
+
+# tests 15
+# pass 13
+# fail 2
+
+[kanit] başarısız testler (8):
+  ✖ KG-16 onayı is_opening'e yazılır (B7): çıkış 0, 13 geçti / 0 kaldı — beklenen neden görülmedi (/deepStrictEqual|Expected values to be strictly deep-equal/)
+  ✖ S48: seçilen cari evraka bağlanmaz (çift karşılıksız): çıkış 1, 5 geçti / 0 kaldı — beklenen neden görülmedi (/free-bounce|cari seçilen|610/)
+  ✖ modül açılışları tek madde, karşı hesap 519, açılış sınıfı (M-01, M-02 / M-03, M-04, M-05, M-07; KG-1); 500 Sermaye'ye hiçbir olay yazmaz
+  ✖ açılış İŞARETTEN tanınır: göçten sonra yazılmış 'AÇILIŞ BAKİYESİ' Borç Yaz 602, 'Açılış bakiyesi' Alacak Yaz 770 (C-01 / C-02; P1, K8-1)
+  ✖ açılış evrakı 519 (M-08 / M-09: 602 / 770'e yazılmaz); formdan carisiz evrak 649.90 / 770.90 (S49); karşılıksız: açılışta B 519 / A 101, carisizde B 649.90 / A 101, cari seçilince cari borçlanır (S48, S66)
+  ✖ KG-5: yüklenen kart TEK madde B CH (T − P) / A 519, P maddesiz, tarih yüklemenin YEREL günü; P = 0 → T; P = T → madde yok (H-06, B5)
+  ✖ açılış sınıfı yalnız SIRAYI değiştirir: aynı gün Kasa açılışı olağan Kasa girişinden önce; borç = alacak her maddede
+  ✖ Mutabakat Testi: 'Açılış Karşılığı' (519 / 500) denetimi temiz ve ikinci yükleyici = defter (B2); stock:opening 519'a göre; expected() 519'u içermez (K6)
+
+[kanit] c5a1-mutasyon: BAŞARISIZ (çıkış 1; 2 başarısız, 0 iptal) · çıkış 1 · 13/15 geçti, 2 başarısız, 0 iptal, 0 atlanan · commit f082e6e +13 izlenmeyen · linux 6.18.44-fc-v378 x64 · Node v22.23.4

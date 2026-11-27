@@ -1,0 +1,445 @@
+TAP version 13
+# Subtest: Aşama 4 (dilim 4) — Banka arayüzünün kaynak kuralları
+    # Subtest: Hareketler sekmesi Hesaplar'dan hemen sonra; POS sekmesi eklenir (Ayarlar'dan önce); Ekstre sekmesi yok
+    ok 1 - Hareketler sekmesi Hesaplar'dan hemen sonra; POS sekmesi eklenir (Ayarlar'dan önce); Ekstre sekmesi yok
+      ---
+      duration_ms: 4.173706
+      type: 'test'
+      ...
+    # Subtest: Hareketler imleçli ve liste kapılı; satır İşlem Kartı'nı açar
+    ok 2 - Hareketler imleçli ve liste kapılı; satır İşlem Kartı'nı açar
+      ---
+      duration_ms: 1.371498
+      type: 'test'
+      ...
+    # Subtest: fiş formu: Benzer İşlem → aynı istek kimliğiyle similarOk; Ters Kaydet, Düzelt, Açıklama, Planlı uçları; pasif neden görünür
+    ok 3 - fiş formu: Benzer İşlem → aynı istek kimliğiyle similarOk; Ters Kaydet, Düzelt, Açıklama, Planlı uçları; pasif neden görünür
+      ---
+      duration_ms: 1.966874
+      type: 'test'
+      ...
+    # Subtest: Yönetim → İşlem Geçmişi ve İşlem Kartı: Aşama 4'ün işlem geçmişi türlerinin (fiş, ters kayıt, düzelt, açıklama, planlı) adı var
+    ok 4 - Yönetim → İşlem Geçmişi ve İşlem Kartı: Aşama 4'ün işlem geçmişi türlerinin (fiş, ters kayıt, düzelt, açıklama, planlı) adı var
+      ---
+      duration_ms: 4.650113
+      type: 'test'
+      ...
+    1..4
+ok 1 - Aşama 4 (dilim 4) — Banka arayüzünün kaynak kuralları
+  ---
+  duration_ms: 13.377972
+  type: 'suite'
+  ...
+# Subtest: Aşama 4 (dilim 4) — arayüzün sunucu ekleri
+    # Subtest: tutar süzgeci (min / max): yalnız aralıktaki olaylar; sınır dahil; yürüyen bakiye verilmez; İşlem No yolu da uyar
+    ok 1 - tutar süzgeci (min / max): yalnız aralıktaki olaylar; sınır dahil; yürüyen bakiye verilmez; İşlem No yolu da uyar
+      ---
+      duration_ms: 66.504189
+      type: 'test'
+      ...
+    # Subtest: aynı günün hareketleri giriş sırasıyla (en yeni üstte); yürüyen bakiye gün içinde de kayıt sırasını izler
+    ok 2 - aynı günün hareketleri giriş sırasıyla (en yeni üstte); yürüyen bakiye gün içinde de kayıt sırasını izler
+      ---
+      duration_ms: 97.91294
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: tutar süzgecine eksi, metin, üç ondalık, ters aralık → 400; süzgeci değişmiş imleç → 400
+    ok 3 - nasıl bozarım: tutar süzgecine eksi, metin, üç ondalık, ters aralık → 400; süzgeci değişmiş imleç → 400
+      ---
+      duration_ms: 55.500443
+      type: 'test'
+      ...
+    # Subtest: fiş formunun seçenekleri: süzgeç türlerinin ve hesapların adları; son kullanılan stopaj oranı (ters kaydedilen sayılmaz)
+    ok 4 - fiş formunun seçenekleri: süzgeç türlerinin ve hesapların adları; son kullanılan stopaj oranı (ters kaydedilen sayılmaz)
+      ---
+      duration_ms: 50.423397
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: Fatura Yönetimi yetkisi olmayan kişi BSMV'li masrafı Düzelt'te KDV'li (faturalı) masrafa çeviremez → 403, hiçbir şey yazılmaz
+    ok 5 - nasıl bozarım: Fatura Yönetimi yetkisi olmayan kişi BSMV'li masrafı Düzelt'te KDV'li (faturalı) masrafa çeviremez → 403, hiçbir şey yazılmaz
+      ---
+      duration_ms: 122.516139
+      type: 'test'
+      ...
+    # Subtest: planlı kredi geri ödemesi: faiz ve referans planda saklanır; Gerçekleştir 780 faizle fiş yazar
+    ok 6 - planlı kredi geri ödemesi: faiz ve referans planda saklanır; Gerçekleştir 780 faizle fiş yazar
+      ---
+      duration_ms: 49.265246
+      type: 'test'
+      ...
+    1..6
+ok 2 - Aşama 4 (dilim 4) — arayüzün sunucu ekleri
+  ---
+  duration_ms: 894.870354
+  type: 'suite'
+  ...
+# Subtest: Aşama 3 (dilim 2) — Banka arayüzünün kaynak kuralları
+    # Subtest: sol menü: Banka Taksitler'in hemen altında, bank.view ister, rozetli; tıklama HOF.bank.open'a gider
+    ok 1 - sol menü: Banka Taksitler'in hemen altında, bank.view ister, rozetli; tıklama HOF.bank.open'a gider
+      ---
+      duration_ms: 5.788612
+      type: 'test'
+      ...
+    # Subtest: hof-bank.js yükleme sırası ve HOF.office kuralı; yetki sınıfı CSS kuralı
+    ok 2 - hof-bank.js yükleme sırası ve HOF.office kuralı; yetki sınıfı CSS kuralı
+      ---
+      duration_ms: 2.07106
+      type: 'test'
+      ...
+    # Subtest: canlı yenileme: istemcide banka yazımı defter değişikliği (LEDGER_PATHS); sunucuda ANLIK DURUM türleri bank'ı kapsar
+    ok 3 - canlı yenileme: istemcide banka yazımı defter değişikliği (LEDGER_PATHS); sunucuda ANLIK DURUM türleri bank'ı kapsar
+      ---
+      duration_ms: 0.76002
+      type: 'test'
+      ...
+    # Subtest: Yönetim → İşlem Geçmişi: her banka işlem geçmişi türünün adı var (admin.js EVENT_LABELS)
+    ok 4 - Yönetim → İşlem Geçmişi: her banka işlem geçmişi türünün adı var (admin.js EVENT_LABELS)
+      ---
+      duration_ms: 1.588413
+      type: 'test'
+      ...
+    1..4
+ok 3 - Aşama 3 (dilim 2) — Banka arayüzünün kaynak kuralları
+  ---
+  duration_ms: 11.024449
+  type: 'suite'
+  ...
+# Subtest: Aşama 3 (dilim 2) — Banka arayüzünün sunucu uçları
+    # Subtest: kalemle ad: Banka, Fatura ve Raporlar adları kaydedilir; tanınmayan anahtar 400
+    ok 1 - kalemle ad: Banka, Fatura ve Raporlar adları kaydedilir; tanınmayan anahtar 400
+      ---
+      duration_ms: 17.382754
+      type: 'test'
+      ...
+    # Subtest: rozet: Hesabı Belirsiz Yeni Hareketler sayısı; personel 403
+    ok 2 - rozet: Hesabı Belirsiz Yeni Hareketler sayısı; personel 403
+      ---
+      duration_ms: 6.150072
+      type: 'test'
+      ...
+    # Subtest: Kurulum Sihirbazı ilk girişte: kapatma kişi ve şirket bazında kaydedilir; personel 403
+    ok 3 - Kurulum Sihirbazı ilk girişte: kapatma kişi ve şirket bazında kaydedilir; personel 403
+      ---
+      duration_ms: 145.499631
+      type: 'test'
+      ...
+    # Subtest: Hesap Detayı: son hareketler (açılış dahil, işaretli, açıklamalı), başka hesabın hareketi yok; kilitli açılış işaretli
+    ok 4 - Hesap Detayı: son hareketler (açılış dahil, işaretli, açıklamalı), başka hesabın hareketi yok; kilitli açılış işaretli
+      ---
+      duration_ms: 226.230876
+      type: 'test'
+      ...
+    # Subtest: Ayarlar ekranı verisi: Ekstre görünmez (available false), POS 2.2.0'da görünür; hesap eşlemelerinde adlar
+    ok 5 - Ayarlar ekranı verisi: Ekstre görünmez (available false), POS 2.2.0'da görünür; hesap eşlemelerinde adlar
+      ---
+      duration_ms: 3.657094
+      type: 'test'
+      ...
+    # Subtest: Ayarlar: boş sayı alanı yalnız boş bırakılabilen kalemde kabul edilir (sessizce 0 olmaz)
+    ok 6 - Ayarlar: boş sayı alanı yalnız boş bırakılabilen kalemde kabul edilir (sessizce 0 olmaz)
+      ---
+      duration_ms: 19.41499
+      type: 'test'
+      ...
+    # Subtest: canlı yenileme: banka yazımı herkese overview.changed (kinds bank) yayımlar
+    ok 7 - canlı yenileme: banka yazımı herkese overview.changed (kinds bank) yayımlar
+      ---
+      duration_ms: 269.623795
+      type: 'test'
+      ...
+    1..7
+ok 4 - Aşama 3 (dilim 2) — Banka arayüzünün sunucu uçları
+  ---
+  duration_ms: 1205.200682
+  type: 'suite'
+  ...
+# Subtest: Alt Hesap Mizanı açıklaması evrak alt hesaplarını anar (plan §3.11a)
+    # Subtest: çek ve senet tahsile verilince rapor 101.0x / 121.0x satırlarını gösterir; açıklama hepsini kodu ve adıyla anar
+    ok 1 - çek ve senet tahsile verilince rapor 101.0x / 121.0x satırlarını gösterir; açıklama hepsini kodu ve adıyla anar
+      ---
+      duration_ms: 176.412062
+      type: 'test'
+      ...
+    # Subtest: Banka penceresindeki Alt Hesap Mizanı notu evrak alt hesaplarını anar
+    ok 2 - Banka penceresindeki Alt Hesap Mizanı notu evrak alt hesaplarını anar
+      ---
+      duration_ms: 1.410277
+      type: 'test'
+      ...
+    1..2
+ok 5 - Alt Hesap Mizanı açıklaması evrak alt hesaplarını anar (plan §3.11a)
+  ---
+  duration_ms: 554.282993
+  type: 'suite'
+  ...
+# Subtest: dışa aktarım düğmeleri (UI11)
+    # Subtest: eski düğme adları kalmadı (liste/rapor tek ad PDF / Excel)
+    ok 1 - eski düğme adları kalmadı (liste/rapor tek ad PDF / Excel)
+      ---
+      duration_ms: 9.491471
+      type: 'test'
+      ...
+    # Subtest: PDF / Excel bağlantıları ortak ailede (makbuz satırı ve kılavuz bağlantısı hariç)
+    ok 2 - PDF / Excel bağlantıları ortak ailede (makbuz satırı ve kılavuz bağlantısı hariç)
+      ---
+      duration_ms: 2.934079
+      type: 'test'
+      ...
+    # Subtest: Yazdır / dışa aktar / PDF düğmeleri elle yazılmıyor (HOF.outputButton)
+    ok 3 - Yazdır / dışa aktar / PDF düğmeleri elle yazılmıyor (HOF.outputButton)
+      ---
+      duration_ms: 2.651002
+      type: 'test'
+      ...
+    # Subtest: ortak yardımcı: tür sınıfı, simge, erişilebilir ad ve ipucu
+    ok 4 - ortak yardımcı: tür sınıfı, simge, erişilebilir ad ve ipucu
+      ---
+      duration_ms: 2.308721
+      type: 'test'
+      ...
+    1..4
+ok 6 - dışa aktarım düğmeleri (UI11)
+  ---
+  duration_ms: 18.945247
+  type: 'suite'
+  ...
+# Subtest: form izolasyonu (2.4.3) — kaynak taraması
+    # Subtest: kod maskesi şablonun ${…} kısmını kod sayar, metni ve yorumu boşaltır
+    ok 1 - kod maskesi şablonun ${…} kısmını kod sayar, metni ve yorumu boşaltır
+      ---
+      duration_ms: 3.155803
+      type: 'test'
+      ...
+    # Subtest: dosya / resim seçimi işleyicileri bulunuyor (test boşa geçmesin)
+    ok 2 - dosya / resim seçimi işleyicileri bulunuyor (test boşa geçmesin)
+      ---
+      duration_ms: 303.207257
+      type: 'test'
+      ...
+    # Subtest: hiçbir dosya seçimi işleyicisi dosya kutusunu içeren formu yeniden çizmez (D1)
+    ok 3 - hiçbir dosya seçimi işleyicisi dosya kutusunu içeren formu yeniden çizmez (D1)
+      ---
+      duration_ms: 163.247884
+      type: 'test'
+      ...
+    # Subtest: Fatura Ayarları: Logo / Kaşe seçme ve kaldırma renderSettings() çağırmaz
+    ok 4 - Fatura Ayarları: Logo / Kaşe seçme ve kaldırma renderSettings() çağırmaz
+      ---
+      duration_ms: 37.426045
+      type: 'test'
+      ...
+    # Subtest: ortak çekirdek: HOF.swap taslağı korur, pencere kapanırken kaydedilmemiş değişikliği sorar
+    ok 5 - ortak çekirdek: HOF.swap taslağı korur, pencere kapanırken kaydedilmemiş değişikliği sorar
+      ---
+      duration_ms: 1.303792
+      type: 'test'
+      ...
+    1..5
+ok 7 - form izolasyonu (2.4.3) — kaynak taraması
+  ---
+  duration_ms: 509.958487
+  type: 'suite'
+  ...
+#   background çağrıları: 21 (yazma: hof-stock.js:594, hof-whatsapp-api.js:596)
+# Subtest: gg243: ortak çekirdek — arka plan yazması ve odak anahtarı
+    # Subtest: \#3 bütün background çağrıları rawApi'den geçer; rawApi bayrağı sendApi'ye iletir; writeOrigin arka plan isteğine pencere vermez
+    ok 1 - \#3 bütün background çağrıları rawApi'den geçer; rawApi bayrağı sendApi'ye iletir; writeOrigin arka plan isteğine pencere vermez
+      ---
+      duration_ms: 22.268523
+      type: 'test'
+      ...
+    # Subtest: \#4 odak anahtarı satır data-* niteliklerini içerir; bulunamazsa yalnız tekil birincil anahtara döner
+    ok 2 - \#4 odak anahtarı satır data-* niteliklerini içerir; bulunamazsa yalnız tekil birincil anahtara döner
+      ---
+      duration_ms: 0.318796
+      type: 'test'
+      ...
+    1..2
+ok 8 - gg243: ortak çekirdek — arka plan yazması ve odak anahtarı
+  ---
+  duration_ms: 23.421022
+  type: 'suite'
+  ...
+# Subtest: K7 (a) — KMH limiti yalnız Vadesiz'de (kart ve kredi limiti kendi türünde)
+    # Subtest: N1: Ticari, Diğer, Vadeli ve Döviz hesaba KMH → 400 bank-limit; hesap açılmaz
+    ok 1 - N1: Ticari, Diğer, Vadeli ve Döviz hesaba KMH → 400 bank-limit; hesap açılmaz
+      ---
+      duration_ms: 22.923459
+      type: 'test'
+      ...
+    # Subtest: N2: var olan Ticari hesabı PUT ile KMH'li yapmak → 400; limit 0 kalır
+    ok 2 - N2: var olan Ticari hesabı PUT ile KMH'li yapmak → 400; limit 0 kalır
+      ---
+      duration_ms: 40.165746
+      type: 'test'
+      ...
+    # Subtest: N5: Vadesiz KMH, Kurumsal Kredi Kartı limiti ve Kredi Hesabı limiti → 200 (limit saklanır)
+    ok 3 - N5: Vadesiz KMH, Kurumsal Kredi Kartı limiti ve Kredi Hesabı limiti → 200 (limit saklanır)
+      ---
+      duration_ms: 48.389356
+      type: 'test'
+      ...
+    1..3
+ok 9 - K7 (a) — KMH limiti yalnız Vadesiz'de (kart ve kredi limiti kendi türünde)
+  ---
+  duration_ms: 514.990887
+  type: 'suite'
+  ...
+# Subtest: K7 (b) — Vadesiz → Ticari çevrilince KMH sıfırlanır (gizli KMH Engelle'yi atlatmaz)
+    # Subtest: N4: tür Ticari + creditLimit birlikte → 400 bank-limit; hesap Vadesiz ve KMH'li kalır
+    ok 1 - N4: tür Ticari + creditLimit birlikte → 400 bank-limit; hesap Vadesiz ve KMH'li kalır
+      ---
+      duration_ms: 4.259788
+      type: 'test'
+      ...
+    # Subtest: N3: Düzenle'de tür Ticari (ekranın gövdesi: creditLimit yok) → KMH 0; Engelle'de 12.529,50 Diğer Gider → 409, hesap 0 kalır
+    ok 2 - N3: Düzenle'de tür Ticari (ekranın gövdesi: creditLimit yok) → KMH 0; Engelle'de 12.529,50 Diğer Gider → 409, hesap 0 kalır
+      ---
+      duration_ms: 21.421528
+      type: 'test'
+      ...
+    1..2
+ok 10 - K7 (b) — Vadesiz → Ticari çevrilince KMH sıfırlanır (gizli KMH Engelle'yi atlatmaz)
+  ---
+  duration_ms: 303.940911
+  type: 'suite'
+  ...
+# Subtest: yalnız hesaplayan / ön izleyen istekler defter değişikliği sayılmaz (2.4.3 H2)
+    # Subtest: fatura toplamı, görünüm ön izlemesi ve Excel ön izlemeleri olay yayımlamaz
+    ok 1 - fatura toplamı, görünüm ön izlemesi ve Excel ön izlemeleri olay yayımlamaz
+      ---
+      duration_ms: 2.822639
+      type: 'test'
+      ...
+    # Subtest: gerçek yazımlar eskisi gibi hemen bildirilir (tür listesiyle)
+    ok 2 - gerçek yazımlar eskisi gibi hemen bildirilir (tür listesiyle)
+      ---
+      duration_ms: 2.639663
+      type: 'test'
+      ...
+    1..2
+ok 11 - yalnız hesaplayan / ön izleyen istekler defter değişikliği sayılmaz (2.4.3 H2)
+  ---
+  duration_ms: 6.200258
+  type: 'suite'
+  ...
+# Subtest: liste kapısı: Daha Fazla ↔ arka plan yenilemesi (H4)
+    # Subtest: Daha Fazla tutulurken başka kayıt + arka plan yenilemesi: Daha Fazla yeni listenin sonundan yinelenir; liste = sunucunun ilk 6'sı
+    ok 1 - Daha Fazla tutulurken başka kayıt + arka plan yenilemesi: Daha Fazla yeni listenin sonundan yinelenir; liste = sunucunun ilk 6'sı
+      ---
+      duration_ms: 4.059786
+      type: 'test'
+      ...
+    # Subtest: arka plan yenilemesi tutulurken Daha Fazla yazıldı: yenileme yeni uzunlukla yinelenir (satırlar geri alınmaz, yeni kayıt görünür)
+    ok 2 - arka plan yenilemesi tutulurken Daha Fazla yazıldı: yenileme yeni uzunlukla yinelenir (satırlar geri alınmaz, yeni kayıt görünür)
+      ---
+      duration_ms: 4.091233
+      type: 'test'
+      ...
+    # Subtest: aynı sırada iki yenileme: sonra başlayan yazılır, önceki düşer (v2.0.22 kuralı); kullanıcı araması Daha Fazla'yı ve eski yenilemeyi geçersiz sayar
+    ok 3 - aynı sırada iki yenileme: sonra başlayan yazılır, önceki düşer (v2.0.22 kuralı); kullanıcı araması Daha Fazla'yı ve eski yenilemeyi geçersiz sayar
+      ---
+      duration_ms: 1.145642
+      type: 'test'
+      ...
+    # Subtest: rastgele sıralar (tohumlu, 300 tur): her sonuçta liste = sunucunun ilk N satırı, Daha Fazla geri alınmaz
+    ok 4 - rastgele sıralar (tohumlu, 300 tur): her sonuçta liste = sunucunun ilk N satırı, Daha Fazla geri alınmaz
+      ---
+      duration_ms: 29.969942
+      type: 'test'
+      ...
+    1..4
+ok 12 - liste kapısı: Daha Fazla ↔ arka plan yenilemesi (H4)
+  ---
+  duration_ms: 40.345862
+  type: 'suite'
+  ...
+# Subtest: statik dosyalar
+    # Subtest: ana sayfayı güvenlik başlıkları ve CSP ile sunar
+    ok 1 - ana sayfayı güvenlik başlıkları ve CSP ile sunar
+      ---
+      duration_ms: 33.800696
+      type: 'test'
+      ...
+    # Subtest: değişmeyen dosyada 304 döner ve sıkıştırma uygular
+    ok 2 - değişmeyen dosyada 304 döner ve sıkıştırma uygular
+      ---
+      duration_ms: 27.334484
+      type: 'test'
+      ...
+    # Subtest: klasör dışına çıkma ve gizli dosya denemelerini engeller
+    ok 3 - klasör dışına çıkma ve gizli dosya denemelerini engeller
+      ---
+      duration_ms: 11.564806
+      type: 'test'
+      ...
+    # Subtest: bilinmeyen sayfada tarayıcıya HTML 404 gösterir
+    ok 4 - bilinmeyen sayfada tarayıcıya HTML 404 gösterir
+      ---
+      duration_ms: 2.689952
+      type: 'test'
+      ...
+    # Subtest: bilinmeyen API ucu 404, desteklenmeyen yöntem 405 döner
+    ok 5 - bilinmeyen API ucu 404, desteklenmeyen yöntem 405 döner
+      ---
+      duration_ms: 10.983229
+      type: 'test'
+      ...
+    1..5
+ok 13 - statik dosyalar
+  ---
+  duration_ms: 416.543446
+  type: 'suite'
+  ...
+# Subtest: yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+    # Subtest: arayüz dosyalarında kurala uymayan ad yok
+    ok 1 - arayüz dosyalarında kurala uymayan ad yok
+      ---
+      duration_ms: 62.831302
+      type: 'test'
+      ...
+    # Subtest: hareket türü adları ve programın varsayılan adları kurala uyuyor
+    ok 2 - hareket türü adları ve programın varsayılan adları kurala uyuyor
+      ---
+      duration_ms: 4.660556
+      type: 'test'
+      ...
+    # Subtest: derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+    ok 3 - derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+      ---
+      duration_ms: 1.859743
+      type: 'test'
+      ...
+    # Subtest: Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+    ok 4 - Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+      ---
+      duration_ms: 2.646008
+      type: 'test'
+      ...
+    # Subtest: mobil görünümde (client/mobil) kurala uymayan ad yok
+    ok 5 - mobil görünümde (client/mobil) kurala uymayan ad yok
+      ---
+      duration_ms: 4.342362
+      type: 'test'
+      ...
+    # Subtest: rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+    ok 6 - rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+      ---
+      duration_ms: 41.278115
+      type: 'test'
+      ...
+    1..6
+ok 14 - yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+  ---
+  duration_ms: 118.64943
+  type: 'suite'
+  ...
+1..14
+# tests 56
+# suites 14
+# pass 56
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6624.897071

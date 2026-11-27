@@ -158,23 +158,54 @@ export function registerTaxRoutes(router, { store, auth, audit, events, bank, pe
   function offsetRows() {
     return has("vat_offsets") ? store.all("SELECT id, month, date, out_minor AS outMinor, in_minor AS inMinor, carry_in_minor AS carryInMinor, carry_out_minor AS carryOutMinor, payable_minor AS payableMinor, status, created_at AS createdAt, reversed_at AS reversedAt FROM vat_offsets ORDER BY month, created_at, rowid") : [];
   }
-  /** Ayın 391 / 191 hareketi (mahsup fişleri hariç) ve ayın başındaki 190 (kuruş): Ana Defter'in kendi yevmiyesinden. */
-  function monthFigures(entries, month) {
-    const from = `${month}-01`;
-    const to = monthEnd(month);
-    let out = 0;
-    let input = 0;
-    let carry = 0;
+  /**
+   * Ayların 391 / 191 hareketi (mahsup fişleri hariç) ve ay başındaki 190 (kuruş): Ana Defter'in kendi yevmiyesinden, TEK geçişte (2.5.0 Ç7b: liste ve ön izleme her ay için yevmiyeyi
+   * yeniden dolaşmıyor — ders 47). of(month) eski monthFigures'ın aynı sonucu: { out, input, carry }.
+   */
+  // 2.5.0 Ç7b tur 2d (KG-7 = A, KDVK 29/3; EK-1 M8 (2): V-01 satırları dönem etiketine göre; docs/erp/C7B-FATURA-TASARIM.md §14.3): "KDV İndirim Dönemi" belge ayından farklı kesilmiş alış
+  // faturaları — maddenin 191'i dönem ayının mahsubuna girer (defter maddesi DEĞİŞMEZ: 191 belge tarihinde). Tek toplu sorgu (ders 47); sütun yoksa (göç 52 öncesi şema) dönem yok.
+  function vatPeriods() {
+    if (!has("invoices") || !store.all("PRAGMA table_info(invoices)").some(column => column.name === "vat_period")) return new Map();
+    return new Map(store.all("SELECT id, vat_period AS period FROM invoices WHERE kind = 'purchase' AND status = 'issued' AND vat_period <> '' AND vat_period <> substr(issue_date, 1, 7)").map(row => [`invoice:${row.id}`, row.period]));
+  }
+  function figureTable(entries) {
+    const months = new Map();
+    const carries = [];
+    const periods = vatPeriods();
     for (const entry of entries) {
       const offset = entry.id.startsWith("vat-offset");
+      const month = String(entry.date).slice(0, 7);
+      const period = periods.get(entry.id) || month;
       for (const line of entry.lines) {
-        if (line.account === "190" && entry.date < from) carry += line.debit - line.credit;
-        if (offset || entry.date < from || entry.date > to) continue;
-        if (line.account === "391") out += line.credit - line.debit;
-        if (line.account === "191") input += line.debit - line.credit;
+        if (line.account === "190") carries.push([entry.date, line.debit - line.credit]);
+        if (offset || (line.account !== "391" && line.account !== "191")) continue;
+        const key = line.account === "191" ? period : month;
+        const row = months.get(key) || { out: 0, input: 0 };
+        if (line.account === "391") row.out += line.credit - line.debit;
+        else row.input += line.debit - line.credit;
+        months.set(key, row);
       }
     }
-    return { out, input, carry: Math.max(0, carry) };
+    return {
+      of(month) {
+        const from = `${month}-01`;
+        const row = months.get(month) || { out: 0, input: 0 };
+        const carry = carries.reduce((sum, [date, minor]) => (date < from ? sum + minor : sum), 0);
+        return { out: row.out, input: row.input, carry: Math.max(0, carry) };
+      },
+    };
+  }
+  /**
+   * 2.5.0 Ç7b — S4 = A (EK-1 §5, kullanıcı 05.11 18:55: "KDV mahsubundan sonra girilen, indirilecek KDV'yi azaltan kayıt → girildiği ayın mahsubunda"; tasarım notu §2.3): ayın
+   * ÖNCESİNDEKİ etkin mahsupların İndirilecek KDV'si için birikmiş fark C = Σ (bugünkü İ − saklı İ). Yalnız AZALTAN kısım (min(0, C)) sonraki mahsuba taşınır; geçmiş ayın saklı
+   * mahsubu DEĞİŞMEZ. Artıran fark (geç gelen fatura) bugünkü gibi o ayın "Güncel Değil" uyarısıdır (Geri Al + yeniden). Çift sayım yok: M'nin mahsubu saklı(M) = şimdi(M) + min(0, C)
+   * yazdığından M + 1'in birikimi C − min(0, C) = max(0, C) olur.
+   */
+  function carriedBefore(table, active, month) {
+    return active.filter(item => item.month < month).reduce((sum, item) => sum + (table.of(item.month).input - Number(item.inMinor)), 0);
+  }
+  function monthFigures(entries, month) {
+    return figureTable(entries).of(month);
   }
   function linesView(row) {
     const names = { 391: "Hesaplanan KDV", 191: "İndirilecek KDV", 190: "Devreden KDV", 360: "Ödenecek Vergi ve Fonlar" };
@@ -182,10 +213,15 @@ export function registerTaxRoutes(router, { store, auth, audit, events, bank, pe
   }
   function offsetList() {
     const entries = ledger()?.build ? ledger().build() : [];
-    return offsetRows().map(row => {
-      const now = monthFigures(entries, row.month);
-      const stale = row.status === "active" && (now.out !== Number(row.outMinor) || now.input !== Number(row.inMinor));
-      return { ...row, label: monthLabel(row.month), lines: linesView(row), stale, ...(stale ? { nowOutMinor: now.out, nowInMinor: now.input } : {}) };
+    const table = figureTable(entries);
+    const rows = offsetRows();
+    const active = rows.filter(item => item.status === "active");
+    return rows.map(row => {
+      const now = table.of(row.month);
+      // S4 (Ç7b): İ'nin AZALTAN farkı (önceki ayların taşınmayı bekleyen azalması dahil) uyarı değildir — sonraki mahsuba taşınır; yalnız ARTIRAN fark "Güncel Değil".
+      const input = now.input + Math.min(0, carriedBefore(table, active, row.month));
+      const stale = row.status === "active" && (now.out !== Number(row.outMinor) || input > Number(row.inMinor));
+      return { ...row, label: monthLabel(row.month), lines: linesView(row), stale, ...(stale ? { nowOutMinor: now.out, nowInMinor: input } : {}) };
     });
   }
   /** Ön izleme: ayın tutarları, fişin satırları ve uyarılar (yazım yok). */
@@ -193,11 +229,16 @@ export function registerTaxRoutes(router, { store, auth, audit, events, bank, pe
     if (!MONTH.test(month)) throw bad(400, "Mahsup edilecek ayı seçin (Yıl-Ay).", "vat-month", { field: "month" });
     const date = monthEnd(month);
     const entries = ledger()?.build ? ledger().build() : [];
-    const { out, input, carry } = monthFigures(entries, month);
-    const position = out - input - carry;
-    const row = { month, date, outMinor: out, inMinor: input, carryInMinor: carry, carryOutMinor: Math.max(0, -position), payableMinor: Math.max(0, position) };
+    const table = figureTable(entries);
     const offsets = offsetRows();
     const active = offsets.filter(item => item.status === "active");
+    const own = table.of(month);
+    // S4 (Ç7b): önceki ayların mahsubundan sonra girilen, indirilecek KDV'yi AZALTAN kayıtlar bu ayın İ'sinden düşer (carried ≤ 0).
+    const carried = Math.min(0, carriedBefore(table, active, month));
+    const { out, carry } = own;
+    const input = own.input + carried;
+    const position = out - input - carry;
+    const row = { month, date, outMinor: out, inMinor: input, carryInMinor: carry, carryOutMinor: Math.max(0, -position), payableMinor: Math.max(0, position) };
     const blocks = [];
     const warnings = [];
     const lock = period?.lockedUntil?.() || "";
@@ -207,11 +248,13 @@ export function registerTaxRoutes(router, { store, auth, audit, events, bank, pe
     if (date > today()) blocks.push(`${monthLabel(month)} henüz bitmedi; mahsup ay sonundan (${dayText(date)}) sonra yapılır.`);
     if (lock && date <= lock) blocks.push(`${monthLabel(month)} kapanmış dönemde (${dayText(lock)} ve öncesi); mahsup fişi yazılamaz.`);
     if (!out && !input && !carry) blocks.push(`${monthLabel(month)} ayında KDV hareketi (391 / 191) ve devreden KDV yok; mahsup edilecek tutar yok.`);
+    if (carried < 0) warnings.push(`Önceki ayların mahsubundan sonra girilen, indirilecek KDV'yi azaltan kayıtlar (${tlText(-carried)}) bu ayın İndirilecek KDV'sinden düşüldü.`);
     const prev = previousMonth(month);
-    const prevFigures = monthFigures(entries, prev);
+    const prevFigures = table.of(prev);
     if ((prevFigures.out || prevFigures.input) && !active.some(item => item.month === prev)) warnings.push(`${monthLabel(prev)} mahsup edilmedi; devreden KDV o ayın mahsubundan gelir. Önce ${monthLabel(prev)} ayını mahsup etmeniz önerilir.`);
     return {
       ...row,
+      carriedInMinor: carried,
       label: monthLabel(month),
       lines: linesView(row),
       result: position > 0 ? "payable" : position < 0 ? "carry" : "zero",

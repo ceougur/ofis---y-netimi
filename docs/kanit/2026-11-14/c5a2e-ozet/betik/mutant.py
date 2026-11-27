@@ -1,0 +1,52 @@
+#!/usr/bin/env python3
+# Ç5-A tur 2e — mutant koşusu (dar kontrol c5a2'nin N1, N3, N4, N9, N10, N11, N12 + tur 2e'nin kendi mutantları). Kendi git worktree kopyamda (mutag; v2.4.9 etiketi gerekir) tek tek
+# açılır, ilgili test(ler) koşulur, dosya HEMEN geri yazılır. Kullanım: python3 -I mutant.py [N1 N3 ...]
+import subprocess, os, sys
+NB = "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2e-k3"
+W = NB + "/mutag/"
+LO = "server/lib/ledger-opening.mjs"; SN = "server/lib/ledger-snapshots.mjs"; LR = "server/routes/ledger.mjs"; OR = "server/routes/opening-review.mjs"; IN = "server/routes/invoices.mjs"
+KFY = "test/kural-farki-yil-250.test.mjs"; KFD = "test/kural-farki-duzeltme-250.test.mjs"; AOL = "test/acilis-olabilir-250.test.mjs"; YET = "test/acilis-olabilir-yetki-250.test.mjs"; S160A = "test/s160-kilitli-tahsilat-bagi-250.test.mjs"
+MUTS = [
+ ("N1", "alt defter dışlaması tek tur (kararlı noktaya yinelenmez)", LO, "for (let changed = true; changed; ) {", "for (let changed = true, once = 0; changed && once++ < 1; ) {", [KFY]),
+ ("N3", "etkin düzeltme listesi ters kaydedilmişleri de sayar", LO, "WHERE v.type = 'rule-diff-correction' AND NOT EXISTS (SELECT 1 FROM ledger_vouchers r WHERE r.reversal_of = v.id)", "WHERE v.type = 'rule-diff-correction'", [KFY]),
+ ("N4", "Düzeltildi dışarıda kalan alt defter farkına bakmaz", SN, "if (numbers.length && diff.count && !remainderMinor && !excludedMinor) {", "if (numbers.length && diff.count && !remainderMinor) {", [KFD]),
+ ("N9", "zil / ekranın kilitli dönemdeki aday sayısı kilit gününü saymaz", LO, "WHERE e.opening_review = 'candidate' AND e.date <= ?\", locked", "WHERE e.opening_review = 'candidate' AND e.date < ?\", locked", [KFY]),
+ ("N10", "B16 sıra zorlaması kilit günündeki adayı saymaz", LR, "WHERE e.opening_review = 'candidate' AND e.date <= ?\", lock)?.n) || 0;", "WHERE e.opening_review = 'candidate' AND e.date < ?\", lock)?.n) || 0;", [KFY]),
+ ("N11", "ön izlemenin 671/681 eşleme yılı fiş tarihinin değil bugünün yılı", LR, "const year = ruleDiffCorrectionYear({ lock, cover, today });", "const year = Number(String(today).slice(0, 4));", [KFY]),
+ ("N12", "S160 sorgusu evrağın silinmiş olmasına bakmaz", IN, "AND c.invoice_id <> ev.invoice_id AND c.deleted_at IS NULL AND ev.date <= ?2)", "AND c.invoice_id <> ev.invoice_id AND ev.date <= ?2)", [S160A]),
+ # tur 2e'nin kendi mutantları
+ ("E1", "eşleme yılı = kilit + 1 yazılmış fişe de uygulanır (fiş kendi yılıyla düşülmez — taban davranışı)", LO, "if (Number(postYear) < year && RESULT_CLASSES.has(account[0]) && !PRIOR_YEAR_SET.has(account))", "if (false)", [KFY]),
+ ("E2", "eşleme yılı kilit + 1 değil kilit gününün yılı", LO, "Number((nextDayOf(lock || cover) || String(today || \"\")).slice(0, 4)) || 0;", "Number(((lock || cover) || String(today || \"\")).slice(0, 4)) || 0;", [KFY]),
+ ("E3", "ters kaydın satırları kendi yılına sayılır (asıl fişin değil)", LO, "CAST(substr(COALESCE(o.date, v.date), 1, 4) AS INTEGER) AS year", "CAST(substr(v.date, 1, 4) AS INTEGER) AS year", [KFY]),
+ ("E4", "önceki yılın fişinin 671/681 satırı da ham farktan düşülür", LO, "&& !PRIOR_YEAR_SET.has(account)) add(prior", ") add(prior", [KFY]),
+ ("E5", "kalan ham fark işaretten bağımsız hep 671", LO, "const priorOf = minor => `${minor > 0 ? PRIOR_YEAR_ACCOUNTS.debit : PRIOR_YEAR_ACCOUNTS.credit}|`;", "const priorOf = () => `${PRIOR_YEAR_ACCOUNTS.credit}|`;", [KFY]),
+ ("E6", "Yönetim satırı eski yıl kuralı (son etkin fişin yılı)", SN, "const year = ruleDiffCorrectionYear({ lock, cover, today: period?.today?.() || \"\" });", "const year = corrections.active.length ? corrections.active.at(-1).year : ruleDiffCorrectionYear({ lock, cover, today: period?.today?.() || \"\" });", [KFY, KFD]),
+ ("E7", "DÜŞÜK-4: kilitli satır yetkisi system.manage yerine accounts.manage", OR, "const LOCKED_PERMISSION = \"system.manage\";", "const LOCKED_PERMISSION = \"accounts.manage\";", [YET]),
+ ("E8", "DÜŞÜK-4: kilit günü sınırı (< yerine <=)", OR, "AND COALESCE(e.opening_review, '') <> '' AND e.date <= ? ORDER BY", "AND COALESCE(e.opening_review, '') <> '' AND e.date < ? ORDER BY", [YET]),
+ ("E9", "DÜŞÜK-4: toplu kararda denetim yok (yalnız tek)", OR, "    assertLockedAllowed(user, ids);\n", "", [YET]),
+ ("E10", "DÜŞÜK-4: tek kararda denetim yok", OR, "    assertLockedAllowed(user, [id], { single: true });\n", "", [YET]),
+]
+only = set(sys.argv[1:])
+tz = os.environ.get("TZ", "Europe/Istanbul")
+env = dict(os.environ, HUKUK_LICENSE_URL="http://127.0.0.1:9", TZ=tz)
+for no, name, f, a, b, tests in MUTS:
+    if only and no not in only: continue
+    p = W + f
+    src = open(p, encoding="utf-8").read()
+    if src.count(a) != 1:
+        print(no, "UYGULANAMADI (eşleşme", src.count(a), ")", flush=True); continue
+    open(p, "w", encoding="utf-8").write(src.replace(a, b))
+    try:
+        res = []
+        for t in tests:
+            r = subprocess.run(["timeout", "-k", "5", "900", "node", "--disable-warning=ExperimentalWarning", "--test", "--test-reporter=spec", t], cwd=W, env=env, capture_output=True, text=True)
+            out = r.stdout + r.stderr
+            open(f"{NB}/mut-{no}-{os.path.basename(t)}.out", "w").write(out)
+            summ = " ".join(l.strip() for l in out.splitlines() if l.startswith(("ℹ tests", "ℹ pass", "ℹ fail")))
+            fails = [l.strip()[:90] for l in out.splitlines() if l.startswith("  ✖") and "[test/" not in l]
+            msgs = [l.strip()[:200] for l in out.splitlines() if "AssertionError" in l][:2]
+            res.append(f"{os.path.basename(t)}: çıkış {r.returncode} [{summ}] {' ; '.join(fails[:3])} || {' ; '.join(msgs)}")
+    finally:
+        open(p, "w", encoding="utf-8").write(src)
+    print(no, name, "=>", " || ".join(res), flush=True)
+print("bitti", flush=True)

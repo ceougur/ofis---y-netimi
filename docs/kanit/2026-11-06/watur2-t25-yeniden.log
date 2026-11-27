@@ -1,0 +1,50 @@
+TAP version 13
+# (node:5720) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 WhatsApp tur 2 — W-3 dk ORTA-1: defter anonimleştirmesi düşerse yeniden denenir (yeniden açılış + bakım turu); S42 kabulü özetle
+    # Subtest: T2-5a bakım turu: defter yeniden anonimleştirilir; B'nin dosyadaki kabulü ÖZETLE yazılmıştı (S42 defter ∪ dosya) → defterde ve dosyada telefon / açık wamid 0
+    ok 1 - T2-5a bakım turu: defter yeniden anonimleştirilir; B'nin dosyadaki kabulü ÖZETLE yazılmıştı (S42 defter ∪ dosya) → defterde ve dosyada telefon / açık wamid 0
+      ---
+      duration_ms: 2389.036598
+      type: 'test'
+      ...
+    # Subtest: T2-5b yeniden açılış: açılıştaki talep uygulaması (bakım turundan ÖNCE) defteri anonimleştirir
+    ok 2 - T2-5b yeniden açılış: açılıştaki talep uygulaması (bakım turundan ÖNCE) defteri anonimleştirir
+      ---
+      duration_ms: 1903.60887
+      type: 'test'
+      ...
+    # Subtest: T2-5c tur 2'den ÖNCEKİ kodun GERÇEK verisi (whatsapp-kvkk-329d5d1b: defterde 2 telefon + 2 açık wamid, dosyada silinmiş B satırında AÇIK wamid) → açılış + ilk bakım turu: hepsi özetlenir
+    ok 3 - T2-5c tur 2'den ÖNCEKİ kodun GERÇEK verisi (whatsapp-kvkk-329d5d1b: defterde 2 telefon + 2 açık wamid, dosyada silinmiş B satırında AÇIK wamid) → açılış + ilk bakım turu: hepsi özetlenir
+      ---
+      duration_ms: 375.485581
+      type: 'test'
+      ...
+    1..3
+ok 1 - 2.5.0 WhatsApp tur 2 — W-3 dk ORTA-1: defter anonimleştirmesi düşerse yeniden denenir (yeniden açılış + bakım turu); S42 kabulü özetle
+  ---
+  duration_ms: 4669.728131
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 WhatsApp tur 2 — W-3 dk ORTA-3: denetim noktası düşerse bakım turu yeniden dener
+    # Subtest: T2-7 dış okuyucu (açık okuma işlemi) varken talep → WAL / dosyada iz kalır; okuyucu kapanınca BİR bakım turu sonra veri klasöründe silinen telefon 0
+    ok 1 - T2-7 dış okuyucu (açık okuma işlemi) varken talep → WAL / dosyada iz kalır; okuyucu kapanınca BİR bakım turu sonra veri klasöründe silinen telefon 0
+      ---
+      duration_ms: 1833.868416
+      type: 'test'
+      ...
+    1..1
+ok 2 - 2.5.0 WhatsApp tur 2 — W-3 dk ORTA-3: denetim noktası düşerse bakım turu yeniden dener
+  ---
+  duration_ms: 1834.229356
+  type: 'suite'
+  ...
+1..2
+# tests 4
+# suites 2
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7297.538367

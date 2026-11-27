@@ -1,0 +1,38 @@
+{
+  "ad": "ana-c6s-dar-UTC",
+  "komut": "node --test test/c6h-ba.test.mjs test/c6h-bilanco-uc.test.mjs test/c6h-bilanco.test.mjs test/c6h-degerleme.test.mjs test/c6h-esdegerlik.test.mjs test/c6h-gelir-tablosu.test.mjs test/c6h-s209.test.mjs test/c6h-uc.test.mjs test/c6h-v249-sinif.test.mjs test/db-tx-kayip-250.test.mjs test/donmus-defter-bellek-250.test.mjs test/donmus-defter-tur1-250.test.mjs test/donmus-defter-tur3-250.test.mjs test/donmus-defter-tur4-250.test.mjs",
+  "commit": "4deab70c05085198e646637ad2c7ea5fd3ae4c5c",
+  "dal": "c6-sinama",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-21T05:29:11.225Z",
+  "sure_sn": 86.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 125,
+    "gecen": 124,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.0 Ç6-HESAP — v2.4.9 GERÇEK verisinde sınıf sınıf (kilitsiz / kilitli) Gelir Tablosu, Bilanço, değerleme ↔ v2.4.9'un kendi sayıları (her fark karar numarasıyla) › fikstür bugünkü kodla: bütün farklar beklenen-farklar.json'da, değerleri aynı; listede kapanmış fark yok; her sınıfta Aktif = Pasif",
+      "konum": "test/c6h-v249-sinif.test.mjs:112:3",
+      "hata": "beklenen-farklar.json'da YAZILI OLMAYAN fark (karar numarasıyla açıklanmadı): · satis-fatura · kilitsiz · 2026-10-20 · mizan.191: 0 → 2000 · satis-fatura · kilitsiz · 2026-10-20 · mizan.391: -16000 → -18000 (beklenen 0, gelen 14)"
+    }
+  ],
+  "ham_cikti": "../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c6s/kanit/2026-11-21/ana-c6s-dar-UTC.log",
+  "klasor": "/dev/shm/c6-sinama",
+  "ham_cikti_sha256": "fce37fd9e7a2322bbb4b519eac4266e0dbb1281b18cc118239c512ff973cc117",
+  "ham_cikti_bayt": 87772
+}

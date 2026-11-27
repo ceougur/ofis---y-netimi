@@ -1,0 +1,37 @@
+#!/bin/bash
+# Ana oturum: CARİ KÂHİNİ BAKIMI 15 + 16 — ÖN KONTROL (kâhin ağacımda: çalışma dalı ucu + kâhin 16 dalı; ürün = ana dal).
+# Liste yeniden üretimi + fark dökümü, kâhin ↔ program (cari, UTC), mobil yazma kâhininin kabul dosyası yeniden üretimi + farkı + öz testi + kâhin ↔ program.
+# Hata durdurmaz; her adımın çıkışı yazılır. Aday DEĞİL — Ç5-A tur 1f ana dala girince aynı adımlar adayda yinelenir.
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+W=$S/kahin8y-ag; K=$S/k16-on-kanit; L=test/bagimsiz/cari/YAPIM-ASAMASI.json; MK=test/bagimsiz/mobil-yazma
+export KANIT_DIR=$K HUKUK_LICENSE_URL=http://127.0.0.1:9 PLAYWRIGHT_BROWSERS_PATH=$S/pw-1194
+G="git -c user.name=ana -c user.email=ana@yerel"
+mkdir -p $K || exit 1
+cd $W || exit 1
+[ -z "$(git status -s | grep -v node_modules)" ] || { echo "kâhin ağacı temiz değil"; git status -s | head -5; exit 1; }
+git checkout -q -B sinama-k16 claude/epic-thompson-w0lc2l || exit 1
+$G merge -q --no-ff --no-verify -m "SINAMA: + cari kâhini bakımı 15 + 16 (gönderilmez)" worktree-agent-a24a9b176b2cdfc4a > $K/merge.out 2>&1 || { echo "birleşim çakıştı"; git status -s | grep -E '^(UU|AA)' | head; exit 1; }
+[ -e node_modules ] || ln -s /home/user/ofis---y-netimi/node_modules node_modules
+echo "başladı $(date -u +%T) yük $(cut -d' ' -f1-3 /proc/loadavg) · ağaç $(git rev-parse --short HEAD) · ana dalla ürün farkı (kâhin + kanıt dışında BOŞ olmalı): [$(git diff claude/epic-thompson-w0lc2l --name-only -- . ':!docs' ':!test/bagimsiz/cari' | tr '\n' ' ')]"
+cp $L $K/liste-oncesi.json || exit 1
+TZ=UTC timeout 3000 node test/bagimsiz/cari/kos.mjs --yapim-asamasi-yaz > $K/liste-uret.out 2>&1; echo "liste üretimi çıkış $?"; tail -3 $K/liste-uret.out | cut -c1-260
+cp $L $K/liste-aday.json
+python3 -I - $K/liste-oncesi.json $K/liste-aday.json <<'PY'
+import json,sys
+from collections import Counter
+o={(e["senaryo"],e["anahtar"]):e for e in json.load(open(sys.argv[1]))["kayitlar"]}
+n={(e["senaryo"],e["anahtar"]):e for e in json.load(open(sys.argv[2]))["kayitlar"]}
+kap=[k for k in o if k not in n]; yeni=[k for k in n if k not in o]; deg=[k for k in n if k in o and (o[k].get("program"),o[k].get("beklenen"))!=(n[k].get("program"),n[k].get("beklenen"))]
+print(f"liste farkı: önceki {len(o)} → yeni {len(n)} · kapanan {len(kap)} · yeni {len(yeni)} · değeri değişen {len(deg)} · paketler {dict(Counter(e.get('paket') for e in n.values()))}")
+print("yeni kayıtların senaryoları:", dict(Counter(k[0] for k in yeni)))
+for k in yeni[:60]: print("  YENİ", k[0][:34], "|", k[1][:60], "| beklenen", str(n[k].get('beklenen'))[:40], "| program", str(n[k].get('program'))[:60])
+for k in kap[:10]: print("  KAPANAN", k[0][:34], "|", k[1][:60])
+PY
+TZ=UTC timeout 3000 node tools/kanit.mjs kos k16-on-kahin-cari-UTC -- npm run test:kahin-cari > $K/kahin-cari-UTC.out 2>&1; echo "kahin-cari UTC çıkış $? $(grep -E '^\[kanit\]' $K/kahin-cari-UTC.out | tail -1 | cut -c1-150) $(grep -E 'ÖZET' $K/kahin-cari-UTC.out | tail -1 | cut -c1-200)"
+cp $MK/kabul.json $K/kabul-oncesi.json
+timeout 1800 python3 -I -B $MK/senaryolar.py > $K/kabul-uret.out 2>&1; echo "mobil kabul üretimi çıkış $? :: $(tail -1 $K/kabul-uret.out | cut -c1-200)"
+echo "mobil kabul dosyası değişti mi: $(git status -s -- $MK | tr '\n' ' ')"
+python3 -I -B docs/kanit/2026-11-13/kahinmobil-s129/arac/kabul-fark.py $K/kabul-oncesi.json $MK/kabul.json > $K/kabul-fark.out 2>&1; echo "kabul farkı çıkış $? :: $(tail -4 $K/kabul-fark.out | cut -c1-220 | tr '\n' '|')"
+TZ=UTC timeout 1800 node tools/kanit.mjs kos k16-on-mobil-oz-UTC -- python3 -I -B $MK/kahin_test.py > $K/mobil-oz-UTC.out 2>&1; echo "mobil öz test UTC çıkış $? :: $(tail -1 $K/mobil-oz-UTC.out | cut -c1-170)"
+timeout 3000 node tools/kanit.mjs kos k16-on-kahin-mobil-yazma -- npm run test:kahin-mobil-yazma -- --haric E02-es-havale-pos-mobil,E02-es-havale-pos-masaustu > $K/mobil-yazma.out 2>&1; echo "kâhin ↔ program (mobil yazma) çıkış $? :: $(tail -1 $K/mobil-yazma.out | cut -c1-200)"
+echo "bitti $(date -u +%T) yük $(cut -d' ' -f1-3 /proc/loadavg) · ağaç durumu (commit'siz; sonra sıfırlanır): $(git status -s | grep -v node_modules | wc -l) dosya"

@@ -1,0 +1,31 @@
+== S9 harfi örnek (elle Borç / Alacak; vadeler karardaki gibi)
+  k1:cari:M:gecikmis           karar metni 400000                                               kâhin 400000                                               AYNI
+  k1:hareket:s:kalan           karar metni 400000                                               kâhin 1000000                                              FARKLI
+  k1:hareket:p:kalan           karar metni 0                                                    kâhin 600000                                               FARKLI
+== S9 harfi örnek (satış + alış FATURASI; bu dilde faturanın vadesi belge günü)
+  k1:cari:M:gecikmis           karar metni 400000                                               kâhin 400000                                               AYNI
+  k1:fatura:S:acik             karar metni 1000000                                              kâhin 1000000                                              AYNI
+  k1:fatura:P:acik             karar metni 600000                                               kâhin 600000                                               AYNI
+  k1:takvim:fatura:S           karar metni {"amount": 400000, "direction": "in"}                kâhin {"amount": 1000000, "direction": "in"}               FARKLI
+  k1:takvim:fatura:P           karar metni "yok"                                                kâhin {"amount": 600000, "direction": "out"}               FARKLI
+== S9 örneği + vadesi GELMEMİŞ ikinci borç 5.000 (vade 30.06) — kuşkunun doğrulandığı hâl
+  k1:cari:M:gecikmis           karar metni 400000                                               kâhin 900000                                               FARKLI
+  k1:hareket:s:kalan           karar metni 400000                                               kâhin 1000000                                              FARKLI
+  k1:hareket:s2:kalan          karar metni 500000                                               kâhin 500000                                               AYNI
+  k1:hareket:p:kalan           karar metni 0                                                    kâhin 600000                                               FARKLI
+== S9 'alış 12.000 olsaydı' dalı (cari bize 2.000 alacaklı)
+  k1:cari:M:gecikmis           karar metni 0                                                    kâhin 0                                                    AYNI
+  k1:hareket:s:kalan           karar metni 0                                                    kâhin 1000000                                              FARKLI
+  k1:hareket:p:kalan           karar metni 200000                                               kâhin 1200000                                              FARKLI
+== 5.000 alacağımız + 1.000 iade borcumuz (S92: Kalan / takvim / Vade Takip net 4.000)
+  k1:cari:M:gecikmis           karar metni 400000                                               kâhin 400000                                               AYNI
+  k1:hareket:s:kalan           karar metni 400000                                               kâhin 500000                                               FARKLI
+  k1:hareket:p:kalan           karar metni 0                                                    kâhin 100000                                               FARKLI
+  k1:takvim:hareket:p          karar metni "yok"                                                kâhin {"amount": 100000, "dueDate": "2026-04-10", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -5, "cari": "M", "person": "Beş Bin"} FARKLI
+  k1:vadeTakip:hareket:s       karar metni {"amount": 400000, "date": "2026-03-31", "direction": "in"} kâhin {"amount": 500000, "date": "2026-03-31", "direction": "in"} FARKLI
+S9 DÖKÜMÜ: 7/20 değer karar metniyle aynı, 13 farklı (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahineski4-a312/eski/test/bagimsiz/cari)
+ESKİ KÂHİN: karar metninden ayrışan 13 değer (beklenen: > 0; satırlar yukarıda 'FARKLI')
+# tests 13
+# pass 13
+# fail 0
+13/13 denetim geçti

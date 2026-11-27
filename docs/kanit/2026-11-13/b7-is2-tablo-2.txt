@@ -1,0 +1,19 @@
+rapor-mizan yaris yeni çıkış 0 | TAMAM: 3 denetim geçti, 0 başarısız. (kip rapor-mizan; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+rapor-mizan yaris taban çıkış 1 | BAŞARISIZ: 0 denetim geçti, 3 başarısız. (kip rapor-mizan; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+rapor-mizan --kontrol yeni çıkış 0 | TAMAM: 3 denetim geçti, 0 başarısız. (kip rapor-mizan kontrol; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+rapor-mizan --kontrol taban çıkış 0 | TAMAM: 3 denetim geçti, 0 başarısız. (kip rapor-mizan kontrol; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+rapor-vade yaris yeni çıkış 0 | TAMAM: 3 denetim geçti, 0 başarısız. (kip rapor-vade; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+rapor-vade yaris taban çıkış 1 | BAŞARISIZ: 0 denetim geçti, 3 başarısız. (kip rapor-vade; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+rapor-vade --kontrol yeni çıkış 0 | TAMAM: 3 denetim geçti, 0 başarısız. (kip rapor-vade kontrol; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+rapor-vade --kontrol taban çıkış 0 | TAMAM: 3 denetim geçti, 0 başarısız. (kip rapor-vade kontrol; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+rapor-akis yaris yeni çıkış 0 | TAMAM: 3 denetim geçti, 0 başarısız. (kip rapor-akis; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+rapor-akis yaris taban çıkış 1 | BAŞARISIZ: 0 denetim geçti, 3 başarısız. (kip rapor-akis; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+rapor-akis --kontrol yeni çıkış 0 | TAMAM: 3 denetim geçti, 0 başarısız. (kip rapor-akis kontrol; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+rapor-akis --kontrol taban çıkış 0 | TAMAM: 3 denetim geçti, 0 başarısız. (kip rapor-akis kontrol; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+rapor-cek yaris yeni çıkış 0 | TAMAM: 3 denetim geçti, 0 başarısız. (kip rapor-cek; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+rapor-cek yaris taban çıkış 1 | BAŞARISIZ: 0 denetim geçti, 3 başarısız. (kip rapor-cek; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+rapor-cek --kontrol yeni çıkış 0 | TAMAM: 3 denetim geçti, 0 başarısız. (kip rapor-cek kontrol; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+rapor-cek --kontrol taban çıkış 0 | TAMAM: 3 denetim geçti, 0 başarısız. (kip rapor-cek kontrol; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+kasa-tarih --kontrol yeni çıkış 0 | TAMAM: 3 denetim geçti, 0 başarısız. (kip kasa-tarih kontrol; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+kasa-tarih --kontrol taban çıkış 0 | TAMAM: 3 denetim geçti, 0 başarısız. (kip kasa-tarih kontrol; ön koşul 3/3 denemede oluştu; 0 sayılmadı) | 
+BITTI

@@ -1,0 +1,184 @@
+{
+ "uretilen_toplam": 48,
+ "listeye_giren": 33,
+ "listeye_girmeyen_P": [
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k1:fatura:FQ1:gosterilen",
+   "beklenen": 10000,
+   "program": 20000
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k1:fatura:FQ1:kartta",
+   "beklenen": 70000,
+   "program": 60000
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k1:fatura:FQ1:liste:gosterilen",
+   "beklenen": 10000,
+   "program": 20000
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k1:kart:KQ1:kalan",
+   "beklenen": 100000,
+   "program": 90000
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k1:kart:KQ1:toplam",
+   "beklenen": 100000,
+   "program": 90000
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k1:takvim:fatura:FQ1",
+   "beklenen": {
+    "amount": 10000,
+    "direction": "in"
+   },
+   "program": {
+    "amount": 20000,
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k2:fatura:FQ1:gosterilen",
+   "beklenen": 10000,
+   "program": 20000
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k2:fatura:FQ1:kartta",
+   "beklenen": 70000,
+   "program": 60000
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k2:fatura:FQ1:liste:gosterilen",
+   "beklenen": 10000,
+   "program": 20000
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k2:kart:KQ1:kalan",
+   "beklenen": 100000,
+   "program": 90000
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k2:kart:KQ1:toplam",
+   "beklenen": 100000,
+   "program": 90000
+  },
+  {
+   "senaryo": "d56-c5-s238-s240-iade-ve-secilmeyen",
+   "anahtar": "k2:takvim:fatura:FQ1",
+   "beklenen": {
+    "amount": 10000,
+    "direction": "in"
+   },
+   "program": {
+    "amount": 20000,
+    "direction": "in"
+   }
+  },
+  {
+   "senaryo": "d57-c5-s241-s242-duzenle",
+   "anahtar": "k1:cari:P1:gecikmis",
+   "beklenen": 80000,
+   "program": 60000
+  },
+  {
+   "senaryo": "d57-c5-s241-s242-duzenle",
+   "anahtar": "k1:kart:fatura:FP1:kalan",
+   "beklenen": 30000,
+   "program": 90000
+  },
+  {
+   "senaryo": "d57-c5-s241-s242-duzenle",
+   "anahtar": "k1:kart:fatura:FP1:toplam",
+   "beklenen": 30000,
+   "program": 90000
+  }
+ ],
+ "yeni": [
+  "d56-c5-s238-s240-iade-ve-secilmeyen k1:cari:L2:gecikmis",
+  "d56-c5-s238-s240-iade-ve-secilmeyen k1:kart:KL1:kalan",
+  "d56-c5-s238-s240-iade-ve-secilmeyen k1:kart:KL1:taksit3:odenen",
+  "d56-c5-s238-s240-iade-ve-secilmeyen k1:kart:KL1:toplam",
+  "d56-c5-s238-s240-iade-ve-secilmeyen k1:kart:KL2:kalan",
+  "d56-c5-s238-s240-iade-ve-secilmeyen k1:kart:KL2:taksit2:odenen",
+  "d56-c5-s238-s240-iade-ve-secilmeyen k1:kart:KL2:taksit3:odenen",
+  "d56-c5-s238-s240-iade-ve-secilmeyen k1:kart:KL2:toplam",
+  "d56-c5-s238-s240-iade-ve-secilmeyen k1:projeksiyon:hareket:bl1",
+  "d56-c5-s238-s240-iade-ve-secilmeyen k1:projeksiyon:hareket:bl2",
+  "d56-c5-s238-s240-iade-ve-secilmeyen k1:takvim:hareket:bl1",
+  "d56-c5-s238-s240-iade-ve-secilmeyen k1:takvim:hareket:bl2",
+  "d56-c5-s238-s240-iade-ve-secilmeyen k1:vadeTakip:hareket:bl1",
+  "d56-c5-s238-s240-iade-ve-secilmeyen k1:vadeTakip:hareket:bl2",
+  "d56-c5-s238-s240-iade-ve-secilmeyen k2:cari:L2:gecikmis",
+  "d56-c5-s238-s240-iade-ve-secilmeyen k2:kart:KL1:kalan",
+  "d56-c5-s238-s240-iade-ve-secilmeyen k2:kart:KL1:taksit3:odenen",
+  "d56-c5-s238-s240-iade-ve-secilmeyen k2:kart:KL1:toplam",
+  "d56-c5-s238-s240-iade-ve-secilmeyen k2:kart:KL2:kalan",
+  "d56-c5-s238-s240-iade-ve-secilmeyen k2:kart:KL2:taksit2:odenen",
+  "d56-c5-s238-s240-iade-ve-secilmeyen k2:kart:KL2:taksit3:odenen",
+  "d56-c5-s238-s240-iade-ve-secilmeyen k2:kart:KL2:toplam",
+  "d56-c5-s238-s240-iade-ve-secilmeyen k2:projeksiyon:hareket:bl1",
+  "d56-c5-s238-s240-iade-ve-secilmeyen k2:projeksiyon:hareket:bl2",
+  "d56-c5-s238-s240-iade-ve-secilmeyen k2:takvim:hareket:bl1",
+  "d56-c5-s238-s240-iade-ve-secilmeyen k2:takvim:hareket:bl2",
+  "d56-c5-s238-s240-iade-ve-secilmeyen k2:vadeTakip:hareket:bl1",
+  "d56-c5-s238-s240-iade-ve-secilmeyen k2:vadeTakip:hareket:bl2",
+  "d57-c5-s241-s242-duzenle k1:kart:KK1:kalan",
+  "d57-c5-s241-s242-duzenle k1:kart:KK1:odenen",
+  "d57-c5-s241-s242-duzenle k1:kart:KK2:kalan",
+  "d57-c5-s241-s242-duzenle k1:kart:KK2:odenen",
+  "d57-c5-s241-s242-duzenle k1:kart:fatura:FK3:toplam"
+ ],
+ "kapanan": [
+  "d53-c5-s234-kapali-kart-iade adim:dz4:durum",
+  "d53-c5-s234-kapali-kart-iade adim:dza4:durum",
+  "d53-c5-s234-kapali-kart-iade k1:cari:A4:acikToplam",
+  "d53-c5-s234-kapali-kart-iade k1:cari:A4:bakiye",
+  "d53-c5-s234-kapali-kart-iade k1:cari:P4:acikToplam",
+  "d53-c5-s234-kapali-kart-iade k1:cari:P4:bakiye",
+  "d53-c5-s234-kapali-kart-iade k1:fatura:FA4:acik",
+  "d53-c5-s234-kapali-kart-iade k1:fatura:FA4:kartta",
+  "d53-c5-s234-kapali-kart-iade k1:fatura:FP4:acik",
+  "d53-c5-s234-kapali-kart-iade k1:fatura:FP4:kartta",
+  "d53-c5-s234-kapali-kart-iade k1:kart:KA4:kalan",
+  "d53-c5-s234-kapali-kart-iade k1:kart:KA4:toplam",
+  "d53-c5-s234-kapali-kart-iade k1:kart:KP4:kalan",
+  "d53-c5-s234-kapali-kart-iade k1:kart:KP4:toplam",
+  "d53-c5-s234-kapali-kart-iade k2:cari:A4:acikToplam",
+  "d53-c5-s234-kapali-kart-iade k2:cari:A4:bakiye",
+  "d53-c5-s234-kapali-kart-iade k2:cari:P4:acikToplam",
+  "d53-c5-s234-kapali-kart-iade k2:cari:P4:bakiye",
+  "d53-c5-s234-kapali-kart-iade k2:fatura:FA4:acik",
+  "d53-c5-s234-kapali-kart-iade k2:fatura:FA4:kartta",
+  "d53-c5-s234-kapali-kart-iade k2:fatura:FP4:acik",
+  "d53-c5-s234-kapali-kart-iade k2:fatura:FP4:kartta",
+  "d53-c5-s234-kapali-kart-iade k2:kart:KA4:kalan",
+  "d53-c5-s234-kapali-kart-iade k2:kart:KA4:toplam",
+  "d53-c5-s234-kapali-kart-iade k2:kart:KP4:kalan",
+  "d53-c5-s234-kapali-kart-iade k2:kart:KP4:toplam",
+  "d53-c5-s234-kapali-kart-iade k3:cari:A4:acikToplam",
+  "d53-c5-s234-kapali-kart-iade k3:cari:A4:bakiye",
+  "d53-c5-s234-kapali-kart-iade k3:cari:P4:acikToplam",
+  "d53-c5-s234-kapali-kart-iade k3:cari:P4:bakiye",
+  "d53-c5-s234-kapali-kart-iade k3:fatura:FA4:acik",
+  "d53-c5-s234-kapali-kart-iade k3:fatura:FA4:kartta",
+  "d53-c5-s234-kapali-kart-iade k3:fatura:FP4:acik",
+  "d53-c5-s234-kapali-kart-iade k3:fatura:FP4:kartta",
+  "d53-c5-s234-kapali-kart-iade k3:kart:KA4:kalan",
+  "d53-c5-s234-kapali-kart-iade k3:kart:KA4:toplam",
+  "d53-c5-s234-kapali-kart-iade k3:kart:KP4:kalan",
+  "d53-c5-s234-kapali-kart-iade k3:kart:KP4:toplam"
+ ],
+ "degisen": []
+}

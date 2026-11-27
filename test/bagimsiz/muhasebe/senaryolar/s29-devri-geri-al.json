@@ -1,0 +1,136 @@
+{
+ "aciklama": "Devri Geri Al devir öncesi kalıcı yedeğe döner; devirden sonra girilen kayıt kaybolur (BİLİNEN SINIR).",
+ "ad": "s29-devri-geri-al",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "geri/kaybolan_hareketler": [
+    "F3"
+   ],
+   "mz/satirlar/120|C1/bakiye": 25000,
+   "mz/satirlar/519/bakiye": -10000,
+   "mz/satirlar/600/bakiye": -25000
+  }
+ },
+ "kapsam": [
+  "N-15"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "tarih": "2026-01-01",
+   "tur": "kasa_acilis",
+   "tutar": 10000
+  },
+  {
+   "K": 0,
+   "M": 20000,
+   "cari": "C1",
+   "id": "F1",
+   "tarih": "2026-06-01",
+   "tur": "satis_faturasi"
+  },
+  {
+   "K": 0,
+   "M": 5000,
+   "cari": "C1",
+   "id": "F2",
+   "tarih": "2027-01-05",
+   "tur": "satis_faturasi"
+  },
+  {
+   "K": "2026-12-31",
+   "ad": "devir",
+   "tur": "devir"
+  },
+  {
+   "K": 0,
+   "M": 3000,
+   "cari": "C1",
+   "id": "F3",
+   "tarih": "2027-01-10",
+   "tur": "satis_faturasi"
+  },
+  {
+   "ad": "geri",
+   "tur": "devri_geri_al"
+  },
+  {
+   "ad": "mz",
+   "bas": "2026-01-01",
+   "rapor": "mizan",
+   "son": "2027-12-31",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

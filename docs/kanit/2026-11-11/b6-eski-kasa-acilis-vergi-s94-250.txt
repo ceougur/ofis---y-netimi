@@ -1,0 +1,82 @@
+TAP version 13
+# Subtest: S94 = A — Kasa açılışından önce tarihli Vergi Ödemesi: düzeltme reddinin iletisi çıkış yolunu söyler; iki yol da çalışır
+    # Subtest: açılıştan önce tarihli Vergi Ödemesi Kasa'dan düzeltilmek istenince 409 cash-tax-payment: ileti çıkış yolunu söyler (açılış günü / sonrası ya da açılışı öne almak); satır değişmez
+    not ok 1 - açılıştan önce tarihli Vergi Ödemesi Kasa'dan düzeltilmek istenince 409 cash-tax-payment: ileti çıkış yolunu söyler (açılış günü / sonrası ya da açılışı öne almak); satır değişmez
+      ---
+      duration_ms: 6.729127
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/birlesik6-eski/test/kasa-acilis-vergi-s94-250.test.mjs:59:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+            code: 'cash-tax-payment',
+        +   date: undefined,
+        +   error: "Bu hareket bir Vergi Ödemesi; Kasa'dan düzeltilmez. Silip Vergi Ödemesi'nden doğru tutarla yeniden girin.",
+        +   openingDate: undefined,
+        -   date: '2026-03-05',
+        -   error: "Bu hareket bir Vergi Ödemesi; Kasa'dan düzeltilmez. Silip Vergi Ödemesi'nden doğru tutarla yeniden girin. Hareket Kasa açılışından (10.03.2026) önce tarihli: yeniden girerken tarihi Kasa açılış günü ya da sonrası yapın; ödeme gerçekten açılıştan önceyse yönetici Kasa → Açılış Bakiyesi'nin tarihini öne alabilir.",
+        -   openingDate: '2026-03-10',
+            status: 409
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        status: 409
+        code: 'cash-tax-payment'
+        error: "Bu hareket bir Vergi Ödemesi; Kasa'dan düzeltilmez. Silip Vergi Ödemesi'nden doğru tutarla yeniden girin. Hareket Kasa açılışından (10.03.2026) önce tarihli: yeniden girerken tarihi Kasa açılış günü ya da sonrası yapın; ödeme gerçekten açılıştan önceyse yönetici Kasa → Açılış Bakiyesi'nin tarihini öne alabilir."
+        openingDate: '2026-03-10'
+        date: '2026-03-05'
+      actual:
+        status: 409
+        code: 'cash-tax-payment'
+        error: "Bu hareket bir Vergi Ödemesi; Kasa'dan düzeltilmez. Silip Vergi Ödemesi'nden doğru tutarla yeniden girin."
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/birlesik6-eski/test/kasa-acilis-vergi-s94-250.test.mjs:61:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: açılıştan SONRA tarihli Vergi Ödemesi: ileti değişmedi (çıkış yolu cümlesi yok)
+    ok 2 - açılıştan SONRA tarihli Vergi Ödemesi: ileti değişmedi (çıkış yolu cümlesi yok)
+      ---
+      duration_ms: 4.602368
+      type: 'test'
+      ...
+    # Subtest: iletideki yol 1: sil + aynı tarihle yeniden giriş 409 cash-before-opening (S12, istisna yok); açılış GÜNÜ tarihiyle 200; uyarı kalkar
+    ok 3 - iletideki yol 1: sil + aynı tarihle yeniden giriş 409 cash-before-opening (S12, istisna yok); açılış GÜNÜ tarihiyle 200; uyarı kalkar
+      ---
+      duration_ms: 48.863669
+      type: 'test'
+      ...
+    # Subtest: iletideki yol 2: yönetici Kasa açılışını öne alır (04.03) → açılıştan önceki güne (05.03) Vergi Ödemesi 200
+    ok 4 - iletideki yol 2: yönetici Kasa açılışını öne alır (04.03) → açılıştan önceki güne (05.03) Vergi Ödemesi 200
+      ---
+      duration_ms: 30.262931
+      type: 'test'
+      ...
+    1..4
+not ok 1 - S94 = A — Kasa açılışından önce tarihli Vergi Ödemesi: düzeltme reddinin iletisi çıkış yolunu söyler; iki yol da çalışır
+  ---
+  duration_ms: 651.654645
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/birlesik6-eski/test/kasa-acilis-vergi-s94-250.test.mjs:33:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 4
+# suites 1
+# pass 3
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1019.026353

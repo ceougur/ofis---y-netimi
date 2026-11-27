@@ -1,0 +1,725 @@
+TAP version 13
+# (node:32652) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Ç7b P7 (S219 = A) — Excel taksit yüklemesinde aynı adlı iki kişi
+    # Subtest: (1) iki ayrı cari aynı ad + farklı telefon: satır sırası iki yönde, her kişiye kendi kartı ve borcu
+    ok 1 - (1) iki ayrı cari aynı ad + farklı telefon: satır sırası iki yönde, her kişiye kendi kartı ve borcu
+      ---
+      duration_ms: 242.957958
+      type: 'test'
+      ...
+    # Subtest: (2) aynı Excel ikinci kez: yeni kart 0, yeni cari 0, defter 120 değişmez; küçük harfle yazılmış ad da aynı kişi (S223 = A: Türkçe harf katlamalı; önceden yalnız ASCII katlanıyordu)
+    ok 2 - (2) aynı Excel ikinci kez: yeni kart 0, yeni cari 0, defter 120 değişmez; küçük harfle yazılmış ad da aynı kişi (S223 = A: Türkçe harf katlamalı; önceden yalnız ASCII katlanıyordu)
+      ---
+      duration_ms: 19.369764
+      type: 'test'
+      ...
+    # Subtest: (3) telefonsuz satır + aynı adlı iki (telefonlu) kişi: kişi kesin değil → atlanır, yeni neden; kart / cari / borç açılmaz
+    ok 3 - (3) telefonsuz satır + aynı adlı iki (telefonlu) kişi: kişi kesin değil → atlanır, yeni neden; kart / cari / borç açılmaz
+      ---
+      duration_ms: 23.58726
+      type: 'test'
+      ...
+    # Subtest: (4) telefonlu satır + aynı adlı TELEFONSUZ carinin kartı: kişi kesin değil → atlanır (çift borç yok)
+    ok 4 - (4) telefonlu satır + aynı adlı TELEFONSUZ carinin kartı: kişi kesin değil → atlanır (çift borç yok)
+      ---
+      duration_ms: 62.166769
+      type: 'test'
+      ...
+    # Subtest: (5) aynı dosyada aynı kişi iki satır: ikinci satır atlanır; telefonu farklı üçüncü kişi yeni carisiyle açılır
+    ok 5 - (5) aynı dosyada aynı kişi iki satır: ikinci satır atlanır; telefonu farklı üçüncü kişi yeni carisiyle açılır
+      ---
+      duration_ms: 58.730006
+      type: 'test'
+      ...
+    # Subtest: (6) grup: telefonsuz satır yalnız aynı gruptaki telefonsuz cariyi bulur; başka gruptaki aynı adlı kart denetime girmez
+    ok 6 - (6) grup: telefonsuz satır yalnız aynı gruptaki telefonsuz cariyi bulur; başka gruptaki aynı adlı kart denetime girmez
+      ---
+      duration_ms: 44.47092
+      type: 'test'
+      ...
+    # Subtest: (7) telefonsuz satır + aynı adlı tek telefonsuz cari (aynı grup, kartsız) ve telefonlu başka kişinin kartı: kişi kesin → kendi carisiyle açılır
+    ok 7 - (7) telefonsuz satır + aynı adlı tek telefonsuz cari (aynı grup, kartsız) ve telefonlu başka kişinin kartı: kişi kesin → kendi carisiyle açılır
+      ---
+      duration_ms: 77.771543
+      type: 'test'
+      ...
+    # Subtest: (9) Geri Al: yalnız bu yüklemenin açtığı kart ve cari kalkar; önceden var olan aynı adlı carinin kartı ve borcu kalır
+    ok 8 - (9) Geri Al: yalnız bu yüklemenin açtığı kart ve cari kalkar; önceden var olan aynı adlı carinin kartı ve borcu kalır
+      ---
+      duration_ms: 117.676982
+      type: 'test'
+      ...
+    # Subtest: (10) kilitli dönem: aynı adlı ikinci kişinin satırı KİLİT nedeniyle atlanır, cari açılmaz; yükleme durmaz
+    ok 9 - (10) kilitli dönem: aynı adlı ikinci kişinin satırı KİLİT nedeniyle atlanır, cari açılmaz; yükleme durmaz
+      ---
+      duration_ms: 336.067826
+      type: 'test'
+      ...
+    # Subtest: (11) ad eşleşmesi: önce veri tabanının NOCASE kuralı (hız düzeltmesinin eşdeğerliği), bulamazsa Türkçe harf katlaması (S223 = A); I / ı, İ / i aynı kişi
+    ok 10 - (11) ad eşleşmesi: önce veri tabanının NOCASE kuralı (hız düzeltmesinin eşdeğerliği), bulamazsa Türkçe harf katlaması (S223 = A); I / ı, İ / i aynı kişi
+      ---
+      duration_ms: 47.026482
+      type: 'test'
+      ...
+    # Subtest: (8) carisiz eski kart: kartın kendi telefonu aynıysa aynı kişi (atlanır), 7+ hane ve farklıysa başka kişi (açılır)
+    ok 11 - (8) carisiz eski kart: kartın kendi telefonu aynıysa aynı kişi (atlanır), 7+ hane ve farklıysa başka kişi (açılır)
+      ---
+      duration_ms: 46.283215
+      type: 'test'
+      ...
+    1..11
+ok 1 - Ç7b P7 (S219 = A) — Excel taksit yüklemesinde aynı adlı iki kişi
+  ---
+  duration_ms: 1615.988241
+  type: 'suite'
+  ...
+# (node:32653) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: ad karşılaştırma
+    # Subtest: Türkçe büyük/küçük harf, boşluk ve Unicode yazım farklarını yok sayar
+    ok 1 - Türkçe büyük/küçük harf, boşluk ve Unicode yazım farklarını yok sayar
+      ---
+      duration_ms: 0.794345
+      type: 'test'
+      ...
+    1..1
+ok 2 - ad karşılaştırma
+  ---
+  duration_ms: 1.779247
+  type: 'suite'
+  ...
+# Subtest: ad çakışması ve görev sahipliği
+    # Subtest: personel adını başka bir kullanıcının adı veya kullanıcı adıyla değiştiremez
+    ok 1 - personel adını başka bir kullanıcının adı veya kullanıcı adıyla değiştiremez
+      ---
+      duration_ms: 27.107767
+      type: 'test'
+      ...
+    # Subtest: yönetici aynı adla ikinci hesap açamaz, adı çakışacak şekilde değiştiremez
+    ok 2 - yönetici aynı adla ikinci hesap açamaz, adı çakışacak şekilde değiştiremez
+      ---
+      duration_ms: 172.550693
+      type: 'test'
+      ...
+    # Subtest: görev kişiye kimliğiyle bağlanır: ad değişse de kişide kalır, adı alan başkası göremez
+    ok 3 - görev kişiye kimliğiyle bağlanır: ad değişse de kişide kalır, adı alan başkası göremez
+      ---
+      duration_ms: 28.140062
+      type: 'test'
+      ...
+    # Subtest: kişiye bağlanamayan serbest adlı görev ad eşleşmesiyle görünür
+    ok 4 - kişiye bağlanamayan serbest adlı görev ad eşleşmesiyle görünür
+      ---
+      duration_ms: 113.981213
+      type: 'test'
+      ...
+    1..4
+ok 3 - ad çakışması ve görev sahipliği
+  ---
+  duration_ms: 1275.056455
+  type: 'suite'
+  ...
+# Subtest: 1.4.0 göçü: belirsiz adlar ve görev bağlama
+    # Subtest: göç hatasız biter; belirsiz alıcı ofis kanalına, tek eşleşme özel yazışmaya gider
+    ok 1 - göç hatasız biter; belirsiz alıcı ofis kanalına, tek eşleşme özel yazışmaya gider
+      ---
+      duration_ms: 0.72631
+      type: 'test'
+      ...
+    # Subtest: görevler tek eşleşen kişiye bağlanır; belirsiz ve serbest adlar bağlanmaz
+    ok 2 - görevler tek eşleşen kişiye bağlanır; belirsiz ve serbest adlar bağlanmaz
+      ---
+      duration_ms: 0.447968
+      type: 'test'
+      ...
+    1..2
+ok 4 - 1.4.0 göçü: belirsiz adlar ve görev bağlama
+  ---
+  duration_ms: 557.988335
+  type: 'suite'
+  ...
+# (node:32654) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: S223 / S228 — kabul D: v2.4.9'un verisinde Türkçe harf katlamalı eşleşme (sınıf listesi)
+    # Subtest: v2.4.9'da hata VAR (elle beklenen): büyük harfli cari Excel çift cari, taksit Excel çift cari + kart, çek bağlanmaz
+    ok 1 - v2.4.9'da hata VAR (elle beklenen): büyük harfli cari Excel çift cari, taksit Excel çift cari + kart, çek bağlanmaz
+      ---
+      duration_ms: 1.334229
+      type: 'test'
+      ...
+    # Subtest: C1–C3 cari Excel: tek aday büyük harf → var; v2.4.9'un çiftinde birebir yazım bugünkü carisi, iki adaylı yazım yeni cari; yok aday yeni cari
+    ok 2 - C1–C3 cari Excel: tek aday büyük harf → var; v2.4.9'un çiftinde birebir yazım bugünkü carisi, iki adaylı yazım yeni cari; yok aday yeni cari
+      ---
+      duration_ms: 35.685839
+      type: 'test'
+      ...
+    # Subtest: C4–C7 taksit Excel: tek aday büyük harf / boşluk → var olan cari; çift caride bugünkü bağ; iki adaylı yazım atlanır; yok aday yeni cari
+    ok 3 - C4–C7 taksit Excel: tek aday büyük harf / boşluk → var olan cari; çift caride bugünkü bağ; iki adaylı yazım atlanır; yok aday yeni cari
+      ---
+      duration_ms: 100.047577
+      type: 'test'
+      ...
+    # Subtest: C8–C10 çek / senet: tek aday büyük harf bağlanır; çift caride birebir yazım kendi carisine; iki adaylı ve tanınmayan ad carisiz
+    ok 4 - C8–C10 çek / senet: tek aday büyük harf bağlanır; çift caride birebir yazım kendi carisine; iki adaylı ve tanınmayan ad carisiz
+      ---
+      duration_ms: 27.178807
+      type: 'test'
+      ...
+    1..4
+ok 5 - S223 / S228 — kabul D: v2.4.9'un verisinde Türkçe harf katlamalı eşleşme (sınıf listesi)
+  ---
+  duration_ms: 1519.91491
+  type: 'suite'
+  ...
+# (node:32679) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: S223 = A / S228 = A — içe aktarmalarda Türkçe harf katlamalı kişi adı
+    # Subtest: (0) foldPersonName = foldName (bütün Unicode kod noktaları + I / İ / birleşen nokta bileşimleri); örnek katlamalar
+    ok 1 - (0) foldPersonName = foldName (bütün Unicode kod noktaları + I / İ / birleşen nokta bileşimleri); örnek katlamalar
+      ---
+      duration_ms: 21993.348335
+      type: 'test'
+      ...
+    # Subtest: (1) cari Excel — ad + telefon: büyük harf / I-ı / İ-i / Ş Ğ Ü Ö Ç / boşluk / ayrık noktalı İ ile yazılan kişi VAR OLAN cari (yeni cari açılmaz); telefonu farklı aynı ad ayrı kişi
+    ok 2 - (1) cari Excel — ad + telefon: büyük harf / I-ı / İ-i / Ş Ğ Ü Ö Ç / boşluk / ayrık noktalı İ ile yazılan kişi VAR OLAN cari (yeni cari açılmaz); telefonu farklı aynı ad ayrı kişi
+      ---
+      duration_ms: 139.328453
+      type: 'test'
+      ...
+    # Subtest: (2) cari Excel — Cari No + ad: aynı No + büyük harfli ad aynı cari; aynı ad başka No (telefonsuz) yeni cari (2.0.19 kuralı); aynı Excel ikinci kez de öyle
+    ok 3 - (2) cari Excel — Cari No + ad: aynı No + büyük harfli ad aynı cari; aynı ad başka No (telefonsuz) yeni cari (2.0.19 kuralı); aynı Excel ikinci kez de öyle
+      ---
+      duration_ms: 29.031557
+      type: 'test'
+      ...
+    # Subtest: (3) cari Excel — aynı dosyada aynı kişi iki satır, biri büyük harfle: ilk satırın açtığı cari ikinciye görünür (yükleme içi harita)
+    ok 4 - (3) cari Excel — aynı dosyada aynı kişi iki satır, biri büyük harfle: ilk satırın açtığı cari ikinciye görünür (yükleme içi harita)
+      ---
+      duration_ms: 13.388521
+      type: 'test'
+      ...
+    # Subtest: (4) taksit Excel — büyük harfle yazılan kişi var olan carisine bağlanır (yeni cari yok); aynı Excel ikinci kez çift kart açmaz; borç doğru cariye
+    ok 5 - (4) taksit Excel — büyük harfle yazılan kişi var olan carisine bağlanır (yeni cari yok); aynı Excel ikinci kez çift kart açmaz; borç doğru cariye
+      ---
+      duration_ms: 96.814769
+      type: 'test'
+      ...
+    # Subtest: (5) taksit Excel — var olan kart başka yazımla (önce 'Şule Çakır' açılır, sonra 'ŞULE ÇAKIR'): yinelenen kart görülür, çift kart / borç yok (telefonsuz + aynı grup dahil)
+    ok 6 - (5) taksit Excel — var olan kart başka yazımla (önce 'Şule Çakır' açılır, sonra 'ŞULE ÇAKIR'): yinelenen kart görülür, çift kart / borç yok (telefonsuz + aynı grup dahil)
+      ---
+      duration_ms: 60.234695
+      type: 'test'
+      ...
+    # Subtest: (6) S228 = A — var olan ÇİFT cari ('Zeynep Kılıç' + 'ZEYNEP KILIÇ', telefonsuz, aynı grup): bugünkü bağlantı korunur; ikisine de uymayan yazım bugünkü gibi şüpheli
+    ok 7 - (6) S228 = A — var olan ÇİFT cari ('Zeynep Kılıç' + 'ZEYNEP KILIÇ', telefonsuz, aynı grup): bugünkü bağlantı korunur; ikisine de uymayan yazım bugünkü gibi şüpheli
+      ---
+      duration_ms: 105.478672
+      type: 'test'
+      ...
+    # Subtest: (7) S228 = A — bugün NOCASE ile bağlanan satır değişmez: 'Irmak Yilmaz' (ASCII i) satırı 'IRMAK YILMAZ' carisine (Türkçe katlamada farklı ad; bugünkü bağ korunur)
+    ok 8 - (7) S228 = A — bugün NOCASE ile bağlanan satır değişmez: 'Irmak Yilmaz' (ASCII i) satırı 'IRMAK YILMAZ' carisine (Türkçe katlamada farklı ad; bugünkü bağ korunur)
+      ---
+      duration_ms: 24.925481
+      type: 'test'
+      ...
+    # Subtest: (8) taksit Excel — aynı dosyada aynı kişi iki yazımla (önce büyük harf): ilk satırın açtığı cari + kart ikinci satıra görünür
+    ok 9 - (8) taksit Excel — aynı dosyada aynı kişi iki yazımla (önce büyük harf): ilk satırın açtığı cari + kart ikinci satıra görünür
+      ---
+      duration_ms: 15.063807
+      type: 'test'
+      ...
+# (node:32679) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: (9) taksit Excel — kilitli dönemde geri alınan satırın carisi sonraki (başka yazımlı) satıra aday olmaz; Geri Al yalnız kendi açtığını siler
+    ok 10 - (9) taksit Excel — kilitli dönemde geri alınan satırın carisi sonraki (başka yazımlı) satıra aday olmaz; Geri Al yalnız kendi açtığını siler
+      ---
+      duration_ms: 305.398128
+      type: 'test'
+      ...
+    # Subtest: (10) çek / senet içe aktarma — keşideci büyük harfle var olan tek cariye bağlanır; aynı dosyada iki yazım kendi sonucunu alır (önbellek); çift caride birebir yazım kendi carisine
+    ok 11 - (10) çek / senet içe aktarma — keşideci büyük harfle var olan tek cariye bağlanır; aynı dosyada iki yazım kendi sonucunu alır (önbellek); çift caride birebir yazım kendi carisine
+      ---
+      duration_ms: 53.546261
+      type: 'test'
+      ...
+    # Subtest: (11) Tablodan Aktar — tablodaki 'AHMET KOÇ' var olan 'Ahmet Koç' (aynı telefon) carisine: ön izleme 'eşleşen cari' der, aktarım yeni cari açmaz; Geri Al cariyi silmez
+    ok 12 - (11) Tablodan Aktar — tablodaki 'AHMET KOÇ' var olan 'Ahmet Koç' (aynı telefon) carisine: ön izleme 'eşleşen cari' der, aktarım yeni cari açmaz; Geri Al cariyi silmez
+      ---
+      duration_ms: 106.826928
+      type: 'test'
+      ...
+    # Subtest: (12) silinmiş cari aday olmaz: 'Bora Ünsal' silinince 'BORA ÜNSAL' satırı (taksit, cari Excel, çek) silinen cariye bağlanmaz
+    ok 13 - (12) silinmiş cari aday olmaz: 'Bora Ünsal' silinince 'BORA ÜNSAL' satırı (taksit, cari Excel, çek) silinen cariye bağlanmaz
+      ---
+      duration_ms: 54.711661
+      type: 'test'
+      ...
+    # Subtest: (13) S228 = A 'bugünkü karşılaştırma bulamazsa' EŞLEŞME düzeyinde: NOCASE aynı adı bulur ama telefonu tutmazsa (başka kişi) Türkçe katlamadaki aynı telefonlu cari seçilir
+    ok 14 - (13) S228 = A 'bugünkü karşılaştırma bulamazsa' EŞLEŞME düzeyinde: NOCASE aynı adı bulur ama telefonu tutmazsa (başka kişi) Türkçe katlamadaki aynı telefonlu cari seçilir
+      ---
+      duration_ms: 40.440032
+      type: 'test'
+      ...
+    1..14
+ok 6 - S223 = A / S228 = A — içe aktarmalarda Türkçe harf katlamalı kişi adı
+  ---
+  duration_ms: 23581.131978
+  type: 'suite'
+  ...
+# (node:32686) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: S231 — çek yüklemesinin ad haritası (foldedNameLookup) S223'ünkiyle eşdeğer
+    # Subtest: (1) foldJoinedNames: birleşik metnin her öğesi foldPersonName ile aynı (bütün kod noktaları × bağlam)
+    not ok 1 - (1) foldJoinedNames: birleşik metnin her öğesi foldPersonName ile aynı (bütün kod noktaları × bağlam)
+      ---
+      duration_ms: 2.221316
+      type: 'test'
+      location: '/dev/shm/ana-s231/eski/test/s231-cek-hiz-esdegerlik-250.test.mjs:17:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        lib/names.mjs foldJoinedNames yok
+        + actual - expected
+        
+        + 'undefined'
+        - 'function'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'function'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/ana-s231/eski/test/s231-cek-hiz-esdegerlik-250.test.mjs:19:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:466:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:435:3)
+        node:internal/per_context/primordials:466:9
+        Array.map (<anonymous>)
+      ...
+    # Subtest: (2) foldedNameLookup ↔ foldedNameIndex: aranan, aranmayan, eklenen kayıt ve ayraçlı metinde aynı kimlikler
+    not ok 2 - (2) foldedNameLookup ↔ foldedNameIndex: aranan, aranmayan, eklenen kayıt ve ayraçlı metinde aynı kimlikler
+      ---
+      duration_ms: 0.552164
+      type: 'test'
+      location: '/dev/shm/ana-s231/eski/test/s231-cek-hiz-esdegerlik-250.test.mjs:49:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        lib/names.mjs foldedNameLookup yok
+        + actual - expected
+        
+        + 'undefined'
+        - 'function'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'function'
+      actual: 'undefined'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/ana-s231/eski/test/s231-cek-hiz-esdegerlik-250.test.mjs:51:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: (3) programda personIndexFor ↔ personIndex (matchName)
+        # Subtest: büyük / küçük harf, boşluk, çift cari, silinmiş cari, adında ayraç olan cari: aynı cari
+        not ok 1 - büyük / küçük harf, boşluk, çift cari, silinmiş cari, adında ayraç olan cari: aynı cari
+          ---
+          duration_ms: 181.398548
+          type: 'test'
+          location: '/dev/shm/ana-s231/eski/test/s231-cek-hiz-esdegerlik-250.test.mjs:97:5'
+          failureType: 'testCodeFailure'
+          error: |-
+            routes/accounts.mjs personIndexFor yok
+            + actual - expected
+            
+            + 'undefined'
+            - 'function'
+            
+          code: 'ERR_ASSERTION'
+          name: 'AssertionError'
+          expected: 'function'
+          actual: 'undefined'
+          operator: 'strictEqual'
+          stack: |-
+            TestContext.<anonymous> (file:///dev/shm/ana-s231/eski/test/s231-cek-hiz-esdegerlik-250.test.mjs:103:14)
+            process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+            async Test.run (node:internal/test_runner/test:1054:7)
+            async Promise.all (index 0)
+            async Suite.run (node:internal/test_runner/test:1442:7)
+            async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+          ...
+        1..1
+    not ok 3 - (3) programda personIndexFor ↔ personIndex (matchName)
+      ---
+      duration_ms: 699.411628
+      type: 'suite'
+      location: '/dev/shm/ana-s231/eski/test/s231-cek-hiz-esdegerlik-250.test.mjs:88:3'
+      failureType: 'subtestsFailed'
+      error: '1 subtest failed'
+      code: 'ERR_TEST_FAILURE'
+      ...
+    1..3
+not ok 7 - S231 — çek yüklemesinin ad haritası (foldedNameLookup) S223'ünkiyle eşdeğer
+  ---
+  duration_ms: 703.809335
+  type: 'suite'
+  location: '/dev/shm/ana-s231/eski/test/s231-cek-hiz-esdegerlik-250.test.mjs:16:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: S231 — Çek / Senet eşleme penceresinin metni
+    # Subtest: yeni cümle var (cümle düzeni), eski 'birebir aynı olan tek cari' yok
+    not ok 1 - yeni cümle var (cümle düzeni), eski 'birebir aynı olan tek cari' yok
+      ---
+      duration_ms: 1.516008
+      type: 'test'
+      location: '/dev/shm/ana-s231/eski/test/s231-cek-pencere-metni-250.test.mjs:12:3'
+      failureType: 'testCodeFailure'
+      error: 'metin: intro: `${preview.rows} satır bulundu. Program başlıkları tanıdı; yanlışsa değiştirin. Keşideci adı birebir aynı olan tek cari varsa evrak o cariye bağlanır.`,'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/ana-s231/eski/test/s231-cek-pencere-metni-250.test.mjs:16:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:466:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:435:3)
+        node:internal/per_context/primordials:466:9
+        Array.map (<anonymous>)
+      ...
+    1..1
+not ok 8 - S231 — Çek / Senet eşleme penceresinin metni
+  ---
+  duration_ms: 3.863164
+  type: 'suite'
+  location: '/dev/shm/ana-s231/eski/test/s231-cek-pencere-metni-250.test.mjs:11:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:32700) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: S231 — kabul D: v2.4.9'un verisinde grup adı Türkçe harf katlamalı (sınıf listesi)
+    # Subtest: v2.4.9'da hata VAR (elle beklenen): 'ELİF SU' / 'IŞIK SERVİSİ' yeni grup + yeni cari + yeni kart (borç iki kez)
+    ok 1 - v2.4.9'da hata VAR (elle beklenen): 'ELİF SU' / 'IŞIK SERVİSİ' yeni grup + yeni cari + yeni kart (borç iki kez)
+      ---
+      duration_ms: 1.988442
+      type: 'test'
+      ...
+    # Subtest: G1–G3, G5 taksit Excel: tek aday grup büyük / küçük harfle bulunur; v2.4.9'un çift grubunda birebir yazım kendi grubuna, iki adaylı yazım yeni grup; alt grup; yok aday yeni grup
+    not ok 2 - G1–G3, G5 taksit Excel: tek aday grup büyük / küçük harfle bulunur; v2.4.9'un çift grubunda birebir yazım kendi grubuna, iki adaylı yazım yeni grup; alt grup; yok aday yeni grup
+      ---
+      duration_ms: 81.952574
+      type: 'test'
+      location: '/dev/shm/ana-s231/eski/test/s231-eski-surum-sinif-250.test.mjs:87:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        [{"row":4,"reason":"Aynı adla açık kart var"}]
+        + actual - expected
+        
+          [
+            'Aynı adla açık kart var',
+        -   'Aynı adla açık kart var'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 'Aynı adla açık kart var'
+        1: 'Aynı adla açık kart var'
+      actual:
+        0: 'Aynı adla açık kart var'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/ana-s231/eski/test/s231-eski-surum-sinif-250.test.mjs:106:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: G4 cari Excel'in grup kolonu: 'ILGAZ HATTI' → v2.4.9'un 'Ilgaz Hattı' grubu (yeni grup yok)
+    not ok 3 - G4 cari Excel'in grup kolonu: 'ILGAZ HATTI' → v2.4.9'un 'Ilgaz Hattı' grubu (yeni grup yok)
+      ---
+      duration_ms: 32.261562
+      type: 'test'
+      location: '/dev/shm/ana-s231/eski/test/s231-eski-surum-sinif-250.test.mjs:120:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + 'group-18e2cf0f-9e67-4600-b5e8-3485c80d9cc3'
+        - 'group-3b3cf113-b752-4117-979d-4d8fa919f8d8'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'group-3b3cf113-b752-4117-979d-4d8fa919f8d8'
+      actual: 'group-18e2cf0f-9e67-4600-b5e8-3485c80d9cc3'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/ana-s231/eski/test/s231-eski-surum-sinif-250.test.mjs:126:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 9 - S231 — kabul D: v2.4.9'un verisinde grup adı Türkçe harf katlamalı (sınıf listesi)
+  ---
+  duration_ms: 1319.538564
+  type: 'suite'
+  location: '/dev/shm/ana-s231/eski/test/s231-eski-surum-sinif-250.test.mjs:41:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:32711) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: S231 = A — içe aktarmalarda grup / alt grup adı Türkçe harf katlamalı (S228 sırası)
+    # Subtest: (1) S231 örneği: önce 'Elif Su' / 'Işık Servisi', sonra 'ELİF SU' / 'IŞIK SERVİSİ' (ikisi de telefonsuz) → AYNI grup, AYNI cari, TEK borç
+    not ok 1 - (1) S231 örneği: önce 'Elif Su' / 'Işık Servisi', sonra 'ELİF SU' / 'IŞIK SERVİSİ' (ikisi de telefonsuz) → AYNI grup, AYNI cari, TEK borç
+      ---
+      duration_ms: 94.362662
+      type: 'test'
+      location: '/dev/shm/ana-s231/eski/test/s231-grup-adi-turkce-250.test.mjs:47:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        yeni grup açıldı (çift grup 'IŞIK SERVİSİ'): rapor groups=1
+        
+        2 !== 1
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 1
+      actual: 2
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/ana-s231/eski/test/s231-grup-adi-turkce-250.test.mjs:57:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: (2) grup adı varyantları (ı / I, İ / i, küçük harf, boşluk, karışık) var olan 'Işık Servisi' grubunu bulur; 'ŞUBE A' ↔ 'Şube A' bugün de aynı (denetim)
+    not ok 2 - (2) grup adı varyantları (ı / I, İ / i, küçük harf, boşluk, karışık) var olan 'Işık Servisi' grubunu bulur; 'ŞUBE A' ↔ 'Şube A' bugün de aynı (denetim)
+      ---
+      duration_ms: 24.808223
+      type: 'test'
+      location: '/dev/shm/ana-s231/eski/test/s231-grup-adi-turkce-250.test.mjs:67:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        yeni grup açıldı: 4
+        
+        6 !== 2
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 2
+      actual: 6
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/ana-s231/eski/test/s231-grup-adi-turkce-250.test.mjs:73:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (3) telefonsuz kişi + aynı grup: büyük harfli grup yazımıyla var olan carisine bağlanır; aynı adlı iki kişi (iki ayrı grupta) kendi grubundaki carisine
+    not ok 3 - (3) telefonsuz kişi + aynı grup: büyük harfli grup yazımıyla var olan carisine bağlanır; aynı adlı iki kişi (iki ayrı grupta) kendi grubundaki carisine
+      ---
+      duration_ms: 86.254336
+      type: 'test'
+      location: '/dev/shm/ana-s231/eski/test/s231-grup-adi-turkce-250.test.mjs:80:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        yeni grup açıldı: 1
+        
+        8 !== 7
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 7
+      actual: 8
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/ana-s231/eski/test/s231-grup-adi-turkce-250.test.mjs:89:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (4) telefonlu kişi: grup eşleşmesi kişi eşleşmesini değiştirmez (telefonla var olan cariye); kart var olan gruba
+    not ok 4 - (4) telefonlu kişi: grup eşleşmesi kişi eşleşmesini değiştirmez (telefonla var olan cariye); kart var olan gruba
+      ---
+      duration_ms: 31.882663
+      type: 'test'
+      location: '/dev/shm/ana-s231/eski/test/s231-grup-adi-turkce-250.test.mjs:100:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + 'group-d56f3dac-5b51-496e-8962-2c98eb3e5a33'
+        - 'group-5ab0d716-f4af-46aa-9121-7e170702152c'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'group-5ab0d716-f4af-46aa-9121-7e170702152c'
+      actual: 'group-d56f3dac-5b51-496e-8962-2c98eb3e5a33'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/ana-s231/eski/test/s231-grup-adi-turkce-250.test.mjs:107:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (5) alt grup: 'YILDIZ SİTESİ' / 'İÇ BLOK' var olan 'Yıldız Sitesi' › 'İç Blok'u bulur; aynı adlı alt grup BAŞKA ana grupta ayrı kalır
+    not ok 5 - (5) alt grup: 'YILDIZ SİTESİ' / 'İÇ BLOK' var olan 'Yıldız Sitesi' › 'İç Blok'u bulur; aynı adlı alt grup BAŞKA ana grupta ayrı kalır
+      ---
+      duration_ms: 39.201059
+      type: 'test'
+      location: '/dev/shm/ana-s231/eski/test/s231-grup-adi-turkce-250.test.mjs:110:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        yeni grup / alt grup açıldı: 3
+        
+        13 !== 10
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 10
+      actual: 13
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/ana-s231/eski/test/s231-grup-adi-turkce-250.test.mjs:118:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (6) S228 sırası — var olan ÇİFT grup ('Çınar Durağı' + 'ÇINAR DURAĞI', elle açılmış): birebir yazım bugünkü grubuna; iki adaylı yazım bugünkü gibi yeni grup; elle grup formu katlamasız (DEĞİŞMEDİ)
+    ok 6 - (6) S228 sırası — var olan ÇİFT grup ('Çınar Durağı' + 'ÇINAR DURAĞI', elle açılmış): birebir yazım bugünkü grubuna; iki adaylı yazım bugünkü gibi yeni grup; elle grup formu katlamasız (DEĞİŞMEDİ)
+      ---
+      duration_ms: 24.829106
+      type: 'test'
+      ...
+    # Subtest: (6b) S228 sırası — bugün NOCASE ile bulunan grup DEĞİŞMEZ: 'irmak yolu' (ASCII i) satırı 'Irmak Yolu' grubuna (Türkçe katlamada 'İrmak Yolu' ile aynı olsa da)
+    ok 7 - (6b) S228 sırası — bugün NOCASE ile bulunan grup DEĞİŞMEZ: 'irmak yolu' (ASCII i) satırı 'Irmak Yolu' grubuna (Türkçe katlamada 'İrmak Yolu' ile aynı olsa da)
+      ---
+      duration_ms: 22.646466
+      type: 'test'
+      ...
+    # Subtest: (7) aynı dosyada iki yazım: ilk satırın açtığı 'Ilıca Yolu' ikinci ve üçüncü satıra görünür (tek grup)
+    not ok 8 - (7) aynı dosyada iki yazım: ilk satırın açtığı 'Ilıca Yolu' ikinci ve üçüncü satıra görünür (tek grup)
+      ---
+      duration_ms: 22.267283
+      type: 'test'
+      location: '/dev/shm/ana-s231/eski/test/s231-grup-adi-turkce-250.test.mjs:152:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        tek grup beklenirdi, açılan: 3
+        
+        21 !== 19
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 19
+      actual: 21
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/ana-s231/eski/test/s231-grup-adi-turkce-250.test.mjs:156:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (8) kilitli dönem: geri alınan satırın açtığı grup sonraki (başka yazımlı) satıra aday olmaz; kartın grubu var
+    ok 9 - (8) kilitli dönem: geri alınan satırın açtığı grup sonraki (başka yazımlı) satıra aday olmaz; kartın grubu var
+      ---
+      duration_ms: 278.95611
+      type: 'test'
+      ...
+    # Subtest: (9) Tablodan Aktar: sayfa adı 'IŞIL KAFE' var olan 'Işıl Kafe' grubunu bulur — ön izleme 'eşleşen cari', aktarım yeni grup / cari açmaz; Geri Al var olan grubu SİLMEZ
+    not ok 10 - (9) Tablodan Aktar: sayfa adı 'IŞIL KAFE' var olan 'Işıl Kafe' grubunu bulur — ön izleme 'eşleşen cari', aktarım yeni grup / cari açmaz; Geri Al var olan grubu SİLMEZ
+      ---
+      duration_ms: 64.043294
+      type: 'test'
+      location: '/dev/shm/ana-s231/eski/test/s231-grup-adi-turkce-250.test.mjs:179:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        ön izleme: {"account":"new","accountName":"","groupName":"IŞIL KAFE"}
+        
+        'new' !== 'match'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'match'
+      actual: 'new'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/ana-s231/eski/test/s231-grup-adi-turkce-250.test.mjs:188:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (10) cari Excel'in grup kolonu: 'IŞIL KAFE' yazımı var olan 'Işıl Kafe' grubuna (yeni grup açılmaz)
+    not ok 11 - (10) cari Excel'in grup kolonu: 'IŞIL KAFE' yazımı var olan 'Işıl Kafe' grubuna (yeni grup açılmaz)
+      ---
+      duration_ms: 18.409162
+      type: 'test'
+      location: '/dev/shm/ana-s231/eski/test/s231-grup-adi-turkce-250.test.mjs:209:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        yeni grup açıldı: 1
+        
+        24 !== 23
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 23
+      actual: 24
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/ana-s231/eski/test/s231-grup-adi-turkce-250.test.mjs:214:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (11) elle grup formu ve yeniden adlandırma DEĞİŞMEDİ: 'IŞIK SERVİSİ' elle yeni grup açar; 'ılgaz hattı' adına yeniden adlandırma çakışma saymaz; NOCASE çakışması bugünkü gibi reddedilir
+    ok 12 - (11) elle grup formu ve yeniden adlandırma DEĞİŞMEDİ: 'IŞIK SERVİSİ' elle yeni grup açar; 'ılgaz hattı' adına yeniden adlandırma çakışma saymaz; NOCASE çakışması bugünkü gibi reddedilir
+      ---
+      duration_ms: 36.571325
+      type: 'test'
+      ...
+    1..12
+not ok 10 - S231 = A — içe aktarmalarda grup / alt grup adı Türkçe harf katlamalı (S228 sırası)
+  ---
+  duration_ms: 1247.003526
+  type: 'suite'
+  location: '/dev/shm/ana-s231/eski/test/s231-grup-adi-turkce-250.test.mjs:21:1'
+  failureType: 'subtestsFailed'
+  error: '8 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..10
+# tests 55
+# suites 11
+# pass 41
+# fail 14
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 26009.957209

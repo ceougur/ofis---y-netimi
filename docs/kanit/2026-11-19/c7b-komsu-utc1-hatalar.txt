@@ -1,0 +1,600 @@
+* açılış İŞARETTEN tanınır: göçten sonra yazılmış 'AÇILIŞ BAKİYESİ' Borç Yaz 602, 'Açılış bakiyesi' Alacak Yaz 7
+  s---y-netimi/.claude/worktrees/agent-afbfc981262c5b2b8/test/acilis-519-250.test.mjs:102:3'
+    error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    [
+    +   'A 602.90 70',
+    -   'A 602 70',
+    'B 120 70'
+* zincir fikstürü surum-2.0.26-zincir (2.0.16 → 2.0.26 gerçek sürüm koduyla, 4 şirket)
+  ---y-netimi/.claude/worktrees/agent-afbfc981262c5b2b8/test/banka-210-altin.test.mjs:497:3'
+    error: |-
+    114 fark:
+    zincir · 001 · Ç5-A katlaması: cash:cash-817a45b2-6565-467b-9bc7-3d6ef3a05654: çevirmeden sonra 649.90 kaldı
+    zincir · 001 · Ç5-A katlaması: cash:cash-8b26bcf0-1c5b-4db3-8e52-ac02449a3c0a: çevirmeden sonra 770.90 kaldı
+    zincir · 001 · Ç5-A katlaması: cash:cash-9175ffca-2507-46d4-a882-5d63517819d2: çevirmeden sonra 770.90 kaldı
+    zincir · 001 · Ç5-A katlaması: cash:cash-1f283acd-3e3f-44b6-9ba1-b5be591763ee: çevirmeden sonra 649.90 kaldı
+    zincir · 001 · Ç5-A katlaması: cash:cash-545157c1-6f7c-41cd-82e8-c6b960c48dd6: çevirmeden sonra 649.90 kaldı
+* v2.0.26'nın kendi koduyla üretilen veri (mutabakat motoru: 120 güne yayılmış 260 rastgele işlem, dönem kilidi,
+  ---y-netimi/.claude/worktrees/agent-afbfc981262c5b2b8/test/banka-210-altin.test.mjs:520:3'
+    error: |-
+    36 fark:
+    motor · 001 · Ç5-A katlaması: account:aentry-22274d04-034c-41b8-a557-469747aa5f8b: çevirmeden sonra 770.90 kaldı
+    motor · 001 · Ç5-A katlaması: account:aentry-b6d83f94-59f2-4da3-a38c-7712abca6665: çevirmeden sonra 770.90 kaldı
+    motor · 001 · Ç5-A katlaması: cash:cash-c845b1a4-5716-4f71-b74b-cf4691db4797: çevirmeden sonra 770.90 kaldı
+    motor · 001 · Ç5-A katlaması: cash:cash-d75902f0-c4c9-440f-9f1a-e8b7e1b569f9: çevirmeden sonra 770.90 kaldı
+    motor · 001 · Ç5-A katlaması: cash:cash-17220568-aec7-42e5-b885-6b0c4740ac06: çevirmeden sonra 649.90 kaldı
+* rastgele mutabakat motoru (eşik 0: her cari SQL yolunda, eşdeğerlik denetimi açık): her işlem tutarlı, süzgeç 
+  --y-netimi/.claude/worktrees/agent-afbfc981262c5b2b8/test/banka-210-gg-cari.test.mjs:39:3'
+    error: |-
+    motor: her işlemde tutarlı
+    + actual - expected
+    + [
+    +   {
+    +     at: 'işlem 40 (fatura-iade, 2026-08-03)',
+    +     problems: [
+* Ters Kaydet → 08.10 tarihli Alıştan İade + bankaya 120 giriş; 770, 191, 320 net 0; kilitli dönem değişmez
+  -y-netimi/.claude/worktrees/agent-afbfc981262c5b2b8/test/banka-210-gg2-fis.test.mjs:159:3'
+    error: |-
+    191 net 0
+    2000 !== 0
+* tüm zamanlar ve üç dönem: alt hesaplar, borç/alacak/bakiye ve ana hesaplar Ana Defter'le kuruşu kuruşuna aynı
+  --y-netimi/.claude/worktrees/agent-afbfc981262c5b2b8/test/banka-210-gg2-hiz.test.mjs:70:3'
+    error: 'test did not finish before its parent and was cancelled'
+* Genel Bakış ve Hesaplar: bütün para satırlarının gruplanmasıyla bulunan değerlerle aynı
+  --y-netimi/.claude/worktrees/agent-afbfc981262c5b2b8/test/banka-210-gg2-hiz.test.mjs:82:3'
+    error: 'test did not finish before its parent and was cancelled'
+* GG2 — Alt Hesap Mizanı ve Genel Bakış tek kaynaktan (Ana Defter kurulmadan) = eski yol
+  --y-netimi/.claude/worktrees/agent-afbfc981262c5b2b8/test/banka-210-gg2-hiz.test.mjs:43:1'
+    error: |-
+    motor tutarlı
+    + actual - expected
+    + [
+    +   {
+    +     at: 'işlem 200 (alim, 2026-09-14)',
+    +     problems: [
+* surum-2.0.16-zincir
+  netimi/.claude/worktrees/agent-afbfc981262c5b2b8/test/banka-210-goc-zinciri.test.mjs:45:5'
+    error: |-
+    surum-2.0.16-zincir 001: Ç5-A katlaması (donmuş dönemin kural farkı dahil) — kural dışı fark
+    + actual - expected
+    + [
+    +   'cash:cash-817a45b2-6565-467b-9bc7-3d6ef3a05654: çevirmeden sonra 649.90 kaldı',
+    +   'cash:cash-8b26bcf0-1c5b-4db3-8e52-ac02449a3c0a: çevirmeden sonra 770.90 kaldı',
+    +   'cash:cash-9175ffca-2507-46d4-a882-5d63517819d2: çevirmeden sonra 770.90 kaldı',
+* surum-2.0.17-zincir
+  netimi/.claude/worktrees/agent-afbfc981262c5b2b8/test/banka-210-goc-zinciri.test.mjs:45:5'
+    error: |-
+    surum-2.0.17-zincir 001: Ç5-A katlaması (donmuş dönemin kural farkı dahil) — kural dışı fark
+    + actual - expected
+    + [
+    +   'cash:cash-817a45b2-6565-467b-9bc7-3d6ef3a05654: çevirmeden sonra 649.90 kaldı',
+    +   'cash:cash-8b26bcf0-1c5b-4db3-8e52-ac02449a3c0a: çevirmeden sonra 770.90 kaldı',
+    +   'cash:cash-9175ffca-2507-46d4-a882-5d63517819d2: çevirmeden sonra 770.90 kaldı',
+* surum-2.0.18-zincir
+  netimi/.claude/worktrees/agent-afbfc981262c5b2b8/test/banka-210-goc-zinciri.test.mjs:45:5'
+    error: |-
+    surum-2.0.18-zincir 001: Ç5-A katlaması (donmuş dönemin kural farkı dahil) — kural dışı fark
+    + actual - expected
+    + [
+    +   'cash:cash-817a45b2-6565-467b-9bc7-3d6ef3a05654: çevirmeden sonra 649.90 kaldı',
+    +   'cash:cash-8b26bcf0-1c5b-4db3-8e52-ac02449a3c0a: çevirmeden sonra 770.90 kaldı',
+    +   'cash:cash-9175ffca-2507-46d4-a882-5d63517819d2: çevirmeden sonra 770.90 kaldı',
+* surum-2.0.19-zincir
+  netimi/.claude/worktrees/agent-afbfc981262c5b2b8/test/banka-210-goc-zinciri.test.mjs:45:5'
+    error: |-
+    surum-2.0.19-zincir 001: Ç5-A katlaması (donmuş dönemin kural farkı dahil) — kural dışı fark
+    + actual - expected
+    + [
+    +   'cash:cash-817a45b2-6565-467b-9bc7-3d6ef3a05654: çevirmeden sonra 649.90 kaldı',
+    +   'cash:cash-8b26bcf0-1c5b-4db3-8e52-ac02449a3c0a: çevirmeden sonra 770.90 kaldı',
+    +   'cash:cash-9175ffca-2507-46d4-a882-5d63517819d2: çevirmeden sonra 770.90 kaldı',
+* surum-2.0.20-zincir
+  netimi/.claude/worktrees/agent-afbfc981262c5b2b8/test/banka-210-goc-zinciri.test.mjs:45:5'
+    error: |-
+    surum-2.0.20-zincir 001: Ç5-A katlaması (donmuş dönemin kural farkı dahil) — kural dışı fark
+    + actual - expected
+    + [
+    +   'cash:cash-817a45b2-6565-467b-9bc7-3d6ef3a05654: çevirmeden sonra 649.90 kaldı',
+    +   'cash:cash-8b26bcf0-1c5b-4db3-8e52-ac02449a3c0a: çevirmeden sonra 770.90 kaldı',
+    +   'cash:cash-9175ffca-2507-46d4-a882-5d63517819d2: çevirmeden sonra 770.90 kaldı',
+* surum-2.0.21-zincir
+  netimi/.claude/worktrees/agent-afbfc981262c5b2b8/test/banka-210-goc-zinciri.test.mjs:45:5'
+    error: |-
+    surum-2.0.21-zincir 001: Ç5-A katlaması (donmuş dönemin kural farkı dahil) — kural dışı fark
+    + actual - expected
+    + [
+    +   'cash:cash-817a45b2-6565-467b-9bc7-3d6ef3a05654: çevirmeden sonra 649.90 kaldı',
+    +   'cash:cash-8b26bcf0-1c5b-4db3-8e52-ac02449a3c0a: çevirmeden sonra 770.90 kaldı',
+    +   'cash:cash-9175ffca-2507-46d4-a882-5d63517819d2: çevirmeden sonra 770.90 kaldı',
+* surum-2.0.22-zincir
+  netimi/.claude/worktrees/agent-afbfc981262c5b2b8/test/banka-210-goc-zinciri.test.mjs:45:5'
+    error: |-
+    surum-2.0.22-zincir 001: Ç5-A katlaması (donmuş dönemin kural farkı dahil) — kural dışı fark
+    + actual - expected
+    + [
+    +   'cash:cash-817a45b2-6565-467b-9bc7-3d6ef3a05654: çevirmeden sonra 649.90 kaldı',
+    +   'cash:cash-8b26bcf0-1c5b-4db3-8e52-ac02449a3c0a: çevirmeden sonra 770.90 kaldı',
+    +   'cash:cash-9175ffca-2507-46d4-a882-5d63517819d2: çevirmeden sonra 770.90 kaldı',
+* surum-2.0.23-zincir
+  netimi/.claude/worktrees/agent-afbfc981262c5b2b8/test/banka-210-goc-zinciri.test.mjs:45:5'
+    error: |-
+    surum-2.0.23-zincir 001: Ç5-A katlaması (donmuş dönemin kural farkı dahil) — kural dışı fark
+    + actual - expected
+    + [
+    +   'cash:cash-817a45b2-6565-467b-9bc7-3d6ef3a05654: çevirmeden sonra 649.90 kaldı',
+    +   'cash:cash-8b26bcf0-1c5b-4db3-8e52-ac02449a3c0a: çevirmeden sonra 770.90 kaldı',
+    +   'cash:cash-9175ffca-2507-46d4-a882-5d63517819d2: çevirmeden sonra 770.90 kaldı',
+* surum-2.0.24-zincir
+  netimi/.claude/worktrees/agent-afbfc981262c5b2b8/test/banka-210-goc-zinciri.test.mjs:45:5'
+    error: |-
+    surum-2.0.24-zincir 001: Ç5-A katlaması (donmuş dönemin kural farkı dahil) — kural dışı fark
+    + actual - expected
+    + [
+    +   'cash:cash-817a45b2-6565-467b-9bc7-3d6ef3a05654: çevirmeden sonra 649.90 kaldı',
+    +   'cash:cash-8b26bcf0-1c5b-4db3-8e52-ac02449a3c0a: çevirmeden sonra 770.90 kaldı',
+    +   'cash:cash-9175ffca-2507-46d4-a882-5d63517819d2: çevirmeden sonra 770.90 kaldı',
+* surum-2.0.25-zincir
+  netimi/.claude/worktrees/agent-afbfc981262c5b2b8/test/banka-210-goc-zinciri.test.mjs:45:5'
+    error: |-
+    surum-2.0.25-zincir 001: Ç5-A katlaması (donmuş dönemin kural farkı dahil) — kural dışı fark
+    + actual - expected
+    + [
+    +   'cash:cash-817a45b2-6565-467b-9bc7-3d6ef3a05654: çevirmeden sonra 649.90 kaldı',
+    +   'cash:cash-8b26bcf0-1c5b-4db3-8e52-ac02449a3c0a: çevirmeden sonra 770.90 kaldı',
+    +   'cash:cash-9175ffca-2507-46d4-a882-5d63517819d2: çevirmeden sonra 770.90 kaldı',
+* surum-2.0.26-zincir
+  netimi/.claude/worktrees/agent-afbfc981262c5b2b8/test/banka-210-goc-zinciri.test.mjs:45:5'
+    error: |-
+    surum-2.0.26-zincir 001: Ç5-A katlaması (donmuş dönemin kural farkı dahil) — kural dışı fark
+    + actual - expected
+    + [
+    +   'cash:cash-817a45b2-6565-467b-9bc7-3d6ef3a05654: çevirmeden sonra 649.90 kaldı',
+    +   'cash:cash-8b26bcf0-1c5b-4db3-8e52-ac02449a3c0a: çevirmeden sonra 770.90 kaldı',
+    +   'cash:cash-9175ffca-2507-46d4-a882-5d63517819d2: çevirmeden sonra 770.90 kaldı',
+* surum-2.0.19-cakisma
+  netimi/.claude/worktrees/agent-afbfc981262c5b2b8/test/banka-210-goc-zinciri.test.mjs:45:5'
+    error: |-
+    surum-2.0.19-cakisma 001: Ç5-A katlaması (donmuş dönemin kural farkı dahil) — kural dışı fark
+    + actual - expected
+    + [
+    +   'cash:cash-ff57b671-7ef2-4735-b268-b2eaab06d9fa: çevirmeden sonra 649.90 kaldı',
+    +   'cash:cash-bac73262-cb21-4016-8d94-4fd814df9f55: çevirmeden sonra 770.90 kaldı',
+    +   'cash:cash-b9dc905b-17be-4e0a-88bc-503cf4fb17fc: çevirmeden sonra 770.90 kaldı',
+* surum-2.0.19-eski
+  netimi/.claude/worktrees/agent-afbfc981262c5b2b8/test/banka-210-goc-zinciri.test.mjs:45:5'
+    error: |-
+    surum-2.0.19-eski 001: Ç5-A katlaması (donmuş dönemin kural farkı dahil) — kural dışı fark
+    + actual - expected
+    + [
+    +   'cash:cash-8c9530a6-16b8-4bcb-a482-015b6e1c3688: çevirmeden sonra 649.90 kaldı',
+    +   'cash:cash-900d10b9-c809-4558-bc64-bb0cbf3ae607: çevirmeden sonra 770.90 kaldı',
+    +   'cash:cash-2e466416-21d8-4281-a5f1-7e5157053acd: çevirmeden sonra 649.90 kaldı',
+* surum-2.0.26-turler
+  netimi/.claude/worktrees/agent-afbfc981262c5b2b8/test/banka-210-goc-zinciri.test.mjs:45:5'
+    error: |-
+    surum-2.0.26-turler 001: Ç5-A katlaması (donmuş dönemin kural farkı dahil) — kural dışı fark
+    + actual - expected
+    + [
+    +   'cash:cash-817a45b2-6565-467b-9bc7-3d6ef3a05654: çevirmeden sonra 649.90 kaldı',
+    +   'cash:cash-8b26bcf0-1c5b-4db3-8e52-ac02449a3c0a: çevirmeden sonra 770.90 kaldı',
+    +   'cash:cash-9175ffca-2507-46d4-a882-5d63517819d2: çevirmeden sonra 770.90 kaldı',
+* veri kapsamı: sınıflamanın bütün kolları ve süzgeçlerin bütün seçenekleri veride var (karşılaştırma boşa çalış
+  mi/.claude/worktrees/agent-afbfc981262c5b2b8/test/banka-210-hiz-esdegerlik.test.mjs:408:5'
+    error: 'test did not finish before its parent and was cancelled'
+* Rapor Merkezi: banka/Kasa raporları × her süzgeç × dönemler — eski ve yeni çıktı birebir (bugün; yerinde ve iş
+  mi/.claude/worktrees/agent-afbfc981262c5b2b8/test/banka-210-hiz-esdegerlik.test.mjs:433:5'
+    error: 'test did not finish before its parent and was cancelled'
+* moneyLines okuma uçları ve yeni toplam yolları — eski ile aynı (bugün)
+  mi/.claude/worktrees/agent-afbfc981262c5b2b8/test/banka-210-hiz-esdegerlik.test.mjs:445:5'
+    error: 'test did not finish before its parent and was cancelled'
+* cari arama — ilk 20 (Cari No sırası, tür önceliği, bakiye) eski uçla aynı
+  mi/.claude/worktrees/agent-afbfc981262c5b2b8/test/banka-210-hiz-esdegerlik.test.mjs:451:5'
+    error: 'test did not finish before its parent and was cancelled'
+* saat ileri (tarihi gelmemiş hesapsız satırların bir kısmının tarihi geldi): raporlar ve okuma uçları yine bire
+  mi/.claude/worktrees/agent-afbfc981262c5b2b8/test/banka-210-hiz-esdegerlik.test.mjs:457:5'
+    error: 'test did not finish before its parent and was cancelled'
+* hız düzeltmesi eşdeğerliği — tohum 21 (300 motor işlemi + elle banka işlemleri)
+  mi/.claude/worktrees/agent-afbfc981262c5b2b8/test/banka-210-hiz-esdegerlik.test.mjs:401:3'
+    error: |-
+    motor (tohum 21) tutarlı
+    + actual - expected
+    + [
+    +   {
+    +     at: 'işlem 200 (supheli-borc, 2026-08-29)',
+    +     problems: [
+* hız düzeltmesi eşdeğerliği — tohum 22 (300 motor işlemi + elle banka işlemleri)
+  mi/.claude/worktrees/agent-afbfc981262c5b2b8/test/banka-210-hiz-esdegerlik.test.mjs:401:3'
+    error: |-
+    motor (tohum 22) tutarlı
+    + actual - expected
+    + [
+    +   {
+    +     at: 'işlem 100 (kasa-duzelt, 2026-07-20)',
+    +     problems: [
+* adım 33 mizanının POS satırları (ekstre adımları 2.3.0'da): 108.01 = 11.580 (KG-6: net), 610 = 2.500, 653 = 67
+  -netimi/.claude/worktrees/agent-afbfc981262c5b2b8/test/banka-220-pos-kabul.test.mjs:116:3'
+    error: |-
+    391 Hesaplanan KDV 6.500 (A)
+    + actual - expected
+    + -700000
+    - -650000
+* eski sürümün verisi yeni kuralla: 101 + 121 = eski 101, 103 + 321 = eski 103, öbür hesaplar ve toplam aynı; ki
+  -netimi/.claude/worktrees/agent-afbfc981262c5b2b8/test/banka-220-senet-121.test.mjs:374:3'
+    error: 'yeni kuralla Mutabakat Testi: kural farkı uyarısı (banka açılışı + carisiz senet): {"code":"ledger:rule-diff","name":"Kural Değişikliği Farkı (Kilitli Dönem: 05.10.2026 ve Öncesi)","ok":false,"count":3,"differenc
+* 2.0.26'nın kendi ölçüsüyle: 103 + 321 = eski 103, öbür hesaplar ve toplam aynı; 321 borç = alacak = 300
+  -netimi/.claude/worktrees/agent-afbfc981262c5b2b8/test/banka-220-senet-121.test.mjs:492:3'
+    error: |-
+    001: Ç5-A katlaması — kural dışı fark
+    + actual - expected
+    + [
+    +   'cash:cash-817a45b2-6565-467b-9bc7-3d6ef3a05654: çevirmeden sonra 649.90 kaldı',
+    +   'cash:cash-8b26bcf0-1c5b-4db3-8e52-ac02449a3c0a: çevirmeden sonra 770.90 kaldı',
+    +   'cash:cash-9175ffca-2507-46d4-a882-5d63517819d2: çevirmeden sonra 770.90 kaldı',
+* son mizan: 602 yalnız taksitli satışlar (−4.700), 770 hareketsiz, 120 +4.700, 101 ve 101.01/101.02 sıfır; Muta
+  i/.claude/worktrees/agent-afbfc981262c5b2b8/test/banka-220-tahsile-ver-tur2.test.mjs:96:3'
+    error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    {
+    '101': 0,
+    '120': 470000,
+    '121': 0,
+* türetmenin okuduğu her sütun: kilitli satırda değişince iz değişir ya da açık istisnada; istisnalar güncel (he
+  netimi/.claude/worktrees/agent-afbfc981262c5b2b8/test/defter-kaynak-iz-250.test.mjs:283:3'
+    error: |-
+    kilit izinde OLMAYAN ve istisna listesinde de olmayan türetme sütunları (LOCK_SQL'e ekleyin ya da gerekçeyle istisnaya yazın): invoice_lines.exemption_code, invoice_lines.gl_account, invoice_lines.net
+    + actual - expected
+    + [
+    +   'invoice_lines.exemption_code',
+    +   'invoice_lines.gl_account',
+    +   'invoice_lines.net'
+* F5: kural değişikliği benzetimi — kilitli dönemin Yevmiye Defteri ve Hesap Planı Mizanı DEĞİŞMEZ, açık dönem y
+  -y-netimi/.claude/worktrees/agent-afbfc981262c5b2b8/test/donmus-defter-250.test.mjs:178:3'
+    error: 'açık dönem yeni kuralla'
+* kural tuzağı: güncel kural 2.5.0-defter; güncel türetme ↔ 2.4.9 kopyası farkı yalnız Ç5-A kural kimliklerinde 
+  -y-netimi/.claude/worktrees/agent-afbfc981262c5b2b8/test/donmus-defter-250.test.mjs:422:3'
+    error: |-
+    account:aentry-d5fa5dd2-248a-406c-9a96-c6759c7cfd7a: güncel türetme ↔ 2.4.9 farkı Ç5-A kural kimliklerinin dışında
+    + actual - expected
+    ... Skipped lines
+    {
+    date: '2026-01-05',
+    id: 'account:aentry-d5fa5dd2-248a-406c-9a96-c6759c7cfd7a',
+* B3: Ana Defter türetmesi (güncel kural ve 2.4.9 kopyası) kaynak satırlarını store.all ile okumaz; çıktı store.
+  mi/.claude/worktrees/agent-afbfc981262c5b2b8/test/donmus-defter-bellek-250.test.mjs:190:3'
+    error: |-
+    plan:plan-15e16480-5866-4202-ac76-b20f108a0f16: fark Ç5-A hesaplarının dışında
+    + actual - expected
+    ... Skipped lines
+    [
+    [
+    '120',
+* ORTA-3: göçün / onarımın bekleyen 2.4.9 koşusu varken AYNI güne yeniden kilit — koşu kendi kuralıyla (2.4.9) s
+  timi/.claude/worktrees/agent-afbfc981262c5b2b8/test/donmus-defter-tur1-250.test.mjs:113:3'
+    error: |-
+    bugün güncel kural = 2.4.9 (tutarda)
+    + actual - expected
+    ... Skipped lines
+    [
+    {
+    date: '2026-01-05',
+* ORTA-3 ailesi: bekleyen 2.4.9 koşusu varken kilit İLERLETİLİNCE koşu 2.4.9 ile tamamlanır, kalan dönem güncel 
+  timi/.claude/worktrees/agent-afbfc981262c5b2b8/test/donmus-defter-tur1-250.test.mjs:131:3'
+    error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    ... Skipped lines
+    [
+    {
+    date: '2026-01-05',
+* ORTA-3 ailesi (eşzamanlı): bekleyen 2.4.9 koşusu varken kapanış fişi kilidi ilerletir (postAll lockThrough) — 
+  timi/.claude/worktrees/agent-afbfc981262c5b2b8/test/donmus-defter-tur1-250.test.mjs:157:3'
+    error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    ... Skipped lines
+    [
+    {
+    date: '2026-01-05',
+* DÜŞÜK-3 (ders 47): göç / onarım penceresinde ara dilim (2.4.9) koşu başına bir kez kurulur — çıktı önbelleksiz
+  timi/.claude/worktrees/agent-afbfc981262c5b2b8/test/donmus-defter-tur1-250.test.mjs:296:3'
+    error: |-
+    Expected values to be strictly equal:
+    2 !== 3
+* ORTA-2: eski sürüm donmuş satırları silip AYNI güne yeniden kilitlediyse açılış onarımı kapsamı indirir, kilit
+  timi/.claude/worktrees/agent-afbfc981262c5b2b8/test/donmus-defter-tur1-250.test.mjs:428:3'
+    error: |-
+    [{"code":"ledger:rule-diff","name":"Kural Değişikliği Farkı (Kilitli Dönem: 31.12.2026 ve Öncesi)","ok":false,"count":5,"difference":0,"sample":["account:aentry-76099c5c-dd4b-4023-bdd7-5874bc9bd1c7 (05.01.2026)","cash:ca
+    false !== true
+* ORTA-2 (ileri kilit): eski sürüm satırları silip kilidi İLERLETTİYSE eski kapsamın satırları da yeniden donar 
+  timi/.claude/worktrees/agent-afbfc981262c5b2b8/test/donmus-defter-tur1-250.test.mjs:453:3'
+    error: |-
+    [{"code":"ledger:rule-diff","name":"Kural Değişikliği Farkı (Kilitli Dönem: 31.12.2026 ve Öncesi)","ok":false,"count":5,"difference":0,"sample":["account:aentry-3aed4e77-8a87-4168-9a0d-553acbb827ec (05.01.2026)","cash:ca
+    false !== true
+* ORTA-2 (sağlama noktası): yalnız son koşunun satırları silindiyse kapsam sağlam son koşunun gününe iner; öncek
+  timi/.claude/worktrees/agent-afbfc981262c5b2b8/test/donmus-defter-tur1-250.test.mjs:478:3'
+    error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    ... Skipped lines
+    [
+    {
+    date: '2026-01-05',
+* ORTA-3 ailesi (yarıda kesilme): bekleyen 2.4.9 koşusu sürerken kilit ilerletildi ve dondurma kesildi → açılışt
+  timi/.claude/worktrees/agent-afbfc981262c5b2b8/test/donmus-defter-tur1-250.test.mjs:509:3'
+    error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    ... Skipped lines
+    [
+    {
+    date: '2026-01-05',
+* T2 (p5): eski sürüm kilidi → açılış onarımının 2.4.9 koşusu yazım adımındayken aynı güne kilit → satırlar sili
+  timi/.claude/worktrees/agent-afbfc981262c5b2b8/test/donmus-defter-tur3-250.test.mjs:258:3'
+    error: |-
+    T2: donmuş = canlı (madde madde)
+    + actual - expected
+    ... Skipped lines
+    [
+    {
+    date: '2026-01-03',
+* U2: izsiz bozulma (2.4.9'un deseni: önce dondurma izi, sonra satırlar) → açılışta GAP_RULE (2.4.9 kopyası) ile
+  timi/.claude/worktrees/agent-afbfc981262c5b2b8/test/donmus-defter-tur3-250.test.mjs:420:3'
+    error: |-
+    U2: donmuş = canlı (madde madde)
+    + actual - expected
+    ... Skipped lines
+    [
+    {
+    date: '2026-01-03',
+* U3: karışık bileşim — (…, 30.06] 2.4.9 göç / onarım koşusu (izli), (30.06, 31.12] 2.5.0 koşusu (izli); satırla
+  timi/.claude/worktrees/agent-afbfc981262c5b2b8/test/donmus-defter-tur3-250.test.mjs:441:3'
+    error: |-
+    U3: donmuş = canlı (madde madde)
+    + actual - expected
+    ... Skipped lines
+    [
+    {
+    date: '2026-01-03',
+* V1 s46 (dar kontrol "kapanis"): plan sürerken (ilk dilim yazım adımında) program kapanır → yeniden açılışta pl
+  timi/.claude/worktrees/agent-afbfc981262c5b2b8/test/donmus-defter-tur4-250.test.mjs:183:5'
+    error: |-
+    V1: donmuş = canlı (madde madde)
+    + actual - expected
+    ... Skipped lines
+    [
+    {
+    date: '2026-01-03',
+* V2 s46 (dar kontrol "aynigun"): planın ilk dilimi hata verir (kart "kilidi yeniden kaydedin") → yönetici AYNI 
+  timi/.claude/worktrees/agent-afbfc981262c5b2b8/test/donmus-defter-tur4-250.test.mjs:212:5'
+    error: |-
+    V2: donmuş = canlı (madde madde)
+    + actual - expected
+    ... Skipped lines
+    [
+    {
+    date: '2026-01-03',
+* V3 s46: planın ilk dilimi YAZILIRKEN aynı güne yeniden kaydetme süren dondurmayı durdurmaz (baştan başlamaz, s
+  timi/.claude/worktrees/agent-afbfc981262c5b2b8/test/donmus-defter-tur4-250.test.mjs:242:5'
+    error: |-
+    V3: donmuş = canlı (madde madde)
+    + actual - expected
+    ... Skipped lines
+    [
+    {
+    date: '2026-01-03',
+* V4 s46: planın ilk dilimi hata verdi, denemenin artığı (bayat satırlar) duruyor → aynı güne yeniden kaydetme t
+  timi/.claude/worktrees/agent-afbfc981262c5b2b8/test/donmus-defter-tur4-250.test.mjs:276:5'
+    error: |-
+    V4: donmuş = canlı (madde madde)
+    + actual - expected
+    ... Skipped lines
+    [
+    {
+    date: '2026-01-03',
+* V1 u3 (dar kontrol "kapanis"): plan sürerken (ilk dilim yazım adımında) program kapanır → yeniden açılışta pla
+  timi/.claude/worktrees/agent-afbfc981262c5b2b8/test/donmus-defter-tur4-250.test.mjs:183:5'
+    error: |-
+    V1: donmuş = canlı (madde madde)
+    + actual - expected
+    ... Skipped lines
+    [
+    {
+    date: '2026-01-03',
+* V2 u3 (dar kontrol "aynigun"): planın ilk dilimi hata verir (kart "kilidi yeniden kaydedin") → yönetici AYNI g
+  timi/.claude/worktrees/agent-afbfc981262c5b2b8/test/donmus-defter-tur4-250.test.mjs:212:5'
+    error: |-
+    V2: donmuş = canlı (madde madde)
+    + actual - expected
+    ... Skipped lines
+    [
+    {
+    date: '2026-01-03',
+* V3 u3: planın ilk dilimi YAZILIRKEN aynı güne yeniden kaydetme süren dondurmayı durdurmaz (baştan başlamaz, sa
+  timi/.claude/worktrees/agent-afbfc981262c5b2b8/test/donmus-defter-tur4-250.test.mjs:242:5'
+    error: |-
+    V3: donmuş = canlı (madde madde)
+    + actual - expected
+    ... Skipped lines
+    [
+    {
+    date: '2026-01-03',
+* V4 u3: planın ilk dilimi hata verdi, denemenin artığı (bayat satırlar) duruyor → aynı güne yeniden kaydetme te
+  timi/.claude/worktrees/agent-afbfc981262c5b2b8/test/donmus-defter-tur4-250.test.mjs:276:5'
+    error: |-
+    V4: donmuş = canlı (madde madde)
+    + actual - expected
+    ... Skipped lines
+    [
+    {
+    date: '2026-01-03',
+* X1 (v249-s46 ilerlet kapanis): plan sürerken program kapanır → yeniden açılışta (…, 30.06] 2.5.0, (30.06, 31.1
+  timi/.claude/worktrees/agent-afbfc981262c5b2b8/test/donmus-defter-tur4-250.test.mjs:317:3'
+    error: |-
+    X1: donmuş = canlı (madde madde)
+    + actual - expected
+    ... Skipped lines
+    [
+    {
+    date: '2026-01-03',
+* X2 (v2.4.9 ilerletmesi + aynı gün): planın ilk dilimi hata verir → aynı güne yeniden kaydetme → (…, 30.06] 2.5
+  timi/.claude/worktrees/agent-afbfc981262c5b2b8/test/donmus-defter-tur4-250.test.mjs:347:3'
+    error: |-
+    X2: donmuş = canlı (madde madde)
+    + actual - expected
+    ... Skipped lines
+    [
+    {
+    date: '2026-01-03',
+* W1: eski kurallı koşu + eski sürüm ilerletmesi + hata + aynı gün → (…, 30.06] ve (30.06, 31.12] 2.4.9; ilerlet
+  timi/.claude/worktrees/agent-afbfc981262c5b2b8/test/donmus-defter-tur4-250.test.mjs:377:3'
+    error: |-
+    W1: donmuş = canlı (madde madde)
+    + actual - expected
+    ... Skipped lines
+    [
+    {
+    date: '2026-01-03',
+* F12: eski sürüm (BS-7 kapısını bilmez) kilidi ilerletir → açılışta aradaki dönem 2.4.9 kuralıyla donar; geri ç
+  imi/.claude/worktrees/agent-afbfc981262c5b2b8/test/donmus-defter-yasam-250.test.mjs:224:3'
+    error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    ... Skipped lines
+    [
+    {
+    date: '2026-02-01',
+* F11 (benzetim): göç 47 — kilitli 46'lık dosyada bekleyen 2.4.9 koşusu yazılır, açılıştan sonra 2.4.9 kopyasıyl
+  imi/.claude/worktrees/agent-afbfc981262c5b2b8/test/donmus-defter-yasam-250.test.mjs:291:3'
+    error: |-
+    bugün güncel kural = 2.4.9 (tutarda)
+    + actual - expected
+    ... Skipped lines
+    [
+    {
+    date: '2026-02-01',
+* tür ve MSUGT kalemi kural kitabı §2 tablosuyla aynı (eksik hesaplar eklendi)
+  etimi/.claude/worktrees/agent-afbfc981262c5b2b8/test/hesap-plani-sinif-250.test.mjs:150:3'
+    error: |-
+    kural kitabı beklentisi olmayan hesap (yeni hesap bu teste de yazılır)
+    + actual - expected
+    + [
+    +   '601'
+    + ]
+    - []
+* defterin yazabildiği her hesap planda (sınıflanabilir): banka fişi rolleri, evrak, şüpheli alacak, fatura gide
+  etimi/.claude/worktrees/agent-afbfc981262c5b2b8/test/hesap-plani-sinif-250.test.mjs:238:3'
+    error: |-
+    defterin yazabildiği ama planda olmayan hesap
+    + actual - expected
+    + [
+    +   '301',
+    +   '302'
+    + ]
+* eski satırlar aynen: kayıt tahsilatı, Kasa, cari/kart satırları, işlem başlıkları, mizan ve yevmiye madde sayı
+  is---y-netimi/.claude/worktrees/agent-afbfc981262c5b2b8/test/kapi-para-245.test.mjs:155:3'
+    error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    ... Skipped lines
+    {
+    accountEntries: 0,
+    accounts: 2,
+* POST kayıt tahsilatı 410 (istek kimliğiyle de); veri değişmez
+  is---y-netimi/.claude/worktrees/agent-afbfc981262c5b2b8/test/kapi-para-245.test.mjs:159:3'
+    error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    ... Skipped lines
+    {
+    accountEntries: 0,
+    accounts: 2,
+* PUT eski kayıt tahsilatı 410; satırın tutarı, tarihi ve yolu aynı
+  is---y-netimi/.claude/worktrees/agent-afbfc981262c5b2b8/test/kapi-para-245.test.mjs:165:3'
+    error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    ... Skipped lines
+    {
+    accountEntries: 0,
+    accounts: 2,
+* oturumsuz 401; personel de 410 alır (Tablodan Aktar yetkisi olmasa da 410: kapı yetkiden önce); veri değişmez
+  is---y-netimi/.claude/worktrees/agent-afbfc981262c5b2b8/test/kapi-para-245.test.mjs:173:3'
+    error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    ... Skipped lines
+    {
+    accountEntries: 0,
+    accounts: 2,
+* Tablodan Aktar POST 410; yükleme sonrası özet sormaz; veri değişmez; eski aktarım listede
+  is---y-netimi/.claude/worktrees/agent-afbfc981262c5b2b8/test/kapi-para-245.test.mjs:184:3'
+    error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    ... Skipped lines
+    {
+    accountEntries: 0,
+    accounts: 2,
+* DELETE açık (→ Silinenler), Silinenler'den geri yükleme açık: Kasa ve mizan eski hâline döner
+  is---y-netimi/.claude/worktrees/agent-afbfc981262c5b2b8/test/kapi-para-245.test.mjs:194:3'
+    error: |-
+    geri yükleme eski hâli verir (aynı kimlik, tutar, Kasa, mizan)
+    + actual - expected
+    ... Skipped lines
+    {
+    accountEntries: 0,
+    accounts: 2,
+* göç (2.4.9 verisi 2.5.0 ile açılır): satırlar aynen, mizan 2.4.9 ile aynı, Mutabakat Testi UYARI (4 satır), sa
+  netimi/.claude/worktrees/agent-afbfc981262c5b2b8/test/kasa-acilis-once-250.test.mjs:453:3'
+    error: |-
+    mizan 2.4.9 ile aynı (yalnız 500 → 519)
+    + actual - expected
+    {
+    '100': 1140000,
+    '120': 150000,
+    '128': 30000,
+* [2] v2.0.26 verisi (kilit 05.10.2026; aynı yıl): yalnız 500 ↔ 519; gerçek eski sürüm satırı (ileri tarihli evr
+  mi/.claude/worktrees/agent-afbfc981262c5b2b8/test/kural-farki-duzeltme-250.test.mjs:130:3'
+    error: |-
+    aynı yıl: açılışların 500'ü 519'a
+    + actual - expected
+    [
+    'A 519 127800',
+    +   'A 600.90 264450',
+    +   'A 602.90 42302.81',
+* [4] B16: kilitli dönemde onay bekleyen Açılış Olabilir kaydı varken fiş yazılmaz; karar verilince satırlar kar
+  mi/.claude/worktrees/agent-afbfc981262c5b2b8/test/kural-farki-duzeltme-250.test.mjs:183:3'
+    error: 'ret durumunda fiş farkı kapattı'
+* [7] S164 = C: kilitli kaynağın kapı dışı değişikliği kural farkına karışırsa fişe sessizce girmez — alt defter
+  mi/.claude/worktrees/agent-afbfc981262c5b2b8/test/kural-farki-duzeltme-250.test.mjs:253:3'
+    error: 'ön koşul: satır kural farkında değil'
+* [8] S164 = C ikinci örnek: kilitli tahsilatın fatura bağı kapı dışından yazılınca 120 / 128 farkı kaynağıyla d
+  mi/.claude/worktrees/agent-afbfc981262c5b2b8/test/kural-farki-duzeltme-250.test.mjs:291:3'
+    error: |-
+    ön koşul: gerçek kural farkı (v2.4.9'un cari açılışı 500 → 519)
+    + actual - expected
+    [
+    'A 519 800',
+    +   'A 602.90 1000',
+    'B 500 800',
+* [y7] S174 = A uçtan uca: fiş 2026 → kilit 30.12 (602) → kilit 31.12 (671) → aday onayı → 'Fişle düzeltilebilen
+  -netimi/.claude/worktrees/agent-afbfc981262c5b2b8/test/kural-farki-yil-250.test.mjs:147:3'
+    error: |-
+    fişin yılı 2026: aynı hesap (602)
+    + actual - expected
+    [
+    +   'A 602.90 700',
+    -   'A 602 700',
+    'B 500 700'
+* [y10] S185 = A uçtan uca: 2027 fişi → kilit 30.11.2026'ya geri — (b) doğrudan: Düzeltildi, 2026'ya fiş yok, ye
+  -netimi/.claude/worktrees/agent-afbfc981262c5b2b8/test/kural-farki-yil-250.test.mjs:307:3'
+    error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    [
+    +   'A 602.90 300',
+    -   'A 602 300',
+    'B 519 300'

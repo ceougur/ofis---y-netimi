@@ -1,0 +1,24 @@
+{
+ "kod": "329d5d1b (2.5.0 WhatsApp tur 1 + W-3)",
+ "node": "v22.23.4",
+ "talep": 200,
+ "accounts": {
+  "A": "account-3086d88b-5d0b-4047-a70d-1e08c007ae02",
+  "B": "account-4b9100c6-bf26-4dc8-ad44-943cab909a28"
+ },
+ "jobs": {
+  "A": {
+   "id": "waj-5a65d90f-3052-415e-a9cd-0a813c14be51",
+   "state": "failed",
+   "erased": true,
+   "numberInText": true
+  },
+  "B": {
+   "id": "waj-67ba34de-b226-4779-9f20-9f8aee4281d7",
+   "state": "accepted"
+  }
+ },
+ "at": "2026-11-03T10:00:00.000Z",
+ "version": 47,
+ "dosyadaNumara": true
+}

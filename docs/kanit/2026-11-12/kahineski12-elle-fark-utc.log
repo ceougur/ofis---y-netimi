@@ -1,0 +1,23 @@
+d37-c5-s126-faturali-kart.json: 17 elle beklenti değişti
+    değer                  k1:cari:L14:acikEsitBakiye: "(yok)" → false
+    değer                  k1:cari:L14:acikToplam: "(yok)" → 30000
+    değer                  k1:cari:L14:gecikmis: "(yok)" → 5000
+    değer                  k1:hareket:l14x:kalan: "(yok)" → 30000
+    değer                  k1:kart:KL14:kalan: "(yok)" → 40000
+    değer                  k1:kart:KL14:mevcutBorc: "(yok)" → true
+    değer                  k1:kart:KL14:odenen: "(yok)" → 30000
+    değer                  k1:kart:KL14:taksit1:odenen: "(yok)" → 30000
+    değer                  k1:kart:KL14:taksit2:odenen: "(yok)" → 0
+    değer                  k1:projeksiyon:hareket:l14x: "(yok)" → "yok"
+    değer                  k1:takvim:hareket:l14x: "(yok)" → "yok"
+    değer                  k1:vadeTakip:hareket:l14x: "(yok)" → "yok"
+    elleYok kalktı         k1:cari:L14:gecikmis: "yok" → ""
+    elleYok kalktı         k1:hareket:l14x:kalan: "yok" → ""
+    elleYok kalktı         k1:kart:KL14:kalan: "yok" → ""
+    elleYok kalktı         k1:takvim:hareket:l14x: "yok" → ""
+    elleBelirsiz kalktı    ["cari L14 tanımsız", "SK-25", "KULLANICIYA SORULMALI"]: "" → ""
+yeni elle senaryo: d38-c5-s128-ozge-kalemli-kart.json
+# tests 91
+# pass 91
+# fail 0
+91/91 denetim geçti

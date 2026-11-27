@@ -1,0 +1,59 @@
+TAP version 13
+# Subtest: 2.5.0 Ç4 Defter Türü
+    # Subtest: varsayılan Seçilmedi; seçenekler yazım düzeninde; Kişi Türü / VKN uzunluğundan tür uydurulmaz; kaydedilir ve yeniden okunur
+    ok 1 - varsayılan Seçilmedi; seçenekler yazım düzeninde; Kişi Türü / VKN uzunluğundan tür uydurulmaz; kaydedilir ve yeniden okunur
+      ---
+      duration_ms: 657.136641
+      type: 'test'
+      ...
+    # Subtest: geçersiz değer 400 ve hiçbir ayar yazılmaz (aynı gövdedeki firma bilgisi de)
+    ok 2 - geçersiz değer 400 ve hiçbir ayar yazılmaz (aynı gövdedeki firma bilgisi de)
+      ---
+      duration_ms: 604.179403
+      type: 'test'
+      ...
+    # Subtest: yetki: yönetici ve muhasebe değiştirir; avukat ve personel 403 (ayar değişmez)
+    ok 3 - yetki: yönetici ve muhasebe değiştirir; avukat ve personel 403 (ayar değişmez)
+      ---
+      duration_ms: 1086.616657
+      type: 'test'
+      ...
+    # Subtest: Şirket Verisini Sıfırla: Tüm Hareketleri Sil ve Tümünü Sıfırla ayarı KORUR; dönem kilidi (ledger.) kalkar
+    ok 4 - Şirket Verisini Sıfırla: Tüm Hareketleri Sil ve Tümünü Sıfırla ayarı KORUR; dönem kilidi (ledger.) kalkar
+      ---
+      duration_ms: 918.435659
+      type: 'test'
+      ...
+    # Subtest: iki şirket ayrı ayar; yedek → değiştir → geri yükle: 002 hemen, 001 yeniden açılışta geri gelir; öbür şirket etkilenmez
+    ok 5 - iki şirket ayrı ayar; yedek → değiştir → geri yükle: 002 hemen, 001 yeniden açılışta geri gelir; öbür şirket etkilenmez
+      ---
+      duration_ms: 1350.239544
+      type: 'test'
+      ...
+    # Subtest: BS-7 kapılı (yeni şemalı) şirkette Defter Türü yazımı 409 SCHEMA_AHEAD; okuma çalışır, dosya değişmez
+    ok 6 - BS-7 kapılı (yeni şemalı) şirkette Defter Türü yazımı 409 SCHEMA_AHEAD; okuma çalışır, dosya değişmez
+      ---
+      duration_ms: 1056.916864
+      type: 'test'
+      ...
+    # Subtest: okuyucu bookTypeOf: store, ham değer, bozuk / bilinmeyen değer → unset; okunamayan store → unset
+    ok 7 - okuyucu bookTypeOf: store, ham değer, bozuk / bilinmeyen değer → unset; okunamayan store → unset
+      ---
+      duration_ms: 1.027811
+      type: 'test'
+      ...
+    1..7
+ok 1 - 2.5.0 Ç4 Defter Türü
+  ---
+  duration_ms: 5676.611997
+  type: 'suite'
+  ...
+1..1
+# tests 7
+# suites 1
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6161.003883

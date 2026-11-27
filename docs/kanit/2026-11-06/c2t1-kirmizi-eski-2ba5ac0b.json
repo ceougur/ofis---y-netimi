@@ -1,0 +1,93 @@
+{
+  "ad": "c2t1-kirmizi-eski-2ba5ac0b",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t1-eski-2ba5ac0b/test/fis-defteri-250.test.mjs /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t1-eski-2ba5ac0b/test/fis-defteri-koruma-250.test.mjs",
+  "commit": "5b75e376c552c3badfe62e3c9b5657350fa509b9",
+  "dal": "worktree-agent-a916111504e511b77",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T03:17:21.111Z",
+  "sure_sn": 16.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 31,
+    "gecen": 19,
+    "basarisiz": 12,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 12 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.0 Ç2 — saklanan fiş defteri › N21: kontrol (alt defter) hesabına yazan fiş reddedilir — fiş denetiminde 400 (Ç2 tur 1, K6 yeni kuralı); kapı ikinci katman (korumasız kurulan modülde 409); numara tüketilmez",
+      "konum": "test/fis-defteri-250.test.mjs:251:3",
+      "hata": "beklenen 400, gelen 409: İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (100 Kasa (Nakit): 5,00 TL fark). Hiçbir değişiklik yazılmadı; yöneticinize bildirin. · 409 !== 400 (beklenen 400, gelen 409)"
+    },
+    {
+      "ad": "Ç2 tur 1 — ORTA-1: alt defter hesabına fiş yazılmaz (boş kurulum; modül kullanılmış olsun olmasın) › boş kurulumda alt defterin 20 hesabının her birine (hesap ya da alt hesabıyla) yazan fiş 400 voucher-subledger-account; hiçbir fiş yazılmaz, numara tüketilmez",
+      "konum": "test/fis-defteri-koruma-250.test.mjs:60:3",
+      "hata": "alt defter hesabına fiş KABUL edildi (K6 iddiası): 121 borç (Fiş 2027-000001), 121 alacak (Fiş 2027-000002), 128 borç (Fiş 2027-000003), 128 alacak (Fiş 2027-000004), 129 borç (Fiş 2027-000005), 129 alacak (Fiş 2027-000006), 190 borç (Fiş 2027-000007), 190 alacak (Fiş 2027-000008), 321 borç (Fiş 2027-000009), 321 alacak (Fiş 2027-000010) · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç2 tur 1 — ORTA-1: alt defter hesabına fiş yazılmaz (boş kurulum; modül kullanılmış olsun olmasın) › dar kontrol p1b / p1c: boş kurulumda 121 fişi reddedilir → ilk senet girişi 200 → dönem kilidi 200 → Mutabakat Testi tutarlı (kalıcı fark yok)",
+      "konum": "test/fis-defteri-koruma-250.test.mjs:92:3",
+      "hata": "Missing expected exception."
+    },
+    {
+      "ad": "Ç2 tur 1 — madde 5: fişin metin alanları nesne / dizi almaz ([object Object] kalıcı saklanmaz) › ters kayıt ucu: açıklama nesne ya da dizi → 400 voucher-text, ters kayıt yazılmaz; metin açıklama saklanır",
+      "konum": "test/fis-defteri-koruma-250.test.mjs:167:3",
+      "hata": "nesne: 200 {\"ok\":true,\"data\":{\"voucher\":{\"id\":\"lv-58493fa5-6ebe-4c32-9a68-cd32d1d7f2c5\",\"year\":2027,\"no\":2,\"noText\":\"Fiş 2027-000002\",\"date\":\"2027-01-05\",\"type\":\"reversal\",\"typeLabel\":\"Ters Kayıt Fişi\",\"cls\":\"opening\",\"description\":\"[object Object]\",\"source\":\"\",\"requestKey\":\"api:fis-koruma-nesne-0000000001\",\"reversalOf\":\"lv-eebe0c7c-1d58-492b-afcb-43d7e78acc8d\",\"reversedBy\":\"\",\"totalMinor\":100,\"lineCount\":2,\"createdBy\":\"user-18870b8e-d61a-4f9b-bfb9-c19a2ec529e3\",\"createdAt\":\"2027-01-10T07:00:00.000Z\",\"lines\":[{\"seq\":1,\"account\":\"590\",\"sub\":\"\",\"party\":\"\",\"debit\":0,\"credit\":100,\"note\":\"\"},{\"seq\":2,\"account\":\"519\",\"sub\":\"\",\"party\":\"\",\"debit\":100,\"credit\":0,\"note\":\"\"}],\"replayed\":false},\"replayed\":false}} · 200 !== 400 (beklenen 400, gelen 200)"
+    },
+    {
+      "ad": "Ç2 tur 1 — madde 5: fişin metin alanları nesne / dizi almaz ([object Object] kalıcı saklanmaz) › iç API: açıklama, kaynak ya da satır notu nesne → 400 voucher-text",
+      "konum": "test/fis-defteri-koruma-250.test.mjs:179:3",
+      "hata": "Missing expected exception."
+    },
+    {
+      "ad": "Ç2 tur 1 — DÜŞÜK-2: \"kapanmış fiş\" tetikleyicisi doğrusal; 12 atlatma denemesi yine engelli › 24.000 satırlık fişin satırları (yalnız tetikleyiciler, bellek içi) 2 sn'den kısa sürede yazılır — eski kural (her satırda COUNT(*)) O(n²): 16.000 satır ≈ 4 sn ölçüldü",
+      "konum": "test/fis-defteri-koruma-250.test.mjs:236:3",
+      "hata": "24000 satır 7344 ms (≥ 2000 ms: tetikleyici satır başına fişin bütün satırlarını okuyor — O(n²)) (beklenen true, gelen false)"
+    },
+    {
+      "ad": "Ç2 tur 1 — DÜŞÜK-1 (ORTA): eski sürüm sıfırlamasının onarımı yalnız AYNI şirketin sıfırlama izinden önce yazılmış fişi kaldırır › iki şirket (dar kontrol p5): 001'in izsiz fişi, 002 sıfırlanınca 001'in dosyasına düşen 'company.reset' (entity 002) yüzünden KALDIRILMAZ",
+      "konum": "test/fis-defteri-koruma-250.test.mjs:295:3",
+      "hata": "başka şirketin sıfırlaması 001'in fişini kaldırmamalı: {\"removed\":1,\"ids\":[\"lv-6615d71d-271e-43d2-85f8-e803d2d984ca\"]} · + actual - expected · + [] (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç2 tur 1 — DÜŞÜK-1 (ORTA): eski sürüm sıfırlamasının onarımı yalnız AYNI şirketin sıfırlama izinden önce yazılmış fişi kaldırır › zaman: sıfırlama izinden ÖNCE yazılan izsiz fiş kaldırılır, SONRA yazılan (izi başka nedenle düşmüş) fiş kalır; günlükte kalan sayısı",
+      "konum": "test/fis-defteri-koruma-250.test.mjs:317:3",
+      "hata": "yalnız sıfırlamadan önceki fiş kaldırılmalı: {\"removed\":2,\"ids\":[\"lv-5968cf12-4dac-4bd4-ad0c-d040af99746d\",\"lv-dfb0ac8d-e4ec-42a1-ab5f-26600fb3865b\"]} · + actual - expected · + [] (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç2 tur 1 — DÜŞÜK-1 (ORTA): eski sürüm sıfırlamasının onarımı yalnız AYNI şirketin sıfırlama izinden önce yazılmış fişi kaldırır › saat dilimi eki: sıfırlama izi '+03:00' ekli (06:30Z) — 05:00Z'deki fiş kaldırılır, 07:00Z'deki kalır (an karşılaştırması; metin karşılaştırması 07:00Z'yi de silerdi)",
+      "konum": "test/fis-defteri-koruma-250.test.mjs:338:3",
+      "hata": "{\"removed\":2,\"ids\":[\"lv-980ae0c0-c018-4bd2-b57e-9bc779cffa14\",\"lv-9615828d-3281-46cc-9798-95959dee1e37\"]} · + actual - expected · + [] (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç2 tur 1 — DÜŞÜK-1 (ORTA): eski sürüm sıfırlamasının onarımı yalnız AYNI şirketin sıfırlama izinden önce yazılmış fişi kaldırır › geri yükleme: 002 sıfırlandıktan sonra alınan 001 yedeği (izsiz fiş + entity 002 sıfırlama izi) geri yüklenince 001'in fişi kalır; yedekten sonraki fiş gider",
+      "konum": "test/fis-defteri-koruma-250.test.mjs:354:3",
+      "hata": "geri yüklenen 001'de yalnız yedekteki fiş: {\"removed\":1,\"ids\":[\"lv-5815e3ee-7b18-4427-8c5e-0ae31c224f13\"]} · + actual - expected · + [] (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç2 tur 1 — madde 6: postAll lockThrough PUT period-lock'un ön adımından (POS) geçer › Elle Onay kipi: valörü gelmiş bekleyen kalem varken 409 bank-pending-before-lock (fiş ve kilit yok); force → kilit konur, kalem kilit + 1'e Gecikmeli Aktarım (PUT 'Yine de Kilitle' ile aynı)",
+      "konum": "test/fis-defteri-koruma-250.test.mjs:393:3",
+      "hata": "Missing expected exception."
+    },
+    {
+      "ad": "Ç2 tur 1 — madde 6: postAll lockThrough PUT period-lock'un ön adımından (POS) geçer › Otomatik kip: vadesi gelmiş kalem kilitten ÖNCE kendi valör gününe (12.10) aktarılır (PUT period-lock ile aynı), sonra fiş + kilit",
+      "konum": "test/fis-defteri-koruma-250.test.mjs:413:3",
+      "hata": "kilitten önce kendi gününe aktarıldı · + actual - expected · + [] (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t1-kanit/2026-11-06/c2t1-kirmizi-eski-2ba5ac0b.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a916111504e511b77",
+  "ham_cikti_sha256": "2512ba5d09d362f8fff1a38a3b269938e23f24e49a6d7173e54daaf5e1436dd5",
+  "ham_cikti_bayt": 31452
+}

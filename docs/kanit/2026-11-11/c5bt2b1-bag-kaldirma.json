@@ -1,0 +1,34 @@
+{
+ "once": {
+  "cek": {
+   "gecikmis": 300,
+   "faturalar": [
+    "FIS2026000000001: partial açık 700 · Otomatik (vadesi en önce gelen) 300 @2026-09-05",
+    "FIS2026000000003: paid açık 0 · Bağlı 300 @2026-09-20, Otomatik (vadesi en önce gelen) 200 @2026-09-05"
+   ]
+  },
+  "tah": {
+   "gecikmis": 300,
+   "faturalar": [
+    "FIS2026000000002: partial açık 700 · Otomatik (vadesi en önce gelen) 300 @2026-09-05",
+    "FIS2026000000004: paid açık 0 · Bağlı 300 @2026-09-20, Otomatik (vadesi en önce gelen) 200 @2026-09-05"
+   ]
+  }
+ },
+ "sonra": {
+  "cek": {
+   "gecikmis": 0,
+   "faturalar": [
+    "FIS2026000000001: open açık 1000 · ",
+    "FIS2026000000003: paid açık 0 · Otomatik (vadesi en önce gelen) 500 @2026-09-05"
+   ]
+  },
+  "tah": {
+   "gecikmis": 0,
+   "faturalar": [
+    "FIS2026000000002: open açık 1000 · ",
+    "FIS2026000000004: paid açık 0 · Otomatik (vadesi en önce gelen) 500 @2026-09-05"
+   ]
+  }
+ }
+}

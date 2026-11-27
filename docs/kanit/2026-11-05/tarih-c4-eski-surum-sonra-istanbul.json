@@ -1,0 +1,32 @@
+{
+  "ad": "tarih-c4-eski-surum-sonra-istanbul",
+  "komut": "node test/defter-turu-c4-eski-surum.mjs",
+  "commit": "9215357158176a87126fff1e4d291a15a59609d6",
+  "dal": "worktree-agent-a7187c0e87f23820b",
+  "kirli": 14,
+  "izlenmeyen": 11,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T23:11:44.864Z",
+  "sure_sn": 2.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 7,
+    "gecen": 7,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/tarih-c4-eski-surum-sonra-istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a7187c0e87f23820b",
+  "ham_cikti_sha256": "a3c87602161aebc86d5dc0cd337cd316deaa70a16fb6943dd210ca97951d9c43",
+  "ham_cikti_bayt": 584
+}

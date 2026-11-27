@@ -1,0 +1,10 @@
+kip rapor-cek (kontrol); kod bu ağaç; tarayıcı 153.0.8010.12
+tarih kutusu aa/gg/yyyy: ilk bölüm "10", kalan "072026"
+    [suzgec-zorla] ON-KOSUL: ekran yazıdan önce yeniden çizildi; kutu YENİ düğüm, odak BODY
+✓ deneme 1: yazılan 2026-10-07; kutu "2026-10-07", odak kutuda, kutu yeniden kuruldu
+    [suzgec-zorla] ON-KOSUL: ekran yazıdan önce yeniden çizildi; kutu YENİ düğüm, odak BODY
+✓ deneme 2: yazılan 2026-10-07; kutu "2026-10-07", odak kutuda, kutu yeniden kuruldu
+    [suzgec-zorla] ON-KOSUL: ekran yazıdan önce yeniden çizildi; kutu YENİ düğüm, odak BODY
+✓ deneme 3: yazılan 2026-10-07; kutu "2026-10-07", odak kutuda, kutu yeniden kuruldu
+
+TAMAM: 3 denetim geçti, 0 başarısız. (kip rapor-cek kontrol; ön koşul 3/3 denemede oluştu; 0 sayılmadı)

@@ -1,0 +1,32 @@
+{
+  "ad": "d2-hacim-100000",
+  "komut": "node --disable-warning=ExperimentalWarning test/devir-d2-hacim-250.mjs --hareket 100000 --json /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2-calisma/hacim-100000.json",
+  "commit": "3064bc414055f7839dd44bc93db20384b09d0289",
+  "dal": "worktree-agent-ab27a0002c2919cb2",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T11:10:18.335Z",
+  "sure_sn": 836.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 10,
+    "gecen": 10,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2-calisma/kanit/2026-11-06/d2-hacim-100000.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ab27a0002c2919cb2",
+  "ham_cikti_sha256": "c46d8e2ba6f020a4fe764f7d3cccf0bfbfc0eb5f4c73c09be8d5e2e54b3c7635",
+  "ham_cikti_bayt": 1917
+}

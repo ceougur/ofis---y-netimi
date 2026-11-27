@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# Ç3 tur 4 — 1.000.000 "dondurma" ölçümü (ders 47, 52): ÖLÇÜM kilidi flock -x (yük koşuları -s ile bekler), /proc/loadavg yazılır; yük > 2 → GEÇERSİZ (betik yazar).
+# Bekleme döngüsü YOK (ders 50): geçersizse ayrı başlatılarak yinelenir. Çıktı: c3t4-kanit/olcum-1m-<etiket>.json
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+W=/home/user/ofis---y-netimi/.claude/worktrees/agent-a8eba3f64140fc5f1
+ETIKET=${1:-1}
+cd "$S/c3t4-betik" || exit 1
+export HUKUK_LICENSE_URL=http://127.0.0.1:9 NODE_NO_WARNINGS=1 TZ=UTC
+echo "istek $(date -u +%H:%M:%S) yuk $(cat /proc/loadavg) disk $(df -h / | tail -1)"
+flock -x "$S/olcum.lock" bash -c "echo \"kilit alındı \$(date -u +%H:%M:%S) yuk \$(cat /proc/loadavg)\"; timeout 3600 node olcum-1m-dondurma.mjs '$W' '$S/c3t4-veri/n-1000000' '$S/c3t4-kanit/olcum-1m-$ETIKET.json'"
+code=$?
+echo "bitis $(date -u +%H:%M:%S) cikis=$code yuk $(cat /proc/loadavg)"
+exit $code

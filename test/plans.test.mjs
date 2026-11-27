@@ -150,7 +150,9 @@ describe("taksit modülü API (v2.0.4)", () => {
     plan = created.data.data;
     assert.equal(plan.items.length, 0, "kayıt bitince taksit sorulmaz");
     assert.equal(plan.totals.unplanned, 12000);
-    assert.equal(plan.state, "active");
+    // G3 (tur 2b-2, ekran yürüyüşü 1 Y2 — BAŞ MİMAR KARARI 11.11 05:48): Kayıt Tarihi 01.09 geçmiş, taksitlere bölünmemiş 12.000 kuyrukta gecikmiş kalem → kart da "Gecikti"
+    // (zil / Vade Takip ile aynı). Önceki beklenti "active" (kartın durumu yalnız taksitlerden).
+    assert.equal(plan.state, "overdue");
     const spread = await admin.post(`/api/workspace/plans/${plan.id}/distribute`, { count: 4, firstDue: "2026-09-05" });
     assert.equal(spread.status, 200, JSON.stringify(spread.data));
     plan = spread.data.data;
@@ -193,7 +195,7 @@ describe("taksit modülü API (v2.0.4)", () => {
     assert.equal((await admin.get(`/api/workspace/plans?group=${groups[0].id}&status=done`)).data.data.plans.length, 0);
   });
 
-  it("gecikmiş taksit tahsilat takvimine ve bildirimlere düşer; kart kapatılınca düşmez", async () => {
+  it("gecikmiş taksit tahsilat takvimine ve bildirimlere düşer; kart kapatılınca da düşmez (Borçta Kalsın — kalan bugünden vadeli, hatırlatma sürer)", async () => {
     const dues = (await admin.get("/api/workspace/dues")).data.data;
     const mine = dues.items.filter(item => item.source === "plan");
     assert.ok(mine.length >= 1, "takvimde taksit kalemi");
@@ -201,7 +203,11 @@ describe("taksit modülü API (v2.0.4)", () => {
     assert.equal(mine[0].planId, plan.id);
     assert.match(mine[0].label, /taksit/);
     assert.equal((await admin.put(`/api/workspace/plans/${plan.id}`, { status: "closed" })).status, 200);
-    assert.equal((await admin.get("/api/workspace/dues")).data.data.items.filter(item => item.source === "plan").length, 0);
+    // BEKLENTİ BİLEREK DEĞİŞTİ (2.5.0 Ç7b tur 3b, karar (6) "Borçta Kalsın: … kalan carinin borcunda kalır, ertesi günden gecikmiş, hatırlatma gider"; S205 = A): kapalı kartın
+    // kalanı zilde kalır — kapanıştan önce gecikmiş kalem gecikmiş, öbürleri kapanış gününde (bugün) vadeli. Önceden "kart kapatılınca düşer" (0 kalem).
+    const closedDues = (await admin.get("/api/workspace/dues")).data.data.items.filter(item => item.source === "plan" && item.planId === plan.id);
+    assert.ok(closedDues.length >= mine.length, `kapalı kartın kalanı zilde (${closedDues.length})`);
+    assert.ok(closedDues.every(item => item.state === "overdue" || item.state === "today"), JSON.stringify(closedDues.map(item => `${item.dueDate}:${item.state}`)));
     assert.equal((await admin.put(`/api/workspace/plans/${plan.id}`, { status: "active" })).status, 200);
   });
 
@@ -273,7 +279,9 @@ describe("taksit modülü API (v2.0.4)", () => {
     const result = await admin.post("/api/workspace/plans/import", { matrix, headerAt: 1, roles: preview.data.data.roles, defaultCount: 4, defaultFirstDue: "2026-11-01", fileName: "servis.xlsx" });
     assert.equal(result.status, 200, JSON.stringify(result.data));
     assert.equal(result.data.data.created, 2);
-    assert.deepEqual(result.data.data.skipped.map(item => item.reason), ["Toplam tutar okunamadı", "Aynı adla açık kart var"]);
+    // 2.5.0 Ç7b P7 (S219 = A): telefonsuz "Ali Veli" satırı, aynı gruptaki TELEFONLU Ali Veli'nin (0532 111 22 33) kartıyla aynı kişi mi belli değil →
+    // atlanır, neden artık kişiyi söyler (önceden yalnız ad: "Aynı adla açık kart var").
+    assert.deepEqual(result.data.data.skipped.map(item => item.reason), ["Toplam tutar okunamadı", "Aynı adlı birden çok kişi var; telefonunu ekleyip yeniden yükleyin"]);
     const list = (await admin.get("/api/workspace/plans?status=all")).data.data;
     const ayse = list.plans.find(item => item.name === "Ayşe Kaya");
     assert.equal(ayse.subgroupName, "15 Temmuz");

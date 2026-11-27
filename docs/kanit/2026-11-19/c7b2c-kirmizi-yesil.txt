@@ -1,0 +1,48 @@
+# Ç7b tur 2c — yeni / değişen testler: TABAN (c7b2c-taban, git worktree --detach; yeni testler kopyalandı) KIRMIZI, YENİ kod YEŞİL; iki TZ
+## taban-utc
+test/c7b-gecis-gunu-250.test.mjs rc=1 # tests 2 # pass 0 # fail 2 # cancelled 0 # skipped 0 
+test/kural-farki-duzeltme-250.test.mjs rc=1 # tests 8 # pass 6 # fail 2 # cancelled 0 # skipped 0 
+BITTI
+## taban-ist
+test/c7b-gecis-gunu-250.test.mjs rc=1 # tests 2 # pass 0 # fail 2 # cancelled 0 # skipped 0 
+test/kural-farki-duzeltme-250.test.mjs rc=1 # tests 8 # pass 6 # fail 2 # cancelled 0 # skipped 0 
+BITTI
+## yeni-utc
+test/c7b-gecis-gunu-250.test.mjs rc=0 # tests 2 # pass 2 # fail 0 # cancelled 0 # skipped 0 
+test/kural-farki-duzeltme-250.test.mjs rc=0 # tests 8 # pass 8 # fail 0 # cancelled 0 # skipped 0 
+BITTI
+## yeni-ist
+test/c7b-gecis-gunu-250.test.mjs rc=0 # tests 2 # pass 2 # fail 0 # cancelled 0 # skipped 0 
+test/kural-farki-duzeltme-250.test.mjs rc=0 # tests 8 # pass 8 # fail 0 # cancelled 0 # skipped 0 
+BITTI
+## TABAN kırmızı nedenleri (UTC)
+### c7b-gecis-gunu-250.test
+    not ok 1 - kilitli eski dosya: geçiş günü = güncellemedeki kilit; gün sınırı (29.09 / 30.09 / 01.10); eski mahsup ayı; ters kayıt → yeni yön; kilit ileri / geri / açık; göç yenid
+    not ok 2 - kilitsiz eski dosya: geçiş yok (bütün tahsilatlar 336.90); güncellemeden önce mahsup edilmiş ay yine eski yönde (B-6)
+      error: "Cannot read properties of undefined (reading 'value')"
+      code: 'ERR_TEST_FAILURE'
+      name: 'TypeError'
+      stack: |-
+      error: "Cannot read properties of undefined (reading 'value')"
+      code: 'ERR_TEST_FAILURE'
+      name: 'TypeError'
+      stack: |-
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+### kural-farki-duzeltme-250.test
+    not ok 2 - [2] v2.0.26 verisi (kilit 05.10.2026; aynı yıl): yalnız 500 ↔ 519; gerçek eski sürüm satırı (ileri tarihli evrak) ayrı kalır; Muhasebe 403; iki kişi aynı anda
+    not ok 4 - [4] B16: kilitli dönemde onay bekleyen Açılış Olabilir kaydı varken fiş yazılmaz; karar verilince satırlar kararla değişir (onay 519, ret 602 / 770)
+      error: |-
+        göç 51: geçiş günü = güncellemedeki kilit
+        + actual - expected
+        
+      error: 'ret durumunda fiş farkı kapattı (Düzeltildi; tur 2c B-8 = A)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1

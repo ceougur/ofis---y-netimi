@@ -1,0 +1,32 @@
+{
+  "ad": "k10-yeniden-mutasyon",
+  "komut": "python3 -I test/bagimsiz/muhasebe/mutasyon.py",
+  "commit": "d83ccf1c6c3d81498165b0d3fb1a7b71afa230d0",
+  "dal": "k10-birlesim",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T16:00:06.600Z",
+  "sure_sn": 1284.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 263,
+    "gecen": 263,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../k10-kanit/2026-11-06/k10-yeniden-mutasyon.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/k10-birlesim-ag",
+  "ham_cikti_sha256": "fc6a48a410143e175cc446db657d9702580b694a269dd9017d52762f93a46e2e",
+  "ham_cikti_bayt": 52444
+}

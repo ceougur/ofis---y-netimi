@@ -1,0 +1,38 @@
+{
+  "ad": "bs7-mutasyon-m7-iz-yazimi-acik",
+  "komut": "node --test test/sema-kapisi-bs7.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T17:35:01.937Z",
+  "sure_sn": 5.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 3,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "BS-7 şema sürüm kapısı › 002 yeni şemalı, 001 normal: 002 yalnız görüntülenir, 001 çalışır; 002 dosyası bayt bayt aynı mantıksal içerikte kalır",
+      "konum": "test/sema-kapisi-bs7.test.mjs:156:3",
+      "hata": "142 uçtan 5xx verenler · + actual - expected · + [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/ofis---y-netimi/.claude/worktrees/agent-a03e5f6803e8339cb/docs/kanit/2026-11-05/bs7-mutasyon-m7-iz-yazimi-acik.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bs7-ccf0b0ca/mutasyon-m7-iz-yazimi-acik",
+  "ham_cikti_sha256": "2304b226ef2b00a80f045634c624796c10db2cac67fd77fe754655157cc8f424",
+  "ham_cikti_bayt": 5968
+}

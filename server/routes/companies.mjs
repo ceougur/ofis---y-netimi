@@ -30,6 +30,12 @@ export function registerCompanyRoutes(router, { store, auth, audit, companies, a
     if (busyCompanies?.has(company.id)) throw new HttpError(409, busyCompanies.get(company.id) || "Bu şirkette başka bir işlem sürüyor; birkaç saniye sonra yeniden deneyin.");
   };
   const publish = (user, detail) => events?.publish("workspace.changed", { actorId: user.id, actorName: user.display_name, ...detail }, { except: user.id });
+  // 2.5.0 BS-7: şirketin veri dosyası programın daha yeni bir sürümüyle açılmışsa o dosyaya yazan işlem (unvan, sıfırlama, Ayır) yapılmaz — kayıt defteri
+  // (sirketler.json) değişip veri dosyası değişmeden kalmasın diye işlemin BAŞINDA denetlenir. Silme ve geri yükleme dosyaya yazmaz (yedek okur, klasörü taşır / değiştirir).
+  const assertDataWritable = company => {
+    const gate = appFor(company)?.schemaGate;
+    if (gate) throw new HttpError(409, gate.message, { code: gate.code, schemaGate: gate });
+  };
   const shape = (user, company) => {
     const current = companies.selectedFor(user);
     return { id: company.id, code: company.code, name: company.name, label: company.label, root: company.root, current: company.id === current, createdAt: company.createdAt };
@@ -107,6 +113,7 @@ export function registerCompanyRoutes(router, { store, auth, audit, companies, a
     const body = await readJson(req);
     const before = companies.require(params.id);
     notBusy(before);
+    if (body.name !== undefined) assertDataWritable(before);
     const company = companies.update(user, before.id, { name: body.name !== undefined ? text(body.name) : undefined, code: body.code !== undefined ? text(body.code) : undefined });
     if (body.name !== undefined) appFor(company).store.setSetting("office.name", company.name, user.id);
     audit(user, "company.updated", company.id, { from: { code: before.code, name: before.name }, to: { code: company.code, name: company.name } });
@@ -191,6 +198,7 @@ export function registerCompanyRoutes(router, { store, auth, audit, companies, a
     const company = companies.require(params.id);
     notBusy(company);
     backups.assertNotShared(company, "sıfırlama");
+    assertDataWritable(company);
     confirmCode(company, body.confirm);
     confirmPassword(user, body.password);
     const result = resetData(company, user, { mode: text(body.mode) || "movements", resetNumbers: body.resetNumbers !== false });
@@ -210,8 +218,27 @@ export function registerCompanyRoutes(router, { store, auth, audit, companies, a
     const chosen = ids.length ? allowed.filter(item => ids.includes(item.id)) : allowed;
     if (!chosen.length) throw new HttpError(400, "Rapor için en az bir şirket seçin (yetkili olduğunuz şirketler).");
     const showBank = bankVisible(user);
+    // 2.5.0 BS-4 (BAŞ MİMAR KARARI; ders 4 — okunamayan veri boş değildir): seçilen şirketlerden birinin verisi açılamıyorsa (veri dosyası kayıp ya da bozuk)
+    // rapor ÜRETİLMEZ, kısmi toplam verilmez; ekran, PDF ve Excel aynı 409. Önceden appFor'un HttpError olmayan hatası (dataMissing / SQLite) 500 "Sunucu işlemi
+    // tamamlayamadı." oluyordu. Önce bütün şirketler açılır, sonra hesaplanır. Meşgul şirketin (geri yükleme / silme) 503'ü olduğu gibi döner. appFor kayıp
+    // dosyada dosya ya da klasör yaratmaz (v2.0.21 koruması açılıştan önce).
+    const apps = new Map();
+    const failures = [];
+    for (const item of chosen) {
+      try {
+        apps.set(item.id, appFor(companies.get(item.id)));
+      } catch (error) {
+        if (error instanceof HttpError) throw error;
+        log?.warn?.(`Birleşik rapor: ${item.code} · ${item.name} açılamadı (${error.message})`);
+        failures.push({ item, missing: error?.dataMissing === true, reason: backupFailureReason(error) });
+      }
+    }
+    if (failures.length) {
+      const what = failures.map(({ item, missing, reason }) => `“${item.code} · ${item.name}” şirketinin ${missing ? "veri dosyası bulunamadı" : `verisi açılamadı (${reason})`}`).join(", ");
+      throw new HttpError(409, `${what}; birleşik rapor üretilmedi. Yönetim → Yedekler'den şirketi geri yükleyin ya da raporu bu şirketi seçmeden alın.`, { code: failures.every(failure => failure.missing) ? "company-data-missing" : "company-unavailable", companies: failures.map(({ item }) => ({ id: item.id, code: item.code, name: item.name })) });
+    }
     const rows = chosen.map(item => {
-      const app = appFor(companies.get(item.id));
+      const app = apps.get(item.id);
       const view = app.context.overview?.compute?.() || {};
       const bank = view.cash?.bank || {};
       return {

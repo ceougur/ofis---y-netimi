@@ -495,6 +495,13 @@ async function runScenario(sen, root) {
         }
         return;
       }
+      case "stok_iade": {
+        // bakım 2 eşlemesi (ana oturum; yalnız eşleme): masaüstünden FATURASIZ stok satış iadesi — cari kâhini koşucusundaki eşlemeyle aynı istek
+        // (POST /api/workspace/stock/:id/moves {kind: "in", reason: "return", pay: "account"}); iade malı kartı şirket başına ilk kullanımda açılır (ids.urun'a girmez — stok kontrollerini etkilemez).
+        if (!ids.iadeMal?.[code]) (ids.iadeMal ||= {})[code] = (await must("iade malı kartı", call(admin, "POST", withCompany("/api/workspace/stock", code), { kind: "goods", code: "M5-IADE-MAL", name: "Kâhin İade Malı", unit: "Adet", openingQty: "100000", salePrice: "100" }))).id;
+        await must(`${a.id} stok iadesi`, call(admin, "POST", withCompany(`/api/workspace/stock/${ids.iadeMal[code]}/moves`, code), { kind: "in", reason: "return", qty: "1", unitPrice: a.tutar, pay: "account", accountId: ids.cari[a.cari], date: day }));
+        return;
+      }
       case "urun_ac": {
         const d = await must(`${a.id} ürün`, call(admin, "POST", withCompany("/api/workspace/stock", code), { kind: "product", code: `M5-${a.ad}`, name: a.isim || a.ad, unit: "Adet", ...(a.miktar ? { openingQty: String(a.miktar) } : {}) }));
         ids.urun[a.ad] = d.id;
@@ -581,7 +588,7 @@ async function runScenario(sen, root) {
         throw new Error(`ortam adımı tanınmadı: ${a.islem}`);
     }
   }
-  const SETUP = new Set(["cari_ac", "fatura", "iade", "kart_ac", "hesap_ac", "urun_ac", "kasa_acilis", "cari_sil", "donem_kilitle", "yedek_al", "yedek_geri_yukle", "sirket_ac", "ayar"]);
+  const SETUP = new Set(["cari_ac", "fatura", "iade", "stok_iade", "kart_ac", "hesap_ac", "urun_ac", "kasa_acilis", "cari_sil", "donem_kilitle", "yedek_al", "yedek_geri_yukle", "sirket_ac", "ayar"]);
   const ENV = new Set(["saat", "sunucu", "cihaz_esle", "cihaz_sil", "uzak_izin", "sirket_yetki", "lisans", "surum_yukselt"]);
   const steps = sen.adimlar;
   for (let i = 0; i < steps.length; i += 1) {

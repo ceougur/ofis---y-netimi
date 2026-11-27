@@ -1,0 +1,279 @@
+TAP version 13
+# Subtest: createClock — çalışıyor mu
+    # Subtest: gerçek saat: her çağrıda Date'i okur (taklit edilebilir), bugün yerel gün
+    ok 1 - gerçek saat: her çağrıda Date'i okur (taklit edilebilir), bugün yerel gün
+      ---
+      duration_ms: 2.251335
+      type: 'test'
+      ...
+    # Subtest: sabit sahte saat: set, advance (gün), freeze/resume; ISO damgası
+    ok 2 - sabit sahte saat: set, advance (gün), freeze/resume; ISO damgası
+      ---
+      duration_ms: 0.77354
+      type: 'test'
+      ...
+    # Subtest: akan sahte saat: verilen andan gerçek zamanla ilerler; yalnız tarih verilirse yerel öğlen
+    ok 3 - akan sahte saat: verilen andan gerçek zamanla ilerler; yalnız tarih verilirse yerel öğlen
+      ---
+      duration_ms: 71.481538
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: bozuk zaman TypeError; sahte saat dışarıdan dondurulamaz (Date döndürür, kopyası)
+    ok 4 - nasıl bozarım: bozuk zaman TypeError; sahte saat dışarıdan dondurulamaz (Date döndürür, kopyası)
+      ---
+      duration_ms: 0.827505
+      type: 'test'
+      ...
+    1..4
+ok 1 - createClock — çalışıyor mu
+  ---
+  duration_ms: 76.424532
+  type: 'suite'
+  ...
+# Subtest: Sunucu sahte saatle (startTestServer({ now }))
+    # Subtest: sunucunun saati paylaşılır: server.clock = app.config.now = context.now
+    ok 1 - sunucunun saati paylaşılır: server.clock = app.config.now = context.now
+      ---
+      duration_ms: 0.732595
+      type: 'test'
+      ...
+    # Subtest: çalışıyor mu: tarihsiz Kasa hareketi, kayıt tahsilatı, cari hareketi, taksit kartı/tahsilatı, stok, çek ve fatura sahte günü alır
+    ok 2 - çalışıyor mu: tarihsiz Kasa hareketi, kayıt tahsilatı, cari hareketi, taksit kartı/tahsilatı, stok, çek ve fatura sahte günü alır
+      ---
+      duration_ms: 296.448966
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: sahte günden bir gün sonrası ileri tarih (400); saat ilerleyince o gün girilir, kapı engellemez
+    ok 3 - nasıl bozarım: sahte günden bir gün sonrası ileri tarih (400); saat ilerleyince o gün girilir, kapı engellemez
+      ---
+      duration_ms: 50.253205
+      type: 'test'
+      ...
+    # Subtest: nasıl bozarım: saat 30 gün ileri — oturum düşmez (oturum süresi gerçek saatle), işlem yine sahte günle
+    ok 4 - nasıl bozarım: saat 30 gün ileri — oturum düşmez (oturum süresi gerçek saatle), işlem yine sahte günle
+      ---
+      duration_ms: 22.761421
+      type: 'test'
+      ...
+    # Subtest: çocuk şirket (002) aynı saati kullanır
+    ok 5 - çocuk şirket (002) aynı saati kullanır
+      ---
+      duration_ms: 246.785374
+      type: 'test'
+      ...
+    1..5
+ok 2 - Sunucu sahte saatle (startTestServer({ now }))
+  ---
+  duration_ms: 1110.798908
+  type: 'suite'
+  ...
+# Subtest: Gerçek saat (now verilmezse) davranış değişmez
+    # Subtest: bugün = gerçek yerel gün; app.config.now gerçek saat
+    ok 1 - bugün = gerçek yerel gün; app.config.now gerçek saat
+      ---
+      duration_ms: 370.579225
+      type: 'test'
+      ...
+    1..1
+ok 3 - Gerçek saat (now verilmezse) davranış değişmez
+  ---
+  duration_ms: 370.848848
+  type: 'suite'
+  ...
+# Subtest: Statik tarama: iş modüllerinde saat tek kaynaktan
+    # Subtest: tarayıcı kendini sınar: sızıntıyı yakalar, işaretli satırı ve yorumu geçer
+    ok 1 - tarayıcı kendini sınar: sızıntıyı yakalar, işaretli satırı ve yorumu geçer
+      ---
+      duration_ms: 0.917658
+      type: 'test'
+      ...
+    # Subtest: iş modüllerinde `new Date()` / `Date.now()` yok (yalnız context.now)
+    ok 2 - iş modüllerinde `new Date()` / `Date.now()` yok (yalnız context.now)
+      ---
+      duration_ms: 33.217255
+      type: 'test'
+      ...
+    1..2
+ok 4 - Statik tarama: iş modüllerinde saat tek kaynaktan
+  ---
+  duration_ms: 34.289956
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 Ç3 tur 2 — dönem kilidi ucu: sıra (DÜŞÜK-1) ve arkada dondurma (İLERLEME)
+    # Subtest: K1: dondurma sürerken geçersiz ya da gelecek tarihli kilit isteği 400 alır; süren dondurma DURMAZ, POS ön adımı çalışmaz; sonunda kapsam = kilit, tek koşu
+    ok 1 - K1: dondurma sürerken geçersiz ya da gelecek tarihli kilit isteği 400 alır; süren dondurma DURMAZ, POS ön adımı çalışmaz; sonunda kapsam = kilit, tek koşu
+      ---
+      duration_ms: 360.76064
+      type: 'test'
+      ...
+    # Subtest: K2: ön adımı (POS, 409 bank-pending-before-lock) reddedilen istek de süren dondurmayı durdurmaz
+    ok 2 - K2: ön adımı (POS, 409 bank-pending-before-lock) reddedilen istek de süren dondurmayı durdurmaz
+      ---
+      duration_ms: 305.81162
+      type: 'test'
+      ...
+    # Subtest: K3: süren dondurma durdurulduktan sonra kilit yazılamazsa (işlem düşer) önceki bekleyen koşu sahipsiz kalmaz — arkada sürer, kapsam = kilit
+    ok 3 - K3: süren dondurma durdurulduktan sonra kilit yazılamazsa (işlem düşer) önceki bekleyen koşu sahipsiz kalmaz — arkada sürer, kapsam = kilit
+      ---
+      duration_ms: 476.09935
+      type: 'test'
+      ...
+    # Subtest: K4: uç uzun dondurmayı BEKLEMEZ — en çok 5 sn sonra yanıt, kilit izi yanıttan önce; ilerleme GET ile; arada kilitli dönem canlı okunur (raporlar aynı), kilitli döneme 409, açık döneme 200; bitince durum temiz
+    ok 4 - K4: uç uzun dondurmayı BEKLEMEZ — en çok 5 sn sonra yanıt, kilit izi yanıttan önce; ilerleme GET ile; arada kilitli dönem canlı okunur (raporlar aynı), kilitli döneme 409, açık döneme 200; bitince durum temiz
+      ---
+      duration_ms: 5111.2221
+      type: 'test'
+      ...
+    # Subtest: K5: kilit geri çekilince uç hemen yanıt verir; bayat satırlar ve kapının izi arkada — iş bitince açılan dönemde donmuş satır yok, iz benimsenmiş; yeniden kilit donar
+    ok 5 - K5: kilit geri çekilince uç hemen yanıt verir; bayat satırlar ve kapının izi arkada — iş bitince açılan dönemde donmuş satır yok, iz benimsenmiş; yeniden kilit donar
+      ---
+      duration_ms: 5629.058689
+      type: 'test'
+      ...
+    # Subtest: K6: aynı güne yinelenen istek süren dondurmayı durdurmaz (koşu kaldığı yerden sürer, yenisi açılmaz); yazılan satırları silinmez — sonunda donmuş = canlı, görünen satır = koşunun kayıtlı satırı
+    ok 6 - K6: aynı güne yinelenen istek süren dondurmayı durdurmaz (koşu kaldığı yerden sürer, yenisi açılmaz); yazılan satırları silinmez — sonunda donmuş = canlı, görünen satır = koşunun kayıtlı satırı
+      ---
+      duration_ms: 10062.747027
+      type: 'test'
+      ...
+    # Subtest: K7: kapanış (app.close) dondurma arkada sürerken süren işi bitirir — kapalı bağlantıya çarpan iş / uyarı yok; yeniden açılışta bekleyen koşu sürer, kapsam = kilit
+    ok 7 - K7: kapanış (app.close) dondurma arkada sürerken süren işi bitirir — kapalı bağlantıya çarpan iş / uyarı yok; yeniden açılışta bekleyen koşu sürer, kapsam = kilit
+      ---
+      duration_ms: 6934.632923
+      type: 'test'
+      ...
+    1..7
+ok 5 - 2.5.0 Ç3 tur 2 — dönem kilidi ucu: sıra (DÜŞÜK-1) ve arkada dondurma (İLERLEME)
+  ---
+  duration_ms: 30218.813702
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 Ç3 tur 2 — dondurma sürerken kilitli fişin Ters Kaydet'i
+    # Subtest: K8: kilitten hemen sonra (dondurma ve iz bekliyor) kilitli fişin Ters Kaydet'i 200, ters fiş bugün tarihli, kilit izi aynı; Düzelt'te kilitli tarih 409; dondurma sonra tamamlanır, Mutabakat Testi temiz
+    ok 1 - K8: kilitten hemen sonra (dondurma ve iz bekliyor) kilitli fişin Ters Kaydet'i 200, ters fiş bugün tarihli, kilit izi aynı; Düzelt'te kilitli tarih 409; dondurma sonra tamamlanır, Mutabakat Testi temiz
+      ---
+      duration_ms: 5213.667336
+      type: 'test'
+      ...
+    # Subtest: K9 (büyük şirket benzetimi): iz bütçeden (5 sn) uzun sürerse uç bütçe dolunca yanıt verir — sınırsız beklemez; iz ve dondurma arkada gelir
+    ok 2 - K9 (büyük şirket benzetimi): iz bütçeden (5 sn) uzun sürerse uç bütçe dolunca yanıt verir — sınırsız beklemez; iz ve dondurma arkada gelir
+      ---
+      duration_ms: 5198.304283
+      type: 'test'
+      ...
+    1..2
+ok 6 - 2.5.0 Ç3 tur 2 — dondurma sürerken kilitli fişin Ters Kaydet'i
+  ---
+  duration_ms: 10852.132754
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 Ç3 tur 3 — YÜKSEK-1: süren dondurmanın satırları silinmez; koşu tablo doğrulanmadan tamamlanmaz
+    # Subtest: T1 (p1): dondurma YAZIM adımındayken aynı güne yinelenen kilit süren koşunun satırlarını silmez — bitince görünen donmuş satır = kayıtlı = canlı; Hesap Planı Mizanı, Yevmiye Defteri ve karma mizan = canlı; Mutabakat Testi temiz
+    ok 1 - T1 (p1): dondurma YAZIM adımındayken aynı güne yinelenen kilit süren koşunun satırlarını silmez — bitince görünen donmuş satır = kayıtlı = canlı; Hesap Planı Mizanı, Yevmiye Defteri ve karma mizan = canlı; Mutabakat Testi temiz
+      ---
+      duration_ms: 5463.001999
+      type: 'test'
+      ...
+    # Subtest: T3: koşunun satırı yazımdan sonra dışarıdan eksilirse (sayaç ↔ tablo farkı) koşu 'tamam' sayılmaz — görünür hata, kapsam yerinde, koşu bekler; aynı güne yeniden kilit baştan yazar ve tamamlar
+    ok 2 - T3: koşunun satırı yazımdan sonra dışarıdan eksilirse (sayaç ↔ tablo farkı) koşu 'tamam' sayılmaz — görünür hata, kapsam yerinde, koşu bekler; aynı güne yeniden kilit baştan yazar ve tamamlar
+      ---
+      duration_ms: 728.686382
+      type: 'test'
+      ...
+    # Subtest: T4 (ORTA-1): kilit geri çekilince bayat satır temizliği sürerken yeniden kilit 5 sn bütçesini aşmaz — 409 ledger-cleanup-running + Türkçe neden; kilit ve koşular değişmez; ilerleme görünür; temizlik bitince kilit 200 ve donar
+    ok 3 - T4 (ORTA-1): kilit geri çekilince bayat satır temizliği sürerken yeniden kilit 5 sn bütçesini aşmaz — 409 ledger-cleanup-running + Türkçe neden; kilit ve koşular değişmez; ilerleme görünür; temizlik bitince kilit 200 ve donar
+      ---
+      duration_ms: 10799.773982
+      type: 'test'
+      ...
+    # Subtest: T6b (Ç3 küçük işler (b), etiketsiz): Mutabakat Günlüğü'nde 20.000 karakterde kesilmiş (geçersiz JSON) kayıt Mutabakat Testi'ni düşürmez — satır günlükte 'okunamadı' işaretiyle, öbür kayıtlar ayrıştırılır
+    ok 4 - T6b (Ç3 küçük işler (b), etiketsiz): Mutabakat Günlüğü'nde 20.000 karakterde kesilmiş (geçersiz JSON) kayıt Mutabakat Testi'ni düşürmez — satır günlükte 'okunamadı' işaretiyle, öbür kayıtlar ayrıştırılır
+      ---
+      duration_ms: 32.710024
+      type: 'test'
+      ...
+    # Subtest: T5 (Ç3 küçük işler (a), K4 ailesi): Defter Mutabakatı alt başlığı nedeni bilinmeyen ayrışmayı 'Defter kuralı program sürümüyle değişti' diye adlandırmaz — denetimin tarafsız iletisi + yeni işlemler engellenmez
+    ok 5 - T5 (Ç3 küçük işler (a), K4 ailesi): Defter Mutabakatı alt başlığı nedeni bilinmeyen ayrışmayı 'Defter kuralı program sürümüyle değişti' diye adlandırmaz — denetimin tarafsız iletisi + yeni işlemler engellenmez
+      ---
+      duration_ms: 25.334412
+      type: 'test'
+      ...
+    1..5
+ok 7 - 2.5.0 Ç3 tur 3 — YÜKSEK-1: süren dondurmanın satırları silinmez; koşu tablo doğrulanmadan tamamlanmaz
+  ---
+  duration_ms: 18524.481671
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 Ç3 tur 3 — YÜKSEK-1 (p5): açılışta süren eski kurallı (2.4.9) dondurma + aynı güne kilit
+    # Subtest: T2 (p5): eski sürüm kilidi → açılış onarımının 2.4.9 koşusu yazım adımındayken aynı güne kilit → satırlar silinmez; koşu 2.4.9 kuralıyla tamamlanır, görünen = kayıtlı = canlı
+    ok 1 - T2 (p5): eski sürüm kilidi → açılış onarımının 2.4.9 koşusu yazım adımındayken aynı güne kilit → satırlar silinmez; koşu 2.4.9 kuralıyla tamamlanır, görünen = kayıtlı = canlı
+      ---
+      duration_ms: 6947.069254
+      type: 'test'
+      ...
+    1..1
+ok 8 - 2.5.0 Ç3 tur 3 — YÜKSEK-1 (p5): açılışta süren eski kurallı (2.4.9) dondurma + aynı güne kilit
+  ---
+  duration_ms: 6947.477503
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 Ç3 tur 3 — ORTA-1: program temizlik bitmeden kapanırsa temizlik açılışta sürer ve süren iş sayılır
+    # Subtest: T4b: geri çekilen dönemin temizliği yarıda kalır (kapanış) → açılışta sürer; ilerleme görünümü 'süren iş' der, yeniden kilit 409; bitince kilit 200
+    ok 1 - T4b: geri çekilen dönemin temizliği yarıda kalır (kapanış) → açılışta sürer; ilerleme görünümü 'süren iş' der, yeniden kilit 409; bitince kilit 200
+      ---
+      duration_ms: 11966.19577
+      type: 'test'
+      ...
+    1..1
+ok 9 - 2.5.0 Ç3 tur 3 — ORTA-1: program temizlik bitmeden kapanırsa temizlik açılışta sürer ve süren iş sayılır
+  ---
+  duration_ms: 11966.642588
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 Ç3 tur 3 — S46 = A: eksilen donmuş dönem izi duruyorsa kendi kuralıyla, izsizse 2.4.9 kopyasıyla yeniden donar
+    # Subtest: U1: bu programın (2.5.0 kuralıyla) dondurduğu dönemin satırları dışarıdan silinir (iz durur) → açılışta aynı (2.5.0) kuralla yeniden donar; donmuş = canlı
+    ok 1 - U1: bu programın (2.5.0 kuralıyla) dondurduğu dönemin satırları dışarıdan silinir (iz durur) → açılışta aynı (2.5.0) kuralla yeniden donar; donmuş = canlı
+      ---
+      duration_ms: 1746.660005
+      type: 'test'
+      ...
+    # Subtest: U2: izsiz bozulma (2.4.9'un deseni: önce dondurma izi, sonra satırlar) → açılışta GAP_RULE (2.4.9 kopyası) ile yeniden donar (S13)
+    ok 2 - U2: izsiz bozulma (2.4.9'un deseni: önce dondurma izi, sonra satırlar) → açılışta GAP_RULE (2.4.9 kopyası) ile yeniden donar (S13)
+      ---
+      duration_ms: 1574.469483
+      type: 'test'
+      ...
+    # Subtest: U3: karışık bileşim — (…, 30.06] 2.4.9 göç / onarım koşusu (izli), (30.06, 31.12] 2.5.0 koşusu (izli); satırların hepsi silinir → plan iki dilim: her dönem kendi kuralıyla
+    ok 3 - U3: karışık bileşim — (…, 30.06] 2.4.9 göç / onarım koşusu (izli), (30.06, 31.12] 2.5.0 koşusu (izli); satırların hepsi silinir → plan iki dilim: her dönem kendi kuralıyla
+      ---
+      duration_ms: 1934.428614
+      type: 'test'
+      ...
+    1..3
+ok 10 - 2.5.0 Ç3 tur 3 — S46 = A: eksilen donmuş dönem izi duruyorsa kendi kuralıyla, izsizse 2.4.9 kopyasıyla yeniden donar
+  ---
+  duration_ms: 5256.059315
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 Ç3 tur 3 — (b) 2.4.9'dan kalan kesik Mutabakat Günlüğü kaydı Mutabakat Testi'ni düşürmez
+    # Subtest: T6: v2.4.9 + v2.0.26 gerçek koduyla kesik kayıt → güncel kodda Mutabakat Testi 200, kesik satır detailUnreadable + neden (boş değil)
+    ok 1 - T6: v2.4.9 + v2.0.26 gerçek koduyla kesik kayıt → güncel kodda Mutabakat Testi 200, kesik satır detailUnreadable + neden (boş değil)
+      ---
+      duration_ms: 13511.351162
+      type: 'test'
+      ...
+    1..1
+ok 11 - 2.5.0 Ç3 tur 3 — (b) 2.4.9'dan kalan kesik Mutabakat Günlüğü kaydı Mutabakat Testi'ni düşürmez
+  ---
+  duration_ms: 13511.613433
+  type: 'suite'
+  ...
+1..11
+# tests 32
+# suites 11
+# pass 32
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 100124.905456

@@ -1,0 +1,38 @@
+{
+  "ad": "c1-esdegerlik-kirmizi-kurcalanmis-hesap",
+  "komut": "node --disable-warning=ExperimentalWarning test/defter-esdegerlik-250.mjs karsilastir /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c1-1c0e4e9e/dok-motor-eski.json /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c1-1c0e4e9e/dok-motor-yeni-kurcalanmis.json --ad-farki 770",
+  "commit": "b8c66bc4151054dd09162f78011403a40c3f0d8a",
+  "dal": "worktree-agent-a51a663795c9175f5",
+  "kirli": 0,
+  "izlenmeyen": 6,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T18:13:55.705Z",
+  "sure_sn": 0.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 14,
+    "gecen": 13,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "şirket 001: yevmiye maddeleri BİREBİR (kimlik, tarih, kaynak, sıra, hesap, alt hesap, cari, borç, alacak) — ilk fark 28: {\"id\":\"cash:cash-080087fa-2cfb-425b-99a1-48c49f9eca8f\",\"date\":\"2025-10-06\",\"source\":\"Kasa\",\"text\":\"Düzeltildi\",\"seq\":2,\"doubtful\":null,\"lines\":[{\"account\":\"770\",\"debit\":421919,\"credit\":0},{\"account\":\"100\",\"debit\":0,\"credit\":421919}]} ≠ {\"id\":\"cash:cash-080087fa-2cfb-425b-99a1-48c49f9eca8f\",\"date\":\"2025-10-06\",\"source\":\"Kasa\",\"text\":\"Düzeltildi\",\"seq\":2,\"doubtful\":null,\"lines\":[{\"account\":\"760\",\"debit\":421919,\"credit\":0},{\"account\":\"100\",\"debit\":0,\"credit\":421919}]}",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-05/c1-esdegerlik-kirmizi-kurcalanmis-hesap.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a51a663795c9175f5",
+  "ham_cikti_sha256": "90f99c3cfcd99c8e1b6915b9f0c8ad491d3b5b5ba1333f1d691595431ce71ac8",
+  "ham_cikti_bayt": 2220
+}

@@ -1,0 +1,32 @@
+{
+  "ad": "k6y-susan-utc",
+  "komut": "python3 -I -B docs/kanit/2026-11-10/kahineski6-arac/susan-say.py --eski /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahineski6y-eski/test/bagimsiz/cari --yeni test/bagimsiz/cari",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v338 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-10T19:26:17.825Z",
+  "sure_sn": 10.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 1,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../kahineski6y-kanit/2026-11-10/k6y-susan-utc.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahineski6y-yeni",
+  "ham_cikti_sha256": "a2ba6e60d66f42dbc4d299dca4c7773ab9d5e59e14bd4f5b647fe3d4a9f90cd5",
+  "ham_cikti_bayt": 1946
+}

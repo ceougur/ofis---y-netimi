@@ -1,0 +1,910 @@
+{
+ "ad": "s114-a2-kural-gecis-gunu",
+ "dallar": {
+  "A": {
+   "acilis_olabilir": [],
+   "degismezler": {
+    "canli": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
+     "kdv_mahsup": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": [],
+     "s127_tek_yazim": [],
+     "tahmini_aylik_toplam": [],
+     "tyk": []
+    }
+   },
+   "devirler": [],
+   "raporlar": {
+    "kf": {},
+    "kf2": {},
+    "mzA": {
+     "ana": {
+      "100": {
+       "alacak": 0,
+       "bakiye": 50000,
+       "borc": 50000,
+       "devir": 0
+      },
+      "120": {
+       "alacak": 22800,
+       "bakiye": 205200,
+       "borc": 228000,
+       "devir": 0
+      },
+      "191": {
+       "alacak": 10000,
+       "bakiye": 800,
+       "borc": 10800,
+       "devir": 0
+      },
+      "320": {
+       "alacak": 60000,
+       "bakiye": -54000,
+       "borc": 6000,
+       "devir": 0
+      },
+      "336": {
+       "alacak": 20000,
+       "bakiye": -20000,
+       "borc": 0,
+       "devir": 0
+      },
+      "360": {
+       "alacak": 18000,
+       "bakiye": -18000,
+       "borc": 0,
+       "devir": 0
+      },
+      "391": {
+       "alacak": 38000,
+       "bakiye": -8000,
+       "borc": 30000,
+       "devir": 0
+      },
+      "600": {
+       "alacak": 190000,
+       "bakiye": -190000,
+       "borc": 0,
+       "devir": 0
+      },
+      "602": {
+       "alacak": 30000,
+       "bakiye": -30000,
+       "borc": 0,
+       "devir": 0
+      },
+      "610": {
+       "alacak": 0,
+       "bakiye": 19000,
+       "borc": 19000,
+       "devir": 0
+      },
+      "770": {
+       "alacak": 5000,
+       "bakiye": 45000,
+       "borc": 50000,
+       "devir": 0
+      }
+     },
+     "bas": "2026-01-01",
+     "satirlar": {
+      "100": {
+       "alacak": 0,
+       "bakiye": 50000,
+       "borc": 50000,
+       "devir": 0
+      },
+      "120|C1": {
+       "alacak": 22800,
+       "bakiye": 205200,
+       "borc": 228000,
+       "devir": 0
+      },
+      "191": {
+       "alacak": 10000,
+       "bakiye": 800,
+       "borc": 10800,
+       "devir": 0
+      },
+      "320|T1": {
+       "alacak": 60000,
+       "bakiye": -54000,
+       "borc": 6000,
+       "devir": 0
+      },
+      "336.90": {
+       "alacak": 20000,
+       "bakiye": -20000,
+       "borc": 0,
+       "devir": 0
+      },
+      "360": {
+       "alacak": 18000,
+       "bakiye": -18000,
+       "borc": 0,
+       "devir": 0
+      },
+      "391": {
+       "alacak": 38000,
+       "bakiye": -8000,
+       "borc": 30000,
+       "devir": 0
+      },
+      "600": {
+       "alacak": 190000,
+       "bakiye": -190000,
+       "borc": 0,
+       "devir": 0
+      },
+      "602.90": {
+       "alacak": 30000,
+       "bakiye": -30000,
+       "borc": 0,
+       "devir": 0
+      },
+      "610": {
+       "alacak": 0,
+       "bakiye": 19000,
+       "borc": 19000,
+       "devir": 0
+      },
+      "770": {
+       "alacak": 5000,
+       "bakiye": 45000,
+       "borc": 50000,
+       "devir": 0
+      }
+     },
+     "son": "2026-08-31",
+     "toplam": {
+      "alacak": 393800,
+      "bakiye": 0,
+      "borc": 393800,
+      "devir": 0
+     }
+    },
+    "mzB": {
+     "ana": {
+      "100": {
+       "alacak": 0,
+       "bakiye": 50000,
+       "borc": 50000,
+       "devir": 0
+      },
+      "120": {
+       "alacak": 22800,
+       "bakiye": 205200,
+       "borc": 228000,
+       "devir": 0
+      },
+      "191": {
+       "alacak": 11000,
+       "bakiye": 800,
+       "borc": 11800,
+       "devir": 0
+      },
+      "320": {
+       "alacak": 60000,
+       "bakiye": -54000,
+       "borc": 6000,
+       "devir": 0
+      },
+      "336": {
+       "alacak": 20000,
+       "bakiye": -20000,
+       "borc": 0,
+       "devir": 0
+      },
+      "360": {
+       "alacak": 27000,
+       "bakiye": -18000,
+       "borc": 9000,
+       "devir": 0
+      },
+      "391": {
+       "alacak": 47000,
+       "bakiye": -8000,
+       "borc": 39000,
+       "devir": 0
+      },
+      "600": {
+       "alacak": 190000,
+       "bakiye": -190000,
+       "borc": 0,
+       "devir": 0
+      },
+      "602": {
+       "alacak": 30000,
+       "bakiye": -30000,
+       "borc": 0,
+       "devir": 0
+      },
+      "610": {
+       "alacak": 0,
+       "bakiye": 19000,
+       "borc": 19000,
+       "devir": 0
+      },
+      "770": {
+       "alacak": 5000,
+       "bakiye": 45000,
+       "borc": 50000,
+       "devir": 0
+      }
+     },
+     "bas": "2026-01-01",
+     "satirlar": {
+      "100": {
+       "alacak": 0,
+       "bakiye": 50000,
+       "borc": 50000,
+       "devir": 0
+      },
+      "120|C1": {
+       "alacak": 22800,
+       "bakiye": 205200,
+       "borc": 228000,
+       "devir": 0
+      },
+      "191": {
+       "alacak": 11000,
+       "bakiye": 800,
+       "borc": 11800,
+       "devir": 0
+      },
+      "320|T1": {
+       "alacak": 60000,
+       "bakiye": -54000,
+       "borc": 6000,
+       "devir": 0
+      },
+      "336.90": {
+       "alacak": 20000,
+       "bakiye": -20000,
+       "borc": 0,
+       "devir": 0
+      },
+      "360": {
+       "alacak": 27000,
+       "bakiye": -18000,
+       "borc": 9000,
+       "devir": 0
+      },
+      "391": {
+       "alacak": 47000,
+       "bakiye": -8000,
+       "borc": 39000,
+       "devir": 0
+      },
+      "600": {
+       "alacak": 190000,
+       "bakiye": -190000,
+       "borc": 0,
+       "devir": 0
+      },
+      "602.90": {
+       "alacak": 30000,
+       "bakiye": -30000,
+       "borc": 0,
+       "devir": 0
+      },
+      "610": {
+       "alacak": 0,
+       "bakiye": 19000,
+       "borc": 19000,
+       "devir": 0
+      },
+      "770": {
+       "alacak": 5000,
+       "bakiye": 45000,
+       "borc": 50000,
+       "devir": 0
+      }
+     },
+     "son": "2026-08-31",
+     "toplam": {
+      "alacak": 412800,
+      "bakiye": 0,
+      "borc": 412800,
+      "devir": 0
+     }
+    },
+    "mzC": {
+     "ana": {
+      "100": {
+       "alacak": 0,
+       "bakiye": 50000,
+       "borc": 50000,
+       "devir": 0
+      },
+      "120": {
+       "alacak": 22800,
+       "bakiye": 205200,
+       "borc": 228000,
+       "devir": 0
+      },
+      "191": {
+       "alacak": 11000,
+       "bakiye": 800,
+       "borc": 11800,
+       "devir": 0
+      },
+      "320": {
+       "alacak": 60000,
+       "bakiye": -54000,
+       "borc": 6000,
+       "devir": 0
+      },
+      "336": {
+       "alacak": 20000,
+       "bakiye": -20000,
+       "borc": 0,
+       "devir": 0
+      },
+      "360": {
+       "alacak": 27000,
+       "bakiye": -18000,
+       "borc": 9000,
+       "devir": 0
+      },
+      "391": {
+       "alacak": 47000,
+       "bakiye": -8000,
+       "borc": 39000,
+       "devir": 0
+      },
+      "600": {
+       "alacak": 190000,
+       "bakiye": -190000,
+       "borc": 0,
+       "devir": 0
+      },
+      "602": {
+       "alacak": 30000,
+       "bakiye": -30000,
+       "borc": 0,
+       "devir": 0
+      },
+      "610": {
+       "alacak": 0,
+       "bakiye": 19000,
+       "borc": 19000,
+       "devir": 0
+      },
+      "770": {
+       "alacak": 5000,
+       "bakiye": 45000,
+       "borc": 50000,
+       "devir": 0
+      }
+     },
+     "bas": "2026-01-01",
+     "satirlar": {
+      "100": {
+       "alacak": 0,
+       "bakiye": 50000,
+       "borc": 50000,
+       "devir": 0
+      },
+      "120|C1": {
+       "alacak": 22800,
+       "bakiye": 205200,
+       "borc": 228000,
+       "devir": 0
+      },
+      "191": {
+       "alacak": 11000,
+       "bakiye": 800,
+       "borc": 11800,
+       "devir": 0
+      },
+      "320|T1": {
+       "alacak": 60000,
+       "bakiye": -54000,
+       "borc": 6000,
+       "devir": 0
+      },
+      "336.90": {
+       "alacak": 20000,
+       "bakiye": -20000,
+       "borc": 0,
+       "devir": 0
+      },
+      "360": {
+       "alacak": 27000,
+       "bakiye": -18000,
+       "borc": 9000,
+       "devir": 0
+      },
+      "391": {
+       "alacak": 47000,
+       "bakiye": -8000,
+       "borc": 39000,
+       "devir": 0
+      },
+      "600": {
+       "alacak": 190000,
+       "bakiye": -190000,
+       "borc": 0,
+       "devir": 0
+      },
+      "602.90": {
+       "alacak": 30000,
+       "bakiye": -30000,
+       "borc": 0,
+       "devir": 0
+      },
+      "610": {
+       "alacak": 0,
+       "bakiye": 19000,
+       "borc": 19000,
+       "devir": 0
+      },
+      "770": {
+       "alacak": 5000,
+       "bakiye": 45000,
+       "borc": 50000,
+       "devir": 0
+      }
+     },
+     "son": "2026-09-30",
+     "toplam": {
+      "alacak": 412800,
+      "bakiye": 0,
+      "borc": 412800,
+      "devir": 0
+     }
+    },
+    "mzG": {
+     "ana": {
+      "100": {
+       "alacak": 0,
+       "bakiye": 50000,
+       "borc": 50000,
+       "devir": 0
+      },
+      "120": {
+       "alacak": 22800,
+       "bakiye": 205200,
+       "borc": 228000,
+       "devir": 0
+      },
+      "191": {
+       "alacak": 10000,
+       "bakiye": 1800,
+       "borc": 11800,
+       "devir": 0
+      },
+      "320": {
+       "alacak": 60000,
+       "bakiye": -54000,
+       "borc": 6000,
+       "devir": 0
+      },
+      "336": {
+       "alacak": 20000,
+       "bakiye": -20000,
+       "borc": 0,
+       "devir": 0
+      },
+      "360": {
+       "alacak": 18000,
+       "bakiye": -9000,
+       "borc": 9000,
+       "devir": 0
+      },
+      "391": {
+       "alacak": 47000,
+       "bakiye": -18000,
+       "borc": 29000,
+       "devir": 0
+      },
+      "600": {
+       "alacak": 190000,
+       "bakiye": -190000,
+       "borc": 0,
+       "devir": 0
+      },
+      "602": {
+       "alacak": 30000,
+       "bakiye": -30000,
+       "borc": 0,
+       "devir": 0
+      },
+      "610": {
+       "alacak": 0,
+       "bakiye": 19000,
+       "borc": 19000,
+       "devir": 0
+      },
+      "770": {
+       "alacak": 5000,
+       "bakiye": 45000,
+       "borc": 50000,
+       "devir": 0
+      }
+     },
+     "bas": "2026-01-01",
+     "satirlar": {
+      "100": {
+       "alacak": 0,
+       "bakiye": 50000,
+       "borc": 50000,
+       "devir": 0
+      },
+      "120|C1": {
+       "alacak": 22800,
+       "bakiye": 205200,
+       "borc": 228000,
+       "devir": 0
+      },
+      "191": {
+       "alacak": 10000,
+       "bakiye": 1800,
+       "borc": 11800,
+       "devir": 0
+      },
+      "320|T1": {
+       "alacak": 60000,
+       "bakiye": -54000,
+       "borc": 6000,
+       "devir": 0
+      },
+      "336.90": {
+       "alacak": 20000,
+       "bakiye": -20000,
+       "borc": 0,
+       "devir": 0
+      },
+      "360": {
+       "alacak": 18000,
+       "bakiye": -9000,
+       "borc": 9000,
+       "devir": 0
+      },
+      "391": {
+       "alacak": 47000,
+       "bakiye": -18000,
+       "borc": 29000,
+       "devir": 0
+      },
+      "600": {
+       "alacak": 190000,
+       "bakiye": -190000,
+       "borc": 0,
+       "devir": 0
+      },
+      "602.90": {
+       "alacak": 30000,
+       "bakiye": -30000,
+       "borc": 0,
+       "devir": 0
+      },
+      "610": {
+       "alacak": 0,
+       "bakiye": 19000,
+       "borc": 19000,
+       "devir": 0
+      },
+      "770": {
+       "alacak": 5000,
+       "bakiye": 45000,
+       "borc": 50000,
+       "devir": 0
+      }
+     },
+     "son": "2026-08-31",
+     "toplam": {
+      "alacak": 402800,
+      "bakiye": 0,
+      "borc": 402800,
+      "devir": 0
+     }
+    },
+    "yev0310": [
+     {
+      "id": "I1#0",
+      "kaynak": "I1",
+      "satirlar": [
+       {
+        "b": 10000,
+        "h": "610"
+       },
+       {
+        "b": 2000,
+        "e": {
+         "donem": "2026-03"
+        },
+        "h": "391"
+       },
+       {
+        "a": 12000,
+        "c": "C1",
+        "e": {
+         "k": "iade:I1",
+         "link": "fatura:F1",
+         "tur": "iade"
+        },
+        "h": "120"
+       }
+      ],
+      "sinif": 1,
+      "tarih": "2026-03-10",
+      "tur": "satis_iade_faturasi"
+     }
+    ],
+    "yev0312": [
+     {
+      "id": "R1#0",
+      "kaynak": "R1",
+      "satirlar": [
+       {
+        "b": 6000,
+        "c": "T1",
+        "e": {
+         "k": "iade:R1",
+         "link": "fatura:A1",
+         "tur": "iade"
+        },
+        "h": "320"
+       },
+       {
+        "a": 5000,
+        "h": "770"
+       },
+       {
+        "a": 1000,
+        "e": {
+         "donem": "2026-03"
+        },
+        "h": "191"
+       }
+      ],
+      "sinif": 1,
+      "tarih": "2026-03-12",
+      "tur": "alis_iade_faturasi"
+     }
+    ],
+    "yev0331": [
+     {
+      "id": "fis6",
+      "kaynak": "fis6",
+      "satirlar": [
+       {
+        "b": 18000,
+        "e": {
+         "donem": "2026-03"
+        },
+        "h": "391"
+       },
+       {
+        "a": 9000,
+        "e": {
+         "donem": "2026-03"
+        },
+        "h": "191"
+       },
+       {
+        "a": 9000,
+        "h": "360"
+       }
+      ],
+      "sinif": 2,
+      "tarih": "2026-03-31",
+      "tur": "kdv_mahsup"
+     }
+    ],
+    "yev0401": [
+     {
+      "id": "KT1#0",
+      "kaynak": "KT1",
+      "satirlar": [
+       {
+        "b": 30000,
+        "h": "100"
+       },
+       {
+        "a": 30000,
+        "h": "602.90"
+       }
+      ],
+      "sinif": 1,
+      "tarih": "2026-04-01",
+      "tur": "kayit_tahsilati"
+     }
+    ],
+    "yev0708": [
+     {
+      "id": "I2#0",
+      "kaynak": "I2",
+      "satirlar": [
+       {
+        "b": 5000,
+        "h": "610"
+       },
+       {
+        "b": 1000,
+        "e": {
+         "donem": "2026-07"
+        },
+        "h": "391"
+       },
+       {
+        "a": 6000,
+        "c": "C1",
+        "e": {
+         "k": "iade:I2",
+         "link": "fatura:F2",
+         "tur": "iade"
+        },
+        "h": "120"
+       }
+      ],
+      "sinif": 1,
+      "tarih": "2026-07-08",
+      "tur": "satis_iade_faturasi"
+     }
+    ],
+    "yev0731": [
+     {
+      "id": "fis9",
+      "kaynak": "fis9",
+      "satirlar": [
+       {
+        "b": 9000,
+        "e": {
+         "donem": "2026-07"
+        },
+        "h": "391"
+       },
+       {
+        "a": 9000,
+        "h": "360"
+       }
+      ],
+      "sinif": 2,
+      "tarih": "2026-07-31",
+      "tur": "kdv_mahsup"
+     },
+     {
+      "id": "fis13",
+      "kaynak": "fis13",
+      "satirlar": [
+       {
+        "a": 9000,
+        "e": {
+         "donem": "2026-07"
+        },
+        "h": "391"
+       },
+       {
+        "b": 9000,
+        "h": "360"
+       }
+      ],
+      "sinif": 2,
+      "tarih": "2026-07-31",
+      "tur": "ters"
+     },
+     {
+      "id": "fis14",
+      "kaynak": "fis14",
+      "satirlar": [
+       {
+        "b": 10000,
+        "e": {
+         "donem": "2026-07"
+        },
+        "h": "391"
+       },
+       {
+        "a": 1000,
+        "e": {
+         "donem": "2026-07"
+        },
+        "h": "191"
+       },
+       {
+        "a": 9000,
+        "h": "360"
+       }
+      ],
+      "sinif": 2,
+      "tarih": "2026-07-31",
+      "tur": "kdv_mahsup"
+     }
+    ],
+    "yev0810": [
+     {
+      "id": "I3#0",
+      "kaynak": "I3",
+      "satirlar": [
+       {
+        "b": 4000,
+        "h": "610"
+       },
+       {
+        "b": 800,
+        "e": {
+         "donem": "2026-08"
+        },
+        "h": "191"
+       },
+       {
+        "a": 4800,
+        "c": "C1",
+        "e": {
+         "k": "iade:I3",
+         "link": "fatura:F3",
+         "tur": "iade"
+        },
+        "h": "120"
+       }
+      ],
+      "sinif": 1,
+      "tarih": "2026-08-10",
+      "tur": "satis_iade_faturasi"
+     }
+    ],
+    "yev0812": [
+     {
+      "id": "KT2#0",
+      "kaynak": "KT2",
+      "satirlar": [
+       {
+        "b": 20000,
+        "h": "100"
+       },
+       {
+        "a": 20000,
+        "h": "336.90"
+       }
+      ],
+      "sinif": 1,
+      "tarih": "2026-08-12",
+      "tur": "kayit_tahsilati"
+     }
+    ],
+    "yevG0708": [
+     {
+      "id": "I2#0",
+      "kaynak": "I2",
+      "satirlar": [
+       {
+        "b": 5000,
+        "h": "610"
+       },
+       {
+        "b": 1000,
+        "e": {
+         "donem": "2026-07"
+        },
+        "h": "191"
+       },
+       {
+        "a": 6000,
+        "c": "C1",
+        "e": {
+         "k": "iade:I2",
+         "link": "fatura:F2",
+         "tur": "iade"
+        },
+        "h": "120"
+       }
+      ],
+      "sinif": 1,
+      "tarih": "2026-07-08",
+      "tur": "satis_iade_faturasi"
+     }
+    ]
+   },
+   "redler": []
+  }
+ },
+ "dil": "muhasebe-kahin/1"
+}

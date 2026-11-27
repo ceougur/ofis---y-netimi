@@ -1,0 +1,128 @@
+{
+ "ad": "s112-s181-bagli-tahsilat-120-siniri",
+ "dallar": {
+  "A": {
+   "acilis_olabilir": [],
+   "degismezler": {
+    "canli": {
+     "aktif_pasif": [],
+     "buyuk_defter_mizan": [],
+     "gt_bilanco_kar": [],
+     "kasa_acilis_ilk": [],
+     "kdv_mahsup": [],
+     "madde_dengesi": [],
+     "mizan_dengesi": [],
+     "modul_defter": [],
+     "s127_tek_yazim": [],
+     "tahmini_aylik_toplam": [],
+     "tyk": []
+    }
+   },
+   "devirler": [],
+   "raporlar": {
+    "g3": {
+     "cari": "C3",
+     "detay": [],
+     "gecikmis": 0,
+     "supheli": 100000,
+     "tarih": "2026-03-01"
+    },
+    "mz": {
+     "ana": {
+      "100": {
+       "alacak": 0,
+       "bakiye": 100000,
+       "borc": 100000,
+       "devir": 0
+      },
+      "120": {
+       "alacak": 300000,
+       "bakiye": 0,
+       "borc": 300000,
+       "devir": 0
+      },
+      "128": {
+       "alacak": 20000,
+       "bakiye": 200000,
+       "borc": 220000,
+       "devir": 0
+      },
+      "600": {
+       "alacak": 300000,
+       "bakiye": -300000,
+       "borc": 0,
+       "devir": 0
+      }
+     },
+     "bas": "2026-01-01",
+     "satirlar": {
+      "100": {
+       "alacak": 0,
+       "bakiye": 100000,
+       "borc": 100000,
+       "devir": 0
+      },
+      "120|C1": {
+       "alacak": 150000,
+       "bakiye": 0,
+       "borc": 150000,
+       "devir": 0
+      },
+      "120|C3": {
+       "alacak": 150000,
+       "bakiye": 0,
+       "borc": 150000,
+       "devir": 0
+      },
+      "128|C1": {
+       "alacak": 0,
+       "bakiye": 100000,
+       "borc": 100000,
+       "devir": 0
+      },
+      "128|C3": {
+       "alacak": 20000,
+       "bakiye": 100000,
+       "borc": 120000,
+       "devir": 0
+      },
+      "600": {
+       "alacak": 300000,
+       "bakiye": -300000,
+       "borc": 0,
+       "devir": 0
+      }
+     },
+     "son": "2026-02-28",
+     "toplam": {
+      "alacak": 620000,
+      "bakiye": 0,
+      "borc": 620000,
+      "devir": 0
+     }
+    }
+   },
+   "redler": [
+    {
+     "kod": "SUPHELI_NORMAL_ASIM",
+     "neden": "120'ye düşen 90000 > kaydın günündeki 120 bakiyesi 50000 (S181 = B)",
+     "olay": 6,
+     "tur": "tahsilat"
+    },
+    {
+     "kod": "SUPHELI_NORMAL_ASIM",
+     "neden": "120'ye düşen 1 > kaydın günündeki 120 bakiyesi 0 (S181 = B)",
+     "olay": 8,
+     "tur": "tahsilat"
+    },
+    {
+     "kod": "SUPHELI_NORMAL_ASIM",
+     "neden": "120'ye düşen 40000 > kaydın günündeki 120 bakiyesi 30000 (S181 = B)",
+     "olay": 10,
+     "tur": "tahsilat"
+    }
+   ]
+  }
+ },
+ "dil": "muhasebe-kahin/1"
+}

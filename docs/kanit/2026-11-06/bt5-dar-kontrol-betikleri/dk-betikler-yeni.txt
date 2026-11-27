@@ -1,0 +1,60 @@
+=== kök: /home/user/ofis---y-netimi/.claude/worktrees/agent-a731f6dec73e0177c (yeni) 2026-11-06T12:31:47Z
+--- dk-ah/betik/bs6-exec-gercek.mjs
+run: iç=disk I/O error | sonraki yazım=ERR_TX_LOST Veri tabanı işlemi yarıda kesildi: SQLite işlemi k | dış=ERR_TX_LOST Veri tabanı işlemi yarıda kesildi: SQLite işlemi kendiliğinden geri al | diskte dış satır=0 ayar=0 settingsTablosu=1 acikIslem=false
+setSetting: iç=disk I/O error | sonraki yazım=ERR_TX_LOST Veri tabanı işlemi yarıda kesildi: SQLite işlemi k | dış=ERR_TX_LOST Veri tabanı işlemi yarıda kesildi: SQLite işlemi kendiliğinden geri al | diskte dış satır=0 ayar=0 settingsTablosu=1 acikIslem=false
+exec: iç=disk I/O error | sonraki yazım=ERR_TX_LOST Veri tabanı işlemi yarıda kesildi: SQLite işlemi k | dış=ERR_TX_LOST Veri tabanı işlemi yarıda kesildi: SQLite işlemi kendiliğinden geri al | diskte dış satır=0 ayar=0 settingsTablosu=1 acikIslem=false
+exec-ddl: iç=disk I/O error | sonraki yazım=ERR_TX_LOST Veri tabanı işlemi yarıda kesildi: SQLite işlemi k | dış=ERR_TX_LOST Veri tabanı işlemi yarıda kesildi: SQLite işlemi kendiliğinden geri al | diskte dış satır=0 ayar=0 settingsTablosu=1 acikIslem=false
+çıkış 0
+--- dk-ah/betik/bs6-mesru.mjs
+UYGUN  ic-kisit-yakala-sur: hata=null eklenen=2 acikIslem=false
+UYGUN  ic-ice-js-hata: hata=null eklenen=2 acikIslem=false
+UYGUN  okuma-hatasi-ddl-pragma: hata=null eklenen=1 acikIslem=false
+UYGUN  raw-kapsam: hata=null eklenen=1 acikIslem=false
+UYGUN  islem-disi-yazim: hata=null eklenen=1 acikIslem=false
+UYGUN  kayip-sonra-run: hata=ERR_TX_LOST Veri tabanı işlemi yarıda kesildi: SQLite işlemi kendiliğinden geri aldı. Bu yazım yapılma eklenen=0 acikIslem=false
+UYGUN  kayip-sonra-exec-BOSLUK: hata=ERR_TX_LOST Veri tabanı işlemi yarıda kesildi: SQLite işlemi kendiliğinden geri aldı. Bu yazım yapılma eklenen=0 acikIslem=false
+UYGUN  kayip-sonra-get-returning-BOSLUK: hata=ERR_TX_LOST Veri tabanı işlemi yarıda kesildi: SQLite işlemi kendiliğinden geri aldı. Bu yazım yapılma eklenen=0 acikIslem=false
+UYGUN  sonraki-islem: hata=null eklenen=1 acikIslem=false
+çıkış 0
+--- bt5-betik/okuma-hatasi-dene.mjs (ilk hata okuma hatasında)
+{
+ "readError": "ERR_SQLITE_ERROR 778 disk I/O error",
+ "acikIslemOkumadanSonra": false,
+ "sonrakiYazim": "ERR_TX_LOST Veri tabanı işlemi yarıda kesildi: SQLite işlemi kendiliğinden geri aldı (ilk hata: disk I/O error). Bu yazım yapılmadı; işlemin tamamı geri alındı, yeniden den",
+ "dis": "ERR_TX_LOST Veri tabanı işlemi yarıda kesildi: SQLite işlemi kendiliğinden geri aldı (ilk hata: disk I/O error). Bu yazım yapılmadı; işlemin tamamı geri alındı, yeniden deneyin.",
+ "disktekiDisSatir": 0
+}
+çıkış 0
+--- dk-webs7-is/senaryo.mjs dosya-kayip
+[senaryo] P1 üretildi: 200 true verify: 200
+[senaryo] yedek (P1'li): destekofis-001-2026-11-06T12-31-49-348Z-manuel.sqlite
+[senaryo] 001 dosyası silindi; secret.key duruyor: true
+[senaryo] boş 001 açıldı; webhook satırı: null
+[senaryo] geri yükleme isteği: 200
+[senaryo] geri yükleme sonucu: {"ok":true,"n":"destekofis-001-2026-11-06T12-31-49-348Z-manuel.sqlite","error":""}
+[senaryo] geri yüklemeden sonra webhook satırı var mı: true WhatsApp bağlantısı (whatsapp.meta) var mı: true
+[senaryo] Meta'daki P1 ile doğrulama (yeniden gösterimden ÖNCE): 200 12
+[senaryo] yeniden gösterim P1 ile aynı mı: true
+[senaryo] Meta'daki P1 ile doğrulama (SONRA): 200 13
+çıkış 0
+--- dk-webs7-is/senaryo.mjs tasima-anahtarli
+[senaryo] geri yükleme isteği: 200
+[senaryo] sonuç: {"ok":true,"error":""}
+[senaryo] A'nın çiftiyle (Meta'da) doğrulama: 200
+çıkış 0
+--- dk-webs7-is/senaryo.mjs kapili-001-geri-don
+[senaryo] B0 (çiftsiz) alındı, P1 üretildi: true
+[senaryo] 001 kapıda: 48 geri yükleme isteği: 200
+[senaryo] sonuç: {"ok":true,"error":""} kapı: null şema: 47
+[senaryo] P1 ile doğrulama: 200
+[senaryo] gösterilen = P1: true
+çıkış 0
+--- dk-bt4-betik/p4-kapali-kart-tarih.mjs
+kapatma günü: {"date":"2026-10-08","balance":0,"closedAt":"2026-10-08"}
++40 gün, aynı içerikle Kaydet (200): {"date":"2026-10-08","balance":0,"closedAt":"2026-10-08"}
++40 gün, yalnız not (200): {"date":"2026-10-08","balance":0,"closedAt":"2026-10-08"}
+SONUÇ: "Kart kapatıldı" satırı 2026-10-08 → aynı içerik 2026-10-08 → not 2026-10-08; closed_at 2026-10-08; SABİT
+çıkış 0
+--- dk-bt4-betik/p1-alanlar.mjs (özet)
+çıkış 0
+=== P1: 75 hücre, 75 OK, 0 HATA

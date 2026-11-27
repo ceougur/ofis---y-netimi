@@ -1,0 +1,38 @@
+Sen DestekOfis projesinde ESKİ KÂHİNLER BAKIMI 4 ajanısın (2.5.0 Ç5 — cari kâhini `test/bagimsiz/cari/`; defter kâhini `test/bagimsiz/defter/` yalnız gerekiyorsa). PROGRAMIN KODUNU GÖRMEZSİN (ders 5, 40). Kâhini yalnız kullanıcı kararlarından, kural kitabından ve plan metninden güncellersin. KENDİ dalında commit edersin; PUSH YAPMAZSIN. Yanıtın Türkçe. Eforun xhigh.
+
+## Neden
+Kullanıcı 06.11 19:33 UTC üç yeni karar verdi (S91, S92, S93 = A). Cari kâhini bunlardan önce yazıldı; bu durumlarda başka bir okumayı bekliyor olabilir. Senin dalın ana dala Ç5-B / Ç5-A ile birlikte girer (ana oturum birleştirir).
+
+## Hazırlık
+1. Worktree'de `git merge --ff-only 2aa1e733` (eski kâhinler bakımı 3'ün dalı `worktree-agent-aee95d00d296d627a`; aynı depoda); olmazsa ve dalında kendi commit'in yoksa `git reset --hard 2aa1e733`. Karar metni için yalnız `git show ddd8be64:docs/2.5.0-IS-LISTESI.md` (A, C, D bölümleri).
+2. ÖNCE oku: `CLAUDE.md` (dersler 1–52; özellikle 5, 6, 31, 40, 43; SORU DÜZENİ); `docs/BAGIMSIZ-DOGRULAMA-PRENSIBI.md`; iş listesinin (ddd8be64) C bölümünde S1, S2, S9 ve S91–S93 metinleri, D bölümünde bunların KULLANICI KARARI satırları + "karar (5)" geçen kararlar + 05.11 "hepsi A" para kuralları; `docs/erp/MUHASEBELESTIRME-KURAL-KITABI.md` EK-1 §1 (açık kalem tanımı, (iii) vadesiz kayıt) ve "karşı yönlü kalemlerin netleşmesi" geçen bölümler; cari kâhininin kendi belgeleri (`test/bagimsiz/cari/KARARLAR.md` — büyük: önce başlık listesi, yalnız gecikmiş / takvim / Vade Takip / Kalan / K6.3 / KS2 / C13.5 / §13 bölümleri) ve kâhin kodları.
+
+## Yasaklar (bağımsızlık)
+- `server/`, `client/`, `bulut/`, `packaging/`, `tools/` (kanit.mjs yalnız çalıştırılır), `docs/erp/C5-ACILIS-TASARIM.md`, `docs/erp/C5B-TYK-TASARIM.md` (kod planları; aynı el riski — ders 5) ve `test/` altında bu iki kâhin klasörü dışındaki her şey OKUNMAZ. Kâhinin programı süren tarafı (`kos.mjs` / `karsilastir.mjs`) yalnız olay / alan EŞLEMESİ için okunabilir; değişirse yalnız eşleme eklenir, raporda yazılır.
+- `docs/kanit/` altında başka ajanların dosyaları ve git farkı / geçmiş içeriği açılmaz. Programın davranışı aranmaz.
+
+## İş — yalnız bu kararlar (AYNEN iş listesi D, 06.11 19:33)
+- S91 = A: VADESİZ kayıtlar (vadesiz Borç / Alacak Yaz, açılış, stok veresiye, karşılıksız evrak) kayıt gününde vadeli kalemdir → takvim / zil / Vade Takip / nakit akışı kalemi olur (ertesi gün gecikmiş).
+- S92 = A: karar (5) net görünümü (aynı caride karşı yönlü kalemler kendi tarihinde netleşir) Kalan / takvim / Vade Takip'e DE uygulanır — yalnız gecikmiş toplamına değil. S9 = A ile birlikte oku: S9 örneğinin kâhindeki sonucu karar metniyle aynı mı denetle (ana oturuma bildirilen kuşku: kâhin S9 örneğinde 9.000 veriyor olabilir, karar A'nın sonucu 4.000 — kuşkuyu KARAR METNİNDEN doğrula ya da çürüt; programdan değil).
+- S93 = A: tedarikçiye verilen avans (tedarikçi borçlu) vadesi geçince "Gecikmiş Borç" sayılır (EK-1 §1: netleşmemiş her borç yönlü satır açık kalem); Ödeme Hatırlatma gitmemesi WhatsApp tarafının işi (bu kâhinin konusu değilse yaz).
+
+1. Önce yorumu cari KARARLAR.md'ye ("2.5.0 Ç5 bakımı 4") yaz ve AYRI commit et (ders 40). İki okuma kalırsa KULLANICIYA SORULMALI (iki seçenek + öneri; uç durumsa üçüncü seçenek "Uç durum böyle kalsın (BİLİNEN SINIR)"), kodlama.
+2. Kâhini karara getir (cari; defter kâhininin dilinde takvim / Kalan yoksa defter değişmez — raporda yaz).
+3. Senaryolar: her karar için en az bir elle senaryo — vadesiz Borç Yaz ertesi gün; açılış bakiyesi; stok veresiye; karşılıksız çek; aynı caride 5.000 alacak + 1.000 iade borcu (Kalan / takvim / Vade Takip net 4.000) ve S9 örneği; karşı yönlü kalemlerin tarihi farklı (netleşme kendi tarihinde); tedarikçiye avans vadeden önce / sonra; aynı adlı iki cari; gün dönümü.
+4. Mutantlar: her kararın B seçeneği + bir sınır kayması (kayıt günü ↔ ertesi gün; netleşme tarihi) — değerle yakalanmalı.
+5. G3: değişen eski beklentiler senaryo senaryo, gerekçesiyle; `--kural 2.4.9` eşdeğerliği bayt bayt korunur.
+
+## Yöntem
+- Eski kâhin kopyası değişiklikten ÖNCE `/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahineski4-<kısa>/` (`git archive 2aa1e733 test/bagimsiz/defter test/bagimsiz/cari`); yeni senaryolar eski kâhinde beklenen nedenle farklı sonuç vermeli (döküm).
+- Program KOŞULMAZ. Kâhinin kendi testleri iki TZ (UTC, Europe/Istanbul): `KANIT_DIR=<kendi not defteri klasörün> node tools/kanit.mjs kos kahineski4-<ad> -- python3 -I <dosya>`; mutasyon `flock -s /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olcum.lock` ile (ders 52), bekleme döngüsü yok (ders 50); kanıt `docs/kanit/2026-11-06/kahineski4-*`.
+- Kendi arka plan işin sürerken turunu rapor vermeden BİTİRME; sonucu bekle, sonra raporla.
+- `pkill` / joker `rm` YOK. Commit'e yalnız kendi yolların (ders 44).
+- Commit iletisi sonunda tam olarak şu iki satır:
+  ```
+  Co-Authored-By: Claude <noreply@anthropic.com>
+  Claude-Session: https://claude.ai/code/session_01EhegDvmPQ9hx2ibfitm6og
+  ```
+  (model adı YOK).
+
+## Rapor
+Yorumlar, değişen kural, senaryolar, mutantlar, test sayıları (iki TZ), eski kâhinle fark dökümü, değişen eski beklentiler (G3, gerekçeli), S9 kuşkusunun sonucu; programı süren tarafta gereken eşleme notları; KULLANICIYA SORULMALI, DENENMEYEN; OKUNAN DOSYALARIN TAM LİSTESİ (satır aralıklarıyla) — bağımsızlık denetimi için.

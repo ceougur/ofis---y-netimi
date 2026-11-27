@@ -1,0 +1,60 @@
+ÜRETİCİ: 20/20 aynı dizi (tur s1 + ux18, tohum 1–10 × 120 işlem)
+ADIMLAR: eski kopyadaki 98 elle senaryonun 0'inin adımları değişti: yok · yalnız `fazlasiniAvansYaz` eklenen: d30-c5-s101-bitti-kart, d43-c5-bilinen-sinir-sus15 · yeni elle senaryo: d45-c5-s159-s154-s162-s163
+EŞDEĞERLİK (2.4.9 / 2.4.6 / 2.4.5 / --legacy; eski kopyanın 98 elle + yeni kopyanın yeni 3 elle + 20 rastgele senaryo × 4 kip): 484/484 bayt bayt aynı
+G3 (kural 2.5.0; 119 senaryo — eski kopyanın 98 elle senaryosu + yeni elle + 20 rastgele): eski 50516 denetim · yeni 50454 denetim · değişen / kalkan / yeni toplam 140 · BEKLENMEYEN 0 · yalnız etiketi değişen 13
+  GENEL          degisen      2
+      örn. d43-c5-bilinen-sinir-sus15 k1:kasa: 170000 → 0
+      örn. d43-c5-bilinen-sinir-sus15 k1:kasaRapor:giris: 170000 → 0
+  GENEL          kalkan       4
+      örn. d30-c5-s101-bitti-kart k1:kasa: 820000 → "(denetim yok)"
+      örn. d30-c5-s101-bitti-kart k1:kasaRapor:giris: 820000 → "(denetim yok)"
+      örn. d45-c5-s159-s154-s162-s163 k1:kasa: 870000 → "(denetim yok)"
+      örn. d45-c5-s159-s154-s162-s163 k1:kasaRapor:giris: 870000 → "(denetim yok)"
+  GENEL          yeni         2
+      örn. d44-c5-s155-s158 k1:kasa: "(denetim yok)" → 270000
+      örn. d44-c5-s155-s158 k1:kasaRapor:giris: "(denetim yok)" → 270000
+  S118           degisen     26
+      örn. d43-c5-bilinen-sinir-sus15 adim:u1k:durum: "ok" → "ret"
+      örn. d43-c5-bilinen-sinir-sus15 adim:u2k:durum: "ok" → "ret"
+      örn. d43-c5-bilinen-sinir-sus15 k1:cari:U1:acikEsitBakiye: false → true
+      örn. d43-c5-bilinen-sinir-sus15 k1:cari:U1:acikToplam: 0 → 100000
+  S118           kalkan      27
+      örn. d30-c5-s101-bitti-kart adim:q1k:durum: "ok" → "(denetim yok)"
+      örn. d30-c5-s101-bitti-kart adim:q3k:durum: "ok" → "(denetim yok)"
+      örn. d30-c5-s101-bitti-kart adim:q5k:durum: "ok" → "(denetim yok)"
+      örn. d30-c5-s101-bitti-kart k1:cari:Q1:acikEsitBakiye: false → "(denetim yok)"
+  S118           yeni         6
+      örn. d43-c5-bilinen-sinir-sus15 k1:cari:U2:acikEsitBakiye: "(denetim yok)" → true
+      örn. d43-c5-bilinen-sinir-sus15 k1:cari:U2:acikToplam: "(denetim yok)" → 100000
+      örn. d43-c5-bilinen-sinir-sus15 k1:fatura:U2F:acik: "(denetim yok)" → 60000
+      örn. d43-c5-bilinen-sinir-sus15 k1:kart:KU1:odenen: "(denetim yok)" → 0
+  S154           yeni         3
+      örn. d45-c5-s159-s154-s162-s163 k1:kart:KA1:odenen: "(denetim yok)" → 130000
+      örn. yeni:d43-c5-bilinen-sinir-sus15 k1:kart:KU1:odenen: "(denetim yok)" → 110000
+      örn. yeni:d43-c5-bilinen-sinir-sus15 k1:kart:KU2:odenen: "(denetim yok)" → 60000
+  S159           yeni        14
+      örn. d44-c5-s155-s158 adim:x12t:durum: "(denetim yok)" → "ok"
+      örn. d44-c5-s155-s158 k1:cari:X12:bakiye: "(denetim yok)" → -10000
+      örn. d44-c5-s155-s158 k1:cari:X12:gecikmis: "(denetim yok)" → 0
+      örn. d44-c5-s155-s158 k1:hareket:x12a:kalan: "(denetim yok)" → 0
+  S162           kalkan      19
+      örn. d42-c5-s140-s151-satis-karti-iade k1:cari:T6:gecikmis: 0 → "(denetim yok)"
+      örn. d42-c5-s140-s151-satis-karti-iade k1:cari:T7:gecikmis: 60000 → "(denetim yok)"
+      örn. d42-c5-s140-s151-satis-karti-iade k1:kart:KT6:taksit1:odenen: 30000 → "(denetim yok)"
+      örn. d42-c5-s140-s151-satis-karti-iade k1:kart:KT6:taksit2:odenen: 0 → "(denetim yok)"
+  S163           kalkan      37
+      örn. d45-c5-s159-s154-s162-s163 k1:cari:C1:gecikmis: 80000 → "(denetim yok)"
+      örn. d45-c5-s159-s154-s162-s163 k1:fatura:C1F:acik: 60000 → "(denetim yok)"
+      örn. d45-c5-s159-s154-s162-s163 k1:fatura:C3F:acik: 60000 → "(denetim yok)"
+      örn. d45-c5-s159-s154-s162-s163 k1:hareket:c1e0:kalan: 0 → "(denetim yok)"
+G3 senaryo senaryo (sınıf/tür: adet; listede olmayan senaryoda fark 0):
+  d30-c5-s101-bitti-kart                   GENEL/kalkan 2 · S118/kalkan 15
+  d42-c5-s140-s151-satis-karti-iade        S162/kalkan 9
+  d43-c5-bilinen-sinir-sus15               GENEL/degisen 2 · S118/degisen 17 · S118/yeni 5
+  d44-c5-s155-s158                         GENEL/yeni 2 · S159/yeni 7 · S162/kalkan 5
+  d45-c5-s159-s154-s162-s163               GENEL/kalkan 2 · S118/degisen 9 · S118/kalkan 12 · S118/yeni 1 · S154/yeni 1 · S159/yeni 7 · S162/kalkan 5 · S163/kalkan 37
+  yeni:d43-c5-bilinen-sinir-sus15          S154/yeni 2
+# tests 603
+# pass 603
+# fail 0
+603/603 denetim geçti

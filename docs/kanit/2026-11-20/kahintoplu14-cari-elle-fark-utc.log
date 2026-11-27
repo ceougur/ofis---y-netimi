@@ -1,0 +1,26 @@
+d50-c5-s206-s25c-b1-iptal-havale.json: 20 elle beklenti değişti
+    değer                  k1:cari:I2:acikEsitBakiye: "(yok)" → true
+    değer                  k1:cari:I2:acikToplam: "(yok)" → 10000
+    değer                  k1:cari:I2:gecikmis: "(yok)" → 10000
+    değer                  k1:cari:I3:acikEsitBakiye: "(yok)" → true
+    değer                  k1:cari:I3:acikToplam: "(yok)" → 0
+    değer                  k1:cari:I3:gecikmis: "(yok)" → 0
+    elleYok kalktı         k1:cari:I2:acikToplam: "yok" → ""
+    elleYok kalktı         k1:cari:I2:gecikmis: "yok" → ""
+    elleYok kalktı         k1:cari:I3:acikToplam: "yok" → ""
+    elleYok kalktı         k1:cari:I3:gecikmis: "yok" → ""
+    elleYok eklendi        k1:kart:KI2:mevcutBorc: "" → "yok"
+    elleYok eklendi        k1:kart:KI2:toplam: "" → "yok"
+    elleYok eklendi        k1:kart:KI2:var: "" → "yok"
+    elleYok eklendi        k1:kart:KI3:mevcutBorc: "" → "yok"
+    elleYok eklendi        k1:kart:KI3:toplam: "" → "yok"
+    elleYok eklendi        k1:kart:KI3:var: "" → "yok"
+    elleBelirsiz kalktı    ["cari I2 tanımsız", "SK-41 (a)"]: "" → ""
+    elleBelirsiz kalktı    ["cari I3 tanımsız", "SK-41 (b)"]: "" → ""
+    elleBelirsiz eklendi   ["kart KI2", "S210 = A"]: "" → ""
+    elleBelirsiz eklendi   ["kart KI3", "S211 = A"]: "" → ""
+yeni elle senaryo: d51-c5-s210-s211-kart-kapanir.json
+# tests 104
+# pass 104
+# fail 0
+104/104 denetim geçti

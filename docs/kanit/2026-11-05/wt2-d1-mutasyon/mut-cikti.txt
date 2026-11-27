@@ -1,0 +1,24 @@
+X1 YAKALANDI exit=1 26/27 fail=1  — sharedWaba aynı veri dosyasını gösteren şirketi atlamaz (selfKey denetimi kalkar)
+    aynı veri klasörünü gösteren iki şirket (Ayır'dan ÖNCE): öbür şirketin bağlantısı aynı ayar satırıdır, 'başka şirket' sayılmaz → Kaldır Meta
+    İLETİ: |-
+X2 YAKALANDI exit=1 26/27 fail=1  — sharedWaba okunan özeti ortak kayda yazmaz (kayıt tazelenmez)
+    aynı WABA'ya bağlı ikinci şirket kapalı, dosyası sağlam, ortak kayıtta ESKİ 'bağlı değil' özeti: 001'in Kaldır'ı Meta'daki aboneliği SİLMEZ 
+    İLETİ: |-
+X3 YAKALANDI exit=1 26/27 fail=1  — okunamayan (bozuk) dosya 'bağlı değil' sayılır (ders 4 ihlali)
+    aynı WABA'ya bağlı ikinci şirket kapalı, dosyası BOZUK (okunamıyor): 001'in Kaldır'ı Meta'daki aboneliği SİLMEZ (ikinci şirket bağlı sayılır
+    İLETİ: |-
+X4 YAKALANDI exit=1 26/27 fail=1  — dosyası olmayan şirket 'bağlı değil' sayılır (kayıttaki özet geçmez)
+    aynı WABA'ya bağlı ikinci şirket kapalı, dosyası YOK (klasör silinmiş): 001'in Kaldır'ı Meta'daki aboneliği SİLMEZ (ikinci şirket bağlı sayı
+    İLETİ: |-
+X5 YAKALANDI exit=1 26/27 fail=1  — sharedWaba silinen şirketi de sayar: liste yerine ortak kaydın bütün girdileri
+    aynı WABA'lı ikinci şirket SİLİNDİ: kalan şirketin Kaldır'ı Meta'daki aboneliği siler (silinen şirket 'başka şirkette bağlı' sayılmaz)
+    İLETİ: |-
+X6 YAKALANDI exit=1 26/27 fail=1  — 102 de belirteç reddi sayılır (kararın dışı — kapsam taşması)
+    kod 102 (kararın DIŞINDA) belirteç reddi SAYILMAZ: o kişi Başarısız, toplu iş duraklamadan kalanlara sürer, bağlantı Süresi Doldu olmaz
+    İLETİ: "toplu iş duraklamaz: paused token-expired WhatsApp bağlantınızın süresi doldu: Meta erişim belirtecini artık kabul etmiyor. Gönderim duraklatıldı; Yönetim → WhatsApp'ta Yeniden Bağla ile yeniden bağlayın ve Devam Et'e basın."
+X7 YAKALANDI exit=1 26/27 fail=1  — noteMetaError 'daha önce çalıştı' koşulunu yalnız 190'da uygular (0'da her belirteç Süresi Doldu)
+    Sına yapılmamış (Meta'da hiç çalışmamış) belirteç kod 0 alırsa bağlantı Süresi Doldu OLMAZ (yanlış yazım; 190'ın kuralı — BAŞ MİMAR KARARI (
+    İLETİ: "hiç çalışmamış belirtecin kod 0'ı bağlantıyı Süresi Doldu yapmaz (geldi expired)"
+X8 YAKALANDI exit=1 26/27 fail=1  — noteMetaError 'belirteç arada değişti' koşulunu yalnız 190'da uygular
+    Yol 2: ileti isteği Meta'dayken belirteç değiştirildi ve ESKİ belirteç kod 0 aldı → bağlantı Süresi Doldu olmaz; kişi bekleyenlere döner; ne
+    İLETİ: |-

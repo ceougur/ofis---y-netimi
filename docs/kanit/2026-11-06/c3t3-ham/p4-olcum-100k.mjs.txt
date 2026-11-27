@@ -1,0 +1,123 @@
+#!/usr/bin/env node
+// DAR KONTROL Ç3 tur 1-2 — p4: programın KENDİ ürettiği 100.000 verisinde (tools/kapi-olcum.mjs --yalniz-kur; scratchpad/c3-olcum-veri/n-100000, salt okunur kaynak; taze kopya)
+// gerçek sunucu (startTestServer / createApp), KANCASIZ (üretim yolu):
+//   A) kilit 31.12.2025 → yanıt ms, olay döngüsü en çok; yanıt dondurma bitmeden geldiyse (freeze.active) AYNI GÜNE yeniden kilit (kartın Kaydet'i) → dondurma bitince
+//      görünen donmuş satır ↔ koşunun kayıtlı satırı ↔ canlı türetme (p1'in kancasız, gerçek veri hâli);
+//   B) Kilidi Aç → hemen Yeniden Kilitle (programın önerdiği "Kilidi Aç → Yeniden Kilitle") → yanıt ms, olay döngüsü en çok, dondurma bitişi.
+// Kullanım: flock <olcum.lock> node p4-olcum-100k.mjs <kod kökü> <veri klasörü> <çıktı.json> [A|B]
+import { cpSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import os from "node:os";
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+
+const [rootArg, veriArg, outArg, modeArg = "A"] = process.argv.slice(2);
+const root = path.resolve(rootArg);
+const veri = path.resolve(veriArg);
+const output = path.resolve(outArg);
+const MODE = modeArg;
+const LOCK = "2025-12-31";
+const NOW = "2026-10-08T12:00:00+03:00";
+const PASS = "Kapi-Olcum-2026!";
+const imp = file => import(pathToFileURL(path.join(root, file)).href);
+const work = mkdtempSync(path.join(path.dirname(output), "p4-"));
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+const result = { kod: root, mod: MODE, cpu: os.cpus().length, yuk: os.loadavg(), adimlar: [] };
+let last = performance.now();
+let windowMax = 0;
+const probe = setInterval(() => {
+  const at = performance.now();
+  windowMax = Math.max(windowMax, at - last - 5);
+  last = at;
+}, 5);
+let server = null;
+try {
+  const { startTestServer } = await imp("test/helpers.mjs");
+  cpSync(path.join(veri, "data"), path.join(work, "data"), { recursive: true });
+  server = await startTestServer({ dataDir: path.join(work, "data"), backupDir: path.join(work, "backups"), now: { time: NOW, fixed: true }, adminPassword: PASS, gateVerify: false, moneyStrict: false, env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" } });
+  const client = server.client();
+  const login = await client.login("admin", PASS);
+  if (login.status !== 200) throw new Error(`giriş ${login.status}`);
+  const S = server.app.ledger.snapshots;
+  const db = server.app.store;
+  const step = async (label, fn) => {
+    await sleep(100);
+    windowMax = 0;
+    const started = performance.now();
+    const value = await fn();
+    const row = { adim: label, ms: Math.round(performance.now() - started), olayDongusuEnCokMs: Math.round(windowMax), ...value };
+    result.adimlar.push(row);
+    console.log(JSON.stringify(row));
+    return row;
+  };
+  const put = async lockedUntil => {
+    const res = await client.put("/api/admin/period-lock", { lockedUntil, force: true });
+    return { status: res.status, active: res.data?.data?.freeze?.active ?? null, frozenThrough: res.data?.data?.frozenThrough ?? null, hata: res.status === 200 ? "" : JSON.stringify(res.data).slice(0, 200) };
+  };
+  const waitFree = async () => {
+    for (let i = 0; i < 6000; i += 1) {
+      const res = await client.get("/api/workspace/ledger/lock");
+      if (!res.data?.data?.freeze?.active) return res.data.data;
+      await sleep(50);
+    }
+    throw new Error("dondurma bitmedi");
+  };
+  const tally = () => {
+    const cover = S.coverage();
+    const visible = Number(db.get("SELECT COUNT(*) AS n FROM ledger_snapshots WHERE date <= ?", cover).n);
+    const lastRun = db.get("SELECT no, state_lines FROM ledger_snapshot_runs WHERE state = 'done' ORDER BY no DESC LIMIT 1");
+    return { kapsam: cover, gorunenDonmusSatir: visible, kosununKayitliSatiri: Number(lastRun?.state_lines ?? 0) };
+  };
+  if (MODE === "A" || MODE === "A2") {
+    const first = await step("kilit 31.12.2025", () => put(LOCK));
+    if (first.active && MODE === "A2") {
+      // Kart "(N satır yazıldı)" gösterirken (yazım adımı) kullanıcı yeniden Kilitle der.
+      let view = null;
+      for (let i = 0; i < 4000; i += 1) {
+        view = (await client.get("/api/workspace/ledger/lock")).data?.data;
+        if (!view?.freeze?.active || (view.freeze.phase === "yazım" && view.freeze.done > 0)) break;
+        await sleep(25);
+      }
+      result.onkosul = view?.freeze?.active ? `yazım adımında: ${view.freeze.done} satır yazılmışken aynı güne yeniden kilit` : "OLUŞMADI: dondurma bitti";
+      await step("aynı güne yeniden kilit (yazım sürerken)", () => put(LOCK));
+    } else if (first.active) {
+      result.onkosul = "yanıt dondurma bitmeden geldi (freeze.active)";
+      await step("aynı güne yeniden kilit (dondurma sürerken)", () => put(LOCK));
+    } else result.onkosul = "OLUŞMADI: dondurma yanıttan önce bitti (bu koşu p1 için kanıt değil)";
+    await step("dondurmanın bitişi (yoklama)", async () => ({ view: (await waitFree()).frozenThrough }));
+    const t = tally();
+    const live = server.app.ledger.build().filter(entry => entry.date <= LOCK).reduce((n, entry) => n + entry.lines.length, 0);
+    result.sonuc = { ...t, canliTuretmeSatiri: live };
+    const report = await client.get(`/api/workspace/report-center/hesap-mizani?from=2025-01-01&to=${LOCK}`);
+    result.sonuc.hesapMizaniAltBaslik = report.data?.data?.subtitle;
+    result.SONUC = t.gorunenDonmusSatir === live && t.gorunenDonmusSatir === t.kosununKayitliSatiri ? "TUTARLI" : `HATA: kapsam ${t.kapsam} içinde ${t.gorunenDonmusSatir} donmuş satır görünüyor; koşu ${t.kosununKayitliSatiri}, canlı ${live} satır`;
+  } else {
+    await step("kilit 31.12.2025", () => put(LOCK));
+    await step("dondurmanın bitişi", async () => ({ view: (await waitFree()).frozenThrough }));
+    result.donmusSatir = tally();
+    await step("Kilidi Aç", () => put(""));
+    const again = await step("Yeniden Kilitle (hemen)", () => put(LOCK));
+    // Ç3 tur 3 (ORTA-1): temizlik bütçeyi aşarsa 409 ledger-cleanup-running; temizlik bitince yeniden Kilitle.
+    if (again.status !== 200) {
+      await step("temizliğin bitişi (yoklama)", async () => ({ view: (await waitFree()).freeze?.cleanup }));
+      await step("Yeniden Kilitle (temizlikten sonra)", () => put(LOCK));
+    }
+    await step("dondurmanın bitişi", async () => ({ view: (await waitFree()).frozenThrough }));
+    result.sonuc = tally();
+    const live = server.app.ledger.build().filter(entry => entry.date <= LOCK).reduce((n, entry) => n + entry.lines.length, 0);
+    result.sonuc.canliTuretmeSatiri = live;
+    result.SONUC = result.sonuc.gorunenDonmusSatir === live && live === result.sonuc.kosununKayitliSatiri ? "TUTARLI" : `HATA: ${JSON.stringify(result.sonuc)}`;
+  }
+} catch (error) {
+  result.hata = String(error?.stack || error);
+} finally {
+  clearInterval(probe);
+  try {
+    await server?.app?.close();
+  } catch {
+    // kapalı
+  }
+  rmSync(work, { recursive: true, force: true, maxRetries: 10, retryDelay: 200 });
+}
+result.yukSonra = os.loadavg();
+writeFileSync(output, JSON.stringify(result, null, 1));
+console.log(JSON.stringify({ SONUC: result.SONUC, sonuc: result.sonuc, onkosul: result.onkosul, hata: result.hata, yuk: result.yuk, yukSonra: result.yukSonra }, null, 1));

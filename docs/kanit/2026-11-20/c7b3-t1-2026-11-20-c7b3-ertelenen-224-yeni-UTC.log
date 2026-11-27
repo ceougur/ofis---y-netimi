@@ -1,0 +1,268 @@
+TAP version 13
+# (node:1535) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.0.24 ertelenen alanlar
+    # Subtest: A. Fatura iade / iptal / düzenleme / silme
+        # Subtest: çalışıyor mu: nakit/POS/havale peşin satış iptali her etkiyi geri alır
+        ok 1 - çalışıyor mu: nakit/POS/havale peşin satış iptali her etkiyi geri alır
+          ---
+          duration_ms: 308.127243
+          type: 'test'
+          ...
+        # Subtest: çalışıyor mu: çekli satış iptali çeki portföyden kaldırır, taksitli satış iptali kartı kaldırır
+        ok 2 - çalışıyor mu: çekli satış iptali çeki portföyden kaldırır, taksitli satış iptali kartı kaldırır
+          ---
+          duration_ms: 83.693687
+          type: 'test'
+          ...
+        # Subtest: çalışıyor mu: satıştan iade (nakit) stok, cari, Kasa; iade iptali geri alır
+        ok 3 - çalışıyor mu: satıştan iade (nakit) stok, cari, Kasa; iade iptali geri alır
+          ---
+          duration_ms: 111.367872
+          type: 'test'
+          ...
+        # Subtest: çalışıyor mu: alıştan iade stoktan düşer, tedarikçi borcu azalır
+        ok 4 - çalışıyor mu: alıştan iade stoktan düşer, tedarikçi borcu azalır
+          ---
+          duration_ms: 68.433178
+          type: 'test'
+          ...
+        # Subtest: çalışıyor mu: düzenleme nakitten havaleye ve tutar değişimi; Kasa ve banka doğru
+        ok 5 - çalışıyor mu: düzenleme nakitten havaleye ve tutar değişimi; Kasa ve banka doğru
+          ---
+          duration_ms: 72.673724
+          type: 'test'
+          ...
+        # Subtest: çalışıyor mu: kaydedilmiş fatura silinince etkiler geri alınır; Silinenler'den etkisiz (iptal) döner
+        ok 6 - çalışıyor mu: kaydedilmiş fatura silinince etkiler geri alınır; Silinenler'den etkisiz (iptal) döner
+          ---
+          duration_ms: 91.597895
+          type: 'test'
+          ...
+        # Subtest: çalışıyor mu: toplu silme iade önce, sonra asıl; hepsi geri alınır
+        ok 7 - çalışıyor mu: toplu silme iade önce, sonra asıl; hepsi geri alınır
+          ---
+          duration_ms: 82.034235
+          type: 'test'
+          ...
+        # Subtest: nasıl bozarım: iki kez iptal → ikincisi reddedilir, etkiler bir kez geri alınır
+        ok 8 - nasıl bozarım: iki kez iptal → ikincisi reddedilir, etkiler bir kez geri alınır
+          ---
+          duration_ms: 57.839897
+          type: 'test'
+          ...
+        # Subtest: nasıl bozarım: aynı anda iki kez sil
+        ok 9 - nasıl bozarım: aynı anda iki kez sil
+          ---
+          duration_ms: 56.608123
+          type: 'test'
+          ...
+        # Subtest: nasıl bozarım: aynı anda iki iade (her biri kalanın tamamı) → yalnız biri geçer
+        ok 10 - nasıl bozarım: aynı anda iki iade (her biri kalanın tamamı) → yalnız biri geçer
+          ---
+          duration_ms: 44.371128
+          type: 'test'
+          ...
+        # Subtest: nasıl bozarım: iade miktarı sıfır/eksi/fazla/kuruş artığı tutar reddedilir
+        ok 11 - nasıl bozarım: iade miktarı sıfır/eksi/fazla/kuruş artığı tutar reddedilir
+          ---
+          duration_ms: 64.263954
+          type: 'test'
+          ...
+        # Subtest: nasıl bozarım: iadesi olan faturayı iptal/sil/düzenle → reddedilir (önce iade)
+        ok 12 - nasıl bozarım: iadesi olan faturayı iptal/sil/düzenle → reddedilir (önce iade)
+          ---
+          duration_ms: 47.658754
+          type: 'test'
+          ...
+        # Subtest: nasıl bozarım: tahsilatı alınmış taksitli faturayı sil → reddedilir; İptal Et kabul, tahsilat avans (S15 = A)
+        ok 13 - nasıl bozarım: tahsilatı alınmış taksitli faturayı sil → reddedilir; İptal Et kabul, tahsilat avans (S15 = A)
+          ---
+          duration_ms: 82.818752
+          type: 'test'
+          ...
+        # Subtest: nasıl bozarım: çeki tahsil edilmiş faturayı iptal → reddedilir
+        ok 14 - nasıl bozarım: çeki tahsil edilmiş faturayı iptal → reddedilir
+          ---
+          duration_ms: 54.057271
+          type: 'test'
+          ...
+        # Subtest: nasıl bozarım: sil → geri yükle → geri yüklenen (iptal) belgeyi düzenle/iptal/iade → reddedilir
+        ok 15 - nasıl bozarım: sil → geri yükle → geri yüklenen (iptal) belgeyi düzenle/iptal/iade → reddedilir
+          ---
+          duration_ms: 72.243348
+          type: 'test'
+          ...
+        # Subtest: nasıl bozarım: aynı istek kimliğiyle aynı anda iki fatura → tek belge
+        ok 16 - nasıl bozarım: aynı istek kimliğiyle aynı anda iki fatura → tek belge
+          ---
+          duration_ms: 40.491675
+          type: 'test'
+          ...
+        1..16
+    ok 1 - A. Fatura iade / iptal / düzenleme / silme
+      ---
+      duration_ms: 1406.30415
+      type: 'suite'
+      ...
+    # Subtest: B. Çek/Senet
+        # Subtest: çalışıyor mu: portföy girişi cariyi alacaklandırır; tahsil bankaya girer; geri al geri çıkarır
+        ok 1 - çalışıyor mu: portföy girişi cariyi alacaklandırır; tahsil bankaya girer; geri al geri çıkarır
+          ---
+          duration_ms: 86.896646
+          type: 'test'
+          ...
+        # Subtest: çalışıyor mu: müşteri türündeki cariye ciro edilir; karşılıksız ciroyu geri döndürür
+        ok 2 - çalışıyor mu: müşteri türündeki cariye ciro edilir; karşılıksız ciroyu geri döndürür
+          ---
+          duration_ms: 66.982099
+          type: 'test'
+          ...
+        # Subtest: nasıl bozarım: aynı anda iki tahsil → yalnız biri; Kasa/banka bir kez
+        ok 3 - nasıl bozarım: aynı anda iki tahsil → yalnız biri; Kasa/banka bir kez
+          ---
+          duration_ms: 44.366912
+          type: 'test'
+          ...
+        # Subtest: nasıl bozarım: tahsil edilmişi ciro, kendisine ciro, olmayan cariye ciro, alıştan önce tahsil, sil → reddedilir
+        ok 4 - nasıl bozarım: tahsil edilmişi ciro, kendisine ciro, olmayan cariye ciro, alıştan önce tahsil, sil → reddedilir
+          ---
+          duration_ms: 62.656516
+          type: 'test'
+          ...
+        # Subtest: çek/senet işlemi ileri tarihle (2099) reddedilir; Kasa'ya ileri tarihli hareket yazılmaz (2.0.23'te yazılıyordu)
+        ok 5 - çek/senet işlemi ileri tarihle (2099) reddedilir; Kasa'ya ileri tarihli hareket yazılmaz (2.0.23'te yazılıyordu)
+          ---
+          duration_ms: 24.674065
+          type: 'test'
+          ...
+        # Subtest: nasıl bozarım: sil → Silinenler'den geri yükle → cari etkisi bir kez döner; aynı seri yeniden girildiyse geri yükleme reddedilir
+        ok 6 - nasıl bozarım: sil → Silinenler'den geri yükle → cari etkisi bir kez döner; aynı seri yeniden girildiyse geri yükleme reddedilir
+          ---
+          duration_ms: 75.304293
+          type: 'test'
+          ...
+        1..6
+    ok 2 - B. Çek/Senet
+      ---
+      duration_ms: 361.287066
+      type: 'suite'
+      ...
+    # Subtest: C. Kasa ↔ Banka
+        # Subtest: çalışıyor mu: Kasadan bankaya yatır ve bankadan kasaya aktar; Kasa yalnız nakit, banka raporunda karşı hareket
+        ok 1 - çalışıyor mu: Kasadan bankaya yatır ve bankadan kasaya aktar; Kasa yalnız nakit, banka raporunda karşı hareket
+          ---
+          duration_ms: 84.032414
+          type: 'test'
+          ...
+        # Subtest: nasıl bozarım: Kasa formuna banka/kart yolu, sıfır/eksi/kuruş artığı/devasa tutar, yanlış yön → 400
+        ok 2 - nasıl bozarım: Kasa formuna banka/kart yolu, sıfır/eksi/kuruş artığı/devasa tutar, yanlış yön → 400
+          ---
+          duration_ms: 45.016567
+          type: 'test'
+          ...
+        # Subtest: nasıl bozarım: eksi nakit politikası Engelle iken bankaya yatırma / aynı anda iki yatırma eksiye düşüremez
+        ok 3 - nasıl bozarım: eksi nakit politikası Engelle iken bankaya yatırma / aynı anda iki yatırma eksiye düşüremez
+          ---
+          duration_ms: 35.791545
+          type: 'test'
+          ...
+        # Subtest: çalışıyor mu: Uyar politikasında eksiye düşüren yatırma önce sorulur (409), onayla geçer
+        ok 4 - çalışıyor mu: Uyar politikasında eksiye düşüren yatırma önce sorulur (409), onayla geçer
+          ---
+          duration_ms: 37.111434
+          type: 'test'
+          ...
+        1..4
+    ok 3 - C. Kasa ↔ Banka
+      ---
+      duration_ms: 202.296092
+      type: 'suite'
+      ...
+    # Subtest: E. Yetkisiz kullanıcı ve şirket ayrımı
+        # Subtest: çalışıyor mu: personel yetkisiz modülleri okuyamaz
+        ok 1 - çalışıyor mu: personel yetkisiz modülleri okuyamaz
+          ---
+          duration_ms: 8.648361
+          type: 'test'
+          ...
+        # Subtest: nasıl bozarım: personel her yazma ucunda 403; veri değişmez
+        ok 2 - nasıl bozarım: personel her yazma ucunda 403; veri değişmez
+          ---
+          duration_ms: 33.851689
+          type: 'test'
+          ...
+        # Subtest: nasıl bozarım: personel ?hofCompany= ile yetkisiz şirkete okuyamaz/yazamaz
+        ok 3 - nasıl bozarım: personel ?hofCompany= ile yetkisiz şirkete okuyamaz/yazamaz
+          ---
+          duration_ms: 149.511296
+          type: 'test'
+          ...
+        1..3
+    ok 4 - E. Yetkisiz kullanıcı ve şirket ayrımı
+      ---
+      duration_ms: 316.665417
+      type: 'suite'
+      ...
+# (node:1535) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:1535) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: D. Dönem kilidi
+        # Subtest: çalışıyor mu: kilit sonrası yeni tarihli işlem yazılır
+        ok 1 - çalışıyor mu: kilit sonrası yeni tarihli işlem yazılır
+          ---
+          duration_ms: 57.333816
+          type: 'test'
+          ...
+        # Subtest: nasıl bozarım: kilitli döneme her yazma 409 ve veri değişmez
+        ok 2 - nasıl bozarım: kilitli döneme her yazma 409 ve veri değişmez
+          ---
+          duration_ms: 45.611443
+          type: 'test'
+          ...
+        # Subtest: nasıl bozarım: kilitli dönemdeki silinmiş Kasa hareketi Silinenler'den geri yüklenemez (409, Kasa değişmez)
+        ok 3 - nasıl bozarım: kilitli dönemdeki silinmiş Kasa hareketi Silinenler'den geri yüklenemez (409, Kasa değişmez)
+          ---
+          duration_ms: 16.595012
+          type: 'test'
+          ...
+        # Subtest: nasıl bozarım: kilitli dönemdeki çek tahsili geri alınamaz (409; Kasa ve çek durumu değişmez — 2.0.23'te geri alınıyordu)
+        ok 4 - nasıl bozarım: kilitli dönemdeki çek tahsili geri alınamaz (409; Kasa ve çek durumu değişmez — 2.0.23'te geri alınıyordu)
+          ---
+          duration_ms: 36.301659
+          type: 'test'
+          ...
+        # Subtest: çek/senet işlemleri dönem kilidine bağlı — kilitli tarihe giriş, tahsil, kilitli dönemdeki evrakı silme (2.0.23'te tahsil geçiyordu)
+        ok 5 - çek/senet işlemleri dönem kilidine bağlı — kilitli tarihe giriş, tahsil, kilitli dönemdeki evrakı silme (2.0.23'te tahsil geçiyordu)
+          ---
+          duration_ms: 26.51672
+          type: 'test'
+          ...
+        # Subtest: nasıl bozarım: kilidi gelecek tarihe/bozuk tarihe koymak 400
+        ok 6 - nasıl bozarım: kilidi gelecek tarihe/bozuk tarihe koymak 400
+          ---
+          duration_ms: 4.279
+          type: 'test'
+          ...
+        1..6
+    ok 5 - D. Dönem kilidi
+      ---
+      duration_ms: 488.028527
+      type: 'suite'
+      ...
+    1..5
+ok 1 - 2.0.24 ertelenen alanlar
+  ---
+  duration_ms: 3133.309369
+  type: 'suite'
+  ...
+1..1
+# tests 35
+# suites 6
+# pass 35
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3400.182074

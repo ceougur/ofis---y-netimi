@@ -1,0 +1,435 @@
+{
+ "adim_farklari": [],
+ "bugun_dal": "A",
+ "dal": "A",
+ "degismezler": {
+  "kahin_mizan_toplam_sifir": true,
+  "program_her_adimda_dengeli": true,
+  "program_her_adimda_mutabakat": true,
+  "program_mizan_toplam_sifir": true,
+  "program_mutabakat_testi": true
+ },
+ "etiketler": {
+  "C7b6-KAPAT": {
+   "dayanak": "kullanıcı kararı 05.11 21:30 (6) 'Kartı Kapat yalnız ödeme planını bitirir; kalan carinin borcunda kalır … BUGÜNKÜ DAVRANIŞ DEĞİŞİR (kalan 689'la borçtan düşüyordu)'; kâhin README R6 `eski` = 2.4.9 davranışı B 689 / A CH",
+   "is": "Ç7b (iş listesi D İŞ ATAMASI (4)(6) → Ç7b)"
+  },
+  "F06-FINANSMAN-251": {
+   "dayanak": "kitap F-06 / M14 'finansman türü 780'; Ç7b tasarım notu §9 B-1 (BAŞ MİMAR KARARI 19.11 04:03) B-1 = B: '780 türü ve tanınmayan türün 770.90'ı 2.5.1' — programın gider türü listesinde finansman yok, 770'e düşer",
+   "is": "2.5.1 (Ç7b B-1; iş listesi B)"
+  },
+  "SURUCU-CARI-ACILIS-YOLU": {
+   "dayanak": "SÜRÜCÜ YOLU (karar değil): programda cari açılışı yalnız cari açılırken (routes/accounts.mjs POST openingBalance); sürücü cariyi açılış olayından ÖNCE başka olayla açmak zorunda kaldıysa açılış Borç / Alacak Yaz satırıdır (602.90 / 770.90)",
+   "is": "sürücü sınırı (eşleme)"
+  }
+ },
+ "olay_durumlari": {
+  "faturada": 3,
+  "rapor": 11,
+  "red": 2,
+  "yapildi": 16
+ },
+ "oz_denetim": {
+  "raporlar_ayni": true,
+  "redler_ayni": true
+ },
+ "ozet": {
+  "AYNI": 20,
+  "K": 0,
+  "OLCULEMEDI": 0,
+  "P": 0,
+  "R": 0,
+  "SINIFLANMADI": 0,
+  "SUSMA": 0,
+  "U": 2,
+  "adim_sinifsiz": 0,
+  "adim_susma": 0,
+  "ara_susma": 0
+ },
+ "raporlar": {
+  "af1b": {
+   "dosya": "canli",
+   "kahin_oz": false,
+   "ozet": {
+    "AYNI": 1,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "SUSMA": 0,
+    "U": 0
+   },
+   "satirlar": [
+    {
+     "alan": "fatura",
+     "anahtar": "F0",
+     "bugun": "—",
+     "kahin": 4000,
+     "program": 4000,
+     "sinif": "AYNI"
+    }
+   ],
+   "tur": "acik_faturalar"
+  },
+  "ak1b": {
+   "dosya": "canli",
+   "kahin_oz": false,
+   "ozet": {
+    "AYNI": 0,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "SUSMA": 0,
+    "U": 1
+   },
+   "satirlar": [
+    {
+     "aciklama": "programda bu görünüm yok (planlı iş)",
+     "alan": "acik_kalem",
+     "anahtar": "C1",
+     "bugun": null,
+     "kahin": "[{\"k\": \"fatura:F0\", \"kalan\": 4000, \"tarih\": \"2026-01-05\", \"tur\": \"fatura\", \"vade\": \"2026-01-31\"}, {\"k\": \"kart:TK1\", \"kalan\": 2000, \"tarih\": \"2026-01-10\", \"tur\": \"taksit\", \"vade\": \"2026-03-10\"}, {\"k\": \"kart:TK1\", \"kalan\": 3000, \"tarih\": \"2026-01-10\", \"tur\": \"taksit\", \"vade\": \"2026-04-10\"}]",
+     "kimlik": [
+      "GÖRÜNÜM-YOK (açık kalemler: programda okunacak uç yok)"
+     ],
+     "program": null,
+     "sinif": "U"
+    }
+   ],
+   "tur": "acik_kalemler"
+  },
+  "durum_F1": {
+   "dosya": "canli",
+   "ozet": {
+    "AYNI": 0,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "SUSMA": 0,
+    "U": 1
+   },
+   "satirlar": [
+    {
+     "aciklama": "SONUÇ (U-S15-KARTLI-FATURA-IPTAL/s69): kartında tahsilat olan F1'in iptali programda reddedildi (S15 = A Ç7b'de) → F1 aktif kalır.",
+     "alan": "durum",
+     "anahtar": "F1",
+     "bugun": null,
+     "kahin": "iptal",
+     "kimlik": [
+      "Ç7b (S15 = A)"
+     ],
+     "program": "aktif",
+     "sinif": "U"
+    }
+   ],
+   "tur": "kaynak_durumu"
+  },
+  "durum_F2": {
+   "dosya": "canli",
+   "ozet": {
+    "AYNI": 1,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "SUSMA": 0,
+    "U": 0
+   },
+   "satirlar": [
+    {
+     "alan": "durum",
+     "anahtar": "F2",
+     "bugun": null,
+     "kahin": "aktif",
+     "program": "aktif",
+     "sinif": "AYNI"
+    }
+   ],
+   "tur": "kaynak_durumu"
+  },
+  "g1a": {
+   "dosya": "canli",
+   "kahin_oz": true,
+   "ozet": {
+    "AYNI": 1,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "SUSMA": 0,
+    "U": 0
+   },
+   "satirlar": [
+    {
+     "alan": "gecikmis",
+     "anahtar": "C1",
+     "bugun": "—",
+     "kahin": 6000,
+     "program": 6000,
+     "sinif": "AYNI"
+    }
+   ],
+   "tur": "gecikmis"
+  },
+  "g1b": {
+   "dosya": "canli",
+   "kahin_oz": false,
+   "ozet": {
+    "AYNI": 1,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "SUSMA": 0,
+    "U": 0
+   },
+   "satirlar": [
+    {
+     "alan": "gecikmis",
+     "anahtar": "C1",
+     "bugun": "—",
+     "kahin": 6000,
+     "program": 6000,
+     "sinif": "AYNI"
+    }
+   ],
+   "tur": "gecikmis"
+  },
+  "g3": {
+   "dosya": "canli",
+   "kahin_oz": true,
+   "ozet": {
+    "AYNI": 1,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "SUSMA": 0,
+    "U": 0
+   },
+   "satirlar": [
+    {
+     "alan": "gecikmis",
+     "anahtar": "C3",
+     "bugun": "—",
+     "kahin": 3000,
+     "program": 3000,
+     "sinif": "AYNI"
+    }
+   ],
+   "tur": "gecikmis"
+  },
+  "kt1a": {
+   "dosya": "canli",
+   "kahin_oz": true,
+   "ozet": {
+    "AYNI": 1,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "SUSMA": 0,
+    "U": 0
+   },
+   "satirlar": [
+    {
+     "alan": "kart",
+     "anahtar": "TK1",
+     "bugun": "—",
+     "kahin": "Açık 2026-03-10 3000/2000; 2026-04-10 3000/3000",
+     "program": "Açık 2026-03-10 3000/2000; 2026-04-10 3000/3000",
+     "sinif": "AYNI"
+    }
+   ],
+   "tur": "kartlar"
+  },
+  "kt1b": {
+   "dosya": "canli",
+   "kahin_oz": false,
+   "ozet": {
+    "AYNI": 1,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "SUSMA": 0,
+    "U": 0
+   },
+   "satirlar": [
+    {
+     "alan": "kart",
+     "anahtar": "TK1",
+     "bugun": "—",
+     "kahin": "Açık 2026-03-10 3000/2000; 2026-04-10 3000/3000",
+     "program": "Açık 2026-03-10 3000/2000; 2026-04-10 3000/3000",
+     "sinif": "AYNI"
+    }
+   ],
+   "tur": "kartlar"
+  },
+  "kt3": {
+   "dosya": "canli",
+   "kahin_oz": true,
+   "ozet": {
+    "AYNI": 1,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "SUSMA": 0,
+    "U": 0
+   },
+   "satirlar": [
+    {
+     "alan": "kart",
+     "anahtar": "TK2",
+     "bugun": "—",
+     "kahin": "Açık 2026-03-20 3000/3000",
+     "program": "Açık 2026-03-20 3000/3000",
+     "sinif": "AYNI"
+    }
+   ],
+   "tur": "kartlar"
+  },
+  "mz": {
+   "brut": {
+    "kahin": {
+     "alacak": 32000,
+     "borc": 32000
+    },
+    "program": {
+     "alacak": 32000,
+     "borc": 32000
+    }
+   },
+   "dosya": "canli",
+   "ozet": {
+    "AYNI": 6,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "SUSMA": 0,
+    "U": 0
+   },
+   "program_dengeli": true,
+   "program_mutabakat": true,
+   "satirlar": [
+    {
+     "alan": "ana",
+     "anahtar": "102",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "120",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "600",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "alt",
+     "anahtar": "102.B1",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "cari",
+     "anahtar": "C1",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "cari",
+     "anahtar": "C3",
+     "sinif": "AYNI"
+    }
+   ],
+   "tur": "mizan"
+  }
+ },
+ "redler": [
+  {
+   "aciklama": "bkz. U-S15-KARTLI-FATURA-IPTAL (s69 kâhinin S15 senaryosu).",
+   "id": "",
+   "kahin": null,
+   "kimlik": [
+    "Ç7b (S15 = A)"
+   ],
+   "no": 12,
+   "program": {
+    "ileti": "Faturanın taksit kartında (“Ahmet Yılmaz”) 2 tahsilat var; fatura iptal edilemez. Borcu düşürmek için iade faturası kesin.",
+    "kod": "plan-has-payments",
+    "status": 409
+   },
+   "sinif": "U",
+   "sonuc": "PROGRAM_REDDETTI",
+   "tur": "iptal"
+  },
+  {
+   "id": "",
+   "kahin": {
+    "kod": "KILITLI_DONEM",
+    "neden": "2026-01-20 ≤ kilit 2026-02-28 (409)"
+   },
+   "no": 18,
+   "program": {
+    "ileti": "Bu fatura 20.01.2026 tarihli; 28.02.2026 ve öncesi kapatılmış (kilitli) dönemdir. Değişiklik için yönetici dönem kilidini açmalı.",
+    "kod": "period-locked",
+    "status": 409
+   },
+   "sonuc": "AYNI",
+   "tur": "iptal"
+  }
+ ],
+ "senaryo": "s69-s15-kartli-fatura-iptal",
+ "son": [
+  {
+   "alan": "ana",
+   "anahtar": "102",
+   "sinif": "AYNI"
+  },
+  {
+   "alan": "ana",
+   "anahtar": "120",
+   "sinif": "AYNI"
+  },
+  {
+   "alan": "ana",
+   "anahtar": "600",
+   "sinif": "AYNI"
+  },
+  {
+   "alan": "alt",
+   "anahtar": "102.B1",
+   "sinif": "AYNI"
+  },
+  {
+   "alan": "cari",
+   "anahtar": "C1",
+   "sinif": "AYNI"
+  },
+  {
+   "alan": "cari",
+   "anahtar": "C3",
+   "sinif": "AYNI"
+  }
+ ],
+ "tz": "Europe/Istanbul",
+ "uyarilar": [],
+ "uygulanamayan": []
+}

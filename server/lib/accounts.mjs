@@ -15,7 +15,42 @@
 import { roundMoney } from "./money.mjs";
 
 const EPS = 0.005;
-const tlText = value => `${new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value)} TL`;
+
+// 2.5.0 Ç7b tur 3b (karar (6) 2B-S5 / S10 = A "Borçta Kalsın", KG-23 = A, S205 = A, B-11 = A; docs/erp/C7B-FATURA-TASARIM.md §17) — KAPATILAN KARTIN KALANI, TEK YARDIMCI.
+// Kartı Kapat yalnız ödeme planını bitirir; kalan carinin borcunda kalır (madde YOK), kapanış gününün ertesinden gecikmiş (vade = kapanış günü). Önceden kapatılmış kartlar (göç 53 '2.4.9') eski kuralda:
+// kalan carinin borcundan düşülür (cari ekstresi "Kart kapatıldı · kalan düşüldü", defter B 689 / A CH). Bütün okuyucular (cari defteri, genel defter, Defter Mutabakatı / kapı, cari
+// listesi, kilit izi / süzgeç, şüpheli ayırıcısı, kapanış günü kilidi, Tek Yükümlülük Kuyruğu'nun takvimi) yalnız bu işlevlerden okur (ders 10).
+export const CLOSE_RULE_WAIVE = "2.4.9";
+/** Kart kapalı VE kalanı düşülen (eski) kuralda mı. Alanı olmayan (seçilmemiş) kart Borçta Kalsın sayılır. */
+export const waivesRemaining = plan => Boolean(plan) && plan.status === "closed" && plan.closeRule === CLOSE_RULE_WAIVE;
+/** Kapalı kartın carinin borcundan düşülen kalanı (TL): eski kuralda max(0, tutar − net tahsilat), Borçta Kalsın'da 0. */
+export const waivedOf = (plan, paid) => (waivesRemaining(plan) ? Math.max(0, roundMoney((Number(plan.total) || 0) - (Number(paid) || 0))) : 0);
+/** SQL ikizi: `alias` kartı kapalı VE eski kuralda. column = false: sütun yok (göç 53 öncesi depo) — eski veri, her kapalı kart eski kural. */
+export const waivesSql = (alias = "p", { column = true } = {}) => (column ? `(${alias}.status = 'closed' AND ${alias}.close_rule = '${CLOSE_RULE_WAIVE}')` : `${alias}.status = 'closed'`);
+/** Kapanış günü (689'un ve S205'in günü): closed_at (2.0.13 öncesi kapatılmışta boş → son güncelleme günü), Kayıt Tarihi'nden önce değil. */
+export const closeDaySql = (alias = "p") => `MAX(COALESCE(${alias}.closed_at, substr(${alias}.updated_at, 1, 10)), COALESCE(NULLIF(${alias}.registered_on, ''), substr(${alias}.created_at, 1, 10)))`;
+/**
+ * S205 = A: Borçta Kalsın ile kapatılmış kartın kaleminin VADESİ — kapanış günü (kuyruğun kuralı "vade < gün" → kapanışın ERTESİ gününden gecikmiş: kapanış 10.04 → 11.04'ten;
+ * aynı kural "bugün açılan taksitsiz kart ertesi günden gecikir" — S1). Kapanıştan ÖNCE vadesi geçmiş kalem kendi vadesinde kalır (erken olan; gecikme yaşı küçülmez).
+ */
+export const keptDueOf = (dueDate, closeDay) => {
+  if (!closeDay || !/^\d{4}-\d{2}-\d{2}$/.test(String(closeDay))) return dueDate;
+  return String(dueDate ?? "") < closeDay ? dueDate : closeDay; // SQL MIN ile aynı (metin karşılaştırması)
+};
+/** Kart Borçta Kalsın ile kapatılmış mı (S205 vadesi bu kartlarda). */
+export const keepsRemaining = plan => Boolean(plan) && plan.status === "closed" && plan.closeRule !== CLOSE_RULE_WAIVE;
+/** keptDueOf'un SQL ikizi: Borçta Kalsın ile kapatılmış kartta MIN(vade, kapanış günü), öbür kartlarda vade. */
+export const keptDueSql = (alias, due) => `CASE WHEN ${alias}.status = 'closed' AND ${alias}.close_rule <> '${CLOSE_RULE_WAIVE}' THEN MIN(${due}, ${closeDaySql(alias)}) ELSE ${due} END`;
+/** JS kapanış günü (closeDaySql'in ikizi). */
+export const closeDayOfPlan = plan => {
+  const closed = plan?.closedAt || String(plan?.updatedAt || "").slice(0, 10);
+  const opened = plan?.registeredOn || String(plan?.createdAt || "").slice(0, 10);
+  return closed && closed > opened ? closed : opened;
+};
+// 2.5.0 Ç5-B: biçimleyici bir kez kurulur (Tek Yükümlülük Kuyruğu'nun artımlı önbelleği değişen carinin defterini — taksit kartı satırlarıyla — yeniden okur; tutar başına
+// yeni Intl.NumberFormat kurulmaz — 2.4.9 whatsapp-elle-alici YAPI denetimi, tasarım notu §9 KÖR NOKTA).
+const TL_FORMAT = new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const tlText = value => `${TL_FORMAT.format(value)} TL`;
 // Dar kontrol 3 (2.4.3, B-3): programın açılış stoku hareketine yazdığı açıklamalar — göç v30 (lib/migrations.mjs) eski veride açılışı bunlardan tanır;
 // stok hareketi kaydı/düzenlemesi aynı tanımı kullanır (aynılık test/gg243-dar3-stok.test.mjs).
 export const STOCK_OPENING_NOTES = Object.freeze(["Açılış stoku", "Açılış stoku (Excel)"]);
@@ -93,7 +128,12 @@ export function accountLedger(entries = [], plans = []) {
     const planned = Number(plan.planned ?? plan.totals?.planned);
     // v2.0.24: iadenin karttan düştüğü tutar kapsama geri eklenir (kapsam kartın açıldığı andaki borçtur; routes/plans.mjs returnCuts).
     const coverTotal = covers ? roundMoney(Math.min(total, Number.isFinite(planned) ? Math.max(0, planned) : total) + Math.max(0, Number(plan.returnCuts) || 0)) : 0;
-    lines.push({ id: `plan:${plan.id}`, origin: "plan", planId: plan.id, kind: "plan", covers, coverTotal, date: opened, at: plan.createdAt || "", label: covers ? "Taksit Planı (mevcut borç)" : "Taksit Planı", note: `${plan.name}${plan.itemCount ? ` · ${plan.itemCount} taksit` : ""}${covers ? ` · ${tlText(total)} borç taksitlendirildi` : ""}`, debit: covers ? 0 : total, credit: 0 });
+    // 2.5.0 Ç5-B tur 2b-2 (S110 / S120 = A): coverGross = kartın açıldığı andaki tutarı (iade kesintileri geri eklenmiş; taksitlere bölünmemiş kısım dahil) — satışla
+    // açılan kartın kendi satışını tanımak için; coverSource "transfer" = Excel / Tablodan Aktar kartı (kararlar bu kartlara uygulanmaz — kartın kaydı belli).
+    // coverSale (Ç5-B kapanış düzeltmesi, ORTA-1): satışla açılan kartın satışı — stok hareketinin kimliği (kalıcı; routes/plans.mjs saleSources). Kart o satışı tutar
+    // eşitliğine bakmadan tanır; boşsa (elle kart, izi olmayan eski kart) tanıma coverGross ile eskisi gibi (S133 = C).
+    const coverGross = covers ? roundMoney(total + Math.max(0, Number(plan.returnCuts) || 0)) : 0;
+    lines.push({ id: `plan:${plan.id}`, origin: "plan", planId: plan.id, kind: "plan", covers, coverTotal, coverGross, coverSource: covers && plan.importId ? "transfer" : "", coverSale: covers ? plan.saleMoveId || "" : "", date: opened, at: plan.createdAt || "", label: covers ? "Taksit Planı (mevcut borç)" : "Taksit Planı", note: `${plan.name}${plan.itemCount ? ` · ${plan.itemCount} taksit` : ""}${covers ? ` · ${tlText(total)} borç taksitlendirildi` : ""}`, debit: covers ? 0 : total, credit: 0 });
     for (const entry of plan.entries || []) {
       const amount = roundMoney(Number(entry.amount) || 0);
       const incoming = entry.kind === "in";
@@ -103,6 +143,9 @@ export function accountLedger(entries = [], plans = []) {
         planId: plan.id,
         kind: incoming ? "plan-in" : "plan-out",
         opening: Boolean(entry.opening),
+        // 2.5.0 Ç5-B tur 2a: "Hangi Taksite" bağı (plan_entries.item_id) — Tek Yükümlülük Kuyruğu'nda bağlı tahsilat önce o taksiti kapatır (karar (2); kartın kendi hesabı
+        // lib/plans.mjs allocate ile aynı sıra).
+        itemId: entry.itemId || "",
         // Çek/senetle alınan taksit (v2.0.7): rapor "çekle tahsilat" olarak ayırır (v2.0.9, cari bazında tahsilat).
         cheque: Boolean(entry.chequeId),
         date: entry.date,
@@ -118,9 +161,14 @@ export function accountLedger(entries = [], plans = []) {
     }
     const paid = roundMoney(Number(plan.totals?.paid) || 0);
     if (plan.status === "closed") {
-      // Kapatılan kartın ödenmeyen kısmı artık istenmez: defterde alacak olarak düşülür (iz kalır, bakiye doğru olur).
-      const writeOff = roundMoney(total - paid);
-      if (writeOff > EPS) lines.push({ id: `plan-close:${plan.id}`, origin: "plan", planId: plan.id, kind: "plan-close", date: String(plan.updatedAt || plan.createdAt || opened).slice(0, 10), at: plan.updatedAt || "", label: "Kart kapatıldı", note: `${plan.name} · kalan düşüldü`, debit: 0, credit: writeOff });
+      // Kapatılan kartın ödenmeyen kısmı: ESKİ kuralda (göç 53 '2.4.9') artık istenmez — defterde alacak olarak düşülür (iz kalır). 2.5.0 Ç7b tur 3b (karar (6) "Borçta Kalsın"):
+      // yeni kapatılan kartta düşülmez (waivedOf = 0) — kalan carinin borcunda kalır; kart toplamlarına (planTotal / planRemaining / eski anlamlı overdue) yine girmez (plan bitti).
+      const writeOff = waivedOf(plan, paid);
+      // 2.5.0 BİRLEŞİK TUR 5 (BT4 dar kontrol YB-1): satırın tarihi genel defterle AYNI kural (routes/ledger.mjs + lib/general-ledger.mjs "plan-close"): kapanış günü
+      // (closed_at; 2.0.13 öncesi kapatılmışta closed_at boş → son güncelleme günü, FREEZE_CLOSE ilk güncellemede onu dondurur), Kayıt Tarihi'nden önce değil. Önceden
+      // updated_at'ten okunuyordu: kapalı kartın notu / adı sonradan düzeltilince satır cari ekstresinde düzeltme gününe kayıyor, genel defter kapanış gününde kalıyordu.
+      const closedOn = plan.closedAt || String(plan.updatedAt || "").slice(0, 10);
+      if (writeOff > EPS) lines.push({ id: `plan-close:${plan.id}`, origin: "plan", planId: plan.id, kind: "plan-close", date: closedOn && closedOn > opened ? closedOn : opened, at: plan.updatedAt || "", label: "Kart kapatıldı", note: `${plan.name} · kalan düşüldü`, debit: 0, credit: writeOff });
     } else {
       planTotal = roundMoney(planTotal + total);
       planRemaining = roundMoney(planRemaining + Math.max(0, total - paid));

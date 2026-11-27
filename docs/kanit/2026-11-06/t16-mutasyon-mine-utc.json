@@ -1,0 +1,38 @@
+{
+  "ad": "t16-mutasyon-mine-utc",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-name-pattern=^T16 test/whatsapp-t-durum-karar-tablosu-248.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T15:59:51.856Z",
+  "sure_sn": 1.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 0,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.4.8 İş T — durum bildirimi karar tablosu (tek dosya; her ulaşılabilir hücre bir alt test) › T16 imzalı bildirim istek Meta'dayken işi ilerletir; yanıt 'Meta Kabul Etti' ezmez; tek ileti",
+      "konum": "test/whatsapp-t-durum-karar-tablosu-248.test.mjs:614:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + 'accepted' (beklenen delivered, gelen accepted)"
+    }
+  ],
+  "ham_cikti": "../t16-kanit/2026-11-06/t16-mutasyon-mine-utc.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/t16-mut",
+  "ham_cikti_sha256": "e7645f065739eb4a771d0a9993e523b018f7ecd2e53edce702cc8d672d8d63bd",
+  "ham_cikti_bayt": 1939
+}

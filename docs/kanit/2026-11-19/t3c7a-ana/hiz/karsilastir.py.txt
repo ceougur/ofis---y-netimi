@@ -1,0 +1,29 @@
+# Ana oturum: hız kabul karşılaştırması — bir ya da birden çok ölçüm dosyası (her dosyada sırayla taban, aday, taban, aday blokları) BİRLİKTE okunur.
+# Ölçüt (ders 53 (a)): hiçbir yol en iyi VE ortancada tabanın %10'undan kötü olmamalı. Çağrı: python3 -I karsilastir.py <dosya> [<dosya> …]
+import re, sys
+T = {}; A = {}; sira = []
+for F in sys.argv[1:]:
+    blk = []; cur = None; yuk = []
+    for l in open(F, encoding='utf-8'):
+        if l.startswith('=== '): yuk.append(l.strip()[:60])
+        if l.startswith('kod '): cur = {}; blk.append(cur)
+        m = re.match(r'  (.+?): durum (\d+) · en iyi ([\d.]+) ms · ortanca ([\d.]+) ms · olay döngüsü en çok ([\d.]+)', l)
+        if m and cur is not None: cur[m.group(1)] = (int(m.group(2)), float(m.group(3)), float(m.group(4)), float(m.group(5)))
+    assert len(blk) == 4, (F, len(blk))
+    assert not any('GEÇERSİZ' in y for y in yuk), (F, 'yük > 2 olan blok var')
+    for i, b in enumerate(blk):
+        for y, v in b.items():
+            if y not in sira: sira.append(y)
+            (T if i % 2 == 0 else A).setdefault(y, []).append(v)
+print(f"{len(sys.argv) - 1} dosya · yol | taban en iyi | aday en iyi | oran | taban ortanca (ort.) | aday ortanca (ort.) | oran | olay döngüsü en çok taban / aday | hüküm")
+kotu = 0
+for y in sira:
+    t = T.get(y); a = A.get(y)
+    if not t or not a: print(y, '| TEK TARAFTA'); continue
+    tb = min(x[1] for x in t); ab = min(x[1] for x in a); tm = sum(x[2] for x in t) / len(t); am = sum(x[2] for x in a) / len(a)
+    rb = ab / tb if tb else 0; rm = am / tm if tm else 0
+    h = 'küçük (<20 ms)' if max(tb, ab) < 20 else ('KÖTÜ' if rb > 1.10 and rm > 1.10 else ('eşikte (tek ölçüt)' if rb > 1.10 or rm > 1.10 else 'tamam'))
+    kotu += h == 'KÖTÜ'
+    d = set(x[0] for x in t + a)
+    print(f"{y[:42]} | {tb:.0f} | {ab:.0f} | {rb:.2f} | {tm:.0f} | {am:.0f} | {rm:.2f} | {max(x[3] for x in t):.0f} / {max(x[3] for x in a):.0f} | {h}{'' if d == {200} else ' DURUM ' + str(d)}")
+print('KÖTÜLEŞEN YOL SAYISI', kotu)

@@ -1,0 +1,133 @@
+başta 1.07 1.43 2.03 3/122 23441 · nproc 4 · 06:34:31
+/dev/vda        252G   31G  7.9G  80% /
+kilit 200
+düzeltme fişi Fiş 2026-000001
+519 -116310.08 false 
+eşleştirme fişi 200 {"voucher":{"id":"lv-a2566798-1435-466e-8b52-9eeab0e71110","year":2027,"no":1,"noText":"Fiş 2027-000001","date":"2027-01
+Mutabakat: false ledger:rule-diff
+== tur 1 taban (1) kilitsiz
+yük (başta) 1.04 1.34 1.95 · kilit yok
+Kural Farkı ön izleme: 200 · 105/4/2 ms (en iyi 2, ortanca 4) · döngü en çok 103 ms
+Mutabakat Testi: 200 · 6309/5726/5538 ms (en iyi 5538, ortanca 5726) · döngü en çok 5725 ms
+Defter Mutabakatı: 200 · 8152/7923/7944 ms (en iyi 7923, ortanca 7944) · döngü en çok 8150 ms
+  ön izleme: pasif (rule-diff-no-lock) · satır 0 · kaynak 0 · yazılmış fiş 0
+yük (sonda) 1.26 1.37 1.93
+== tur 1 taban (2) kilit 31.12.2026
+yük (başta) 1.33 1.37 1.91 · kilit 2026-12-31
+Kural Farkı ön izleme: 200 · 3734/3769/3988 ms (en iyi 3734, ortanca 3769) · döngü en çok 3731 ms
+Mutabakat Testi: 200 · 18905/8129/7955 ms (en iyi 7955, ortanca 8129) · döngü en çok 18908 ms
+Defter Mutabakatı: 200 · 10482/10330/10469 ms (en iyi 10330, ortanca 10469) · döngü en çok 10486 ms
+  ön izleme: etkin · satır 2 · kaynak 0 · yazılmış fiş 1
+Kural Farkı kaydı (POST): 400 · 5 ms (en iyi 5, ortanca 5) · döngü en çok 2 ms
+yük (sonda) 1.11 1.29 1.84
+== tur 1 taban (3) 5.000 aday
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2e-k3/taban · yük (başta) 1.11 1.29 1.84
+  liste (sayfasız): 200 · 41 ms · döngü en çok 31 ms
+  liste (sayfasız, 2.): 200 · 35 ms · döngü en çok 26 ms
+  sayfa 1 (200): 200 · 9 ms · döngü en çok 7 ms
+  zil sayısı: 200 · 4 ms · döngü en çok 2 ms
+  Mutabakat Testi: 200 · 127 ms · döngü en çok 126 ms
+  aday 5000 · kilit 2026-09-30 · açık 2600 · kilitli 2400
+  toplu onay — yönetici, kilitli 1.000: 200 · 404 ms · döngü en çok 398 ms
+  toplu ret — Muhasebe, açık 1.000: 200 · 440 ms · döngü en çok 435 ms
+  toplu Geri Al — Muhasebe, açık 1.000: 200 · 394 ms · döngü en çok 392 ms
+  toplu onay — yönetici, açık + kilitli 1.000: 200 · 363 ms · döngü en çok 359 ms
+  tek karar — Muhasebe, açık: 200 · 7 ms · döngü en çok 5 ms
+  Kural Farkı ön izleme: 200 · 95 ms · döngü en çok 0 ms
+  Mutabakat Testi (kararlardan sonra): 200 · 120 ms · döngü en çok 119 ms
+yük (sonda) 1.11 1.29 1.84
+== tur 1 yeni (1) kilitsiz
+yük (başta) 1.01 1.26 1.82 · kilit yok
+Kural Farkı ön izleme: 200 · 98/4/2 ms (en iyi 2, ortanca 4) · döngü en çok 96 ms
+Mutabakat Testi: 200 · 6098/5495/5088 ms (en iyi 5088, ortanca 5495) · döngü en çok 5088 ms
+Defter Mutabakatı: 200 · 7652/8232/8096 ms (en iyi 7652, ortanca 8096) · döngü en çok 8229 ms
+  ön izleme: pasif (rule-diff-no-lock) · satır 0 · kaynak 0 · yazılmış fiş 0
+yük (sonda) 1.40 1.33 1.82
+== tur 1 yeni (2) kilit 31.12.2026
+yük (başta) 1.65 1.41 1.83 · kilit 2026-12-31
+Kural Farkı ön izleme: 200 · 3942/4294/3909 ms (en iyi 3909, ortanca 3942) · döngü en çok 4293 ms
+Mutabakat Testi: 200 · 19886/8490/8515 ms (en iyi 8490, ortanca 8515) · döngü en çok 8514 ms
+Defter Mutabakatı: 200 · 10934/10843/10925 ms (en iyi 10843, ortanca 10925) · döngü en çok 10939 ms
+  ön izleme: etkin · satır 2 · kaynak 0 · yazılmış fiş 1
+Kural Farkı kaydı (POST): 400 · 5 ms (en iyi 5, ortanca 5) · döngü en çok 2 ms
+yük (sonda) 1.31 1.36 1.77
+== tur 1 yeni (3) 5.000 aday
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2e-k3/yeni · yük (başta) 1.31 1.36 1.77
+  liste (sayfasız): 200 · 41 ms · döngü en çok 31 ms
+  liste (sayfasız, 2.): 200 · 36 ms · döngü en çok 29 ms
+  sayfa 1 (200): 200 · 8 ms · döngü en çok 7 ms
+  zil sayısı: 200 · 4 ms · döngü en çok 0 ms
+  Mutabakat Testi: 200 · 135 ms · döngü en çok 0 ms
+  aday 5000 · kilit 2026-09-30 · açık 2600 · kilitli 2400
+  toplu onay — yönetici, kilitli 1.000: 200 · 359 ms · döngü en çok 355 ms
+  toplu ret — Muhasebe, açık 1.000: 200 · 423 ms · döngü en çok 416 ms
+  toplu Geri Al — Muhasebe, açık 1.000: 200 · 380 ms · döngü en çok 375 ms
+  toplu onay — yönetici, açık + kilitli 1.000: 200 · 403 ms · döngü en çok 400 ms
+  tek karar — Muhasebe, açık: 200 · 6 ms · döngü en çok 5 ms
+  Kural Farkı ön izleme: 200 · 88 ms · döngü en çok 0 ms
+  Mutabakat Testi (kararlardan sonra): 200 · 110 ms · döngü en çok 109 ms
+yük (sonda) 1.31 1.36 1.77
+== tur 2 taban (1) kilitsiz
+yük (başta) 1.30 1.35 1.76 · kilit yok
+Kural Farkı ön izleme: 200 · 90/5/3 ms (en iyi 3, ortanca 5) · döngü en çok 87 ms
+Mutabakat Testi: 200 · 6652/6112/5618 ms (en iyi 5618, ortanca 6112) · döngü en çok 6648 ms
+Defter Mutabakatı: 200 · 8172/7981/8091 ms (en iyi 7981, ortanca 8091) · döngü en çok 8091 ms
+  ön izleme: pasif (rule-diff-no-lock) · satır 0 · kaynak 0 · yazılmış fiş 0
+yük (sonda) 1.39 1.36 1.74
+== tur 2 taban (2) kilit 31.12.2026
+yük (başta) 1.41 1.37 1.73 · kilit 2026-12-31
+Kural Farkı ön izleme: 200 · 4153/4183/4113 ms (en iyi 4113, ortanca 4153) · döngü en çok 4182 ms
+Mutabakat Testi: 200 · 18961/8058/8198 ms (en iyi 8058, ortanca 8198) · döngü en çok 18958 ms
+Defter Mutabakatı: 200 · 10529/10528/10934 ms (en iyi 10528, ortanca 10529) · döngü en çok 10939 ms
+  ön izleme: etkin · satır 2 · kaynak 0 · yazılmış fiş 1
+Kural Farkı kaydı (POST): 400 · 5 ms (en iyi 5, ortanca 5) · döngü en çok 0 ms
+yük (sonda) 1.29 1.35 1.70
+== tur 2 taban (3) 5.000 aday
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2e-k3/taban · yük (başta) 1.29 1.35 1.70
+  liste (sayfasız): 200 · 50 ms · döngü en çok 39 ms
+  liste (sayfasız, 2.): 200 · 37 ms · döngü en çok 27 ms
+  sayfa 1 (200): 200 · 9 ms · döngü en çok 8 ms
+  zil sayısı: 200 · 4 ms · döngü en çok 3 ms
+  Mutabakat Testi: 200 · 138 ms · döngü en çok 136 ms
+  aday 5000 · kilit 2026-09-30 · açık 2600 · kilitli 2400
+  toplu onay — yönetici, kilitli 1.000: 200 · 417 ms · döngü en çok 409 ms
+  toplu ret — Muhasebe, açık 1.000: 200 · 429 ms · döngü en çok 426 ms
+  toplu Geri Al — Muhasebe, açık 1.000: 200 · 415 ms · döngü en çok 413 ms
+  toplu onay — yönetici, açık + kilitli 1.000: 200 · 433 ms · döngü en çok 0 ms
+  tek karar — Muhasebe, açık: 200 · 7 ms · döngü en çok 5 ms
+  Kural Farkı ön izleme: 200 · 105 ms · döngü en çok 0 ms
+  Mutabakat Testi (kararlardan sonra): 200 · 125 ms · döngü en çok 124 ms
+yük (sonda) 1.34 1.36 1.70
+== tur 2 yeni (1) kilitsiz
+yük (başta) 1.27 1.34 1.69 · kilit yok
+Kural Farkı ön izleme: 200 · 96/4/3 ms (en iyi 3, ortanca 4) · döngü en çok 93 ms
+Mutabakat Testi: 200 · 6599/6060/5533 ms (en iyi 5533, ortanca 6060) · döngü en çok 5528 ms
+Defter Mutabakatı: 200 · 8489/8221/8037 ms (en iyi 8037, ortanca 8221) · döngü en çok 8485 ms
+  ön izleme: pasif (rule-diff-no-lock) · satır 0 · kaynak 0 · yazılmış fiş 0
+yük (sonda) 1.24 1.32 1.66
+== tur 2 yeni (2) kilit 31.12.2026
+yük (başta) 1.19 1.31 1.64 · kilit 2026-12-31
+Kural Farkı ön izleme: 200 · 4074/4240/3819 ms (en iyi 3819, ortanca 4074) · döngü en çok 4230 ms
+Mutabakat Testi: 200 · 21197/8184/8012 ms (en iyi 8012, ortanca 8184) · döngü en çok 8183 ms
+Defter Mutabakatı: 200 · 10348/10306/10800 ms (en iyi 10306, ortanca 10348) · döngü en çok 10805 ms
+  ön izleme: etkin · satır 2 · kaynak 0 · yazılmış fiş 1
+Kural Farkı kaydı (POST): 400 · 5 ms (en iyi 5, ortanca 5) · döngü en çok 2 ms
+yük (sonda) 1.23 1.31 1.62
+== tur 2 yeni (3) 5.000 aday
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2e-k3/yeni · yük (başta) 1.23 1.31 1.62
+  liste (sayfasız): 200 · 41 ms · döngü en çok 31 ms
+  liste (sayfasız, 2.): 200 · 36 ms · döngü en çok 26 ms
+  sayfa 1 (200): 200 · 8 ms · döngü en çok 6 ms
+  zil sayısı: 200 · 4 ms · döngü en çok 3 ms
+  Mutabakat Testi: 200 · 126 ms · döngü en çok 0 ms
+  aday 5000 · kilit 2026-09-30 · açık 2600 · kilitli 2400
+  toplu onay — yönetici, kilitli 1.000: 200 · 365 ms · döngü en çok 362 ms
+  toplu ret — Muhasebe, açık 1.000: 200 · 397 ms · döngü en çok 392 ms
+  toplu Geri Al — Muhasebe, açık 1.000: 200 · 385 ms · döngü en çok 382 ms
+  toplu onay — yönetici, açık + kilitli 1.000: 200 · 383 ms · döngü en çok 378 ms
+  tek karar — Muhasebe, açık: 200 · 15 ms · döngü en çok 12 ms
+  Kural Farkı ön izleme: 200 · 121 ms · döngü en çok 118 ms
+  Mutabakat Testi (kararlardan sonra): 200 · 116 ms · döngü en çok 115 ms
+yük (sonda) 1.21 1.31 1.61
+sonda 1.21 1.31 1.61 1/120 25818 · 06:46:56
+kilit/çıkış 0

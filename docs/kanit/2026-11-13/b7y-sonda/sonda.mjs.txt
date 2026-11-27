@@ -1,0 +1,42 @@
+// İş 3 sondası: 9 hücre (söz × vade) + fatura / kart / söz / tedarikçi — Vade Takip, Cari Listesi, zil, Anlık Durum, Nakit Akışı sayıları. ROOT=<kod>
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+process.env.HUKUK_LICENSE_URL ||= "http://127.0.0.1:9";
+const ROOT = process.env.ROOT;
+const { loginAdmin, startTestServer } = await import(pathToFileURL(path.join(ROOT, "test", "helpers.mjs")).href);
+const TODAY = "2026-10-20";
+const day = o => { const d = new Date(`${TODAY}T00:00:00Z`); d.setUTCDate(d.getUTCDate() + o); return d.toISOString().slice(0, 10); };
+const unwrap = r => (r.data && typeof r.data === "object" && "ok" in r.data ? (r.data.ok ? r.data.data : r.data) : r.data);
+const server = await startTestServer({ now: { time: `${TODAY}T12:00:00+03:00`, fixed: true } });
+const c = await loginAdmin(server);
+const must = async (l, p) => { const r = await p; if (r.status !== 200) throw new Error(`${l}: ${r.status} ${JSON.stringify(r.data).slice(0, 300)}`); return unwrap(r); };
+const out = {};
+try {
+  await c.post("/api/workspace/bank/setup/dismiss", {});
+  let n = 0;
+  const acc = (name, type = "customer") => must(name, c.post("/api/workspace/accounts", { name, type, registeredOn: day(-400), phone: `0500 777 ${String(10 + n).padStart(2, "0")} ${String((n += 1)).padStart(2, "0")}`, similarOk: true, force: true }));
+  const entry = (a, body) => must(`hareket ${a.name}`, c.post(`/api/workspace/accounts/${a.id}/entries`, { method: "cash", cashForce: true, similarOk: true, ...body }));
+  const cells = [];
+  for (const v of [-10, 0, 10]) for (const p of [15, 0, -5]) {
+    const a = await acc(`Hücre v${v} p${p}`);
+    const r = await c.post(`/api/workspace/accounts/${a.id}/entries`, { kind: "debt", amount: "100", date: day(-30), dueDate: day(v), expectedDate: day(p), method: "cash", cashForce: true, similarOk: true });
+    cells.push({ name: a.name, id: a.id, status: r.status, err: r.status === 200 ? "" : JSON.stringify(r.data).slice(0, 160) });
+  }
+  out.hucreler = cells.filter(x => x.status !== 200);
+  const list = await must("liste", c.get("/api/workspace/accounts?status=all&limit=5000"));
+  const vade = await must("vade", c.get(`/api/workspace/overview/vade-takip?from=${day(-800)}&to=${day(800)}`));
+  const dues = await must("zil", c.get("/api/workspace/dues"));
+  out.satir = cells.map(x => {
+    const row = list.accounts.find(a => a.id === x.id) || {};
+    const vr = vade.rows.filter(r => r.ref?.id === x.id || r.party === x.name).map(r => `${r.date}|${r.state}|${r.days}`);
+    const dr = (dues.items || []).filter(r => r.accountId === x.id).map(r => `${r.dueDate}|${r.state}|${r.days}`);
+    return `${x.name}: liste gecikmiş ${row.overdue} | vade ${vr.join(",")} | zil ${dr.join(",")}`;
+  });
+  out.vadeToplam = vade.totals.in;
+  const ov = await must("anlık", c.get("/api/workspace/overview"));
+  out.anlik = JSON.stringify(ov).match(/"overdue[A-Za-z]*":[0-9.]+/g);
+  const flow = await must("nakit", c.get(`/api/workspace/overview/nakit-akisi?from=${day(0)}&to=${day(30)}&overdue=1`));
+  out.nakit = cells.map(x => `${x.name}: satır ${(flow.rows || []).filter(r => r.party === x.name).map(r => r.date + "|" + r.label).join(",")} · gecikmiş ${(flow.overdue || []).filter(r => r.party === x.name).map(r => r.date).join(",")}`);
+  out.nakitGecikmis = flow.overdueTotals;
+} catch (e) { out.HATA = String(e.message).slice(0, 400); } finally { await server.close(); }
+console.log(JSON.stringify(out, null, 1));

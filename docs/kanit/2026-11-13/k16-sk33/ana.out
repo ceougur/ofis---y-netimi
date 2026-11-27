@@ -1,0 +1,48 @@
+{
+ "S145 örneği: borç 1.000 → şüpheli 900 (−30) → TAHSİLAT 300 (−40)": {
+  "supheli": "200",
+  "kayit": "409 İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Şüpheli Alacak — Carinin Normal Alacağı Eksi Değil (120 = kart − açık şüpheli ≥ 0)). ",
+  "bakiye": 1000
+ },
+ "SK-33 çek: borç 1.000 → şüpheli 900 (−30) → ÇEK 300 (düzenleme −40)": {
+  "supheli": "200",
+  "kayit": "409 İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Şüpheli Alacak — Carinin Normal Alacağı Eksi Değil (120 = kart − açık şüpheli ≥ 0)). ",
+  "bakiye": 1000
+ },
+ "SK-33 Alacak Yaz: borç 1.000 → şüpheli 900 (−30) → ALACAK 300 (−40)": {
+  "supheli": "200",
+  "kayit": "409 İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Şüpheli Alacak — Carinin Normal Alacağı Eksi Değil (120 = kart − açık şüpheli ≥ 0)). ",
+  "bakiye": 1000
+ },
+ "SK-33 borç silme: borç 700 (−60) + borç 300 (−50) → şüpheli 900 (−30) → 300'lük borcu SİL": {
+  "supheli": "200",
+  "kayit": "409 İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Şüpheli Alacak — Carinin Normal Alacağı Eksi Değil (120 = kart − açık şüpheli ≥ 0)). ",
+  "bakiye": 1000
+ },
+ "SK-34 (a) aşım önceden var: borç 500 (−60) + borç 500 (−20) → şüpheli 900 (−30) → tahsilat 50 (−40)": {
+  "supheli": "200",
+  "kayit": "200",
+  "bakiye": 950
+ },
+ "SK-34 (b) aynı gün borç: borç 700 (−60) + borç 500 (−30) → şüpheli 900 (−30) → tahsilat 50 (−40)": {
+  "supheli": "200",
+  "kayit": "200",
+  "bakiye": 1150
+ },
+ "S145 komşusu: borç 1.000 → şüpheli 900 (−30) → tahsilat 100 (−40; borç yetiyor)": {
+  "supheli": "200",
+  "kayit": "200",
+  "bakiye": 900
+ },
+ "ÖLÇÜ: borç 1.000 (−60) → şüpheli 900 (−30) → yeni borç 500 (−10) → tahsilat 300 (−40)": {
+  "supheli": "200",
+  "kayit": "200",
+  "bakiye": 1200,
+  "acikSupheli": 90000
+ },
+ "ÖLÇÜ 2: borç 500 (−60) → şüpheli 900 (−30; o gün borç 500) — borç 500 (−20) SONRA girilirse şüpheliye alma": {
+  "borc500ikenAlma900": "400 Şüpheliye alınacak tutar (900,00 TL) carinin borç bakiyesini aşıyor: bakiye 500,00 TL → en çok 500,00 TL.",
+  "borc1000OlduktanSonraAlma900": "200",
+  "bakiye": 1000
+ }
+}

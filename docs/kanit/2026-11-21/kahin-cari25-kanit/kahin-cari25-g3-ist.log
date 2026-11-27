@@ -1,0 +1,45 @@
+ÜRETİCİ: 20/20 aynı dizi (tur s1 + ux18, tohum 1–10 × 120 işlem)
+ADIMLAR: eski kopyadaki 109 elle senaryonun 0'inin adımları değişti: yok · izinli: yok · yeni elle senaryo: d56-c5-s238-s240-iade-ve-secilmeyen, d57-c5-s241-s242-duzenle
+DİL EKİ (bakım 24): eski kâhinin dilinde olmayan adımlı yeni elle senaryo — eşdeğerlik / G3 dışında: yok
+EŞDEĞERLİK (2.4.9 / 2.4.6 / 2.4.5 / --legacy; eski kopyanın 109 elle + yeni kopyanın yeni 2 elle + 20 rastgele senaryo × 4 kip): 524/524 bayt bayt aynı
+G3 (kural 2.5.0; 131 senaryo — eski kopyanın 109 elle senaryosu + yeni elle + 20 rastgele): eski 79302 denetim · yeni 79511 denetim · değişen / kalkan / yeni toplam 405 · BEKLENMEYEN 0 · yalnız etiketi değişen 16
+  S234           degisen      6
+      örn. d56-c5-s238-s240-iade-ve-secilmeyen k1:kart:KH2:toplam: 60000 → 30000
+      örn. d56-c5-s238-s240-iade-ve-secilmeyen k1:kart:KJ1:toplam: 90000 → 70000
+      örn. d56-c5-s238-s240-iade-ve-secilmeyen k1:kart:KJ2:toplam: 90000 → 70000
+      örn. d56-c5-s238-s240-iade-ve-secilmeyen k2:kart:KH2:toplam: 60000 → 30000
+  S234           yeni       140
+      örn. d56-c5-s238-s240-iade-ve-secilmeyen k1:cari:H2:acikEsitBakiye: "(denetim yok)" → true
+      örn. d56-c5-s238-s240-iade-ve-secilmeyen k1:cari:H2:acikToplam: "(denetim yok)" → 30000
+      örn. d56-c5-s238-s240-iade-ve-secilmeyen k1:cari:H2:gecikmis: "(denetim yok)" → 30000
+      örn. d56-c5-s238-s240-iade-ve-secilmeyen k1:cari:J1:acikEsitBakiye: "(denetim yok)" → true
+  S239           yeni       103
+      örn. d56-c5-s238-s240-iade-ve-secilmeyen k1:cari:H1:acikEsitBakiye: "(denetim yok)" → true
+      örn. d56-c5-s238-s240-iade-ve-secilmeyen k1:cari:H1:acikToplam: "(denetim yok)" → 60000
+      örn. d56-c5-s238-s240-iade-ve-secilmeyen k1:cari:H1:gecikmis: "(denetim yok)" → 60000
+      örn. d56-c5-s238-s240-iade-ve-secilmeyen k1:cari:Q1:acikEsitBakiye: "(denetim yok)" → true
+  S241           degisen      2
+      örn. d57-c5-s241-s242-duzenle k1:kart:KK1:toplam: 90000 → 60000
+      örn. d57-c5-s241-s242-duzenle k1:kart:KK2:toplam: 90000 → 60000
+  S241           yeni        25
+      örn. d57-c5-s241-s242-duzenle k1:cari:K1:acikEsitBakiye: "(denetim yok)" → false
+      örn. d57-c5-s241-s242-duzenle k1:cari:K1:acikToplam: "(denetim yok)" → 0
+      örn. d57-c5-s241-s242-duzenle k1:cari:K1:gecikmis: "(denetim yok)" → 0
+      örn. d57-c5-s241-s242-duzenle k1:cari:K2:acikEsitBakiye: "(denetim yok)" → false
+  S242           yeni        35
+      örn. d57-c5-s241-s242-duzenle k1:cari:P1:acikEsitBakiye: "(denetim yok)" → true
+      örn. d57-c5-s241-s242-duzenle k1:cari:P1:acikToplam: "(denetim yok)" → 90000
+      örn. d57-c5-s241-s242-duzenle k1:cari:P1:gecikmis: "(denetim yok)" → 80000
+      örn. d57-c5-s241-s242-duzenle k1:cari:P2:acikEsitBakiye: "(denetim yok)" → true
+  SUS25          kalkan      94
+      örn. d56-c5-s238-s240-iade-ve-secilmeyen k1:cari:N1:acikEsitBakiye: true → "(denetim yok)"
+      örn. d56-c5-s238-s240-iade-ve-secilmeyen k1:cari:N1:acikToplam: 60000 → "(denetim yok)"
+      örn. d56-c5-s238-s240-iade-ve-secilmeyen k1:cari:N1:gecikmis: 60000 → "(denetim yok)"
+      örn. d56-c5-s238-s240-iade-ve-secilmeyen k1:cari:N2:acikEsitBakiye: true → "(denetim yok)"
+G3 senaryo senaryo (sınıf/tür: adet; listede olmayan senaryoda fark 0):
+  d56-c5-s238-s240-iade-ve-secilmeyen      S234/degisen 6 · S234/yeni 140 · S239/yeni 90 · SUS25/kalkan 94
+  d57-c5-s241-s242-duzenle                 S239/yeni 13 · S241/degisen 2 · S241/yeni 25 · S242/yeni 35
+# tests 654
+# pass 654
+# fail 0
+654/654 denetim geçti

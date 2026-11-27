@@ -1,0 +1,19 @@
+// t3hiz deneyi: Ç7a'nın tek sorgulu periodGroups'unun değişkeleri (PGV) — süre ve sonuç (a ile aynı mı). node parca8.mjs <k-exp> <veri>
+import path from "node:path";
+import { isDeepStrictEqual } from "node:util";
+import { pathToFileURL } from "node:url";
+const [root, dir] = process.argv.slice(2);
+const imp = p => import(pathToFileURL(path.join(root, p)).href);
+const dbm = await imp("server/lib/db.mjs");
+const ml = await imp("server/lib/bank/money-lines.mjs");
+const store = dbm.createStore(dbm.openDatabase(path.join(dir, "data", "destekofis.sqlite"), { readOnly: true }));
+const money = ml.createMoneyLines(store);
+const run = v => { process.env.PGV = v; return money.periodGroupsOneQuery({ from: "2026-01-01", to: "2026-12-31" }); };
+const ref = run("a");
+for (const round of [1, 2]) for (const v of ["a", "c", "d", "f"]) {
+  const ms = [];
+  let out;
+  for (let i = 0; i < 7; i += 1) { const s = performance.now(); out = run(v); ms.push(performance.now() - s); }
+  ms.sort((x, y) => x - y);
+  console.log(`tur ${round} ${v}: en iyi ${ms[0].toFixed(1)} · ortanca ${ms[3].toFixed(1)} ms · a ile aynı ${isDeepStrictEqual(out, ref)}`);
+}

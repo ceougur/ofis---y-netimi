@@ -1,0 +1,26 @@
+TAP version 13
+# (node:13227) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: göç v28: v2.4.2 verisi güncel kodla açılır (stok kartında KDV oranı)
+    # Subtest: eski veride oran boş; miktar, değer, faturalar aynı; düzenleme oranı korur; yazılan oran faturada gelir; Mutabakat Testi temiz
+    ok 1 - eski veride oran boş; miktar, değer, faturalar aynı; düzenleme oranı korur; yazılan oran faturada gelir; Mutabakat Testi temiz
+      ---
+      duration_ms: 1091.043832
+      type: 'test'
+      ...
+    1..1
+ok 1 - göç v28: v2.4.2 verisi güncel kodla açılır (stok kartında KDV oranı)
+  ---
+  duration_ms: 1097.823391
+  type: 'suite'
+  ...
+1..1
+# tests 1
+# suites 1
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1446.255509
+cikis=0

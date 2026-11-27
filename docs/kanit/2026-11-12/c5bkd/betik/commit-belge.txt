@@ -1,0 +1,10 @@
+2.5.0 Ç5-B tasarım notu §14: kapanış düzeltme turu (belge)
+
+ORTA-1 (kartın kaynağı kalıcı bilgiden), ORTA-2 (yakınsama + güvenli kapanış), S129 = A (gösterilen ↔
+kendi hesap alanları), zil senaryosunun kök nedeni, hızın kök nedeni düzeltmesi (ılık zilde kuyruk
+kurulmuyor — süre yanıtın JSON'a çevrilmesi ve parmak izi sorguları), DÜŞÜK-2 / DÜŞÜK-3 ve mutabakat
+motorunun gösterdiği ayrı bulgu (kart fazlası iki görünümde farklı dağılıyor — S99 = A ile çelişir;
+düzeltmeden önceki kodda da var).
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01EhegDvmPQ9hx2ibfitm6og

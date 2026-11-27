@@ -1,0 +1,936 @@
+TAP version 13
+# Subtest: 2.5.0 BİRLEŞİK TUR 5 — açılış onarımının savunma kuralları (üst sınır, yeniden okuma, kirli işareti)
+    # Subtest: (a) üst sınır · toplu eleme: kart eski kuralın hedefini aşıyorsa (600 > 500) onarılmaz; aynı durumda hedefi aşmayan kart (500) onarılır
+    ok 1 - (a) üst sınır · toplu eleme: kart eski kuralın hedefini aşıyorsa (600 > 500) onarılmaz; aynı durumda hedefi aşmayan kart (500) onarılır
+      ---
+      duration_ms: 1401.656758
+      type: 'test'
+      ...
+    # Subtest: (a) üst sınır · toplu okuma düştü (her aday cari başına yoldan): kart eski kuralın hedefini aşıyorsa (600 > 500) onarılmaz; aynı durumda hedefi aşmayan kart (500) onarılır
+    ok 2 - (a) üst sınır · toplu okuma düştü (her aday cari başına yoldan): kart eski kuralın hedefini aşıyorsa (600 > 500) onarılmaz; aynı durumda hedefi aşmayan kart (500) onarılır
+      ---
+      duration_ms: 832.441343
+      type: 'test'
+      ...
+    # Subtest: (b) yeniden okuma: toplu durum ONARIR derken cari başına yol onarma diyor → yazılmaz; toplu durum yanlış hedef veriyor → yazılan tutar cari başına yolunki
+    ok 3 - (b) yeniden okuma: toplu durum ONARIR derken cari başına yol onarma diyor → yazılmaz; toplu durum yanlış hedef veriyor → yazılan tutar cari başına yolunki
+      ---
+      duration_ms: 963.220079
+      type: 'test'
+      ...
+    # Subtest: (c) kirli işareti · aynı cari (iki satır aynı cariyi işaretler): ilk aday onarılınca o carinin toplu durumu bayat sayılır; sonraki aday cari başına yoldan okunup onarılır
+    ok 4 - (c) kirli işareti · aynı cari (iki satır aynı cariyi işaretler): ilk aday onarılınca o carinin toplu durumu bayat sayılır; sonraki aday cari başına yoldan okunup onarılır
+      ---
+      duration_ms: 739.556785
+      type: 'test'
+      ...
+    # Subtest: (c) kirli işareti · önceki adayın kartı sonrakinin carisine taşınmış (eski veri; yalnız KARTIN carisi satırı işaretler): ilk aday onarılınca o carinin toplu durumu bayat sayılır; sonraki aday cari başına yoldan okunup onarılır
+    ok 5 - (c) kirli işareti · önceki adayın kartı sonrakinin carisine taşınmış (eski veri; yalnız KARTIN carisi satırı işaretler): ilk aday onarılınca o carinin toplu durumu bayat sayılır; sonraki aday cari başına yoldan okunup onarılır
+      ---
+      duration_ms: 861.198553
+      type: 'test'
+      ...
+    # Subtest: (c) kirli işareti · iki fatura aynı caride, önceki adayın kartı üçüncü cariye taşınmış (eski veri; yalnız kartı TAŞIYAN faturanın carisi satırı işaretler): ilk aday onarılınca o carinin toplu durumu bayat sayılır; sonraki aday cari başına yoldan okunup onarılır
+    ok 6 - (c) kirli işareti · iki fatura aynı caride, önceki adayın kartı üçüncü cariye taşınmış (eski veri; yalnız kartı TAŞIYAN faturanın carisi satırı işaretler): ilk aday onarılınca o carinin toplu durumu bayat sayılır; sonraki aday cari başına yoldan okunup onarılır
+      ---
+      duration_ms: 838.474747
+      type: 'test'
+      ...
+    1..6
+ok 1 - 2.5.0 BİRLEŞİK TUR 5 — açılış onarımının savunma kuralları (üst sınır, yeniden okuma, kirli işareti)
+  ---
+  duration_ms: 8424.026598
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 BİRLEŞİK TUR 4 — taksit düzelt: 'değişiklik yok' kısa yolu
+    # Subtest: yanıtı kopan kendi düzeltmesi: aynı gövde (formun eski sürümü) ikinci kez → 200; tek yazım — Değişiklik Geçmişi 1, sürüm ilerlemez
+    ok 1 - yanıtı kopan kendi düzeltmesi: aynı gövde (formun eski sürümü) ikinci kez → 200; tek yazım — Değişiklik Geçmişi 1, sürüm ilerlemez
+      ---
+      duration_ms: 592.220637
+      type: 'test'
+      ...
+    # Subtest: koruma bozulmaz: yanıt koptuktan sonra B FARKLI değer girer → A'nın aynı gövdeli yeniden gönderimi 409, B'nin değeri durur
+    ok 2 - koruma bozulmaz: yanıt koptuktan sonra B FARKLI değer girer → A'nın aynı gövdeli yeniden gönderimi 409, B'nin değeri durur
+      ---
+      duration_ms: 349.927132
+      type: 'test'
+      ...
+    # Subtest: aynı içerik: A formu açar, B taksiti 300 yapar, A da (eskimiş formla) 300 kaydeder → 200, A hiçbir şey yazmaz
+    ok 3 - aynı içerik: A formu açar, B taksiti 300 yapar, A da (eskimiş formla) 300 kaydeder → 200, A hiçbir şey yazmaz
+      ---
+      duration_ms: 225.704977
+      type: 'test'
+      ...
+    # Subtest: GÖVDE YOLDAYKEN: A'nın gövdesi formun açıldığı hâliyle AYNI, B arada değiştirir → 409 (kısa yol güncel taksitle karşılaştırır, isteğin başındakiyle değil)
+    ok 4 - GÖVDE YOLDAYKEN: A'nın gövdesi formun açıldığı hâliyle AYNI, B arada değiştirir → 409 (kısa yol güncel taksitle karşılaştırır, isteğin başındakiyle değil)
+      ---
+      duration_ms: 673.024045
+      type: 'test'
+      ...
+    # Subtest: her alan tek tek: eskimiş formda yalnız vade ya da yalnız açıklama farklıysa 409 (farklı içerik 'aynı' sayılmaz)
+    ok 5 - her alan tek tek: eskimiş formda yalnız vade ya da yalnız açıklama farklıysa 409 (farklı içerik 'aynı' sayılmaz)
+      ---
+      duration_ms: 296.013093
+      type: 'test'
+      ...
+    1..5
+ok 2 - 2.5.0 BİRLEŞİK TUR 4 — taksit düzelt: 'değişiklik yok' kısa yolu
+  ---
+  duration_ms: 5258.332142
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 BİRLEŞİK TUR 4 — taksit kartı: 'değişiklik yok' kısa yolu
+    # Subtest: yanıtı kopan kendi kaydı: aynı form ikinci kez → 200; tek yazım — Değişiklik Geçmişi 1, sürüm ilerlemez
+    ok 1 - yanıtı kopan kendi kaydı: aynı form ikinci kez → 200; tek yazım — Değişiklik Geçmişi 1, sürüm ilerlemez
+      ---
+      duration_ms: 240.191276
+      type: 'test'
+      ...
+    # Subtest: koruma bozulmaz: yanıt koptuktan sonra B tutarı 1.200 yapar → A'nın yeniden gönderimi 409, 1.200 durur
+    ok 2 - koruma bozulmaz: yanıt koptuktan sonra B tutarı 1.200 yapar → A'nın yeniden gönderimi 409, 1.200 durur
+      ---
+      duration_ms: 220.165808
+      type: 'test'
+      ...
+    # Subtest: aynı içerik: B notu 'ortak' yapar, A da eskimiş formla 'ortak' kaydeder → 200, A yazmaz; Kartı Kapat iki kez → ikincisi yazmaz
+    ok 3 - aynı içerik: B notu 'ortak' yapar, A da eskimiş formla 'ortak' kaydeder → 200, A yazmaz; Kartı Kapat iki kez → ikincisi yazmaz
+      ---
+      duration_ms: 154.885985
+      type: 'test'
+      ...
+    # Subtest: GÖVDE YOLDAYKEN: A'nın formu açıldığı hâliyle AYNI, B arada tutarı değiştirir → 409
+    ok 4 - GÖVDE YOLDAYKEN: A'nın formu açıldığı hâliyle AYNI, B arada tutarı değiştirir → 409
+      ---
+      duration_ms: 581.212546
+      type: 'test'
+      ...
+    # Subtest: carisiz eski kart (göç öncesinden kalma): değişmemiş form da kısa yola girmez — ilk düzenlemede cari açılır (önceki davranış)
+    ok 5 - carisiz eski kart (göç öncesinden kalma): değişmemiş form da kısa yola girmez — ilk düzenlemede cari açılır (önceki davranış)
+      ---
+      duration_ms: 270.848915
+      type: 'test'
+      ...
+    # Subtest: her alan tek tek: B tutarı değiştirdi; A'nın eskimiş formu tutarı B'ninkiyle aynı, yalnız adı / telefonu / Sıra No'su farklı → 409
+    ok 6 - her alan tek tek: B tutarı değiştirdi; A'nın eskimiş formu tutarı B'ninkiyle aynı, yalnız adı / telefonu / Sıra No'su farklı → 409
+      ---
+      duration_ms: 235.397495
+      type: 'test'
+      ...
+    1..6
+ok 3 - 2.5.0 BİRLEŞİK TUR 4 — taksit kartı: 'değişiklik yok' kısa yolu
+  ---
+  duration_ms: 4483.581132
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 BİRLEŞİK TUR 4 — stok kartı: 'değişiklik yok' kısa yolu
+    # Subtest: yanıtı kopan kendi kaydı: aynı form ikinci kez → 200; tek yazım — Değişiklik Geçmişi 1, sürüm ilerlemez
+    ok 1 - yanıtı kopan kendi kaydı: aynı form ikinci kez → 200; tek yazım — Değişiklik Geçmişi 1, sürüm ilerlemez
+      ---
+      duration_ms: 96.32176
+      type: 'test'
+      ...
+    # Subtest: koruma bozulmaz: yanıt koptuktan sonra B fiyatlı ALIM girer (Alış Fiyatı 10 → 12) → A'nın yeniden gönderimi 409, 12 durur
+    ok 2 - koruma bozulmaz: yanıt koptuktan sonra B fiyatlı ALIM girer (Alış Fiyatı 10 → 12) → A'nın yeniden gönderimi 409, 12 durur
+      ---
+      duration_ms: 122.048757
+      type: 'test'
+      ...
+    # Subtest: aynı içerik: B Satış Fiyatı'nı 20 yapar, A da eskimiş formla 20 kaydeder → 200, A yazmaz
+    ok 3 - aynı içerik: B Satış Fiyatı'nı 20 yapar, A da eskimiş formla 20 kaydeder → 200, A yazmaz
+      ---
+      duration_ms: 78.522873
+      type: 'test'
+      ...
+    # Subtest: GÖVDE YOLDAYKEN: A'nın formu açıldığı hâliyle AYNI, B arada Satış Fiyatı'nı değiştirir → 409
+    ok 4 - GÖVDE YOLDAYKEN: A'nın formu açıldığı hâliyle AYNI, B arada Satış Fiyatı'nı değiştirir → 409
+      ---
+      duration_ms: 379.571906
+      type: 'test'
+      ...
+    # Subtest: her alan tek tek: B Satış Fiyatı'nı 20 yaptı; A'nın eskimiş formu 20 ile aynı, yalnız KDV oranı / Alış Fiyatı / not farklı → 409
+    ok 5 - her alan tek tek: B Satış Fiyatı'nı 20 yaptı; A'nın eskimiş formu 20 ile aynı, yalnız KDV oranı / Alış Fiyatı / not farklı → 409
+      ---
+      duration_ms: 107.888281
+      type: 'test'
+      ...
+    1..5
+ok 4 - 2.5.0 BİRLEŞİK TUR 4 — stok kartı: 'değişiklik yok' kısa yolu
+  ---
+  duration_ms: 2529.74943
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 BİRLEŞİK TUR 5 — alan alan: taze form + tek alan → 200, yeni değer veri tabanında, Değişiklik Geçmişi +1 (kısa yol değişikliği yutmaz)
+    # Subtest: taksit kartı · ad
+    ok 1 - taksit kartı · ad
+      ---
+      duration_ms: 108.900236
+      type: 'test'
+      ...
+    # Subtest: taksit kartı · ad yalnız büyük harf
+    ok 2 - taksit kartı · ad yalnız büyük harf
+      ---
+      duration_ms: 114.583282
+      type: 'test'
+      ...
+    # Subtest: taksit kartı · ad yalnız küçük harf
+    ok 3 - taksit kartı · ad yalnız küçük harf
+      ---
+      duration_ms: 130.080945
+      type: 'test'
+      ...
+    # Subtest: taksit kartı · telefon
+    ok 4 - taksit kartı · telefon
+      ---
+      duration_ms: 116.418838
+      type: 'test'
+      ...
+    # Subtest: taksit kartı · not
+    ok 5 - taksit kartı · not
+      ---
+      duration_ms: 117.056849
+      type: 'test'
+      ...
+    # Subtest: taksit kartı · Sıra No
+    ok 6 - taksit kartı · Sıra No
+      ---
+      duration_ms: 150.915755
+      type: 'test'
+      ...
+    # Subtest: taksit kartı · Kayıt Tarihi
+    ok 7 - taksit kartı · Kayıt Tarihi
+      ---
+      duration_ms: 112.87933
+      type: 'test'
+      ...
+    # Subtest: taksit kartı · kayıt bağı: yalnız caseKey
+    ok 8 - taksit kartı · kayıt bağı: yalnız caseKey
+      ---
+      duration_ms: 192.715584
+      type: 'test'
+      ...
+    # Subtest: taksit kartı · kayıt bağı: yalnız caseSource
+    ok 9 - taksit kartı · kayıt bağı: yalnız caseSource
+      ---
+      duration_ms: 197.656423
+      type: 'test'
+      ...
+    # Subtest: taksit kartı · kayıt bağı: yalnız caseTitle
+    ok 10 - taksit kartı · kayıt bağı: yalnız caseTitle
+      ---
+      duration_ms: 152.284652
+      type: 'test'
+      ...
+    # Subtest: taksit kartı · grup
+    ok 11 - taksit kartı · grup
+      ---
+      duration_ms: 100.443111
+      type: 'test'
+      ...
+    # Subtest: taksit kartı · alt grup
+    ok 12 - taksit kartı · alt grup
+      ---
+      duration_ms: 175.069612
+      type: 'test'
+      ...
+    # Subtest: taksit kartı · cari
+    ok 13 - taksit kartı · cari
+      ---
+      duration_ms: 131.82828
+      type: 'test'
+      ...
+    # Subtest: taksit kartı · toplam
+    ok 14 - taksit kartı · toplam
+      ---
+      duration_ms: 143.760767
+      type: 'test'
+      ...
+    # Subtest: taksit kartı · toplam 1 kuruş
+    ok 15 - taksit kartı · toplam 1 kuruş
+      ---
+      duration_ms: 64.883125
+      type: 'test'
+      ...
+    # Subtest: taksit kartı · durum (Kartı Kapat, yalnız status)
+    ok 16 - taksit kartı · durum (Kartı Kapat, yalnız status)
+      ---
+      duration_ms: 59.615878
+      type: 'test'
+      ...
+    # Subtest: taksit · vade
+    ok 17 - taksit · vade
+      ---
+      duration_ms: 75.937982
+      type: 'test'
+      ...
+    # Subtest: taksit · tutar
+    ok 18 - taksit · tutar
+      ---
+      duration_ms: 83.596069
+      type: 'test'
+      ...
+    # Subtest: taksit · tutar 1 kuruş
+    ok 19 - taksit · tutar 1 kuruş
+      ---
+      duration_ms: 75.160217
+      type: 'test'
+      ...
+    # Subtest: taksit · açıklama
+    ok 20 - taksit · açıklama
+      ---
+      duration_ms: 101.084927
+      type: 'test'
+      ...
+    # Subtest: taksit · açıklama yalnız büyük harf
+    ok 21 - taksit · açıklama yalnız büyük harf
+      ---
+      duration_ms: 163.558568
+      type: 'test'
+      ...
+    # Subtest: taksit · açıklama yalnız küçük harf
+    ok 22 - taksit · açıklama yalnız küçük harf
+      ---
+      duration_ms: 131.773887
+      type: 'test'
+      ...
+    # Subtest: stok kartı · tür (kritik seviyesi 0 olan ürün → hizmet)
+    ok 23 - stok kartı · tür (kritik seviyesi 0 olan ürün → hizmet)
+      ---
+      duration_ms: 116.597869
+      type: 'test'
+      ...
+    # Subtest: stok kartı · Stok Kodu
+    ok 24 - stok kartı · Stok Kodu
+      ---
+      duration_ms: 120.048242
+      type: 'test'
+      ...
+    # Subtest: stok kartı · Stok Kodu yalnız büyük harf
+    ok 25 - stok kartı · Stok Kodu yalnız büyük harf
+      ---
+      duration_ms: 62.975547
+      type: 'test'
+      ...
+    # Subtest: stok kartı · ad
+    ok 26 - stok kartı · ad
+      ---
+      duration_ms: 45.118039
+      type: 'test'
+      ...
+    # Subtest: stok kartı · ad yalnız büyük harf
+    ok 27 - stok kartı · ad yalnız büyük harf
+      ---
+      duration_ms: 62.833872
+      type: 'test'
+      ...
+    # Subtest: stok kartı · birim
+    ok 28 - stok kartı · birim
+      ---
+      duration_ms: 67.79596
+      type: 'test'
+      ...
+    # Subtest: stok kartı · kategori
+    ok 29 - stok kartı · kategori
+      ---
+      duration_ms: 79.994002
+      type: 'test'
+      ...
+    # Subtest: stok kartı · KDV oranı
+    ok 30 - stok kartı · KDV oranı
+      ---
+      duration_ms: 91.955222
+      type: 'test'
+      ...
+    # Subtest: stok kartı · not
+    ok 31 - stok kartı · not
+      ---
+      duration_ms: 69.340126
+      type: 'test'
+      ...
+    # Subtest: stok kartı · not yalnız büyük harf
+    ok 32 - stok kartı · not yalnız büyük harf
+      ---
+      duration_ms: 78.451421
+      type: 'test'
+      ...
+    # Subtest: stok kartı · kritik seviye
+    ok 33 - stok kartı · kritik seviye
+      ---
+      duration_ms: 104.28098
+      type: 'test'
+      ...
+    # Subtest: stok kartı · Alış Fiyatı
+    ok 34 - stok kartı · Alış Fiyatı
+      ---
+      duration_ms: 134.896294
+      type: 'test'
+      ...
+    # Subtest: stok kartı · Alış Fiyatı 0,0001
+    ok 35 - stok kartı · Alış Fiyatı 0,0001
+      ---
+      duration_ms: 116.63857
+      type: 'test'
+      ...
+    # Subtest: stok kartı · Satış Fiyatı
+    ok 36 - stok kartı · Satış Fiyatı
+      ---
+      duration_ms: 111.929738
+      type: 'test'
+      ...
+    # Subtest: stok kartı · Satış Fiyatı 1 kuruş
+    ok 37 - stok kartı · Satış Fiyatı 1 kuruş
+      ---
+      duration_ms: 87.835658
+      type: 'test'
+      ...
+    1..37
+ok 5 - 2.5.0 BİRLEŞİK TUR 5 — alan alan: taze form + tek alan → 200, yeni değer veri tabanında, Değişiklik Geçmişi +1 (kısa yol değişikliği yutmaz)
+  ---
+  duration_ms: 6042.587081
+  type: 'suite'
+  ...
+# Subtest: store.run / store.tx — derinlik > 0 iken bağlantıda işlem yoksa yazım yok, açık hata (2.5.0 BS-6)
+    # Subtest: (k1) iç işlemde SQLite işlemi kendiliğinden geri alır, çağıran yakalayıp sürer → sonraki yazımlar ERR_TX_LOST, yarım yazım yok; Linux'ta gerçek G/Ç hatası
+    ok 1 - (k1) iç işlemde SQLite işlemi kendiliğinden geri alır, çağıran yakalayıp sürer → sonraki yazımlar ERR_TX_LOST, yarım yazım yok; Linux'ta gerçek G/Ç hatası
+      ---
+      duration_ms: 229.063779
+      type: 'test'
+      ...
+    # Subtest: (k2) işlem kayboldu ama sonra yazım yok → en dış COMMIT asıl nedeni söyler ("cannot commit - no transaction is active" değil); iç düzeyde RELEASE de
+    ok 2 - (k2) işlem kayboldu ama sonra yazım yok → en dış COMMIT asıl nedeni söyler ("cannot commit - no transaction is active" değil); iç düzeyde RELEASE de
+      ---
+      duration_ms: 78.673432
+      type: 'test'
+      ...
+    # Subtest: (k3) işlem canlıyken seçici yakalama bugünkü gibi: iç işlem geri alınır, dış işlem yazmayı sürdürür ve kesinleşir; işlem dışı yazım etkilenmez
+    ok 3 - (k3) işlem canlıyken seçici yakalama bugünkü gibi: iç işlem geri alınır, dış işlem yazmayı sürdürür ve kesinleşir; işlem dışı yazım etkilenmez
+      ---
+      duration_ms: 58.501182
+      type: 'test'
+      ...
+    1..3
+ok 6 - store.run / store.tx — derinlik > 0 iken bağlantıda işlem yoksa yazım yok, açık hata (2.5.0 BS-6)
+  ---
+  duration_ms: 367.316639
+  type: 'suite'
+  ...
+# Subtest: store.exec / store.get / store.all — kayıptan sonra yazım yok, ilk hata okuma / exec hatasında da (2.5.0 BİRLEŞİK TUR 5)
+    # Subtest: (k4) kayıptan sonra exec INSERT / DROP TABLE / DROP TRIGGER / PRAGMA user_version ve get / all ile yazım (RETURNING, UPDATE, WITH) → ERR_TX_LOST, diskte değişiklik yok; okuma çalışır; Linux'ta gerçek G/Ç hatası
+    not ok 1 - (k4) kayıptan sonra exec INSERT / DROP TABLE / DROP TRIGGER / PRAGMA user_version ve get / all ile yazım (RETURNING, UPDATE, WITH) → ERR_TX_LOST, diskte değişiklik yok; okuma çalışır; Linux'ta gerçek G/Ç hatası
+      ---
+      duration_ms: 183.637986
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt5-eski-578c/test/db-tx-kayip-250.test.mjs:265:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        k4 benzetim: kayıptan sonra exec INSERT YAZDI (hata yok) — ERR_TX_LOST beklenirdi
+        k4 benzetim: kayıptan sonra exec DROP TABLE YAZDI (hata yok) — ERR_TX_LOST beklenirdi
+        k4 benzetim: kayıptan sonra exec DROP TRIGGER (Sıfırla yolu) YAZDI (hata yok) — ERR_TX_LOST beklenirdi
+        k4 benzetim: kayıptan sonra exec PRAGMA user_version (göç yolu) YAZDI (hata yok) — ERR_TX_LOST beklenirdi
+        k4 benzetim: kayıptan sonra get INSERT … RETURNING YAZDI (hata yok) — ERR_TX_LOST beklenirdi
+        k4 benzetim: kayıptan sonra all INSERT … RETURNING YAZDI (hata yok) — ERR_TX_LOST beklenirdi
+        k4 benzetim: kayıptan sonra get UPDATE (RETURNING'siz) YAZDI (hata yok) — ERR_TX_LOST beklenirdi
+        k4 benzetim: kayıptan sonra all DELETE … RETURNING "no such table: kalici" — ERR_TX_LOST beklenirdi
+        k4 benzetim: kayıptan sonra get WITH … INSERT YAZDI (hata yok) — ERR_TX_LOST beklenirdi
+        k4 benzetim: diskte değişiklik — önce {"rows":0,"tables":3,"trigger":1,"version":5}, sonra {"rows":6,"tables":2,"trigger":0,"version":77} (satır / tablo / tetikleyici / user_version aynı kalmalı)
+        k4 gerçek (RLIMIT_FSIZE): kayıptan sonra exec INSERT YAZDI (hata yok) — ERR_TX_LOST beklenirdi
+        k4 gerçek (RLIMIT_FSIZE): kayıptan sonra exec DROP TABLE YAZDI (hata yok) — ERR_TX_LOST beklenirdi
+        k4 gerçek (RLIMIT_FSIZE): kayıptan sonra exec DROP TRIGGER (Sıfırla yolu) YAZDI (hata yok) — ERR_TX_LOST beklenirdi
+        k4 gerçek (RLIMIT_FSIZE): kayıptan sonra exec PRAGMA user_version (göç yolu) YAZDI (hata yok) — ERR_TX_LOST beklenirdi
+        k4 gerçek (RLIMIT_FSIZE): kayıptan sonra get INSERT … RETURNING YAZDI (hata yok) — ERR_TX_LOST beklenirdi
+        k4 gerçek (RLIMIT_FSIZE): kayıptan sonra all INSERT … RETURNING YAZDI (hata yok) — ERR_TX_LOST beklenirdi
+        k4 gerçek (RLIMIT_FSIZE): kayıptan sonra get UPDATE (RETURNING'siz) YAZDI (hata yok) — ERR_TX_LOST beklenirdi
+        k4 gerçek (RLIMIT_FSIZE): kayıptan sonra all DELETE … RETURNING "no such table: kalici" — ERR_TX_LOST beklenirdi
+        k4 gerçek (RLIMIT_FSIZE): kayıptan sonra get WITH … INSERT YAZDI (hata yok) — ERR_TX_LOST beklenirdi
+        k4 gerçek (RLIMIT_FSIZE): diskte değişiklik — önce {"rows":0,"tables":3,"trigger":1,"version":5}, sonra {"rows":6,"tables":2,"trigger":0,"version":77} (satır / tablo / tetikleyici / user_version aynı kalmalı)
+        + actual - expected
+        
+        + [
+        +   'k4 benzetim: kayıptan sonra exec INSERT YAZDI (hata yok) — ERR_TX_LOST beklenirdi',
+        +   'k4 benzetim: kayıptan sonra exec DROP TABLE YAZDI (hata yok) — ERR_TX_LOST beklenirdi',
+        +   'k4 benzetim: kayıptan sonra exec DROP TRIGGER (Sıfırla yolu) YAZDI (hata yok) — ERR_TX_LOST beklenirdi',
+        +   'k4 benzetim: kayıptan sonra exec PRAGMA user_version (göç yolu) YAZDI (hata yok) — ERR_TX_LOST beklenirdi',
+        +   'k4 benzetim: kayıptan sonra get INSERT … RETURNING YAZDI (hata yok) — ERR_TX_LOST beklenirdi',
+        +   'k4 benzetim: kayıptan sonra all INSERT … RETURNING YAZDI (hata yok) — ERR_TX_LOST beklenirdi',
+        +   "k4 benzetim: kayıptan sonra get UPDATE (RETURNING'siz) YAZDI (hata yok) — ERR_TX_LOST beklenirdi",
+        +   'k4 benzetim: kayıptan sonra all DELETE … RETURNING "no such table: kalici" — ERR_TX_LOST beklenirdi',
+        +   'k4 benzetim: kayıptan sonra get WITH … INSERT YAZDI (hata yok) — ERR_TX_LOST beklenirdi',
+        +   'k4 benzetim: diskte değişiklik — önce {"rows":0,"tables":3,"trigger":1,"version":5}, sonra {"rows":6,"tables":2,"trigger":0,"version":77} (satır / tablo / tetikleyici / user_version aynı kalmalı)',
+        +   'k4 gerçek (RLIMIT_FSIZE): kayıptan sonra exec INSERT YAZDI (hata yok) — ERR_TX_LOST beklenirdi',
+        +   'k4 gerçek (RLIMIT_FSIZE): kayıptan sonra exec DROP TABLE YAZDI (hata yok) — ERR_TX_LOST beklenirdi',
+        +   'k4 gerçek (RLIMIT_FSIZE): kayıptan sonra exec DROP TRIGGER (Sıfırla yolu) YAZDI (hata yok) — ERR_TX_LOST beklenirdi',
+        +   'k4 gerçek (RLIMIT_FSIZE): kayıptan sonra exec PRAGMA user_version (göç yolu) YAZDI (hata yok) — ERR_TX_LOST beklenirdi',
+        +   'k4 gerçek (RLIMIT_FSIZE): kayıptan sonra get INSERT … RETURNING YAZDI (hata yok) — ERR_TX_LOST beklenirdi',
+        +   'k4 gerçek (RLIMIT_FSIZE): kayıptan sonra all INSERT … RETURNING YAZDI (hata yok) — ERR_TX_LOST beklenirdi',
+        +   "k4 gerçek (RLIMIT_FSIZE): kayıptan sonra get UPDATE (RETURNING'siz) YAZDI (hata yok) — ERR_TX_LOST beklenirdi",
+        +   'k4 gerçek (RLIMIT_FSIZE): kayıptan sonra all DELETE … RETURNING "no such table: kalici" — ERR_TX_LOST beklenirdi',
+        +   'k4 gerçek (RLIMIT_FSIZE): kayıptan sonra get WITH … INSERT YAZDI (hata yok) — ERR_TX_LOST beklenirdi',
+        +   'k4 gerçek (RLIMIT_FSIZE): diskte değişiklik — önce {"rows":0,"tables":3,"trigger":1,"version":5}, sonra {"rows":6,"tables":2,"trigger":0,"version":77} (satır / tablo / tetikleyici / user_version aynı kalmalı)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'k4 benzetim: kayıptan sonra exec INSERT YAZDI (hata yok) — ERR_TX_LOST beklenirdi'
+        1: 'k4 benzetim: kayıptan sonra exec DROP TABLE YAZDI (hata yok) — ERR_TX_LOST beklenirdi'
+        2: 'k4 benzetim: kayıptan sonra exec DROP TRIGGER (Sıfırla yolu) YAZDI (hata yok) — ERR_TX_LOST beklenirdi'
+        3: 'k4 benzetim: kayıptan sonra exec PRAGMA user_version (göç yolu) YAZDI (hata yok) — ERR_TX_LOST beklenirdi'
+        4: 'k4 benzetim: kayıptan sonra get INSERT … RETURNING YAZDI (hata yok) — ERR_TX_LOST beklenirdi'
+        5: 'k4 benzetim: kayıptan sonra all INSERT … RETURNING YAZDI (hata yok) — ERR_TX_LOST beklenirdi'
+        6: "k4 benzetim: kayıptan sonra get UPDATE (RETURNING'siz) YAZDI (hata yok) — ERR_TX_LOST beklenirdi"
+        7: 'k4 benzetim: kayıptan sonra all DELETE … RETURNING "no such table: kalici" — ERR_TX_LOST beklenirdi'
+        8: 'k4 benzetim: kayıptan sonra get WITH … INSERT YAZDI (hata yok) — ERR_TX_LOST beklenirdi'
+        9: 'k4 benzetim: diskte değişiklik — önce {"rows":0,"tables":3,"trigger":1,"version":5}, sonra {"rows":6,"tables":2,"trigger":0,"version":77} (satır / tablo / tetikleyici / user_version aynı kalmalı)'
+        10: 'k4 gerçek (RLIMIT_FSIZE): kayıptan sonra exec INSERT YAZDI (hata yok) — ERR_TX_LOST beklenirdi'
+        11: 'k4 gerçek (RLIMIT_FSIZE): kayıptan sonra exec DROP TABLE YAZDI (hata yok) — ERR_TX_LOST beklenirdi'
+        12: 'k4 gerçek (RLIMIT_FSIZE): kayıptan sonra exec DROP TRIGGER (Sıfırla yolu) YAZDI (hata yok) — ERR_TX_LOST beklenirdi'
+        13: 'k4 gerçek (RLIMIT_FSIZE): kayıptan sonra exec PRAGMA user_version (göç yolu) YAZDI (hata yok) — ERR_TX_LOST beklenirdi'
+        14: 'k4 gerçek (RLIMIT_FSIZE): kayıptan sonra get INSERT … RETURNING YAZDI (hata yok) — ERR_TX_LOST beklenirdi'
+        15: 'k4 gerçek (RLIMIT_FSIZE): kayıptan sonra all INSERT … RETURNING YAZDI (hata yok) — ERR_TX_LOST beklenirdi'
+        16: "k4 gerçek (RLIMIT_FSIZE): kayıptan sonra get UPDATE (RETURNING'siz) YAZDI (hata yok) — ERR_TX_LOST beklenirdi"
+        17: 'k4 gerçek (RLIMIT_FSIZE): kayıptan sonra all DELETE … RETURNING "no such table: kalici" — ERR_TX_LOST beklenirdi'
+        18: 'k4 gerçek (RLIMIT_FSIZE): kayıptan sonra get WITH … INSERT YAZDI (hata yok) — ERR_TX_LOST beklenirdi'
+        19: 'k4 gerçek (RLIMIT_FSIZE): diskte değişiklik — önce {"rows":0,"tables":3,"trigger":1,"version":5}, sonra {"rows":6,"tables":2,"trigger":0,"version":77} (satır / tablo / tetikleyici / user_version aynı kalmalı)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        report (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt5-eski-578c/test/db-tx-kayip-250.test.mjs:64:35)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt5-eski-578c/test/db-tx-kayip-250.test.mjs:329:5)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:466:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:435:3)
+        node:internal/per_context/primordials:466:9
+      ...
+    # Subtest: (k5) işlemi kendiliğinden geri aldıran hata bir OKUMA ya da exec ise ERR_TX_LOST iletisi onu "ilk hata" diye söyler; Linux'ta gerçek: işlem içindeki SELECT önbelleği taşırırken G/Ç hatası
+    not ok 2 - (k5) işlemi kendiliğinden geri aldıran hata bir OKUMA ya da exec ise ERR_TX_LOST iletisi onu "ilk hata" diye söyler; Linux'ta gerçek: işlem içindeki SELECT önbelleği taşırırken G/Ç hatası
+      ---
+      duration_ms: 454.408604
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt5-eski-578c/test/db-tx-kayip-250.test.mjs:332:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        k5 okuma (get): "Veri tabanı işlemi yarıda kesildi: SQLite işlemi kendiliğinden geri aldı. Bu yazım yapılmadı; işlemin tamamı geri alındı, yeniden deneyin." — ERR_TX_LOST + "(ilk hata: no such table: yok_okuma)" beklenirdi
+        k5 okuma (all): "Veri tabanı işlemi yarıda kesildi: SQLite işlemi kendiliğinden geri aldı. Bu yazım yapılmadı; işlemin tamamı geri alındı, yeniden deneyin." — ERR_TX_LOST + "(ilk hata: no such table: yok_liste)" beklenirdi
+        k5 setting: "Veri tabanı işlemi yarıda kesildi: SQLite işlemi kendiliğinden geri aldı. Bu yazım yapılmadı; işlemin tamamı geri alındı, yeniden deneyin." — ERR_TX_LOST + "(ilk hata: no such table: settings)" beklenirdi
+        k5 exec: "Veri tabanı işlemi yarıda kesildi: SQLite işlemi kendiliğinden geri aldı. Bu yazım yapılmadı; işlemin tamamı geri alındı, yeniden deneyin." — ERR_TX_LOST + "(ilk hata: no such table: yok_exec)" beklenirdi
+        k5 gerçek (okuma G/Ç): "Veri tabanı işlemi yarıda kesildi: SQLite işlemi kendiliğinden geri aldı. Bu yazım yapılmadı; işlemin tamamı geri alındı, yeniden deneyin." — ERR_TX_LOST + "(ilk hata: disk I/O error)" beklenirdi
+        + actual - expected
+        
+        + [
+        +   'k5 okuma (get): "Veri tabanı işlemi yarıda kesildi: SQLite işlemi kendiliğinden geri aldı. Bu yazım yapılmadı; işlemin tamamı geri alındı, yeniden deneyin." — ERR_TX_LOST + "(ilk hata: no such table: yok_okuma)" beklenirdi',
+        +   'k5 okuma (all): "Veri tabanı işlemi yarıda kesildi: SQLite işlemi kendiliğinden geri aldı. Bu yazım yapılmadı; işlemin tamamı geri alındı, yeniden deneyin." — ERR_TX_LOST + "(ilk hata: no such table: yok_liste)" beklenirdi',
+        +   'k5 setting: "Veri tabanı işlemi yarıda kesildi: SQLite işlemi kendiliğinden geri aldı. Bu yazım yapılmadı; işlemin tamamı geri alındı, yeniden deneyin." — ERR_TX_LOST + "(ilk hata: no such table: settings)" beklenirdi',
+        +   'k5 exec: "Veri tabanı işlemi yarıda kesildi: SQLite işlemi kendiliğinden geri aldı. Bu yazım yapılmadı; işlemin tamamı geri alındı, yeniden deneyin." — ERR_TX_LOST + "(ilk hata: no such table: yok_exec)" beklenirdi',
+        +   'k5 gerçek (okuma G/Ç): "Veri tabanı işlemi yarıda kesildi: SQLite işlemi kendiliğinden geri aldı. Bu yazım yapılmadı; işlemin tamamı geri alındı, yeniden deneyin." — ERR_TX_LOST + "(ilk hata: disk I/O error)" beklenirdi'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'k5 okuma (get): "Veri tabanı işlemi yarıda kesildi: SQLite işlemi kendiliğinden geri aldı. Bu yazım yapılmadı; işlemin tamamı geri alındı, yeniden deneyin." — ERR_TX_LOST + "(ilk hata: no such table: yok_okuma)" beklenirdi'
+        1: 'k5 okuma (all): "Veri tabanı işlemi yarıda kesildi: SQLite işlemi kendiliğinden geri aldı. Bu yazım yapılmadı; işlemin tamamı geri alındı, yeniden deneyin." — ERR_TX_LOST + "(ilk hata: no such table: yok_liste)" beklenirdi'
+        2: 'k5 setting: "Veri tabanı işlemi yarıda kesildi: SQLite işlemi kendiliğinden geri aldı. Bu yazım yapılmadı; işlemin tamamı geri alındı, yeniden deneyin." — ERR_TX_LOST + "(ilk hata: no such table: settings)" beklenirdi'
+        3: 'k5 exec: "Veri tabanı işlemi yarıda kesildi: SQLite işlemi kendiliğinden geri aldı. Bu yazım yapılmadı; işlemin tamamı geri alındı, yeniden deneyin." — ERR_TX_LOST + "(ilk hata: no such table: yok_exec)" beklenirdi'
+        4: 'k5 gerçek (okuma G/Ç): "Veri tabanı işlemi yarıda kesildi: SQLite işlemi kendiliğinden geri aldı. Bu yazım yapılmadı; işlemin tamamı geri alındı, yeniden deneyin." — ERR_TX_LOST + "(ilk hata: disk I/O error)" beklenirdi'
+      operator: 'deepStrictEqual'
+      stack: |-
+        report (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt5-eski-578c/test/db-tx-kayip-250.test.mjs:64:35)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt5-eski-578c/test/db-tx-kayip-250.test.mjs:415:5)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (k6) meşru yollar yanlış ERR_TX_LOST almaz: iç işlemde yakalanan kısıt hatası, iç içe JS hatası, işlem içinde okunamayan tablo + exec DDL + PRAGMA, işlem içinde exec / get RETURNING yazımı, store.raw, işlem dışı exec / get yazımı
+    ok 3 - (k6) meşru yollar yanlış ERR_TX_LOST almaz: iç işlemde yakalanan kısıt hatası, iç içe JS hatası, işlem içinde okunamayan tablo + exec DDL + PRAGMA, işlem içinde exec / get RETURNING yazımı, store.raw, işlem dışı exec / get yazımı
+      ---
+      duration_ms: 95.420321
+      type: 'test'
+      ...
+    1..3
+not ok 7 - store.exec / store.get / store.all — kayıptan sonra yazım yok, ilk hata okuma / exec hatasında da (2.5.0 BİRLEŞİK TUR 5)
+  ---
+  duration_ms: 733.90391
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt5-eski-578c/test/db-tx-kayip-250.test.mjs:264:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 BİRLEŞİK TUR 5 — kapalı kartın "Kart kapatıldı" satırı: cari ekstre = genel defter (kapanış günü)
+    # Subtest: kapanış günü: üç yerde de kapanış günü (ön koşul: closed_at = kapanış günü)
+    ok 1 - kapanış günü: üç yerde de kapanış günü (ön koşul: closed_at = kapanış günü)
+      ---
+      duration_ms: 232.684222
+      type: 'test'
+      ...
+    # Subtest: +40 gün: kartın yalnız NOTU düzeltildi / cari adı değişti / aynı içerikle Kaydet → satır kapanış gününde kalır (ön koşul: kartın updated_at'i ilerledi)
+    not ok 2 - +40 gün: kartın yalnız NOTU düzeltildi / cari adı değişti / aynı içerikle Kaydet → satır kapanış gününde kalır (ön koşul: kartın updated_at'i ilerledi)
+      ---
+      duration_ms: 402.889029
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt5-eski-578c/test/kapali-kart-ekstre-tarihi-250.test.mjs:83:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Not +40 gün: {"card":["17.11.2026"],"ekstre":["17.11.2026"],"all":["17.11.2026"],"general":["08.10.2026"]} — dördü de 08.10.2026 olmalı
+        Ad +40 gün: {"card":["17.11.2026"],"ekstre":["17.11.2026"],"all":["17.11.2026"],"general":["08.10.2026"]} — dördü de 08.10.2026 olmalı
+        + actual - expected
+        
+        + [
+        +   'Not +40 gün: {"card":["17.11.2026"],"ekstre":["17.11.2026"],"all":["17.11.2026"],"general":["08.10.2026"]} — dördü de 08.10.2026 olmalı',
+        +   'Ad +40 gün: {"card":["17.11.2026"],"ekstre":["17.11.2026"],"all":["17.11.2026"],"general":["08.10.2026"]} — dördü de 08.10.2026 olmalı'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'Not +40 gün: {"card":["17.11.2026"],"ekstre":["17.11.2026"],"all":["17.11.2026"],"general":["08.10.2026"]} — dördü de 08.10.2026 olmalı'
+        1: 'Ad +40 gün: {"card":["17.11.2026"],"ekstre":["17.11.2026"],"all":["17.11.2026"],"general":["08.10.2026"]} — dördü de 08.10.2026 olmalı'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt5-eski-578c/test/kapali-kart-ekstre-tarihi-250.test.mjs:99:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: closed_at boş eski kart (2.0.13 öncesi benzetimi): son güncelleme günü; ilk düzeltmede dondurulur, üç yer aynı gün kalır; closed_at Kayıt Tarihi'nden önceyse Kayıt Tarihi
+    not ok 3 - closed_at boş eski kart (2.0.13 öncesi benzetimi): son güncelleme günü; ilk düzeltmede dondurulur, üç yer aynı gün kalır; closed_at Kayıt Tarihi'nden önceyse Kayıt Tarihi
+      ---
+      duration_ms: 796.490241
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt5-eski-578c/test/kapali-kart-ekstre-tarihi-250.test.mjs:102:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        closed_at boş (düzeltmeden sonra): {"card":["20.12.2026"],"ekstre":["20.12.2026"],"all":["20.12.2026"],"general":["20.10.2026"]} — dördü de 20.10.2026 olmalı
+        kapanış Kayıt Tarihi'nden önce: {"card":["20.12.2026"],"ekstre":["20.12.2026"],"all":["20.12.2026"],"general":["01.09.2026"]} — dördü de 01.09.2026 olmalı
+        + actual - expected
+        
+        + [
+        +   'closed_at boş (düzeltmeden sonra): {"card":["20.12.2026"],"ekstre":["20.12.2026"],"all":["20.12.2026"],"general":["20.10.2026"]} — dördü de 20.10.2026 olmalı',
+        +   `kapanış Kayıt Tarihi'nden önce: {"card":["20.12.2026"],"ekstre":["20.12.2026"],"all":["20.12.2026"],"general":["01.09.2026"]} — dördü de 01.09.2026 olmalı`
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'closed_at boş (düzeltmeden sonra): {"card":["20.12.2026"],"ekstre":["20.12.2026"],"all":["20.12.2026"],"general":["20.10.2026"]} — dördü de 20.10.2026 olmalı'
+        1: `kapanış Kayıt Tarihi'nden önce: {"card":["20.12.2026"],"ekstre":["20.12.2026"],"all":["20.12.2026"],"general":["01.09.2026"]} — dördü de 01.09.2026 olmalı`
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt5-eski-578c/test/kapali-kart-ekstre-tarihi-250.test.mjs:125:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 8 - 2.5.0 BİRLEŞİK TUR 5 — kapalı kartın "Kart kapatıldı" satırı: cari ekstre = genel defter (kapanış günü)
+  ---
+  duration_ms: 5823.788871
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt5-eski-578c/test/kapali-kart-ekstre-tarihi-250.test.mjs:55:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 BİRLEŞİK TUR 5 — v2.4.9 gerçek koduyla kapatılıp düzeltilmiş kart güncel kodda
+    # Subtest: v2.4.9: kapat → +40 gün notu düzelt; güncel kod: cari kartı / Cari Ekstre / Yevmiye 689 kapanış gününde
+    not ok 1 - v2.4.9: kapat → +40 gün notu düzelt; güncel kod: cari kartı / Cari Ekstre / Yevmiye 689 kapanış gününde
+      ---
+      duration_ms: 5251.323112
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt5-eski-578c/test/kapali-kart-ekstre-tarihi-250.test.mjs:133:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        v2.4.9 verisi güncel kodda: cari kartı / Cari Ekstre / Tüm Cari Hareketleri / Yevmiye 689 aynı gün (08.10.2026) olmalı
+        + actual - expected
+        
+          {
+            all: [
+        +     '17.11.2026'
+        -     '08.10.2026'
+            ],
+            card: [
+        +     '17.11.2026'
+        -     '08.10.2026'
+            ],
+            ekstre: [
+        +     '17.11.2026'
+        -     '08.10.2026'
+            ],
+            general: [
+              '08.10.2026'
+            ]
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        card:
+          0: '08.10.2026'
+        ekstre:
+          0: '08.10.2026'
+        all:
+          0: '08.10.2026'
+        general:
+          0: '08.10.2026'
+      actual:
+        card:
+          0: '17.11.2026'
+        ekstre:
+          0: '17.11.2026'
+        all:
+          0: '17.11.2026'
+        general:
+          0: '08.10.2026'
+      operator: 'deepStrictEqual'
+      stack: |-
+        expectDays (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt5-eski-578c/test/kapali-kart-ekstre-tarihi-250.test.mjs:52:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt5-eski-578c/test/kapali-kart-ekstre-tarihi-250.test.mjs:161:9)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 9 - 2.5.0 BİRLEŞİK TUR 5 — v2.4.9 gerçek koduyla kapatılıp düzeltilmiş kart güncel kodda
+  ---
+  duration_ms: 5257.057373
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt5-eski-578c/test/kapali-kart-ekstre-tarihi-250.test.mjs:132:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 WE — Elle Bağla webhook bilgileri: program gösterir, kurulum başına, gizli
+    # Subtest: WE-1 yönetici: Callback URL = ofisin adresi + /wa/kanca/<43>, Verify token 43 karakter; yeniden sorulunca ve öbür şirkette AYNI (kurulum başına); WABA'nın bildirim adresinden farklı
+    ok 1 - WE-1 yönetici: Callback URL = ofisin adresi + /wa/kanca/<43>, Verify token 43 karakter; yeniden sorulunca ve öbür şirkette AYNI (kurulum başına); WABA'nın bildirim adresinden farklı
+      ---
+      duration_ms: 3915.950407
+      type: 'test'
+      ...
+    # Subtest: WE-2 Meta doğrulaması: GET doğru belirteç → 200 challenge, yanlış / eksik → 403; POST (S41 = A) kaydı olan WABA'nınsa İŞLENİR (Yol 1: iş Teslim Edildi, defterde teslim; WABA düzeyinde işaret yok — tur 1); WABA adresi aynen çalışır
+    ok 2 - WE-2 Meta doğrulaması: GET doğru belirteç → 200 challenge, yanlış / eksik → 403; POST (S41 = A) kaydı olan WABA'nınsa İŞLENİR (Yol 1: iş Teslim Edildi, defterde teslim; WABA düzeyinde işaret yok — tur 1); WABA adresi aynen çalışır
+      ---
+      duration_ms: 2331.562592
+      type: 'test'
+      ...
+    # Subtest: WE-3 yetkisiz kullanıcı (Personel) göremez (403); belirteç ve gizli yol yöneticinin öbür yanıtlarında da yok (bağlantı, gönderim durumu, onay, sayaç, işlem geçmişi)
+    ok 3 - WE-3 yetkisiz kullanıcı (Personel) göremez (403); belirteç ve gizli yol yöneticinin öbür yanıtlarında da yok (bağlantı, gönderim durumu, onay, sayaç, işlem geçmişi)
+      ---
+      duration_ms: 2381.288973
+      type: 'test'
+      ...
+    # Subtest: WE-4 sızıntı yok: günlük, veri klasöründeki BÜTÜN dosyalar (şirket dosyası, makine defteri, WAL) ve yedek belirteci / gizli yolu AÇIK hâlde taşımaz; ayar yazılamazsa 503 + Türkçe ileti (değer yok)
+    ok 4 - WE-4 sızıntı yok: günlük, veri klasöründeki BÜTÜN dosyalar (şirket dosyası, makine defteri, WAL) ve yedek belirteci / gizli yolu AÇIK hâlde taşımaz; ayar yazılamazsa 503 + Türkçe ileti (değer yok)
+      ---
+      duration_ms: 1367.158764
+      type: 'test'
+      ...
+    # Subtest: WE-5 kalıcılık: program yeniden açılınca ve Şirket Verisini Sıfırla'dan sonra AYNI değerler; secret.key değişince (veri başka bilgisayarda) yeni değerler, eski yol kapanır
+    ok 5 - WE-5 kalıcılık: program yeniden açılınca ve Şirket Verisini Sıfırla'dan sonra AYNI değerler; secret.key değişince (veri başka bilgisayarda) yeni değerler, eski yol kapanır
+      ---
+      duration_ms: 2442.74682
+      type: 'test'
+      ...
+    # Subtest: WE-6 ofisin uzaktan adresi hazır değil: ready false, adres boş, neden Türkçe cümle; belirteç yine gösterilir (aynı)
+    ok 6 - WE-6 ofisin uzaktan adresi hazır değil: ready false, adres boş, neden Türkçe cümle; belirteç yine gösterilir (aynı)
+      ---
+      duration_ms: 1557.406548
+      type: 'test'
+      ...
+    # Subtest: WE-7 001 yeni şemalı, çift YOK: 001'den ve 002'den sorulunca 200 + ready false + Türkçe neden, değer boş; 001'e webhook ayarı yazılmaz; kapı kalkınca çift üretilir (çıkmaz yok)
+    ok 7 - WE-7 001 yeni şemalı, çift YOK: 001'den ve 002'den sorulunca 200 + ready false + Türkçe neden, değer boş; 001'e webhook ayarı yazılmaz; kapı kalkınca çift üretilir (çıkmaz yok)
+      ---
+      duration_ms: 3027.788677
+      type: 'test'
+      ...
+    # Subtest: WE-8 001 yeni şemalı, çift VAR: aynı değerler gösterilir (001 ve 002), Meta doğrulaması geçer, ayar satırı aynen; secret.key değişince yeni çift ÜRETİLMEZ (ready false + neden, satır aynen)
+    ok 8 - WE-8 001 yeni şemalı, çift VAR: aynı değerler gösterilir (001 ve 002), Meta doğrulaması geçer, ayar satırı aynen; secret.key değişince yeni çift ÜRETİLMEZ (ready false + neden, satır aynen)
+      ---
+      duration_ms: 1864.326807
+      type: 'test'
+      ...
+    # Subtest: WE-9 001 yedekten geri yüklenir (yedek çift gösterilmeden ÖNCE alınmış): çift AYNI, Meta'ya girilmiş eski çiftle doğrulama 200
+    ok 9 - WE-9 001 yedekten geri yüklenir (yedek çift gösterilmeden ÖNCE alınmış): çift AYNI, Meta'ya girilmiş eski çiftle doğrulama 200
+      ---
+      duration_ms: 1595.634864
+      type: 'test'
+      ...
+    # Subtest: WE-9 001 yedekten geri yüklenir (yedek çift gösterilmeden SONRA alınmış): çift AYNI, Meta'ya girilmiş eski çiftle doğrulama 200
+    ok 10 - WE-9 001 yedekten geri yüklenir (yedek çift gösterilmeden SONRA alınmış): çift AYNI, Meta'ya girilmiş eski çiftle doğrulama 200
+      ---
+      duration_ms: 1687.748537
+      type: 'test'
+      ...
+    1..10
+ok 10 - 2.5.0 WE — Elle Bağla webhook bilgileri: program gösterir, kurulum başına, gizli
+  ---
+  duration_ms: 22174.088269
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 BİRLEŞİK TUR 5 — 001 geri yüklemesinde webhook çifti: canlıda varsa canlınınki, yoksa yedeğinki
+    # Subtest: WE-10 001'in veri dosyası kayboldu (secret.key duruyor) → boş 001 açıldı → yedekten geri yüklendi: Meta'ya girilmiş çiftle doğrulama 200, gösterilen çift AYNI
+    not ok 1 - WE-10 001'in veri dosyası kayboldu (secret.key duruyor) → boş 001 açıldı → yedekten geri yüklendi: Meta'ya girilmiş çiftle doğrulama 200, gösterilen çift AYNI
+      ---
+      duration_ms: 3137.48468
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt5-eski-578c/test/whatsapp-we-webhook-bilgisi-250.test.mjs:414:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        geri yüklemeden sonra (yeniden gösterimden önce) Meta'daki çiftle doğrulama
+        + actual - expected
+        
+          [
+        +   404,
+        +   '{"ok":false,"code":"whatsapp-hook-missing","error":"Bu adres uzaktan erişime açık değil."}'
+        -   200,
+        -   '71'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 200
+        1: '71'
+      actual:
+        0: 404
+        1: '{"ok":false,"code":"whatsapp-hook-missing","error":"Bu adres uzaktan erişime açık değil."}'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt5-eski-578c/test/whatsapp-we-webhook-bilgisi-250.test.mjs:436:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: WE-11 veri başka bilgisayara secret.key ile taşındı (yeni kurulumda çift hiç gösterilmedi) → 001 yedeği geri yüklendi: Meta'daki çiftle doğrulama 200, gösterilen çift AYNI
+    not ok 2 - WE-11 veri başka bilgisayara secret.key ile taşındı (yeni kurulumda çift hiç gösterilmedi) → 001 yedeği geri yüklendi: Meta'daki çiftle doğrulama 200, gösterilen çift AYNI
+      ---
+      duration_ms: 2876.431533
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt5-eski-578c/test/whatsapp-we-webhook-bilgisi-250.test.mjs:446:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        taşınan kurulumda Meta'daki (eski bilgisayarın) çiftle doğrulama
+        + actual - expected
+        
+          [
+        +   404,
+        +   '{"ok":false,"code":"whatsapp-hook-missing","error":"Bu adres uzaktan erişime açık değil."}'
+        -   200,
+        -   '81'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 200
+        1: '81'
+      actual:
+        0: 404
+        1: '{"ok":false,"code":"whatsapp-hook-missing","error":"Bu adres uzaktan erişime açık değil."}'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt5-eski-578c/test/whatsapp-we-webhook-bilgisi-250.test.mjs:473:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: WE-12 canlıda çift VAR ve yedektekinden farklı → geri yüklemede canlınınki kalır (yedekteki eski çift 404); kararın öbür yarısı
+    ok 3 - WE-12 canlıda çift VAR ve yedektekinden farklı → geri yüklemede canlınınki kalır (yedekteki eski çift 404); kararın öbür yarısı
+      ---
+      duration_ms: 1664.831732
+      type: 'test'
+      ...
+    1..3
+not ok 11 - 2.5.0 BİRLEŞİK TUR 5 — 001 geri yüklemesinde webhook çifti: canlıda varsa canlınınki, yoksa yedeğinki
+  ---
+  duration_ms: 7679.337054
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt5-eski-578c/test/whatsapp-we-webhook-bilgisi-250.test.mjs:413:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 BİRLEŞİK TUR 5 — salt okunur lisansta Webhook Bilgileri çifti üretmez
+    # Subtest: WE-13 salt okunur: çift YOK → ready false + neden, değer boş, ayar satırı yok; yazılabilir olunca üretilir; çift VARKEN salt okunur → aynı çift; açılamayan çift salt okunurda yeniden üretilmez
+    not ok 1 - WE-13 salt okunur: çift YOK → ready false + neden, değer boş, ayar satırı yok; yazılabilir olunca üretilir; çift VARKEN salt okunur → aynı çift; açılamayan çift salt okunurda yeniden üretilmez
+      ---
+      duration_ms: 59.709078
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt5-eski-578c/test/whatsapp-we-webhook-bilgisi-250.test.mjs:517:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        salt okunurda çift üretilmez
+        + actual - expected
+        
+          [
+        +   true,
+        +   'http://ofis-we.destekofis.test/wa/kanca/sghmju8L9qTf4x7eG2tgodZUXhQYyH23g1SKD5zdAhY',
+        +   'A6VWJgEbMZcbGLDI_qqNMQmx-6u2JpFygF8bTsRw0YI',
+        -   false,
+            '',
+        -   '',
+        -   'Lisans salt okunur; Webhook Bilgileri lisans etkinleşince gösterilir.'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: false
+        1: ''
+        2: ''
+        3: 'Lisans salt okunur; Webhook Bilgileri lisans etkinleşince gösterilir.'
+      actual:
+        0: true
+        1: 'http://ofis-we.destekofis.test/wa/kanca/sghmju8L9qTf4x7eG2tgodZUXhQYyH23g1SKD5zdAhY'
+        2: 'A6VWJgEbMZcbGLDI_qqNMQmx-6u2JpFygF8bTsRw0YI'
+        3: ''
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt5-eski-578c/test/whatsapp-we-webhook-bilgisi-250.test.mjs:526:14)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:466:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:435:3)
+        node:internal/per_context/primordials:466:9
+        Array.map (<anonymous>)
+      ...
+    1..1
+not ok 12 - 2.5.0 BİRLEŞİK TUR 5 — salt okunur lisansta Webhook Bilgileri çifti üretmez
+  ---
+  duration_ms: 59.849606
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt5-eski-578c/test/whatsapp-we-webhook-bilgisi-250.test.mjs:516:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..12
+# tests 83
+# suites 12
+# pass 75
+# fail 8
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 36258.471111

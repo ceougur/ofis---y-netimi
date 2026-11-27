@@ -63,6 +63,8 @@ jobs:
       - run: npm run test:senaryo-k8-230
       - run: npm run test:senaryo-iz32-230
       - run: npm run test:senaryo-pos-kart-249
+      - run: npm run test:senaryo-kart-iade-gecmis-250
+      - run: npm run test:senaryo-tyk-tur2a-250
       - run: npm run test:senaryo-supheli-230
       - run: npm run test:senaryo-iz5-230
       - run: npm run test:senaryo-entegrator-240
@@ -82,10 +84,32 @@ jobs:
       - run: npm run test:senaryo-mobil-yazma-247
       - run: npm run test:senaryo-mobil-tunel-247
       - run: npm run test:senaryo-mobil-iphone-248
+      - run: npm run test:senaryo-defter-turu-250
+      - run: npm run test:senaryo-duzeltme-kilidi-250
+      - run: npm run test:senaryo-duzeltme-kilidi-tur3-250
+      - run: npm run test:senaryo-c7b-kabul-250
+      - run: npm run test:senaryo-kdv-donemi-250
+      - run: npm run test:senaryo-c7b-tur3-250
+      - run: npm run test:senaryo-c7bt-ayni-ad-250
+      - run: npm run test:senaryo-dkfix-250
+      - run: npm run test:senaryo-izt-250
+      - run: npm run test:senaryo-izt2-250
+      - run: npm run test:senaryo-izt3-250
+      - run: npm run test:senaryo-s223-250
+      - run: npm run test:senaryo-s231-250
+      - run: npm run test:senaryo-izt4-250
+      - run: npm run test:senaryo-donem-kilidi-ilerleme-250
+      - run: npm run test:senaryo-kasa-acilis-uyari-250
+      - run: npm run test:senaryo-acilis-duzeni-250
+      - run: npm run test:senaryo-acilis-olabilir-250
+      - run: npm run test:senaryo-acilis-eslestirme-250
+      - run: npm run test:senaryo-supheli-kuyruk-250
+      - run: npm run test:senaryo-kart-faizi-250
       - run: npm run test:senaryo-whatsapp-ayar-248
       - run: npm run test:senaryo-whatsapp-donem-248
       - run: npm run test:senaryo-whatsapp-sablon-248
       - run: npm run test:senaryo-whatsapp-gonder-248
+      - run: npm run test:senaryo-whatsapp-kvkk-250
       - run: npm run test:senaryo-kayit-bag-31e
       - run: npm run test:senaryo-pil-karti-245
       - run: npm run test:senaryo-serit-sira-245
@@ -105,6 +129,8 @@ jobs:
       - run: npm run test:guncelleme-gercek
       - run: npm run test:hiz-243-arka-plan
       - run: npm run test:fatura-243-daha-fazla-yaris
+      - run: npm run test:suzgec-cubugu-yaris
+      - run: npm run test:suzgec-tarih-yazim
       - run: npm run test:fatura-243-duzen-kaymasi
       - run: npm run test:gg243-arka-plan-yazma
       - run: npm run test:gg243-odak-dugme
@@ -122,6 +148,7 @@ jobs:
       - run: npm run test:uiux-244-ux9-ux10
       - run: npm run test:uiux-ui11-244
       - run: npm run test:sirket-canli-yetki-244
+      - run: npm run test:sema-kapisi-bs7
       - run: npm run test:baslarken-244
 
   windows:

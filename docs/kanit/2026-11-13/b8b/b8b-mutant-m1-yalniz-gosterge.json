@@ -1,0 +1,53 @@
+{
+  "ad": "b8b-mutant-m1-yalniz-gosterge",
+  "komut": "node --test test/vade-takip-gecikmis-b8b-250.test.mjs test/vade-takip-gecikmis-b8-250.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v445 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-13T16:28:50.417Z",
+  "sure_sn": 1.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 13,
+    "gecen": 9,
+    "basarisiz": 4,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 4 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Birleşik tur 8 — İş 4: Vade Takip 'Gecikmiş' hazır aralığı = durumu Gecikmiş olan kalemler (S150 = A) › Bugün / 7 Gün sözü aralığın bitişinden ileride olan gecikmiş kalemi de gösterir (birleşik tur 8b — S150 = A'nın eksik kolu; ayrıntı test/vade-takip-gecikmis-b8b-250.test.mjs)",
+      "konum": "test/vade-takip-gecikmis-b8-250.test.mjs:66:3",
+      "hata": "today · + actual - expected · + [] (beklenen , gelen )"
+    },
+    {
+      "ad": "Birleşik tur 8b — Vade Takip 'Bugün' / '7 Gün': 'Gecikmiş' göstergesi ve satırları öbür hazır aralıklarla aynı (S150 = A) › 'Bugün' / '7 Gün' satır kümesi = aralığın kendi satırları ∪ durumu Gecikmiş olan her satır ('Tüm Açık'tan); toplam = satırlar; gösterge = gecikmiş satırların toplamı",
+      "konum": "test/vade-takip-gecikmis-b8b-250.test.mjs:77:3",
+      "hata": "today: satır kümesi · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Birleşik tur 8b — Vade Takip 'Bugün' / '7 Gün': 'Gecikmiş' göstergesi ve satırları öbür hazır aralıklarla aynı (S150 = A) › yön süzgeci: Yalnız Tahsil Edilecek / Yalnız Ödenecek — 'Bugün' ve '7 Gün'de gösterge ve satırlar 'Gecikmiş' aralığıyla aynı gecikmişleri taşır",
+      "konum": "test/vade-takip-gecikmis-b8b-250.test.mjs:102:3",
+      "hata": "today: tahsilat gecikmişleri = 'Gecikmiş' aralığı · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Birleşik tur 8b — Vade Takip 'Bugün' / '7 Gün': 'Gecikmiş' göstergesi ve satırları öbür hazır aralıklarla aynı (S150 = A) › PDF ve Excel ekranla aynı ('Bugün' ve '7 Gün'): satırlar ve 'Gecikmiş Tahsilat' / 'Gecikmiş Ödeme' özeti",
+      "konum": "test/vade-takip-gecikmis-b8b-250.test.mjs:130:3",
+      "hata": "today PDF: v−10 p15 (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "../b8b-kanit/2026-11-13/b8b-mutant-m1-yalniz-gosterge.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8b-mutant",
+  "ham_cikti_sha256": "980d9552e7c4ef96c9d4015209af378f01fda5a0a5426ccb48c43be00e8b8bea",
+  "ham_cikti_bayt": 13463
+}

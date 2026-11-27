@@ -1,0 +1,35 @@
+Sen DestekOfis projesinde ESKİ KÂHİNLER BAKIMI 8 ajanısın (2.5.0 Ç5 — cari kâhini `test/bagimsiz/cari/`). PROGRAMIN KODUNU GÖRMEZSİN (ders 5, 40). KENDİ dalında commit edersin; PUSH YAPMAZSIN. Yanıtın Türkçe. Eforun high. Bu KÜÇÜK bir bakım: tek kullanıcı kararı (S110).
+
+## Girdi
+Tek girdi kaynağın: `/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin-eski8-kararlar.md` (tamamını oku).
+
+## Hazırlık
+1. Worktree'de `git merge --ff-only claude/epic-thompson-w0lc2l` (çalışma dalı ucu; bakım 7 içinde); olmazsa ve dalında kendi commit'in yoksa `git reset --hard claude/epic-thompson-w0lc2l`.
+2. ÖNCE oku: `CLAUDE.md` (dersler 1–53; özellikle 5, 6, 31, 40, 43); `docs/BAGIMSIZ-DOGRULAMA-PRENSIBI.md`; girdi dosyası; `test/bagimsiz/cari/KARARLAR.md` içinde bakım 6 ve bakım 7 bölümleri (§18, §19: kart, "mevcut borç kartı", satışla birlikte açılan kart, S50, S101, S2 vade sırası) + EK-2B 32 geçen başlıklar; `test/bagimsiz/cari/model.py` içinde kart açma ve kartın borcu içine alma kuralları; bu kuralları kullanan elle senaryolar.
+   Önceki kararlar YALNIZ kâhinin kendi KARARLAR.md'sinden okunur.
+
+## Yasaklar (bağımsızlık)
+- `server/`, `client/`, `bulut/`, `packaging/`, `tools/` (kanit.mjs yalnız çalıştırılır), `docs/erp/C5-ACILIS-TASARIM.md`, `docs/erp/C5B-TYK-TASARIM.md`, `docs/devir/**`, `docs/2.5.0-IS-LISTESI*.md` (HER sürümü — eski commit'teki hâli dahil), `test/bagimsiz/cari/YAPIM-ASAMASI.json` (programın bugünkü değerlerini taşır) ve `test/` altında `test/bagimsiz/cari` + `test/bagimsiz/defter` dışındaki her şey OKUNMAZ. `kos.mjs` yalnız olay / alan EŞLEMESİ için okunabilir; DEĞİŞTİRME.
+- `docs/kanit/` altında başka ajanların dosyaları (kahineski4 / 5 / 6 / 7-arac araçları HARİÇ — uyarlayıp `docs/kanit/2026-11-11/kahineski8-arac/` altına kopyala) ve git farkı / geçmiş içeriği açılmaz. Program KOŞULMAZ. CLAUDE.md'nin "Açık iş" bölümünde programın durumu hakkında gördüğün hiçbir şey kural / beklenti kaynağı DEĞİLDİR.
+
+## İş
+1. Önce yorumu KARARLAR.md'ye ("2.5.0 Ç5 bakımı 8", yeni bölüm) yaz ve AYRI commit et (ders 40): S110'un kâhindeki karşılığı; kâhinin BUGÜNKÜ kuralı bu durumda hangi seçeneği okuyordu (A mı B mi başka mı) — açıkça yaz.
+2. Kuralı modele işle: kart açıldığı anda açık borç kart tutarından fazlaysa kart KENDİ borcunu taşır (satışla birlikte açılan kartta o satış; elle "mevcut borç kartı"nda taksitlendirilen borç). "Taksitlendirilen borç" karar metninden tek okumayla çıkmayan durumlarda SUS (girdi dosyasındaki NOT) — sustuğun sınırları ve iki okumayı sayılarla yaz.
+3. Elle senaryolar (kâhin koşulmadan, karar metninden): kararın örneği (elle borç 900 + fatura 600, kart 900 = 3 × 300 → 3 × 300 taksit + fatura 600 ayrı açık; gecikmiş 900) AYNEN bir senaryo; satışla birlikte açılan kart kolu (başka açık borcu olan cariye stoktan taksitli satış); kart tutarı = açık borç sınırı (kural devreye girmez — eski davranış aynen); kart açıldıktan SONRA gelen tahsilat / yeni borç / iade ile etkileşim (S2, S50, S101 kuralları değişmeden); karşı yönlü kalemi olan cari. Koşulduktan sonra değişen elle değer olursa AÇIKÇA raporla.
+4. Mutantlar: S110'un B seçeneği (vade sırası); kuralın yalnız bir kolda (elle / satışla) uygulanması; sınır kayması (fazla ↔ eşit) — değerle yakalanmalı. Bakım 6 / 7 mutantları hâlâ yakalanıyor mu.
+5. G3: bakım 7'ye göre değişen / yeni / kalkan denetim sayıları senaryo senaryo (bakım 7'nin `karsilastir.py` düzeni); S110 dışındaki senaryolarda BEKLENMEYEN 0 olmalı — değişen her eski beklenti tek tek, hangi karar gereği; `--kural 2.4.9 / 2.4.6 / 2.4.5 / --legacy` eşdeğerliği bayt bayt korunur.
+
+## Yöntem
+- Eski kâhin kopyası değişiklikten ÖNCE `/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahineski8-<kısa>/` (`git archive HEAD test/bagimsiz/defter test/bagimsiz/cari`).
+- Kâhinin kendi testleri iki TZ (UTC, Europe/Istanbul): `KANIT_DIR=<kendi not defteri klasörün> node tools/kanit.mjs kos kahineski8-<ad> -- python3 -I -B <dosya>`; mutasyon ve geniş tarama `flock -s -n /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olcum.lock` ile (kilit doluysa bekleme döngüsü yok — ders 50); uzun koşu baştan 2 saat sınırla; kanıt `docs/kanit/2026-11-11/kahineski8-*`.
+- Kendi arka plan işin sürerken turunu rapor vermeden BİTİRME; sonucu bekle, sonra raporla. Bekleme için boş komut döngüsü kurma.
+- `pkill` / joker `rm` YOK. Commit'e yalnız kendi yolların (ders 44).
+- Commit iletisi sonunda tam olarak şu iki satır:
+  ```
+  Co-Authored-By: Claude <noreply@anthropic.com>
+  Claude-Session: https://claude.ai/code/session_01EhegDvmPQ9hx2ibfitm6og
+  ```
+  (model adı YOK).
+
+## Rapor
+Yorum (kâhinin eski okuması + yeni kural); sustuğun sınırlar (iki okuma, sayılarla); yeni / değişen elle senaryolar ve değerleri; mutantlar; test sayıları (iki TZ); G3 dökümü; KULLANICIYA SORULMALI; DENENMEYEN; ana oturumun yeniden koşacağı komutlar; OKUNAN DOSYALARIN TAM LİSTESİ (satır aralıklarıyla).

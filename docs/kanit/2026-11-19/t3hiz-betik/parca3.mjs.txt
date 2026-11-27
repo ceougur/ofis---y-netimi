@@ -1,0 +1,38 @@
+// t3hiz: aday SQL seçenekleri + kurulum parçaları + kesit maliyeti (salt okunur). node parca3.mjs <kod> <veri kopyası>
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+const [root, dir] = process.argv.slice(2);
+const imp = p => import(pathToFileURL(path.join(root, p)).href);
+const dbm = await imp("server/lib/db.mjs");
+const D = await imp("server/lib/bank/doubtful.mjs");
+const Q = await imp("server/lib/obligation-queue.mjs");
+const { createObligationInput } = await imp("server/lib/obligation-input.mjs");
+const store = dbm.createStore(dbm.openDatabase(path.join(dir, "data", "destekofis.sqlite"), { readOnly: true }));
+const t = (label, fn, n = 7) => { const ms = []; let v; for (let i = 0; i < n; i += 1) { const s = performance.now(); v = fn(); ms.push(performance.now() - s); } ms.sort((a, b) => a - b); console.log(`${label}: en iyi ${ms[0].toFixed(2)} · ortanca ${ms[Math.floor(n / 2)].toFixed(2)} ms`); return v; };
+const parties = [...new Set(D.doubtfulRows(store).records.map(r => r.party))];
+const list = JSON.stringify(parties);
+const OLD = "SELECT DISTINCT j.value AS id FROM json_each(?) j WHERE EXISTS (SELECT 1 FROM cheque_events ev JOIN cheques c ON c.id = ev.cheque_id WHERE ev.invoice_id <> '' AND (c.account_id = j.value OR c.endorse_account_id = j.value OR ev.account_id = j.value))";
+const NEW = `SELECT c.account_id AS id FROM json_each(?1) j CROSS JOIN cheques c ON c.account_id = j.value WHERE EXISTS (SELECT 1 FROM cheque_events ev WHERE ev.cheque_id = c.id AND ev.invoice_id <> '')
+ UNION SELECT c.endorse_account_id FROM cheques c WHERE c.endorse_account_id IN (SELECT value FROM json_each(?1)) AND EXISTS (SELECT 1 FROM cheque_events ev WHERE ev.cheque_id = c.id AND ev.invoice_id <> '')
+ UNION SELECT ev.account_id FROM cheque_events ev WHERE ev.account_id IN (SELECT value FROM json_each(?1)) AND ev.invoice_id <> '' AND EXISTS (SELECT 1 FROM cheques c WHERE c.id = ev.cheque_id)`;
+const a = t("aday 2 ESKİ", () => store.all(OLD, list).map(r => r.id).sort());
+const b = t("aday 2 YENİ", () => store.all(NEW, list).map(r => r.id).sort());
+console.log("aynı mı", JSON.stringify(a) === JSON.stringify(b), a.length);
+const all = JSON.stringify(store.all("SELECT id FROM accounts").map(r => r.id));
+const a2 = t("aday 2 ESKİ (bütün cariler)", () => store.all(OLD, all).map(r => r.id).sort(), 1);
+const b2 = t("aday 2 YENİ (bütün cariler)", () => store.all(NEW, all).map(r => r.id).sort(), 3);
+console.log("bütün carilerde aynı mı", JSON.stringify(a2) === JSON.stringify(b2), a2.length);
+for (const row of store.all(`EXPLAIN QUERY PLAN ${NEW}`, list)) console.log("  plan", row.detail);
+const acc = store.get("SELECT id FROM accounts WHERE name = 'Ölçüm Şüpheli Bağlı'")?.id;
+if (acc) {
+  const input = createObligationInput({ store });
+  const ledger = input.ledgerLines({ ids: [acc] }).get(acc) || [];
+  t("accountSettleInput", () => input.accountSettleInput(acc, ledger, ""));
+  t("obligationExtras", () => input.obligationExtras(acc, new Map()));
+  const base = input.withExtras(input.accountSettleInput(acc, ledger, ""), input.obligationExtras(acc, new Map()), acc);
+  const open = D.doubtfulRows(store, { parties: [acc] }).records.map(r => ({ id: r.id, date: r.date, remainingMinor: r.amountMinor }));
+  const linkedLines = ledger.filter(line => base.links.has(line.id));
+  console.log("bağlı satır", linkedLines.length, "satır", ledger.length);
+  t(`doubtfulBefore × ${linkedLines.length}`, () => { for (const line of linkedLines) Q.doubtfulBefore({ ...base, doubtfulRecords: open }, { lineId: line.id }); }, 5);
+  t("JSON (girdi)", () => JSON.stringify(base, (k, v) => (v instanceof Map ? [...v] : v instanceof Set ? [...v] : v)), 5);
+}

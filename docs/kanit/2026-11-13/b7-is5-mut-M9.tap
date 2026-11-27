@@ -1,0 +1,85 @@
+TAP version 13
+# (node:28581) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: S94 = A — Kasa açılışından önce tarihli Vergi Ödemesi: düzeltme reddinin iletisi çıkış yolunu söyler; iki yol da çalışır
+    # Subtest: açılıştan önce tarihli Vergi Ödemesi Kasa'dan düzeltilmek istenince 409 cash-tax-payment: ileti çıkış yolunu söyler (açılış günü / sonrası ya da açılışı öne almak); satır değişmez
+    ok 1 - açılıştan önce tarihli Vergi Ödemesi Kasa'dan düzeltilmek istenince 409 cash-tax-payment: ileti çıkış yolunu söyler (açılış günü / sonrası ya da açılışı öne almak); satır değişmez
+      ---
+      duration_ms: 4.550232
+      type: 'test'
+      ...
+    # Subtest: açılıştan SONRA tarihli Vergi Ödemesi: ileti değişmedi (çıkış yolu cümlesi yok)
+    ok 2 - açılıştan SONRA tarihli Vergi Ödemesi: ileti değişmedi (çıkış yolu cümlesi yok)
+      ---
+      duration_ms: 2.887818
+      type: 'test'
+      ...
+    # Subtest: iletideki yol 1: sil + aynı tarihle yeniden giriş 409 cash-before-opening (S12, istisna yok); açılış GÜNÜ tarihiyle 200; uyarı kalkar
+    ok 3 - iletideki yol 1: sil + aynı tarihle yeniden giriş 409 cash-before-opening (S12, istisna yok); açılış GÜNÜ tarihiyle 200; uyarı kalkar
+      ---
+      duration_ms: 40.315235
+      type: 'test'
+      ...
+    # Subtest: açılış GÜNÜ tarihli Vergi Ödemesi Kasa'dan düzeltilmek istenince: 409 cash-tax-payment, ileti değişmedi (çıkış yolu cümlesi yok — açılış günü 'önce' sayılmaz)
+    not ok 4 - açılış GÜNÜ tarihli Vergi Ödemesi Kasa'dan düzeltilmek istenince: 409 cash-tax-payment, ileti değişmedi (çıkış yolu cümlesi yok — açılış günü 'önce' sayılmaz)
+      ---
+      duration_ms: 3.904916
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7-mut/test/kasa-acilis-vergi-s94-250.test.mjs:80:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+            code: 'cash-tax-payment',
+        +   error: "Bu hareket bir Vergi Ödemesi; Kasa'dan düzeltilmez. Silip Vergi Ödemesi'nden doğru tutarla yeniden girin. Hareket Kasa açılışından (10.03.2026) önce tarihli: yeniden girerken tarihi Kasa açılış günü ya da sonrası yapın; ödeme gerçekten açılıştan önceyse yönetici Kasa → Açılış Bakiyesi'nin tarihini öne alabilir.",
+        +   openingDate: '2026-03-10',
+        -   error: "Bu hareket bir Vergi Ödemesi; Kasa'dan düzeltilmez. Silip Vergi Ödemesi'nden doğru tutarla yeniden girin.",
+        -   openingDate: undefined,
+            status: 409
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        status: 409
+        code: 'cash-tax-payment'
+        error: "Bu hareket bir Vergi Ödemesi; Kasa'dan düzeltilmez. Silip Vergi Ödemesi'nden doğru tutarla yeniden girin."
+      actual:
+        status: 409
+        code: 'cash-tax-payment'
+        error: "Bu hareket bir Vergi Ödemesi; Kasa'dan düzeltilmez. Silip Vergi Ödemesi'nden doğru tutarla yeniden girin. Hareket Kasa açılışından (10.03.2026) önce tarihli: yeniden girerken tarihi Kasa açılış günü ya da sonrası yapın; ödeme gerçekten açılıştan önceyse yönetici Kasa → Açılış Bakiyesi'nin tarihini öne alabilir."
+        openingDate: '2026-03-10'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7-mut/test/kasa-acilis-vergi-s94-250.test.mjs:84:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: iletideki yol 2: yönetici Kasa açılışını öne alır (04.03) → açılıştan önceki güne (05.03) Vergi Ödemesi 200
+    ok 5 - iletideki yol 2: yönetici Kasa açılışını öne alır (04.03) → açılıştan önceki güne (05.03) Vergi Ödemesi 200
+      ---
+      duration_ms: 26.736046
+      type: 'test'
+      ...
+    1..5
+not ok 1 - S94 = A — Kasa açılışından önce tarihli Vergi Ödemesi: düzeltme reddinin iletisi çıkış yolunu söyler; iki yol da çalışır
+  ---
+  duration_ms: 558.094868
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7-mut/test/kasa-acilis-vergi-s94-250.test.mjs:33:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 5
+# suites 1
+# pass 4
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 892.618618

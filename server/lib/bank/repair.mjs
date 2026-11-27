@@ -25,6 +25,7 @@ import { copyMismatchSql, eventCopy, eventDigest, eventRows, isModuleEvent, prim
 import { NON_MONEY_TYPES } from "./event-types.mjs";
 import { newEventId, nextEventNo } from "./event-no.mjs";
 import { closedBeforeOpening, depositAccountProblem, reopenLegacyClosures } from "./collections.mjs";
+import { boundedDetail } from "../log-detail.mjs";
 import { MODULE_TABLES, moneyWhere } from "./money-lines.mjs";
 
 export const REPAIR_KEY = "meta.bank.repair";
@@ -258,7 +259,11 @@ export function repairBank({ store, now = systemClock, period = null, log = null
           report.reopenedCollections.length ? `yeniden açılan tahsil kaydı ${report.reopenedCollections.length}` : "",
           report.pending.length ? `Onarım Bekliyor ${report.pending.length}` : "",
         ].filter(Boolean).join("; ");
-        store.run("INSERT INTO integrity_log (id, at, action, tables, summary, detail_json) VALUES (?, ?, 'repair', '', ?, ?)", newId(), at, `Açılış onarımı (eski sürümden): ${summary}`.slice(0, 500), JSON.stringify({ ...report, unassignedIds: undefined }).slice(0, 20000));
+        // 2.5.0 Ç2 tur 3 (yan bulgu, ORTA; v2.4.9'da da): ayrıntı kesilmiş JSON OLMAZ — `JSON.stringify(...).slice(0, 20000)` 600 iptal başlığında geçersiz JSON bırakıyor,
+        // Mutabakat Testi HTTP 500 veriyordu. Rapor dizileri ilk 50 öğe (lib/log-detail.mjs); tam sayılar `counts` alanında (Hesabı Belirsiz'in sayısı zaten
+        // `unassigned`). Tam rapor meta.bank.repair ayarında (değişmedi).
+        const counts = Object.fromEntries(Object.entries(report).filter(([name, list]) => Array.isArray(list) && name !== "unassignedIds" && name !== "unassignedSample").map(([name, list]) => [name, list.length]));
+        store.run("INSERT INTO integrity_log (id, at, action, tables, summary, detail_json) VALUES (?, ?, 'repair', '', ?, ?)", newId(), at, `Açılış onarımı (eski sürümden): ${summary}`.slice(0, 500), boundedDetail({ ...report, unassignedIds: undefined, counts }, { maxList: 50, maxChars: 20_000 }));
       }
     }),
   );

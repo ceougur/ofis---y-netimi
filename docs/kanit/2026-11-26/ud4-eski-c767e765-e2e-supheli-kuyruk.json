@@ -1,0 +1,78 @@
+{
+  "ad": "ud4-eski-c767e765-e2e-supheli-kuyruk",
+  "komut": "node --disable-warning=ExperimentalWarning /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud4-k7p3/eski/test/e2e/senaryo-supheli-kuyruk-250.mjs",
+  "commit": "04124181bef41303ca39be478865281b095365ca",
+  "dal": "ud4-s269",
+  "kirli": 3,
+  "izlenmeyen": 7,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-26T16:20:57.465Z",
+  "sure_sn": 29.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 28,
+    "gecen": 20,
+    "basarisiz": 8,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 8 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "4a: ipucu “En çok ₺123,55 (kalan şüpheli)” (en çok ₺3.000,00)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "4a: önerilen tutar 123.55, tarih 2026-11-26 (beklenen 3.000,00 · 2026-11-21)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "4a: form kapandı (kayıt alındı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "veri tabanı: Değersiz toplamı 0 (1.000)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "4b: ipucu “En çok ₺123,55 (kalan şüpheli)” (en çok ₺2.000,00)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "4b: önerilen tutar 123.55, tarih 2026-11-26 (beklenen 2.000,00 · 2026-11-21)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "veri tabanı: Değersiz toplamı 123.55 (3.000)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "bakiye 3300 (2.900 + 3.400 − 2.876,45 − 3.000 = 423,55; v2.4.9 ile aynı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "senaryo-supheli-kuyruk-250: 20 geçti, 8 kaldı",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-26/ud4-eski-c767e765-e2e-supheli-kuyruk.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-af5447eb2af85a0d6",
+  "ham_cikti_sha256": "8def806b94980de8191acb4933054f973c551c06c6be9991c44560ad8353a701",
+  "ham_cikti_bayt": 2804
+}

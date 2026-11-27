@@ -1,0 +1,188 @@
+{
+ "aciklama": "Satıştan iade 610/191, alıştan iade 153/391; mahsupta 360.",
+ "ad": "s05-iadeler",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "bil/aktif/I.C": 120000,
+   "bil/aktif/I.E": 40000,
+   "bil/kesin_degil": [
+    "SATISLARIN_MALIYETI_TAHMINI"
+   ],
+   "bil/pasif/III.B": 96000,
+   "bil/pasif/III.F": 4000,
+   "bil/pasif/V.F": 60000,
+   "gt/kalemler/A": 150000,
+   "gt/kalemler/B": 50000,
+   "gt/kalemler/C": 100000,
+   "gt/kalemler/D": 40000,
+   "gt/kalemler/DNK": 60000,
+   "mz/satirlar/191/bakiye": 0,
+   "mz/satirlar/360/bakiye": -4000,
+   "mz/satirlar/391/bakiye": 0
+  }
+ },
+ "kapsam": [
+  "F-07",
+  "F-08",
+  "KG-8",
+  "V-01",
+  "§5"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "K": 20000,
+   "M": 100000,
+   "cari": "T1",
+   "fatura_turu": "stok",
+   "id": "A1",
+   "kalemler": [
+    {
+     "miktar": 10,
+     "urun": "U1"
+    }
+   ],
+   "tarih": "2026-03-01",
+   "tur": "alis_faturasi"
+  },
+  {
+   "K": 30000,
+   "M": 150000,
+   "cari": "C1",
+   "id": "F1",
+   "kalemler": [
+    {
+     "miktar": 6,
+     "urun": "U1"
+    }
+   ],
+   "tarih": "2026-03-05",
+   "tur": "satis_faturasi"
+  },
+  {
+   "K": 10000,
+   "M": 50000,
+   "asil_fatura": "F1",
+   "cari": "C1",
+   "id": "I1",
+   "kalemler": [
+    {
+     "miktar": 2,
+     "urun": "U1"
+    }
+   ],
+   "tarih": "2026-03-08",
+   "tur": "satis_iade_faturasi"
+  },
+  {
+   "K": 4000,
+   "M": 20000,
+   "asil_fatura": "A1",
+   "cari": "T1",
+   "id": "R1",
+   "kalemler": [
+    {
+     "miktar": 2,
+     "urun": "U1"
+    }
+   ],
+   "tarih": "2026-03-09",
+   "tur": "alis_iade_faturasi"
+  },
+  {
+   "ay": "2026-03",
+   "tur": "kdv_mahsup"
+  },
+  {
+   "ad": "gt",
+   "bas": "2026-03-01",
+   "rapor": "gelir_tablosu",
+   "son": "2026-03-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "bil",
+   "rapor": "bilanco",
+   "tarih": "2026-03-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "mz",
+   "bas": "2026-03-01",
+   "rapor": "mizan",
+   "son": "2026-03-31",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

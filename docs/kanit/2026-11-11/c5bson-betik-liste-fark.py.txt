@@ -1,0 +1,23 @@
+import json, sys, collections
+a = json.load(open(sys.argv[1], encoding='utf-8'))['kayitlar']
+b = json.load(open(sys.argv[2], encoding='utf-8'))['kayitlar']
+ka = {(r['senaryo'], r['anahtar']): r for r in a}
+kb = {(r['senaryo'], r['anahtar']): r for r in b}
+print('eski', len(ka), 'yeni', len(kb))
+new = [k for k in kb if k not in ka]
+gone = [k for k in ka if k not in kb]
+chg = [k for k in kb if k in ka and json.dumps(ka[k]['program'], sort_keys=True) != json.dumps(kb[k]['program'], sort_keys=True)]
+print('YENI', len(new), 'KAPANAN', len(gone), dict(collections.Counter(ka[k].get('paket') for k in gone)), 'DEGERI DEGISEN', len(chg))
+for k in new:
+    print('YENI', k, 'bek', kb[k]['beklenen'], 'prg', kb[k]['program'], kb[k].get('paket'))
+for k in chg:
+    print('DEG', k, 'bek', kb[k]['beklenen'], 'eski', ka[k]['program'], 'yeni', kb[k]['program'], ka[k].get('paket'))
+if '--kapanan' in sys.argv:
+    for k in gone:
+        print('KAPANAN', k, ka[k].get('paket'))
+if '--kalan' in sys.argv:
+    for k in kb:
+        if kb[k].get('paket') not in ('Ç5-A', 'eşleme') and (ka.get(k) or kb[k]).get('paket') not in ('Ç5-A', 'eşleme'):
+            print('KALAN', k, 'bek', kb[k]['beklenen'], 'prg', kb[k]['program'], (ka.get(k) or kb[k]).get('paket'))
+print('KALAN paket (yeni liste etiketi)', dict(collections.Counter(r.get('paket') for r in b)))
+print('KALAN paket (eski etiketle)', dict(collections.Counter((ka.get(k) or kb[k]).get('paket') for k in kb)))

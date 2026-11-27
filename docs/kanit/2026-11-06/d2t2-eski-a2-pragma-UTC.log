@@ -1,0 +1,36 @@
+TAP version 13
+# Subtest: store.get / store.all — kayıptan sonra PRAGMA ataması yazımdır (2.5.0 BS-6, birleşik tur 5)
+    # Subtest: kayıptan sonra get / all ile PRAGMA ataması ERR_TX_LOST, dosyanın şeması değişmez; atamasız PRAGMA okuması çalışır
+    ok 1 - kayıptan sonra get / all ile PRAGMA ataması ERR_TX_LOST, dosyanın şeması değişmez; atamasız PRAGMA okuması çalışır
+      ---
+      duration_ms: 18.97313
+      type: 'test'
+      ...
+    1..1
+ok 1 - store.get / store.all — kayıptan sonra PRAGMA ataması yazımdır (2.5.0 BS-6, birleşik tur 5)
+  ---
+  duration_ms: 20.307466
+  type: 'suite'
+  ...
+# Subtest: D2 arşiv kayıt defteri ve salt okunur açma
+    # Subtest: diskten tanıma: aynı yıl ama FARKLI devir çalışması (arşivin işareti ↔ çalışma dosyasının devir kaydı) tanınmaz, sahipsiz listesine girer; aynı çalışmanınki tanınır
+    ok 1 - diskten tanıma: aynı yıl ama FARKLI devir çalışması (arşivin işareti ↔ çalışma dosyasının devir kaydı) tanınmaz, sahipsiz listesine girer; aynı çalışmanınki tanınır
+      ---
+      duration_ms: 571.528201
+      type: 'test'
+      ...
+    1..1
+ok 2 - D2 arşiv kayıt defteri ve salt okunur açma
+  ---
+  duration_ms: 572.855078
+  type: 'suite'
+  ...
+1..2
+# tests 2
+# suites 2
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1445.17532

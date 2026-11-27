@@ -5,6 +5,7 @@ import { existsSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { after, before, describe, test } from "node:test";
 import { ADMIN_PASSWORD, loginAdmin, startTestServer } from "./helpers.mjs";
+import { isoDay } from "../server/lib/plans.mjs";
 
 const unwrap = response => ({ ...response, data: response.data && typeof response.data === "object" && "ok" in response.data ? (response.data.ok ? response.data.data : response.data) : response.data });
 const apiOf = client => ({
@@ -13,7 +14,8 @@ const apiOf = client => ({
   put: async (url, body) => unwrap(await client.put(url, body)),
   del: async (url, body) => unwrap(await client.raw("DELETE", url, { body: body ? JSON.stringify(body) : undefined, headers: body ? { "content-type": "application/json" } : {} })),
 });
-const today = new Date().toISOString().slice(0, 10);
+// Program "bugün"ü yerel günle hesaplar (period.mjs today, plans.mjs isoDay); UTC günü yerel günden ayrışınca (İstanbul 00:00–03:00) yanlış gün olur (ders 13, 22).
+const today = isoDay(new Date());
 
 describe("Çoklu şirket: ayrı veri, ortak lisans/kullanıcı; göç, yetki, sıfırlama, birleşik rapor, silme", () => {
   let server;

@@ -1,0 +1,50 @@
+temel: 174 test, 0 kırmızı
+B78 V3 (d) / S56 sınır: şüpheli-normal aşım sınırında eşitlik de aşım (bakım 8: eşitlikte de SUPHELI_NORMAL_ASIM reddi)
+   ÖLDÜ — 4/174: test_S40_S44_S45_kapsam_ve_susma, test_S81_olagan_duzeltme_siniri, test_s105_s81_olagan_normal_cari_siniri, test_s96_s56_s44_normal_cari_siniri
+   elle senaryo ile: test_s105_s81_olagan_normal_cari_siniri, test_s96_s56_s44_normal_cari_siniri
+B97 U5 S56 B: S44 düzeltmesi şüpheli-normal sınırını aşsa da kabul
+   ÖLDÜ — 6/174: test_S40_S44_S45_kapsam_ve_susma, test_S79_olagan_kayit_bag_cari, test_S81_S56_ile_ayni, test_S81_olagan_duzeltme_siniri, test_s105_s81_olagan_normal_cari_siniri, test_s96_s56_s44_normal_cari_siniri
+   elle senaryo ile: test_s105_s81_olagan_normal_cari_siniri, test_s96_s56_s44_normal_cari_siniri
+B105 L1 / L2 S80 B: formdaki peşinin carisi S79 gibi (bağ + cari kabul; bağ değişmeden S57 red)
+   ÖLDÜ — 5/174: test_S40_S44_S45_kapsam_ve_susma, test_S79_olagan_kayit_bag_cari, test_S80_formdaki_pesin_cari, test_S81_olagan_duzeltme_siniri, test_s104_s80_formdaki_pesin_cari
+   elle senaryo ile: test_s104_s80_formdaki_pesin_cari
+B105b L1 S80 sınır: yalnız olağan kayıtta — geri yüklenmiş açılış öncesi kayıtta S80 yok (S45 / S54 kuralları)
+   ÖLDÜ — 3/174: test_S40_S44_S45_kapsam_ve_susma, test_S80_formdaki_pesin_cari, test_s104_s80_formdaki_pesin_cari
+   elle senaryo ile: test_s104_s80_formdaki_pesin_cari
+B105c L2 S80 sınır: yalnız tek başına cari düzeltmesi red (cari + başka alan S79 / S57 kurallarıyla)
+   ÖLDÜ — 4/174: test_S79_olagan_kayit_bag_cari, test_S80_formdaki_pesin_cari, test_S81_olagan_duzeltme_siniri, test_s104_s80_formdaki_pesin_cari
+   elle senaryo ile: test_s104_s80_formdaki_pesin_cari
+B105d L1 S80 sınır: aynı carinin yeniden yazılması da red
+   ÖLDÜ — 2/174: test_S80_formdaki_pesin_cari, test_s104_s80_formdaki_pesin_cari
+   elle senaryo ile: test_s104_s80_formdaki_pesin_cari
+B105e L2 S80 sırası: FATURA_DUZENLENMELI T12 / B11'den önce (açılıştan önceki başka güne alınan peşinde de)
+   ÖLDÜ — 2/174: test_S80_formdaki_pesin_cari, test_s104_s80_formdaki_pesin_cari
+   elle senaryo ile: test_s104_s80_formdaki_pesin_cari
+B105f L3 S80 genişletme: formdaki peşinin her düzeltmesi red (carisi aynı tutar / açıklama da)
+   ÖLDÜ — 3/174: test_S40_S44_S45_kapsam_ve_susma, test_S80_formdaki_pesin_cari, test_s104_s80_formdaki_pesin_cari
+   elle senaryo ile: test_s104_s80_formdaki_pesin_cari
+B105g L4 S80 ödeme yönüne de (karar metninde yok; kâhin susmaz)
+   ÖLDÜ — 1/174: test_S80_formdaki_pesin_cari
+   elle senaryo ile: YOK (yalnız birim)
+B106 L5 S81 B: olağan düzeltmede sınır yok (aşsa da kabul)
+   ÖLDÜ — 4/174: test_S79_olagan_kayit_bag_cari, test_S81_S56_ile_ayni, test_S81_olagan_duzeltme_siniri, test_s105_s81_olagan_normal_cari_siniri
+   elle senaryo ile: test_s105_s81_olagan_normal_cari_siniri
+B106b L6 S81 sınır kayması: eşitlik de aşım (120'ye yazılan bir kuruş fazla sayılır)
+   ÖLDÜ — 2/174: test_S81_olagan_duzeltme_siniri, test_s105_s81_olagan_normal_cari_siniri
+   elle senaryo ile: test_s105_s81_olagan_normal_cari_siniri
+B106c L5 S81 kapsam: yalnız S79 düzeltmesi (cari + bağ birlikte); bağsız kaydın carisi ve aynı carinin seçimi denetlenmez
+   ÖLDÜ — 2/174: test_S81_olagan_duzeltme_siniri, test_s105_s81_olagan_normal_cari_siniri
+   elle senaryo ile: test_s105_s81_olagan_normal_cari_siniri
+B106d L7 S81 tarih: sınır kaydın ESKİ gününde ölçülür
+   ÖLDÜ — 1/174: test_S81_olagan_duzeltme_siniri
+   elle senaryo ile: YOK (yalnız birim)
+B106e L6 / L9 S81 fatura bağı: tutarın tamamı sayılır (128'den düşen ve fazla da)
+   ÖLDÜ — 3/174: test_S79_olagan_kayit_bag_cari, test_S81_olagan_duzeltme_siniri, test_s105_s81_olagan_normal_cari_siniri
+   elle senaryo ile: test_s105_s81_olagan_normal_cari_siniri
+B106f L5 (iii) S81 kapsam: cari değişmeli — aynı carinin kendi tahsilatında Normal Cari / bağ denetlenmez (U5 boşluğu açık)
+   ÖLDÜ — 2/174: test_S81_olagan_duzeltme_siniri, test_s105_s81_olagan_normal_cari_siniri
+   elle senaryo ile: test_s105_s81_olagan_normal_cari_siniri
+B106g L6 S81 sırası: sınır S57 / S80 redlerinden önce
+   ÖLDÜ — 1/174: test_S81_olagan_duzeltme_siniri
+   elle senaryo ile: YOK (yalnız birim)
+sağ kalan: 0

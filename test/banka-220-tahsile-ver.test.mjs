@@ -25,6 +25,12 @@ import { after, before, describe, it } from "node:test";
 import { subBalances as journalSubs } from "../server/lib/general-ledger.mjs";
 import { createUser } from "./helpers.mjs";
 import { apiOf, integrityOf, integrityOk, rawRun } from "./banka-210-ortak.mjs";
+// 2.5.0 Ç5-A (G3: C5-ACILIS-TASARIM §3.1): eski sürüm fikstürünün kilitli dönemi 2.4.9 kuralıyla donar → "Kural Değişikliği Farkı" UYARISI (açılışlar 500 → 519 …) beklenir; öbür denetimler tamam.
+const okExceptRuleDiff = async (api, label) => {
+  const result = await integrityOf(api);
+  assert.deepEqual(result.failures.filter(item => item.code !== "ledger:rule-diff"), [], `${label}: mutabakat bozuk ${JSON.stringify(result.failures).slice(0, 900)}`);
+  return result;
+};
 import { BANK, TODAY, bootBank, expectStatus, lockPeriod, must, TAHSILE_FLAGS, openAcceptanceAccounts, openAccount, trialBalances } from "./banka-210-hesap-ortak.mjs";
 import { ADMIN_PASSWORD } from "./helpers.mjs";
 import { fixtureExists, unpackFixture } from "./guvenilirlik/fikstur.mjs";
@@ -466,7 +472,7 @@ describe("Bankaya Tahsile Ver — eski sürüm verisi (gerçek 2.0.26 kodunun fi
       // Ret kodu (res.code) ortak sarmalayıcıyla okunur (sürüm sarmalayıcısı hatayı yalnız data'da taşır).
       const api = apiOf((await server.login()).client);
       assert.equal((await api.post("/api/companies/select", { id: "sirket-001" })).status, 200);
-      await integrityOk(api, "göç sonrası");
+      await okExceptRuleDiff(api, "göç sonrası");
       const list = (await must("liste", api.get(CHEQUES))).cheques;
       const portfolio = list.find(item => item.direction === "in" && item.status === "portfolio");
       const collected = list.find(item => item.direction === "in" && item.status === "collected");
@@ -480,10 +486,15 @@ describe("Bankaya Tahsile Ver — eski sürüm verisi (gerçek 2.0.26 kodunun fi
       const subs = Object.fromEntries((await must("alt hesap", api.get(`${BANK}/sub-trial`))).rows.map(row => [row.sub, row.balance]));
       assert.equal(subs["101.02"], portfolio.amount);
       assert.equal(Math.round((subs["101.01"] + subs["101.02"]) * 100), Math.round(after["101"] * 100), "Σ 101.* = 101");
-      await integrityOk(api, "tahsile ver");
+      // 2.5.0 Ç5-A (G3: §3.1): bu fikstürün kilitli dönemi 2.4.9 kuralıyla donmuş — Kural Değişikliği Farkı UYARISI beklenir (açılışlar 500 → 519, açıklamalı eski Borç Yaz
+      // adayları); öbür her denetim tamam.
+      {
+        const result = await integrityOf(api);
+        assert.deepEqual(result.failures.filter(item => item.code !== "ledger:rule-diff"), [], `tahsile ver: mutabakat bozuk ${JSON.stringify(result.failures).slice(0, 900)}`);
+      }
       await must("tahsil", api.post(`${CHEQUES}/${portfolio.id}/actions`, { action: "collect", date: "2026-10-15" }));
       assert.equal(Number((await must("hesap", api.get(`${BANK}/accounts/${account.id}`))).balanceMinor), 1_000_000 + Math.round(portfolio.amount * 100));
-      await integrityOk(api, "tahsil");
+      await okExceptRuleDiff(api, "tahsil");
     } finally {
       await server.close();
       fixture.cleanup();

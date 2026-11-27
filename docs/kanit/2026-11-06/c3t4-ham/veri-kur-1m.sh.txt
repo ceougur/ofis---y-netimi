@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Ç3 tur 4 — 1.000.000 ölçüm verisi (programın KENDİ ürettiği; tools/kapi-olcum.mjs'nin kendi kopyam: kapi-olcum-yama.mjs — ROOT bu ağaç, legacyCasePayments / legacyTableTransfer açık;
+# dar kontrolün yaklaşımı). Veri üretimi yüktür: flock -s (ders 52). tools/kapi-olcum.mjs DEĞİŞMEDİ.
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+mkdir -p "$S/c3t4-veri" || exit 1
+cd "$S/c3t4-betik" || exit 1
+echo "basla $(date -u +%H:%M:%S) disk $(df -h / | tail -1) yuk $(cat /proc/loadavg)"
+flock -s "$S/olcum.lock" env HUKUK_LICENSE_URL=http://127.0.0.1:9 NODE_NO_WARNINGS=1 node kapi-olcum-yama.mjs --hedef 1000000 --yalniz-kur --klasor "$S/c3t4-veri"
+code=$?
+echo "bitis $(date -u +%H:%M:%S) cikis=$code disk $(df -h / | tail -1) yuk $(cat /proc/loadavg)"
+exit $code

@@ -1,0 +1,65 @@
+ÜRETİCİ: 20/20 aynı dizi (tur s1 + ux18, tohum 1–10 × 120 işlem)
+EŞDEĞERLİK (2.4.9 / 2.4.6 / 2.4.5 / --legacy; 67 elle + 20 rastgele senaryo × 4 kip): 348/348 bayt bayt aynı
+G3 (kural 2.5.0; 87 senaryo): eski 44071 denetim · yeni 41771 denetim · değişen / kalkan / yeni toplam 3112 · BEKLENMEYEN 0 · yalnız etiketi değişen 573
+  S91            degisen    393
+      örn. c10-ks10-projeksiyon-cari-vade k1:projeksiyon:hareket:bg5: "yok" → {"amount": 10000, "date": "2026-06-03", "direction": "in"}
+      örn. c10-ks10-projeksiyon-cari-vade k1:takvim:hareket:bg5: "yok" → {"amount": 10000, "dueDate": "2026-06-03", "direction": "in", "label": "Tahsil Edilecek Borç", "state": "overd
+      örn. c10-ks10-projeksiyon-cari-vade k1:vadeTakip:hareket:bg5: "yok" → {"amount": 10000, "date": "2026-06-03", "direction": "in"}
+      örn. c14a-c1-hareket-turleri k1:projeksiyon:hareket:a-ha: "yok" → {"amount": 60000, "date": "2026-06-04", "direction": "out"}
+  S91            yeni        23
+      örn. c14a-c1-hareket-turleri k1:projeksiyon:cariToplam:HA: "(denetim yok)" → -60000
+      örn. c14a-c1-hareket-turleri k1:projeksiyon:cariToplam:HAC: "(denetim yok)" → 150000
+      örn. c14a-c1-hareket-turleri k1:projeksiyon:cariToplam:HB: "(denetim yok)" → 100000
+      örn. c14a-c1-hareket-turleri k2:projeksiyon:cariToplam:HA: "(denetim yok)" → -60000
+  S92-net        degisen    251
+      örn. c6b-cari-vade-dogrulama k2:hareket:ea:kalan: 15000 → 0
+      örn. c6b-cari-vade-dogrulama k2:hareket:eb:kalan: 40000 → 25000
+      örn. c6b-cari-vade-dogrulama k2:projeksiyon:hareket:ea: {"amount": 15000, "date": "2026-06-13", "direction": "out"} → "yok"
+      örn. c6b-cari-vade-dogrulama k2:projeksiyon:hareket:eb: {"amount": 40000, "date": "2026-06-12", "direction": "in"} → {"amount": 25000, "date": "2026-06-12", "direction": "in"}
+  S92-tanimsiz   kalkan    2163
+      örn. c12-ks81-sb-kalan-dagilimi k1:cari:B4:acikEsitBakiye: false → "(denetim yok)"
+      örn. c12-ks81-sb-kalan-dagilimi k1:cari:B4:acikToplam: -15000 → "(denetim yok)"
+      örn. c12-ks81-sb-kalan-dagilimi k1:hareket:ab4:kalan: 15000 → "(denetim yok)"
+      örn. c12-ks81-sb-kalan-dagilimi k1:hareket:bb4:kalan: 0 → "(denetim yok)"
+  sayac          degisen    122
+      örn. c10-ks10-projeksiyon-cari-vade k1:projeksiyon:cari: 8 → 9
+      örn. c10-ks10-projeksiyon-cari-vade k1:takvim:cariKalemSayisi: 2 → 3
+      örn. c14a-c1-hareket-turleri k1:projeksiyon:cari: 0 → {"catal": [3, 4, 5, 6]}
+      örn. c14a-c1-hareket-turleri k1:takvim:cariKalemSayisi: 0 → {"catal": [3, 4, 5, 6]}
+  sayac          kalkan     160
+      örn. c12-ks81-sb-kalan-dagilimi k1:projeksiyon:cari: 1 → "(denetim yok)"
+      örn. c12-ks81-sb-kalan-dagilimi k1:takvim:cariKalemSayisi: 1 → "(denetim yok)"
+      örn. c12-ks81-sb-kalan-dagilimi k2:projeksiyon:cari: 3 → "(denetim yok)"
+      örn. c12-ks81-sb-kalan-dagilimi k2:takvim:cariKalemSayisi: 3 → "(denetim yok)"
+G3 senaryo senaryo (sınıf/tür: adet):
+  c10-ks10-projeksiyon-cari-vade           S91/degisen 3 · sayac/degisen 2
+  c12-ks81-sb-kalan-dagilimi               S92-tanimsiz/kalkan 20 · sayac/kalkan 4
+  c13-ks83-ayni-gun-sira                   S92-tanimsiz/kalkan 60 · sayac/kalkan 2
+  c14a-c1-hareket-turleri                  S91/degisen 27 · S91/yeni 9 · sayac/degisen 6
+  c14b-c1-silinenler-ve-geri-yukleme       S91/degisen 3 · S91/yeni 1 · sayac/degisen 2
+  c14d-c1-ayni-ad                          S91/degisen 9 · S91/yeni 3 · sayac/degisen 6
+  c14e-c1-pasife-al                        S91/degisen 9 · S91/yeni 3 · sayac/degisen 6
+  c6-cari-vade-fifo                        S91/degisen 6 · sayac/degisen 4
+  c6b-cari-vade-dogrulama                  S92-net/degisen 16 · sayac/degisen 4
+  c7-ks7-bagsiz-kapaticilar                S92-net/degisen 5
+  c7b-supheli-kalan                        S91/degisen 6 · sayac/degisen 4
+  c8-ks8-iade-geri-odemesi                 S92-net/degisen 5 · S92-tanimsiz/kalkan 25 · sayac/degisen 2 · sayac/kalkan 10
+  d1-c5-acilis-519                         S91/degisen 15 · S91/yeni 5 · sayac/degisen 2
+  d11-c5-s66-carisiz-karsiliksiz           sayac/degisen 2
+  d2-c5-kg5-excel-kart                     S91/degisen 6 · sayac/degisen 4
+  d7-c5-s52-gecikmis                       S91/degisen 3 · S91/yeni 1 · S92-net/degisen 5 · sayac/degisen 2
+  d9-c5-s68-borc-tarafi-vade               S91/degisen 3 · sayac/degisen 2
+  rastgele-s1-1                            S91/degisen 54 · S92-tanimsiz/kalkan 303 · sayac/kalkan 26
+  rastgele-s1-10                           S91/degisen 9 · S92-net/degisen 19 · S92-tanimsiz/kalkan 289 · sayac/degisen 8 · sayac/kalkan 18
+  rastgele-s1-2                            S91/degisen 45 · S91/yeni 1 · S92-net/degisen 4 · S92-tanimsiz/kalkan 309 · sayac/degisen 2 · sayac/kalkan 24
+  rastgele-s1-3                            S91/degisen 60 · S92-net/degisen 26 · S92-tanimsiz/kalkan 230 · sayac/degisen 12 · sayac/kalkan 12
+  rastgele-s1-4                            S91/degisen 15 · S92-net/degisen 86 · S92-tanimsiz/kalkan 61 · sayac/degisen 10 · sayac/kalkan 6
+  rastgele-s1-5                            S92-net/degisen 22 · S92-tanimsiz/kalkan 283 · sayac/degisen 10 · sayac/kalkan 16
+  rastgele-s1-6                            S91/degisen 51 · S92-tanimsiz/kalkan 229 · sayac/kalkan 20
+  rastgele-s1-7                            S91/degisen 15 · S92-net/degisen 12 · sayac/degisen 16
+  rastgele-s1-8                            S91/degisen 9 · S92-net/degisen 42 · S92-tanimsiz/kalkan 215 · sayac/degisen 6 · sayac/kalkan 10
+  rastgele-s1-9                            S91/degisen 45 · S92-net/degisen 9 · S92-tanimsiz/kalkan 139 · sayac/degisen 10 · sayac/kalkan 12
+# tests 369
+# pass 369
+# fail 0
+369/369 denetim geçti

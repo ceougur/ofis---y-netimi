@@ -1,0 +1,34 @@
+(node:21050) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:21050) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ok 1 - yeni kod: kilit 30.06.2026
+ok 2 - yeni kod: 30.06'ya kadar dondu
+ok 3 - yeni kod: şema 47
+ok 4 - eski kod dosyayı göç ettirmedi (şema 47 kaldı)
+ok 5 - eski kod: kilit 31.12.2026'ya ilerletildi
+ok 6 - eski kod: açık döneme Kasa hareketi
+ok 7 - eski kod: Mutabakat Testi 200 true
+ok 8 - eski kodun bağlantısında donmuş satır değiştirilemez (tetikleyici dosyada): ledger_snapshots değiştirilemez: donmuş defter
+ok 9 - eski kod koşu açmadı (kapsam 30.06, kilit 31.12)
+(node:21050) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ok 10 - yeni kod: açılış onarımı aradaki dönemi 2.4.9 kuralıyla dondurdu ({"kind":"freeze","state":"done","reason":"repair","rule":"2.4.9","fromDate":"2026-06-30","through":"2026-12-31"})
+ok 11 - yeni kod: kapsam = kilit, donmuş = canlı
+ok 12 - yeni kod: Mutabakat Testi tutarlı
+ok 13 - eski kod: kilit kaldırıldı
+ok 14 - yeni kod: thaw (repair), kapsam boş, bayat satır silindi ({"kind":"thaw","reason":"repair","through":""})
+(node:21050) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ok 15 - yeni kod: yeniden kilit, donmuş = canlı
+ok 16 - eski kod: Şirket Verisini Sıfırla 200  (önce 8 donmuş satır)
+ok 17 - eski kod sıfırlaması donmuş satırları sildi, koşuları bilmez (kaldı), kilit kalktı
+ok 18 - yeni kod: açılış onarımı kapsamı kilide (boş) indirdi
+ok 19 - yeni kod: Mutabakat Testi tutarlı ([])
+(node:21050) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ok 20 - yeni kod: sıfırlamadan sonra kilit yeniden donar
+
+# tests 20
+# pass 20
+# fail 0

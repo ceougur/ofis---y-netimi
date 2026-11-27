@@ -1,0 +1,19 @@
+eski kod: ccf0b0ca → /tmp/w1a-goc-250-n7EXk1/eski-ccf0b0ca
+(node:30717) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✓ 2.4.9: Elle Bağla kaydedildi
+✓ 2.4.9: Bağlantıyı Sına başarılı
+✓ 2.4.9 kaydında süre alanı yok (eski biçim), son sınama başarılı
+✓ 2.4.9: WhatsApp'ı Bağla kaydı (eski biçim, süre alanı yok)
+✓ 2.4.9: firma adı + gönderim onayı
+✓ 2.4.9: cari
+✓ Yol 1 (2.4.9 kaydı) süresiz: 400 gün sonra {"state":"ok","expiresAt":null,"source":"","expiredBy":"","expiredAt":null,"daysLeft":null,"message":""}
+✓ Meta 190 (belirteç Meta'da kaldırıldı)
+✓ 2.4.9'da sınanmış belirteç çalışmış sayılır → Süresi Doldu (Meta): {"state":"expired","expiresAt":null,"source":"","expiredBy":"meta","expiredAt":"2027-12-10T07:00:00.000Z","daysLeft":null,"message":"WhatsApp bağlantınızın süresi doldu: Meta erişim belirtecini artık kabul etmiyor (süresi dolmuş ya da iptal edilmiş). Yeni gönderim başlatılamaz; Yönetim → WhatsApp'ta Yeniden Bağla ile yeniden bağlayın."}
+✓ Yol 2 (2.4.9 kaydı): bitiş = bağlanma + 60 gün (2027-01-04T07:00:00.000Z)
+✓ 53. gün: süresi doluyor, 7 gün kaldı (expiring 7)
+✓ 60. gün: Süresi Doldu ({"state":"expired","expiresAt":"2027-01-04T07:00:00.000Z","source":"default","expiredBy":"clock","expiredAt":"2027-01-04T07:00:00.000Z","daysLeft":0,"message":"WhatsApp bağlantınızın süresi doldu (04.01.2027). Yeni gönderim başlatılamaz; Yönetim → WhatsApp'ta Yeniden Bağla ile yeniden bağlayın."})
+✓ yeni gönderim 409 Türkçe neden (409 whatsapp-token-expired)
+✓ Meta'ya istek gitmedi
+
+14 geçti, 0 kaldı

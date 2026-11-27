@@ -1,0 +1,13 @@
+#!/bin/bash
+# Ana oturum: Ç5-B TEK DÜZELTME TURU hız kabul ölçümü — üç sütun: once = Ç5-B ÖNCESİ (8d6ea9c9^1) · taban = düzeltme turunun tabanı (c5bkd-taban) · aday = düzeltme turu (ajan ağacı 3c8473f2); iki geçiş, sırayla. Özel ölçüm kilidi altında çağrılır.
+# KOŞUL (S132): zilin / takvimin ılık çağrısı ve Borç Yaz, Ç5-B öncesinin %10'u içinde.
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+R=/home/user/ofis---y-netimi
+O=$S/c5bkdy-kabul; mkdir -p $O || exit 1
+d=$S/c5bkdy-once
+[ -d $d/server ] || { mkdir -p $d && git -C $R archive '8d6ea9c9^1' ':!docs/kanit' | tar -x -C $d || exit 1; ln -s $R/node_modules $d/node_modules; }
+[ -d $S/c5bkdy-eski/server ] || { echo "taban kopyası yok"; exit 1; }
+echo "kilit alındı $(date -u +%T) yük $(cat /proc/loadavg)"
+for g in ${GECISLER:-1 2}; do for p in "once:$d" "taban:$S/c5bkdy-eski" "aday:$R/.claude/worktrees/agent-a511c161b54069067"; do ad=${p%%:*}; kok=${p#*:}
+  echo "== $g $ad başta $(cat /proc/loadavg)"; timeout 2700 bash $S/ana-kabul/betik/kabul.sh $kok $O/$ad-$g.txt; echo "çıkış $?"; done; done
+echo "sonda $(date -u +%T) $(cat /proc/loadavg) · disk $(df -h / | awk 'NR==2{print $4}')"

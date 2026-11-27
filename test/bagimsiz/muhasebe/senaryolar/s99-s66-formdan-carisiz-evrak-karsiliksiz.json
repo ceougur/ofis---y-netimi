@@ -1,0 +1,196 @@
+{
+ "aciklama": "S66: formdan carisiz (açılış değil) alınan evrak karşılıksız dönerse cari seçilirse cari borçlanır (Ç-07), seçilmezse B 649.90 / A 101.",
+ "ad": "s99-s66-formdan-carisiz-evrak-karsiliksiz",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "ak1": [
+    {
+     "k": "karsiliksiz:KC1",
+     "kalan": 5000,
+     "tarih": "2026-03-20",
+     "tur": "karsiliksiz",
+     "vade": "2026-03-20"
+    }
+   ],
+   "g1a/gecikmis": 0,
+   "g1b/gecikmis": 5000,
+   "gt/kalemler/DNK": 5000,
+   "gt/kalemler/E": 0,
+   "gt/kalemler/F": 5000,
+   "hat/elle": {},
+   "hat/otomatik": {
+    "C1": 5000
+   },
+   "hat/supheli_etiketli": [],
+   "mz/satirlar/101.01/bakiye": 0,
+   "mz/satirlar/101.02/bakiye": 0,
+   "mz/satirlar/120|C1/bakiye": 5000,
+   "mz/satirlar/519/bakiye": 0,
+   "mz/satirlar/649.90/bakiye": -5000,
+   "mz/satirlar/770.90/bakiye": 0,
+   "redler": []
+  }
+ },
+ "kapsam": [
+  "S66",
+  "S49",
+  "S48",
+  "Ç-07",
+  "Ç-02",
+  "M1c",
+  "S1",
+  "Q2"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "evrak": "CK1",
+   "evrak_turu": "cek",
+   "id": "CE1",
+   "tarih": "2026-03-10",
+   "tur": "carisiz_evrak",
+   "tutar": 5000,
+   "yon": "alinan"
+  },
+  {
+   "evrak": "CK2",
+   "evrak_turu": "cek",
+   "id": "CE2",
+   "tarih": "2026-03-11",
+   "tur": "carisiz_evrak",
+   "tutar": 2000,
+   "yon": "alinan"
+  },
+  {
+   "banka": "B1",
+   "evrak": "CK2",
+   "tarih": "2026-03-12",
+   "tur": "evrak_tahsile_ver"
+  },
+  {
+   "cari": "C1",
+   "evrak": "CK1",
+   "id": "KC1",
+   "tarih": "2026-03-20",
+   "tur": "evrak_karsiliksiz"
+  },
+  {
+   "evrak": "CK2",
+   "id": "KC2",
+   "tarih": "2026-03-21",
+   "tur": "evrak_karsiliksiz"
+  },
+  {
+   "ad": "mz",
+   "bas": "2026-01-01",
+   "rapor": "mizan",
+   "son": "2026-03-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "gt",
+   "bas": "2026-01-01",
+   "rapor": "gelir_tablosu",
+   "son": "2026-03-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "g1a",
+   "cari": "C1",
+   "rapor": "gecikmis",
+   "tarih": "2026-03-20",
+   "tur": "rapor"
+  },
+  {
+   "ad": "g1b",
+   "cari": "C1",
+   "rapor": "gecikmis",
+   "tarih": "2026-03-21",
+   "tur": "rapor"
+  },
+  {
+   "ad": "ak1",
+   "cari": "C1",
+   "rapor": "acik_kalemler",
+   "tarih": "2026-03-21",
+   "tur": "rapor"
+  },
+  {
+   "ad": "hat",
+   "rapor": "hatirlatma",
+   "tarih": "2026-03-31",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

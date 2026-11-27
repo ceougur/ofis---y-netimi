@@ -8,73 +8,301 @@
 // karşılaştırır; fark varsa hangi hesapta ve ne kadar olduğunu söyler.
 //
 // Hesap planı: Tekdüzen Hesap Planı'nın ilgili hesapları.
-import { DOCUMENT_GL, documentGl } from "./cheque-gl.mjs";
-import { DOUBTFUL_CHART, DOUBTFUL_GL, applyDoubtfulToJournal, doubtfulSkipOf } from "./doubtful-gl.mjs";
+import { DOCUMENT_GL, documentGl, mainOfSub } from "./cheque-gl.mjs";
+import { DOUBTFUL_CHART, DOUBTFUL_GL, applyDoubtfulToJournal, doubtfulKeepOf } from "./doubtful-gl.mjs";
 import { roundMoney } from "./money.mjs";
+import { waivedOf, waivesRemaining } from "./accounts.mjs";
+import { OPENING_ROLES, effectiveGl } from "./bank/voucher.mjs";
+import { isCovered } from "./bank/opening-cover.mjs";
+import { NO_SHIFT, oldCollection, oldReturnVat } from "./ledger-rule-shift.mjs";
 
-export const CHART = Object.freeze({
-  100: "Kasa (Nakit)",
+/**
+ * Türetme kuralının sürümü (2.5.0 Ç3; docs/erp/C3-DONDURMA-TASARIM.md §5): kilit konunca donan satırlar bu etiketle saklanır (ledger_snapshots.rule_version). Bir olayın
+ * HANGİ hesaba / hangi tarihe / hangi tutarla yazıldığını değiştiren her türetme değişikliği (Ç5, Ç7a, Ç7b …) bu sürümü yükseltir; kural tuzağı testi
+ * (test/donmus-defter-250.test.mjs) "2.5.0" iken güncel türetmenin 2.4.9 kopyasıyla (lib/ledger-rule-249) aynı olduğunu denetler. Ad değişikliği (Ç1: 770) kural değildir.
+ */
+// 2.5.0 Ç5-A tur 1 (BAŞ MİMAR KARARI B15; C5-ACILIS-TASARIM §3.2): Ç5-A tek yeni etiket açar — "2.5.0-defter" (açılış karşı hesabı 519, açılış işaretten, KG-5, açılış evrakı,
+// S49 carisiz evrak, açılış sınıfı). Ç7a / Ç7b yayından ÖNCE aynı etiketi genişletir (yayımlanmamış ara kural hiçbir müşteri dosyasında bekleyen koşu olamaz); 2.5.1 değiştirirse
+// bu kuralın kopyası ledger-rule-250defter/ olur (C3 §5).
+export const LEDGER_RULE_VERSION = "2.5.0-defter";
+/**
+ * Kural sürümü takma adları (B15): "2.5.0" (Ç3–Ç5-A arası geliştirme verisinde donmuş / bekleyen koşu) = 2.4.9 kopyasının KANITLI takma adıdır — Ç5-A'dan önceki güncel türetme
+ * 2.4.9 kopyasıyla madde madde aynıydı (kural tuzağı testi, test/donmus-defter-250 tabanı). Ayrı kopya yok; kayıt defteri (lib/ledger-snapshots.mjs) ve dondurma iş parçacığı
+ * (lib/ledger-freeze-worker.mjs) bu eşlemeyle tanır.
+ */
+export const LEDGER_RULE_ALIASES = Object.freeze({ "2.5.0": "2.4.9" });
+/** Yevmiye maddesinin açılış sınıfı (kural kitabı G-4 / M-01 "açılış sınıfı, günün başı"; BAŞ MİMAR KARARI B9): madde KİMLİĞİ değişmez, sınıf ayrı alan (`cls`). */
+export const OPENING_CLASS = 2;
+/** Modül açılışlarının karşı hesabı (2.5.0 Ç5-A; KG-1 A, 30.10 açılış düzeni): 519. 500 Sermaye'ye yalnız Açılış Eşleştirme Fişi yazar. */
+export const OPENING_GL = "519";
+/** Formdan carisiz evrakın (açılış değil; S49 = A) karşı alt hesapları: alınan 649.90, verilen 770.90. */
+export const FREE_DOCUMENT_GL = Object.freeze({ received: Object.freeze({ account: "649", sub: "649.90" }), given: Object.freeze({ account: "770", sub: "770.90" }) });
+/**
+ * 2.5.0 Ç7b (docs/erp/C7B-FATURA-TASARIM.md §2.1–§2.2, §11): sınıflandırılmamış / belgesiz alt hesaplar. Ana hesap bakiyeleri (taksit Yeni Borç 602 → 600 ve kayıt tahsilatı 602 → 336
+ * hariç) değişmez; yalnız alt hesap kırılımı.
+ *   cashIn / cashOut  K-01 / K-02 carisiz Kasa girişi 649.90, çıkışı 770.90 (KG-3 A + BAŞ MİMAR KARARI 19.11; G-8, §7.5 (6)) — formdan carisiz evrakla (S49) aynı hesaplar.
+ *   debtWrite         C-01 Borç Yaz (açılış değil) karşı hesabı 602.90 (KG-4 A).
+ *   creditWrite       C-02 Alacak Yaz (açılış değil) karşı hesabı 770.90 (KG-4 A).
+ *   sale / saleReturn KG-2 = A belgesiz gelir: stok modülü satışı (veresiye / peşin) ve taksit kartı Yeni Borç 600.90, müşteri iadesi 610.90 — tutarın TAMAMI, KDV ayrılmaz (S-03, S-04, H-03).
+ *   collection        KG-3 = A (B kolu) kayıt (dosya) tahsilatı gelir değil: 336.90 "Sınıflandırılmamış Tahsilatlar" (pasif; T-14). Cari değildir (party yok) — Defter Mutabakatı 336'nın
+ *                     beklenenine bu tahsilatların toplamını ayrıca katar (routes/ledger.mjs expected; B-2).
+ */
+export const UNCLASSIFIED_GL = Object.freeze({
+  cashIn: FREE_DOCUMENT_GL.received,
+  cashOut: FREE_DOCUMENT_GL.given,
+  debtWrite: Object.freeze({ account: "602", sub: "602.90" }),
+  creditWrite: FREE_DOCUMENT_GL.given,
+  sale: Object.freeze({ account: "600", sub: "600.90" }),
+  saleReturn: Object.freeze({ account: "610", sub: "610.90" }),
+  collection: Object.freeze({ account: "336", sub: "336.90" }),
+});
+
+// ---------- Hesap planı ve sınıflama (2.5.0 Ç1) ----------
+// Kaynak: docs/erp/MUHASEBELESTIRME-KURAL-KITABI.md §2 (hesap planı), §7 (MSUGT bilanço / gelir tablosu kalemleri, ters bakiye); docs/erp/MUHASEBE-CEKIRDEGI-PLANI.md
+// §2, §13. Her hesabın TEK kaydı ACCOUNT_PLAN'dadır (ad + sınıflama); CHART (kod → ad) ondan türetilir ve eski okuyucular (raporlar, Banka Ayarları, İşlem Kartı)
+// onu değişmeden okur. Sınıflama YALNIZ sınıflamadır: hiçbir olayın hangi hesaba yazıldığı buradan okunmaz (journal aşağıda, değişmedi). Kilitli dönemin
+// defterini dondurma (Ç3) gelmeden türetme kuralı değişmez; yeni hesapların ve alt hesapların deftere yazılması Ç2 / Ç5 / Ç6'dadır. Mali tablolar (Ç6)
+// aşağıdaki yardımcılarla okur (accountOf, balanceSheetItemOf, incomeStatementItemOf, reverseBalanceOf). Denetim: test/hesap-plani-sinif-250.test.mjs.
+//
+// Alanlar:
+//   tur          aktif | pasif | gelir | gider | yansitma | kapanis — özkaynak (5 sınıfı) pasif tarafındadır (bilanço kalemi V.x). 7/A gider hesapları
+//                (760 / 770 / 780) "gider"dir; gelir tablosunda yansıtıldıkları hesabın (631 / 632 / 660) satırında görünürler (kural kitabı §2, §7.1).
+//   duzenleyici  bilançonun düzenleyici (−) hesabı: kendi kaleminde eksi (103, 129, 580, 591; kural kitabı §2 "Tür" kolonu, §7.2).
+//   bilanco      MSUGT bilanço kalemi (BALANCE_SHEET_ITEMS) — aktif / pasif hesaplarda.
+//   gelirTablosu MSUGT gelir tablosu kalemi (INCOME_STATEMENT_ITEMS) — gelir / gider hesaplarda. Yansıtma ve kapanış hesaplarının kalemi yoktur (dönem
+//                sonu kapanış maddelerinde yer alırlar; gelir tablosu kapanış sınıfı maddelerini almaz — kural kitabı §4).
+//   ters         bilanço hesabının ters bakiyesi (kural kitabı §7.3; çekirdek §13): null = kural kitabında "—" (kendi kaleminde işaretli);
+//                "kesinDegil" = kendi kaleminde eksi + rapor "Kesin Değil" (eksi kasa, evrak, stok …); { bilanco, hesap, boyut, kesinDegil? } =
+//                BRÜTLEŞTİRME, ters bakiye o kaleme o hesabın adıyla gider (boyut: cari = cari bazında, altHesap = alt hesap bazında, hesap = hesap
+//                bazında); "karar" = kural kitabında yok, KARAR GEREKİYOR (Ç6'dan önce sorulur; sessiz varsayım yok).
+//   yansitma / hedef (7/A gider hesabında) ve kaynak / hedef (yansıtma hesabında): 760 → 761 / 631, 770 → 771 / 632, 780 → 781 / 660 (çekirdek §13).
+const KESIN_DEGIL = "kesinDegil";
+const KARAR = "karar";
+const brut = (bilanco, hesap, boyut, extra = {}) => Object.freeze({ bilanco, hesap, boyut, ...extra });
+const planItem = (ad, tur, { duzenleyici = false, bilanco = null, gelirTablosu = null, ters = null, ...extra } = {}) => Object.freeze({ ad, tur, duzenleyici, bilanco, gelirTablosu, ters, ...extra });
+const aktif = (ad, bilanco, ters = null, extra = {}) => planItem(ad, "aktif", { bilanco, ters, ...extra });
+const pasif = (ad, bilanco, ters = null, extra = {}) => planItem(ad, "pasif", { bilanco, ters, ...extra });
+const gelir = (ad, gelirTablosu) => planItem(ad, "gelir", { gelirTablosu });
+const gider = (ad, gelirTablosu, extra = {}) => planItem(ad, "gider", { gelirTablosu, ...extra });
+const yansitma = (ad, kaynak, hedef) => planItem(ad, "yansitma", { kaynak, hedef });
+const kapanis = ad => planItem(ad, "kapanis");
+
+export const ACCOUNT_KINDS = Object.freeze(["aktif", "pasif", "gelir", "gider", "yansitma", "kapanis"]);
+/** MSUGT bilanço kalemleri (kural kitabı §7.2; kullanılanlar). taraf: aktif | pasif; grup: Roma rakamı (I Dönen, II Duran, III Kısa Vadeli, V Özkaynaklar). */
+export const BALANCE_SHEET_ITEMS = Object.freeze({
+  "I.A": Object.freeze({ taraf: "aktif", grup: "I", grupAd: "Dönen Varlıklar", ad: "Hazır Değerler" }),
+  "I.C": Object.freeze({ taraf: "aktif", grup: "I", grupAd: "Dönen Varlıklar", ad: "Ticari Alacaklar" }),
+  "I.D": Object.freeze({ taraf: "aktif", grup: "I", grupAd: "Dönen Varlıklar", ad: "Diğer Alacaklar" }),
+  "I.E": Object.freeze({ taraf: "aktif", grup: "I", grupAd: "Dönen Varlıklar", ad: "Stoklar" }),
+  "I.H": Object.freeze({ taraf: "aktif", grup: "I", grupAd: "Dönen Varlıklar", ad: "Diğer Dönen Varlıklar" }),
+  "II.D": Object.freeze({ taraf: "aktif", grup: "II", grupAd: "Duran Varlıklar", ad: "Maddi Duran Varlıklar" }),
+  "III.A": Object.freeze({ taraf: "pasif", grup: "III", grupAd: "Kısa Vadeli Yabancı Kaynaklar", ad: "Mali Borçlar" }),
+  "III.B": Object.freeze({ taraf: "pasif", grup: "III", grupAd: "Kısa Vadeli Yabancı Kaynaklar", ad: "Ticari Borçlar" }),
+  "III.C": Object.freeze({ taraf: "pasif", grup: "III", grupAd: "Kısa Vadeli Yabancı Kaynaklar", ad: "Diğer Borçlar" }),
+  "III.D": Object.freeze({ taraf: "pasif", grup: "III", grupAd: "Kısa Vadeli Yabancı Kaynaklar", ad: "Alınan Avanslar" }),
+  "III.F": Object.freeze({ taraf: "pasif", grup: "III", grupAd: "Kısa Vadeli Yabancı Kaynaklar", ad: "Ödenecek Vergi ve Diğer Yükümlülükler" }),
+  "III.G": Object.freeze({ taraf: "pasif", grup: "III", grupAd: "Kısa Vadeli Yabancı Kaynaklar", ad: "Borç ve Gider Karşılıkları" }),
+  "III.I": Object.freeze({ taraf: "pasif", grup: "III", grupAd: "Kısa Vadeli Yabancı Kaynaklar", ad: "Diğer Kısa Vadeli Yabancı Kaynaklar" }),
+  "V.A": Object.freeze({ taraf: "pasif", grup: "V", grupAd: "Özkaynaklar", ad: "Ödenmiş Sermaye" }),
+  // 2.5.0 Ç5-A (C5-ACILIS-TASARIM §2.1; M-11 hedefleri, çekirdek §13): sermaye ve kâr yedekleri — Açılış Eşleştirme Fişi'nin (tur 2) hedef hesapları.
+  "V.B": Object.freeze({ taraf: "pasif", grup: "V", grupAd: "Özkaynaklar", ad: "Sermaye Yedekleri" }),
+  "V.C": Object.freeze({ taraf: "pasif", grup: "V", grupAd: "Özkaynaklar", ad: "Kâr Yedekleri" }),
+  "V.D": Object.freeze({ taraf: "pasif", grup: "V", grupAd: "Özkaynaklar", ad: "Geçmiş Yıllar Kârları" }),
+  "V.E": Object.freeze({ taraf: "pasif", grup: "V", grupAd: "Özkaynaklar", ad: "Geçmiş Yıllar Zararları (−)" }),
+  "V.F": Object.freeze({ taraf: "pasif", grup: "V", grupAd: "Özkaynaklar", ad: "Dönem Net Kârı (Zararı)" }),
+  // Kural kitabı §7.2 / çekirdek §13: Özkaynaklar'ın sonunda ayrı, uyarılı satır (MSUGT'de karşılığı yok; açılış eşleştirilince 0 olur).
+  "V.G": Object.freeze({ taraf: "pasif", grup: "V", grupAd: "Özkaynaklar", ad: "Eşleştirilecek Açılış Bakiyeleri (Geçici)" }),
+});
+/** MSUGT gelir tablosu kalemleri (kural kitabı §7.1; hesap taşıyanlar — Net Satışlar, Brüt Satış Kârı gibi ara toplamlar raporun işidir). eksi: (−) kalem. */
+export const INCOME_STATEMENT_ITEMS = Object.freeze({
+  A: Object.freeze({ ad: "Brüt Satışlar", eksi: false }),
+  B: Object.freeze({ ad: "Satış İndirimleri (−)", eksi: true }),
+  D: Object.freeze({ ad: "Satışların Maliyeti (−)", eksi: true }),
+  E: Object.freeze({ ad: "Faaliyet Giderleri (−)", eksi: true }),
+  F: Object.freeze({ ad: "Diğer Faaliyetlerden Olağan Gelir ve Kârlar", eksi: false }),
+  G: Object.freeze({ ad: "Diğer Faaliyetlerden Olağan Gider ve Zararlar (−)", eksi: true }),
+  H: Object.freeze({ ad: "Finansman Giderleri (−)", eksi: true }),
+  I: Object.freeze({ ad: "Olağandışı Gelir ve Kârlar", eksi: false }),
+  J: Object.freeze({ ad: "Olağandışı Gider ve Zararlar (−)", eksi: true }),
+  K: Object.freeze({ ad: "Dönem Kârı Vergi ve Diğer Yasal Yükümlülük Karşılıkları (−)", eksi: true }),
+});
+
+export const ACCOUNT_PLAN = Object.freeze({
+  100: aktif("Kasa (Nakit)", "I.A", KESIN_DEGIL),
   // 2.2.0 İz 4.2 (plan §3.11a): çek ve senet ayrı Tekdüzen hesaplarında (lib/cheque-gl.mjs) — önceden 101 "Alınan Çekler ve Senetler (Portföy)"
   // ve 103 "Verilen Çekler ve Senetler" ikisini birlikte tutuyordu.
-  101: "Alınan Çekler",
-  102: "Bankalar (Havale / EFT)",
-  103: "Verilen Çekler ve Ödeme Emirleri (−)",
-  108: "Kredi Kartı Tahsilatları (POS)",
-  120: "Alıcılar (Müşteri Carileri)",
-  121: "Alacak Senetleri",
-  127: "Carisiz Taksit Kartları",
+  101: aktif("Alınan Çekler", "I.A", KESIN_DEGIL),
+  // Ters: alacaklı banka hesabı (KMH) alt hesap bazında Kısa Vadeli Mali Borçlar'a (300).
+  102: aktif("Bankalar (Havale / EFT)", "I.A", brut("III.A", "300", "altHesap")),
+  103: aktif("Verilen Çekler ve Ödeme Emirleri (−)", "I.A", KESIN_DEGIL, { duzenleyici: true }),
+  108: aktif("Kredi Kartı Tahsilatları (POS)", "I.A", KESIN_DEGIL),
+  // Ters: alacaklı müşteri cari bazında Alınan Sipariş Avansları'na (340).
+  120: aktif("Alıcılar (Müşteri Carileri)", "I.C", brut("III.D", "340", "cari")),
+  121: aktif("Alacak Senetleri", "I.C", KESIN_DEGIL),
+  // Tekdüzen 12 grubu (Ticari Alacaklar). Ters bakiyesi (fazla ödenmiş carisiz kart) kural kitabında yok → KARAR GEREKİYOR.
+  127: aktif("Carisiz Taksit Kartları", "I.C", KARAR),
   // 2.3.0 İz 1 (plan §3.11b; lib/doubtful-gl.mjs): şüpheli ticari alacaklar ve karşılığı (129 eksi bakiyeli), karşılık gideri (654) ve konusu
   // kalmayan karşılık geliri (644). 659 zaten var (karşılıksız değersiz alacak).
-  128: DOUBTFUL_CHART[128],
-  129: DOUBTFUL_CHART[129],
-  153: "Ticari Mallar (Stok Alımları)",
+  128: aktif(DOUBTFUL_CHART[128], "I.C", KESIN_DEGIL),
+  129: aktif(DOUBTFUL_CHART[129], "I.C", KESIN_DEGIL, { duzenleyici: true }),
+  // 2.5.0 Ç1: ters bakiye kalemleri (yalnız sunum; borçlu 336 ve borçlu 309 buraya).
+  136: aktif("Diğer Çeşitli Alacaklar", "I.D"),
+  153: aktif("Ticari Mallar (Stok Alımları)", "I.E", KESIN_DEGIL),
+  // 2.5.0 Ç1: borçlu tedarikçi (320 ters bakiyesi; yalnız sunum).
+  159: aktif("Verilen Sipariş Avansları", "I.E"),
   // 2.4.3 MM3: KDV Mahsup Fişi'nin devreden KDV'si (indirilecek KDV hesaplanandan büyükse; sonraki ayın mahsubunda kullanılır).
-  190: "Devreden KDV",
-  191: "İndirilecek KDV",
-  193: "Peşin Ödenen Vergiler (Stopaj)",
-  255: "Demirbaşlar",
-  // v2.1.0 (§3.11): banka kredisi ve kurumsal kredi kartı borcu.
-  300: "Banka Kredileri",
-  309: "Diğer Mali Borçlar (Kredi Kartları)",
-  320: "Satıcılar (Tedarikçi Carileri)",
-  321: "Borç Senetleri",
-  336: "Diğer Cariler (Personel vb.)",
-  360: "Ödenecek Vergi ve Fonlar (Tevkifat, Stopaj)",
-  391: "Hesaplanan KDV",
-  500: "Açılış ve Devir Bakiyeleri",
-  600: "Yurt İçi Satışlar (Stok)",
-  602: "Diğer Gelirler (Hizmet, Taksitli Satış, Kayıt Tahsilatları)",
-  610: "Satıştan İadeler",
+  190: aktif("Devreden KDV", "I.H"),
+  191: aktif("İndirilecek KDV", "I.H"),
+  193: aktif("Peşin Ödenen Vergiler (Stopaj)", "I.H"),
+  // 2.5.0 Ç1: borçlu 360 (tahakkuku programda olmayan vergi ödemesi; KG-14) — yalnız sunum.
+  198: aktif("Diğer Çeşitli Dönen Varlıklar", "I.H"),
+  255: aktif("Demirbaşlar", "II.D"),
+  // v2.1.0 (§3.11): banka kredisi ve kurumsal kredi kartı borcu. Krediler vadeye bakılmaksızın kısa vadede (kural kitabı §7.5 dipnot 4).
+  300: pasif("Banka Kredileri", "III.A", KESIN_DEGIL),
+  // Ters: borçlu kart alt hesap bazında Diğer Çeşitli Alacaklar'a (136).
+  309: pasif("Diğer Mali Borçlar (Kredi Kartları)", "III.A", brut("I.D", "136", "altHesap")),
+  // Ters: borçlu tedarikçi cari bazında Verilen Sipariş Avansları'na (159).
+  320: pasif("Satıcılar (Tedarikçi Carileri)", "III.B", brut("I.E", "159", "cari")),
+  321: pasif("Borç Senetleri", "III.B", KESIN_DEGIL),
+  // Ters: borçlu "Diğer" cari cari bazında Diğer Çeşitli Alacaklar'a (136).
+  336: pasif("Diğer Cariler (Personel vb.)", "III.C", brut("I.D", "136", "cari")),
+  // 2.5.0 Ç1: alacaklı müşteri (120 ters bakiyesi; yalnız sunum).
+  340: pasif("Alınan Sipariş Avansları", "III.D"),
+  // Ters (KG-14 A, çekirdek §13): borçlu 360 Diğer Çeşitli Dönen Varlıklar'a (198) + Kesin Değil.
+  360: pasif("Ödenecek Vergi ve Fonlar (Tevkifat, Stopaj)", "III.F", brut("I.H", "198", "hesap", { kesinDegil: true })),
+  391: pasif("Hesaplanan KDV", "III.I"),
+  // 2.5.0 Ç5-A (C5-ACILIS-TASARIM §2.1; kural kitabı §2 "500 Sermaye … yalnız eşleştirme fişiyle"): Tek Düzen adı. 2.4.9'a kadar "Açılış ve Devir Bakiyeleri" — modül
+  // açılışları artık 519'a yazılır; 500'e yalnız Açılış Eşleştirme Fişi (tur 2) yazar. Banka fişlerinde saklı "500" (rol opening / closing) türetmede 519 okunur (effectiveGl).
+  500: pasif("Sermaye", "V.A"),
+  501: pasif("Ödenmemiş Sermaye (−)", "V.A", null, { duzenleyici: true }),
+  502: pasif("Sermaye Düzeltmesi Olumlu Farkları", "V.A"),
+  503: pasif("Sermaye Düzeltmesi Olumsuz Farkları (−)", "V.A", null, { duzenleyici: true }),
+  // 2.5.0 Ç1 (KG-1, çekirdek §13): geçici açılış hesabı. Modül açılışları (Ç5-A) buraya yazılır; Bilanço'da Özkaynaklar'ın sonunda uyarılı satır.
+  519: pasif("Eşleştirilecek Açılış Bakiyeleri", "V.G"),
+  // 2.5.0 Ç5-A (§2.1): Sermaye Yedekleri (52) ve Kâr Yedekleri (54), Tek Düzen adları — yalnız Açılış Eşleştirme Fişi'nin hedefi (hiçbir olay türetmede yazmaz).
+  520: pasif("Hisse Senedi İhraç Primleri", "V.B"),
+  521: pasif("Hisse Senedi İptal Kârları", "V.B"),
+  522: pasif("Maddi Duran Varlık Yeniden Değerleme Artışları", "V.B"),
+  523: pasif("İştirakler Yeniden Değerleme Artışları", "V.B"),
+  529: pasif("Diğer Sermaye Yedekleri", "V.B"),
+  540: pasif("Yasal Yedekler", "V.C"),
+  541: pasif("Statü Yedekleri", "V.C"),
+  542: pasif("Olağanüstü Yedekler", "V.C"),
+  548: pasif("Diğer Kâr Yedekleri", "V.C"),
+  549: pasif("Özel Fonlar", "V.C"),
+  // 2.5.0 Ç1: dönem sonu ve devir hesapları (kapanış akışı: 690 → 692 → 590 / 591; önceki yıllar 570 / 580 — KG-12).
+  570: pasif("Geçmiş Yıllar Kârları", "V.D"),
+  580: pasif("Geçmiş Yıllar Zararları (−)", "V.E", null, { duzenleyici: true }),
+  590: pasif("Dönem Net Kârı", "V.F"),
+  591: pasif("Dönem Net Zararı (−)", "V.F", null, { duzenleyici: true }),
+  600: gelir("Yurt İçi Satışlar (Stok)", "A"),
+  // 2.5.0 Ç7b (KG-24 = A; kural kitabı §2 satır 601, F-02): ihracat istisna kodlu (301 / 302) satış kalemlerinin matrahı.
+  601: gelir("Yurt Dışı Satışlar", "A"),
+  602: gelir("Diğer Gelirler (Hizmet, Taksitli Satış, Kayıt Tahsilatları)", "A"),
+  610: gider("Satıştan İadeler", "B"),
+  // 2.5.0 Ç1: dönem sonu stok değerlemesi (satışların maliyeti; kural kitabı §5).
+  621: gider("Satılan Ticari Mallar Maliyeti", "D"),
+  // 2.5.0 Ç1: 7/A yansıtmasının gelir tablosu hesapları (çekirdek §13).
+  631: gider("Pazarlama, Satış ve Dağıtım Giderleri", "E"),
+  632: gider("Genel Yönetim Giderleri", "E"),
   // v2.1.0 (§3.11): faiz geliri ve kambiyo kârı (banka fişi, döviz değerlemesi).
-  642: "Faiz Gelirleri",
-  644: DOUBTFUL_CHART[644],
-  646: "Kambiyo Kârları",
+  642: gelir("Faiz Gelirleri", "F"),
+  644: gelir(DOUBTFUL_CHART[644], "F"),
+  646: gelir("Kambiyo Kârları", "F"),
   // v2.1.0 Aşama 4 (plan §3.11): Tekdüzen Hesap Planı'ndaki adı. Kasa'ya elle giriş ve Banka Fişi'nin "Diğer Gelir"i buraya yazar (2.0.26'daki
   // ad "Diğer Olağan Gelirler (Kasaya Elle)"; tutarlar değişmez). Aşama 2'de (gözden geçirme D3) ad bilinçli olarak eski kalmıştı.
-  649: "Diğer Olağan Gelir ve Kârlar",
+  649: gelir("Diğer Olağan Gelir ve Kârlar", "F"),
   // v2.1.0 (§3.11): POS komisyonu, kambiyo zararı, diğer olağan giderler, finansman giderleri.
-  653: "Komisyon Giderleri",
-  654: DOUBTFUL_CHART[654],
-  656: "Kambiyo Zararları",
-  659: "Diğer Olağan Gider ve Zararlar",
+  653: gider("Komisyon Giderleri", "G"),
+  654: gider(DOUBTFUL_CHART[654], "G"),
+  656: gider("Kambiyo Zararları", "G"),
+  659: gider("Diğer Olağan Gider ve Zararlar", "G"),
+  660: gider("Kısa Vadeli Borçlanma Giderleri", "H"),
+  // 2.5.0 Ç1 (kural kitabı EK-1 E2, M14): önceki dönem düzeltmeleri — Kural Farkı Düzeltme Fişi (Ç2 / Ç3) kullanır; dönem sonunda 690'a kapanan sonuç hesapları.
+  671: gelir("Önceki Dönem Gelir ve Kârları", "I"),
+  681: gider("Önceki Dönem Gider ve Zararları", "J"),
   // 2.4.3 MM3: Tekdüzen Hesap Planı adı. Kapatılan taksit kartlarının vazgeçilen kalanı ve vergi ödemesinin gecikme zammı / faizi (KKEG) buraya yazılır
   // (önceki ad "Kapatılan Kartlardan Vazgeçilen Alacaklar"; tutarlar değişmez).
-  689: "Diğer Olağandışı Gider ve Zararlar",
-  760: "Pazarlama, Satış ve Dağıtım Giderleri",
-  770: "Genel Giderler ve Alış Faturaları",
-  780: "Finansman Giderleri",
+  689: gider("Diğer Olağandışı Gider ve Zararlar", "J"),
+  // 2.5.0 Ç1: kapanış hesapları. 691 kural kitabında kapanış akışındadır (KP) ama MSUGT gelir tablosunda K satırıdır (program ayırmaz, KG-13 A → 0).
+  690: kapanis("Dönem Kârı veya Zararı"),
+  691: gider("Dönem Kârı Vergi ve Diğer Yasal Yükümlülük Karşılıkları", "K"),
+  692: kapanis("Dönem Net Kârı veya Zararı"),
+  // 7/A (çekirdek §13): giderler 760 / 770 / 780'e yazılır; gelir tablosunda ve kapanışta 761 / 771 / 781 ile 631 / 632 / 660'a yansıtılır.
+  760: gider("Pazarlama, Satış ve Dağıtım Giderleri", "E", { yansitma: "761", hedef: "631" }),
+  761: yansitma("Pazarlama, Satış ve Dağıtım Giderleri Yansıtma Hesabı", "760", "631"),
+  // 2.5.0 Ç1: Tekdüzen adı (2.4.9'a kadar "Genel Giderler ve Alış Faturaları"; yalnız ad — tutar ve hesap değişmez, ad saklanmaz, kod saklanır).
+  770: gider("Genel Yönetim Giderleri", "E", { yansitma: "771", hedef: "632" }),
+  771: yansitma("Genel Yönetim Giderleri Yansıtma Hesabı", "770", "632"),
+  780: gider("Finansman Giderleri", "H", { yansitma: "781", hedef: "660" }),
+  781: yansitma("Finansman Giderleri Yansıtma Hesabı", "780", "660"),
 });
+/** Hesap kodu → ad (2.0.13'ten beri okuyucuların biçimi; ACCOUNT_PLAN'dan türetilir). */
+export const CHART = Object.freeze(Object.fromEntries(Object.entries(ACCOUNT_PLAN).map(([code, item]) => [code, item.ad])));
+/**
+ * Planın alt hesapları (2.5.0 Ç1 — YALNIZ TANIM; deftere yazılmaları Ç5 / Ç6'da): kod → ad. Sınıflaması ana hesabınınkidir (accountOf). Kaynak kural kitabı:
+ * 600.90 / 610.90 KG-2 (faturasız satış / iade, kullanıcı kararı 05.11 "A"); 602.90 / 770.90 KG-4 (Borç Yaz / Alacak Yaz) ve çekirdek §13 (Kasa çıkışı);
+ * 336.90 KG-3 (kayıt tahsilatı gelir değil — pasif; kullanıcı kararı 05.11 "A").
+ */
+export const PLAN_SUBS = Object.freeze({
+  "336.90": "Sınıflandırılmamış Tahsilatlar",
+  "600.90": "Belgesiz",
+  "602.90": "Sınıflandırılmamış",
+  // 2.5.0 Ç5-A (S49 = A): formdan carisiz alınan evrak (açılış değil) B 101 / A 649.90 — Kasa'nın carisiz girişi gibi (KG-3 ailesi).
+  "649.90": "Sınıflandırılmamış",
+  "610.90": "Belgesiz",
+  "770.90": "Sınıflandırılmamış",
+});
+/** Hesabın plan kaydı (alt hesap verilirse ana hesabınınki: 770.90 → 770; 102.01 → 102); planda yoksa null. */
+export function accountOf(code) {
+  const main = mainOfSub(String(code ?? "").trim());
+  return main && Object.hasOwn(ACCOUNT_PLAN, main) ? ACCOUNT_PLAN[main] : null;
+}
+/** Hesabın MSUGT bilanço kalemi: { kod, taraf, grup, grupAd, ad, duzenleyici }; bilanço hesabı değilse (ya da planda yoksa) null. */
+export function balanceSheetItemOf(code) {
+  const item = accountOf(code);
+  return item?.bilanco ? { kod: item.bilanco, ...BALANCE_SHEET_ITEMS[item.bilanco], duzenleyici: item.duzenleyici } : null;
+}
+/**
+ * Hesabın MSUGT gelir tablosu kalemi: { kod, ad, eksi, hesap } — hesap, gelir tablosunda göründüğü hesaptır (7/A gideri yansıtıldığı hesabın satırında:
+ * 770 → 632). Gelir tablosu hesabı değilse (bilanço, yansıtma, kapanış ya da planda yok) null.
+ */
+export function incomeStatementItemOf(code) {
+  const item = accountOf(code);
+  if (!item?.gelirTablosu) return null;
+  return { kod: item.gelirTablosu, ...INCOME_STATEMENT_ITEMS[item.gelirTablosu], hesap: item.hedef || mainOfSub(String(code).trim()) };
+}
+/**
+ * Bilanço hesabının ters bakiye kuralı (kural kitabı §7.3): { kural: "ayni" } (kendi kaleminde işaretli), { kural: "kesinDegil" }, { kural: "karar" }
+ * (KARAR GEREKİYOR) ya da { kural: "brut", bilanco, hesap, boyut, kesinDegil } (brütleştirme). Bilanço hesabı değilse null.
+ */
+export function reverseBalanceOf(code) {
+  const item = accountOf(code);
+  if (!item?.bilanco) return null;
+  if (item.ters === null) return { kural: "ayni" };
+  if (item.ters === KESIN_DEGIL || item.ters === KARAR) return { kural: item.ters };
+  return { kural: "brut", bilanco: item.ters.bilanco, hesap: item.ters.hesap, boyut: item.ters.boyut, kesinDegil: Boolean(item.ters.kesinDegil) };
+}
 // 128 (2.3.0 İz 1): şüpheli alacak satırları da cariyi taşır — carinin defter bakiyesi 120 + 128 = cari kartı (Şüpheli Alacağa Al cari bakiyesini
 // değiştirmez; lib/doubtful-gl.mjs).
-const PARTY_ACCOUNTS = new Set(["120", "127", "320", "336", DOUBTFUL_GL.doubtful]);
+export const PARTY_ACCOUNTS = Object.freeze(new Set(["120", "127", "320", "336", DOUBTFUL_GL.doubtful]));
 const CONTROL = { customer: "120", supplier: "320", other: "336" };
 const cents = value => Math.round((Number(value) || 0) * 100);
 /**
- * Cari açılış (devir) kaydı mı: notu "Açılış" ile başlar (cari Borç/Alacak Yaz açılışı, v2.0.13). Karşı hesap 500 "Açılış ve Devir Bakiyeleri" —
- * banka hesabının açılışı (lib/bank/voucher.mjs openingLines) ve taksit açılışıyla aynı. Kasa açılışı metinden DEĞİL, satırın işaretinden
- * (cash_entries.is_opening; Yargıç 2.2.0 Y2/Y3) tanınır.
+ * Cari açılış (devir) kaydı mı — 2.5.0 Ç5-A (C5-ACILIS-TASARIM §2.3; kural kitabı M-02 "açıklamadan değil, açılış işaretinden"; KG-16; S47 = A): Açılış Bakiyesi satırının
+ * işareti (account_entries.is_opening, göç 35) YA DA göçte "Açılış Olabilir" listesine girmiş satır (opening_review: candidate onaya kadar — S47 —, confirmed). Reddedilen
+ * (rejected) ve işaretsiz her satır sıradan Borç / Alacak Yaz'dır (602 / 770) — açıklaması ne olursa olsun ("AÇILIŞ", "Açılış bakiyesi" …). 2.4.9'a kadar açıklamadan
+ * tanınıyordu (`/^açılış/i`; Türkçe büyük İ / I katlanmadığı için "AÇILIŞ" tanınmıyordu — sürücü P1). Karşı hesap 519.
  */
-const opening = note => /^açılış/i.test(String(note || "").trim());
+export const OPENING_REVIEW_OPEN = Object.freeze(["candidate", "confirmed"]);
+export const isOpeningEntry = row => Number(row?.isOpening) === 1 || OPENING_REVIEW_OPEN.includes(String(row?.openingReview || ""));
+/** Kaynak satırın yazım anındaki yerel günü (KG-5 B5 — yükleme damgasının YEREL günü; lib/clock.mjs today() ile aynı kural). Damga okunamazsa "". */
+export function localDayOf(stamp) {
+  const date = new Date(String(stamp || ""));
+  if (!Number.isFinite(date.getTime())) return "";
+  const pad = value => String(value).padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+}
 /** Kasa satırının vergi ödemesi ayrıntısı (MM3; cash_entries.tax_json): { type, taxMinor, lateMinor } ya da null. */
 export function taxOf(row) {
   const raw = row?.taxJson ?? row?.tax_json;
@@ -145,6 +373,8 @@ export function moneyAccount(method, ref = "", refs = {}) {
  *   (instrument: 'cheque' | 'note' — 2.2.0 İz 4.2: çek 101 / 103, senet 121 / 321; yoksa çek)
  *   invoices: { id, kind, date, number, glJson ([{ account, net }] TL kuruş), tryVat, tryWithheld, tryStoppage, tryPayable,
  *               accountType, party }  (yalnız kesilmiş; taslak ve iptal deftere girmez)
+ *   vouchers: { id, seq, date, cls, label, text, lines: [{ account, sub, party, debit, credit }] } (2.5.0 Ç2 saklanan fiş defteri, kuruş;
+ *               lib/ledger-vouchers.mjs voucherJournalRows) — satırlar yazım anında saklanmıştır, aynen alınır
  *
  * Fatura (v2.0.15) çok satırlı tek yevmiye maddesidir; cariye yazılan borç/alacak satırı (account_entries, source =
  * 'invoice') faturanın kendisinden gelir, ikinci kez sayılmaz. Faturanın peşin tahsilat/ödemesi ayrı cari satırıdır
@@ -154,6 +384,34 @@ export function moneyAccount(method, ref = "", refs = {}) {
  *   alış             : B 153/770/760/255 matrah, B 191 KDV  ·  A 360 (tevkifat + stopaj), A 320 ödenecek
  *   alıştan iade     : B 320 ödenecek, B 360 (tevkifat + stopaj)  ·  A 153/770/… matrah, A 191 KDV
  */
+/** İhracat geliri hesabı (KG-24 = A). */
+export const EXPORT_SALES_GL = "601";
+/** İhracat sayılan KDV istisna kodları (KG-24; lib/invoice-math.mjs EXEMPTIONS: 301 "11/1-a Mal İhracatı", 302 "11/1-a Hizmet İhracatı"). */
+export const EXPORT_EXEMPTIONS = Object.freeze(["301", "302"]);
+/**
+ * KG-24: faturanın hesap dağılımından (nets: [{ account, amount }] kuruş TL) ihracat kalemlerinin payını 601'e ayırır. exportJson: { hesap: [ihracat neti, toplam net] } (belge para
+ * biriminde kuruş). Pay = round(amount × ihracat / toplam); kalan asıl hesapta. Bozuk / boş girdi dağılımı değiştirmez.
+ */
+export function exportSplit(nets, exportJson) {
+  let shares = {};
+  try {
+    shares = typeof exportJson === "string" ? JSON.parse(exportJson) : exportJson || {};
+  } catch {
+    return nets;
+  }
+  const out = [];
+  let moved = 0;
+  for (const net of nets) {
+    const [part, whole] = Array.isArray(shares?.[net.account]) ? shares[net.account].map(Number) : [0, 0];
+    const share = part > 0 && whole > 0 ? (part >= whole ? net.amount : Math.round((net.amount * part) / whole)) : 0;
+    if (share && net.account !== EXPORT_SALES_GL) {
+      moved += share;
+      if (net.amount - share) out.push({ account: net.account, amount: net.amount - share });
+    } else out.push(net);
+  }
+  if (moved) out.push({ account: EXPORT_SALES_GL, amount: moved });
+  return out;
+}
 export function journal(rows) {
   const out = [];
   // party: cari kimliği. Kontrol hesaplarına (120/127/320/336) düşen satır hangi cariye/karta aitse onu taşır; cari
@@ -163,13 +421,25 @@ export function journal(rows) {
   // (journalOrder; ders 31, MM8). Yazım sırası taşımayan satır (eski çağıran) sınıfının sonuna, kimlik sırasıyla.
   let at = null;
   const stamp = entry => (Number.isFinite(at) ? Object.assign(entry, { seq: at }) : entry);
+  // 2.5.0 Ç5-A (§2.6; B9): az önce yazılan madde açılış sınıfındadır (kimliği değişmez; journalOrder önce `cls`'i okur). Tutarı sıfır olup yazılmayan madde etkilenmez.
+  const opened = before => {
+    if (out.length > before) out[out.length - 1].cls = OPENING_CLASS;
+  };
   // debit/credit: hesap kodu ya da { account, sub } (para hesapları alt hesabı taşır: 102.01, 108.00 …).
   const post = (id, date, source, text, debit, credit, amount) => {
     const value = cents(amount);
     if (!value) return;
     const line = (target, dr, cr) => {
-      const { account, sub } = typeof target === "string" ? { account: target, sub: "" } : target;
+      let { account, sub } = typeof target === "string" ? { account: target, sub: "" } : target;
+      // 2.5.0 Ç7a tur 2 (K-14 / K-15, S179 = A; lib/bank/opening-cover.mjs): hesabı atanmamış satır (102.00 / 108.00) açılıştan önceyse karşılığı 519 — para açılış
+      // bakiyesinin içindedir (olağan madde, hareketin tarihinde). Kart yolunda yön aileyi seçer: giriş POS tahsilatı, çıkış kurumsal kartla ödeme.
+      if ((sub === "102.00" || sub === "108.00") && isCovered({ way: sub === "102.00" ? "bank" : "card", kind: dr > 0 ? "in" : "out", date }, refs.cover)) {
+        account = OPENING_GL;
+        sub = "";
+      }
       const out = { account, debit: dr, credit: cr };
+      // 519 dökümünün türü (ledger-opening openingMatchBalance "Hesapsız Hareketler (Açılıştan Önce)"); dondurma ve mizan bu alanı okumaz.
+      if (account === OPENING_GL && typeof target !== "string" && target.account !== OPENING_GL) out.cover = true;
       // Bankaya Tahsile Ver (plan §3.14): alınan evrak 101.01 / 121.01 (portföy) ya da 101.02 / 121.02 (bankaya tahsile verilen) alt hesabında
       // izlenir; alt hesabı verilmemiş 101 / 121 satırı portföydür. Σ 101.* = 101, Σ 121.* = 121 (alt hesap mutabakatı: cheque:collections).
       if (sub) out.sub = sub;
@@ -189,7 +459,11 @@ export function journal(rows) {
     return { account: gl.received, sub: atBank ? gl.bank : gl.portfolio };
   };
   const given = instrument => documentGl(instrument).given;
-  for (const row of rows.payments || []) (at = row.seq), post(`payment:${row.id}`, row.date, "Kayıt tahsilatı", row.note || "Tahsilat", moneyOf(row), "602", row.amount);
+  // 2.5.0 Ç7b tur 2c (KURAL GEÇİŞ GÜNÜ — B-8 = A + B-6; lib/ledger-rule-shift.mjs): KG-3 ve KG-8 / F-08'in yeni yönü yalnız geçiş gününden sonraki kayıtlara (rows.ruleShift; verilmezse
+  // geçiş yok). Geçiş gününde ve öncesinde tarihli kayıt eski yönde (alt defter hesabı — kilitli dönemde Kural Değişikliği Farkı doğurmaz; fişle düzeltilemezdi, B14).
+  const shift = rows.ruleShift || NO_SHIFT;
+  // 2.5.0 Ç7b (KG-3 = A, T-14): kayıt (dosya) tahsilatı gelir değil — B para / A 336.90 "Sınıflandırılmamış Tahsilatlar" (Ç7b öncesi: A 602). Cari satırı değildir (party yok).
+  for (const row of rows.payments || []) (at = row.seq), post(`payment:${row.id}`, row.date, "Kayıt tahsilatı", row.note || "Tahsilat", moneyOf(row), oldCollection(shift, row.date) ? "602" : UNCLASSIFIED_GL.collection, row.amount);
   for (const row of rows.cashEntries || []) {
     at = row.seq;
     // v2.0.17: Kasa ↔ Banka transferi gelir/gider değildir — tek fiş, 100 ↔ 102 (nakit tarafı yazılır, banka tarafı atlanır). v2.1.0: banka
@@ -205,7 +479,12 @@ export function journal(rows) {
     // 2.2.0 İz 1.3 (K6; plan susuyor → yaygın Tekdüzen açılış fişi): Kasa'ya devreden nakit (Kasa → Açılış Bakiyesi'nin işaretli satırı) gelir
     // değildir: B 100 / A 500, banka/cari/taksit açılışıyla aynı karşı hesap. Yargıç Y2/Y3: açıklaması "Açılış …" olan sıradan giriş 2.1.0'daki
     // gibi 649'da kalır (eski veride kilitli dönem değişmez).
-    if (row.kind === "in" && Number(row.isOpening) === 1) post(`cash:${row.id}`, row.date, "Kasa açılışı", row.description, moneyOf(row), "500", row.amount);
+    // 2.5.0 Ç5-A (M-01; 30.10 açılış düzeni): karşı hesap 519 "Eşleştirilecek Açılış Bakiyeleri" (2.4.9: 500), açılış sınıfı.
+    if (row.kind === "in" && Number(row.isOpening) === 1) {
+      const n = out.length;
+      post(`cash:${row.id}`, row.date, "Kasa açılışı", row.description, moneyOf(row), OPENING_GL, row.amount);
+      opened(n);
+    }
     // 2.4.3 MM3: Kasa'dan nakit Vergi Ödemesi — B 360 vergi · B 689 gecikme zammı / faizi (KKEG) / A 100 toplam (gider değil: 360'ı kapatır).
     else if (row.kind === "out" && taxOf(row)) {
       const tax = taxOf(row);
@@ -217,8 +496,9 @@ export function journal(rows) {
       ].filter(line => line.debit > 0 || line.credit > 0);
       out.push(stamp({ id: `cash:${row.id}`, date: row.date, source: "Vergi Ödemesi", text: row.description || "Vergi ödemesi", lines }));
     }
-    else if (row.kind === "in") post(`cash:${row.id}`, row.date, "Kasa", row.description || "Kasaya giriş", moneyOf(row), "649", row.amount);
-    else post(`cash:${row.id}`, row.date, "Kasa", row.description || "Kasadan ödeme", "770", moneyOf(row), row.amount);
+    // 2.5.0 Ç7b (K-01 / K-02; §2.1): carisiz Kasa girişi 649.90, çıkışı 770.90 (2.4.9 ve Ç7b öncesi: 649 / 770 ana hesap).
+    else if (row.kind === "in") post(`cash:${row.id}`, row.date, "Kasa", row.description || "Kasaya giriş", moneyOf(row), UNCLASSIFIED_GL.cashIn, row.amount);
+    else post(`cash:${row.id}`, row.date, "Kasa", row.description || "Kasadan ödeme", UNCLASSIFIED_GL.cashOut, moneyOf(row), row.amount);
   }
   for (const row of rows.accountEntries || []) {
     party = row.party || "";
@@ -230,8 +510,16 @@ export function journal(rows) {
       // Bankada tahsildeki evrak karşılıksız dönünce (plan §3.14 "Yevmiye mevcut bounce maddesinde A 101.02"): karşılıksız maddesinin alacağı
       // 101.02 / 121.02'dir (bankReturned: routes/ledger.mjs rows; ayrı kapanış maddesi yazılmaz).
       const counter = row.chequeDirection === "out" ? given(row.chequeInstrument) : received(row.chequeInstrument, Boolean(row.bankReturned));
-      if (row.kind === "debt") post(id, row.date, "Çek / Senet", row.note, control, counter, row.amount);
-      else post(id, row.date, "Çek / Senet", row.note, counter, control, row.amount);
+      // Cariye işlenmemiş evrak (row.free; routes/ledger.mjs rows): cari etkisi yoktur, karşı taraf cari değil — 2.5.0 Ç5-A (2.4.9: build()'de 602 / 770):
+      //   açılış evrakı (cheques.is_opening; Excel "Açılış portföyü" — M-08 / M-09, 30.10 (1)): alınan B 101 / A 519, verilen B 519 / A 103, açılış sınıfı; karşılıksız
+      //     (cari seçilmedi — S48 = A "açılış geri alınmış") B 519 / A 101;
+      //   formdan carisiz evrak (açılış değil — S49 = A): alınan B 101 / A 649.90, verilen B 770.90 / A 103; karşılıksız (cari seçilmedi — S66 = A, kâhin bakımı 2
+      //     KARARLAR D4′) B 649.90 / A 101 (S49 geliri geri alınır). Cari seçilen karşılıksız carinin borç satırıdır (B CH / A 101; bu dalda değil).
+      const target = row.free ? (Number(row.isOpening) === 1 ? OPENING_GL : row.chequeDirection === "out" ? FREE_DOCUMENT_GL.given : FREE_DOCUMENT_GL.received) : control;
+      const n = out.length;
+      if (row.kind === "debt") post(id, row.date, "Çek / Senet", row.note, target, counter, row.amount);
+      else post(id, row.date, "Çek / Senet", row.note, counter, target, row.amount);
+      if (row.free && Number(row.isOpening) === 1 && !row.bounce) opened(n);
       continue;
     }
     // Faturanın borç/alacak satırı faturanın maddesinden gelir (yukarıda değil, aşağıda invoices döngüsünde).
@@ -247,18 +535,25 @@ export function journal(rows) {
     if (row.source === "stock") {
       // 2.4.6 madde 10: faturasız tedarikçiye iade (açık hesap) — B 320 / A 153 (alıştan iade faturasının matrah satırı gibi; satış değil, 600'e yazılmaz).
       if (row.kind === "debt" && row.moveReason === "preturn") post(id, row.date, "Stok (alış iadesi)", row.note, control, "153", row.amount);
-      else if (row.kind === "debt") post(id, row.date, "Stok (veresiye satış)", row.note, control, "600", row.amount);
-      else post(id, row.date, row.moveReason === "return" ? "Stok (satış iadesi)" : "Stok (açık hesap alım)", row.note, row.moveReason === "return" ? "610" : "153", control, row.amount);
+      // 2.5.0 Ç7b (KG-2 = A; S-03 / S-04): belgesiz satış 600.90, müşteri iadesi 610.90 — tamamı, KDV ayrılmaz (Ç7b öncesi: 600 / 610 ana hesap).
+      else if (row.kind === "debt") post(id, row.date, "Stok (veresiye satış)", row.note, control, UNCLASSIFIED_GL.sale, row.amount);
+      else post(id, row.date, row.moveReason === "return" ? "Stok (satış iadesi)" : "Stok (açık hesap alım)", row.note, row.moveReason === "return" ? UNCLASSIFIED_GL.saleReturn : "153", control, row.amount);
       continue;
     }
-    if (row.kind === "debt") post(id, row.date, "Cari (borç yaz)", row.note, control, opening(row.note) ? "500" : "602", row.amount);
-    else if (row.kind === "credit") post(id, row.date, "Cari (alacak yaz)", row.note, opening(row.note) ? "500" : "770", control, row.amount);
-    else if (row.kind === "in") {
-      // Karar 15.10.2026 (plan §3.11b/2; lib/doubtful-gl.mjs doubtfulSkipOf): "Normal Cari Hesaba İşle" işaretli tahsilat, fatura peşini ve
-      // Kapatılacak Fatura bağlı tahsilat şüpheliden düşmez (A 120 kalır); ayırma kuralı bu işareti okur. SQL ikizi doubtfulCredits.
+    // 2.5.0 Ç5-A (M-02 / M-03, KG-16, S47; §2.3): açılış işaretten — borçlu B CH / A 519, alacaklı B 519 / A CH, açılış sınıfı; işaretsiz (ya da Açılış Olabilir'de reddedilen)
+    // Borç Yaz C-01 B CH / A 602.90, Alacak Yaz C-02 B 770.90 / A CH (2.5.0 Ç7b, KG-4 = A; Ç7b öncesi: 602 / 770 ana hesap).
+    if (row.kind === "debt" || row.kind === "credit") {
+      const isOpening = isOpeningEntry(row);
+      const n = out.length;
+      if (row.kind === "debt") post(id, row.date, "Cari (borç yaz)", row.note, control, isOpening ? OPENING_GL : UNCLASSIFIED_GL.debtWrite, row.amount);
+      else post(id, row.date, "Cari (alacak yaz)", row.note, isOpening ? OPENING_GL : UNCLASSIFIED_GL.creditWrite, control, row.amount);
+      if (isOpening) opened(n);
+    } else if (row.kind === "in") {
+      // Karar 15.10.2026 (plan §3.11b/2): "Normal Cari Hesaba İşle" işaretli tahsilat ve fatura peşini şüpheliden düşmez (A 120 kalır); ayırma kuralı bu işareti okur.
+      // 2.5.0 Ç5-A tur 3c (S25 (c), S39, S168 = B): Kapatılacak Fatura bağlı tahsilat ayırıcıya girer (lib/doubtful-gl.mjs doubtfulKeepOf / `linked`). SQL ikizi doubtfulCredits.
       const n = out.length;
       post(id, row.date, "Cari tahsilat", row.note, moneyOf(row), control, row.amount);
-      if (out.length > n && doubtfulSkipOf(row)) out[out.length - 1].doubtful = { skip: true };
+      if (out.length > n && doubtfulKeepOf(row)) out[out.length - 1].doubtful = { skip: true };
     } else if (row.kind === "out") post(id, row.date, "Cari ödeme", row.note, control, moneyOf(row), row.amount);
   }
   for (const plan of rows.plans || []) {
@@ -266,10 +561,25 @@ export function journal(rows) {
     at = plan.seq;
     const control = plan.accountType ? CONTROL[plan.accountType] || CONTROL.customer : "127";
     // Mevcut borcu taksitlendiren kart ana deftere yeni alacak getirmez (borç caride zaten yazılı).
-    if (!plan.coversBalance) post(`plan:${plan.id}`, plan.date, "Taksit kartı", "Taksitli satış / hizmet", control, "602", plan.total);
-    if (plan.status === "closed") {
+    // 2.5.0 Ç5-A (KG-5 = A, H-06, M-10; BAŞ MİMAR B5): Excel'den / tablodan yüklenen kart (plans.import_id) AÇILIŞ alacağıdır — TEK madde B CH (T − P) / A 519, P (kartın
+    // "Excel'de ödenmiş (açılış)" satırları) maddesiz; tarih yüklemenin (plan_imports.created_at) YEREL günü (damga yoksa kartın tarihi); açılış sınıfı. Gelir değildir.
+    // BİLİNEN SINIR (B5): kartın Kayıt Tarihi yükleme gününden önceyse cari ekstresinde kart Kayıt Tarihi'nde, defterde yükleme gününde görünür.
+    // 2.5.0 Ç5-A tur 1b (S127 = A, "bir olay tek kez yazılır"; C5-ACILIS-TASARIM §12.1): KG-5'ten önceki kuralla donmuş dönemin iki yanına düşen kart (routes/ledger.mjs rows()
+    // pinnedOld — lib/ledger-opening.mjs oldRulePinnedPlans) BÜTÜNÜYLE ESKİ YAPISIYLA: kart maddesi Kayıt Tarihi'nde B CH T, açılış satırları (P) kendi günlerinde ayrı madde
+    // (aşağıda planEntries) — donmuş defterdeki maddeyle aynı kimlik / tarih / cari tutarı. Karşı hesap güncel açılış hesabı 519 (öbür kilitli kayıtlar gibi; eski ↔ yeni kural
+    // farkı 602 ↔ 519 Kural Değişikliği Farkı'nda görünür).
+    if (!plan.coversBalance && plan.importId && Number(plan.pinnedOld) === 1) post(`plan:${plan.id}`, plan.date, "Taksit kartı açılışı (Excel / tablo)", "Açılış alacağı (yüklenen taksit kartı)", control, OPENING_GL, plan.total);
+    else if (!plan.coversBalance && plan.importId) {
       const n = out.length;
-      post(`plan-close:${plan.id}`, plan.closedOn && plan.closedOn > plan.date ? plan.closedOn : plan.date, "Taksit kartı kapatıldı", "Kalan alacaktan vazgeçildi", "689", control, Math.max(0, roundMoney((Number(plan.total) || 0) - (Number(plan.paid) || 0))));
+      post(`plan:${plan.id}`, localDayOf(plan.importedAt) || plan.date, "Taksit kartı açılışı (Excel / tablo)", "Açılış alacağı (yüklenen taksit kartı)", control, OPENING_GL, roundMoney((Number(plan.total) || 0) - (Number(plan.openingPaid) || 0)));
+      opened(n);
+      // 2.5.0 Ç7b (KG-2 = A; H-03): Yeni Borç kartı belgesiz gelirdir — B CH / A 600.90, kart toplamı, KDV ayrılmaz (Ç7b öncesi: 602).
+    } else if (!plan.coversBalance) post(`plan:${plan.id}`, plan.date, "Taksit kartı", "Taksitli satış / hizmet", control, UNCLASSIFIED_GL.sale, plan.total);
+    // 2.5.0 Ç7b tur 3b (karar (6) "Borçta Kalsın", KG-23 = A "Alacak CH'de kalır (madde yok)"): 689 YALNIZ eski kuralla kapatılmış kartta (göç 53 '2.4.9'; lib/accounts.mjs waivedOf —
+    // cari defteriyle aynı yardımcı); yeni kapatılan kartın kalanı CH'de kalır, madde yazılmaz. rows.plans closeRule taşır (routes/ledger.mjs rows()).
+    if (waivesRemaining(plan)) {
+      const n = out.length;
+      post(`plan-close:${plan.id}`, plan.closedOn && plan.closedOn > plan.date ? plan.closedOn : plan.date, "Taksit kartı kapatıldı", "Kalan alacaktan vazgeçildi", "689", control, waivedOf(plan, plan.paid));
       // Karar 15.10.2026 (plan §3.11b/2): kartın açılış tarihi — şüpheli kaydından SONRA açılan kartın satırı o kayıttan düşmez (doubtful-gl openedOn).
       // Kontrol turu 2 K1: "Mevcut borcu taksitlendir" (coversBalance) kartı yeni alacak değildir → tarih kapısı yok (lib/bank/doubtful.mjs SQL ikizi).
       if (out.length > n && plan.date && !plan.coversBalance) out[out.length - 1].doubtful = { openedOn: plan.date };
@@ -281,9 +591,14 @@ export function journal(rows) {
     const control = row.accountType ? CONTROL[row.accountType] || CONTROL.customer : "127";
     const id = `plan-entry:${row.id}`;
     if (row.kind === "in") {
-      const debit = row.opening ? "500" : row.chequeId ? received(row.chequeInstrument) : moneyOf(row);
+      // 2.5.0 Ç5-A (KG-5): yüklenen (Excel / tablo) kartın açılış satırı (P) maddesizdir — kartın tek maddesinin içinde (T − P). Öbür açılış satırı (Mevcut Borcu
+      // Taksitlendir yüklemesi) B 519 / A CH (2.4.9: 500), açılış sınıfı.
+      // S127 (tur 1b): eski kurala bağlı kartın (planPinned) açılış satırı ayrı madde B 519 / A CH (kart maddesi T'yi taşır).
+      if (row.opening && row.planImported && !Number(row.planCovers) && !Number(row.planPinned)) continue;
+      const debit = row.opening ? OPENING_GL : row.chequeId ? received(row.chequeInstrument) : moneyOf(row);
       const n = out.length;
       post(id, row.date, row.opening ? "Taksit açılışı (devir)" : row.chequeId ? "Taksit (çek/senetle)" : "Taksit tahsilatı", row.note, debit, control, row.amount);
+      if (row.opening) opened(n);
       // Karar 15.10.2026 (plan §3.11b/2): kartın açılış tarihi (planDate) — şüpheli kaydından SONRA açılan kartın taksiti o kayıttan düşmez.
       // Kontrol turu 2 K1: kapsayan kartta (planCovers) tarih kapısı yok — taksit şüpheliden düşer.
       if (out.length > n && row.planDate && !Number(row.planCovers)) out[out.length - 1].doubtful = { openedOn: row.planDate };
@@ -299,13 +614,19 @@ export function journal(rows) {
     const id = `stock:${row.id}`;
     // 2.4.6 madde 10: faturasız tedarikçiye iade, para geri alındı (Kasa / banka) — B para / A 153.
     if (row.kind === "out" && row.reason === "preturn") post(id, row.date, "Stok (peşin alış iadesi)", row.note, moneyOf(row), "153", row.amount);
-    else if (row.kind === "out") post(id, row.date, "Stok (peşin satış)", row.note, moneyOf(row), "600", row.amount);
-    else if (row.reason === "return") post(id, row.date, "Stok (peşin satış iadesi)", row.note, "610", moneyOf(row), row.amount);
+    else if (row.kind === "out") post(id, row.date, "Stok (peşin satış)", row.note, moneyOf(row), UNCLASSIFIED_GL.sale, row.amount);
+    else if (row.reason === "return") post(id, row.date, "Stok (peşin satış iadesi)", row.note, UNCLASSIFIED_GL.saleReturn, moneyOf(row), row.amount);
     else post(id, row.date, "Stok (peşin alım)", row.note, "153", moneyOf(row), row.amount);
   }
   // MM4 (2.4.3; kullanıcı kararı 18.10.2026): açılış stoku (ürün kartındaki açılış miktarı, Excel'den ürün yüklemedeki miktar) — B 153 / A 500, tutar
   // miktar × birim fiyat (kuruşa yuvarlanır). Karşı hesap Kasa / banka / cari / taksit açılışlarıyla aynı (500). Para satırı değildir (Kasa'ya yazmaz).
-  for (const row of rows.stockOpenings || []) (at = row.seq), post(`stock-open:${row.id}`, row.date, "Stok açılışı", `Açılış stoku${row.itemName ? `: ${row.itemName}` : ""}`, "153", "500", stockOpeningValue(row));
+  // 2.5.0 Ç5-A (M-07): karşı hesap 519 (2.4.9: 500), açılış sınıfı.
+  for (const row of rows.stockOpenings || []) {
+    at = row.seq;
+    const n = out.length;
+    post(`stock-open:${row.id}`, row.date, "Stok açılışı", `Açılış stoku${row.itemName ? `: ${row.itemName}` : ""}`, "153", OPENING_GL, stockOpeningValue(row));
+    opened(n);
+  }
   // Çok satırlı madde (kuruş). Borç ve alacak toplamı eşit değilse madde yine yazılır; mizan "dengesiz" der (kapı yakalar).
   const postLines = (id, date, source, text, lines) => {
     const kept = lines.filter(line => line.amount > 0).map(line => {
@@ -324,7 +645,11 @@ export function journal(rows) {
     } catch {
       groups = [];
     }
-    const nets = (Array.isArray(groups) ? groups : []).map(group => ({ account: String(group.account || "600"), amount: Math.round(Number(group.net) || 0) }));
+    let nets = (Array.isArray(groups) ? groups : []).map(group => ({ account: String(group.account || "600"), amount: Math.round(Number(group.net) || 0) }));
+    // 2.5.0 Ç7b (KG-24 = A, F-02; BAŞ MİMAR KARARI B-3 = A): satışta / SMM'de ihracat istisna kodlu kalemlerin matrahı 601 Yurt Dışı Satışlar'a — kalem payı faturanın kendi
+    // kalemlerinden (routes/ledger.mjs rows exportJson: hesap → [ihracat kalemleri neti, bütün kalemlerin neti], belge para biriminde kuruş). TL faturada pay kuruşu kuruşuna kalemin
+    // netidir; döviz faturada gl_json'un TL neti aynı oranla bölünür (kalan asıl hesapta — toplam değişmez). Eski veride de uygulanır (kilitli dönemde kural farkı).
+    if ((row.kind === "sale" || row.kind === "smm") && row.exportJson) nets = exportSplit(nets, row.exportJson);
     const vat = cents(row.tryVat);
     const withheld = cents(row.tryWithheld);
     const stoppage = cents(row.tryStoppage);
@@ -338,9 +663,11 @@ export function journal(rows) {
         { account: "391", side: "credit", amount: vat - withheld },
       ]);
     } else if (row.kind === "sale_return") {
+      // 2.5.0 Ç7b (KG-8 = A, F-07; KDVK 35): satıştan iade KDV'si iade döneminde İNDİRİM — B 191 (Ç7b öncesi: B 391). Mahsup sonucu iki dalda aynı. Geçiş gününde / öncesinde ya da
+      // güncellemeden önce mahsup edilmiş (etkin) ayda eski yön B 391 (tur 2c; B-6, B-8).
       postLines(`invoice:${row.id}`, row.date, "Satıştan iade faturası", label, [
         ...nets.map(net => ({ ...net, side: "debit" })),
-        { account: "391", side: "debit", amount: vat - withheld },
+        { account: oldReturnVat(shift, row.date) ? "391" : "191", side: "debit", amount: vat - withheld },
         { account: control, side: "credit", amount: payable },
       ]);
     } else if (row.kind === "purchase") {
@@ -351,11 +678,12 @@ export function journal(rows) {
         { account: control, side: "credit", amount: payable },
       ]);
     } else if (row.kind === "purchase_return") {
+      // 2.5.0 Ç7b (F-08): alıştan iade KDV'si A 391 (Ç7b öncesi: A 191). Geçiş gününde / öncesinde ya da güncellemeden önce mahsup edilmiş ayda eski yön A 191 (tur 2c).
       postLines(`invoice:${row.id}`, row.date, "Alıştan iade faturası", label, [
         { account: control, side: "debit", amount: payable },
         { account: "360", side: "debit", amount: withheld + stoppage },
         ...nets.map(net => ({ ...net, side: "credit" })),
-        { account: "191", side: "credit", amount: vat },
+        { account: oldReturnVat(shift, row.date) ? "191" : "391", side: "credit", amount: vat },
       ]);
     }
   }
@@ -392,14 +720,68 @@ export function journal(rows) {
     if (!fis.has(row.eventId)) fis.set(row.eventId, { date: row.date, text: row.description || row.no || "Banka fişi", seq: row.eventSeq, lines: [] });
     fis.get(row.eventId).lines.push(row);
   }
+  // 2.5.0 Ç7a tur 2b (KG-6 = A, S177 = A; lib/bank/pos-commission.mjs): etkin gün fişine bağlı kalemlerin kesintisi (S) satış günü maddesinde — gün fişinin 108 satırı ve gider
+  // satırı S kadar düşer (102 net değişmez; kalan gider = Komisyon Farkı, valörün gününde).
+  const settledCommission = new Map((rows.posSettled || []).map(row => [row.eventId, { posId: row.posId, minor: Number(row.minor) || 0 }]));
   for (const [eventId, item] of fis) {
-    const lines = item.lines
+    let covered = false;
+    let raw = item.lines
       .slice()
       .sort((a, b) => a.seq - b.seq)
-      .filter(line => Number(line.tryMinor) > 0)
-      .map(line => ({ account: String(line.gl), debit: line.side === "D" ? Number(line.tryMinor) : 0, credit: line.side === "C" ? Number(line.tryMinor) : 0, ...(line.sub ? { sub: String(line.sub) } : {}) }));
+      .filter(line => Number(line.tryMinor) > 0);
+    const commission = settledCommission.get(eventId);
+    if (commission?.minor) raw = netCommission(raw, commission, refs);
+    let lines = raw
+      .map(line => {
+        const debit = line.side === "D" ? Number(line.tryMinor) : 0;
+        const credit = line.side === "C" ? Number(line.tryMinor) : 0;
+        // 2.5.0 Ç7a tur 2 (K-14, S179 = A): hesabı atanmamış fiş satırı (Devir Kapanışı ve ters kaydı her zaman; Bankaya Geçmiş Say / Kart Borcuna Aktar'ın 108.00
+        // tarafı Devir Kapanışı'ndan önceyse) 519 — kapattığı satırlar zaten 519'dadır (lib/bank/opening-cover.mjs).
+        if (!line.ref && (line.sub === "102.00" || line.sub === "108.00") && line.ref !== undefined && isCovered({ bankLine: true, carry: Number(line.carry) === 1, date: item.date }, refs.cover)) {
+          covered = true;
+          return { account: OPENING_GL, debit, credit };
+        }
+        return { account: effectiveGl(line), debit, credit, ...(line.sub ? { sub: String(line.sub) } : {}) };
+      });
+    // Aynı maddede 519'un iki yanı netlenir (Devir Kapanışı: B 519 / A 519 → madde yazılmaz; mizanın devir hızı şişmez).
+    if (covered) {
+      const net = lines.filter(line => line.account === OPENING_GL).reduce((sum, line) => sum + line.debit - line.credit, 0);
+      lines = lines.filter(line => line.account !== OPENING_GL);
+      if (net) lines.push({ account: OPENING_GL, debit: net > 0 ? net : 0, credit: net < 0 ? -net : 0, cover: true });
+    }
     at = item.seq;
-    if (lines.length) out.push(stamp({ id: `bank:${eventId}`, date: item.date, source: "Banka fişi", text: item.text, lines }));
+    // 2.5.0 Ç5-A (M-04 / M-05 / M-06, K-14; BAŞ MİMAR B3): saklı "500" (rol opening / closing) türetmede 519; açılış fişi ve Devir Kapanışı (ve ters kayıtları) açılış sınıfı.
+    if (lines.length) out.push(stamp({ id: `bank:${eventId}`, date: item.date, source: "Banka fişi", text: item.text, lines, ...(item.lines.some(line => OPENING_ROLES.has(line.role)) ? { cls: OPENING_CLASS } : {}) }));
+  }
+  // 2.5.0 Ç7a tur 2b (KG-6 = A; kural kitabı §9 "satış (çekim) günü (B komisyon hesabı / A 108; valörde net)"; S178 = A: yalnız BSMV / vergisiz kip): POS kaydının (satış ya da
+  // iade) günü B komisyon hesabı / A 108.POS = kalemlerinin kesintisi (taksitli satışta bütün taksitler; iade edilen kesinti ters yön — KG-20 A). Komisyon hesabı kalem kalem:
+  // bankaya geçmiş kalemde gün fişinin gider satırının hesabı, bekleyende Banka Ayarları'ndaki güncel hesap.
+  for (const row of rows.posCommission || []) {
+    let parts;
+    try {
+      parts = JSON.parse(row.parts || "[]");
+    } catch {
+      parts = [];
+    }
+    const byGl = new Map();
+    let total = 0;
+    for (const [, minor, gl] of parts) {
+      const value = Number(minor) || 0;
+      if (!value) continue;
+      const account = gl || refs.commissionGl || "653";
+      byGl.set(account, (byGl.get(account) || 0) + value);
+      total += value;
+    }
+    const lines = [];
+    for (const [account, value] of byGl) if (value) lines.push({ account, debit: value > 0 ? value : 0, credit: value < 0 ? -value : 0 });
+    if (total) {
+      const { account, sub } = moneyAccount("card", row.posId, refs);
+      lines.push({ account, sub, debit: total < 0 ? -total : 0, credit: total > 0 ? total : 0 });
+    }
+    if (!lines.length) continue;
+    at = Number(row.seq);
+    const refund = row.kind === "refund";
+    out.push(stamp({ id: `pos-commission:${row.saleId}`, date: row.date, source: refund ? "POS Komisyon İadesi" : "POS Komisyonu", text: `${refund ? "POS Komisyon İadesi" : "POS Komisyonu (Satış Günü)"}${row.no ? ` · ${row.no}` : ""}`, lines }));
   }
   // 2.4.3 MM3: KDV Mahsup Fişi (ay sonu tarihli; vat_offsets): ayın 391'i ve 191'i kapanır, fark 360'a (ödenecek) ya da 190'a (devreden); önceki
   // devreden (190) kullanılır. Geri alınan fiş (reversed) ters kaydıyla AYNI GÜN yazılır (ay sonu mizanı sıfırlanır, iz görünür).
@@ -414,9 +796,43 @@ export function journal(rows) {
   // 2.3.0 İz 1 (plan §3.11b; lib/doubtful-gl.mjs): şüpheli alacak kayıtları varsa carinin alacak satırları önce 128'den düşer (A 120 → A 128),
   // al / karşılık / 644 / çıkar maddeleri eklenir. Kayıt yoksa (ya da süzgeç yüklemediyse) yevmiye 2.2.0'dakiyle aynıdır.
   if (rows.doubtful?.records?.length) applyDoubtfulToJournal(out, rows.doubtful);
-  out.sort(journalOrder);
+  // 2.5.0 Ç2 (lib/ledger-vouchers.mjs; docs/erp/C2-FIS-DEFTERI-TASARIM.md): saklanan fişler — satırlar yazım anındaki hesap, alt hesap ve cariyle AYNEN (Banka Fişi gibi; kuruş
+  // doğrudan). Şüpheli alacak ayırmasından SONRA eklenir: saklanan satır yeniden sınıflanmaz. Maddenin kimlik öneki fişin yevmiye sınıfıdır (aynı gün sırası,
+  // JOURNAL_CLASS: açılış günün başında, kapanış günün sonunda). Fiş yoksa (rows.vouchers boş) yevmiye 2.4.9'dakiyle aynıdır.
+  for (const voucher of rows.vouchers || []) {
+    const lines = voucher.lines
+      .filter(line => line.debit > 0 || line.credit > 0)
+      .map(line => ({ account: String(line.account), debit: Number(line.debit) || 0, credit: Number(line.credit) || 0, ...(line.sub ? { sub: String(line.sub) } : {}), ...(line.party ? { party: String(line.party) } : {}) }));
+    at = voucher.seq;
+    if (lines.length) out.push(stamp({ id: `${VOUCHER_ENTRY[voucher.cls] || VOUCHER_ENTRY.ordinary}:${voucher.id}`, date: voucher.date, source: voucher.label, text: voucher.text, lines }));
+  }
+  journalSort(out);
   return out;
 }
+/**
+ * 2.5.0 Ç7a tur 2b (KG-6; lib/bank/pos-commission.mjs): gün fişinin saklı satırları, bağlı kalemlerin kesintisi (S) satış günü maddesine alınmış olarak — 108 satırı (alacak yönlü
+ * işaretli v) v − S, gider satırı (borç yönlü işaretli x) x − S; satır yoksa açılır (108: POS'un alt hesabı; gider: güncel komisyon hesabı), sıfırsa yazılmaz. 102 satırı aynen.
+ */
+function netCommission(raw, { posId, minor }, refs) {
+  const out = raw.map(line => ({ ...line }));
+  const apply = (role, sign, make) => {
+    let line = out.find(item => item.role === role);
+    if (!line) {
+      line = { ...make(), side: sign > 0 ? "C" : "D", tryMinor: 0, seq: Number.MAX_SAFE_INTEGER };
+      out.push(line);
+    }
+    // sign: 108 satırında alacak, gider satırında borç artı.
+    const positive = sign > 0 ? "C" : "D";
+    const value = (line.side === positive ? 1 : -1) * Number(line.tryMinor) - minor;
+    line.side = value >= 0 ? positive : positive === "C" ? "D" : "C";
+    line.tryMinor = Math.abs(value);
+  };
+  apply("pos", 1, () => ({ role: "pos", gl: "108", sub: moneyAccount("card", posId, refs).sub, ref: posId || "" }));
+  apply("expense", -1, () => ({ role: "expense", gl: refs.commissionGl || "653", sub: "", ref: "" }));
+  return out.filter(line => Number(line.tryMinor) > 0);
+}
+/** Saklanan fişin yevmiye sınıfı (ledger_vouchers.journal_class) → madde kimliğinin öneki (JOURNAL_CLASS). */
+export const VOUCHER_ENTRY = Object.freeze({ opening: "voucher-open", ordinary: "voucher", "period-end": "voucher-end", closing: "voucher-close" });
 
 /**
  * Yevmiye madde sırası (2.4.4 MM8, mali müşavir 31b; ders 31 "aynı tarihli kayıtlar kimlikle sıralanmaz"): tarih → olay sınıfı → yazım sırası (kaynak
@@ -427,8 +843,12 @@ export function journal(rows) {
  * MONEY_SOURCES rank: kayıt tahsilatı 1, Kasa 2, taksit tahsilatı 3, cari satırı 4, stok 5, çek/senet 6; Banka Fişi 9) → kart kapanışı → şüpheliden
  * çıkar / konusu kalmayan karşılık (§4.15 "çıkar") → ay sonu KDV Mahsup Fişi ve ters kaydı. Sıra yalnız gösterim sırasıdır: mizan, cari bakiyesi ve şüpheli
  * ayırması maddelerin sırasından bağımsızdır (ayırma kendi sırasını doubtful-gl'de kurar; test/yevmiye-sira-244.test.mjs).
+ * 2.5.0 Ç2 (kural kitabı G-4 "açılış sınıfı günün başı … kapanış sınıfı günün sonu"): saklanan fişler — açılış sınıfı (Açılış / Açılış Eşleştirme Fişi) günün
+ * EN BAŞINDA, olağan fiş (Kural Farkı Düzeltme Fişi) olağan maddelerin arasında (Banka Fişi'nden sonra), dönem sonu sınıfı KDV mahsubundan sonra, kapanış sınıfı
+ * (Kapanış / Önceki Yıl Sonucu Fişi) günün EN SONUNDA; sınıf içinde yazım sırası (fişin rowid'i). Ters kayıt asıl fişin sınıfındadır.
  */
 export const JOURNAL_CLASS = Object.freeze({
+  "voucher-open": 1,
   "doubtful-take": 10,
   "doubtful-provision": 11,
   invoice: 20,
@@ -443,22 +863,50 @@ export const JOURNAL_CLASS = Object.freeze({
   cheque: 36,
   "cheque-deposit": 36,
   "cheque-withdraw": 36,
+  // 2.5.0 Ç7a tur 2b (KG-6): POS kaydının satış / iade günü komisyon maddesi — kaydın para satırından sonra, Banka Fişi'nden (gün fişi) önce.
+  "pos-commission": 38,
   bank: 39,
+  voucher: 45,
   "plan-close": 50,
   "doubtful-644": 60,
   "doubtful-release": 61,
   "vat-offset": 70,
   "vat-offset-reverse": 71,
+  "voucher-end": 75,
+  "voucher-close": 99,
 });
 const classOf = id => JOURNAL_CLASS[String(id).slice(0, String(id).indexOf(":"))] ?? 90;
+/** Maddenin yevmiye sınıfı: açılış sınıfı alanı (`cls`, Ç5-A B9) varsa o, yoksa kimliğin önekinden (JOURNAL_CLASS). 2.4.9 kopyasının maddelerinde `cls` yoktur → sıra aynı. */
+export const entryClass = entry => (Number.isFinite(entry?.cls) ? entry.cls : classOf(entry?.id));
 export function journalOrder(a, b) {
   if (a.date !== b.date) return a.date < b.date ? -1 : 1;
-  const byClass = classOf(a.id) - classOf(b.id);
+  const byClass = entryClass(a) - entryClass(b);
   if (byClass) return byClass;
   const sa = Number.isFinite(a.seq) ? a.seq : Infinity;
   const sb = Number.isFinite(b.seq) ? b.seq : Infinity;
   if (sa !== sb) return sa < sb ? -1 : 1;
   return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
+}
+/**
+ * journalOrder'la AYNI sıralama, yerinde (Ç5-A tur 1c, hız — ders 47; C5-ACILIS-TASARIM §13 H3): karşılaştırma anahtarları (tarih, sınıf, yazım sırası, kimlik) madde başına BİR
+ * kez hesaplanır — journalOrder her karşılaştırmada iki maddenin sınıfını kimlik metninden yeniden çıkarıyordu (100.000 satırda ~2 milyon karşılaştırma). Array.prototype.sort
+ * kararlıdır: eşit anahtarlı maddeler girdi sırasını korur (journalOrder'la sıralamayla aynı). journalOrder AYNEN durur (2.4.9 kopyası, donmuş defter, tekil karşılaştırmalar).
+ */
+export function journalSort(entries) {
+  const keyed = new Array(entries.length);
+  for (let index = 0; index < entries.length; index += 1) {
+    const entry = entries[index];
+    keyed[index] = { entry, date: entry.date, cls: entryClass(entry), seq: Number.isFinite(entry.seq) ? entry.seq : Infinity, id: entry.id };
+  }
+  keyed.sort((a, b) => {
+    if (a.date !== b.date) return a.date < b.date ? -1 : 1;
+    const byClass = a.cls - b.cls;
+    if (byClass) return byClass;
+    if (a.seq !== b.seq) return a.seq < b.seq ? -1 : 1;
+    return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
+  });
+  for (let index = 0; index < keyed.length; index += 1) entries[index] = keyed[index].entry;
+  return entries;
 }
 
 /** Alt hesap bakiyeleri (v2.1.0, §3.11): alt hesap kodu (102.01, 108.00 …) → kuruş (borç artı). Σ alt hesap = ana hesap. */

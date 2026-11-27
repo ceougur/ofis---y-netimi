@@ -1,0 +1,386 @@
+rastgele-2 [TZ=UTC]: 1115 olay · yapıldı 1101 · red 0 · api_yok 5 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 108 ms
+    rastgele-2 [UTC] öz denetim TAMAM · AYNI 150 · U 48 · P 0 · K 56 · R 24 · SINIFLANMADI 0 · red farkı 0 · adım farkı 38 (sınıfsız 0)  (50 sn + 6 sn)
+rastgele-1 [TZ=UTC]: 1161 olay · yapıldı 1146 · red 1 · api_yok 5 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 97 ms
+    rastgele-1 [UTC] öz denetim TAMAM · AYNI 156 · U 49 · P 0 · K 70 · R 34 · SINIFLANMADI 0 · red farkı 0 · adım farkı 36 (sınıfsız 0)  (52 sn + 7 sn)
+rastgele-1 [TZ=Europe/Istanbul]: 1161 olay · yapıldı 1146 · red 1 · api_yok 5 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 129 ms
+    rastgele-1 [Europe/Istanbul] öz denetim TAMAM · AYNI 156 · U 49 · P 0 · K 70 · R 34 · SINIFLANMADI 0 · red farkı 0 · adım farkı 36 (sınıfsız 0)  (53 sn + 7 sn)
+rastgele-2 [TZ=Europe/Istanbul]: 1115 olay · yapıldı 1101 · red 0 · api_yok 5 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 111 ms
+    rastgele-2 [Europe/Istanbul] öz denetim TAMAM · AYNI 150 · U 48 · P 0 · K 56 · R 24 · SINIFLANMADI 0 · red farkı 0 · adım farkı 38 (sınıfsız 0)  (53 sn + 8 sn)
+s01-satis-tahsilat-nakit [TZ=UTC]: 9 olay · yapıldı 6 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 37 ms
+    s01-satis-tahsilat-nakit [UTC] öz denetim TAMAM · AYNI 9 · U 6 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+rastgele-3 [TZ=Europe/Istanbul]: 1130 olay · yapıldı 1114 · red 0 · api_yok 7 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 112 ms
+    rastgele-3 [Europe/Istanbul] öz denetim TAMAM · AYNI 125 · U 45 · P 0 · K 82 · R 24 · SINIFLANMADI 0 · red farkı 0 · adım farkı 40 (sınıfsız 0)  (53 sn + 8 sn)
+rastgele-3 [TZ=UTC]: 1130 olay · yapıldı 1114 · red 0 · api_yok 7 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 120 ms
+    rastgele-3 [UTC] öz denetim TAMAM · AYNI 125 · U 45 · P 0 · K 82 · R 24 · SINIFLANMADI 0 · red farkı 0 · adım farkı 40 (sınıfsız 0)  (53 sn + 8 sn)
+s01-satis-tahsilat-nakit [TZ=Europe/Istanbul]: 9 olay · yapıldı 6 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 36 ms
+    s01-satis-tahsilat-nakit [Europe/Istanbul] öz denetim TAMAM · AYNI 9 · U 6 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (1 sn + 0 sn)
+s02-ihracat-tevkifat [TZ=UTC]: 7 olay · yapıldı 4 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 34 ms
+    s02-ihracat-tevkifat [UTC] öz denetim TAMAM · AYNI 12 · U 6 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s02-ihracat-tevkifat [TZ=Europe/Istanbul]: 7 olay · yapıldı 4 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 42 ms
+    s02-ihracat-tevkifat [Europe/Istanbul] öz denetim TAMAM · AYNI 12 · U 6 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s03-alis-stok-tevkifat-havale [TZ=UTC]: 13 olay · yapıldı 10 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 32 ms
+    s03-alis-stok-tevkifat-havale [UTC] öz denetim TAMAM · AYNI 12 · U 6 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s03-alis-stok-tevkifat-havale [TZ=Europe/Istanbul]: 13 olay · yapıldı 10 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 43 ms
+    s03-alis-stok-tevkifat-havale [Europe/Istanbul] öz denetim TAMAM · AYNI 12 · U 6 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s04-gider-yansitma-stopaj-devir [TZ=UTC]: 21 olay · yapıldı 14 · red 1 · api_yok 0 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 37 ms
+    s04-gider-yansitma-stopaj-devir [UTC] öz denetim TAMAM · AYNI 32 · U 16 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s04-gider-yansitma-stopaj-devir [TZ=Europe/Istanbul]: 21 olay · yapıldı 14 · red 1 · api_yok 0 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 39 ms
+    s04-gider-yansitma-stopaj-devir [Europe/Istanbul] öz denetim TAMAM · AYNI 32 · U 16 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s05-iadeler [TZ=Europe/Istanbul]: 12 olay · yapıldı 9 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 63 ms
+    s05-iadeler [Europe/Istanbul] öz denetim TAMAM · AYNI 30 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 2 (sınıfsız 0)  (2 sn + 0 sn)
+s05-iadeler [TZ=UTC]: 12 olay · yapıldı 9 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 67 ms
+    s05-iadeler [UTC] öz denetim TAMAM · AYNI 30 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 2 (sınıfsız 0)  (2 sn + 0 sn)
+s06-esmm-gelen-smm [TZ=UTC]: 6 olay · yapıldı 4 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 29 ms
+    s06-esmm-gelen-smm [UTC] öz denetim TAMAM · AYNI 20 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s06-esmm-gelen-smm [TZ=Europe/Istanbul]: 6 olay · yapıldı 4 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 54 ms
+    s06-esmm-gelen-smm [Europe/Istanbul] öz denetim TAMAM · AYNI 20 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (1 sn + 0 sn)
+s07-duzenle-iptal-sil-kilit [TZ=UTC]: 20 olay · yapıldı 15 · red 2 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 47 ms
+    s07-duzenle-iptal-sil-kilit [UTC] öz denetim TAMAM · AYNI 9 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 2 (sınıfsız 0)  (2 sn + 0 sn)
+s07-duzenle-iptal-sil-kilit [TZ=Europe/Istanbul]: 20 olay · yapıldı 15 · red 2 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 41 ms
+    s07-duzenle-iptal-sil-kilit [Europe/Istanbul] öz denetim TAMAM · AYNI 9 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 2 (sınıfsız 0)  (2 sn + 0 sn)
+s08-pos-kg6 [TZ=UTC]: 20 olay · yapıldı 14 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 53 ms
+    s08-pos-kg6 [UTC] öz denetim TAMAM · AYNI 26 · U 3 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s08-pos-kg6 [TZ=Europe/Istanbul]: 20 olay · yapıldı 14 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 33 ms
+    s08-pos-kg6 [Europe/Istanbul] öz denetim TAMAM · AYNI 26 · U 3 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s09-cek-senet-alinan [TZ=UTC]: 25 olay · yapıldı 21 · red 1 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 36 ms
+    s09-cek-senet-alinan [UTC] öz denetim TAMAM · AYNI 34 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s10-cek-senet-verilen [TZ=UTC]: 15 olay · yapıldı 12 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 34 ms
+    s10-cek-senet-verilen [UTC] öz denetim TAMAM · AYNI 18 · U 8 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s09-cek-senet-alinan [TZ=Europe/Istanbul]: 25 olay · yapıldı 21 · red 1 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 52 ms
+    s09-cek-senet-alinan [Europe/Istanbul] öz denetim TAMAM · AYNI 34 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s10-cek-senet-verilen [TZ=Europe/Istanbul]: 15 olay · yapıldı 12 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 43 ms
+    s10-cek-senet-verilen [Europe/Istanbul] öz denetim TAMAM · AYNI 18 · U 8 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s11-kasa-carisiz-kg3 [TZ=UTC]: 18 olay · yapıldı 14 · red 1 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 33 ms
+    s11-kasa-carisiz-kg3 [UTC] öz denetim TAMAM · AYNI 21 · U 12 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s11-kasa-carisiz-kg3 [TZ=Europe/Istanbul]: 18 olay · yapıldı 14 · red 1 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 43 ms
+    s11-kasa-carisiz-kg3 [Europe/Istanbul] öz denetim TAMAM · AYNI 21 · U 12 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s12-banka-islemleri [TZ=UTC]: 17 olay · yapıldı 14 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 39 ms
+    s12-banka-islemleri [UTC] öz denetim TAMAM · AYNI 23 · U 10 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s13-kart-kredi-ters-bakiye [TZ=Europe/Istanbul]: 21 olay · yapıldı 17 · red 0 · api_yok 1 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 36 ms
+    s13-kart-kredi-ters-bakiye [Europe/Istanbul] öz denetim TAMAM · AYNI 27 · U 6 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s12-banka-islemleri [TZ=Europe/Istanbul]: 17 olay · yapıldı 14 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 37 ms
+    s12-banka-islemleri [Europe/Istanbul] öz denetim TAMAM · AYNI 23 · U 10 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s13-kart-kredi-ters-bakiye [TZ=UTC]: 21 olay · yapıldı 17 · red 0 · api_yok 1 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 51 ms
+    s13-kart-kredi-ters-bakiye [UTC] öz denetim TAMAM · AYNI 27 · U 6 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s14-kdv-mahsup-360 [TZ=Europe/Istanbul]: 34 olay · yapıldı 28 · red 1 · api_yok 1 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 38 ms
+    s14-kdv-mahsup-360 [Europe/Istanbul] öz denetim TAMAM · AYNI 27 · U 6 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s15-supheli-alacak [TZ=UTC]: 23 olay · yapıldı 17 · red 2 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 45 ms
+    s15-supheli-alacak [UTC] öz denetim TAMAM · AYNI 31 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s14-kdv-mahsup-360 [TZ=UTC]: 34 olay · yapıldı 28 · red 1 · api_yok 1 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 57 ms
+    s14-kdv-mahsup-360 [UTC] öz denetim TAMAM · AYNI 27 · U 6 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s16-stok-modulu-kg2-kg11 [TZ=Europe/Istanbul]: 17 olay · yapıldı 14 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 39 ms
+    s16-stok-modulu-kg2-kg11 [Europe/Istanbul] öz denetim TAMAM · AYNI 16 · U 6 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s16-stok-modulu-kg2-kg11 [TZ=UTC]: 17 olay · yapıldı 14 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 36 ms
+    s16-stok-modulu-kg2-kg11 [UTC] öz denetim TAMAM · AYNI 16 · U 6 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s15-supheli-alacak [TZ=Europe/Istanbul]: 23 olay · yapıldı 17 · red 2 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 40 ms
+    s15-supheli-alacak [Europe/Istanbul] öz denetim TAMAM · AYNI 31 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s17-cari-duzeltme-kg16 [TZ=Europe/Istanbul]: 14 olay · yapıldı 12 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 19 ms
+    s17-cari-duzeltme-kg16 [Europe/Istanbul] öz denetim TAMAM · AYNI 12 · U 5 · P 5 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 1 (sınıfsız 0)  (2 sn + 0 sn)
+s17-cari-duzeltme-kg16 [TZ=UTC]: 14 olay · yapıldı 12 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 32 ms
+    s17-cari-duzeltme-kg16 [UTC] öz denetim TAMAM · AYNI 12 · U 5 · P 5 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 1 (sınıfsız 0)  (2 sn + 0 sn)
+s18-acilislar-eslestirme [TZ=UTC]: 16 olay · yapıldı 11 · red 0 · api_yok 0 · uygulanmadı 3 · sürücü hatası 0 · olay döngüsü en çok 40 ms
+    s18-acilislar-eslestirme [UTC] öz denetim TAMAM · AYNI 48 · U 5 · P 0 · K 0 · R 6 · SINIFLANMADI 0 · red farkı 0 · adım farkı 1 (sınıfsız 0)  (2 sn + 0 sn)
+s19-taksit-kg5 [TZ=UTC]: 10 olay · yapıldı 6 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 68 ms
+    s19-taksit-kg5 [UTC] öz denetim TAMAM · AYNI 8 · U 8 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s18-acilislar-eslestirme [TZ=Europe/Istanbul]: 16 olay · yapıldı 11 · red 0 · api_yok 0 · uygulanmadı 3 · sürücü hatası 0 · olay döngüsü en çok 36 ms
+    s18-acilislar-eslestirme [Europe/Istanbul] öz denetim TAMAM · AYNI 48 · U 5 · P 0 · K 0 · R 6 · SINIFLANMADI 0 · red farkı 0 · adım farkı 1 (sınıfsız 0)  (2 sn + 0 sn)
+s19-taksit-kg5 [TZ=Europe/Istanbul]: 10 olay · yapıldı 6 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 56 ms
+    s19-taksit-kg5 [Europe/Istanbul] öz denetim TAMAM · AYNI 8 · U 8 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s20-ters-bakiye-avans-ayni-ad [TZ=UTC]: 9 olay · yapıldı 7 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 34 ms
+    s20-ters-bakiye-avans-ayni-ad [UTC] öz denetim TAMAM · AYNI 20 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s20-ters-bakiye-avans-ayni-ad [TZ=Europe/Istanbul]: 9 olay · yapıldı 7 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 34 ms
+    s20-ters-bakiye-avans-ayni-ad [Europe/Istanbul] öz denetim TAMAM · AYNI 20 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (1 sn + 0 sn)
+s21-devir-ayni-adli-iki-cari [TZ=UTC]: 10 olay · yapıldı 7 · red 0 · api_yok 0 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 33 ms
+    s21-devir-ayni-adli-iki-cari [UTC] öz denetim TAMAM · AYNI 9 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s21-devir-ayni-adli-iki-cari [TZ=Europe/Istanbul]: 10 olay · yapıldı 7 · red 0 · api_yok 0 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 52 ms
+    s21-devir-ayni-adli-iki-cari [Europe/Istanbul] öz denetim TAMAM · AYNI 9 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (1 sn + 0 sn)
+s22-devir-temel [TZ=UTC]: 36 olay · yapıldı 28 · red 0 · api_yok 0 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 34 ms
+    s22-devir-temel [UTC] öz denetim TAMAM · AYNI 51 · U 8 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s22-devir-temel [TZ=Europe/Istanbul]: 36 olay · yapıldı 28 · red 0 · api_yok 0 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 58 ms
+    s22-devir-temel [Europe/Istanbul] öz denetim TAMAM · AYNI 51 · U 8 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s23-devir-pos-valor-kg6 [TZ=UTC]: 7 olay · yapıldı 3 · red 0 · api_yok 0 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 64 ms
+    s23-devir-pos-valor-kg6 [UTC] öz denetim TAMAM · AYNI 7 · U 2 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s23-devir-pos-valor-kg6 [TZ=Europe/Istanbul]: 7 olay · yapıldı 3 · red 0 · api_yok 0 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 44 ms
+    s23-devir-pos-valor-kg6 [Europe/Istanbul] öz denetim TAMAM · AYNI 7 · U 2 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s24-devir-eksi-stok-kg9 [TZ=UTC]: 13 olay · yapıldı 8 · red 0 · api_yok 0 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 50 ms
+    s24-devir-eksi-stok-kg9 [UTC] öz denetim TAMAM · AYNI 21 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s24-devir-eksi-stok-kg9 [TZ=Europe/Istanbul]: 13 olay · yapıldı 8 · red 0 · api_yok 0 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 59 ms
+    s24-devir-eksi-stok-kg9 [Europe/Istanbul] öz denetim TAMAM · AYNI 21 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s25-devir-onceki-yil-kg12 [TZ=UTC]: 20 olay · yapıldı 15 · red 0 · api_yok 0 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 53 ms
+    s25-devir-onceki-yil-kg12 [UTC] öz denetim TAMAM · AYNI 25 · U 6 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s25-devir-onceki-yil-kg12 [TZ=Europe/Istanbul]: 20 olay · yapıldı 15 · red 0 · api_yok 0 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 55 ms
+    s25-devir-onceki-yil-kg12 [Europe/Istanbul] öz denetim TAMAM · AYNI 25 · U 6 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s26a-devir-borc-ve-alacaklari-aktar [TZ=UTC]: 15 olay · yapıldı 11 · red 0 · api_yok 0 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 30 ms
+    s26a-devir-borc-ve-alacaklari-aktar [UTC] öz denetim TAMAM · AYNI 6 · U 2 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s26a-devir-borc-ve-alacaklari-aktar [TZ=Europe/Istanbul]: 15 olay · yapıldı 11 · red 0 · api_yok 0 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 45 ms
+    s26a-devir-borc-ve-alacaklari-aktar [Europe/Istanbul] öz denetim TAMAM · AYNI 6 · U 2 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s26b-devir-sadece-bakiyeyi-aktar [TZ=Europe/Istanbul]: 15 olay · yapıldı 11 · red 0 · api_yok 0 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 27 ms
+    s26b-devir-sadece-bakiyeyi-aktar [Europe/Istanbul] öz denetim TAMAM · AYNI 6 · U 2 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (1 sn + 0 sn)
+s26b-devir-sadece-bakiyeyi-aktar [TZ=UTC]: 15 olay · yapıldı 11 · red 0 · api_yok 0 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 49 ms
+    s26b-devir-sadece-bakiyeyi-aktar [UTC] öz denetim TAMAM · AYNI 6 · U 2 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s27-devir-yoldaki-supheli-evrak-taksit [TZ=UTC]: 31 olay · yapıldı 27 · red 0 · api_yok 0 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 63 ms
+    s27-devir-yoldaki-supheli-evrak-taksit [UTC] öz denetim TAMAM · AYNI 22 · U 6 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s28-devri-yenile-kg7 [TZ=UTC]: 16 olay · yapıldı 10 · red 1 · api_yok 0 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 38 ms
+    s28-devri-yenile-kg7 [UTC] öz denetim TAMAM · AYNI 33 · U 12 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s27-devir-yoldaki-supheli-evrak-taksit [TZ=Europe/Istanbul]: 31 olay · yapıldı 27 · red 0 · api_yok 0 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 44 ms
+    s27-devir-yoldaki-supheli-evrak-taksit [Europe/Istanbul] öz denetim TAMAM · AYNI 22 · U 6 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s28-devri-yenile-kg7 [TZ=Europe/Istanbul]: 16 olay · yapıldı 10 · red 1 · api_yok 0 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 36 ms
+    s28-devri-yenile-kg7 [Europe/Istanbul] öz denetim TAMAM · AYNI 33 · U 12 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s29-devri-geri-al [TZ=UTC]: 11 olay · yapıldı 8 · red 0 · api_yok 0 · uygulanmadı 2 · sürücü hatası 0 · olay döngüsü en çok 64 ms
+    s29-devri-geri-al [UTC] öz denetim TAMAM · AYNI 8 · U 4 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s29-devri-geri-al [TZ=Europe/Istanbul]: 11 olay · yapıldı 8 · red 0 · api_yok 0 · uygulanmadı 2 · sürücü hatası 0 · olay döngüsü en çok 26 ms
+    s29-devri-geri-al [Europe/Istanbul] öz denetim TAMAM · AYNI 8 · U 4 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s30-kilit-kural-farki-kg15 [TZ=UTC]: 20 olay · yapıldı 13 · red 1 · api_yok 0 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 34 ms
+    s30-kilit-kural-farki-kg15 [UTC] öz denetim TAMAM · AYNI 45 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s30-kilit-kural-farki-kg15 [TZ=Europe/Istanbul]: 20 olay · yapıldı 13 · red 1 · api_yok 0 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 33 ms
+    s30-kilit-kural-farki-kg15 [Europe/Istanbul] öz denetim TAMAM · AYNI 45 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s31-eslestirme-sonra-devir [TZ=UTC]: 8 olay · yapıldı 5 · red 0 · api_yok 0 · uygulanmadı 2 · sürücü hatası 0 · olay döngüsü en çok 31 ms
+    s31-eslestirme-sonra-devir [UTC] öz denetim TAMAM · AYNI 9 · U 4 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s31-eslestirme-sonra-devir [TZ=Europe/Istanbul]: 8 olay · yapıldı 5 · red 0 · api_yok 0 · uygulanmadı 2 · sürücü hatası 0 · olay döngüsü en çok 33 ms
+    s31-eslestirme-sonra-devir [Europe/Istanbul] öz denetim TAMAM · AYNI 9 · U 4 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s32-yil-donumu-29-subat [TZ=UTC]: 19 olay · yapıldı 12 · red 0 · api_yok 0 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 75 ms
+    s32-yil-donumu-29-subat [UTC] öz denetim TAMAM · AYNI 27 · U 6 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s32-yil-donumu-29-subat [TZ=Europe/Istanbul]: 19 olay · yapıldı 12 · red 0 · api_yok 0 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 63 ms
+    s32-yil-donumu-29-subat [Europe/Istanbul] öz denetim TAMAM · AYNI 27 · U 6 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s33-gecikmis-b1 [TZ=UTC]: 19 olay · yapıldı 16 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 53 ms
+    s33-gecikmis-b1 [UTC] öz denetim TAMAM · AYNI 7 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s33-gecikmis-b1 [TZ=Europe/Istanbul]: 19 olay · yapıldı 16 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 37 ms
+    s33-gecikmis-b1 [Europe/Istanbul] öz denetim TAMAM · AYNI 7 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s34-ocakta-aralik-iadesi [TZ=UTC]: 14 olay · yapıldı 10 · red 0 · api_yok 0 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 39 ms
+    s34-ocakta-aralik-iadesi [UTC] öz denetim TAMAM · AYNI 21 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 1 (sınıfsız 0)  (2 sn + 0 sn)
+s34-ocakta-aralik-iadesi [TZ=Europe/Istanbul]: 14 olay · yapıldı 10 · red 0 · api_yok 0 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 66 ms
+    s34-ocakta-aralik-iadesi [Europe/Istanbul] öz denetim TAMAM · AYNI 21 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 1 (sınıfsız 0)  (2 sn + 0 sn)
+s35-banka-ters-kayit [TZ=UTC]: 16 olay · yapıldı 12 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 34 ms
+    s35-banka-ters-kayit [UTC] öz denetim TAMAM · AYNI 11 · U 8 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s35-banka-ters-kayit [TZ=Europe/Istanbul]: 16 olay · yapıldı 12 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 34 ms
+    s35-banka-ters-kayit [Europe/Istanbul] öz denetim TAMAM · AYNI 11 · U 8 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s36-yuvarlama-kg2-ic-yuzde [TZ=UTC]: 15 olay · yapıldı 12 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 28 ms
+    s36-yuvarlama-kg2-ic-yuzde [UTC] öz denetim TAMAM · AYNI 9 · U 6 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s36-yuvarlama-kg2-ic-yuzde [TZ=Europe/Istanbul]: 15 olay · yapıldı 12 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 35 ms
+    s36-yuvarlama-kg2-ic-yuzde [Europe/Istanbul] öz denetim TAMAM · AYNI 9 · U 6 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s37-kart-borcuna-aktar [TZ=UTC]: 10 olay · yapıldı 8 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 48 ms
+    s37-kart-borcuna-aktar [UTC] öz denetim TAMAM · AYNI 8 · U 12 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s37-kart-borcuna-aktar [TZ=Europe/Istanbul]: 10 olay · yapıldı 8 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 37 ms
+    s37-kart-borcuna-aktar [Europe/Istanbul] öz denetim TAMAM · AYNI 8 · U 12 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+s38-cari-tur-degistir [TZ=UTC]: 11 olay · yapıldı 7 · red 1 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 27 ms
+    s38-cari-tur-degistir [UTC] öz denetim TAMAM · AYNI 14 · U 8 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (1 sn + 0 sn)
+s38-cari-tur-degistir [TZ=Europe/Istanbul]: 11 olay · yapıldı 7 · red 1 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 33 ms
+    s38-cari-tur-degistir [Europe/Istanbul] öz denetim TAMAM · AYNI 14 · U 8 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (1 sn + 0 sn)
+s39-mahsup-acik-kalem [TZ=UTC]: 11 olay · yapıldı 8 · red 0 · api_yok 0 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 32 ms
+    s39-mahsup-acik-kalem [UTC] öz denetim TAMAM · AYNI 8 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (1 sn + 0 sn)
+s39-mahsup-acik-kalem [TZ=Europe/Istanbul]: 11 olay · yapıldı 8 · red 0 · api_yok 0 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 36 ms
+    s39-mahsup-acik-kalem [Europe/Istanbul] öz denetim TAMAM · AYNI 8 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (1 sn + 0 sn)
+
+AYNI 2426 · U 662 · P 48 · K 420 · R 178 · SINIFLANMADI 0 · red farkı 0 · uygulanamayan olay 0 · sınıfsız adım farkı 0 · değişmez 0 · öz denetim bozuk 0 · koşu hatası 0
+Ölçüm (olay döngüsü en çok, ms): rastgele-1 [Europe/Istanbul] 129 (koşu 53 sn; GET ledger ort 11 / en çok 58 ms) · rastgele-3 [UTC] 120 (koşu 53 sn; GET ledger ort 12 / en çok 72 ms) · rastgele-3 [Europe/Istanbul] 112 (koşu 53 sn; GET ledger ort 12 / en çok 69 ms) · rastgele-2 [Europe/Istanbul] 111 (koşu 53 sn; GET ledger ort 12 / en çok 59 ms) · rastgele-2 [UTC] 108 (koşu 50 sn; GET ledger ort 11 / en çok 42 ms)
+U etiketleri: C5-ACILIS-519 346 · C1-ALT-90 118 · F06-GIDER-TURU 116 · KG2-H03 84 · C5-EVRAK-ACILIS 82 · KG24-IHRACAT 82 · K14-HESAPSIZ 18 · C5-EVRAK-KARSILIKSIZ 12 · KG3-KAYIT 12 · KG5-EXCEL 12 · KG19-YOLDAKI 8 · KG8-IADE-KDV 8 · KG16-ACIKLAMA 6
+
+FARKLAR (394; ilk 200):
+  rastgele-1 [Europe/Istanbul] RED #857 devri_yenile: kâhin kabul · program 400 chronology → K
+  rastgele-1 [Europe/Istanbul] OLAY #77 kart_faiz (api_yok) → P: kart faizi (D-07): kart hesabına faiz / masraf fişi girilemiyor — faiz 400 Garanti BBVA · Şirket Kartı (Kredi Kartı): faiz gideri Vadesiz, Ticari ya da Diğer TL
+  rastgele-1 [Europe/Istanbul] OLAY #103 kart_faiz (api_yok) → P: kart faizi (D-07): kart hesabına faiz / masraf fişi girilemiyor — faiz 400 Garanti BBVA · Şirket Kartı (Kredi Kartı): faiz gideri Vadesiz, Ticari ya da Diğer TL
+  rastgele-1 [Europe/Istanbul] OLAY #193 kart_faiz (api_yok) → P: kart faizi (D-07): kart hesabına faiz / masraf fişi girilemiyor — faiz 400 Garanti BBVA · Şirket Kartı (Kredi Kartı): faiz gideri Vadesiz, Ticari ya da Diğer TL
+  rastgele-1 [Europe/Istanbul] OLAY #488 kart_faiz (api_yok) → P: kart faizi (D-07): kart hesabına faiz / masraf fişi girilemiyor — faiz 400 Garanti BBVA · Şirket Kartı (Kredi Kartı): faiz gideri Vadesiz, Ticari ya da Diğer TL
+  rastgele-1 [Europe/Istanbul] OLAY #545 kart_faiz (api_yok) → P: kart faizi (D-07): kart hesabına faiz / masraf fişi girilemiyor — faiz 400 Garanti BBVA · Şirket Kartı (Kredi Kartı): faiz gideri Vadesiz, Ticari ya da Diğer TL
+  rastgele-1 [Europe/Istanbul] bil_arsiv ana:320 program 2582180 · kâhin 2582179 · bugün 2582179 → K
+  rastgele-1 [Europe/Istanbul] bil_arsiv ana:360 program -3191464 · kâhin -3279041 · bugün -3261959 → K
+  rastgele-1 [Europe/Istanbul] bil_arsiv cari:C2 program 1478040 · kâhin 1500726 · bugün 1500726 → K
+  rastgele-1 [Europe/Istanbul] bil_arsiv cari:C3 program 1155703 · kâhin 1190204 · bugün 1190204 → K
+  rastgele-1 [Europe/Istanbul] bil_arsiv cari:C5 program 14386 · kâhin 23570 · bugün 23570 → K
+  rastgele-1 [Europe/Istanbul] bil_arsiv cari:T1 program 2622752 · kâhin 2622751 · bugün 2622751 → K
+  rastgele-1 [Europe/Istanbul] bil_canli_K ana:320 program 2582180 · kâhin 2582179 · bugün 2582179 → K
+  rastgele-1 [Europe/Istanbul] bil_canli_K ana:360 program -3191464 · kâhin -3279041 · bugün -3261959 → K
+  rastgele-1 [Europe/Istanbul] bil_canli_K cari:C2 program 1478040 · kâhin 1500726 · bugün 1500726 → K
+  rastgele-1 [Europe/Istanbul] bil_canli_K cari:C3 program 1155703 · kâhin 1190204 · bugün 1190204 → K
+  rastgele-1 [Europe/Istanbul] bil_canli_K cari:C5 program 14386 · kâhin 23570 · bugün 23570 → K
+  rastgele-1 [Europe/Istanbul] bil_canli_K cari:T1 program 2622752 · kâhin 2622751 · bugün 2622751 → K
+  rastgele-1 [Europe/Istanbul] bil_yeni ana:320 program 2345223 · kâhin 2345221 · bugün 2345221 → K
+  rastgele-1 [Europe/Istanbul] bil_yeni ana:360 program -3217398 · kâhin -3299313 · bugün -3287892 → K
+  rastgele-1 [Europe/Istanbul] bil_yeni cari:C2 program 855720 · kâhin 878406 · bugün 878406 → K
+  rastgele-1 [Europe/Istanbul] bil_yeni cari:C3 program 1327128 · kâhin 1361629 · bugün 1361629 → K
+  rastgele-1 [Europe/Istanbul] bil_yeni cari:C5 program -9184 · kâhin 0 · bugün 0 → K
+  rastgele-1 [Europe/Istanbul] bil_yeni cari:T1 program 2682945 · kâhin 2682943 · bugün 2682943 → K
+  rastgele-1 [Europe/Istanbul] mz_arsiv ana:320 program 2582180 · kâhin 2582179 · bugün 2582179 → K
+  rastgele-1 [Europe/Istanbul] mz_arsiv ana:360 program -3191464 · kâhin -3279041 · bugün -3261959 → K
+  rastgele-1 [Europe/Istanbul] mz_arsiv cari:C2 program 1478040 · kâhin 1500726 · bugün 1500726 → K
+  rastgele-1 [Europe/Istanbul] mz_arsiv cari:C3 program 1155703 · kâhin 1190204 · bugün 1190204 → K
+  rastgele-1 [Europe/Istanbul] mz_arsiv cari:C5 program 14386 · kâhin 23570 · bugün 23570 → K
+  rastgele-1 [Europe/Istanbul] mz_arsiv cari:T1 program 2622752 · kâhin 2622751 · bugün 2622751 → K
+  rastgele-1 [Europe/Istanbul] mz_yeni ana:320 program 2345223 · kâhin 2345221 · bugün 2345221 → K
+  rastgele-1 [Europe/Istanbul] mz_yeni ana:360 program -3217398 · kâhin -3299313 · bugün -3287892 → K
+  rastgele-1 [Europe/Istanbul] mz_yeni cari:C2 program 855720 · kâhin 878406 · bugün 878406 → K
+  rastgele-1 [Europe/Istanbul] mz_yeni cari:C3 program 1327128 · kâhin 1361629 · bugün 1361629 → K
+  rastgele-1 [Europe/Istanbul] mz_yeni cari:C5 program -9184 · kâhin 0 · bugün 0 → K
+  rastgele-1 [Europe/Istanbul] mz_yeni cari:T1 program 2682945 · kâhin 2682943 · bugün 2682943 → K
+  rastgele-1 [Europe/Istanbul] son ana:320 program 2345223 · kâhin 2345221 · bugün 2345221 → K
+  rastgele-1 [Europe/Istanbul] son ana:360 program -3217398 · kâhin -3299313 · bugün -3287892 → K
+  rastgele-1 [Europe/Istanbul] son cari:C2 program 855720 · kâhin 878406 · bugün 878406 → K
+  rastgele-1 [Europe/Istanbul] son cari:C3 program 1327128 · kâhin 1361629 · bugün 1361629 → K
+  rastgele-1 [Europe/Istanbul] son cari:C5 program -9184 · kâhin 0 · bugün 0 → K
+  rastgele-1 [Europe/Istanbul] son cari:T1 program 2682945 · kâhin 2682943 · bugün 2682943 → K
+  rastgele-1 [UTC] RED #857 devri_yenile: kâhin kabul · program 400 chronology → K
+  rastgele-1 [UTC] OLAY #77 kart_faiz (api_yok) → P: kart faizi (D-07): kart hesabına faiz / masraf fişi girilemiyor — faiz 400 Garanti BBVA · Şirket Kartı (Kredi Kartı): faiz gideri Vadesiz, Ticari ya da Diğer TL
+  rastgele-1 [UTC] OLAY #103 kart_faiz (api_yok) → P: kart faizi (D-07): kart hesabına faiz / masraf fişi girilemiyor — faiz 400 Garanti BBVA · Şirket Kartı (Kredi Kartı): faiz gideri Vadesiz, Ticari ya da Diğer TL
+  rastgele-1 [UTC] OLAY #193 kart_faiz (api_yok) → P: kart faizi (D-07): kart hesabına faiz / masraf fişi girilemiyor — faiz 400 Garanti BBVA · Şirket Kartı (Kredi Kartı): faiz gideri Vadesiz, Ticari ya da Diğer TL
+  rastgele-1 [UTC] OLAY #488 kart_faiz (api_yok) → P: kart faizi (D-07): kart hesabına faiz / masraf fişi girilemiyor — faiz 400 Garanti BBVA · Şirket Kartı (Kredi Kartı): faiz gideri Vadesiz, Ticari ya da Diğer TL
+  rastgele-1 [UTC] OLAY #545 kart_faiz (api_yok) → P: kart faizi (D-07): kart hesabına faiz / masraf fişi girilemiyor — faiz 400 Garanti BBVA · Şirket Kartı (Kredi Kartı): faiz gideri Vadesiz, Ticari ya da Diğer TL
+  rastgele-1 [UTC] bil_arsiv ana:320 program 2582180 · kâhin 2582179 · bugün 2582179 → K
+  rastgele-1 [UTC] bil_arsiv ana:360 program -3191464 · kâhin -3279041 · bugün -3261959 → K
+  rastgele-1 [UTC] bil_arsiv cari:C2 program 1478040 · kâhin 1500726 · bugün 1500726 → K
+  rastgele-1 [UTC] bil_arsiv cari:C3 program 1155703 · kâhin 1190204 · bugün 1190204 → K
+  rastgele-1 [UTC] bil_arsiv cari:C5 program 14386 · kâhin 23570 · bugün 23570 → K
+  rastgele-1 [UTC] bil_arsiv cari:T1 program 2622752 · kâhin 2622751 · bugün 2622751 → K
+  rastgele-1 [UTC] bil_canli_K ana:320 program 2582180 · kâhin 2582179 · bugün 2582179 → K
+  rastgele-1 [UTC] bil_canli_K ana:360 program -3191464 · kâhin -3279041 · bugün -3261959 → K
+  rastgele-1 [UTC] bil_canli_K cari:C2 program 1478040 · kâhin 1500726 · bugün 1500726 → K
+  rastgele-1 [UTC] bil_canli_K cari:C3 program 1155703 · kâhin 1190204 · bugün 1190204 → K
+  rastgele-1 [UTC] bil_canli_K cari:C5 program 14386 · kâhin 23570 · bugün 23570 → K
+  rastgele-1 [UTC] bil_canli_K cari:T1 program 2622752 · kâhin 2622751 · bugün 2622751 → K
+  rastgele-1 [UTC] bil_yeni ana:320 program 2345223 · kâhin 2345221 · bugün 2345221 → K
+  rastgele-1 [UTC] bil_yeni ana:360 program -3217398 · kâhin -3299313 · bugün -3287892 → K
+  rastgele-1 [UTC] bil_yeni cari:C2 program 855720 · kâhin 878406 · bugün 878406 → K
+  rastgele-1 [UTC] bil_yeni cari:C3 program 1327128 · kâhin 1361629 · bugün 1361629 → K
+  rastgele-1 [UTC] bil_yeni cari:C5 program -9184 · kâhin 0 · bugün 0 → K
+  rastgele-1 [UTC] bil_yeni cari:T1 program 2682945 · kâhin 2682943 · bugün 2682943 → K
+  rastgele-1 [UTC] mz_arsiv ana:320 program 2582180 · kâhin 2582179 · bugün 2582179 → K
+  rastgele-1 [UTC] mz_arsiv ana:360 program -3191464 · kâhin -3279041 · bugün -3261959 → K
+  rastgele-1 [UTC] mz_arsiv cari:C2 program 1478040 · kâhin 1500726 · bugün 1500726 → K
+  rastgele-1 [UTC] mz_arsiv cari:C3 program 1155703 · kâhin 1190204 · bugün 1190204 → K
+  rastgele-1 [UTC] mz_arsiv cari:C5 program 14386 · kâhin 23570 · bugün 23570 → K
+  rastgele-1 [UTC] mz_arsiv cari:T1 program 2622752 · kâhin 2622751 · bugün 2622751 → K
+  rastgele-1 [UTC] mz_yeni ana:320 program 2345223 · kâhin 2345221 · bugün 2345221 → K
+  rastgele-1 [UTC] mz_yeni ana:360 program -3217398 · kâhin -3299313 · bugün -3287892 → K
+  rastgele-1 [UTC] mz_yeni cari:C2 program 855720 · kâhin 878406 · bugün 878406 → K
+  rastgele-1 [UTC] mz_yeni cari:C3 program 1327128 · kâhin 1361629 · bugün 1361629 → K
+  rastgele-1 [UTC] mz_yeni cari:C5 program -9184 · kâhin 0 · bugün 0 → K
+  rastgele-1 [UTC] mz_yeni cari:T1 program 2682945 · kâhin 2682943 · bugün 2682943 → K
+  rastgele-1 [UTC] son ana:320 program 2345223 · kâhin 2345221 · bugün 2345221 → K
+  rastgele-1 [UTC] son ana:360 program -3217398 · kâhin -3299313 · bugün -3287892 → K
+  rastgele-1 [UTC] son cari:C2 program 855720 · kâhin 878406 · bugün 878406 → K
+  rastgele-1 [UTC] son cari:C3 program 1327128 · kâhin 1361629 · bugün 1361629 → K
+  rastgele-1 [UTC] son cari:C5 program -9184 · kâhin 0 · bugün 0 → K
+  rastgele-1 [UTC] son cari:T1 program 2682945 · kâhin 2682943 · bugün 2682943 → K
+  rastgele-2 [Europe/Istanbul] OLAY #224 kart_faiz (api_yok) → P: kart faizi (D-07): kart hesabına faiz / masraf fişi girilemiyor — faiz 400 Garanti BBVA · Şirket Kartı (Kredi Kartı): faiz gideri Vadesiz, Ticari ya da Diğer TL
+  rastgele-2 [Europe/Istanbul] OLAY #345 kart_faiz (api_yok) → P: kart faizi (D-07): kart hesabına faiz / masraf fişi girilemiyor — faiz 400 Garanti BBVA · Şirket Kartı (Kredi Kartı): faiz gideri Vadesiz, Ticari ya da Diğer TL
+  rastgele-2 [Europe/Istanbul] OLAY #498 kart_faiz (api_yok) → P: kart faizi (D-07): kart hesabına faiz / masraf fişi girilemiyor — faiz 400 Garanti BBVA · Şirket Kartı (Kredi Kartı): faiz gideri Vadesiz, Ticari ya da Diğer TL
+  rastgele-2 [Europe/Istanbul] OLAY #598 kart_faiz (api_yok) → P: kart faizi (D-07): kart hesabına faiz / masraf fişi girilemiyor — faiz 400 Garanti BBVA · Şirket Kartı (Kredi Kartı): faiz gideri Vadesiz, Ticari ya da Diğer TL
+  rastgele-2 [Europe/Istanbul] OLAY #768 kart_faiz (api_yok) → P: kart faizi (D-07): kart hesabına faiz / masraf fişi girilemiyor — faiz 400 Garanti BBVA · Şirket Kartı (Kredi Kartı): faiz gideri Vadesiz, Ticari ya da Diğer TL
+  rastgele-2 [Europe/Istanbul] bil_arsiv ana:128 program 77581 · kâhin 583281 · bugün 583281 → R
+  rastgele-2 [Europe/Istanbul] bil_arsiv ana:129 program -77581 · kâhin -437460 · bugün -437460 → R
+  rastgele-2 [Europe/Istanbul] bil_arsiv ana:320 program 4390329 · kâhin 4390328 · bugün 4390328 → K
+  rastgele-2 [Europe/Istanbul] bil_arsiv ana:360 program -2167392 · kâhin -2251218 · bugün -2242440 → K
+  rastgele-2 [Europe/Istanbul] bil_arsiv cari:C1 program 359729 · kâhin 442615 · bugün 367315 → K
+  rastgele-2 [Europe/Istanbul] bil_arsiv cari:C2 program 12662 · kâhin 44929 · bugün 44929 → K
+  rastgele-2 [Europe/Istanbul] bil_arsiv cari:C4 program 637720 · kâhin 653490 · bugün 653490 → K
+  rastgele-2 [Europe/Istanbul] bil_arsiv cari:C5 program 2203556 · kâhin 2222984 · bugün 2222984 → K
+  rastgele-2 [Europe/Istanbul] bil_arsiv cari:T2 program 1 · kâhin 0 · bugün 0 → K
+  rastgele-2 [Europe/Istanbul] bil_canli_K ana:128 program 77581 · kâhin 583281 · bugün 583281 → R
+  rastgele-2 [Europe/Istanbul] bil_canli_K ana:129 program -77581 · kâhin -437460 · bugün -437460 → R
+  rastgele-2 [Europe/Istanbul] bil_canli_K ana:320 program 4390329 · kâhin 4390328 · bugün 4390328 → K
+  rastgele-2 [Europe/Istanbul] bil_canli_K ana:360 program -2167392 · kâhin -2251218 · bugün -2242440 → K
+  rastgele-2 [Europe/Istanbul] bil_canli_K cari:C1 program 359729 · kâhin 442615 · bugün 367315 → K
+  rastgele-2 [Europe/Istanbul] bil_canli_K cari:C2 program 12662 · kâhin 44929 · bugün 44929 → K
+  rastgele-2 [Europe/Istanbul] bil_canli_K cari:C4 program 637720 · kâhin 653490 · bugün 653490 → K
+  rastgele-2 [Europe/Istanbul] bil_canli_K cari:C5 program 2203556 · kâhin 2222984 · bugün 2222984 → K
+  rastgele-2 [Europe/Istanbul] bil_canli_K cari:T2 program 1 · kâhin 0 · bugün 0 → K
+  rastgele-2 [Europe/Istanbul] bil_yeni ana:128 program 0 · kâhin 583281 · bugün 583281 → R
+  rastgele-2 [Europe/Istanbul] bil_yeni ana:129 program 0 · kâhin -437460 · bugün -437460 → R
+  rastgele-2 [Europe/Istanbul] bil_yeni ana:320 program 5293097 · kâhin 5293096 · bugün 5293096 → K
+  rastgele-2 [Europe/Istanbul] bil_yeni ana:360 program -2333172 · kâhin -2400219 · bugün -2408219 → K
+  rastgele-2 [Europe/Istanbul] bil_yeni cari:C1 program 875790 · kâhin 958676 · bugün 883376 → K
+  rastgele-2 [Europe/Istanbul] bil_yeni cari:C2 program 554293 · kâhin 586560 · bugün 586560 → K
+  rastgele-2 [Europe/Istanbul] bil_yeni cari:C3 program 1389085 · kâhin 1389084 · bugün 1389084 → K
+  rastgele-2 [Europe/Istanbul] bil_yeni cari:C4 program 139930 · kâhin 155700 · bugün 155700 → K
+  rastgele-2 [Europe/Istanbul] bil_yeni cari:C5 program 1640151 · kâhin 1659579 · bugün 1659579 → K
+  rastgele-2 [Europe/Istanbul] bil_yeni cari:T2 program -192039 · kâhin -192040 · bugün -192040 → K
+  rastgele-2 [Europe/Istanbul] gt_arsiv ana:610 program 572390 · kâhin 572388 · bugün 572388 → K
+  rastgele-2 [Europe/Istanbul] gt_arsiv ana:644 program -359879 · kâhin 0 · bugün 0 → R
+  rastgele-2 [Europe/Istanbul] gt_canli ana:610 program 572390 · kâhin 572388 · bugün 572388 → K
+  rastgele-2 [Europe/Istanbul] gt_canli ana:644 program -359879 · kâhin 0 · bugün 0 → R
+  rastgele-2 [Europe/Istanbul] gt_yeni ana:644 program -77581 · kâhin 0 · bugün 0 → R
+  rastgele-2 [Europe/Istanbul] mz_arsiv ana:128 program 77581 · kâhin 583281 · bugün 583281 → R
+  rastgele-2 [Europe/Istanbul] mz_arsiv ana:129 program -77581 · kâhin -437460 · bugün -437460 → R
+  rastgele-2 [Europe/Istanbul] mz_arsiv ana:320 program 4390329 · kâhin 4390328 · bugün 4390328 → K
+  rastgele-2 [Europe/Istanbul] mz_arsiv ana:360 program -2167392 · kâhin -2251218 · bugün -2242440 → K
+  rastgele-2 [Europe/Istanbul] mz_arsiv ana:610 program 572390 · kâhin 572388 · bugün 572388 → K
+  rastgele-2 [Europe/Istanbul] mz_arsiv ana:644 program -359879 · kâhin 0 · bugün 0 → R
+  rastgele-2 [Europe/Istanbul] mz_arsiv cari:C1 program 359729 · kâhin 442615 · bugün 367315 → K
+  rastgele-2 [Europe/Istanbul] mz_arsiv cari:C2 program 12662 · kâhin 44929 · bugün 44929 → K
+  rastgele-2 [Europe/Istanbul] mz_arsiv cari:C4 program 637720 · kâhin 653490 · bugün 653490 → K
+  rastgele-2 [Europe/Istanbul] mz_arsiv cari:C5 program 2203556 · kâhin 2222984 · bugün 2222984 → K
+  rastgele-2 [Europe/Istanbul] mz_arsiv cari:T2 program 1 · kâhin 0 · bugün 0 → K
+  rastgele-2 [Europe/Istanbul] mz_yeni ana:128 program 0 · kâhin 583281 · bugün 583281 → R
+  rastgele-2 [Europe/Istanbul] mz_yeni ana:129 program 0 · kâhin -437460 · bugün -437460 → R
+  rastgele-2 [Europe/Istanbul] mz_yeni ana:320 program 5293097 · kâhin 5293096 · bugün 5293096 → K
+  rastgele-2 [Europe/Istanbul] mz_yeni ana:360 program -2333172 · kâhin -2400219 · bugün -2408219 → K
+  rastgele-2 [Europe/Istanbul] mz_yeni ana:610 program 576390 · kâhin 576388 · bugün 576388 → K
+  rastgele-2 [Europe/Istanbul] mz_yeni ana:644 program -437460 · kâhin 0 · bugün 0 → R
+  rastgele-2 [Europe/Istanbul] mz_yeni cari:C1 program 875790 · kâhin 958676 · bugün 883376 → K
+  rastgele-2 [Europe/Istanbul] mz_yeni cari:C2 program 554293 · kâhin 586560 · bugün 586560 → K
+  rastgele-2 [Europe/Istanbul] mz_yeni cari:C3 program 1389085 · kâhin 1389084 · bugün 1389084 → K
+  rastgele-2 [Europe/Istanbul] mz_yeni cari:C4 program 139930 · kâhin 155700 · bugün 155700 → K
+  rastgele-2 [Europe/Istanbul] mz_yeni cari:C5 program 1640151 · kâhin 1659579 · bugün 1659579 → K
+  rastgele-2 [Europe/Istanbul] mz_yeni cari:T2 program -192039 · kâhin -192040 · bugün -192040 → K
+  rastgele-2 [Europe/Istanbul] son ana:128 program 0 · kâhin 583281 · bugün 583281 → R
+  rastgele-2 [Europe/Istanbul] son ana:129 program 0 · kâhin -437460 · bugün -437460 → R
+  rastgele-2 [Europe/Istanbul] son ana:320 program 5293097 · kâhin 5293096 · bugün 5293096 → K
+  rastgele-2 [Europe/Istanbul] son ana:360 program -2333172 · kâhin -2400219 · bugün -2408219 → K
+  rastgele-2 [Europe/Istanbul] son ana:610 program 576390 · kâhin 576388 · bugün 576388 → K
+  rastgele-2 [Europe/Istanbul] son ana:644 program -437460 · kâhin 0 · bugün 0 → R
+  rastgele-2 [Europe/Istanbul] son cari:C1 program 875790 · kâhin 958676 · bugün 883376 → K
+  rastgele-2 [Europe/Istanbul] son cari:C2 program 554293 · kâhin 586560 · bugün 586560 → K
+  rastgele-2 [Europe/Istanbul] son cari:C3 program 1389085 · kâhin 1389084 · bugün 1389084 → K
+  rastgele-2 [Europe/Istanbul] son cari:C4 program 139930 · kâhin 155700 · bugün 155700 → K
+  rastgele-2 [Europe/Istanbul] son cari:C5 program 1640151 · kâhin 1659579 · bugün 1659579 → K
+  rastgele-2 [Europe/Istanbul] son cari:T2 program -192039 · kâhin -192040 · bugün -192040 → K
+  rastgele-2 [UTC] OLAY #224 kart_faiz (api_yok) → P: kart faizi (D-07): kart hesabına faiz / masraf fişi girilemiyor — faiz 400 Garanti BBVA · Şirket Kartı (Kredi Kartı): faiz gideri Vadesiz, Ticari ya da Diğer TL
+  rastgele-2 [UTC] OLAY #345 kart_faiz (api_yok) → P: kart faizi (D-07): kart hesabına faiz / masraf fişi girilemiyor — faiz 400 Garanti BBVA · Şirket Kartı (Kredi Kartı): faiz gideri Vadesiz, Ticari ya da Diğer TL
+  rastgele-2 [UTC] OLAY #498 kart_faiz (api_yok) → P: kart faizi (D-07): kart hesabına faiz / masraf fişi girilemiyor — faiz 400 Garanti BBVA · Şirket Kartı (Kredi Kartı): faiz gideri Vadesiz, Ticari ya da Diğer TL
+  rastgele-2 [UTC] OLAY #598 kart_faiz (api_yok) → P: kart faizi (D-07): kart hesabına faiz / masraf fişi girilemiyor — faiz 400 Garanti BBVA · Şirket Kartı (Kredi Kartı): faiz gideri Vadesiz, Ticari ya da Diğer TL
+  rastgele-2 [UTC] OLAY #768 kart_faiz (api_yok) → P: kart faizi (D-07): kart hesabına faiz / masraf fişi girilemiyor — faiz 400 Garanti BBVA · Şirket Kartı (Kredi Kartı): faiz gideri Vadesiz, Ticari ya da Diğer TL
+  rastgele-2 [UTC] bil_arsiv ana:128 program 77581 · kâhin 583281 · bugün 583281 → R
+  rastgele-2 [UTC] bil_arsiv ana:129 program -77581 · kâhin -437460 · bugün -437460 → R
+  rastgele-2 [UTC] bil_arsiv ana:320 program 4390329 · kâhin 4390328 · bugün 4390328 → K
+  rastgele-2 [UTC] bil_arsiv ana:360 program -2167392 · kâhin -2251218 · bugün -2242440 → K
+  rastgele-2 [UTC] bil_arsiv cari:C1 program 359729 · kâhin 442615 · bugün 367315 → K
+  rastgele-2 [UTC] bil_arsiv cari:C2 program 12662 · kâhin 44929 · bugün 44929 → K
+  rastgele-2 [UTC] bil_arsiv cari:C4 program 637720 · kâhin 653490 · bugün 653490 → K
+  rastgele-2 [UTC] bil_arsiv cari:C5 program 2203556 · kâhin 2222984 · bugün 2222984 → K
+  rastgele-2 [UTC] bil_arsiv cari:T2 program 1 · kâhin 0 · bugün 0 → K
+  rastgele-2 [UTC] bil_canli_K ana:128 program 77581 · kâhin 583281 · bugün 583281 → R
+  rastgele-2 [UTC] bil_canli_K ana:129 program -77581 · kâhin -437460 · bugün -437460 → R
+  rastgele-2 [UTC] bil_canli_K ana:320 program 4390329 · kâhin 4390328 · bugün 4390328 → K
+  rastgele-2 [UTC] bil_canli_K ana:360 program -2167392 · kâhin -2251218 · bugün -2242440 → K
+  rastgele-2 [UTC] bil_canli_K cari:C1 program 359729 · kâhin 442615 · bugün 367315 → K
+  rastgele-2 [UTC] bil_canli_K cari:C2 program 12662 · kâhin 44929 · bugün 44929 → K
+  rastgele-2 [UTC] bil_canli_K cari:C4 program 637720 · kâhin 653490 · bugün 653490 → K
+  rastgele-2 [UTC] bil_canli_K cari:C5 program 2203556 · kâhin 2222984 · bugün 2222984 → K
+  rastgele-2 [UTC] bil_canli_K cari:T2 program 1 · kâhin 0 · bugün 0 → K
+  rastgele-2 [UTC] bil_yeni ana:128 program 0 · kâhin 583281 · bugün 583281 → R
+  rastgele-2 [UTC] bil_yeni ana:129 program 0 · kâhin -437460 · bugün -437460 → R
+  rastgele-2 [UTC] bil_yeni ana:320 program 5293097 · kâhin 5293096 · bugün 5293096 → K
+  rastgele-2 [UTC] bil_yeni ana:360 program -2333172 · kâhin -2400219 · bugün -2408219 → K
+  rastgele-2 [UTC] bil_yeni cari:C1 program 875790 · kâhin 958676 · bugün 883376 → K
+  rastgele-2 [UTC] bil_yeni cari:C2 program 554293 · kâhin 586560 · bugün 586560 → K
+  rastgele-2 [UTC] bil_yeni cari:C3 program 1389085 · kâhin 1389084 · bugün 1389084 → K
+  rastgele-2 [UTC] bil_yeni cari:C4 program 139930 · kâhin 155700 · bugün 155700 → K
+  rastgele-2 [UTC] bil_yeni cari:C5 program 1640151 · kâhin 1659579 · bugün 1659579 → K
+  rastgele-2 [UTC] bil_yeni cari:T2 program -192039 · kâhin -192040 · bugün -192040 → K
+  rastgele-2 [UTC] gt_arsiv ana:610 program 572390 · kâhin 572388 · bugün 572388 → K
+  rastgele-2 [UTC] gt_arsiv ana:644 program -359879 · kâhin 0 · bugün 0 → R
+  rastgele-2 [UTC] gt_canli ana:610 program 572390 · kâhin 572388 · bugün 572388 → K
+  rastgele-2 [UTC] gt_canli ana:644 program -359879 · kâhin 0 · bugün 0 → R
+  rastgele-2 [UTC] gt_yeni ana:644 program -77581 · kâhin 0 · bugün 0 → R
+  rastgele-2 [UTC] mz_arsiv ana:128 program 77581 · kâhin 583281 · bugün 583281 → R
+  rastgele-2 [UTC] mz_arsiv ana:129 program -77581 · kâhin -437460 · bugün -437460 → R
+  rastgele-2 [UTC] mz_arsiv ana:320 program 4390329 · kâhin 4390328 · bugün 4390328 → K
+  rastgele-2 [UTC] mz_arsiv ana:360 program -2167392 · kâhin -2251218 · bugün -2242440 → K
+  rastgele-2 [UTC] mz_arsiv ana:610 program 572390 · kâhin 572388 · bugün 572388 → K
+
+# tests 3734
+# pass 3088
+# fail 646
+# cancelled 0
+# skipped 0
+# todo 0
+Çıktı: /home/user/ofis---y-netimi/.claude/worktrees/agent-a64680bb6bb82a79e/docs/kanit/2026-11-05/surucu-muhasebe-v249

@@ -1,0 +1,150 @@
+{
+ "aciklama": "S189 A: açılışla aynı günkü eski kart hareketi sınırın içinde (309); S190 A: silinen hesabın açılışı en geç açılışa sayılmaz (hesapsız havale 519).",
+ "ad": "s116-a4-s189-s190-sinir",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "mz/satirlar/102.B1/bakiye": 100000,
+   "mz/satirlar/120|C1/bakiye": -7000,
+   "mz/satirlar/309.KK1/bakiye": -1020,
+   "mz/satirlar/320|T1/bakiye": 50,
+   "mz/satirlar/519/bakiye": -92030,
+   "redler": []
+  }
+ },
+ "kapsam": [
+  "K-14",
+  "K-15",
+  "S179",
+  "S189",
+  "S190",
+  "M-04",
+  "M-05",
+  "Ü10",
+  "Ü11"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "banka": "B1",
+   "tarih": "2026-04-01",
+   "tur": "banka_acilis",
+   "tutar": 100000
+  },
+  {
+   "banka": "B2",
+   "id": "BA2",
+   "tarih": "2026-05-01",
+   "tur": "banka_acilis",
+   "tutar": 50000
+  },
+  {
+   "kaynak": "BA2",
+   "tur": "sil"
+  },
+  {
+   "cari": "C1",
+   "tarih": "2026-03-15",
+   "tur": "hesapsiz_hareket",
+   "tutar": 7000,
+   "yon": "tahsilat"
+  },
+  {
+   "kart": "KK1",
+   "tarih": "2026-02-01",
+   "tur": "kart_acilis",
+   "tutar": 1000
+  },
+  {
+   "cari": "T1",
+   "kart": "KK1",
+   "tarih": "2026-02-01",
+   "tur": "kart_borcuna_aktar",
+   "tutar": 20
+  },
+  {
+   "cari": "T1",
+   "kart": "KK1",
+   "tarih": "2026-01-20",
+   "tur": "kart_borcuna_aktar",
+   "tutar": 30
+  },
+  {
+   "ad": "mz",
+   "bas": "2026-01-01",
+   "rapor": "mizan",
+   "son": "2026-12-31",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

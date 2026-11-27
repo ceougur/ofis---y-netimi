@@ -1,0 +1,22 @@
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkd-once · yük 1.95 1.49 2.73
+BORÇ YAZ × 8: en iyi 302.2 · ortanca 341.6 · en kötü 754.2 ms · 394.5 337.6 340.6 341.6 319.5 754.2 370 302.2
+  profil toplam 3600 ms (çağrı başına 450 ms)
+    221.1 ms/çağrı  all :0
+     93.9 ms/çağrı  exec :0
+     54.9 ms/çağrı  post node:inspector:118
+     42.6 ms/çağrı  get :0
+      5.4 ms/çağrı  (garbage collector) :0
+      3.9 ms/çağrı  queueOnce obligation-queue.mjs:228
+      1.7 ms/çağrı  next :0
+      1.6 ms/çağrı  add obligation-queue.mjs:257
+      1.4 ms/çağrı  query db.mjs:375
+      1.1 ms/çağrı  coverForcing obligation-queue.mjs:169
+        1 ms/çağrı  roundMoney money.mjs:32
+      0.8 ms/çağrı  send http.mjs:38
+      0.7 ms/çağrı  (anonim) accounts.mjs:182
+      0.6 ms/çağrı  assemble obligation-queue.mjs:659
+      0.6 ms/çağrı  s2 obligation-queue.mjs:70
+      0.6 ms/çağrı  leanRows lean-rows.mjs:32
+  lastTx {"marksMs":0.09635400000115624,"guardMs":60.65151100000003,"moneyMs":0.1438670000025013} · kapı {"path":"scoped","ms":60.378483000000415}
+yük (sonda) 1.95 1.51 2.72
+çıkış 0

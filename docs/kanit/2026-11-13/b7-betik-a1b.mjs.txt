@@ -1,0 +1,206 @@
+// DK-B6 dar kontrol — A1 (uyarı artışı) yollar tablosu. Kullanım: ROOT=<kod kökü> node a1.mjs
+// Veri programın API'sinden; dış yazım ayrı bağlantı (DatabaseSync). Sahte saat; lisans servisi yok.
+import { mkdtempSync } from "node:fs";
+import { tmpdir } from "node:os";
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+import { DatabaseSync } from "node:sqlite";
+
+process.env.HUKUK_LICENSE_URL ||= "http://127.0.0.1:9";
+const ROOT = process.env.ROOT;
+const { loginAdmin, removeTestDir, startTestServer } = await import(pathToFileURL(path.join(ROOT, "test", "helpers.mjs")).href);
+const NOW = "2026-03-20T12:00:00";
+const OPEN = "2026-03-10";
+const AFTER = "2026-03-11";
+const MOVED = "2026-03-08";
+const EARLY = ["2026-03-01", "2026-03-02", "2026-03-03", "2026-03-04"];
+const CODE = "cash:before-opening";
+const unwrap = r => ({ status: r.status, data: r.data && typeof r.data === "object" && r.data.ok === true ? r.data.data : r.data, code: r.data?.code, error: r.data?.error });
+const apiOf = c => ({ get: async u => unwrap(await c.get(u)), post: async (u, b) => unwrap(await c.post(u, b)), put: async (u, b) => unwrap(await c.put(u, b)), del: async u => unwrap(await c.del(u)) });
+const must = async (label, p) => {
+  const r = await p;
+  if (r.status !== 200) throw new Error(`${label}: ${r.status} ${r.code || ""} ${JSON.stringify(r.data).slice(0, 300)}`);
+  return r.data;
+};
+const idOf = d => d?.id || d?.entry?.id || d?.plan?.id || "";
+const noticeOf = r => (r?.checks || []).find(i => i.code === CODE) || null;
+const driftsOf = r => (r?.failures || []).filter(i => !i.notice).map(i => i.code);
+const scans = store => store.all("SELECT summary FROM integrity_log WHERE action = 'scan' ORDER BY at, rowid").map(r => r.summary);
+
+function outside(store, sqlList) {
+  const other = new DatabaseSync(store.get("PRAGMA database_list").file);
+  try {
+    other.exec("PRAGMA busy_timeout = 5000");
+    for (const [sql, ...args] of sqlList) other.prepare(sql).run(...args);
+  } finally {
+    other.close();
+  }
+}
+const moveOutside = (store, id, date) => {
+  const other = new DatabaseSync(store.get("PRAGMA database_list").file);
+  try {
+    const e = other.prepare("SELECT event_id AS e FROM cash_entries WHERE id = ?").get(id)?.e;
+    other.prepare("UPDATE cash_entries SET date = ? WHERE id = ?").run(date, id);
+    if (e) other.prepare("UPDATE fin_events SET date = ? WHERE id = ?").run(date, e);
+  } finally {
+    other.close();
+  }
+};
+
+async function setup() {
+  const root = mkdtempSync(path.join(tmpdir(), "dkb6-a1-"));
+  const server = await startTestServer({ dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), now: { time: NOW, fixed: true }, gateVerify: false });
+  const api = apiOf(await loginAdmin(server));
+  await api.post("/api/workspace/bank/setup/dismiss", {});
+  const ids = { early: [] };
+  const kasaIn = async (date, amount = "250") => idOf(await must(`Kasa Giriş ${date}`, api.post("/api/workspace/cash", { kind: "in", amount, date, description: `giriş ${date}`, method: "cash" })));
+  for (const d of EARLY) ids.early.push(await kasaIn(d, "10"));
+  for (const id of ids.early) await must("sil", api.del(`/api/workspace/cash/${id}`));
+  ids.opening = idOf(await must("açılış", api.post("/api/workspace/cash/opening", { amount: "5.000", date: OPEN })));
+  const restore = async (ref, label = ref) => {
+    const listed = await must("Silinenler", api.get("/api/admin/trash"));
+    const item = (Array.isArray(listed) ? listed : listed.items || []).find(r => r.ref === ref || r.id === `cash:${ref}` || r.id.endsWith(`:${ref}`));
+    if (!item) throw new Error(`Silinenler'de yok: ${label}`);
+    return api.post("/api/admin/trash/restore", { id: item.id });
+  };
+  await must("r0", restore(ids.early[0]));
+  await must("r1", restore(ids.early[1]));
+  ids.d1 = await kasaIn(OPEN);
+  ids.d2 = await kasaIn(AFTER);
+  ids.d3 = await kasaIn(AFTER, "30");
+  const integ = async () => must("Mutabakat Testi", api.get("/api/workspace/ledger/integrity"));
+  const base = await integ();
+  const store = () => server.app.store;
+  let mark = scans(store()).length;
+  const fresh = () => {
+    const s = scans(store());
+    const out = s.slice(mark);
+    mark = s.length;
+    return out;
+  };
+  const kasa = async () => (await must("Kasa", api.get("/api/workspace/cash"))).totals?.balance;
+  return { root, server, api, ids, integ, restore, store, fresh, kasa, kasaIn, base: noticeOf(base)?.count };
+}
+
+const results = [];
+async function scenario(name, expectAlarm, fn) {
+  const ctx = await setup();
+  try {
+    ctx.fresh();
+    const r = await fn(ctx);
+    const gunluk = ctx.fresh();
+    const alarm = gunluk.some(s => /uyarısı arttı|uyarısına yeni hareket girdi/.test(s));
+    results.push({ yol: name, ...r, gunluk, alarmBekleniyor: expectAlarm, alarmOldu: alarm, sonuc: expectAlarm === alarm ? "UYGUN" : "UYUMSUZ" });
+  } catch (error) {
+    results.push({ yol: name, hata: String(error.message).slice(0, 300) });
+  } finally {
+    await ctx.server.close();
+    removeTestDir(ctx.root);
+  }
+}
+
+// S1: sil + Silinenler'den geri yükle (arada tarama YOK) + aynı aralıkta 1 dış artış.
+await scenario("S1 sil+geri yükle (taramasız) + dış artış", true, async c => {
+  const once = c.base;
+  await must("sil e0", c.api.del(`/api/workspace/cash/${c.ids.early[0]}`));
+  await must("geri e0", c.restore(c.ids.early[0]));
+  moveOutside(c.store(), c.ids.d1, MOVED);
+  const r = await c.integ();
+  return { once, sonra: noticeOf(r)?.count, sapma: driftsOf(r) };
+});
+// S1b: aynısı iş parçacığı taramasıyla.
+await scenario("S1b sil+geri yükle (taramasız) + dış artış — iş parçacığı taraması", true, async c => {
+  const once = c.base;
+  await must("sil e0", c.api.del(`/api/workspace/cash/${c.ids.early[0]}`));
+  await must("geri e0", c.restore(c.ids.early[0]));
+  moveOutside(c.store(), c.ids.d1, MOVED);
+  const bg = await c.server.app.integrity.scanInBackground();
+  return { once, sonra: noticeOf(bg?.result)?.count, bulgu: bg?.findings?.map(f => f.code) };
+});
+// S2: kontrol — sil, TARAMA, geri yükle + dış artış.
+await scenario("S2 sil, tarama, geri yükle + dış artış (kontrol)", true, async c => {
+  const once = c.base;
+  await must("sil e0", c.api.del(`/api/workspace/cash/${c.ids.early[0]}`));
+  await c.integ();
+  await must("geri e0", c.restore(c.ids.early[0]));
+  moveOutside(c.store(), c.ids.d1, MOVED);
+  const r = await c.integ();
+  return { once, sonra: noticeOf(r)?.count };
+});
+// S3: açılışı sil + Silinenler'den geri yükle (arada tarama yok) — yanlış alarm olmamalı.
+await scenario("S3 açılışı sil + geri yükle (taramasız)", false, async c => {
+  const once = c.base;
+  await must("açılışı sil", c.api.del(`/api/workspace/cash/${c.ids.opening}`));
+  await must("açılışı geri", c.restore(c.ids.opening));
+  const r = await c.integ();
+  return { once, sonra: noticeOf(r)?.count };
+});
+// S3b: açılışı sil, TARAMA (0), geri yükle — yanlış alarm olmamalı.
+await scenario("S3b açılışı sil, tarama, geri yükle", false, async c => {
+  const once = c.base;
+  await must("açılışı sil", c.api.del(`/api/workspace/cash/${c.ids.opening}`));
+  const mid = noticeOf(await c.integ())?.count ?? 0;
+  await must("açılışı geri", c.restore(c.ids.opening));
+  const r = await c.integ();
+  return { once, ara: mid, sonra: noticeOf(r)?.count };
+});
+// S3c: açılışı sil + geri yükle (taramasız) + aynı aralıkta 1 dış artış.
+await scenario("S3c açılışı sil + geri yükle (taramasız) + dış artış", true, async c => {
+  const once = c.base;
+  await must("açılışı sil", c.api.del(`/api/workspace/cash/${c.ids.opening}`));
+  await must("açılışı geri", c.restore(c.ids.opening));
+  moveOutside(c.store(), c.ids.d1, MOVED);
+  const r = await c.integ();
+  return { once, sonra: noticeOf(r)?.count };
+});
+// S4: açılışı ÖNE al (03.01) sonra geri ileri (03.10) — ikinci adım kabul edilirse yanlış alarm olur mu.
+await scenario("S4 açılışı öne al, tarama, eski tarihe geri al", false, async c => {
+  const once = c.base;
+  const cur = await must("açılış oku", c.api.get("/api/workspace/cash/opening"));
+  const a = await c.api.post("/api/workspace/cash/opening", { amount: "5.000", date: EARLY[0] });
+  const mid = noticeOf(await c.integ())?.count ?? 0;
+  const b = await c.api.post("/api/workspace/cash/opening", { amount: "5.000", date: OPEN });
+  const r = await c.integ();
+  return { once, oneAl: `${a.status} ${a.code || ""}`, ara: mid, geriAl: `${b.status} ${b.code || ""}`, sonra: noticeOf(r)?.count ?? 0, acilis: cur.opening?.date };
+});
+// S5: dış araçla açılış öncesi satırın TUTARI değiştirilir (sayı aynı).
+await scenario("S5 dış tutar değişikliği (açılış öncesi satır)", false, async c => {
+  const k0 = await c.kasa();
+  outside(c.store(), [["UPDATE cash_entries SET amount = 999 WHERE id = ?", c.ids.early[0]]]);
+  const r = await c.integ();
+  return { once: c.base, sonra: noticeOf(r)?.count, sapma: driftsOf(r), kasa: [k0, await c.kasa()] };
+});
+// S6: dış araçla YENİ açılış öncesi satır eklenir.
+await scenario("S6 dış ekleme (yeni açılış öncesi satır)", true, async c => {
+  outside(c.store(), [["INSERT INTO cash_entries (id, kind, amount, date, description, method, created_by, created_at) VALUES ('dis-1', 'in', 77, ?, 'dış', 'cash', 'x', ?)", MOVED, NOW]]);
+  const r = await c.integ();
+  return { once: c.base, sonra: noticeOf(r)?.count, sapma: driftsOf(r) };
+});
+// S7: alarm sonrası dış azalma (geri taşıma) ve yeniden dış artış — ikinci artış bildirilmeli; yinelenen tarama yeni satır yazmamalı.
+await scenario("S7 artış, tarama, dış azalma, tarama, dış artış, iki tarama", true, async c => {
+  moveOutside(c.store(), c.ids.d1, MOVED);
+  await c.integ();
+  const ilk = c.fresh().length;
+  moveOutside(c.store(), c.ids.d1, OPEN);
+  await c.integ();
+  const azalma = c.fresh().length;
+  moveOutside(c.store(), c.ids.d1, MOVED);
+  await c.integ();
+  await c.integ();
+  return { ilkArtisSatiri: ilk, azalmaSatiri: azalma };
+});
+// S8: yalnız Silinenler geri yüklemesi (iki satır) — yanlış alarm olmamalı.
+await scenario("S8 iki geri yükleme (yalnız meşru)", false, async c => {
+  await must("geri e2", c.restore(c.ids.early[2]));
+  await must("geri e3", c.restore(c.ids.early[3]));
+  const r = await c.integ();
+  return { once: c.base, sonra: noticeOf(r)?.count };
+});
+// S9: sil (tarama yok) + dış artış: net 0 (BİLİNEN SINIR) — kontrol amaçlı.
+await scenario("S9 sil + dış artış (net 0; tasarım notundaki BİLİNEN SINIR)", true, async c => {
+  await must("sil e0", c.api.del(`/api/workspace/cash/${c.ids.early[0]}`));
+  moveOutside(c.store(), c.ids.d1, MOVED);
+  const r = await c.integ();
+  return { once: c.base, sonra: noticeOf(r)?.count };
+});
+console.log(JSON.stringify(results, null, 1));

@@ -1,0 +1,7 @@
+/data/destekofis.sqlite: 19 dönem, açılışta sayılmış gruplu 19 · süre (en iyi / ortanca) yeni 427.7 / 436.0 ms · tek sorgu 264.6 / 277.2 ms
+/data/sirketler/002/destekofis.sqlite: 19 dönem, açılışta sayılmış gruplu 19 · süre (en iyi / ortanca) yeni 38.2 / 38.6 ms · tek sorgu 24.2 / 24.5 ms
+/data/destekofis.sqlite: 19 dönem, açılışta sayılmış gruplu 19 · süre (en iyi / ortanca) yeni 423.9 / 424.9 ms · tek sorgu 275.0 / 286.8 ms
+/data/sirketler/002/destekofis.sqlite: 19 dönem, açılışta sayılmış gruplu 19 · süre (en iyi / ortanca) yeni 39.2 / 40.1 ms · tek sorgu 31.7 / 38.0 ms
+/data/destekofis.sqlite: 19 dönem, açılışta sayılmış gruplu 19 · süre (en iyi / ortanca) yeni 439.5 / 441.3 ms · tek sorgu 276.1 / 278.3 ms
+/data/sirketler/002/destekofis.sqlite: 19 dönem, açılışta sayılmış gruplu 19 · süre (en iyi / ortanca) yeni 38.9 / 39.3 ms · tek sorgu 24.7 / 26.0 ms
+SONUÇ: 114 karşılaştırma, 0 fark

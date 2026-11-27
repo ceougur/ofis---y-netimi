@@ -1,0 +1,17 @@
+# Ç7b tur 2c — aynı betik, YENİ kod (4a0facb0 ve sonrası)
+== açılış (güncelleme sonrası)
+  336: karma -750 · canlı -750 · beklenen -750
+  602: karma -460525.85 · canlı -71525.85 · beklenen -
+  191: karma 5376 · canlı 5376 · beklenen 5376
+  391: karma -69517.5 · canlı -69517.5 · beklenen -69517.5
+  Mutabakat Testi: ok=false hatalar=["ledger:rule-diff","dates:future:cheque_events"] kural farkı: ok=false corrected=false excludedMinor=- remainder=-
+  kayıt tahsilatı: kilitli 750 · açık 750 · kilit 2026-10-05 · geçiş 2026-10-05
+  fiş ön izleme: excluded=[]
+  fiş: 200
+== Kural Farkı Düzeltme Fişi sonrası
+  336: karma -750 · canlı -750 · beklenen -750
+  602: karma -196525.85 · canlı 192474.15 · beklenen -
+  191: karma 5376 · canlı 5376 · beklenen 5376
+  391: karma -69517.5 · canlı -69517.5 · beklenen -69517.5
+  Mutabakat Testi: ok=false hatalar=["dates:future:cheque_events"] kural farkı: ok=true corrected=true excludedMinor=0 remainder=0
+  kayıt tahsilatı: kilitli 750 · açık 750 · kilit 2026-10-05 · geçiş 2026-10-05

@@ -1,0 +1,12 @@
+kilit alındı 13:54:11 · yük 0.73 1.41 2.15
+yük 1.03 1.39 2.09 · fiş yazıldı
+  ledger.build() (canlı türetme): en iyi 2222 · ortanca 2332 ms
+  madde 153804
+  incomeStatementOf yıl 2026 (tam): en iyi 4241 · ortanca 4417 ms
+  frozenSums kapsamın tamamı (SQL): en iyi 1191 · ortanca 1305 ms
+  frozenPartOf (tamamı): en iyi 9 · ortanca 11 ms
+  periodRuleDiff (tamamı, cari boyutlu, bütün hesaplar): en iyi 156 · ortanca 209 ms
+  expected every (alt defter hesapları): en iyi 72 · ortanca 73 ms
+  postedCorrectionsAt: en iyi 0 · ortanca 0 ms
+yük (sonda) 1.01 1.33 2.04
+çıkış 0

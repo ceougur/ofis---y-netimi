@@ -1,0 +1,587 @@
+TAP version 13
+# Subtest: Birleşik tur 6 — uyarının kapının görmediği artışı: günlük + zil; geri yükleme, azalma, yeniden açılış, iki şirket, yedek, gün dönümü sessiz
+    # Subtest: dış yazım (açılış günü girilen Kasa hareketinin tarihi başka bağlantıdan açılış öncesine): Mutabakat Testi günlük + zil + sunucu günlüğü, cümle düzeninde; sunum AYNEN; aynı artış ikinci kez bildirilmez
+    not ok 1 - dış yazım (açılış günü girilen Kasa hareketinin tarihi başka bağlantıdan açılış öncesine): Mutabakat Testi günlük + zil + sunucu günlüğü, cümle düzeninde; sunum AYNEN; aynı artış ikinci kez bildirilmez
+      ---
+      duration_ms: 279.454481
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/birlesik6-eski/test/kasa-acilis-uyari-artis-250.test.mjs:141:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+            gozlem: {
+        +     gunluk: [],
+        +     sunucu: [],
+        +     zil: []
+        -     gunluk: [
+        -       'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım)'
+        -     ],
+        -     sunucu: [
+        -       "warn: Mutabakat taraması: Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım). Elle ya da dış bir araçla veri düzenlenmiş olabilir; Mutabakat Testi'ndeki uyarının satırlarına bakın."
+        -     ],
+        -     zil: [
+        -       [
+        -         {
+        -           code: 'cash:before-opening',
+        -           count: 3,
+        -           name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım)',
+        -           notice: true,
+        -           previous: 2
+        -         }
+        -       ]
+        -     ]
+            },
+            ikinci: {
+              gozlem: {
+                gunluk: [],
+                sunucu: [],
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        uyari: 3
+        notice: true
+        severity: 'warning'
+        sapma:
+        gozlem:
+          gunluk:
+            0: 'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım)'
+          zil:
+            0:
+              0:
+                code: 'cash:before-opening'
+                name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım)'
+                count: 3
+                notice: true
+                previous: 2
+          sunucu:
+            0: "warn: Mutabakat taraması: Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım). Elle ya da dış bir araçla veri düzenlenmiş olabilir; Mutabakat Testi'ndeki uyarının satırlarına bakın."
+        rapor:
+          sonuc: 'Tutarlı'
+          satir:
+            0: '3 satır'
+            1: 'Uyarı'
+        ikinci:
+          isParcacigi:
+          gozlem:
+            gunluk:
+            zil:
+            sunucu:
+      actual:
+        uyari: 3
+        notice: true
+        severity: 'warning'
+        sapma:
+        gozlem:
+          gunluk:
+          zil:
+          sunucu:
+        rapor:
+          sonuc: 'Tutarlı'
+          satir:
+            0: '3 satır'
+            1: 'Uyarı'
+        ikinci:
+          isParcacigi:
+          gozlem:
+            gunluk:
+            zil:
+            sunucu:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/birlesik6-eski/test/kasa-acilis-uyari-artis-250.test.mjs:151:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: azalma sessiz ve işaret onu izler: satır silinince (3 → 2) günlük yok; sonraki dış artış 2 → 3 diye bildirilir (iş parçacığı taraması da bulur)
+    not ok 2 - azalma sessiz ve işaret onu izler: satır silinince (3 → 2) günlük yok; sonraki dış artış 2 → 3 diye bildirilir (iş parçacığı taraması da bulur)
+      ---
+      duration_ms: 234.699084
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/birlesik6-eski/test/kasa-acilis-uyari-artis-250.test.mjs:158:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+            gozlem: {
+        +     gunluk: [],
+        +     sunucu: [],
+        +     zil: []
+        -     gunluk: [
+        -       'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım)'
+        -     ],
+        -     sunucu: [
+        -       "warn: Mutabakat taraması: Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım). Elle ya da dış bir araçla veri düzenlenmiş olabilir; Mutabakat Testi'ndeki uyarının satırlarına bakın."
+        -     ],
+        -     zil: [
+        -       [
+        -         {
+        -           code: 'cash:before-opening',
+        -           count: 3,
+        -           name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım)',
+        -           notice: true,
+        -           previous: 2
+        -         }
+        -       ]
+        -     ]
+            },
+        +   isParcacigi: [],
+        -   isParcacigi: [
+        -     'cash:before-opening'
+        -   ],
+            quiet: {
+              gozlem: {
+                gunluk: [],
+                sunucu: [],
+                zil: []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        quiet:
+          uyari: 2
+          gozlem:
+            gunluk:
+            zil:
+            sunucu:
+        isParcacigi:
+          0: 'cash:before-opening'
+        uyari: 3
+        gozlem:
+          gunluk:
+            0: 'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım)'
+          zil:
+            0:
+              0:
+                code: 'cash:before-opening'
+                name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım)'
+                count: 3
+                notice: true
+                previous: 2
+          sunucu:
+            0: "warn: Mutabakat taraması: Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım). Elle ya da dış bir araçla veri düzenlenmiş olabilir; Mutabakat Testi'ndeki uyarının satırlarına bakın."
+      actual:
+        quiet:
+          uyari: 2
+          gozlem:
+            gunluk:
+            zil:
+            sunucu:
+        isParcacigi:
+        uyari: 3
+        gozlem:
+          gunluk:
+          zil:
+          sunucu:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/birlesik6-eski/test/kasa-acilis-uyari-artis-250.test.mjs:165:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: geri yükleme sayılır, ama dış artışı ÖRTMEZ: aynı aralıkta 1 geri yükleme + 1 dış artış → 2 → 4, açıklanamayan 1 → bildirilir; yalnız geri yükleme → sessiz
+    not ok 3 - geri yükleme sayılır, ama dış artışı ÖRTMEZ: aynı aralıkta 1 geri yükleme + 1 dış artış → 2 → 4, açıklanamayan 1 → bildirilir; yalnız geri yükleme → sessiz
+      ---
+      duration_ms: 107.808368
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/birlesik6-eski/test/kasa-acilis-uyari-artis-250.test.mjs:168:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+            birlikte: {
+              gozlem: {
+        +       gunluk: [],
+        +       sunucu: [],
+        +       zil: []
+        -       gunluk: [
+        -         'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 4 hareket; kapının görmediği yazım)'
+        -       ],
+        -       sunucu: [
+        -         "warn: Mutabakat taraması: Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 4 hareket; kapının görmediği yazım). Elle ya da dış bir araçla veri düzenlenmiş olabilir; Mutabakat Testi'ndeki uyarının satırlarına bakın."
+        -       ],
+        -       zil: [
+        -         [
+        -           {
+        -             code: 'cash:before-opening',
+        -             count: 4,
+        -             name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 4 hareket; kapının görmediği yazım)',
+        -             notice: true,
+        -             previous: 2
+        -           }
+        -         ]
+        -       ]
+              },
+              uyari: 4
+            },
+            yalnizGeriYukleme: {
+              gozlem: {
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        birlikte:
+          uyari: 4
+          gozlem:
+            gunluk:
+              0: 'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 4 hareket; kapının görmediği yazım)'
+            zil:
+              0:
+                0:
+                  code: 'cash:before-opening'
+                  name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 4 hareket; kapının görmediği yazım)'
+                  count: 4
+                  notice: true
+                  previous: 2
+            sunucu:
+              0: "warn: Mutabakat taraması: Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 4 hareket; kapının görmediği yazım). Elle ya da dış bir araçla veri düzenlenmiş olabilir; Mutabakat Testi'ndeki uyarının satırlarına bakın."
+        yalnizGeriYukleme:
+          uyari: 5
+          gozlem:
+            gunluk:
+            zil:
+            sunucu:
+      actual:
+        birlikte:
+          uyari: 4
+          gozlem:
+            gunluk:
+            zil:
+            sunucu:
+        yalnizGeriYukleme:
+          uyari: 5
+          gozlem:
+            gunluk:
+            zil:
+            sunucu:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/birlesik6-eski/test/kasa-acilis-uyari-artis-250.test.mjs:180:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: üst kaydın geri yüklenmesi (silinmiş taksit kartı; nakit satırı yazılmaz, görünürlüğü döner) sayılır: 5 → 6 sessiz
+    ok 4 - üst kaydın geri yüklenmesi (silinmiş taksit kartı; nakit satırı yazılmaz, görünürlüğü döner) sayılır: 5 → 6 sessiz
+      ---
+      duration_ms: 35.623254
+      type: 'test'
+      ...
+    # Subtest: iş parçacığı taraması sürerken kesinleşen geri yükleme yanlış alarm vermez (ön koşul zorla: geri yükleme taramanın anlık görüntüsüne girdi — ders 20)
+    ok 5 - iş parçacığı taraması sürerken kesinleşen geri yükleme yanlış alarm vermez (ön koşul zorla: geri yükleme taramanın anlık görüntüsüne girdi — ders 20)
+      ---
+      duration_ms: 239.209225
+      type: 'test'
+      ...
+    # Subtest: gün dönümü (sahte saat ertesi gün 00:30): tarama yeniden koşar, sayı aynı → sessiz; yeni günde dış artış bildirilir
+    not ok 6 - gün dönümü (sahte saat ertesi gün 00:30): tarama yeniden koşar, sayı aynı → sessiz; yeni günde dış artış bildirilir
+      ---
+      duration_ms: 262.786334
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/birlesik6-eski/test/kasa-acilis-uyari-artis-250.test.mjs:215:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+            gozlem: {
+        +     gunluk: [],
+        +     sunucu: [],
+        +     zil: []
+        -     gunluk: [
+        -       'Kasa açılışından önce tarihli hareket uyarısı arttı (6 → 7 hareket; kapının görmediği yazım)'
+        -     ],
+        -     sunucu: [
+        -       "warn: Mutabakat taraması: Kasa açılışından önce tarihli hareket uyarısı arttı (6 → 7 hareket; kapının görmediği yazım). Elle ya da dış bir araçla veri düzenlenmiş olabilir; Mutabakat Testi'ndeki uyarının satırlarına bakın."
+        -     ],
+        -     zil: [
+        -       [
+        -         {
+        -           code: 'cash:before-opening',
+        -           count: 7,
+        -           name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (6 → 7 hareket; kapının görmediği yazım)',
+        -           notice: true,
+        -           previous: 6
+        -         }
+        -       ]
+        -     ]
+            },
+            quiet: {
+              gozlem: {
+                gunluk: [],
+                sunucu: [],
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        quiet:
+          kostu: true
+          isParcacigi:
+          gozlem:
+            gunluk:
+            zil:
+            sunucu:
+        gozlem:
+          gunluk:
+            0: 'Kasa açılışından önce tarihli hareket uyarısı arttı (6 → 7 hareket; kapının görmediği yazım)'
+          zil:
+            0:
+              0:
+                code: 'cash:before-opening'
+                name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (6 → 7 hareket; kapının görmediği yazım)'
+                count: 7
+                notice: true
+                previous: 6
+          sunucu:
+            0: "warn: Mutabakat taraması: Kasa açılışından önce tarihli hareket uyarısı arttı (6 → 7 hareket; kapının görmediği yazım). Elle ya da dış bir araçla veri düzenlenmiş olabilir; Mutabakat Testi'ndeki uyarının satırlarına bakın."
+        uyari: 7
+      actual:
+        quiet:
+          kostu: true
+          isParcacigi:
+          gozlem:
+            gunluk:
+            zil:
+            sunucu:
+        gozlem:
+          gunluk:
+          zil:
+          sunucu:
+        uyari: 7
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/birlesik6-eski/test/kasa-acilis-uyari-artis-250.test.mjs:224:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: program yeniden açılınca: aynı artış İKİNCİ kez bildirilmez (açılış, Mutabakat Testi, iş parçacığı); açılıştan sonraki ilk nakit yazımı süzgeçli yolda; sonra yeni dış artış bildirilir
+    not ok 7 - program yeniden açılınca: aynı artış İKİNCİ kez bildirilmez (açılış, Mutabakat Testi, iş parçacığı); açılıştan sonraki ilk nakit yazımı süzgeçli yolda; sonra yeni dış artış bildirilir
+      ---
+      duration_ms: 382.632077
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/birlesik6-eski/test/kasa-acilis-uyari-artis-250.test.mjs:227:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        ... Skipped lines
+        
+          {
+            gozlem: {
+              gunluk: [],
+              sunucu: [],
+              zil: []
+        ...
+            yeni: {
+        +     gunluk: [],
+        +     sunucu: [],
+        +     zil: []
+        -     gunluk: [
+        -       'Kasa açılışından önce tarihli hareket uyarısı arttı (7 → 8 hareket; kapının görmediği yazım)'
+        -     ],
+        -     sunucu: [
+        -       "warn: Mutabakat taraması: Kasa açılışından önce tarihli hareket uyarısı arttı (7 → 8 hareket; kapının görmediği yazım). Elle ya da dış bir araçla veri düzenlenmiş olabilir; Mutabakat Testi'ndeki uyarının satırlarına bakın."
+        -     ],
+        -     zil: [
+        -       [
+        -         {
+        -           code: 'cash:before-opening',
+        -           count: 8,
+        -           name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (7 → 8 hareket; kapının görmediği yazım)',
+        -           notice: true,
+        -           previous: 7
+        -         }
+        -       ]
+        -     ]
+            }
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        opened:
+          gunluk:
+          sunucu:
+        uyari: 7
+        isParcacigi:
+        gozlem:
+          gunluk:
+          zil:
+          sunucu:
+        ilkYazim: 'scoped'
+        yeni:
+          gunluk:
+            0: 'Kasa açılışından önce tarihli hareket uyarısı arttı (7 → 8 hareket; kapının görmediği yazım)'
+          zil:
+            0:
+              0:
+                code: 'cash:before-opening'
+                name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (7 → 8 hareket; kapının görmediği yazım)'
+                count: 8
+                notice: true
+                previous: 7
+          sunucu:
+            0: "warn: Mutabakat taraması: Kasa açılışından önce tarihli hareket uyarısı arttı (7 → 8 hareket; kapının görmediği yazım). Elle ya da dış bir araçla veri düzenlenmiş olabilir; Mutabakat Testi'ndeki uyarının satırlarına bakın."
+      actual:
+        opened:
+          gunluk:
+          sunucu:
+        uyari: 7
+        isParcacigi:
+        gozlem:
+          gunluk:
+          zil:
+          sunucu:
+        ilkYazim: 'scoped'
+        yeni:
+          gunluk:
+          zil:
+          sunucu:
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/birlesik6-eski/test/kasa-acilis-uyari-artis-250.test.mjs:241:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: iki şirket + yedekten geri yükleme: 002'nin geri yüklemesi / dış artışı yalnız 002'de; 002 yedekten dönünce (sayı geri gelir) yanlış alarm yok
+    not ok 8 - iki şirket + yedekten geri yükleme: 002'nin geri yüklemesi / dış artışı yalnız 002'de; 002 yedekten dönünce (sayı geri gelir) yanlış alarm yok
+      ---
+      duration_ms: 699.052739
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/birlesik6-eski/test/kasa-acilis-uyari-artis-250.test.mjs:244:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        ... Skipped lines
+        
+          {
+            outside: {
+              g001: [],
+        +     g002: [],
+        -     g002: [
+        -       'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım)'
+        -     ],
+              s001: 8,
+              s002: 3,
+        +     zil002: []
+        -     zil002: [
+        -       [
+        -         {
+        -           code: 'cash:before-opening',
+        -           count: 3,
+        -           name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım)',
+        -           notice: true,
+        -           previous: 2
+        -         }
+        -       ]
+        -     ]
+            },
+            restored: {
+              g001: [],
+              g002: [],
+              s001: 8,
+        ...
+            yedek: {
+        +     arttiSatiri: 0,
+        -     arttiSatiri: 1,
+              down: 1,
+              gunluk: [],
+              isParcacigi: [],
+              quietDown: [],
+              s002: 3,
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        restored:
+          s002: 2
+          g002:
+          s001: 8
+          g001:
+        outside:
+          s002: 3
+          g002:
+            0: 'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım)'
+          zil002:
+            0:
+              0:
+                code: 'cash:before-opening'
+                name: 'Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım)'
+                count: 3
+                notice: true
+                previous: 2
+          s001: 8
+          g001:
+        yedek:
+          down: 1
+          quietDown:
+          s002: 3
+          isParcacigi:
+          gunluk:
+          zil: 0
+          arttiSatiri: 1
+      actual:
+        restored:
+          s002: 2
+          g002:
+          s001: 8
+          g001:
+        outside:
+          s002: 3
+          g002:
+          zil002:
+          s001: 8
+          g001:
+        yedek:
+          down: 1
+          quietDown:
+          s002: 3
+          isParcacigi:
+          gunluk:
+          zil: 0
+          arttiSatiri: 0
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/birlesik6-eski/test/kasa-acilis-uyari-artis-250.test.mjs:276:12)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..8
+not ok 1 - Birleşik tur 6 — uyarının kapının görmediği artışı: günlük + zil; geri yükleme, azalma, yeniden açılış, iki şirket, yedek, gün dönümü sessiz
+  ---
+  duration_ms: 2904.5776
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/birlesik6-eski/test/kasa-acilis-uyari-artis-250.test.mjs:98:1'
+  failureType: 'subtestsFailed'
+  error: '6 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Birleşik tur 6 — dar kontrolün betiği: v2.4.9'un GERÇEK koduyla üretilmiş veri (açılış öncesi Kasa Giriş + cari nakit tahsilat) — dış artış bildirilir
+ok 2 - Birleşik tur 6 — dar kontrolün betiği: v2.4.9'un GERÇEK koduyla üretilmiş veri (açılış öncesi Kasa Giriş + cari nakit tahsilat) — dış artış bildirilir # SKIP v2.4.9 etiketi bu depoda yok (git fetch --tags)
+  ---
+  duration_ms: 0.07158
+  type: 'suite'
+  ...
+1..2
+# tests 8
+# suites 2
+# pass 2
+# fail 6
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3252.637953

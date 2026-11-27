@@ -1,0 +1,32 @@
+{
+  "ad": "kahineski12-kirmizi-eski-cari-ist",
+  "komut": "python3 -I -B docs/kanit/2026-11-11/kahineski12-arac/elle-karsilastir.py --kirmizi-bekle --model /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin12y-eski/test/bagimsiz/cari test/bagimsiz/cari/senaryolar/d38-c5-s128-ozge-kalemli-kart.json test/bagimsiz/cari/senaryolar/d37-c5-s126-faturali-kart.json",
+  "commit": "205ed370072de4b70a6fe8c7e5bb1ae2357fb93d",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-12T04:25:04.966Z",
+  "sure_sn": 0.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 176,
+    "gecen": 176,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../kahin12y-kanit/2026-11-12/kahineski12-kirmizi-eski-cari-ist.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8y-ag",
+  "ham_cikti_sha256": "4270d03a2690a4f04b5d0bce7e96f939b2e37fa91d760cd948e67c50f309c00d",
+  "ham_cikti_bayt": 17842
+}

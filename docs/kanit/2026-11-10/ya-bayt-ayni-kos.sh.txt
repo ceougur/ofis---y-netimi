@@ -1,0 +1,19 @@
+# (f) eski kural setlerinde liste UYGULANMAZ: eski kos.mjs (HEAD = bakım 4 birleşimi; git archive) ile yeni kos.mjs aynı argümanla, AYNI --cikti yoluyla sırayla; çıktı + ozet.json bayt bayt
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+W=/home/user/ofis---y-netimi/.claude/worktrees/agent-ad614648682496b49
+export HUKUK_LICENSE_URL=http://127.0.0.1:9 TZ=UTC KAHIN_PROGRAM_KOKU=$W
+cd $W || exit 1
+for kip in "--kural 2.4.9" "--legacy"; do
+  ad=$(echo "$kip" | tr -d ' .-')
+  for surum in eski yeni; do
+    if [ $surum = eski ]; then K=$S/ya-eski/test/bagimsiz/cari/kos.mjs; else K=$W/test/bagimsiz/cari/kos.mjs; fi
+    rm -rf $S/ya-eski/cikti-ortak
+    node --disable-warning=ExperimentalWarning $K $kip --cikti $S/ya-eski/cikti-ortak > $S/ya-eski/$ad-$surum.log 2>&1
+    echo "$ad $surum cikis $?"
+    cp $S/ya-eski/cikti-ortak/ozet.json $S/ya-eski/$ad-$surum.ozet.json || exit 1
+  done
+  cmp $S/ya-eski/$ad-eski.log $S/ya-eski/$ad-yeni.log && echo "$ad cikti AYNI" || echo "$ad cikti FARKLI"
+  cmp $S/ya-eski/$ad-eski.ozet.json $S/ya-eski/$ad-yeni.ozet.json && echo "$ad ozet.json AYNI" || echo "$ad ozet.json FARKLI"
+  tail -1 $S/ya-eski/$ad-yeni.log
+done
+rm -rf $S/ya-eski/cikti-ortak

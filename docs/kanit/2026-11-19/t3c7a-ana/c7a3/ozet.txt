@@ -1,0 +1,6 @@
+yeni UTC çıkış 0 # tests 17 # pass 17 # fail 0 
+yeni Europe/Istanbul çıkış 0 # tests 17 # pass 17 # fail 0 
+taban çıkış 1 # tests 17 # pass 1 # fail 16 
+mutasyon çıkış 0
+yeni temiz: 0 · taban temiz: 0
+BITTI

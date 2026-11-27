@@ -374,8 +374,29 @@
           <button type="button" class="hof-acc-choice" data-kind="statement"><b>Ekstre Gönder</b><small>Hareketler, güncel bakiye ve sıradaki taksit hazır mesaj olarak</small></button>
           <button type="button" class="hof-acc-choice" data-kind="message"><b>Mesaj Gönder</b><small>Hazır şablon ya da kendi mesajınız ({Ad}, {Bakiye} ile)</small></button>
           <button type="button" class="hof-acc-choice is-plain" data-kind="chat"><b>Sohbeti Aç</b><small>Boş sohbet</small></button>
-        </div><div class="hof-wa-history" data-history></div><div class="hof-actions"><button type="button" class="hof-button hof-button-ghost" data-close>Vazgeç</button></div>`,
+        </div><div class="hof-wa-history" data-history></div><div class="hof-actions">${
+          // 2.5.0 W-3: KVKK silme talebi — yalnız yönetici (sunucu da system.manage ister).
+          HOF.can("system.manage") ? '<button type="button" class="hof-button hof-button-danger-ghost" data-wa-kvkk>Gönderim Kayıtlarını Sil (KVKK)</button>' : ""
+        }<button type="button" class="hof-button hof-button-ghost" data-close>Vazgeç</button></div>`,
     });
+    // 2.5.0 W-3 (KULLANICI KARARI S-W3 + S35 / S42): carinin WhatsApp gönderim kayıtlarındaki ileti içeriği ve telefon numarası hemen silinir; tarih ve sonuç kalır
+    // (aynı döneme ikinci ileti gitmez). Bekleyen gönderimi "Atlandı — Silme Talebi" olur.
+    async function eraseRecords() {
+      const sure = await HOF.confirm({
+        title: "Gönderim Kayıtları Silinsin mi?",
+        message: `${account.name} için WhatsApp gönderim kayıtlarındaki ileti içeriği, ekstre PDF'i ve telefon numarası silinecek; bekleyen gönderimi gönderilmeyecek. Tarih ve gönderim sonucu kalır (bu döneme ikinci ileti gitmez). Cari kartı değişmez. İşlem geri alınamaz.`,
+        confirmLabel: "Sil",
+        danger: true,
+      });
+      if (!sure) return;
+      try {
+        const answer = await HOF.api("/api/workspace/whatsapp/kvkk-erase", { method: "POST", body: { accountId: account.id, confirm: true } });
+        chooser.close();
+        HOF.toast(`Gönderim kayıtları silindi: ${Number(answer?.jobs || 0) + Number(answer?.manual || 0)} kayıt${answer?.skipped ? `, ${answer.skipped} bekleyen gönderim atlandı` : ""}.`, { type: "success" });
+      } catch (error) {
+        HOF.toast(error?.message || "Gönderim kayıtları silinemedi.", { type: "error" });
+      }
+    }
     HOF.api(`/api/workspace/whatsapp/history?accountId=${encodeURIComponent(account.id)}`)
       .then(rows => {
         const box = chooser.dialog.querySelector("[data-history]");
@@ -383,12 +404,13 @@
         // 2.4.8 W4 (plan §6 W4): yol (Otomatik / Elle), durum ve neden — otomatik satırlar sunucunun durum etiketiyle (wa_jobs).
         const kindText = row => (row.kind === "statement" ? "Ekstre" : row.kind === "reminder" ? "Ödeme Hatırlatma" : "Mesaj");
         const line = row => row.channel === "api"
-          ? `${esc(HOF.formatDate(row.at))} · ${kindText(row)} · Otomatik · ${esc(row.stateLabel || "")}${row.reason ? ` (${esc(row.reason)})` : ""}${row.actorName ? ` · ${esc(row.actorName)}` : ""}`
+          ? `${esc(HOF.formatDate(row.at))} · ${kindText(row)} · Otomatik · ${esc(row.stateLabel || "")}${row.reason ? ` (${esc(row.reason)})` : ""}${row.contentErased ? " · İçerik Silindi" : ""}${row.actorName ? ` · ${esc(row.actorName)}` : ""}`
           : `${esc(HOF.formatDate(row.at))} · ${kindText(row)} · Elle${row.status === "skipped" ? " (atlandı)" : ""}${row.actorName ? ` · ${esc(row.actorName)}` : ""}`;
         box.innerHTML = `<p class="hof-wa-label">Son Gönderimler</p><ul>${rows.slice(0, 5).map(row => `<li data-wa-history="${esc(row.channel || "manual")}">${line(row)}</li>`).join("")}</ul>`;
       })
       .catch(() => {});
     chooser.dialog.addEventListener("click", event => {
+      if (event.target.closest("[data-wa-kvkk]")) return void eraseRecords();
       const button = event.target.closest("[data-kind], [data-close]");
       if (!button) return;
       chooser.close();

@@ -1,0 +1,11 @@
+#!/bin/bash
+# t3hiz: eşdeğerlik testi yeni kodda (çalışma ağacı) iki saat diliminde. Çağrı: bash yeni.sh [ek ad]
+A=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/t3hiz-a
+W=/home/user/ofis---y-netimi/.claude/worktrees/agent-af7c4e455433c3703
+cd $W || exit 1
+for tz in Europe/Istanbul UTC; do
+  ad=${tz//\//-}
+  HUKUK_LICENSE_URL=http://127.0.0.1:9 TZ=$tz timeout -k 5 1500 node --test --test-reporter=spec test/t3hiz-esdegerlik-250.test.mjs > $A/yeni$1-$ad.out 2>&1
+  echo "$tz çıkış $? · $(grep -E '^ℹ (tests|pass|fail|skipped)' $A/yeni$1-$ad.out | tr '\n' ' ')"
+  grep -A3 '^test at' $A/yeni$1-$ad.out | cut -c1-300 | head -12
+done

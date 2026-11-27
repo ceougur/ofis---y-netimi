@@ -7,8 +7,10 @@ import { DatabaseSync } from "node:sqlite";
 import test from "node:test";
 import { createStore } from "../server/lib/db.mjs";
 import { createUser, loginAdmin, startTestServer } from "./helpers.mjs";
+import { isoDay } from "../server/lib/plans.mjs";
 
-const TODAY = new Date().toISOString().slice(0, 10);
+// Program "bugün"ü yerel günle hesaplar (period.mjs today, plans.mjs isoDay); UTC günü yerel günden ayrışınca (İstanbul 00:00–03:00) yanlış gün olur (ders 13, 22).
+const TODAY = isoDay(new Date());
 
 test("veri katmanı: yalnız bilgi kolonuna yazan UPDATE kapıyı tetiklemez; geri kalan her yazma tetikler", () => {
   const db = new DatabaseSync(":memory:");

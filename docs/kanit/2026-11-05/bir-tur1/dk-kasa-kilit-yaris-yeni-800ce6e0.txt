@@ -1,0 +1,17 @@
+A) Kasa Engelle + aynı hareketi başka kullanıcı küçültür
+  başlangıç Kasa 500 (600 − 100)
+  yarışsız 100 → 650: 409 cash-blocked (beklenen 409 cash-blocked)
+  arada muhasebe 100 → 10: 200, Kasa 590
+  yöneticinin 650 düzeltmesi: 409 cash-blocked Bu ödeme 10,00 TL'den 650,00 TL'ye düzeltilince Nakit Kasa'dan 640,00 TL düşer; Nakit Kasa 590,00 TL iken -50,00 TL olur. Bu hesapta eksi ba
+  SONUÇ A: hareket {"kind":"out","amount":10,"date":"2026-10-08","method":"cash"}, Kasa 590 (Engelle politikası; 0'ın altı olmamalı)
+B) Kasa Uyar + gövde yoldayken hareket silinir
+  başlangıç Kasa 200
+  arada silme: 200, Kasa -800
+  1000 → 500 düzeltmesi (onaysız): 404  Hareket bulunamadı. Başka biri silmiş olabilir.
+  aynı düzeltme "Yine de Kaydet" (cashForce): 404  Hareket bulunamadı. Başka biri silmiş olabilir.
+  SONUÇ B: satır null, account.entry.updated izi 0, Kasa -800
+C) Dönem kilidi gövde yoldayken konur
+  arada kilit: 200, kilit 2026-10-05
+  01.10 tarihli borcun 300 → 999 düzeltmesi: 409 period-locked Bu cari hareketi 01.10.2026 tarihli; 05.10.2026 ve öncesi kapatılmış (kilitli) dönemdir. Değişiklik için yönetici dönem kilidini açmalı.
+  kilitten sonra yarışsız düzeltme: 409 Bu cari hareketi 01.10.2026 tarihli; 05.10.2026 ve öncesi kapatılmış (kilitli) dönemdir. Değişiklik 
+  SONUÇ C: satır {"kind":"debt","amount":300,"date":"2026-10-01","method":"cash"} (kilitli 01.10; 300 kalmalı), account.entry.updated izi 0

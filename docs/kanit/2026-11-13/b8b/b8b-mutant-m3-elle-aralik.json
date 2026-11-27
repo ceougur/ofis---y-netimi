@@ -1,0 +1,43 @@
+{
+  "ad": "b8b-mutant-m3-elle-aralik",
+  "komut": "node --test test/vade-takip-gecikmis-b8b-250.test.mjs test/vade-takip-gecikmis-b8-250.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v445 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-13T16:28:53.422Z",
+  "sure_sn": 1.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 13,
+    "gecen": 11,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Birleşik tur 8 — İş 4: Vade Takip 'Gecikmiş' hazır aralığı = durumu Gecikmiş olan kalemler (S150 = A) › ELLE girilen aralık değişmez: 60 gün önce … dün ⇒ yalnız tarihi aralıkta olan 4 satır (sözü ileride olan kalem YOK)",
+      "konum": "test/vade-takip-gecikmis-b8-250.test.mjs:73:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "Birleşik tur 8b — Vade Takip 'Bugün' / '7 Gün': 'Gecikmiş' göstergesi ve satırları öbür hazır aralıklarla aynı (S150 = A) › ELLE girilen aralık DEĞİŞMEDİ: bugün … bugün ve bugün … +7 (hazır aralıkla aynı tarihler) sözü ileride olan gecikmiş kalemi göstermez — 510 / 6 tahsilat, 30 / 1 ödeme",
+      "konum": "test/vade-takip-gecikmis-b8b-250.test.mjs:115:3",
+      "hata": "2026-10-20–2026-10-20 · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../b8b-kanit/2026-11-13/b8b-mutant-m3-elle-aralik.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8b-mutant",
+  "ham_cikti_sha256": "d7a47e2dc189bcc68d2299de48c75d5f035bc674e41b35e4213fedc7334750c9",
+  "ham_cikti_bayt": 8692
+}

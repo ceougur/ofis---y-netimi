@@ -1,0 +1,9 @@
+eski kod: (klasör) (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c4-eski-0fc8add4)
+✓ ön koşul: eski sürümde Defter Türü yok
+✗ 001 (gerçek kişi, TCKN) Seçilmedi: undefined
+✗ 002 (tüzel kişi, VKN) Seçilmedi: undefined
+✓ eski firma bilgisi yerinde
+✓ açılışta ayar satırı yazılmadı (sessiz çıkarım yok)
+✗ 002 Tümünü Sıfırla'dan sonra Bilanço Esası korunur
+✗ 001 ayrı ayarını taşır
+3 geçti, 4 kaldı

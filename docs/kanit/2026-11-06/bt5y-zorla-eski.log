@@ -1,0 +1,70 @@
+[b230-zorla] kip sıra 5 (1500 ms)
+adım: YENİ (tools/olcek-ekran.mjs ekranKaydet)
+depo: /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt5y-eski-zorla
+tur: 2 · tutma: 1600 ms · liste beklemesi: 12000 ms
+
+■ A1 — Benzer İşlem sorusu GEÇ (yanıt tutulur): 14,37 ₺, iz YARIS-A1-1
+  · soru Kaydet'ten 1930 ms sonra belirdi; adım: listede 3827 ms, yanıtlanan [{"baslik":"Benzer İşlem","ms":2651}], durumlar [409], hata “”
+  · adımdan sonra açık pencereler: ["Banka"]; formdaki hata: “”
+  · ön koşul: soru Kaydet'ten en az 1.200 ms sonra belirdi (1930 ms)
+  ✓ A1: kayıt veri tabanında bir kez (1)
+  ✓ A1: kayıt listede göründü (3827 ms)
+  ✓ A1: masraf formu kapandı
+  ✓ A1: sonraki "+ Masraf" tıklanabilir (üstte açık pencere yok)
+  ✓ A1: ürün — iki gönderim aynı istek kimliğiyle, 409 → 200 (409, 200; kimlik 1)
+  ✓ A1: ürün — kayıt doğru hesapta ve tutarda (Garanti BBVA · Ana TL Hesabı, -1437)
+
+■ B1 — Eksi Bakiye sorusu GEÇ (yanıt tutulur): 150,14 ₺, iz YARIS-B1-2
+  · soru Kaydet'ten 2579 ms sonra belirdi; adım: listede 6118 ms, yanıtlanan [{"baslik":"Eksi Bakiye","ms":4041}], durumlar [409,200], hata “”
+  · adımdan sonra açık pencereler: ["Banka"]; formdaki hata: “”
+  · ön koşul: soru Kaydet'ten en az 1.200 ms sonra belirdi (2579 ms)
+  ✓ B1: kayıt veri tabanında bir kez (1)
+  ✓ B1: kayıt listede göründü (6118 ms)
+  ✓ B1: masraf formu kapandı
+  ✓ B1: sonraki "+ Masraf" tıklanabilir (üstte açık pencere yok)
+  ✓ B1: ürün — iki gönderim aynı istek kimliğiyle, 409 → 200 (409, 200; kimlik 1)
+  ✓ B1: ürün — kayıt doğru hesapta ve tutarda (Akbank · Küçük Hesap, -15014)
+
+■ C1 — Benzer İşlem sorusu ERKEN (tutma yok): 8,11 ₺, iz YARIS-C1-3
+[b230-zorla] POST /bank/vouchers #5: yanıt 409 1500 ms tutuldu
+  · soru Kaydet'ten 1879 ms sonra belirdi; adım: listede 2988 ms, yanıtlanan [{"baslik":"Benzer İşlem","ms":2644}], durumlar [409,200], hata “”
+  · adımdan sonra açık pencereler: ["Banka"]; formdaki hata: “”
+  ✗ ÖN KOŞUL OLUŞMADI: soru 1.200 ms içinde belirdi (1879 ms) (deneme sayılmaz, kırmızı)
+
+■ A2 — Benzer İşlem sorusu GEÇ (yanıt tutulur): 17,48 ₺, iz YARIS-A2-4
+  · soru Kaydet'ten 2167 ms sonra belirdi; adım: listede 3855 ms, yanıtlanan [{"baslik":"Benzer İşlem","ms":2773}], durumlar [409], hata “”
+  · adımdan sonra açık pencereler: ["Banka"]; formdaki hata: “”
+  · ön koşul: soru Kaydet'ten en az 1.200 ms sonra belirdi (2167 ms)
+  ✓ A2: kayıt veri tabanında bir kez (1)
+  ✓ A2: kayıt listede göründü (3855 ms)
+  ✓ A2: masraf formu kapandı
+  ✓ A2: sonraki "+ Masraf" tıklanabilir (üstte açık pencere yok)
+  ✓ A2: ürün — iki gönderim aynı istek kimliğiyle, 409 → 200 (409, 200; kimlik 1)
+  ✓ A2: ürün — kayıt doğru hesapta ve tutarda (Garanti BBVA · Ana TL Hesabı, -1748)
+
+■ B2 — Eksi Bakiye sorusu GEÇ (yanıt tutulur): 150,35 ₺, iz YARIS-B2-5
+  · soru Kaydet'ten 1906 ms sonra belirdi; adım: listede 4008 ms, yanıtlanan [{"baslik":"Eksi Bakiye","ms":2656}], durumlar [409], hata “”
+  · adımdan sonra açık pencereler: ["Banka"]; formdaki hata: “”
+  · ön koşul: soru Kaydet'ten en az 1.200 ms sonra belirdi (1906 ms)
+  ✓ B2: kayıt veri tabanında bir kez (1)
+  ✓ B2: kayıt listede göründü (4008 ms)
+  ✓ B2: masraf formu kapandı
+  ✓ B2: sonraki "+ Masraf" tıklanabilir (üstte açık pencere yok)
+  ✓ B2: ürün — iki gönderim aynı istek kimliğiyle, 409 → 200 (409, 200; kimlik 1)
+  ✓ B2: ürün — kayıt doğru hesapta ve tutarda (Akbank · Küçük Hesap, -15035)
+
+■ C2 — Benzer İşlem sorusu ERKEN (tutma yok): 11,22 ₺, iz YARIS-C2-6
+  · soru Kaydet'ten 561 ms sonra belirdi; adım: listede 1833 ms, yanıtlanan [{"baslik":"Benzer İşlem","ms":1513}], durumlar [409,200], hata “”
+  · adımdan sonra açık pencereler: ["Banka"]; formdaki hata: “”
+  · ön koşul: soru 1.200 ms içinde belirdi (561 ms)
+  ✓ C2: kayıt veri tabanında bir kez (1)
+  ✓ C2: kayıt listede göründü (1833 ms)
+  ✓ C2: masraf formu kapandı
+  ✓ C2: sonraki "+ Masraf" tıklanabilir (üstte açık pencere yok)
+  ✓ C2: ürün — iki gönderim aynı istek kimliğiyle, 409 → 200 (409, 200; kimlik 1)
+  ✓ C2: ürün — kayıt doğru hesapta ve tutarda (Garanti BBVA · Ana TL Hesabı, -1122)
+  ✓ sayfa hatası yok
+
+ön koşulu oluşmayan deneme: 1; başka oturumun masrafı: 4; adım: YENİ (tools/olcek-ekran.mjs ekranKaydet)
+
+✗ banka-230-hareket-yaris: 31 geçti, 1 kaldı

@@ -1,0 +1,182 @@
+TAP version 13
+# (node:8704) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: İzleyen tur 3 — kapı süzgecinde rowid yeniden kullanımı (üretim kipi)
+    # Subtest: P1: yeni kaydedilmiş faturanın Düzenle'si (azaltma, aynı içerik, ikinci azaltma) — sonuç tabanla aynı; üretimde süzgeç yolu (tabanda tam kapı 'kimlik değişti')
+    ok 1 - P1: yeni kaydedilmiş faturanın Düzenle'si (azaltma, aynı içerik, ikinci azaltma) — sonuç tabanla aynı; üretimde süzgeç yolu (tabanda tam kapı 'kimlik değişti')
+      ---
+      duration_ms: 791.874106
+      type: 'test'
+      ...
+    # Subtest: Y1 / Y2 / Y4 (açık dönem, store üzerinden): son stok hareketi silinip aynı rowid'e yeni kimlikle (bozmasız / miktar +1) ya da aynı kimlikle miktar +1 yazılır → 409 invoice:stock (tabanda da)
+    ok 2 - Y1 / Y2 / Y4 (açık dönem, store üzerinden): son stok hareketi silinip aynı rowid'e yeni kimlikle (bozmasız / miktar +1) ya da aynı kimlikle miktar +1 yazılır → 409 invoice:stock (tabanda da)
+      ---
+      duration_ms: 476.609743
+      type: 'test'
+      ...
+    # Subtest: Y3 (açık dönem, store üzerinden): son Kasa satırı silinip aynı rowid'e yeni kimlikle (aynı olay bağıyla) yazılır → kapı kabul eder, tarama bank:event bulur (tabanın davranışı AYNEN)
+    ok 3 - Y3 (açık dönem, store üzerinden): son Kasa satırı silinip aynı rowid'e yeni kimlikle (aynı olay bağıyla) yazılır → kapı kabul eder, tarama bank:event bulur (tabanın davranışı AYNEN)
+      ---
+      duration_ms: 418.423894
+      type: 'test'
+      ...
+# (node:8704) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: K1 / K2 / K5 (KİLİTLİ dönem, store üzerinden): kilitli tarihli son satır silinip aynı rowid'e yeni kimlikle (içerik aynı) ya da aynı kimlikle miktar +1 yazılır → 409 period-lock (tabanda da)
+    ok 4 - K1 / K2 / K5 (KİLİTLİ dönem, store üzerinden): kilitli tarihli son satır silinip aynı rowid'e yeni kimlikle (içerik aynı) ya da aynı kimlikle miktar +1 yazılır → 409 period-lock (tabanda da)
+      ---
+      duration_ms: 726.907143
+      type: 'test'
+      ...
+# (node:8704) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: K3 / K4 (D8 bekçisi): UPDATE … SET id (rowid'in son hâli eklenmemiş) — kilitliyse 409 period-lock; açıksa bugünkü gibi TAM kapı 'kimlik değişti' (kabul, tarama bank:event)
+    ok 5 - K3 / K4 (D8 bekçisi): UPDATE … SET id (rowid'in son hâli eklenmemiş) — kilitliyse 409 period-lock; açıksa bugünkü gibi TAM kapı 'kimlik değişti' (kabul, tarama bank:event)
+      ---
+      duration_ms: 861.029079
+      type: 'test'
+      ...
+# (node:8704) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8704) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: D1–D4 (store DIŞI — program dışından): aynı rowid'e yeni kimlik (açık / kilitli), Düzenle'nin yeniden kullandığı rowid'in miktarı, silinip aynı kimlikle geri yazılan kilitli satır → tarama bulur, sonraki yazım 409 (tabanda da)
+    ok 6 - D1–D4 (store DIŞI — program dışından): aynı rowid'e yeni kimlik (açık / kilitli), Düzenle'nin yeniden kullandığı rowid'in miktarı, silinip aynı kimlikle geri yazılan kilitli satır → tarama bulur, sonraki yazım 409 (tabanda da)
+      ---
+      duration_ms: 2430.409732
+      type: 'test'
+      ...
+    1..6
+ok 1 - İzleyen tur 3 — kapı süzgecinde rowid yeniden kullanımı (üretim kipi)
+  ---
+  duration_ms: 5706.821367
+  type: 'suite'
+  ...
+# Subtest: İzleyen tur 3 — kapı süzgecinde rowid yeniden kullanımı (test kipi (eşdeğerlik denetimi açık))
+    # Subtest: P1: yeni kaydedilmiş faturanın Düzenle'si (azaltma, aynı içerik, ikinci azaltma) — sonuç tabanla aynı; üretimde süzgeç yolu (tabanda tam kapı 'kimlik değişti')
+    ok 1 - P1: yeni kaydedilmiş faturanın Düzenle'si (azaltma, aynı içerik, ikinci azaltma) — sonuç tabanla aynı; üretimde süzgeç yolu (tabanda tam kapı 'kimlik değişti')
+      ---
+      duration_ms: 543.179483
+      type: 'test'
+      ...
+    # Subtest: Y1 / Y2 / Y4 (açık dönem, store üzerinden): son stok hareketi silinip aynı rowid'e yeni kimlikle (bozmasız / miktar +1) ya da aynı kimlikle miktar +1 yazılır → 409 invoice:stock (tabanda da)
+    ok 2 - Y1 / Y2 / Y4 (açık dönem, store üzerinden): son stok hareketi silinip aynı rowid'e yeni kimlikle (bozmasız / miktar +1) ya da aynı kimlikle miktar +1 yazılır → 409 invoice:stock (tabanda da)
+      ---
+      duration_ms: 541.008737
+      type: 'test'
+      ...
+    # Subtest: Y3 (açık dönem, store üzerinden): son Kasa satırı silinip aynı rowid'e yeni kimlikle (aynı olay bağıyla) yazılır → kapı kabul eder, tarama bank:event bulur (tabanın davranışı AYNEN)
+    ok 3 - Y3 (açık dönem, store üzerinden): son Kasa satırı silinip aynı rowid'e yeni kimlikle (aynı olay bağıyla) yazılır → kapı kabul eder, tarama bank:event bulur (tabanın davranışı AYNEN)
+      ---
+      duration_ms: 397.367473
+      type: 'test'
+      ...
+# (node:8704) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8704) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: K1 / K2 / K5 (KİLİTLİ dönem, store üzerinden): kilitli tarihli son satır silinip aynı rowid'e yeni kimlikle (içerik aynı) ya da aynı kimlikle miktar +1 yazılır → 409 period-lock (tabanda da)
+    ok 4 - K1 / K2 / K5 (KİLİTLİ dönem, store üzerinden): kilitli tarihli son satır silinip aynı rowid'e yeni kimlikle (içerik aynı) ya da aynı kimlikle miktar +1 yazılır → 409 period-lock (tabanda da)
+      ---
+      duration_ms: 835.899892
+      type: 'test'
+      ...
+# (node:8704) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8704) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: K3 / K4 (D8 bekçisi): UPDATE … SET id (rowid'in son hâli eklenmemiş) — kilitliyse 409 period-lock; açıksa bugünkü gibi TAM kapı 'kimlik değişti' (kabul, tarama bank:event)
+    ok 5 - K3 / K4 (D8 bekçisi): UPDATE … SET id (rowid'in son hâli eklenmemiş) — kilitliyse 409 period-lock; açıksa bugünkü gibi TAM kapı 'kimlik değişti' (kabul, tarama bank:event)
+      ---
+      duration_ms: 732.48332
+      type: 'test'
+      ...
+# (node:8704) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8704) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: D1–D4 (store DIŞI — program dışından): aynı rowid'e yeni kimlik (açık / kilitli), Düzenle'nin yeniden kullandığı rowid'in miktarı, silinip aynı kimlikle geri yazılan kilitli satır → tarama bulur, sonraki yazım 409 (tabanda da)
+    ok 6 - D1–D4 (store DIŞI — program dışından): aynı rowid'e yeni kimlik (açık / kilitli), Düzenle'nin yeniden kullandığı rowid'in miktarı, silinip aynı kimlikle geri yazılan kilitli satır → tarama bulur, sonraki yazım 409 (tabanda da)
+      ---
+      duration_ms: 2323.278326
+      type: 'test'
+      ...
+    1..6
+ok 2 - İzleyen tur 3 — kapı süzgecinde rowid yeniden kullanımı (test kipi (eşdeğerlik denetimi açık))
+  ---
+  duration_ms: 5374.224599
+  type: 'suite'
+  ...
+# Subtest: İzleyen tur 3 — rowid yeniden kullanımı bozma bulanıklaştırması (test kipi): süzgeç ↔ tam kapı eşdeğerliği
+    # Subtest: tohum 31: 160 rowid yeniden kullanımı, eşdeğerlik ihlali yok
+    ok 1 - tohum 31: 160 rowid yeniden kullanımı, eşdeğerlik ihlali yok
+      ---
+      duration_ms: 5527.040199
+      type: 'test'
+      ...
+    # rowid yeniden kullanımı 135 / 160 · kabul 89 · ret 46 · eşdeğerlik ihlali 0
+# (node:8704) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8704) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: tohum 37 (kilitli dönem): 160 rowid yeniden kullanımı, eşdeğerlik ihlali yok
+    ok 2 - tohum 37 (kilitli dönem): 160 rowid yeniden kullanımı, eşdeğerlik ihlali yok
+      ---
+      duration_ms: 5779.538704
+      type: 'test'
+      ...
+    # rowid yeniden kullanımı 144 / 160 · kabul 25 · ret 119 · eşdeğerlik ihlali 0
+    1..2
+ok 3 - İzleyen tur 3 — rowid yeniden kullanımı bozma bulanıklaştırması (test kipi): süzgeç ↔ tam kapı eşdeğerliği
+  ---
+  duration_ms: 11307.16515
+  type: 'suite'
+  ...
+# (node:8705) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: İzleyen tur 3 — İş 2: faturasız stok iadesi kartı değiştirince öbür ekrana 'plans' olayı (planId'li)
+    # Subtest: S0 (taban bekçisi): yeni stok iadesi kartı 900 → 600 küçültür ve 'plans' yayımlar
+    ok 1 - S0 (taban bekçisi): yeni stok iadesi kartı 900 → 600 küçültür ve 'plans' yayımlar
+      ---
+      duration_ms: 2432.976034
+      type: 'test'
+      ...
+    # Subtest: S1: iade düzeltmesi 1 → 2 kartı 600 → 300 küçültür → öbür ekrana 'plans:K' (tabanda yok)
+    ok 2 - S1: iade düzeltmesi 1 → 2 kartı 600 → 300 küçültür → öbür ekrana 'plans:K' (tabanda yok)
+      ---
+      duration_ms: 3408.341262
+      type: 'test'
+      ...
+    # Subtest: S2: iade silinince kart 600 → 900 geri büyür → öbür ekrana 'plans:K' (tabanda yok)
+    ok 3 - S2: iade silinince kart 600 → 900 geri büyür → öbür ekrana 'plans:K' (tabanda yok)
+      ---
+      duration_ms: 3128.278581
+      type: 'test'
+      ...
+    # Subtest: S3: silinen iade Silinenler'den geri yüklenince kart 900 → 600 yeniden küçülür → öbür ekrana 'plans:K' ve 'accounts@A' (tabanda ikisi de yok)
+    ok 4 - S3: silinen iade Silinenler'den geri yüklenince kart 900 → 600 yeniden küçülür → öbür ekrana 'plans:K' ve 'accounts@A' (tabanda ikisi de yok)
+      ---
+      duration_ms: 3098.895389
+      type: 'test'
+      ...
+    # Subtest: S4 (bekçi): kartı değiştirmeyen stok hareketi (peşin satış) düzeltilip silinince 'plans' olayı YOK (bugünkü gibi)
+    ok 5 - S4 (bekçi): kartı değiştirmeyen stok hareketi (peşin satış) düzeltilip silinince 'plans' olayı YOK (bugünkü gibi)
+      ---
+      duration_ms: 3260.559465
+      type: 'test'
+      ...
+    1..5
+ok 4 - İzleyen tur 3 — İş 2: faturasız stok iadesi kartı değiştirince öbür ekrana 'plans' olayı (planId'li)
+  ---
+  duration_ms: 15330.995468
+  type: 'suite'
+  ...
+1..4
+# tests 19
+# suites 4
+# pass 19
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 22869.429151

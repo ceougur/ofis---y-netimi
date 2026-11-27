@@ -1,0 +1,28 @@
+W-3 KANITLARI (2.5.0; WhatsApp gönderim kayıtlarının saklama süresi + KVKK silme talebi) — 06.11.2026, W-3 kod ajanı, taban 75f1aad9 (dal worktree-agent-a049637a49bdad154)
+Tasarım: docs/erp/W3-SAKLAMA-TASARIM.md. Kararlar AYNEN: docs/2.5.0-IS-LISTESI.md D (S-W3, S30–S32, S35–S38, S42; BAŞ MİMAR KARARI Y17-6; İLKEYLE WK 15).
+Koşular tools/kanit.mjs kos ile (.json çıkış kodu + sayılar + commit; .log ham çıktı). "commit 75f1aad +N değişmiş" = kod commit'inden ÖNCE çalışma ağacında koşuldu (son kodla).
+
+  w3-yeni-utc / w3-yeni-istanbul           test/whatsapp-w3-saklama-250.test.mjs (14 hücre), TZ=UTC 14/14 ve TZ=Europe/Istanbul 14/14 — SON kod.
+  w3-eski-75f1aad9-utc + w3-eski-nedenler.txt   aynı test dosyası ESKİ kodda (git archive 75f1aad9 ayrı kopya; ders 23 / 25): 0/14 — her hücrenin nedeni okundu (ders 38).
+  w3-mutasyon-istanbul.txt (+ -m15.txt)    24 mutasyon (kararların karşı seçenekleri + dişsiz uygulamalar), TZ=Europe/Istanbul: 23/24 + M15 çıpası düzeltilip ayrı koşu 1/1 = 24/24 YAKALANDI.
+  w3-olcum-100k*.json/.log                 100.000 iş + 100.000 defter talebi, ilk süpürme + iş yokken tur (flock olcum.lock; ders 15 / 47). -1 ilk sürüm, -2 500'lük sayfa, -3 pencere (makine
+                                           yüklüyken), -4 pencere (son koddan önceki sürüm), -5 SON kod (commit 16c9e40; yük ~4): süpürme 17.635 ms, olay döngüsü
+                                           en çok 658 ms, eşzamanlı Gönderimler listesi 222 ms (200), 100.000/100.000 silindi, açık telefon 0 (dosya + defter), açık wamid 0;
+                                           ikinci tur (iş yok) 72 ms / bakım turu 289 ms, olay döngüsü 6 ms. (-4: 12.602 ms / 130 ms / 275 ms.)
+  w3-komsu-utc                             G2 komşu taraması 1 (139 dosya): 1034/1037 — BS-7 (tabanda da kırmızı) + 2 GERÇEK gerileme (dk11 İş N kilitli dosyada denetim noktası 10 sn;
+                                           T35r "defter önce" kapalı dosyada iş okuma) → düzeltildi.
+  w3-komsu-utc-2                           G2 komşu taraması 2 (düzeltmeden sonra, aynı 139 dosya): 1036/1037 — yalnız BS-7.
+  w3-taban-75f1aad9-sema-kapisi-bs7        BS-7 tabanda (75f1aad9, W-3 kodu YOK) da kırmızı: whatsapp.appWebhook (WE gerilemesi; ana dalda 86eed89 ile kapandı).
+  w3-ana-5620b55c-ustune                   ana dal ucu 5620b55c + W-3 dosyaları (ana dal bu dosyalara 75f1aad9'dan beri dokunmadı): W-3 testi + sema-kapisi-bs7 + we-webhook-bilgisi + kanit-araci +
+                                           db-tx-kayip = 81/81 (TZ=Europe/Istanbul) — BS-7 W-3 ile yeşil.
+  w3-e2e-*                                 senaryo-whatsapp 45/45, whatsapp-ayar-248 153/153, whatsapp-donem-248 37/37, whatsapp-sablon-248 50/50, whatsapp-gonder-248 189/189,
+                                           whatsapp-kvkk-250 16/16 (YENİ; ci.yml listesinde YOK), senaryo-211 59/59 (ekranda yazım düzeni), kilavuz-metin 930/930.
+  w3-pdf-denetle                           kılavuz PDF'i 39/39 (ders 42; client/kilavuz'a kopyalandı).
+  w3-surucu-*                              kâhin sürücüsü (test/bagimsiz/whatsapp-248/surucu.mjs; yalnız W-3 olay eşlemeleri + 3 S-8 öz mutasyonu eklendi, kâhin DEĞİŞMEDİ): tam küme
+                                           (367 senaryo, hızlı uç, TZ=Europe/Istanbul) + W-3 senaryoları — fark sınıflaması raporda.
+    w3-surucu-tum-istanbul                 YENİ kod, 367 senaryo: 26 geçti, 1 GEÇERSİZ (S30-02: salt okunur lisansta talep 403), 223 yalnız gösterim (G1), 103 W-3 DIŞI davranış farkı,
+                                           14 W-3 / S29 / S33 / S34 senaryosu davranış farkı (S29 / S34 Ç5'in, S33 WhatsApp tur 1'in işi).
+    w3-surucu-eski-75f1aad9-disi-istanbul  aynı sürücü + aynı kâhin, ESKİ kodda yalnız o 103 W-3 dışı senaryo → w3-surucu-sinifla.txt: 103/103 AYNI fark listesi (W-3 gerilemesi yok).
+    w3-surucu-ana-ustune-w3-istanbul       ana dal 5620b55c (WK 18 kâhini, 374 senaryo) + W-3: W-3 + S42 senaryoları; S42-01…04 "SÜRÜCÜ HATASI" (S-84 gecikmeli yanıt eşlemesi
+                                           sürücüde YOK — README §23.9 S-84…S-90 yazılmadı); süreç TAP'tan sonra kapanmadı, ajan kendi pid'ini durdurdu (çıkış kodu buna göre).
+Yeniden koşma: rapordaki komutlar.

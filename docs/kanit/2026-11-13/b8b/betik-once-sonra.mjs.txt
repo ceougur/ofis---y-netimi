@@ -1,0 +1,38 @@
+// Birleşik tur 8b ÖNCE → SONRA tablosu: test/vade-takip-gecikmis-b8b-250.test.mjs'in ilk kurgusu (dokuz hücre + tedarikçi + fatura + çek), altı hazır aralık + elle aralık.
+// Kullanım: node once-sonra.mjs <kod kökü>
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+
+process.env.HUKUK_LICENSE_URL ||= "http://127.0.0.1:9";
+const root = process.argv[2];
+const { loginAdmin, startTestServer } = await import(pathToFileURL(path.join(root, "test", "helpers.mjs")).href);
+const TODAY = "2026-10-20";
+const day = offset => {
+  const at = new Date(`${TODAY}T00:00:00Z`);
+  at.setUTCDate(at.getUTCDate() + offset);
+  return at.toISOString().slice(0, 10);
+};
+const unwrap = r => (r.data && typeof r.data === "object" && "ok" in r.data ? (r.data.ok ? r.data.data : r.data) : r.data);
+const server = await startTestServer({ now: { time: `${TODAY}T12:00:00+03:00`, fixed: true }, env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" } });
+const c = await loginAdmin(server);
+await c.post("/api/workspace/bank/setup/dismiss", {});
+let n = 0;
+const must = async p => { const r = await p; if (r.status !== 200) throw new Error(`${r.status} ${JSON.stringify(r.data).slice(0, 200)}`); return unwrap(r); };
+const account = (name, type = "customer") => must(c.post("/api/workspace/accounts", { name, type, registeredOn: day(-400), phone: `0500 781 ${String(10 + n).padStart(2, "0")} ${String((n += 1)).padStart(2, "0")}`, similarOk: true, force: true }));
+const entry = (a, body) => must(c.post(`/api/workspace/accounts/${a.id}/entries`, { method: "cash", cashForce: true, similarOk: true, ...body }));
+for (const v of [-10, 0, 10]) for (const p of [15, 0, -5]) await entry(await account(`Gecikmiş Hücre v${v} p${p}`), { kind: "debt", amount: "100", date: day(-30), dueDate: day(v), expectedDate: day(p) });
+await entry(await account("Gecikmiş Tedarikçi Sözlü", "supplier"), { kind: "credit", amount: "70", date: day(-30), dueDate: day(-10), expectedDate: day(15) });
+await entry(await account("Gecikmiş Tedarikçi Vadeli", "supplier"), { kind: "credit", amount: "30", date: day(-30), dueDate: day(-3) });
+const service = await must(c.post("/api/workspace/stock", { kind: "service", code: "HZM-B8B-1", name: "Hizmet", unit: "Adet", salePrice: "100" }));
+const sale = async (a, amount, dueDate) => must(c.post("/api/workspace/invoices", { scenario: "service_sale", accountId: a.id, issueDate: day(-30), lines: [{ itemId: service.id, qty: 1, unitPrice: String(amount), vatRate: 0 }], payment: { rest: "open", dueDate }, cashForce: true }));
+await sale(await account("Kaynak Fatura Gecikmiş"), 60, day(-6));
+await sale(await account("Kaynak Fatura Yaklaşan"), 20, day(2));
+await must(c.post("/api/workspace/cheques", { direction: "in", instrument: "cheque", serialNo: "B8B-1", bank: "Akbank", amount: "50", issueDate: day(-40), dueDate: day(-4) }));
+await must(c.post("/api/workspace/cheques", { direction: "in", instrument: "cheque", serialNo: "B8B-2", bank: "Akbank", amount: "40", issueDate: day(-40), dueDate: day(3) }));
+const Q = [...["late", "today", "next7", "next30", "next90", "open"].map(p => [p, `preset=${p}`]), ["elle bugün…bugün", `from=${day(0)}&to=${day(0)}`], ["elle bugün…+7", `from=${day(0)}&to=${day(7)}`], ["today late=0", "preset=today&late=0"], ["next7 late=0", "preset=next7&late=0"]];
+for (const [label, q] of Q) {
+  const d = await must(c.get(`/api/workspace/overview/vade-takip?${q}`));
+  const t = d.totals;
+  console.log(`${label.padEnd(18)} | gecikmiş tahsil ${t.in.overdue.amount} / ${t.in.overdue.count} | gecikmiş ödeme ${t.out.overdue.amount} / ${t.out.overdue.count} | satır ${d.rows.length} | tahsil edilecek ${t.in.total.amount} | ödenecek ${t.out.total.amount} | bugün ${t.in.today.amount} | yaklaşan ${t.in.upcoming.amount}`);
+}
+await server.close();

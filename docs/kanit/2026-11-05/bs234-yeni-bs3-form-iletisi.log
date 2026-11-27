@@ -1,0 +1,14 @@
+
+■ (d) stok hareketi ✎ → hareket silinir → Kaydet
+  ✓ formda ileti: “Stok hareketi bulunamadı. Başka biri silmiş olabilir.”
+  ✓ veri tabanında kayıt yok (düzeltme yazılmadı)
+
+■ (f) taksit kartı tahsilatı ✎ → tahsilat silinir → Kaydet
+  ✓ formda ileti: “Hareket bulunamadı. Başka biri silmiş olabilir.”
+  ✓ veri tabanında kayıt yok (düzeltme yazılmadı)
+
+■ (g) taksit ✎ → taksit silinir → Kaydet
+  ✓ formda ileti: “Taksit bulunamadı. Başka biri silmiş olabilir.”
+  ✓ veri tabanında kayıt yok (düzeltme yazılmadı)
+
+SONUÇ: 6 geçti, 0 kaldı

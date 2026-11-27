@@ -1,0 +1,14 @@
+{
+  "aciklama": "2.5.0 Ç5 bakımı 3 ÖK-1 (BAŞ MİMAR KARARI 12.11.2026; senaryo ön koşulu, para kuralı değil) — ÇİĞNEYEN senaryo, yalnız oz-test.py (programla KOŞULMAZ: kâhin beklenen nedenle hata verir). M1'in taksitli satış faturası (F1; KDV dahil değil 1.000 + %20 = 1.200, 3 taksit) TK1 400'le kısmen ödenmiş, kart AÇIK (kalan 800) → aynı cariye Excel taksit kartı (EX1) yüklenemez; kâhin sayı üretmez.",
+  "simdi": "2026-09-30T17:00:00+03:00",
+  "bugun": "2026-09-30",
+  "beklenenHata": "ÖK-1",
+  "olaylar": [
+    { "id": "M1", "tur": "cari", "ad": "Taksitli Fatura Müşterisi Ltd.", "tip": "customer" },
+    { "id": "KASA0", "tur": "kasa_acilis", "tarih": "2026-09-01", "tutar": 1000 },
+    { "id": "F1", "tur": "fatura", "fatura": "satis", "tarih": "2026-09-05", "cari": "M1", "kalemler": [{ "ad": "Kurulum Hizmeti", "miktar": 1, "fiyat": 1000, "kdv": 20 }], "odeme": { "taksit": { "sayi": 3, "ilkVade": "2026-09-15" } } },
+    { "id": "TK1", "tur": "taksit_tahsil", "tarih": "2026-09-15", "fatura": "F1", "tutar": 400, "yol": "nakit" },
+    { "id": "EX1", "tur": "excel_taksit_karti", "tarih": "2026-09-20", "cari": "M1", "toplam": 900, "odenen": 300, "not": "ÖK-1: F1'in kartı açık (kalan 800) — yüklenemez" },
+    { "id": "K1", "tur": "kontrol", "tarih": "2026-09-30" }
+  ]
+}

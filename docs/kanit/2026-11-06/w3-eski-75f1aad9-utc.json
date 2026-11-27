@@ -1,0 +1,103 @@
+{
+  "ad": "w3-eski-75f1aad9-utc",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/whatsapp-w3-saklama-250.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T10:48:30.612Z",
+  "sure_sn": 16.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 14,
+    "gecen": 0,
+    "basarisiz": 14,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 14 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.0 W-3 — saklama süresi (1 yıl + anonim iz) ve KVKK silme talebi › S-W3 + S35: talep → içerik, telefon, PDF, ad, wamid HEMEN silinir, iz kalır; bekleyen (Duraklatıldı) iş 'Atlandı — Silme Talebi'; aynı dönem 'Daha Önce Gönderildi', R3 Yine de Gönder yeni içerikle gider; öbür cari ve kart değişmez; yetki / onay",
+      "konum": "test/whatsapp-w3-saklama-250.test.mjs:107:3",
+      "hata": "yönetici olmayan silemez · 404 !== 403 (beklenen 403, gelen 404)"
+    },
+    {
+      "ad": "2.5.0 W-3 — saklama süresi (1 yıl + anonim iz) ve KVKK silme talebi › S-W3 1 yıl (yerel saat; gece yarısı yerel ≠ UTC) + Y17-6: sınırdan 1 sa önce içerik durur, sınırda silinir (bakım turu); 1 yılını dolduran bekleyen iş DOLUM ANINDA 'Atlandı — Saklama Süresi' (önce 'Zaten Kuyrukta' eler, sonra elemez); aynı dönem iz eler",
+      "konum": "test/whatsapp-w3-saklama-250.test.mjs:174:3",
+      "hata": "dolum anında: B kuyrukta değil (Y17-6), A iz ile elenir (S-W3) · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 W-3 — saklama süresi (1 yıl + anonim iz) ve KVKK silme talebi › S-W3 29 Şubat (yerel gün; İstanbul'da UTC'nin bir gün gerisi): 29.02.2028 01:00'de gönderilen ekstrenin içeriği 28.02.2029 00:00'da durur, 01:00'de silinir; aynı anda açılan bekleyen iş 00:59'da kuyrukta, 01:00'de 'Atlandı — Saklama Süresi'",
+      "konum": "test/whatsapp-w3-saklama-250.test.mjs:209:3",
+      "hata": "28.02.2029 01:00: bekleyen iş kapandı (29 Şubat → 28 Şubat, yerel) · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 W-3 — saklama süresi (1 yıl + anonim iz) ve KVKK silme talebi › S-W3 takvim yılı ≠ 365 gün: 15.06.2027 10:00'da gönderilen ekstre (araya 29.02.2028 girer) 14.06.2028 10:30'da (365 gün + 30 dk) DURUR, 15.06.2028 10:00'da silinir",
+      "konum": "test/whatsapp-w3-saklama-250.test.mjs:237:3",
+      "hata": "takvim yılı doldu: silindi · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 W-3 — saklama süresi (1 yıl + anonim iz) ve KVKK silme talebi › S42: talep anında iş Gönderiliyor — içerik + telefon (dosya + defter) hemen silinir; kabul → wamid özetle iz; geçici hata → yeniden gönderilmez, 'Atlandı — Silme Talebi'; yanıt yok → Sonucu Belirsiz izi",
+      "konum": "test/whatsapp-w3-saklama-250.test.mjs:255:3",
+      "hata": "KVKK silme talebi ucu (geldi 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"}) · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.5.0 W-3 — saklama süresi (1 yıl + anonim iz) ve KVKK silme talebi › S35 + K7 düzeni: Meta Bekletti (131049) iş talep anında Atlandı — 24 sa sonraki deneme GİTMEZ, bırakılmış deneme 'Daha Önce' saymaz (aynı dönem yeni gönderim gider); geç teslim sayılır, sonra 'Daha Önce'",
+      "konum": "test/whatsapp-w3-saklama-250.test.mjs:302:3",
+      "hata": "KVKK silme talebi ucu (geldi 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"}) · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.5.0 W-3 — saklama süresi (1 yıl + anonim iz) ve KVKK silme talebi › S31 + S36 (Ekstre): silinmiş Başarısız → Başarısızları Yeniden Dene 'İçeriği Silindi' (öbürü alınır); silinmiş Sonucu Belirsiz → Yine de Gönder 'İçeriği Silindi' + neden; aynı dönem 'Sonucu Belirsiz' eler (Yine de Gönder bayrağı da), sonraki dönem gider; yeni gönderim (Başarısız) gider",
+      "konum": "test/whatsapp-w3-saklama-250.test.mjs:327:3",
+      "hata": "KVKK silme talebi ucu (geldi 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"}) · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.5.0 W-3 — saklama süresi (1 yıl + anonim iz) ve KVKK silme talebi › S37 = B (Ödeme Hatırlatma): silinmiş Başarısız → Yeniden Dene ve silinmiş Sonucu Belirsiz → Yine de Gönder karttan YENİ içerikle gider; kart telefonu da silindiyse 'Telefon yok'",
+      "konum": "test/whatsapp-w3-saklama-250.test.mjs:371:3",
+      "hata": "KVKK silme talebi ucu (geldi 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"}) · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.5.0 W-3 — saklama süresi (1 yıl + anonim iz) ve KVKK silme talebi › S32 (002, geri yükleme hemen): talepten ÖNCE alınmış yedek → silinmiş içerik / telefon GELMEZ; talepten SONRA açılan iş kalır; talepten sonraki yedek: o içerik durur",
+      "konum": "test/whatsapp-w3-saklama-250.test.mjs:409:3",
+      "hata": "KVKK silme talebi ucu (geldi 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"}) · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.5.0 W-3 — saklama süresi (1 yıl + anonim iz) ve KVKK silme talebi › S32 (001, geri yükleme yeniden açılışta) + S38 (taşıma: gönderim defteri yok, talep dosyası veri klasöründe) + zincirleme taşıma + yeni bilgisayarda yeni talep: talepten önceki yedek içeriği GELMEZ",
+      "konum": "test/whatsapp-w3-saklama-250.test.mjs:444:3",
+      "hata": "KVKK silme talebi ucu (geldi 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"}) · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.5.0 W-3 — saklama süresi (1 yıl + anonim iz) ve KVKK silme talebi › İki şirket: 002'deki talep yalnız 002'nin carisini siler (001'de aynı adlı / telefonlu cari etkilenmez); talep kaydı şirket kimliğiyle",
+      "konum": "test/whatsapp-w3-saklama-250.test.mjs:499:3",
+      "hata": "KVKK silme talebi ucu (geldi 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"}) · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.5.0 W-3 — saklama süresi (1 yıl + anonim iz) ve KVKK silme talebi › KVKK sızıntı denetimi: talepten sonra günlükte, veri klasöründeki BÜTÜN dosyalarda (şirket dosyası, WAL, makine defteri, talep dosyası) ve yeni yedekte silinen telefon, ad, ileti metni ve numarayı taşıyan wamid YOK",
+      "konum": "test/whatsapp-w3-saklama-250.test.mjs:520:3",
+      "hata": "KVKK silme talebi ucu (geldi 404 {\"ok\":false,\"error\":\"Endpoint bulunamadı.\"}) · 404 !== 200 (beklenen 200, gelen 404)"
+    },
+    {
+      "ad": "2.5.0 W-3 — saklama süresi (1 yıl + anonim iz) ve KVKK silme talebi › Makine defteri 'yalnız eklenir' kalır, tek istisna KVKK anonimleştirmesi: eski (2.4.9) tetikli defter açılınca yükseltilir; telefon → 'silinmis:<iş>' ve wamid → özet geçer, öbür her UPDATE / DELETE düşer",
+      "konum": "test/whatsapp-w3-saklama-250.test.mjs:574:3",
+      "hata": "telefonun anonimleştirilmesi geçer (yükseltilmiş tetik) · + actual - expected · + 'reddedildi' (beklenen geçti, gelen reddedildi)"
+    },
+    {
+      "ad": "2.5.0 W-3 — saklama süresi (1 yıl + anonim iz) ve KVKK silme talebi › Yarıda kesilme: talep makineye yazılamazsa 503 ve HİÇBİR şey silinmez; talep yazılıp şirket dosyası yazılamazsa açılışta tamamlanır",
+      "konum": "test/whatsapp-w3-saklama-250.test.mjs:624:3",
+      "hata": "talep yazılamadı → 503 (geldi 404) · 404 !== 503 (beklenen 503, gelen 404)"
+    }
+  ],
+  "ham_cikti": "../w3-kanit/2026-11-06/w3-eski-75f1aad9-utc.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9",
+  "ham_cikti_sha256": "a9e42d64d496cf70f3697e37f47414141d9e27cd19a2c167944e9818dd188517",
+  "ham_cikti_bayt": 23297
+}

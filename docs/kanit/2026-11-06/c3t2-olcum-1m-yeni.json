@@ -1,0 +1,32 @@
+{
+  "ad": "c3t2-olcum-1m-yeni",
+  "komut": "flock /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olcum.lock node test/donmus-defter-kilit-ucu-olcum-250.mjs --kod /home/user/ofis---y-netimi/.claude/worktrees/agent-ae037f9ed9ae9cefe --veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3-olcum-veri/n-1000000 --cikti /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t2-olcum/1m-yeni.json --sunucu cekirdek",
+  "commit": "8f9e767df74a718399dabd808252122d7e8b9add",
+  "dal": "worktree-agent-ae037f9ed9ae9cefe",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T06:01:59.353Z",
+  "sure_sn": 351.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 1,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t2-kanit/2026-11-06/c3t2-olcum-1m-yeni.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ae037f9ed9ae9cefe",
+  "ham_cikti_sha256": "6c8c508ca9aa85239b09f4c9db31c2fc61a4fa3247491fddf739f432b5d23315",
+  "ham_cikti_bayt": 821
+}

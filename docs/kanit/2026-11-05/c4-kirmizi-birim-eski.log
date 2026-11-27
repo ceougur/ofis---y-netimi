@@ -1,0 +1,187 @@
+TAP version 13
+# Subtest: 2.5.0 Ç4 Defter Türü
+    # Subtest: varsayılan Seçilmedi; seçenekler yazım düzeninde; Kişi Türü / VKN uzunluğundan tür uydurulmaz; kaydedilir ve yeniden okunur
+    not ok 1 - varsayılan Seçilmedi; seçenekler yazım düzeninde; Kişi Türü / VKN uzunluğundan tür uydurulmaz; kaydedilir ve yeniden okunur
+      ---
+      duration_ms: 805.402694
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c4-eski-0fc8add4/test/defter-turu-c4.test.mjs:49:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + undefined
+        - 'unset'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'unset'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c4-eski-0fc8add4/test/defter-turu-c4.test.mjs:54:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: geçersiz değer 400 ve hiçbir ayar yazılmaz (aynı gövdedeki firma bilgisi de)
+    not ok 2 - geçersiz değer 400 ve hiçbir ayar yazılmaz (aynı gövdedeki firma bilgisi de)
+      ---
+      duration_ms: 807.222522
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c4-eski-0fc8add4/test/defter-turu-c4.test.mjs:83:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        "Bilanço Esası": 200 {"ok":true,"data":{"seller":{"name":"Olmamalı","partyKind":"company","firstName":"","familyName":"","taxNo":"","taxOffice":"","mersisNo":"","tradeRegistry":"","address":"","district":"","city":"","postalCode":"","country":"Türkiye","phone":"","email":"","website":"","banks":[],"logo":"","stamp":""},"efatura":false,"earsiv":false,"esmm":false,"series":{"paper":"FIS","earsiv":"EAR","efatura":"EFT","smm":"SMM","esmm":"ESM","internal":"IAD"},"start":{},"defaults":{"vatRate":20,"pricesIncludeVat":false,"stoppageRate":20,"efaturaProfile":"TEMELFATURA","dueDays":0,"footer":"","saleScenario":"","purchaseScenario":"","signatureArea":true,"itemTracking":false},"eView":{"enabled":true,"logo":true,"banks":true,"footer":true,"stamp":true,"stampEfatura":false},"eOptions":{"balanceNote":false,"paymentMeans":true,"draftUpload":false},"eOptionsSet":{},"integrator":{"id":"edm","env":"test","baseUrl":"","username":"","senderAlias":"","mailboxAlias":"","autoSend":false,"earchiveEmail":true,"autoCheckUser":false,"lastTest":null,"hasPassword":false,"url":"https://test.edmbilisim.com.tr/EFaturaEDM21ea/EFaturaEDM.svc","label":"EDM Bilişim","liveAllowed":false,"network":null},"reportHeader":{"signName":"","mode":"sign"},"edocEnabled":false,"esmmAvailable":false,"nextNumbers":{"paper":{"series":"FIS","year":2026,"seq":1,"number":"FIS2026000000001"},"smm":{"series":"SMM","year":2026,"seq":1,"number":"SMM2026000000001"},"internal":{"series":"IAD","year":2026,"seq":1,"number":"IAD2026000000001"}},"testNumbers":null,"testSeries":{"efatura":"TEF","earsiv":"TEA","esmm":"TES"},"bankAccounts":{"active":false,"accounts":[],"suggestions":[]},"problems":{"KAGIT":[],"EARSIVFATURA":["Firma bilgisi (satıcı): e-Arşiv için VKN ya da TCKN zorunludur.","Firma bilgisi (satıcı): il zorunludur (adres).","Firma bilgisi (satıcı): vergi dairesi zorunludur."],"TEMELFATURA":["Firma bilgisi (satıcı): e-Fatura için VKN ya da TCKN zorunludur.","Firma bilgisi (satıcı): il zorunludur (adres).","Firma bilgisi (satıcı): vergi dairesi zorunludur."]}}}
+        
+        200 !== 400
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 400
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c4-eski-0fc8add4/test/defter-turu-c4.test.mjs:90:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: yetki: yönetici ve muhasebe değiştirir; avukat ve personel 403 (ayar değişmez)
+    not ok 3 - yetki: yönetici ve muhasebe değiştirir; avukat ve personel 403 (ayar değişmez)
+      ---
+      duration_ms: 1204.159933
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c4-eski-0fc8add4/test/defter-turu-c4.test.mjs:102:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + undefined
+        - 'professional'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'professional'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c4-eski-0fc8add4/test/defter-turu-c4.test.mjs:109:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Şirket Verisini Sıfırla: Tüm Hareketleri Sil ve Tümünü Sıfırla ayarı KORUR; dönem kilidi (ledger.) kalkar
+    not ok 4 - Şirket Verisini Sıfırla: Tüm Hareketleri Sil ve Tümünü Sıfırla ayarı KORUR; dönem kilidi (ledger.) kalkar
+      ---
+      duration_ms: 1183.744934
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c4-eski-0fc8add4/test/defter-turu-c4.test.mjs:120:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        movements: Defter Türü korunmalı
+        + actual - expected
+        
+        + undefined
+        - 'operating'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'operating'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c4-eski-0fc8add4/test/defter-turu-c4.test.mjs:130:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: iki şirket ayrı ayar; yedek → değiştir → geri yükle: 002 hemen, 001 yeniden açılışta geri gelir; öbür şirket etkilenmez
+    not ok 5 - iki şirket ayrı ayar; yedek → değiştir → geri yükle: 002 hemen, 001 yeniden açılışta geri gelir; öbür şirket etkilenmez
+      ---
+      duration_ms: 1019.844048
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c4-eski-0fc8add4/test/defter-turu-c4.test.mjs:140:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        yeni şirket Seçilmedi başlar
+        + actual - expected
+        
+        + undefined
+        - 'unset'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'unset'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c4-eski-0fc8add4/test/defter-turu-c4.test.mjs:152:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: BS-7 kapılı (yeni şemalı) şirkette Defter Türü yazımı 409 SCHEMA_AHEAD; okuma çalışır, dosya değişmez
+    not ok 6 - BS-7 kapılı (yeni şemalı) şirkette Defter Türü yazımı 409 SCHEMA_AHEAD; okuma çalışır, dosya değişmez
+      ---
+      duration_ms: 1335.862424
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c4-eski-0fc8add4/test/defter-turu-c4.test.mjs:187:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kapılı şirkette okuma çalışır
+        + actual - expected
+        
+        + undefined
+        - 'balance'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'balance'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c4-eski-0fc8add4/test/defter-turu-c4.test.mjs:213:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: okuyucu bookTypeOf: store, ham değer, bozuk / bilinmeyen değer → unset; okunamayan store → unset
+    not ok 7 - okuyucu bookTypeOf: store, ham değer, bozuk / bilinmeyen değer → unset; okunamayan store → unset
+      ---
+      duration_ms: 1.429725
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c4-eski-0fc8add4/test/defter-turu-c4.test.mjs:226:3'
+      failureType: 'testCodeFailure'
+      error: "Cannot find module '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c4-eski-0fc8add4/server/lib/book-type.mjs' imported from /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c4-eski-0fc8add4/test/defter-turu-c4.test.mjs"
+      code: 'ERR_MODULE_NOT_FOUND'
+      stack: |-
+        finalizeResolution (node:internal/modules/esm/resolve:275:11)
+        moduleResolve (node:internal/modules/esm/resolve:865:10)
+        defaultResolve (node:internal/modules/esm/resolve:989:11)
+        #cachedDefaultResolve (node:internal/modules/esm/loader:747:20)
+        ModuleLoader.resolve (node:internal/modules/esm/loader:724:38)
+        ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:320:38)
+        onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:680:36)
+        TracingChannel.tracePromise (node:diagnostics_channel:350:14)
+        ModuleLoader.import (node:internal/modules/esm/loader:679:21)
+        defaultImportModuleDynamicallyForModule (node:internal/modules/esm/utils:222:31)
+      ...
+    1..7
+not ok 1 - 2.5.0 Ç4 Defter Türü
+  ---
+  duration_ms: 6360.52987
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c4-eski-0fc8add4/test/defter-turu-c4.test.mjs:48:1'
+  failureType: 'subtestsFailed'
+  error: '7 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 7
+# suites 1
+# pass 0
+# fail 7
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7139.388947

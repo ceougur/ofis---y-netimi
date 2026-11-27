@@ -1,0 +1,20 @@
+ÜRETİCİ: 20/20 aynı dizi (tur s1 + ux18, tohum 1–10 × 120 işlem)
+ADIMLAR: eski kopyadaki 87 elle senaryonun 0'inin adımları değişti: yok · yeni elle senaryo: d34-c5-s110-kendi-borcu
+EŞDEĞERLİK (2.4.9 / 2.4.6 / 2.4.5 / --legacy; eski kopyanın 87 elle + yeni kopyanın yeni 1 elle + 20 rastgele senaryo × 4 kip): 432/432 bayt bayt aynı
+G3 (kural 2.5.0; 107 senaryo — eski kopyanın 87 elle senaryosu + yeni elle + 20 rastgele): eski 46217 denetim · yeni 46328 denetim · değişen / kalkan / yeni toplam 143 · BEKLENMEYEN 0 · yalnız etiketi değişen 0
+  S110-alan      yeni       127
+      örn. d34-c5-s110-kendi-borcu k1:cari:E14a:acikEsitBakiye: "(denetim yok)" → true
+      örn. d34-c5-s110-kendi-borcu k1:cari:E14a:acikToplam: "(denetim yok)" → 150000
+      örn. d34-c5-s110-kendi-borcu k1:cari:E14a:gecikmis: "(denetim yok)" → 90000
+      örn. d34-c5-s110-kendi-borcu k1:cari:E1:acikEsitBakiye: "(denetim yok)" → true
+  S110-sus       kalkan      16
+      örn. d34-c5-s110-kendi-borcu k1:cari:E12:acikEsitBakiye: true → "(denetim yok)"
+      örn. d34-c5-s110-kendi-borcu k1:cari:E12:acikToplam: 150000 → "(denetim yok)"
+      örn. d34-c5-s110-kendi-borcu k1:cari:E12:gecikmis: 120000 → "(denetim yok)"
+      örn. d34-c5-s110-kendi-borcu k1:cari:E13:acikEsitBakiye: true → "(denetim yok)"
+G3 senaryo senaryo (sınıf/tür: adet; listede olmayan senaryoda fark 0):
+  d34-c5-s110-kendi-borcu                  S110-alan/yeni 127 · S110-sus/kalkan 16
+# tests 540
+# pass 540
+# fail 0
+540/540 denetim geçti

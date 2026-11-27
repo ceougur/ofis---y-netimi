@@ -1,0 +1,36 @@
+#!/bin/bash
+# Tur 2a + ana dal (kâhin 7, liste 513) birleşik ağaç: ESKİ listeyle kahin-cari farkı, liste yeniden üretimi, sonra ci.yml'nin BÜTÜN e2e listesi (ders 37)
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+A=$S/d2t3-ya-ag; export KANIT_DIR=$S/c5bt2ay-kanit2 HUKUK_LICENSE_URL=http://127.0.0.1:9 PLAYWRIGHT_BROWSERS_PATH=$S/pw-1194
+mkdir -p "$KANIT_DIR" || exit 1
+cd "$A" || exit 1
+L=test/bagimsiz/cari/YAPIM-ASAMASI.json
+echo "başladı $(date -u +%H:%M:%S) yük $(cat /proc/loadavg)"
+cp "$L" "$KANIT_DIR/liste-once.json" || exit 1
+TZ=UTC node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs --mutasyonsuz > "$KANIT_DIR/kahin-cari-eski-liste.out" 2>&1; echo "kahin-cari ESKİ listeyle çıkış $?"
+grep -E "ÖZET" "$KANIT_DIR/kahin-cari-eski-liste.out" | cut -c1-330
+node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs --yapim-asamasi-yaz --mutasyonsuz > "$KANIT_DIR/yaz.out" 2>&1; echo "yaz çıkış $?"; tail -1 "$KANIT_DIR/yaz.out" | cut -c1-260
+python3 -I - "$KANIT_DIR/liste-once.json" "$L" <<'PY'
+import json, sys, collections
+a = {(x["senaryo"], x["anahtar"]): x for x in json.load(open(sys.argv[1], encoding="utf-8"))["kayitlar"]}
+b = {(x["senaryo"], x["anahtar"]): x for x in json.load(open(sys.argv[2], encoding="utf-8"))["kayitlar"]}
+yeni = [k for k in b if k not in a]; kapanan = [k for k in a if k not in b]
+degisen = [k for k in b if k in a and (a[k]["beklenen"], a[k]["program"]) != (b[k]["beklenen"], b[k]["program"])]
+print(f"önce {len(a)} → sonra {len(b)}; yeni {len(yeni)}, kapanan {len(kapanan)}, değeri değişen {len(degisen)}")
+for ad, ks, kay in (("YENİ", yeni, b), ("KAPANAN", kapanan, a), ("DEĞİŞEN", degisen, b)):
+    for k in ks[:40]:
+        x = kay[k]; once = a.get(k)
+        print(f"  {ad} {k[0][:26]} {k[1][:44]} | kâhin {json.dumps(x['beklenen'], ensure_ascii=False)[:50]} | program {json.dumps(x['program'], ensure_ascii=False)[:50]}" + (f" (önce {json.dumps(once['program'], ensure_ascii=False)[:40]})" if ad == "DEĞİŞEN" else "") + f" | {x['paket']}")
+print("sonra paket dağılımı:", dict(collections.Counter(x["paket"] for x in b.values())))
+PY
+for tz in UTC Europe/Istanbul; do n=$(echo $tz | tr '/' '-'); TZ=$tz node tools/kanit.mjs kos c5bt2ay2-kahin-cari-$n -- npm run test:kahin-cari > "$KANIT_DIR/kahin-cari-$n.out" 2>&1; echo "kahin-cari (yeni liste) $tz çıkış $? $(grep -E 'denetim geçti' "$KANIT_DIR/kahin-cari-$n.out" | tail -1 | cut -c1-120)"; done
+node tools/kanit.mjs kos c5bt2ay2-kahin-mobil-yazma -- npm run test:kahin-mobil-yazma -- --haric E02-es-havale-pos-mobil,E02-es-havale-pos-masaustu > "$KANIT_DIR/kahin-mobil-yazma.out" 2>&1; echo "kahin-mobil-yazma çıkış $?"
+node tools/kanit.mjs kos c5bt2ay2-kapi -- node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/yapim-asamasi-kapisi.test.mjs test/kanit-araci.test.mjs test/ci-kapi-listesi.test.mjs test/platform-tasinabilirlik.test.mjs test/yazim-duzeni.test.mjs test/lisans-servisi-izolasyonu.test.mjs > "$KANIT_DIR/kapi.out" 2>&1; echo "kapi çıkış $?"
+# ci.yml'nin BÜTÜN e2e listesi
+grep -oP "kanit\.mjs kos e2e-\S+ npm run \S+" .github/workflows/ci.yml | awk '{print $3, $6}' > "$KANIT_DIR/e2e-liste.txt"
+echo "e2e listesi: $(wc -l < "$KANIT_DIR/e2e-liste.txt") senaryo · $(date -u +%H:%M:%S)"
+while read ad betik; do
+  node tools/kanit.mjs kos y2-$ad -- npm run $betik > "$KANIT_DIR/$ad.out" 2>&1 < /dev/null; c=$?
+  echo "$c $ad $(tail -1 "$KANIT_DIR/$ad.out" | grep -oP '\d+/\d+ geçti, \d+ başarısız')"
+done < "$KANIT_DIR/e2e-liste.txt"
+echo "bitti $(date -u +%H:%M:%S) yük $(cat /proc/loadavg)"

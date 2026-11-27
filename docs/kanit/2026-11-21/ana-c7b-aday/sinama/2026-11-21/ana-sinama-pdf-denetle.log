@@ -1,0 +1,26 @@
+I/O Error: Couldn't open file '/dev/shm/c7b-sinama/docs/kilavuz/DestekOfis-Kullanim-Kilavuzu.pdf': No such file or directory.
+node:internal/errors:983
+  const err = new Error(message);
+              ^
+
+Error: Command failed: pdfinfo /dev/shm/c7b-sinama/docs/kilavuz/DestekOfis-Kullanim-Kilavuzu.pdf
+I/O Error: Couldn't open file '/dev/shm/c7b-sinama/docs/kilavuz/DestekOfis-Kullanim-Kilavuzu.pdf': No such file or directory.
+
+    at genericNodeError (node:internal/errors:983:15)
+    at wrappedFn (node:internal/errors:537:14)
+    at checkExecSyncError (node:child_process:916:11)
+    at execFileSync (node:child_process:952:15)
+    at file:///dev/shm/c7b-sinama/docs/kilavuz/pdf-denetle.mjs:23:44 {
+  status: 1,
+  signal: null,
+  output: [
+    null,
+    '',
+    "I/O Error: Couldn't open file '/dev/shm/c7b-sinama/docs/kilavuz/DestekOfis-Kullanim-Kilavuzu.pdf': No such file or directory.\n"
+  ],
+  pid: 18782,
+  stdout: '',
+  stderr: "I/O Error: Couldn't open file '/dev/shm/c7b-sinama/docs/kilavuz/DestekOfis-Kullanim-Kilavuzu.pdf': No such file or directory.\n"
+}
+
+Node.js v22.23.4

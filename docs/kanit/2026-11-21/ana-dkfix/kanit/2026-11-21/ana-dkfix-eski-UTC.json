@@ -1,0 +1,68 @@
+{
+  "ad": "ana-dkfix-eski-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/dkfix-s234-kapali-kart-250.test.mjs test/banka-210-altin.test.mjs",
+  "commit": "94a7b4755cdc9d7b9eddb286d67c22ea822504a0",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-21T10:24:15.152Z",
+  "sure_sn": 29.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 15,
+    "gecen": 8,
+    "basarisiz": 7,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 7 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "altın test: v2.0.26 ile bu dal aynı veride aynı Kasa, Banka ve POS, ANLIK DURUM, Ana Defter ve raporları gösterir › v2.0.26'nın kendi koduyla üretilen veri (mutabakat motoru: 120 güne yayılmış 260 rastgele işlem, dönem kilidi, iade/iptal)",
+      "konum": "test/banka-210-altin.test.mjs:520:3",
+      "hata": "3 fark: · motor · 001 · admin · json /api/workspace/overview: Expected values to be strictly deep-equal: · + actual - expected"
+    },
+    {
+      "ad": "S234 = A — karar (4) Borçta Kalsın ile kapatılmış karta da (kart küçülür, Kalan = carinin karttaki borcu) › T1 — kapalı Mevcut Borç kartı + iade: kart en önce gelen açık taksitten küçülür, Kalan her yerde 300; bakiye / gecikmiş / Mizan / Mutabakat Testi tabanla aynı; Yeniden Aç → Kapat 300",
+      "konum": "test/dkfix-s234-kapali-kart-250.test.mjs:76:3",
+      "hata": "kart tutarı 900 → 600 (karar (4); tabanda 900 kalıyordu) · 900 !== 600 (beklenen 600, gelen 900)"
+    },
+    {
+      "ad": "S234 = A — karar (4) Borçta Kalsın ile kapatılmış karta da (kart küçülür, Kalan = carinin karttaki borcu) › T2 — kapanıştan önce vadesi geçmiş açık taksit: kesim o taksitten (karar (4)); 09.10 gecikmiş tabanla aynı",
+      "konum": "test/dkfix-s234-kapali-kart-250.test.mjs:103:3",
+      "hata": "kart 600 · 900 !== 600 (beklenen 600, gelen 900)"
+    },
+    {
+      "ad": "S234 = A — karar (4) Borçta Kalsın ile kapatılmış karta da (kart küçülür, Kalan = carinin karttaki borcu) › T3 — iade kalanı aşar: kart net tahsilata iner, Kalan 0, fazlası avans; parası geri verilen iade kartı küçültmez",
+      "konum": "test/dkfix-s234-kapali-kart-250.test.mjs:122:3",
+      "hata": "kart tutarı = net tahsilat 300 · 900 !== 300 (beklenen 300, gelen 900)"
+    },
+    {
+      "ad": "S234 = A — karar (4) Borçta Kalsın ile kapatılmış karta da (kart küçülür, Kalan = carinin karttaki borcu) › T4 — iade → iade İptal Et: kapalı kart geri büyür (son taksite), Kalan 600; bakiye / gecikmiş tabanla aynı",
+      "konum": "test/dkfix-s234-kapali-kart-250.test.mjs:146:3",
+      "hata": "iade sonrası 600 · 900 !== 600 (beklenen 600, gelen 900)"
+    },
+    {
+      "ad": "S234 = A — karar (4) Borçta Kalsın ile kapatılmış karta da (kart küçülür, Kalan = carinin karttaki borcu) › T7 — taksitli faturanın KENDİ kartı Borçta Kalsın kapalı + iade: tutar 600, Tahsil Edilen 300, Kalan 300; iade İptal Et → 900 / Kalan 600",
+      "konum": "test/dkfix-s234-kapali-kart-250.test.mjs:203:3",
+      "hata": "kendi kartı 900 → 600 (karar (4); tabanda 900) · 900 !== 600 (beklenen 600, gelen 900)"
+    },
+    {
+      "ad": "S234 = A — karar (4) Borçta Kalsın ile kapatılmış karta da (kart küçülür, Kalan = carinin karttaki borcu) › T8 — iki kart aynı caride (kapalı eski + açık yeni): ilk faturanın iadesi kapalı kartı küçültür; iki kartın Kalan toplamı = bakiye",
+      "konum": "test/dkfix-s234-kapali-kart-250.test.mjs:226:3",
+      "hata": "kapalı kart 600 · 900 !== 600 (beklenen 600, gelen 900)"
+    }
+  ],
+  "ham_cikti": "../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-dkfix/kanit/2026-11-21/ana-dkfix-eski-UTC.log",
+  "klasor": "/dev/shm/ana-dkfix/eski",
+  "ham_cikti_sha256": "4a2936d4173220f7021c0a8938237b287a5e9d2066b84a4a612c466fa39adb35",
+  "ham_cikti_bayt": 14845
+}

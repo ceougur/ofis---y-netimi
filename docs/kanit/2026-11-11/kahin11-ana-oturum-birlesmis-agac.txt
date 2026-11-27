@@ -1,0 +1,41 @@
+başladı 16:12:54 yük 2.89 2.43 1.06 2/112 617
+liste üretimi çıkış 0
+  + yeni: d37-c5-s126-faturali-kart k1:kart:KL10:taksit2:odenen · program 0 / kâhin 30000 · paket AYRIŞTIRILMADI (kural metni paketi göstermiyor)
+  + yeni: d37-c5-s126-faturali-kart k1:kart:KL8:kalan · program 90000 / kâhin 40000 · paket AYRIŞTIRILMADI (kural metni paketi göstermiyor)
+  + yeni: d37-c5-s126-faturali-kart k1:kart:KL8:odenen · program 0 / kâhin 50000 · paket AYRIŞTIRILMADI (kural metni paketi göstermiyor)
+  + yeni: d37-c5-s126-faturali-kart k1:kart:KL8:taksit1:odenen · program 0 / kâhin 30000 · paket AYRIŞTIRILMADI (kural metni paketi göstermiyor)
+  + yeni: d37-c5-s126-faturali-kart k1:kart:KL8:taksit2:odenen · program 0 / kâhin 20000 · paket AYRIŞTIRILMADI (kural metni paketi göstermiyor)
+  + yeni: d37-c5-s126-faturali-kart k1:projeksiyon:hareket:l18x · program {"amount":20000,"date":"2026-03-02","direction":"in"} / kâhin "yok" · paket AYRIŞTIRILMADI (kural metni paketi göstermiyor)
+  + yeni: d37-c5-s126-faturali-kart k1:projeksiyon:hareket:l18y · program {"amount":70000,"date":"2026-03-05","direction":"in"} / kâhin {"amount":30000,"date":"2026-03-05","direction":"in"} · paket AYRIŞTIRILMADI (kural metni paketi göstermiyor)
+  + yeni: d37-c5-s126-faturali-kart k1:takvim:fatura:L18F · program "yok" / kâhin {"amount":60000,"direction":"in"} · paket AYRIŞTIRILMADI (kural metni paketi göstermiyor)
+  + yeni: d37-c5-s126-faturali-kart k1:takvim:hareket:l18x · program {"amount":20000,"cari":"L18","days":-44,"direction":"in","dueDate":"2026-03-02","label":"Tahsil Edilecek Borç","person":"Lale Küçük Kart","state":"overdue"} / kâhin "yok" · paket Ç5-B
+  + yeni: d37-c5-s126-faturali-kart k1:takvim:hareket:l18y · program {"amount":70000,"cari":"L18","days":-41,"direction":"in","dueDate":"2026-03-05","label":"Tahsil Edilecek Borç","person":"Lale Küçük Kart","state":"overdue"} / kâhin {"amount":30000,"car
+  + yeni: d37-c5-s126-faturali-kart k1:vadeTakip:hareket:l18x · program {"amount":20000,"date":"2026-03-02","direction":"in"} / kâhin "yok" · paket AYRIŞTIRILMADI (kural metni paketi göstermiyor)
+  + yeni: d37-c5-s126-faturali-kart k1:vadeTakip:hareket:l18y · program {"amount":70000,"date":"2026-03-05","direction":"in"} / kâhin {"amount":30000,"date":"2026-03-05","direction":"in"} · paket AYRIŞTIRILMADI (kural metni paketi göstermiyor)
+liste farkı: önceki 706 → yeni 722 · kapanan 0 · yeni 16 · değeri değişen 0 · etiketi / notu değişen 0 · paketler {'Ç5-A': 228, 'Ç5-B tur 2': 473, 'eşleme': 7, 'AYRIŞTIRILMADI': 14}
+   ('d37-c5-s126-faturali-kart', 'k1:fatura:L18F:acik') {"senaryo": "d37-c5-s126-faturali-kart", "anahtar": "k1:fatura:L18F:acik", "beklenen": 60000, "program": 30000, "sinif": "BULGU BAŞ MİMAR · SINIF DIŞI", "kural": "C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitle
+   ('d37-c5-s126-faturali-kart', 'k1:hareket:l18x:kalan') {"senaryo": "d37-c5-s126-faturali-kart", "anahtar": "k1:hareket:l18x:kalan", "beklenen": 20000, "program": 50000, "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen", "kural": "C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık
+   ('d37-c5-s126-faturali-kart', 'k1:kart:KL10:kalan') {"senaryo": "d37-c5-s126-faturali-kart", "anahtar": "k1:kart:KL10:kalan", "beklenen": 30000, "program": 60000, "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen", "kural": "C13.4", "paket": "AYRIŞTIRILMADI", "not": "kural metni paketi göstermiyor"}
+   ('d37-c5-s126-faturali-kart', 'k1:kart:KL10:odenen') {"senaryo": "d37-c5-s126-faturali-kart", "anahtar": "k1:kart:KL10:odenen", "beklenen": 60000, "program": 30000, "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen", "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)", "p
+   ('d37-c5-s126-faturali-kart', 'k1:kart:KL10:taksit2:odenen') {"senaryo": "d37-c5-s126-faturali-kart", "anahtar": "k1:kart:KL10:taksit2:odenen", "beklenen": 30000, "program": 0, "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen", "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsı
+   ('d37-c5-s126-faturali-kart', 'k1:kart:KL8:kalan') {"senaryo": "d37-c5-s126-faturali-kart", "anahtar": "k1:kart:KL8:kalan", "beklenen": 40000, "program": 90000, "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen", "kural": "C13.4", "paket": "AYRIŞTIRILMADI", "not": "kural metni paketi göstermiyor"}
+   ('d37-c5-s126-faturali-kart', 'k1:kart:KL8:odenen') {"senaryo": "d37-c5-s126-faturali-kart", "anahtar": "k1:kart:KL8:odenen", "beklenen": 50000, "program": 0, "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen", "kural": "C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50)", "paket"
+   ('d37-c5-s126-faturali-kart', 'k1:kart:KL8:taksit1:odenen') {"senaryo": "d37-c5-s126-faturali-kart", "anahtar": "k1:kart:KL8:taksit1:odenen", "beklenen": 30000, "program": 0, "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen", "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız
+   ('d37-c5-s126-faturali-kart', 'k1:kart:KL8:taksit2:odenen') {"senaryo": "d37-c5-s126-faturali-kart", "anahtar": "k1:kart:KL8:taksit2:odenen", "beklenen": 20000, "program": 0, "sinif": "BULGU KULLANICI · 2.5.0 kararıyla değişen", "kural": "C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız
+   ('d37-c5-s126-faturali-kart', 'k1:projeksiyon:hareket:l18x') {"senaryo": "d37-c5-s126-faturali-kart", "anahtar": "k1:projeksiyon:hareket:l18x", "beklenen": "yok", "program": {"amount": 20000, "date": "2026-03-02", "direction": "in"}, "sinif": "BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen", "kural": "KS10 madde 11: cari vad
+   ('d37-c5-s126-faturali-kart', 'k1:projeksiyon:hareket:l18y') {"senaryo": "d37-c5-s126-faturali-kart", "anahtar": "k1:projeksiyon:hareket:l18y", "beklenen": {"amount": 30000, "date": "2026-03-05", "direction": "in"}, "program": {"amount": 70000, "date": "2026-03-05", "direction": "in"}, "sinif": "İNCELE YAYGIN · 2.5.0 ka
+   ('d37-c5-s126-faturali-kart', 'k1:takvim:fatura:L18F') {"senaryo": "d37-c5-s126-faturali-kart", "anahtar": "k1:takvim:fatura:L18F", "beklenen": {"amount": 60000, "direction": "in"}, "program": "yok", "sinif": "İNCELE YAYGIN · 2.5.0 kararıyla değişen", "kural": "madde 4 'fatura kalemleri aynen': açık > 0 fatura kal
+kahin-cari UTC çıkış 0
+ÖZET [2.5.0]: 83 senaryo, 14718 denetim, 0 fark (BULGU 0), 7 bilinen sınır (BILINEN.json; başarısız sayılmaz), 722 yapım aşaması (YAPIM-ASAMASI.json; paketlere göre: AYRIŞTIRILMADI 14, eşleme 7, Ç5-A 228, Ç5-B tur 2 473; 715 denetim + 7 okuma hatası; geçti de başarısız da sayılm
+14003/14003 denetim geçti (7 bilinen sınır dahil) (722 yapım aşaması ayrı sayıldı — 715 denetim + 7 okuma hatası; geçti sayılmadı)
+kahin-cari Europe/Istanbul çıkış 0
+ÖZET [2.5.0]: 83 senaryo, 14718 denetim, 0 fark (BULGU 0), 7 bilinen sınır (BILINEN.json; başarısız sayılmaz), 722 yapım aşaması (YAPIM-ASAMASI.json; paketlere göre: AYRIŞTIRILMADI 14, eşleme 7, Ç5-A 228, Ç5-B tur 2 473; 715 denetim + 7 okuma hatası; geçti de başarısız da sayılm
+14003/14003 denetim geçti (7 bilinen sınır dahil) (722 yapım aşaması ayrı sayıldı — 715 denetim + 7 okuma hatası; geçti sayılmadı)
+kahin-defter çıkış 0 [kanit] kahin11b-kahin-defter: GEÇTİ · çıkış 0 · 176/176 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit cac0501 +63 değişmi�
+turun testleri UTC çıkış 1 [kanit] kahin11b-testler-UTC: BAŞARISIZ (çıkış 1; 1 başarısız, 0 iptal) · çıkış 1 · 60/61 geçti, 1 başarısız, 0 iptal, 0 a
+turun testleri Europe/Istanbul çıkış 1 [kanit] kahin11b-testler-Europe-Istanbul: BAŞARISIZ (çıkış 1; 1 başarısız, 0 iptal) · çıkış 1 · 60/61 geçti, 1 başarısız, 
+bitti 16:26:04 yük 5.56 3.86 2.36 2/241 5134
+mobil yazma kabul üretimi çıkış 0
+ M test/bagimsiz/mobil-yazma/kabul.json
+mobil yazma öz test çıkış 1 · # cancelled 0 # skipped 0 # todo 0 
+bitti-2 16:32:18 yük 2.97 3.27 2.61 1/182 6595

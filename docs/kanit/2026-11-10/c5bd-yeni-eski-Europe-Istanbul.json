@@ -1,0 +1,43 @@
+{
+  "ad": "c5bd-yeni-eski-Europe-Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/tyk-250.test.mjs test/tyk-kilit-taksitli-250.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v338 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-10T13:11:36.276Z",
+  "sure_sn": 1.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 35,
+    "gecen": 33,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "TYK — taksit kartları (S50, M1a, M1e, K8-3) › karar (3) × v2.0.24: kilitten önceki bağsız avans varken kilitten sonraki kart tahsilatı taksitli faturayı KAPATIR (fatura durumu); net görünümde karar (3) aynen",
+      "konum": "test/tyk-250.test.mjs:249:3",
+      "hata": "kart tahsilatı taksitli faturayı kapatır: açık = kartın kalanı 0 · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 Ç5-B — kilit × taksitli fatura: kart tahsilatı faturayı kapatır (v2.0.24 değişmezi, karar (3)) › avans 1.000 → taksitli fatura 169,03 → kilit faturadan sonraya → kart tahsilatı 169,03: fatura Ödendi (açık 0 = kartın kalanı), kapatan kart tahsilatı (Bağlı)",
+      "konum": "test/tyk-kilit-taksitli-250.test.mjs:34:3",
+      "hata": "taksitli faturanın açığı = kartın kalanı 0 (kapatanlar: []) · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../c5bd-kanit/2026-11-10/c5bd-yeni-eski-Europe-Istanbul.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bd-birlesim",
+  "ham_cikti_sha256": "6fbad5161b99e261782ae0b7d77bfaed429bf1359667c41d11cac10b889c08e0",
+  "ham_cikti_bayt": 16745
+}

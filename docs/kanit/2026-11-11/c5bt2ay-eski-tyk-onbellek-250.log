@@ -1,0 +1,73 @@
+TAP version 13
+# Subtest: 2.5.0 Ç5-B tur 2a — TYK önbelleği (Y-3): iz bütün girdileri kapsar, izi değişmeyen yazımda önbellek korunur
+    # Subtest: cariye dokunmayan yazım (stok girişi, oturum açma, cari notu, Kasa ayarı) bütün carileri yeniden kurmaz; cari yazımı yalnız o cariyi
+    not ok 1 - cariye dokunmayan yazım (stok girişi, oturum açma, cari notu, Kasa ayarı) bütün carileri yeniden kurmaz; cari yazımı yalnız o cariyi
+      ---
+      duration_ms: 523.494874
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2ay-eski/test/tyk-onbellek-250.test.mjs:66:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        stok girişi (cari / para yok): bütün carilerin defteri kurulmaz
+        
+        1 !== 0
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 0
+      actual: 1
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2ay-eski/test/tyk-onbellek-250.test.mjs:86:18)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+# \# tohum 1: {"alacak:200":7,"borc:200":11,"dokunmayan:-":4,"dokunmayan:200":10,"duzelt:-":3,"duzelt:200":12,"duzelt:409":1,"fatura:200":6,"fatura:409":1,"geriAl:-":1,"geriAl:200":1,"geriAl:409":3,"kartDurumu:-":1,"kartDurumu:200":1,"kartDuzenle:-":1,"kartDuzenle:200":1,"kartHareketi:-":6,"kartTahsilati:-":6,"kartTahsilati:409":5,"kilit:200":1,"mevcutBorcKarti:-":2,"mevcutBorcKarti:200":3,"mevcutBorcKarti:400":1,"odeme:200":2,"odeme:409":3,"sil:-":1,"sil:200":7,"sil:409":1,"stokSatis:200":3,"supheli:-":1,"supheli:409":1,"tahsilat:200":12,"tahsilat:409":8,"taksit:-":5,"taksit:200":5,"yeniBorcKarti:200":1,"yeniBorcKarti:409":2}
+    # Subtest: tohum 1 (durağan saat, 140 yazım): her yazım türünden sonra önbellekli sonuç = baştan kurulan
+    ok 2 - tohum 1 (durağan saat, 140 yazım): her yazım türünden sonra önbellekli sonuç = baştan kurulan
+      ---
+      duration_ms: 2475.060402
+      type: 'test'
+      ...
+# \# tohum 2: {"alacak:200":5,"alacak:409":2,"borc:200":11,"borc:409":2,"dokunmayan:-":3,"dokunmayan:200":7,"duzelt:-":4,"duzelt:200":6,"fatura:200":7,"fatura:409":2,"geriAl:-":3,"geriAl:200":1,"kartDurumu:-":1,"kartDurumu:200":1,"kartDuzenle:-":3,"kartDuzenle:200":1,"kartHareketi:-":4,"kartTahsilati:-":5,"kartTahsilati:200":1,"kartTahsilati:409":3,"kilit:200":6,"mevcutBorcKarti:-":2,"mevcutBorcKarti:200":4,"odeme:200":5,"odeme:409":2,"sil:-":2,"sil:200":11,"stokSatis:200":5,"stokSatis:409":1,"supheli:-":1,"supheli:200":1,"supheli:409":1,"tahsilat:200":14,"tahsilat:409":1,"taksit:-":1,"taksit:200":8,"yeniBorcKarti:200":2,"yeniBorcKarti:409":1}
+    # Subtest: tohum 2 (durağan saat, 140 yazım): her yazım türünden sonra önbellekli sonuç = baştan kurulan
+    ok 3 - tohum 2 (durağan saat, 140 yazım): her yazım türünden sonra önbellekli sonuç = baştan kurulan
+      ---
+      duration_ms: 2888.500605
+      type: 'test'
+      ...
+# \# tohum 3: {"alacak:200":10,"alacak:409":1,"borc:200":12,"dokunmayan:-":3,"dokunmayan:200":11,"duzelt:200":7,"duzelt:409":1,"fatura:200":1,"fatura:409":3,"geriAl:-":1,"geriAl:200":1,"kartDurumu:-":2,"kartDuzenle:-":1,"kartHareketi:-":5,"kartTahsilati:-":7,"kartTahsilati:409":4,"kilit:200":5,"mevcutBorcKarti:-":2,"mevcutBorcKarti:200":2,"mevcutBorcKarti:400":2,"odeme:200":2,"sil:200":2,"sil:409":1,"stokSatis:200":4,"stokSatis:409":1,"supheli:-":3,"supheli:200":2,"tahsilat:200":6,"tahsilat:409":2,"taksit:-":10,"taksit:200":1,"taksit:400":1,"yeniBorcKarti:200":4}
+    # Subtest: tohum 3 (akan saat, 120 yazım): her yazım türünden sonra önbellekli sonuç = baştan kurulan
+    ok 4 - tohum 3 (akan saat, 120 yazım): her yazım türünden sonra önbellekli sonuç = baştan kurulan
+      ---
+      duration_ms: 2500.873232
+      type: 'test'
+      ...
+    # Subtest: yedekten geri yükleme ve Silinenler'den geri alma sonrası önbellek bayat kalmaz (önbellekli = baştan kurulan)
+    ok 5 - yedekten geri yükleme ve Silinenler'den geri alma sonrası önbellek bayat kalmaz (önbellekli = baştan kurulan)
+      ---
+      duration_ms: 482.504454
+      type: 'test'
+      ...
+    1..5
+not ok 1 - 2.5.0 Ç5-B tur 2a — TYK önbelleği (Y-3): iz bütün girdileri kapsar, izi değişmeyen yazımda önbellek korunur
+  ---
+  duration_ms: 8871.931481
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2ay-eski/test/tyk-onbellek-250.test.mjs:65:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 5
+# suites 1
+# pass 4
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 9293.082312

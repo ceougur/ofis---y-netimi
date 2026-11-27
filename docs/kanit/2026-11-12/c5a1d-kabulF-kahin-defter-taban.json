@@ -1,0 +1,58 @@
+{
+  "ad": "c5a1d-kabulF-kahin-defter-taban",
+  "komut": "node --disable-warning=ExperimentalWarning test/bagimsiz/defter/kos.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-12T14:22:36.054Z",
+  "sure_sn": 4.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "kahin-defter",
+    "toplam": 185,
+    "gecen": 180,
+    "basarisiz": 5,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 5 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "mizan K_SON 120: program 65.505,00 · kâhin 70.005,00",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "mizan K_SON 519: program -69.200,00 · kâhin -73.700,00",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "cari Ahmet Yılmaz: program 1.100,00 · kâhin 5.600,00",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "yaşlandırma TOPLAM: program 70.505,00 · kâhin 75.005,00",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "yaşlandırma Ahmet Yılmaz: program 1.100,00 · kâhin 5.600,00",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../c5a1d-kanit/2026-11-12/c5a1d-kabulF-kahin-defter-taban.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1d-eski",
+  "ham_cikti_sha256": "2ebe9b887430b71e69ff95c1125eb1d403bc77365814251c0ffa561b18729ecc",
+  "ham_cikti_bayt": 3044
+}

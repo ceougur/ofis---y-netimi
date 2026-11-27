@@ -1,0 +1,206 @@
+{
+ "adim_farklari": [
+  {
+   "degisim": {
+    "ana": {
+     "120": -1000,
+     "128": 1000
+    }
+   },
+   "durum": "yapildi",
+   "id": "P2",
+   "no": 7,
+   "olay_turu": "tahsilat",
+   "sinif": "SINIFLANMADI",
+   "tarih": "2026-02-10",
+   "tur": "tahsilat"
+  }
+ ],
+ "bugun_dal": "A",
+ "dal": "A",
+ "degismezler": {
+  "kahin_mizan_toplam_sifir": true,
+  "program_her_adimda_dengeli": true,
+  "program_her_adimda_mutabakat": true,
+  "program_mizan_toplam_sifir": true,
+  "program_mutabakat_testi": true
+ },
+ "etiketler": {
+  "F06-FINANSMAN-251": {
+   "dayanak": "kitap F-06 / M14 'finansman türü 780'; Ç7b tasarım notu §9 B-1 (BAŞ MİMAR KARARI 19.11 04:03) B-1 = B: '780 türü ve tanınmayan türün 770.90'ı 2.5.1' — programın gider türü listesinde finansman yok, 770'e düşer",
+   "is": "2.5.1 (Ç7b B-1; iş listesi B)"
+  },
+  "SURUCU-CARI-ACILIS-YOLU": {
+   "dayanak": "SÜRÜCÜ YOLU (karar değil): programda cari açılışı yalnız cari açılırken (routes/accounts.mjs POST openingBalance); sürücü cariyi açılış olayından ÖNCE başka olayla açmak zorunda kaldıysa açılış Borç / Alacak Yaz satırıdır (602.90 / 770.90)",
+   "is": "sürücü sınırı (eşleme)"
+  }
+ },
+ "olay_durumlari": {
+  "rapor": 3,
+  "yapildi": 13
+ },
+ "oz_denetim": {
+  "raporlar_ayni": false,
+  "redler_ayni": true
+ },
+ "ozet": {
+  "AYNI": 8,
+  "K": 0,
+  "OLCULEMEDI": 0,
+  "P": 0,
+  "R": 0,
+  "SINIFLANMADI": 4,
+  "SUSMA": 0,
+  "U": 0,
+  "adim_sinifsiz": 1,
+  "adim_susma": 0,
+  "ara_susma": 0
+ },
+ "raporlar": {
+  "af0205": {
+   "dosya": "canli",
+   "kahin_oz": false,
+   "ozet": {
+    "AYNI": 2,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "SUSMA": 0,
+    "U": 0
+   },
+   "satirlar": [
+    {
+     "alan": "fatura",
+     "anahtar": "F2",
+     "bugun": "—",
+     "kahin": 1000,
+     "program": 1000,
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "fatura",
+     "anahtar": "F3",
+     "bugun": "—",
+     "kahin": 2000,
+     "program": 2000,
+     "sinif": "AYNI"
+    }
+   ],
+   "tur": "acik_faturalar"
+  },
+  "mz": {
+   "brut": {
+    "kahin": {
+     "alacak": 7000,
+     "borc": 7000
+    },
+    "program": {
+     "alacak": 7000,
+     "borc": 7000
+    }
+   },
+   "dosya": "canli",
+   "ozet": {
+    "AYNI": 3,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 2,
+    "SUSMA": 0,
+    "U": 0
+   },
+   "program_dengeli": true,
+   "program_mutabakat": true,
+   "satirlar": [
+    {
+     "alan": "ana",
+     "anahtar": "100",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "120",
+     "bugun": 2000,
+     "kahin": 2000,
+     "program": 1000,
+     "sinif": "SINIFLANMADI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "128",
+     "bugun": 0,
+     "kahin": 0,
+     "program": 1000,
+     "sinif": "SINIFLANMADI"
+    },
+    {
+     "alan": "ana",
+     "anahtar": "600",
+     "sinif": "AYNI"
+    },
+    {
+     "alan": "cari",
+     "anahtar": "C1",
+     "sinif": "AYNI"
+    }
+   ],
+   "tur": "mizan"
+  },
+  "sk": {
+   "dosya": "canli",
+   "ozet": {
+    "AYNI": 0,
+    "K": 0,
+    "OLCULEMEDI": 0,
+    "P": 0,
+    "R": 0,
+    "SINIFLANMADI": 0,
+    "SUSMA": 0,
+    "U": 0
+   },
+   "satirlar": [],
+   "tur": "supheli_kayitlari"
+  }
+ },
+ "redler": [],
+ "senaryo": "ek-bag-sonra",
+ "son": [
+  {
+   "alan": "ana",
+   "anahtar": "100",
+   "sinif": "AYNI"
+  },
+  {
+   "alan": "ana",
+   "anahtar": "120",
+   "bugun": 2000,
+   "kahin": 2000,
+   "program": 1000,
+   "sinif": "SINIFLANMADI"
+  },
+  {
+   "alan": "ana",
+   "anahtar": "128",
+   "bugun": 0,
+   "kahin": 0,
+   "program": 1000,
+   "sinif": "SINIFLANMADI"
+  },
+  {
+   "alan": "ana",
+   "anahtar": "600",
+   "sinif": "AYNI"
+  },
+  {
+   "alan": "cari",
+   "anahtar": "C1",
+   "sinif": "AYNI"
+  }
+ ],
+ "tz": "UTC",
+ "uyarilar": [],
+ "uygulanamayan": []
+}

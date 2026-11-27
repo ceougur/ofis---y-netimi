@@ -1,0 +1,12 @@
+== c2t3-eski-bc495a1c
+üretim: 600 tahsilat, etkin işlem başlığı 600, 26911 ms
+v2.0.26 Tüm Hareketleri Sil: HTTP 200 
+açılış 1: {"onarimSatiri":1,"ozet":"Açılış onarımı (eski sürümden): iptal edilen işlem başlığı 600","uzunluk":20000,"gecerli":false,"mutabakatTestiHTTP":500,"raporHTTP":200}
+açılış 2: {"onarimSatiri":1,"ozet":"Açılış onarımı (eski sürümden): iptal edilen işlem başlığı 600","uzunluk":20000,"gecerli":false,"mutabakatTestiHTTP":500,"raporHTTP":200}
+çıkış 0
+== c2t3-v249
+üretim: 600 tahsilat, etkin işlem başlığı 600, 22906 ms
+v2.0.26 Tüm Hareketleri Sil: HTTP 200 
+açılış 1: {"onarimSatiri":1,"ozet":"Açılış onarımı (eski sürümden): iptal edilen işlem başlığı 600","uzunluk":20000,"gecerli":false,"mutabakatTestiHTTP":500,"raporHTTP":200}
+açılış 2: {"onarimSatiri":1,"ozet":"Açılış onarımı (eski sürümden): iptal edilen işlem başlığı 600","uzunluk":20000,"gecerli":false,"mutabakatTestiHTTP":500,"raporHTTP":200}
+çıkış 0

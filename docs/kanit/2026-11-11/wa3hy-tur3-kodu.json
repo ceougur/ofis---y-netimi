@@ -1,0 +1,43 @@
+{
+  "ad": "wa3hy-tur3-kodu",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-reporter=spec test/whatsapp-tur3-hiz-250.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-11T17:05:07.771Z",
+  "sure_sn": 37.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 5,
+    "gecen": 3,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "W3H-K1 inherit_of'a yazan deyim server/ altında yalnız queue.mjs createBatch'te (2 yer) ve aynı işlemde zincir kaynak kümesi düşürülüyor — yeni yazar eklenirse küme ÜST KÜME olmaktan çıkar",
+      "konum": "test/whatsapp-tur3-hiz-250.test.mjs:44:3",
+      "hata": "AssertionError [ERR_ASSERTION]: iki yazımın hemen ardından, aynı işlemin içinde küme düşürülüyor · at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wa3hy-tur3/test/whatsapp-tur3-hiz-250.test.mjs:65:12)"
+    },
+    {
+      "ad": "W3H-K2 zincirsiz olağan veride (ölçümün yolu) teslim / okundu bildirimi carinin zincir okumasını YAPMAZ; kaynak kümesi bir kez kurulur (ders 47: bildirim başına ek okuma yok)",
+      "konum": "test/whatsapp-tur3-hiz-250.test.mjs:70:3",
+      "hata": "AssertionError [ERR_ASSERTION]: 12 bildirimde cari zincir okuması 0, kaynak kümesi 1 kez (tur 3: 12 cari okuması) · + actual - expected"
+    }
+  ],
+  "ham_cikti": "../wa3hy-kanit/2026-11-11/wa3hy-tur3-kodu.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wa3hy-tur3",
+  "ham_cikti_sha256": "4a7b0923e2363ebad36cfd1d0d80c0e3b185d549eadf1945c81ef38208117828",
+  "ham_cikti_bayt": 4769
+}

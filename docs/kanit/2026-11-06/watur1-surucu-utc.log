@@ -1,0 +1,16 @@
+TAP version 13
+# saat dilimi UTC
+(node:28421) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+not ok 1 - S33-01-yol-2-imzasiz-bildirim-isaret-koymaz-sure-dolmaz-ayni-donem-daha-once [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 2 - S33-02-yol-1-imzasiz-bildirim-kabul-isaret-ve-sure-dolumu-sahte-de-islenir [hizli] (3 fark; davranış farkı 0; gösterim: G1-borclu-eki 3)
+not ok 3 - S41-01-yol-2-uygulama-duzeyi-adres-imzali-islenir-imzasiz-duser [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 4 - S41-02-yol-1-uygulama-duzeyi-adres-imzasiz-kabul [hizli] (3 fark; davranış farkı 0; gösterim: G1-borclu-eki 3)
+not ok 5 - S43-01-yol-2-imzali-taninmayan-bildirim-isaret-koymaz-ayni-donem-daha-once [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 6 - S43-02-yol-1-imzasiz-taninmayan-bildirim-kabul-isaret-koymaz [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+not ok 7 - S43-03-yol-2-is-kimligiyle-taninan-bildirim-isaret-koyar-sure-dolar [hizli] (2 fark; davranış farkı 0; gösterim: G1-borclu-eki 2)
+1..7
+# tests 7
+# pass 0
+# fail 7
+# skipped 0

@@ -1,0 +1,1379 @@
+TAP version 13
+# (node:8168) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: B-a — kapanmış yılın ara dönemi: 31.12'yi içermeyen parça T(b) − T(a − 1), N-01 yalnız 31.12 parçasında
+    # Subtest: yıl [01.01, 31.12] kesin: D = 621 266,67, tahmin yok
+    ok 1 - yıl [01.01, 31.12] kesin: D = 621 266,67, tahmin yok
+      ---
+      duration_ms: 3.159436
+      type: 'test'
+      ...
+    # Subtest: aylar (elle): Ocak 240,00, Şubat–Kasım 0, Aralık 26,67; toplam = yıl = 621
+    ok 2 - aylar (elle): Ocak 240,00, Şubat–Kasım 0, Aralık 26,67; toplam = yıl = 621
+      ---
+      duration_ms: 2.985616
+      type: 'test'
+      ...
+    # Subtest: çeyrekler (elle): Q1 240,00 · Q2 0 · Q3 0 · Q4 26,67; toplam = yıl; yarıyıl + yarıyıl = yıl
+    ok 3 - çeyrekler (elle): Q1 240,00 · Q2 0 · Q3 0 · Q4 26,67; toplam = yıl; yarıyıl + yarıyıl = yıl
+      ---
+      duration_ms: 0.835708
+      type: 'test'
+      ...
+    # Subtest: yıl içi Bilanço (30.06): 153 = DSS_t 360,00 (N-01 31.12'de; t'den sonra), hesaplanmış = Gelir Tablosu [01.01, 30.06]; Aktif = Pasif
+    ok 4 - yıl içi Bilanço (30.06): 153 = DSS_t 360,00 (N-01 31.12'de; t'den sonra), hesaplanmış = Gelir Tablosu [01.01, 30.06]; Aktif = Pasif
+      ---
+      duration_ms: 3.218536
+      type: 'test'
+      ...
+    # Subtest: 31.12 Bilanço (N-01 yazılmış): 153 defterden 733,33 (= DSS), satışların maliyeti kesin; Aktif = Pasif
+    ok 5 - 31.12 Bilanço (N-01 yazılmış): 153 defterden 733,33 (= DSS), satışların maliyeti kesin; Aktif = Pasif
+      ---
+      duration_ms: 0.678204
+      type: 'test'
+      ...
+    1..5
+ok 1 - B-a — kapanmış yılın ara dönemi: 31.12'yi içermeyen parça T(b) − T(a − 1), N-01 yalnız 31.12 parçasında
+  ---
+  duration_ms: 12.141258
+  type: 'suite'
+  ...
+# (node:8169) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Ç6-HESAP Bilanço okuma ucu — API'den girilen veri, iş parçacığı, yetki, kilit, iki şirket, yedek
+    # Subtest: Bilanço 30.09.2026 elle hesaplanan sayılarla; aynı adlı iki cari brüt (biri 120'de, öbürü 340'ta); Aktif = Pasif
+    ok 1 - Bilanço 30.09.2026 elle hesaplanan sayılarla; aynı adlı iki cari brüt (biri 120'de, öbürü 340'ta); Aktif = Pasif
+      ---
+      duration_ms: 268.622171
+      type: 'test'
+      ...
+# (node:8169) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: hesaplanmış Dönem Net Kârı = aynı t'nin Gelir Tablosu ucu (1 Ocak – t) — ay / çeyrek / yıl sonu, gelecek tarih; Aktif = Pasif her t'de
+    ok 2 - hesaplanmış Dönem Net Kârı = aynı t'nin Gelir Tablosu ucu (1 Ocak – t) — ay / çeyrek / yıl sonu, gelecek tarih; Aktif = Pasif her t'de
+      ---
+      duration_ms: 2588.466334
+      type: 'test'
+      ...
+    # Subtest: iç tutarlılık: hesap başına defter bakiyesi = aynı t'nin Hesap Planı Mizanı (1–5); bilançodaki tutar = defter (153 hariç: DSS_t)
+    ok 3 - iç tutarlılık: hesap başına defter bakiyesi = aynı t'nin Hesap Planı Mizanı (1–5); bilançodaki tutar = defter (153 hariç: DSS_t)
+      ---
+      duration_ms: 321.931001
+      type: 'test'
+      ...
+    # Subtest: iş parçacığı ↔ iş parçacığısız sonuç birebir; varsayılan tarih bugün; geçersiz tarih 400
+    ok 4 - iş parçacığı ↔ iş parçacığısız sonuç birebir; varsayılan tarih bugün; geçersiz tarih 400
+      ---
+      duration_ms: 548.100237
+      type: 'test'
+      ...
+    # Subtest: yetki: Muhasebe görür; Personel ve Avukat 403
+    ok 5 - yetki: Muhasebe görür; Personel ve Avukat 403
+      ---
+      duration_ms: 561.925406
+      type: 'test'
+      ...
+# (node:8169) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8169) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: kilitli t DONMUŞ defterden (kural değişikliği benzetiminde değişmez), kilitsiz t canlı
+    ok 6 - kilitli t DONMUŞ defterden (kural değişikliği benzetiminde değişmez), kilitsiz t canlı
+      ---
+      duration_ms: 941.830986
+      type: 'test'
+      ...
+    # Subtest: iki şirket + yedek: ikinci şirketin Bilanço'su birinciyi görmez; 002'de yedek → kayıt → geri yükleme → Bilanço yedekteki gibi; 001'e dönünce sayılar aynı
+    ok 7 - iki şirket + yedek: ikinci şirketin Bilanço'su birinciyi görmez; 002'de yedek → kayıt → geri yükleme → Bilanço yedekteki gibi; 001'e dönünce sayılar aynı
+      ---
+      duration_ms: 2041.030423
+      type: 'test'
+      ...
+    1..7
+ok 2 - Ç6-HESAP Bilanço okuma ucu — API'den girilen veri, iş parçacığı, yetki, kilit, iki şirket, yedek
+  ---
+  duration_ms: 8104.13667
+  type: 'suite'
+  ...
+# Subtest: Ç6-HESAP Bilanço okuma ucu — Kapanış Fişi ve ters kaydı (programın fiş defteri)
+    # Subtest: kapanmamış 2025 → Geçmiş Yıllar 570 kısmı; Kapanış Fişi → 590 (V.F), Geçmiş Yıllar boş; ters kayıt → yeniden kapanmamış; her durumda Aktif = Pasif
+    ok 1 - kapanmamış 2025 → Geçmiş Yıllar 570 kısmı; Kapanış Fişi → 590 (V.F), Geçmiş Yıllar boş; ters kayıt → yeniden kapanmamış; her durumda Aktif = Pasif
+      ---
+      duration_ms: 1059.324903
+      type: 'test'
+      ...
+    1..1
+ok 3 - Ç6-HESAP Bilanço okuma ucu — Kapanış Fişi ve ters kaydı (programın fiş defteri)
+  ---
+  duration_ms: 1638.201174
+  type: 'suite'
+  ...
+# (node:8175) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Ç6-HESAP Bilanço — elle hesaplanmış örnek (30.06.2026; kapanmamış 2025)
+    # Subtest: kalemler: brütleştirme (alacaklı 120 → 340, borçlu 320 → 159, KMH 102 → 300, borçlu 360 → 198), düzenleyici 103 eksi, 153 = DSS_t, Aktif = Pasif
+    ok 1 - kalemler: brütleştirme (alacaklı 120 → 340, borçlu 320 → 159, KMH 102 → 300, borçlu 360 → 198), düzenleyici 103 eksi, 153 = DSS_t, Aktif = Pasif
+      ---
+      duration_ms: 10.436834
+      type: 'test'
+      ...
+    # Subtest: hesaplanmış Dönem Net Kârı = aynı t'nin Gelir Tablosu (1 Ocak – t) Dönem Net Kârı; Geçmiş Yıllar — Kapanmamış yıl yıl (2025 kâr → 570 kısmı)
+    ok 2 - hesaplanmış Dönem Net Kârı = aynı t'nin Gelir Tablosu (1 Ocak – t) Dönem Net Kârı; Geçmiş Yıllar — Kapanmamış yıl yıl (2025 kâr → 570 kısmı)
+      ---
+      duration_ms: 2.407774
+      type: 'test'
+      ...
+    # Subtest: Kesin Değil (TEK toplayıcı, kitap §7.4 sırası): açılış, tahmin, borçlu 360, kapanmamış yıl
+    ok 3 - Kesin Değil (TEK toplayıcı, kitap §7.4 sırası): açılış, tahmin, borçlu 360, kapanmamış yıl
+      ---
+      duration_ms: 1.228459
+      type: 'test'
+      ...
+    # Subtest: iç tutarlılık: hesap başına bilançoda gösterilen = defter bakiyesi (153 hariç: DSS_t); brütleştirme yalnız kalem değiştirir
+    ok 4 - iç tutarlılık: hesap başına bilançoda gösterilen = defter bakiyesi (153 hariç: DSS_t); brütleştirme yalnız kalem değiştirir
+      ---
+      duration_ms: 3.240043
+      type: 'test'
+      ...
+    # Subtest: yıl ortası t (2026-02-28): T(t) aynı işlevden; Aktif = Pasif
+    ok 5 - yıl ortası t (2026-02-28): T(t) aynı işlevden; Aktif = Pasif
+      ---
+      duration_ms: 0.705323
+      type: 'test'
+      ...
+    1..5
+ok 4 - Ç6-HESAP Bilanço — elle hesaplanmış örnek (30.06.2026; kapanmamış 2025)
+  ---
+  duration_ms: 19.199444
+  type: 'suite'
+  ...
+# Subtest: Ç6-HESAP Bilanço — kapanmış yıl, ters kayıt, boş veri, tarih
+    # Subtest: kapanmış 2025: Geçmiş Yıllar — Kapanmamış'a GİRMEZ, sonucu 590'da (V.F); Aktif = Pasif; kapanmamis-yil yok
+    ok 1 - kapanmış 2025: Geçmiş Yıllar — Kapanmamış'a GİRMEZ, sonucu 590'da (V.F); Aktif = Pasif; kapanmamis-yil yok
+      ---
+      duration_ms: 0.798161
+      type: 'test'
+      ...
+    # Subtest: kapanış fişi ters kaydedilmiş (closedOn boş): 2025 kapanmamış sayılır, sonucu 570 kısmında; 590 = 0; Aktif = Pasif
+    ok 2 - kapanış fişi ters kaydedilmiş (closedOn boş): 2025 kapanmamış sayılır, sonucu 570 kısmında; 590 = 0; Aktif = Pasif
+      ---
+      duration_ms: 0.742031
+      type: 'test'
+      ...
+    # Subtest: t = 31.12 ve yıl kapanmış: hesaplanmış satır YOK, 153 defterden (N-01 sonrası = DSS)
+    ok 3 - t = 31.12 ve yıl kapanmış: hesaplanmış satır YOK, 153 defterden (N-01 sonrası = DSS)
+      ---
+      duration_ms: 0.547161
+      type: 'test'
+      ...
+    # Subtest: boş veri: bütün kalemler 0, Aktif = Pasif = 0, Kesin Değil yok
+    ok 4 - boş veri: bütün kalemler 0, Aktif = Pasif = 0, Kesin Değil yok
+      ---
+      duration_ms: 0.499329
+      type: 'test'
+      ...
+    # Subtest: tek kayıt: yalnız Kasa açılışı → 100 = 519
+    ok 5 - tek kayıt: yalnız Kasa açılışı → 100 = 519
+      ---
+      duration_ms: 0.52737
+      type: 'test'
+      ...
+    # Subtest: t'den sonraki madde sayılmaz (ileri tarihli hareket); bir gün önce farklı
+    ok 6 - t'den sonraki madde sayılmaz (ileri tarihli hareket); bir gün önce farklı
+      ---
+      duration_ms: 1.013595
+      type: 'test'
+      ...
+    # Subtest: aynı gün kayıtlarının sırası sonucu değiştirmez (ders 31)
+    ok 7 - aynı gün kayıtlarının sırası sonucu değiştirmez (ders 31)
+      ---
+      duration_ms: 1.229754
+      type: 'test'
+      ...
+    # Subtest: geçersiz tarih 400 (29 Şubat 2026 yok); 29 Şubat 2028 geçerli
+    ok 8 - geçersiz tarih 400 (29 Şubat 2026 yok); 29 Şubat 2028 geçerli
+      ---
+      duration_ms: 0.977784
+      type: 'test'
+      ...
+    # Subtest: Bilgi Amaçlı: Defter Türü bilanço esası değil
+    ok 9 - Bilgi Amaçlı: Defter Türü bilanço esası değil
+      ---
+      duration_ms: 0.490129
+      type: 'test'
+      ...
+    1..9
+ok 5 - Ç6-HESAP Bilanço — kapanmış yıl, ters kayıt, boş veri, tarih
+  ---
+  duration_ms: 7.30498
+  type: 'suite'
+  ...
+# Subtest: Ç6-HESAP Bilanço — imkânsız ters bakiye, eksi stok, 127
+    # Subtest: eksi kasa ve borçlu 300 (kesinDegil kuralı): kendi kaleminde işaretli + İmkânsız Ters Bakiye
+    ok 1 - eksi kasa ve borçlu 300 (kesinDegil kuralı): kendi kaleminde işaretli + İmkânsız Ters Bakiye
+      ---
+      duration_ms: 0.502227
+      type: 'test'
+      ...
+    # Subtest: eksi stok (KG-9): ürün değeri 0, Kesin Değil; Aktif = Pasif (fark dönem sonucunda)
+    ok 2 - eksi stok (KG-9): ürün değeri 0, Kesin Değil; Aktif = Pasif (fark dönem sonucunda)
+      ---
+      duration_ms: 0.458571
+      type: 'test'
+      ...
+    # Subtest: alacaklı 127 (carisiz taksit kartı) kart bazında III.D 340'a (EK-2 S. 36; tasarım §10 B-f); borçlu kart 127'de kalır
+    ok 3 - alacaklı 127 (carisiz taksit kartı) kart bazında III.D 340'a (EK-2 S. 36; tasarım §10 B-f); borçlu kart 127'de kalır
+      ---
+      duration_ms: 3.753799
+      type: 'test'
+      ...
+    # Subtest: borçlu 336 cari (iki alt hesaplı satır) TEK grup: I.D 136'ya, kaynak adedi 1, alt hesap kırılımı korunur
+    ok 4 - borçlu 336 cari (iki alt hesaplı satır) TEK grup: I.D 136'ya, kaynak adedi 1, alt hesap kırılımı korunur
+      ---
+      duration_ms: 0.420123
+      type: 'test'
+      ...
+    1..4
+ok 6 - Ç6-HESAP Bilanço — imkânsız ters bakiye, eksi stok, 127
+  ---
+  duration_ms: 5.361876
+  type: 'suite'
+  ...
+# Subtest: Ç6-HESAP Bilanço — Kesin Değil'in tur 2 nedenleri (B-d, Aktif ≠ Pasif, Kural Değişikliği Farkı)
+    # Subtest: dengesiz madde: fark satırı (kayıt değil) + 'Defter Mutabakatı Farkı ya da Dengesiz Madde' + 'Aktif ile Pasif Eşit Değil' (elle: B 100 5,00 / A 600 4,00 → fark 1,00)
+    ok 1 - dengesiz madde: fark satırı (kayıt değil) + 'Defter Mutabakatı Farkı ya da Dengesiz Madde' + 'Aktif ile Pasif Eşit Değil' (elle: B 100 5,00 / A 600 4,00 → fark 1,00)
+      ---
+      duration_ms: 0.694956
+      type: 'test'
+      ...
+    # Subtest: B-d: Defter Mutabakatı başarısızsa (ledger.check() → reconcile) neden + ayrıntı; verilmezse denetlenmemiş (neden yok); başarılıysa yok
+    ok 2 - B-d: Defter Mutabakatı başarısızsa (ledger.check() → reconcile) neden + ayrıntı; verilmezse denetlenmemiş (neden yok); başarılıysa yok
+      ---
+      duration_ms: 1.217529
+      type: 'test'
+      ...
+    # Subtest: Kural Değişikliği Farkı (Ç3): t'ye kadarki yılların satırları; t'den sonraki yıl sayılmaz
+    ok 3 - Kural Değişikliği Farkı (Ç3): t'ye kadarki yılların satırları; t'den sonraki yıl sayılmaz
+      ---
+      duration_ms: 0.539465
+      type: 'test'
+      ...
+    1..3
+ok 7 - Ç6-HESAP Bilanço — Kesin Değil'in tur 2 nedenleri (B-d, Aktif ≠ Pasif, Kural Değişikliği Farkı)
+  ---
+  duration_ms: 2.756667
+  type: 'suite'
+  ...
+# Subtest: Ç6-HESAP değerleme — hareket sınıfı (defterin 153 maddeleriyle aynı ayrım)
+    # Subtest: açılış / alış / alış iadesi / yalnız miktar
+    ok 1 - açılış / alış / alış iadesi / yalnız miktar
+      ---
+      duration_ms: 0.695931
+      type: 'test'
+      ...
+    1..1
+ok 8 - Ç6-HESAP değerleme — hareket sınıfı (defterin 153 maddeleriyle aynı ayrım)
+  ---
+  duration_ms: 1.526853
+  type: 'suite'
+  ...
+# Subtest: Ç6-HESAP değerleme — dönemsel ağırlıklı ortalama, iki yıl (DBS = önceki yıl DSS, KG-12 A)
+    # Subtest: 2025 yıl sonu: DSS 108,00, SMM 1.242,00
+    ok 1 - 2025 yıl sonu: DSS 108,00, SMM 1.242,00
+      ---
+      duration_ms: 1.22337
+      type: 'test'
+      ...
+    # Subtest: 2026: DBS = 2025 DSS; 31.01 DSS 108,00; 31.03 DSS 448,00, SMM 320,00
+    ok 2 - 2026: DBS = 2025 DSS; 31.01 DSS 108,00; 31.03 DSS 448,00, SMM 320,00
+      ---
+      duration_ms: 0.37635
+      type: 'test'
+      ...
+    # Subtest: yıl sonu ile 31 Aralık 'at' aynı (tek işlev)
+    ok 3 - yıl sonu ile 31 Aralık 'at' aynı (tek işlev)
+      ---
+      duration_ms: 0.113609
+      type: 'test'
+      ...
+    1..3
+ok 9 - Ç6-HESAP değerleme — dönemsel ağırlıklı ortalama, iki yıl (DBS = önceki yıl DSS, KG-12 A)
+  ---
+  duration_ms: 1.955198
+  type: 'suite'
+  ...
+# Subtest: Ç6-HESAP değerleme — G-1 yuvarlama, KG-9, KG-10, M5, 29 Şubat, silinen ürün, eksi birim maliyet
+    # Subtest: G-1: ürün başına kuruşa yarım yukarı, toplam = yuvarlanmış satırlar
+    ok 1 - G-1: ürün başına kuruşa yarım yukarı, toplam = yuvarlanmış satırlar
+      ---
+      duration_ms: 0.445049
+      type: 'test'
+      ...
+    # Subtest: KG-9 A: eksi miktar 0 değer + eksi stok listesi; M5: ertesi yıl eksi dönem başı ortalamada 0, miktar devri eksi dahil
+    ok 2 - KG-9 A: eksi miktar 0 değer + eksi stok listesi; M5: ertesi yıl eksi dönem başı ortalamada 0, miktar devri eksi dahil
+      ---
+      duration_ms: 0.362896
+      type: 'test'
+      ...
+    # Subtest: KG-10 A: alışı ve DBS'si olmayan ürün kartın alış fiyatıyla; fiyat da yoksa 0 + uyarı
+    ok 3 - KG-10 A: alışı ve DBS'si olmayan ürün kartın alış fiyatıyla; fiyat da yoksa 0 + uyarı
+      ---
+      duration_ms: 0.442268
+      type: 'test'
+      ...
+    # Subtest: 29 Şubat (artık yıl 2028): alış 29.02'de; 28.02'de stok yok, 29.02'de 30,00
+    ok 4 - 29 Şubat (artık yıl 2028): alış 29.02'de; 28.02'de stok yok, 29.02'de 30,00
+      ---
+      duration_ms: 0.216659
+      type: 'test'
+      ...
+    # Subtest: silinmiş ürün kartı silindiği günden itibaren envantere girmez (tasarım §3, S-a A); öncesinde girer
+    ok 5 - silinmiş ürün kartı silindiği günden itibaren envantere girmez (tasarım §3, S-a A); öncesinde girer
+      ---
+      duration_ms: 0.320169
+      type: 'test'
+      ...
+    # Subtest: alış iadesi alışlardan değerliyse birim maliyet 0'a kırpılır, kırpılan tutar listede (S209 = B; tur 1'in 'eksi değer + uyarı' beklentisi kararla değişti)
+    ok 6 - alış iadesi alışlardan değerliyse birim maliyet 0'a kırpılır, kırpılan tutar listede (S209 = B; tur 1'in 'eksi değer + uyarı' beklentisi kararla değişti)
+      ---
+      duration_ms: 0.321502
+      type: 'test'
+      ...
+    # Subtest: alış iadesi birim maliyeti DÜŞÜRÜR / YÜKSELTİR (iade fiyatı ortalamadan farklıysa)
+    ok 7 - alış iadesi birim maliyeti DÜŞÜRÜR / YÜKSELTİR (iade fiyatı ortalamadan farklıysa)
+      ---
+      duration_ms: 0.171304
+      type: 'test'
+      ...
+    # Subtest: sonradan açılan ürünün açılışı (M-07) kendi yılının dönem başıdır; boş veri 0
+    ok 8 - sonradan açılan ürünün açılışı (M-07) kendi yılının dönem başıdır; boş veri 0
+      ---
+      duration_ms: 0.125128
+      type: 'test'
+      ...
+    1..8
+ok 10 - Ç6-HESAP değerleme — G-1 yuvarlama, KG-9, KG-10, M5, 29 Şubat, silinen ürün, eksi birim maliyet
+  ---
+  duration_ms: 2.75085
+  type: 'suite'
+  ...
+# (node:8195) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8195) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8195) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8195) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Ç6-HESAP tur 3 — B-g (b): donmuş toplamlarla okuma ↔ eski okuma BİREBİR (Bilanço, Gelir Tablosu; kilitli / kilitsiz, kapanış fişi, kural farkı)
+    # Subtest: kilitsiz → boş donmuş dönem → kilit 31.03.2026 (kural farkıyla) → kilit kaldır + Kapanış Fişi 31.12.2025 + yeniden kilit → kilit 30.06.2026: her aşamada BİREBİR
+    ok 1 - kilitsiz → boş donmuş dönem → kilit 31.03.2026 (kural farkıyla) → kilit kaldır + Kapanış Fişi 31.12.2025 + yeniden kilit → kilit 30.06.2026: her aşamada BİREBİR
+      ---
+      duration_ms: 2940.685782
+      type: 'test'
+      ...
+    # Subtest: uç (iş parçacığı) = iş parçacığısız yeni okuma = eski okuma — kilitli t (30.06.2026 kilidiyle)
+    ok 2 - uç (iş parçacığı) = iş parçacığısız yeni okuma = eski okuma — kilitli t (30.06.2026 kilidiyle)
+      ---
+      duration_ms: 1027.187477
+      type: 'test'
+      ...
+    1..2
+ok 11 - Ç6-HESAP tur 3 — B-g (b): donmuş toplamlarla okuma ↔ eski okuma BİREBİR (Bilanço, Gelir Tablosu; kilitli / kilitsiz, kapanış fişi, kural farkı)
+  ---
+  duration_ms: 4894.675048
+  type: 'suite'
+  ...
+# Subtest: Ç6-HESAP tur 3 — B-g (b) saf işlevler: donmuş toplam ↔ madde madde (elle maddeler; sınıf, sıra, dengesiz madde)
+    # Subtest: kapsam 2025-06-01: Bilanço (her t) ve Gelir Tablosu (her dönem) — donmuş toplam + kuyruk = madde madde
+    ok 1 - kapsam 2025-06-01: Bilanço (her t) ve Gelir Tablosu (her dönem) — donmuş toplam + kuyruk = madde madde
+      ---
+      duration_ms: 5.298072
+      type: 'test'
+      ...
+    # Subtest: kapsam 2025-12-31: Bilanço (her t) ve Gelir Tablosu (her dönem) — donmuş toplam + kuyruk = madde madde
+    ok 2 - kapsam 2025-12-31: Bilanço (her t) ve Gelir Tablosu (her dönem) — donmuş toplam + kuyruk = madde madde
+      ---
+      duration_ms: 3.928276
+      type: 'test'
+      ...
+    # Subtest: kapsam 2026-03-31: Bilanço (her t) ve Gelir Tablosu (her dönem) — donmuş toplam + kuyruk = madde madde
+    ok 3 - kapsam 2026-03-31: Bilanço (her t) ve Gelir Tablosu (her dönem) — donmuş toplam + kuyruk = madde madde
+      ---
+      duration_ms: 4.062155
+      type: 'test'
+      ...
+    # Subtest: ön koşul: elle maddelerde ayrıntı sırası ilk görünüş sırası (197, 196 ve 695, 690 — sıralı değil), dengesiz madde sayılır
+    ok 4 - ön koşul: elle maddelerde ayrıntı sırası ilk görünüş sırası (197, 196 ve 695, 690 — sıralı değil), dengesiz madde sayılır
+      ---
+      duration_ms: 1.338404
+      type: 'test'
+      ...
+    1..4
+ok 12 - Ç6-HESAP tur 3 — B-g (b) saf işlevler: donmuş toplam ↔ madde madde (elle maddeler; sınıf, sıra, dengesiz madde)
+  ---
+  duration_ms: 14.96807
+  type: 'suite'
+  ...
+# (node:8203) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Ç6-HESAP Gelir Tablosu — sınıflama hesap önekinden, planla tutarlı
+    # Subtest: planda gelir tablosu kalemi olan her hesap önek sınıflamasıyla AYNI kaleme ve satıra düşer
+    ok 1 - planda gelir tablosu kalemi olan her hesap önek sınıflamasıyla AYNI kaleme ve satıra düşer
+      ---
+      duration_ms: 1.795716
+      type: 'test'
+      ...
+    # Subtest: planda olmayan önekler: 601 A, 611 B, 661 H, 679 I; 690 / 692 / 650 sınıflanamaz; 1–5 sınıfı gelir tablosu dışı; alt hesap ana önekle
+    ok 2 - planda olmayan önekler: 601 A, 611 B, 661 H, 679 I; 690 / 692 / 650 sınıflanamaz; 1–5 sınıfı gelir tablosu dışı; alt hesap ana önekle
+      ---
+      duration_ms: 0.32354
+      type: 'test'
+      ...
+    1..2
+ok 13 - Ç6-HESAP Gelir Tablosu — sınıflama hesap önekinden, planla tutarlı
+  ---
+  duration_ms: 3.156752
+  type: 'suite'
+  ...
+# Subtest: Ç6-HESAP Gelir Tablosu — elle hesaplanmış örnek (Q1, Q2, yıl, aylar)
+    # Subtest: Q1: kalemler, 7/A yansıtma, .90 alt satırlar, ara toplamlar, tahmini satışların maliyeti
+    ok 1 - Q1: kalemler, 7/A yansıtma, .90 alt satırlar, ara toplamlar, tahmini satışların maliyeti
+      ---
+      duration_ms: 4.04617
+      type: 'test'
+      ...
+    # Subtest: Q2: 780 → 660 Finansman Giderleri; satışların maliyeti T(30.06) − T(31.03) = 0; kapanış sınıfı maddesi hiçbir dönemde yok
+    ok 2 - Q2: 780 → 660 Finansman Giderleri; satışların maliyeti T(30.06) − T(31.03) = 0; kapanış sınıfı maddesi hiçbir dönemde yok
+      ---
+      duration_ms: 0.927241
+      type: 'test'
+      ...
+    # Subtest: aylar toplamı = çeyrek = yıl (her kalem, satışların maliyeti dahil — EK-1 M6)
+    ok 3 - aylar toplamı = çeyrek = yıl (her kalem, satışların maliyeti dahil — EK-1 M6)
+      ---
+      duration_ms: 4.246028
+      type: 'test'
+      ...
+    # Subtest: dönem sınırı: 31.03 maddesi Q1'de, 01.04 maddesi Q2'de (bir gün kaydırma yakalanır)
+    ok 4 - dönem sınırı: 31.03 maddesi Q1'de, 01.04 maddesi Q2'de (bir gün kaydırma yakalanır)
+      ---
+      duration_ms: 0.401672
+      type: 'test'
+      ...
+    # Subtest: boş dönem: bütün kalemler 0, Kesin Değil yok (stok etkilenmedi), dipnotlar var
+    ok 5 - boş dönem: bütün kalemler 0, Kesin Değil yok (stok etkilenmedi), dipnotlar var
+      ---
+      duration_ms: 0.456096
+      type: 'test'
+      ...
+    # Subtest: tek kayıt: yalnız bir satış faturası
+    ok 6 - tek kayıt: yalnız bir satış faturası
+      ---
+      duration_ms: 0.519837
+      type: 'test'
+      ...
+    1..6
+ok 14 - Ç6-HESAP Gelir Tablosu — elle hesaplanmış örnek (Q1, Q2, yıl, aylar)
+  ---
+  duration_ms: 11.066816
+  type: 'suite'
+  ...
+# Subtest: Ç6-HESAP Gelir Tablosu — Kesin Değil, dipnotlar, hata
+    # Subtest: dengesiz madde, sınıflandırılmamış hesap (690 olağan maddede), Kural Değişikliği Farkı (yıl satırı), Bilgi Amaçlı — TEK toplayıcı sırası
+    ok 1 - dengesiz madde, sınıflandırılmamış hesap (690 olağan maddede), Kural Değişikliği Farkı (yıl satırı), Bilgi Amaçlı — TEK toplayıcı sırası
+      ---
+      duration_ms: 0.968803
+      type: 'test'
+      ...
+    # Subtest: eksi stok (KG-9) Kesin Değil nedeni
+    ok 2 - eksi stok (KG-9) Kesin Değil nedeni
+      ---
+      duration_ms: 0.609363
+      type: 'test'
+      ...
+    # Subtest: yılda 621 hareketi (N-01 yazılmış) varsa o yıl kesin: tahmin eklenmez, defterdeki 621 D kaleminde
+    ok 3 - yılda 621 hareketi (N-01 yazılmış) varsa o yıl kesin: tahmin eklenmez, defterdeki 621 D kaleminde
+      ---
+      duration_ms: 0.469485
+      type: 'test'
+      ...
+    # Subtest: dipnot 3 (770.90 tutarı) ve dipnot 6 (.90 gelir / gider)
+    ok 4 - dipnot 3 (770.90 tutarı) ve dipnot 6 (.90 gelir / gider)
+      ---
+      duration_ms: 0.426806
+      type: 'test'
+      ...
+    # Subtest: çapraz yıl ve geçersiz aralık 400 (kodlanmadı — tasarım §10 S-b)
+    ok 5 - çapraz yıl ve geçersiz aralık 400 (kodlanmadı — tasarım §10 S-b)
+      ---
+      duration_ms: 0.612369
+      type: 'test'
+      ...
+    # Subtest: dönemin Kural Değişikliği Farkı: donmuş ↔ güncel yıl × hesap toplamı (6 / 7 ve 153); fiş maddesi ve dönem dışı karşılaştırılmaz
+    ok 6 - dönemin Kural Değişikliği Farkı: donmuş ↔ güncel yıl × hesap toplamı (6 / 7 ve 153); fiş maddesi ve dönem dışı karşılaştırılmaz
+      ---
+      duration_ms: 0.684527
+      type: 'test'
+      ...
+    # Subtest: toplayıcı: verilmeyen bulgu neden yazmaz; Bilanço nedenleri aynı işlevden (tur 2)
+    ok 7 - toplayıcı: verilmeyen bulgu neden yazmaz; Bilanço nedenleri aynı işlevden (tur 2)
+      ---
+      duration_ms: 0.207993
+      type: 'test'
+      ...
+    1..7
+ok 15 - Ç6-HESAP Gelir Tablosu — Kesin Değil, dipnotlar, hata
+  ---
+  duration_ms: 4.444751
+  type: 'suite'
+  ...
+# (node:8210) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: S209 = B — alış iadesi alışlardan değerliyse birim maliyet 0'a kırpılır + Kesin Değil (kırpılan tutar görünür)
+    # Subtest: değerleme: ürün değeri 0 (−50,00 değil), kırpılan −50,00 ürün ayrıntısında ve toplu listede
+    ok 1 - değerleme: ürün değeri 0 (−50,00 değil), kırpılan −50,00 ürün ayrıntısında ve toplu listede
+      ---
+      duration_ms: 1.776448
+      type: 'test'
+      ...
+    # Subtest: Gelir Tablosu: satışların maliyeti T = −50,00 − 0 = −50,00; Kesin Değil 'Eksi Birim Maliyet' + ayrıntı
+    ok 2 - Gelir Tablosu: satışların maliyeti T = −50,00 − 0 = −50,00; Kesin Değil 'Eksi Birim Maliyet' + ayrıntı
+      ---
+      duration_ms: 2.003625
+      type: 'test'
+      ...
+    # Subtest: Bilanço aynı değerlemeyi okur: 153 = 0, aynı neden; Aktif = Pasif
+    ok 3 - Bilanço aynı değerlemeyi okur: 153 = 0, aynı neden; Aktif = Pasif
+      ---
+      duration_ms: 3.505861
+      type: 'test'
+      ...
+    1..3
+ok 16 - S209 = B — alış iadesi alışlardan değerliyse birim maliyet 0'a kırpılır + Kesin Değil (kırpılan tutar görünür)
+  ---
+  duration_ms: 8.336992
+  type: 'suite'
+  ...
+# (node:8217) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Ç6-HESAP okuma ucu — API'den girilen veri, iş parçacığı, yetki, kilit, iki şirket
+    # Subtest: Gelir Tablosu [01.01, 30.09] elle hesaplanan sayılarla; tahmini satışların maliyeti 1.242,00
+    ok 1 - Gelir Tablosu [01.01, 30.09] elle hesaplanan sayılarla; tahmini satışların maliyeti 1.242,00
+      ---
+      duration_ms: 219.616165
+      type: 'test'
+      ...
+    # Subtest: iç tutarlılık: kalemlerin defter tutarları Hesap Planı Mizanı'nın 6 / 7 hareketleriyle birebir (yıl, çeyrek, ay, boş ay)
+    ok 2 - iç tutarlılık: kalemlerin defter tutarları Hesap Planı Mizanı'nın 6 / 7 hareketleriyle birebir (yıl, çeyrek, ay, boş ay)
+      ---
+      duration_ms: 1309.931532
+      type: 'test'
+      ...
+    # Subtest: iş parçacığı ↔ iş parçacığısız sonuç birebir; değerleme ucu; önbellek veri değişince düşer
+    ok 3 - iş parçacığı ↔ iş parçacığısız sonuç birebir; değerleme ucu; önbellek veri değişince düşer
+      ---
+      duration_ms: 545.665915
+      type: 'test'
+      ...
+    # Subtest: varsayılan dönem Bu Yıl; çapraz yıl 400 gelir-tablosu-tek-yil; geçersiz tarih 400
+    ok 4 - varsayılan dönem Bu Yıl; çapraz yıl 400 gelir-tablosu-tek-yil; geçersiz tarih 400
+      ---
+      duration_ms: 1055.53299
+      type: 'test'
+      ...
+    # Subtest: yetki: Muhasebe görür; Personel ve Avukat 403 (Ana Defter raporlarıyla aynı)
+    ok 5 - yetki: Muhasebe görür; Personel ve Avukat 403 (Ana Defter raporlarıyla aynı)
+      ---
+      duration_ms: 566.158995
+      type: 'test'
+      ...
+# (node:8217) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8217) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: kilitli dönem DONMUŞ defterden, açık dönem canlı türetmeden; kural farkı Kesin Değil nedeni
+    ok 6 - kilitli dönem DONMUŞ defterden, açık dönem canlı türetmeden; kural farkı Kesin Değil nedeni
+      ---
+      duration_ms: 949.245389
+      type: 'test'
+      ...
+# (node:8217) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: iki şirket: ikinci şirketin Gelir Tablosu boş, birinci şirketinkini görmez; geri dönünce sayılar aynı
+    ok 7 - iki şirket: ikinci şirketin Gelir Tablosu boş, birinci şirketinkini görmez; geri dönünce sayılar aynı
+      ---
+      duration_ms: 997.885165
+      type: 'test'
+      ...
+    1..7
+ok 17 - Ç6-HESAP okuma ucu — API'den girilen veri, iş parçacığı, yetki, kilit, iki şirket
+  ---
+  duration_ms: 6498.404219
+  type: 'suite'
+  ...
+# (node:8272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# sınıf testi: 13 sınıf × 2 kip; 78 fark; yazılı olmayan 14, değeri değişen 0, kapanmış ama listede duran 0
+#   karar başına: K1 (KG-1 A, M-01…M-07, S47; 30.10 açılış düzeni) 18 · KG-11 A (YÜKSEK-1) 12 · çekirdek §13 + kitap §5.1 (dönemsel ağırlıklı ortalama) 12 · K1 (KG-1 A, M-01…M-07, S47; 30.10 açılış düzeni) + KG-16 A 6 · KG-11 A (YÜKSEK-1) + S-06 12 · BANKA-MODULU-PLAN §3.11b (12.10.2026) 4
+# Subtest: 2.5.0 Ç6-HESAP — v2.4.9 GERÇEK verisinde sınıf sınıf (kilitsiz / kilitli) Gelir Tablosu, Bilanço, değerleme ↔ v2.4.9'un kendi sayıları (her fark karar numarasıyla)
+    # Subtest: fikstür bugünkü kodla: bütün farklar beklenen-farklar.json'da, değerleri aynı; listede kapanmış fark yok; her sınıfta Aktif = Pasif
+    not ok 1 - fikstür bugünkü kodla: bütün farklar beklenen-farklar.json'da, değerleri aynı; listede kapanmış fark yok; her sınıfta Aktif = Pasif
+      ---
+      duration_ms: 64829.345758
+      type: 'test'
+      location: '/dev/shm/c6-sinama/test/c6h-v249-sinif.test.mjs:112:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        beklenen-farklar.json'da YAZILI OLMAYAN fark (karar numarasıyla açıklanmadı):
+          satis-fatura · kilitsiz · 2026-10-20 · mizan.191: 0 → 2000
+          satis-fatura · kilitsiz · 2026-10-20 · mizan.391: -16000 → -18000
+          satis-fatura · kilitli · 2026-10-20 · mizan.191: 0 → 2000
+          satis-fatura · kilitli · 2026-10-20 · mizan.391: -16000 → -18000
+          alis-fatura · kilitsiz · 2026-10-20 · mizan.191: 26800 → 29400
+          alis-fatura · kilitsiz · 2026-10-20 · mizan.391: 0 → -2600
+          alis-fatura · kilitli · 2026-10-20 · mizan.191: 26800 → 29400
+          alis-fatura · kilitli · 2026-10-20 · mizan.391: 0 → -2600
+          taksit · kilitsiz · 2025-12-31 · donem.600: 0 → -120000
+          taksit · kilitsiz · 2025-12-31 · donem.602: -120000 → 0
+          taksit · kilitsiz · 2026-10-20 · donem.600: 0 → -90000
+          taksit · kilitsiz · 2026-10-20 · donem.602: -90000 → 0
+          taksit · kilitli · 2026-10-20 · donem.600: 0 → -90000
+          taksit · kilitli · 2026-10-20 · donem.602: -90000 → 0
+        
+        14 !== 0
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 0
+      actual: 14
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/c6-sinama/test/c6h-v249-sinif.test.mjs:163:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..1
+not ok 18 - 2.5.0 Ç6-HESAP — v2.4.9 GERÇEK verisinde sınıf sınıf (kilitsiz / kilitli) Gelir Tablosu, Bilanço, değerleme ↔ v2.4.9'un kendi sayıları (her fark karar numarasıyla)
+  ---
+  duration_ms: 64835.047918
+  type: 'suite'
+  location: '/dev/shm/c6-sinama/test/c6h-v249-sinif.test.mjs:111:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:8298) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: store.run / store.tx — derinlik > 0 iken bağlantıda işlem yoksa yazım yok, açık hata (2.5.0 BS-6)
+    # Subtest: (k1) iç işlemde SQLite işlemi kendiliğinden geri alır, çağıran yakalayıp sürer → sonraki yazımlar ERR_TX_LOST, yarım yazım yok; Linux'ta gerçek G/Ç hatası
+    ok 1 - (k1) iç işlemde SQLite işlemi kendiliğinden geri alır, çağıran yakalayıp sürer → sonraki yazımlar ERR_TX_LOST, yarım yazım yok; Linux'ta gerçek G/Ç hatası
+      ---
+      duration_ms: 43.624607
+      type: 'test'
+      ...
+    # Subtest: (k2) işlem kayboldu ama sonra yazım yok → en dış COMMIT asıl nedeni söyler ("cannot commit - no transaction is active" değil); iç düzeyde RELEASE de
+    ok 2 - (k2) işlem kayboldu ama sonra yazım yok → en dış COMMIT asıl nedeni söyler ("cannot commit - no transaction is active" değil); iç düzeyde RELEASE de
+      ---
+      duration_ms: 12.146365
+      type: 'test'
+      ...
+    # Subtest: (k3) işlem canlıyken seçici yakalama bugünkü gibi: iç işlem geri alınır, dış işlem yazmayı sürdürür ve kesinleşir; işlem dışı yazım etkilenmez
+    ok 3 - (k3) işlem canlıyken seçici yakalama bugünkü gibi: iç işlem geri alınır, dış işlem yazmayı sürdürür ve kesinleşir; işlem dışı yazım etkilenmez
+      ---
+      duration_ms: 9.101479
+      type: 'test'
+      ...
+    1..3
+ok 19 - store.run / store.tx — derinlik > 0 iken bağlantıda işlem yoksa yazım yok, açık hata (2.5.0 BS-6)
+  ---
+  duration_ms: 65.978478
+  type: 'suite'
+  ...
+# Subtest: store.exec / store.get / store.all — kayıptan sonra yazım yok, ilk hata okuma / exec hatasında da (2.5.0 BİRLEŞİK TUR 5)
+    # Subtest: (k4) kayıptan sonra exec INSERT / DROP TABLE / DROP TRIGGER / PRAGMA user_version ve get / all ile yazım (RETURNING, UPDATE, WITH) → ERR_TX_LOST, diskte değişiklik yok; okuma çalışır; Linux'ta gerçek G/Ç hatası
+    ok 1 - (k4) kayıptan sonra exec INSERT / DROP TABLE / DROP TRIGGER / PRAGMA user_version ve get / all ile yazım (RETURNING, UPDATE, WITH) → ERR_TX_LOST, diskte değişiklik yok; okuma çalışır; Linux'ta gerçek G/Ç hatası
+      ---
+      duration_ms: 36.349845
+      type: 'test'
+      ...
+    # Subtest: (k5) işlemi kendiliğinden geri aldıran hata bir OKUMA ya da exec ise ERR_TX_LOST iletisi onu "ilk hata" diye söyler; Linux'ta gerçek: işlem içindeki SELECT önbelleği taşırırken G/Ç hatası
+    ok 2 - (k5) işlemi kendiliğinden geri aldıran hata bir OKUMA ya da exec ise ERR_TX_LOST iletisi onu "ilk hata" diye söyler; Linux'ta gerçek: işlem içindeki SELECT önbelleği taşırırken G/Ç hatası
+      ---
+      duration_ms: 102.047552
+      type: 'test'
+      ...
+    # Subtest: (k6) meşru yollar yanlış ERR_TX_LOST almaz: iç işlemde yakalanan kısıt hatası, iç içe JS hatası, işlem içinde okunamayan tablo + exec DDL + PRAGMA, işlem içinde exec / get RETURNING yazımı, store.raw, işlem dışı exec / get yazımı
+    ok 3 - (k6) meşru yollar yanlış ERR_TX_LOST almaz: iç işlemde yakalanan kısıt hatası, iç içe JS hatası, işlem içinde okunamayan tablo + exec DDL + PRAGMA, işlem içinde exec / get RETURNING yazımı, store.raw, işlem dışı exec / get yazımı
+      ---
+      duration_ms: 15.368291
+      type: 'test'
+      ...
+    1..3
+ok 20 - store.exec / store.get / store.all — kayıptan sonra yazım yok, ilk hata okuma / exec hatasında da (2.5.0 BİRLEŞİK TUR 5)
+  ---
+  duration_ms: 154.148372
+  type: 'suite'
+  ...
+# (node:8322) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 Ç3 tamamlama — büyük okumada sıkı satırlar (lib/lean-rows.mjs)
+    # Subtest: B1: leanAll / leanRows = store.all — aynı anahtarlar, aynı sıra, aynı değerler (metin, tamsayı, ondalık, NULL, BLOB, büyük tamsayı; konumlu ve adlı parametre); tutma sınırı aşılınca da
+    ok 1 - B1: leanAll / leanRows = store.all — aynı anahtarlar, aynı sıra, aynı değerler (metin, tamsayı, ondalık, NULL, BLOB, büyük tamsayı; konumlu ve adlı parametre); tutma sınırı aşılınca da
+      ---
+      duration_ms: 22.402647
+      type: 'test'
+      ...
+    # Subtest: B2: sıkı satırlar V8'in hızlı kipinde (ayrı süreç, --allow-natives-syntax: %HasFastProperties); store.all'ın satırı bilgi için ölçülür
+    ok 2 - B2: sıkı satırlar V8'in hızlı kipinde (ayrı süreç, --allow-natives-syntax: %HasFastProperties); store.all'ın satırı bilgi için ölçülür
+      ---
+      duration_ms: 78.966128
+      type: 'test'
+      ...
+    # Subtest: B5: 2.4.9 kural kopyasını çağıran her yer sıkı depoyla çağırır (kaynak taraması; kopyanın kendisi değişmez)
+    ok 3 - B5: 2.4.9 kural kopyasını çağıran her yer sıkı depoyla çağırır (kaynak taraması; kopyanın kendisi değişmez)
+      ---
+      duration_ms: 69.593856
+      type: 'test'
+      ...
+    1..3
+ok 21 - 2.5.0 Ç3 tamamlama — büyük okumada sıkı satırlar (lib/lean-rows.mjs)
+  ---
+  duration_ms: 173.270403
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 Ç3 tamamlama — türetme ve donmuş defter sıkı satırlarla (eski sürüm verisi, güncel şema)
+    # Subtest: B3: Ana Defter türetmesi (güncel kural ve 2.4.9 kopyası) kaynak satırlarını store.all ile okumaz; çıktı store.all'lı türetmeyle BİREBİR; donmuş okuma ve Kural Değişikliği Farkı da store.all'sız
+    ok 1 - B3: Ana Defter türetmesi (güncel kural ve 2.4.9 kopyası) kaynak satırlarını store.all ile okumaz; çıktı store.all'lı türetmeyle BİREBİR; donmuş okuma ve Kural Değişikliği Farkı da store.all'sız
+      ---
+      duration_ms: 137.918358
+      type: 'test'
+      ...
+# (node:8322) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: B4: iş parçacığı kipi — donmuş satırlar parça parça üretilir (parça 7 satır: tam parçalar + eksik son parça); yazılan = türetilen (sayı, borç, alacak), donmuş = canlı; koşunun toplamları satırlarla aynı
+    ok 2 - B4: iş parçacığı kipi — donmuş satırlar parça parça üretilir (parça 7 satır: tam parçalar + eksik son parça); yazılan = türetilen (sayı, borç, alacak), donmuş = canlı; koşunun toplamları satırlarla aynı
+      ---
+      duration_ms: 281.088457
+      type: 'test'
+      ...
+    1..2
+ok 22 - 2.5.0 Ç3 tamamlama — türetme ve donmuş defter sıkı satırlarla (eski sürüm verisi, güncel şema)
+  ---
+  duration_ms: 834.794526
+  type: 'suite'
+  ...
+# (node:8344) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8344) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8344) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8344) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 Ç3 tur 1 — önbellek, aynı gün / başka gün yeniden kilit, iletiler, ara dilim
+    # Subtest: ORTA-1: Şirket Verisini Sıfırla + aynı güne yeniden kilitten sonra Hesap Planı Mizanı (uç ve Rapor Merkezi) YENİ verinin toplamını gösterir (önbellek son koşunun kimliğiyle)
+    ok 1 - ORTA-1: Şirket Verisini Sıfırla + aynı güne yeniden kilitten sonra Hesap Planı Mizanı (uç ve Rapor Merkezi) YENİ verinin toplamını gösterir (önbellek son koşunun kimliğiyle)
+      ---
+      duration_ms: 2099.426791
+      type: 'test'
+      ...
+# (node:8344) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8344) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: ORTA-3: göçün / onarımın bekleyen 2.4.9 koşusu varken AYNI güne yeniden kilit — koşu kendi kuralıyla (2.4.9) sürer, güncel kuralla yeni koşu açılmaz
+    ok 2 - ORTA-3: göçün / onarımın bekleyen 2.4.9 koşusu varken AYNI güne yeniden kilit — koşu kendi kuralıyla (2.4.9) sürer, güncel kuralla yeni koşu açılmaz
+      ---
+      duration_ms: 998.517715
+      type: 'test'
+      ...
+# (node:8344) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8344) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8344) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: ORTA-3 ailesi: bekleyen 2.4.9 koşusu varken kilit İLERLETİLİNCE koşu 2.4.9 ile tamamlanır, kalan dönem güncel kuralla; GERİ ÇEKİLİNCE (koşunun içine) kısa koşu yine 2.4.9
+    ok 3 - ORTA-3 ailesi: bekleyen 2.4.9 koşusu varken kilit İLERLETİLİNCE koşu 2.4.9 ile tamamlanır, kalan dönem güncel kuralla; GERİ ÇEKİLİNCE (koşunun içine) kısa koşu yine 2.4.9
+      ---
+      duration_ms: 1175.059447
+      type: 'test'
+      ...
+    # Subtest: ORTA-3 ailesi (eşzamanlı): bekleyen 2.4.9 koşusu varken kapanış fişi kilidi ilerletir (postAll lockThrough) — koşu 2.4.9 ile, kalan dönem güncel kuralla, ikisi aynı işlemde
+    ok 4 - ORTA-3 ailesi (eşzamanlı): bekleyen 2.4.9 koşusu varken kapanış fişi kilidi ilerletir (postAll lockThrough) — koşu 2.4.9 ile, kalan dönem güncel kuralla, ikisi aynı işlemde
+      ---
+      duration_ms: 636.435966
+      type: 'test'
+      ...
+# (node:8344) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8344) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: ORTA-3 ailesi: kuralı bu programda olmayan bekleyen koşu güncel kurala GEÇMEZ, yarım donmaz — ilerlemede ve Mutabakat Testi'nde görünür; eşzamanlı kilit düşer; kilit kaldırılınca bırakılır
+    ok 5 - ORTA-3 ailesi: kuralı bu programda olmayan bekleyen koşu güncel kurala GEÇMEZ, yarım donmaz — ilerlemede ve Mutabakat Testi'nde görünür; eşzamanlı kilit düşer; kilit kaldırılınca bırakılır
+      ---
+      duration_ms: 1203.470986
+      type: 'test'
+      ...
+# (node:8344) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8344) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: K4: eksik donmuş satır ayrı iletiyle; 'Kural Değişikliği Farkı' nedeni bilinmeyende tarafsız, nedeni biliniyorsa onu söyler; denetim adları Yazım düzeninde
+    ok 6 - K4: eksik donmuş satır ayrı iletiyle; 'Kural Değişikliği Farkı' nedeni bilinmeyende tarafsız, nedeni biliniyorsa onu söyler; denetim adları Yazım düzeninde
+      ---
+      duration_ms: 1084.646011
+      type: 'test'
+      ...
+# (node:8344) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8344) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8344) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: §5 kural kayıt defteri: RULE_HISTORY'nin son öğesi güncel kural, önceki her kuralın kopyası (ledger-rule-<sürüm>/) ve kayıt defteri girdisi var; her kuralın bekleyen koşusu (iş parçacığında) kendi kuralıyla donar
+    ok 7 - §5 kural kayıt defteri: RULE_HISTORY'nin son öğesi güncel kural, önceki her kuralın kopyası (ledger-rule-<sürüm>/) ve kayıt defteri girdisi var; her kuralın bekleyen koşusu (iş parçacığında) kendi kuralıyla donar
+      ---
+      duration_ms: 1461.310684
+      type: 'test'
+      ...
+# (node:8344) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: DÜŞÜK-3 (ders 47): göç / onarım penceresinde ara dilim (2.4.9) koşu başına bir kez kurulur — çıktı önbelleksiz yolla birebir; yazım, kural farkı ve işlem içi okuma yeniden kurar; kilitli yılın Yevmiye Defteri güncel türetme kurmaz
+    ok 8 - DÜŞÜK-3 (ders 47): göç / onarım penceresinde ara dilim (2.4.9) koşu başına bir kez kurulur — çıktı önbelleksiz yolla birebir; yazım, kural farkı ve işlem içi okuma yeniden kurar; kilitli yılın Yevmiye Defteri güncel türetme kurmaz
+      ---
+      duration_ms: 894.151918
+      type: 'test'
+      ...
+    1..8
+ok 23 - 2.5.0 Ç3 tur 1 — önbellek, aynı gün / başka gün yeniden kilit, iletiler, ara dilim
+  ---
+  duration_ms: 9555.41836
+  type: 'suite'
+  ...
+# (node:8344) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8344) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 Ç3 tur 1 — ORTA-2 / ORTA-3 açılış (dosya kapatılıp ham bağlantıyla değiştirilir, yeniden açılır)
+    # Subtest: ORTA-2: eski sürüm donmuş satırları silip AYNI güne yeniden kilitlediyse açılış onarımı kapsamı indirir, kilitli yıl GAP_RULE (2.4.9) ile yeniden donar — Yevmiye Defteri ve Hesap Planı Mizanı dolu, Mutabakat Testi tutarlı
+    ok 1 - ORTA-2: eski sürüm donmuş satırları silip AYNI güne yeniden kilitlediyse açılış onarımı kapsamı indirir, kilitli yıl GAP_RULE (2.4.9) ile yeniden donar — Yevmiye Defteri ve Hesap Planı Mizanı dolu, Mutabakat Testi tutarlı
+      ---
+      duration_ms: 1194.392625
+      type: 'test'
+      ...
+# (node:8344) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8344) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: ORTA-2 (ileri kilit): eski sürüm satırları silip kilidi İLERLETTİYSE eski kapsamın satırları da yeniden donar (05.05 satırı kaybolmaz)
+    ok 2 - ORTA-2 (ileri kilit): eski sürüm satırları silip kilidi İLERLETTİYSE eski kapsamın satırları da yeniden donar (05.05 satırı kaybolmaz)
+      ---
+      duration_ms: 1045.513504
+      type: 'test'
+      ...
+# (node:8344) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8344) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8344) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: ORTA-2 (sağlama noktası): yalnız son koşunun satırları silindiyse kapsam sağlam son koşunun gününe iner; önceki koşunun satırları (güncel kural) korunur, kalan dönem GAP_RULE ile donar
+    ok 3 - ORTA-2 (sağlama noktası): yalnız son koşunun satırları silindiyse kapsam sağlam son koşunun gününe iner; önceki koşunun satırları (güncel kural) korunur, kalan dönem GAP_RULE ile donar
+      ---
+      duration_ms: 1435.821412
+      type: 'test'
+      ...
+# (node:8344) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8344) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8344) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: ORTA-3 ailesi (yarıda kesilme): bekleyen 2.4.9 koşusu sürerken kilit ilerletildi ve dondurma kesildi → açılışta koşu 2.4.9 ile sürer, kalan dönem (ilerletme izi) güncel kuralla donar
+    ok 4 - ORTA-3 ailesi (yarıda kesilme): bekleyen 2.4.9 koşusu sürerken kilit ilerletildi ve dondurma kesildi → açılışta koşu 2.4.9 ile sürer, kalan dönem (ilerletme izi) güncel kuralla donar
+      ---
+      duration_ms: 1292.455284
+      type: 'test'
+      ...
+    1..4
+ok 24 - 2.5.0 Ç3 tur 1 — ORTA-2 / ORTA-3 açılış (dosya kapatılıp ham bağlantıyla değiştirilir, yeniden açılır)
+  ---
+  duration_ms: 4983.135927
+  type: 'suite'
+  ...
+# (node:8354) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8354) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 Ç3 tur 3 — YÜKSEK-1: süren dondurmanın satırları silinmez; koşu tablo doğrulanmadan tamamlanmaz
+    # Subtest: T1 (p1): dondurma YAZIM adımındayken aynı güne yinelenen kilit süren koşunun satırlarını silmez — bitince görünen donmuş satır = kayıtlı = canlı; Hesap Planı Mizanı, Yevmiye Defteri ve karma mizan = canlı; Mutabakat Testi temiz
+    ok 1 - T1 (p1): dondurma YAZIM adımındayken aynı güne yinelenen kilit süren koşunun satırlarını silmez — bitince görünen donmuş satır = kayıtlı = canlı; Hesap Planı Mizanı, Yevmiye Defteri ve karma mizan = canlı; Mutabakat Testi temiz
+      ---
+      duration_ms: 5450.605337
+      type: 'test'
+      ...
+# (node:8354) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8354) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: T3: koşunun satırı yazımdan sonra dışarıdan eksilirse (sayaç ↔ tablo farkı) koşu 'tamam' sayılmaz — görünür hata, kapsam yerinde, koşu bekler; aynı güne yeniden kilit baştan yazar ve tamamlar
+    ok 2 - T3: koşunun satırı yazımdan sonra dışarıdan eksilirse (sayaç ↔ tablo farkı) koşu 'tamam' sayılmaz — görünür hata, kapsam yerinde, koşu bekler; aynı güne yeniden kilit baştan yazar ve tamamlar
+      ---
+      duration_ms: 658.175583
+      type: 'test'
+      ...
+# (node:8354) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8354) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: T4 (ORTA-1): kilit geri çekilince bayat satır temizliği sürerken yeniden kilit 5 sn bütçesini aşmaz — 409 ledger-cleanup-running + Türkçe neden; kilit ve koşular değişmez; ilerleme görünür; temizlik bitince kilit 200 ve donar
+    ok 3 - T4 (ORTA-1): kilit geri çekilince bayat satır temizliği sürerken yeniden kilit 5 sn bütçesini aşmaz — 409 ledger-cleanup-running + Türkçe neden; kilit ve koşular değişmez; ilerleme görünür; temizlik bitince kilit 200 ve donar
+      ---
+      duration_ms: 10797.333414
+      type: 'test'
+      ...
+    # Subtest: T6b (Ç3 küçük işler (b), etiketsiz): Mutabakat Günlüğü'nde 20.000 karakterde kesilmiş (geçersiz JSON) kayıt Mutabakat Testi'ni düşürmez — satır günlükte 'okunamadı' işaretiyle, öbür kayıtlar ayrıştırılır
+    ok 4 - T6b (Ç3 küçük işler (b), etiketsiz): Mutabakat Günlüğü'nde 20.000 karakterde kesilmiş (geçersiz JSON) kayıt Mutabakat Testi'ni düşürmez — satır günlükte 'okunamadı' işaretiyle, öbür kayıtlar ayrıştırılır
+      ---
+      duration_ms: 24.989959
+      type: 'test'
+      ...
+    # Subtest: T5 (Ç3 küçük işler (a), K4 ailesi): Defter Mutabakatı alt başlığı nedeni bilinmeyen ayrışmayı 'Defter kuralı program sürümüyle değişti' diye adlandırmaz — denetimin tarafsız iletisi + yeni işlemler engellenmez
+    ok 5 - T5 (Ç3 küçük işler (a), K4 ailesi): Defter Mutabakatı alt başlığı nedeni bilinmeyen ayrışmayı 'Defter kuralı program sürümüyle değişti' diye adlandırmaz — denetimin tarafsız iletisi + yeni işlemler engellenmez
+      ---
+      duration_ms: 18.968868
+      type: 'test'
+      ...
+    1..5
+ok 25 - 2.5.0 Ç3 tur 3 — YÜKSEK-1: süren dondurmanın satırları silinmez; koşu tablo doğrulanmadan tamamlanmaz
+  ---
+  duration_ms: 18749.594804
+  type: 'suite'
+  ...
+# (node:8354) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 Ç3 tur 3 — YÜKSEK-1 (p5): açılışta süren eski kurallı (2.4.9) dondurma + aynı güne kilit
+    # Subtest: T2 (p5): eski sürüm kilidi → açılış onarımının 2.4.9 koşusu yazım adımındayken aynı güne kilit → satırlar silinmez; koşu 2.4.9 kuralıyla tamamlanır, görünen = kayıtlı = canlı
+    ok 1 - T2 (p5): eski sürüm kilidi → açılış onarımının 2.4.9 koşusu yazım adımındayken aynı güne kilit → satırlar silinmez; koşu 2.4.9 kuralıyla tamamlanır, görünen = kayıtlı = canlı
+      ---
+      duration_ms: 6922.159619
+      type: 'test'
+      ...
+    1..1
+ok 26 - 2.5.0 Ç3 tur 3 — YÜKSEK-1 (p5): açılışta süren eski kurallı (2.4.9) dondurma + aynı güne kilit
+  ---
+  duration_ms: 6922.486592
+  type: 'suite'
+  ...
+# (node:8354) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8354) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 Ç3 tur 3 — ORTA-1: program temizlik bitmeden kapanırsa temizlik açılışta sürer ve süren iş sayılır
+    # Subtest: T4b: geri çekilen dönemin temizliği yarıda kalır (kapanış) → açılışta sürer; ilerleme görünümü 'süren iş' der, yeniden kilit 409; bitince kilit 200
+    ok 1 - T4b: geri çekilen dönemin temizliği yarıda kalır (kapanış) → açılışta sürer; ilerleme görünümü 'süren iş' der, yeniden kilit 409; bitince kilit 200
+      ---
+      duration_ms: 11881.85139
+      type: 'test'
+      ...
+    1..1
+ok 27 - 2.5.0 Ç3 tur 3 — ORTA-1: program temizlik bitmeden kapanırsa temizlik açılışta sürer ve süren iş sayılır
+  ---
+  duration_ms: 11882.316832
+  type: 'suite'
+  ...
+# (node:8354) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8354) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8354) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 Ç3 tur 3 — S46 = A: eksilen donmuş dönem izi duruyorsa kendi kuralıyla, izsizse 2.4.9 kopyasıyla yeniden donar
+    # Subtest: U1: bu programın (2.5.0 kuralıyla) dondurduğu dönemin satırları dışarıdan silinir (iz durur) → açılışta aynı (2.5.0) kuralla yeniden donar; donmuş = canlı
+    ok 1 - U1: bu programın (2.5.0 kuralıyla) dondurduğu dönemin satırları dışarıdan silinir (iz durur) → açılışta aynı (2.5.0) kuralla yeniden donar; donmuş = canlı
+      ---
+      duration_ms: 2040.763058
+      type: 'test'
+      ...
+# (node:8354) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8354) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: U2: izsiz bozulma (2.4.9'un deseni: önce dondurma izi, sonra satırlar) → açılışta GAP_RULE (2.4.9 kopyası) ile yeniden donar (S13)
+    ok 2 - U2: izsiz bozulma (2.4.9'un deseni: önce dondurma izi, sonra satırlar) → açılışta GAP_RULE (2.4.9 kopyası) ile yeniden donar (S13)
+      ---
+      duration_ms: 2070.156565
+      type: 'test'
+      ...
+# (node:8354) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8354) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8354) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8354) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: U3: karışık bileşim — (…, 30.06] 2.4.9 göç / onarım koşusu (izli), (30.06, 31.12] 2.5.0 koşusu (izli); satırların hepsi silinir → plan iki dilim: her dönem kendi kuralıyla
+    ok 3 - U3: karışık bileşim — (…, 30.06] 2.4.9 göç / onarım koşusu (izli), (30.06, 31.12] 2.5.0 koşusu (izli); satırların hepsi silinir → plan iki dilim: her dönem kendi kuralıyla
+      ---
+      duration_ms: 2257.448387
+      type: 'test'
+      ...
+    1..3
+ok 28 - 2.5.0 Ç3 tur 3 — S46 = A: eksilen donmuş dönem izi duruyorsa kendi kuralıyla, izsizse 2.4.9 kopyasıyla yeniden donar
+  ---
+  duration_ms: 6368.829688
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 Ç3 tur 3 — (b) 2.4.9'dan kalan kesik Mutabakat Günlüğü kaydı Mutabakat Testi'ni düşürmez
+    # Subtest: T6: v2.4.9 + v2.0.26 gerçek koduyla kesik kayıt → güncel kodda Mutabakat Testi 200, kesik satır detailUnreadable + neden (boş değil)
+    ok 1 - T6: v2.4.9 + v2.0.26 gerçek koduyla kesik kayıt → güncel kodda Mutabakat Testi 200, kesik satır detailUnreadable + neden (boş değil)
+      ---
+      duration_ms: 13220.116586
+      type: 'test'
+      ...
+    1..1
+ok 29 - 2.5.0 Ç3 tur 3 — (b) 2.4.9'dan kalan kesik Mutabakat Günlüğü kaydı Mutabakat Testi'ni düşürmez
+  ---
+  duration_ms: 13220.364972
+  type: 'suite'
+  ...
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 Ç3 tur 4 — ORTA-1 (S46 = A): yeniden donma planı yarıda kesilince korunur — bileşim s46 (ilk dilim 2.5.0-defter)
+    # Subtest: V1 s46 (dar kontrol "kapanis"): plan sürerken (ilk dilim yazım adımında) program kapanır → yeniden açılışta plan sürer; her dönem kendi kuralıyla, donmuş = canlı
+    ok 1 - V1 s46 (dar kontrol "kapanis"): plan sürerken (ilk dilim yazım adımında) program kapanır → yeniden açılışta plan sürer; her dönem kendi kuralıyla, donmuş = canlı
+      ---
+      duration_ms: 2733.576597
+      type: 'test'
+      ...
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: V2 s46 (dar kontrol "aynigun"): planın ilk dilimi hata verir (kart "kilidi yeniden kaydedin") → yönetici AYNI günü yeniden kaydeder → plan sürer; her dönem kendi kuralıyla
+    ok 2 - V2 s46 (dar kontrol "aynigun"): planın ilk dilimi hata verir (kart "kilidi yeniden kaydedin") → yönetici AYNI günü yeniden kaydeder → plan sürer; her dönem kendi kuralıyla
+      ---
+      duration_ms: 2837.884986
+      type: 'test'
+      ...
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: V3 s46: planın ilk dilimi YAZILIRKEN aynı güne yeniden kaydetme süren dondurmayı durdurmaz (baştan başlamaz, satırları silinmez); plan sürer
+    ok 3 - V3 s46: planın ilk dilimi YAZILIRKEN aynı güne yeniden kaydetme süren dondurmayı durdurmaz (baştan başlamaz, satırları silinmez); plan sürer
+      ---
+      duration_ms: 7361.795541
+      type: 'test'
+      ...
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: V4 s46: planın ilk dilimi hata verdi, denemenin artığı (bayat satırlar) duruyor → aynı güne yeniden kaydetme temizlik beklemez (409 yok; kilit değişmiyor, koşu açılmaz); plan sürer
+    ok 4 - V4 s46: planın ilk dilimi hata verdi, denemenin artığı (bayat satırlar) duruyor → aynı güne yeniden kaydetme temizlik beklemez (409 yok; kilit değişmiyor, koşu açılmaz); plan sürer
+      ---
+      duration_ms: 7488.644855
+      type: 'test'
+      ...
+    1..4
+ok 30 - 2.5.0 Ç3 tur 4 — ORTA-1 (S46 = A): yeniden donma planı yarıda kesilince korunur — bileşim s46 (ilk dilim 2.5.0-defter)
+  ---
+  duration_ms: 20423.164501
+  type: 'suite'
+  ...
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 Ç3 tur 4 — ORTA-1 (S46 = A): yeniden donma planı yarıda kesilince korunur — bileşim u3 (ilk dilim 2.4.9)
+    # Subtest: V1 u3 (dar kontrol "kapanis"): plan sürerken (ilk dilim yazım adımında) program kapanır → yeniden açılışta plan sürer; her dönem kendi kuralıyla, donmuş = canlı
+    ok 1 - V1 u3 (dar kontrol "kapanis"): plan sürerken (ilk dilim yazım adımında) program kapanır → yeniden açılışta plan sürer; her dönem kendi kuralıyla, donmuş = canlı
+      ---
+      duration_ms: 2532.654583
+      type: 'test'
+      ...
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: V2 u3 (dar kontrol "aynigun"): planın ilk dilimi hata verir (kart "kilidi yeniden kaydedin") → yönetici AYNI günü yeniden kaydeder → plan sürer; her dönem kendi kuralıyla
+    ok 2 - V2 u3 (dar kontrol "aynigun"): planın ilk dilimi hata verir (kart "kilidi yeniden kaydedin") → yönetici AYNI günü yeniden kaydeder → plan sürer; her dönem kendi kuralıyla
+      ---
+      duration_ms: 3097.370605
+      type: 'test'
+      ...
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: V3 u3: planın ilk dilimi YAZILIRKEN aynı güne yeniden kaydetme süren dondurmayı durdurmaz (baştan başlamaz, satırları silinmez); plan sürer
+    ok 3 - V3 u3: planın ilk dilimi YAZILIRKEN aynı güne yeniden kaydetme süren dondurmayı durdurmaz (baştan başlamaz, satırları silinmez); plan sürer
+      ---
+      duration_ms: 7809.589353
+      type: 'test'
+      ...
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: V4 u3: planın ilk dilimi hata verdi, denemenin artığı (bayat satırlar) duruyor → aynı güne yeniden kaydetme temizlik beklemez (409 yok; kilit değişmiyor, koşu açılmaz); plan sürer
+    ok 4 - V4 u3: planın ilk dilimi hata verdi, denemenin artığı (bayat satırlar) duruyor → aynı güne yeniden kaydetme temizlik beklemez (409 yok; kilit değişmiyor, koşu açılmaz); plan sürer
+      ---
+      duration_ms: 8128.581839
+      type: 'test'
+      ...
+    1..4
+ok 31 - 2.5.0 Ç3 tur 4 — ORTA-1 (S46 = A): yeniden donma planı yarıda kesilince korunur — bileşim u3 (ilk dilim 2.4.9)
+  ---
+  duration_ms: 21568.750816
+  type: 'suite'
+  ...
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 Ç3 tur 4 — ORTA-1: v2.4.9 GERÇEK koduyla ilerletilmiş kilit
+    # Subtest: X1 (v249-s46 ilerlet kapanis): plan sürerken program kapanır → yeniden açılışta (…, 30.06] 2.5.0, (30.06, 31.12] 2.4.9; donmuş = canlı; Mutabakat Testi temiz
+    ok 1 - X1 (v249-s46 ilerlet kapanis): plan sürerken program kapanır → yeniden açılışta (…, 30.06] 2.5.0, (30.06, 31.12] 2.4.9; donmuş = canlı; Mutabakat Testi temiz
+      ---
+      duration_ms: 3265.982164
+      type: 'test'
+      ...
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: X2 (v2.4.9 ilerletmesi + aynı gün): planın ilk dilimi hata verir → aynı güne yeniden kaydetme → (…, 30.06] 2.5.0, (30.06, 31.12] 2.4.9
+    ok 2 - X2 (v2.4.9 ilerletmesi + aynı gün): planın ilk dilimi hata verir → aynı güne yeniden kaydetme → (…, 30.06] 2.5.0, (30.06, 31.12] 2.4.9
+      ---
+      duration_ms: 2474.462381
+      type: 'test'
+      ...
+    1..2
+ok 32 - 2.5.0 Ç3 tur 4 — ORTA-1: v2.4.9 GERÇEK koduyla ilerletilmiş kilit
+  ---
+  duration_ms: 5740.732853
+  type: 'suite'
+  ...
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 Ç3 tur 4 — S13 = A: aynı güne yeniden kaydetme eski sürümün ilerlettiği dönemi güncel kurala geçirmez
+    # Subtest: W1: eski kurallı koşu + eski sürüm ilerletmesi + hata + aynı gün → (…, 30.06] ve (30.06, 31.12] 2.4.9; ilerletme izi yazılmaz; donmuş = canlı
+    ok 1 - W1: eski kurallı koşu + eski sürüm ilerletmesi + hata + aynı gün → (…, 30.06] ve (30.06, 31.12] 2.4.9; ilerletme izi yazılmaz; donmuş = canlı
+      ---
+      duration_ms: 2103.457054
+      type: 'test'
+      ...
+    1..1
+ok 33 - 2.5.0 Ç3 tur 4 — S13 = A: aynı güne yeniden kaydetme eski sürümün ilerlettiği dönemi güncel kurala geçirmez
+  ---
+  duration_ms: 2103.645499
+  type: 'suite'
+  ...
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 Ç3 tur 4 — DÜŞÜK-1: 'before-done' ve 'doğrulama' pencerelerinde aynı güne kilit yazılan koşunun satırlarını silmez
+    # Subtest: D1 before-done: koşu bu pencerede tutulurken aynı güne yinelenen kilit yazılan satırları silmez — satırlar = yazılan; bitince görünen = kayıtlı = canlı; Mutabakat Testi temiz
+    ok 1 - D1 before-done: koşu bu pencerede tutulurken aynı güne yinelenen kilit yazılan satırları silmez — satırlar = yazılan; bitince görünen = kayıtlı = canlı; Mutabakat Testi temiz
+      ---
+      duration_ms: 5301.981187
+      type: 'test'
+      ...
+# (node:8507) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: D2 doğrulama (ilk parça özetlendi): koşu bu pencerede tutulurken aynı güne yinelenen kilit yazılan satırları silmez — satırlar = yazılan; bitince görünen = kayıtlı = canlı; Mutabakat Testi temiz
+    ok 2 - D2 doğrulama (ilk parça özetlendi): koşu bu pencerede tutulurken aynı güne yinelenen kilit yazılan satırları silmez — satırlar = yazılan; bitince görünen = kayıtlı = canlı; Mutabakat Testi temiz
+      ---
+      duration_ms: 5285.405807
+      type: 'test'
+      ...
+    1..2
+ok 34 - 2.5.0 Ç3 tur 4 — DÜŞÜK-1: 'before-done' ve 'doğrulama' pencerelerinde aynı güne kilit yazılan koşunun satırlarını silmez
+  ---
+  duration_ms: 11694.014098
+  type: 'suite'
+  ...
+1..34
+# tests 125
+# suites 34
+# pass 124
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 86668.131496

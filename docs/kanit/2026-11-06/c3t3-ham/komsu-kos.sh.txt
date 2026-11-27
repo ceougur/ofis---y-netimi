@@ -1,0 +1,10 @@
+#!/bin/bash
+# Ç3 tur 3 — G2 komşu koşusu (ders 10): değişen dosyaları / uçlarını anan test dosyaları (komsu-liste-tam.txt) tek koşuda, kanit.mjs kos ile.
+# Kullanım: bash komsu-kos.sh <saat dilimi> <ad>
+WT=/home/user/ofis---y-netimi/.claude/worktrees/agent-a9a8e7bc8f35a45ce
+SC=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+cd "$WT" || exit 1
+mapfile -t FILES < "$SC/c3t3-kanit/komsu-liste-tam.txt"
+TZ="$1" KANIT_DIR="$SC/c3t3-kanit" HUKUK_LICENSE_URL=http://127.0.0.1:9 PLAYWRIGHT_BROWSERS_PATH="$SC/pw-1194" \
+  timeout 5400 node tools/kanit.mjs kos "$2" -- node --disable-warning=ExperimentalWarning --test --test-concurrency=1 "${FILES[@]}" > "$SC/c3t3-kanit/$2.out" 2>&1
+echo "cikis=$?"

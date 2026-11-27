@@ -1,0 +1,29 @@
+{
+  "aciklama": "2.5.0 Ç5 bakımı 2 — D4′ (KULLANICI S66 = A, 06.11 12:16): formdan girilmiş CARİSİZ alınan evrak (S49: B 101|121 / A 649) karşılıksız dönünce program cariyi sorar. CK1 çek cari SEÇİLEREK (M1, müşteri): B 120 / A 101, M1 borçlanır, 649 yerinde. CK2 senet cari SEÇİLMEDEN: B 649 / A 121 (S49 geliri geri alınır). CK4 çek TEDARİKÇİ seçilerek: B 320 / A 101 (G-2). CK3 portföyde kalır. Göçsüz — programla da koşulabilir (cari seçimi: UCLAR.karsiliksiz_cari verilene kadar ATLANAN).",
+  "simdi": "2026-06-30T17:00:00+03:00",
+  "bugun": "2026-06-30",
+  "olaylar": [
+    { "id": "M1", "tur": "cari", "ad": "S66 Müşteri A.Ş.", "tip": "customer" },
+    { "id": "T1", "tur": "cari", "ad": "S66 Tedarik Ltd.", "tip": "supplier" },
+    { "id": "CK1", "tur": "cek_carisiz", "tarih": "2026-06-01", "yon": "alinan", "evrak": "cek", "tutar": 700, "no": "C-S661", "vade": "2026-07-15" },
+    { "id": "CK2", "tur": "cek_carisiz", "tarih": "2026-06-02", "yon": "alinan", "evrak": "senet", "tutar": 300, "no": "S-S662", "vade": "2026-07-20" },
+    { "id": "CK3", "tur": "cek_carisiz", "tarih": "2026-06-03", "yon": "alinan", "evrak": "cek", "tutar": 400, "no": "C-S663", "vade": "2026-07-25" },
+    { "id": "CK4", "tur": "cek_carisiz", "tarih": "2026-06-04", "yon": "alinan", "evrak": "cek", "tutar": 250, "no": "C-S664", "vade": "2026-07-30" },
+    { "id": "K1", "tur": "kontrol", "tarih": "2026-06-05" },
+    { "id": "CK1K", "tur": "karsiliksiz", "tarih": "2026-06-10", "cek": "CK1", "cari": "M1", "not": "S66 A: cari seçildi — B 120 / A 101, M1 +700" },
+    { "id": "CK2K", "tur": "karsiliksiz", "tarih": "2026-06-11", "cek": "CK2", "not": "S66 A: cari seçilmedi — B 649 / A 121" },
+    { "id": "CK4K", "tur": "karsiliksiz", "tarih": "2026-06-12", "cek": "CK4", "cari": "T1", "not": "S66 A: tedarikçi seçildi — B 320 / A 101 (G-2)" },
+    { "id": "K2", "tur": "kontrol", "tarih": "2026-06-30" }
+  ],
+  "elleBeklenenTL": {
+    "aciklama": "K1: 101 = 700+400+250, 121 = 300, 649 = −1.650. K2: 101 = 1.350 − 700 − 250 = 400 (CK3); 121 = 0; 120 = 700; 320 = 250; 649 = −1.650 + 300 = −1.350 (CK1 / CK4 gelirleri yerinde). Cari M1 700, T1 250 (borçlu tedarikçi); yaşlandırma yalnız müşteri M1 700 (carisiz portföy evrakı müşteri kalemi değil — MM5).",
+    "kontroller": {
+      "K1": { "101": 1350, "121": 300, "649": -1650 },
+      "K2": { "101": 400, "120": 700, "320": 250, "649": -1350 }
+    },
+    "retler": [],
+    "acilisOlabilir": [],
+    "cari": { "S66 Müşteri A.Ş.": 700, "S66 Tedarik Ltd.": 250 },
+    "yaslandirmaToplam": 700
+  }
+}

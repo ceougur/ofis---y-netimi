@@ -1,0 +1,14 @@
+(node:32097) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:32097) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:32097) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+kilit yanıtı: 200 5030 ms · olay döngüsü en çok 20 ms
+dondurma bitti: 13253 ms (uç işleyicisi bitti - ms) · 274616 donmuş satır · kapsam 2025-12-31 · olay döngüsü en çok 47 ms · yoklama 8 (en uzun 65 ms)
+50 ms'yi aşan boşluk: 0
+para satırı 226734 · gercek · açılış 103203 ms · yük 7.81 7.44 8.37 → 7.53 7.44 8.25
+
+# tests 1
+# pass 1
+# fail 0

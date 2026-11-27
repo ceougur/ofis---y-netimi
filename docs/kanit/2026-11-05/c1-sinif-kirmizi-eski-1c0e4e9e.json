@@ -1,0 +1,68 @@
+{
+  "ad": "c1-sinif-kirmizi-eski-1c0e4e9e",
+  "komut": "node --test test/hesap-plani-sinif-250.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T18:47:09.281Z",
+  "sure_sn": 0.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 8,
+    "gecen": 1,
+    "basarisiz": 7,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 7 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.0 Ç1 — hesap planı sınıflaması › CHART'taki her hesap tam bir yere düşer (bilanço kalemi ya da gelir tablosu kalemi ya da yansıtma / kapanış türü); sınıfsız ya da çift sınıflı yok",
+      "konum": "test/hesap-plani-sinif-250.test.mjs:110:3",
+      "hata": "sınıflama sorunları: · 100 Kasa (Nakit): sınıfsız (hesap planında sınıflama kaydı yok) · 101 Alınan Çekler: sınıfsız (hesap planında sınıflama kaydı yok) (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 Ç1 — hesap planı sınıflaması › tür ve MSUGT kalemi kural kitabı §2 tablosuyla aynı (eksik hesaplar eklendi)",
+      "konum": "test/hesap-plani-sinif-250.test.mjs:117:3",
+      "hata": "100: planda yok · 101: planda yok · 102: planda yok (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 Ç1 — hesap planı sınıflaması › ters bakiye kuralları (çekirdek §13, kural kitabı §7.3): brütleştirme, Kesin Değil, KARAR GEREKİYOR",
+      "konum": "test/hesap-plani-sinif-250.test.mjs:135:3",
+      "hata": "102 ters bakiyesi · + actual - expected · + undefined"
+    },
+    {
+      "ad": "2.5.0 Ç1 — hesap planı sınıflaması › 7/A yansıtma: 760 → 761 / 631, 770 → 771 / 632, 780 → 781 / 660; gelir tablosunda yansıtıldığı hesabın satırında",
+      "konum": "test/hesap-plani-sinif-250.test.mjs:144:3",
+      "hata": "760 yansıtma hesabı · undefined !== '761'"
+    },
+    {
+      "ad": "2.5.0 Ç1 — hesap planı sınıflaması › yardımcılar: alt hesap ana hesabın sınıfını alır; planda olmayan kod null",
+      "konum": "test/hesap-plani-sinif-250.test.mjs:156:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + undefined"
+    },
+    {
+      "ad": "2.5.0 Ç1 — hesap planı sınıflaması › adlar: 770 Tekdüzen adıyla; geri kalan 2.4.9 adları değişmedi; yeni hesaplar planda",
+      "konum": "test/hesap-plani-sinif-250.test.mjs:166:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + 'Genel Giderler ve Alış Faturaları' (beklenen Genel Yönetim Giderleri, gelen Genel Giderler ve Alış Faturaları)"
+    },
+    {
+      "ad": "2.5.0 Ç1 — hesap planı sınıflaması › alt hesap tanımları (yalnız tanım): 600.90 Belgesiz, 770.90 Sınıflandırılmamış, 336.90 Sınıflandırılmamış Tahsilatlar",
+      "konum": "test/hesap-plani-sinif-250.test.mjs:176:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + undefined"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/ofis---y-netimi/.claude/worktrees/agent-a51a663795c9175f5/docs/kanit/2026-11-05/c1-sinif-kirmizi-eski-1c0e4e9e.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c1-1c0e4e9e/eski",
+  "ham_cikti_sha256": "47d783020ffe1248e2c387a6b40e8811ce8b04611ed9ec179a73b57e31842541",
+  "ham_cikti_bayt": 26959
+}

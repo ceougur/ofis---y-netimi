@@ -1,0 +1,6 @@
+taban: 32 geçti / 0 kaldı (çıkış 0)
+M12 YAKALANDI — kesitin aynı gün kuralı kalkar (ayırıcının işlediği alacak yerine kuyruğun anahtarı) (31 geçti / 1 kaldı; değer iletisi var; çökme yok) düşen: 
+M16 YAKALANDI — B1 gerilemesi: aynı gün alacak sırası yazım sırası yerine kimlik (anahtar) sırası (31 geçti / 1 kaldı; değer iletisi var; çökme yok) düşen: 
+M18 YAKALANDI — S212 gerilemesi: kesit satırı kuyruğa girmez (bağ hedefini kapatmaz, bağsız ödeme serbest kalmaz) (29 geçti / 3 kaldı; değer iletisi var; çökme yok) düşen: 
+M17 YAKALANDI — B1 gerilemesi (yalnız SQL yükleyicisi): alacak satırının yazım sırası okunmaz (31 geçti / 1 kaldı; değer iletisi var; çökme yok) düşen: 
+SONUÇ: 4 geçti, 0 kaldı (4 mutasyonun 4'i yakalandı)

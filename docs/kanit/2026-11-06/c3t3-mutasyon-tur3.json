@@ -1,0 +1,32 @@
+{
+  "ad": "c3t3-mutasyon-tur3",
+  "komut": "node --disable-warning=ExperimentalWarning test/donmus-defter-250-mutasyon.mjs --kopya /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t3-mut-2d42d493 --yalniz 15,203,206,208,209,301,302,303,304,311,312,313,314,321,322,323,324,331,341,342,351,352,353",
+  "commit": "2d42d493adc34e81a9bc1eaace959b6dbbf188ef",
+  "dal": "worktree-agent-a9a8e7bc8f35a45ce",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T11:05:18.350Z",
+  "sure_sn": 1488.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 23,
+    "gecen": 23,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t3-kanit/2026-11-06/c3t3-mutasyon-tur3.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a9a8e7bc8f35a45ce",
+  "ham_cikti_sha256": "0da67034968d781640c60b1d02fe72f84eadc03936c998974b24b0e0c7466f9a",
+  "ham_cikti_bayt": 2781
+}

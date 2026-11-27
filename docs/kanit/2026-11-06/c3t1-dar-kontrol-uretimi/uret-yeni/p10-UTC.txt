@@ -1,0 +1,4 @@
+onarım sonrası bekleyen: {"no":1,"from":"","through":"2026-12-31","rule":"2.4.9","reason":"repair"}
+PUT aynı gün: 200 "tamam"
+koşular: [{"no":1,"kind":"freeze","state":"done","rule_version":"2.4.9","reason":"repair","through":"2026-12-31"}]
+SONUÇ: göç dönemi 2.4.9 kuralıyla dondu

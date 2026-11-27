@@ -1,0 +1,8 @@
+başta 2.50 3.11 2.66 6/158 13920 18:42:53
+yeni UTC çıkış 0
+eski(tur4) UTC çıkış 1
+kâhin defter UTC çıkış 0
+yeni Europe/Istanbul çıkış 0
+eski(tur4) Europe/Istanbul çıkış 1
+kâhin defter Europe/Istanbul çıkış 0
+bitti 5.69 4.10 3.06 6/158 15217 18:44:18

@@ -1,0 +1,21 @@
+ek-bag-sonra [TZ=UTC]: 16 olay · yapıldı 13 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 38 ms
+    ek-bag-sonra [UTC] öz denetim TAMAM · AYNI 9 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 1 · ÖLÇÜLEMEDİ 0 · SUSMA 0 (adım 0, ara 0) · red farkı 0 · adım farkı 0 (sınıfsız 0)  (1 sn + 0 sn)
+ek-bag-sonra [TZ=Europe/Istanbul]: 16 olay · yapıldı 13 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 39 ms
+    ek-bag-sonra [Europe/Istanbul] öz denetim TAMAM · AYNI 9 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 1 · ÖLÇÜLEMEDİ 0 · SUSMA 0 (adım 0, ara 0) · red farkı 0 · adım farkı 0 (sınıfsız 0)  (1 sn + 0 sn)
+
+AYNI 18 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 2 · ÖLÇÜLEMEDİ 0 · SUSMA 0 (adım 0, ara adım 0) · red farkı 0 · uygulanamayan olay 0 · sınıfsız adım farkı 0 · değişmez 0 · öz denetim bozuk 0 · koşu hatası 0
+Ölçüm (olay döngüsü en çok, ms): ek-bag-sonra [Europe/Istanbul] 39 (koşu 1 sn; GET ledger ort 6 / en çok 13 ms) · ek-bag-sonra [UTC] 38 (koşu 1 sn; GET ledger ort 5 / en çok 11 ms)
+BEKLEYEN KURAL FARKLARI (kimlik: senaryo / denetim [UTC]): 
+U etiketleri: 
+
+FARKLAR (2; ilk 200):
+  ek-bag-sonra [Europe/Istanbul] af0205 fatura:F2 program 1000 · kâhin 0 · bugün — → SINIFLANMADI
+  ek-bag-sonra [UTC] af0205 fatura:F2 program 1000 · kâhin 0 · bugün — → SINIFLANMADI
+
+# tests 20
+# pass 18
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+Çıktı: /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/t3duz-d3/surucu/ek-yeni

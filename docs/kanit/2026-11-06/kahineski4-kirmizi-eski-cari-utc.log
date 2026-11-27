@@ -1,0 +1,153 @@
+  ✗ d14-c5-s91-vadesiz-kayit-gunu.json k1:takvim:hareket:a1: elle {"amount": 70000, "dueDate": "2026-06-15", "direction": "in", "label": "Tahsil Edilecek Borç", "state": "today", "days": 0, "cari": "A", "person": "Ayla Bugün"} · kâhin "yok"
+  ✗ d14-c5-s91-vadesiz-kayit-gunu.json k1:vadeTakip:hareket:a1: elle {"amount": 70000, "date": "2026-06-15", "direction": "in"} · kâhin "yok"
+  ✗ d14-c5-s91-vadesiz-kayit-gunu.json k1:projeksiyon:hareket:a1: elle {"amount": 70000, "date": "2026-06-15", "direction": "in"} · kâhin "yok"
+  ✗ d14-c5-s91-vadesiz-kayit-gunu.json k1:takvim:hareket:b1: elle {"amount": 50000, "dueDate": "2026-06-14", "direction": "in", "label": "Tahsil Edilecek Borç", "state": "overdue", "days": -1, "cari": "B", "person": "Bora Dün"} · kâhin "yok"
+  ✗ d14-c5-s91-vadesiz-kayit-gunu.json k1:projeksiyon:hareket:b1: elle {"amount": 50000, "date": "2026-06-14", "direction": "in"} · kâhin "yok"
+  ✗ d14-c5-s91-vadesiz-kayit-gunu.json k1:takvim:hareket:b2: elle {"amount": 30000, "dueDate": "2026-06-14", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -1, "cari": "B2", "person": "Bora Dün"} · kâhin "yok"
+  ✗ d14-c5-s91-vadesiz-kayit-gunu.json k1:vadeTakip:hareket:b2: elle {"amount": 30000, "date": "2026-06-14", "direction": "out"} · kâhin "yok"
+  ✗ d14-c5-s91-vadesiz-kayit-gunu.json k1:takvim:hareket:acilis:K: elle {"amount": 90000, "dueDate": "2026-06-10", "direction": "in", "label": "Tahsil Edilecek Borç", "state": "overdue", "days": -5, "cari": "K", "person": "Kaan Açılış"} · kâhin "yok"
+  ✗ d14-c5-s91-vadesiz-kayit-gunu.json k1:vadeTakip:hareket:acilis:K: elle {"amount": 90000, "date": "2026-06-10", "direction": "in"} · kâhin "yok"
+  ✗ d14-c5-s91-vadesiz-kayit-gunu.json k1:takvim:hareket:acilis:KA: elle {"amount": 40000, "dueDate": "2026-06-12", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -3, "cari": "KA", "person": "Kemal Alacaklı"} · kâhin "yok"
+  ✗ d14-c5-s91-vadesiz-kayit-gunu.json k1:projeksiyon:hareket:acilis:KA: elle {"amount": 40000, "date": "2026-06-12", "direction": "out"} · kâhin "yok"
+  ✗ d14-c5-s91-vadesiz-kayit-gunu.json k1:takvim:hareket:p1: elle {"amount": 50000, "dueDate": "2026-06-01", "direction": "in", "label": "Tahsil Edilecek Borç", "state": "overdue", "days": -14, "cari": "P", "person": "Pınar Kısmi"} · kâhin "yok"
+  ✗ d14-c5-s91-vadesiz-kayit-gunu.json k1:takvim:hareket:r1: elle {"amount": 50000, "dueDate": "2026-06-01", "direction": "in", "label": "Tahsil Edilecek Borç", "state": "overdue", "days": -14, "cari": "R", "person": "Rıza Çek"} · kâhin "yok"
+  ✗ d14-c5-s91-vadesiz-kayit-gunu.json k1:takvim:cariToplam:S: elle 45000 · kâhin "ANAHTAR YOK"
+  ✗ d14-c5-s91-vadesiz-kayit-gunu.json k1:vadeTakip:cariToplam:S: elle 45000 · kâhin "ANAHTAR YOK"
+  ✗ d14-c5-s91-vadesiz-kayit-gunu.json k1:projeksiyon:cariToplam:S: elle 45000 · kâhin "ANAHTAR YOK"
+  ✗ d14-c5-s91-vadesiz-kayit-gunu.json k1:takvim:cariToplam:S2: elle 25000 · kâhin "ANAHTAR YOK"
+  ✗ d14-c5-s91-vadesiz-kayit-gunu.json k1:vadeTakip:cariToplam:S2: elle 25000 · kâhin "ANAHTAR YOK"
+  ✗ d14-c5-s91-vadesiz-kayit-gunu.json k1:projeksiyon:cariToplam:S2: elle 25000 · kâhin "ANAHTAR YOK"
+  ✗ d14-c5-s91-vadesiz-kayit-gunu.json k1:takvim:cariToplam:Q: elle 60000 · kâhin "ANAHTAR YOK"
+  ✗ d14-c5-s91-vadesiz-kayit-gunu.json k1:vadeTakip:cariToplam:Q: elle 60000 · kâhin "ANAHTAR YOK"
+  ✗ d14-c5-s91-vadesiz-kayit-gunu.json k1:projeksiyon:cariToplam:Q: elle 60000 · kâhin "ANAHTAR YOK"
+  ✗ d14-c5-s91-vadesiz-kayit-gunu.json k1:takvim:cariToplam:Q2: elle 35000 · kâhin "ANAHTAR YOK"
+  ✗ d14-c5-s91-vadesiz-kayit-gunu.json k1:vadeTakip:cariToplam:Q2: elle 35000 · kâhin "ANAHTAR YOK"
+  ✗ d14-c5-s91-vadesiz-kayit-gunu.json k1:projeksiyon:cariToplam:Q2: elle 35000 · kâhin "ANAHTAR YOK"
+  ✗ d14-c5-s91-vadesiz-kayit-gunu.json k1:takvim:cariToplam:A: elle 70000 · kâhin "ANAHTAR YOK"
+  ✗ d14-c5-s91-vadesiz-kayit-gunu.json k1:takvim:cariToplam:B: elle 50000 · kâhin "ANAHTAR YOK"
+  ✗ d14-c5-s91-vadesiz-kayit-gunu.json k1:takvim:cariToplam:B2: elle -30000 · kâhin "ANAHTAR YOK"
+  ✗ d14-c5-s91-vadesiz-kayit-gunu.json k1:takvim:cariToplam:K: elle 90000 · kâhin "ANAHTAR YOK"
+  ✗ d14-c5-s91-vadesiz-kayit-gunu.json k1:takvim:cariToplam:KA: elle -40000 · kâhin "ANAHTAR YOK"
+  ✗ d14-c5-s91-vadesiz-kayit-gunu.json k1:takvim:cariToplam:P: elle 50000 · kâhin "ANAHTAR YOK"
+  ✗ d14-c5-s91-vadesiz-kayit-gunu.json k1:projeksiyon:cariToplam:A: elle 70000 · kâhin "ANAHTAR YOK"
+  ✗ d14-c5-s91-vadesiz-kayit-gunu.json k1:projeksiyon:cariToplam:K: elle 90000 · kâhin "ANAHTAR YOK"
+  ✗ d14-c5-s91-vadesiz-kayit-gunu.json k1:takvim:cariKalemSayisi: elle {"catal": [8, 9, 10, 11, 12]} · kâhin 1
+  ✗ d14-c5-s91-vadesiz-kayit-gunu.json k1:projeksiyon:cari: elle {"catal": [8, 9, 10, 11, 12]} · kâhin 1
+d14-c5-s91-vadesiz-kayit-gunu.json: 70 elle denetim, 35 kırmızı
+  ✗ d15-c5-s91-vadesiz-ertesi-gun.json k1:takvim:hareket:a1: elle {"amount": 70000, "dueDate": "2026-06-15", "direction": "in", "label": "Tahsil Edilecek Borç", "state": "overdue", "days": -1, "cari": "A", "person": "Ayla Bugün"} · kâhin "yok"
+  ✗ d15-c5-s91-vadesiz-ertesi-gun.json k1:vadeTakip:hareket:a1: elle {"amount": 70000, "date": "2026-06-15", "direction": "in"} · kâhin "yok"
+  ✗ d15-c5-s91-vadesiz-ertesi-gun.json k1:projeksiyon:hareket:a1: elle {"amount": 70000, "date": "2026-06-15", "direction": "in"} · kâhin "yok"
+  ✗ d15-c5-s91-vadesiz-ertesi-gun.json k1:takvim:hareket:b1: elle {"amount": 50000, "dueDate": "2026-06-14", "direction": "in", "label": "Tahsil Edilecek Borç", "state": "overdue", "days": -2, "cari": "B", "person": "Bora Dün"} · kâhin "yok"
+  ✗ d15-c5-s91-vadesiz-ertesi-gun.json k1:takvim:hareket:b2: elle {"amount": 30000, "dueDate": "2026-06-14", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -2, "cari": "B2", "person": "Bora Dün"} · kâhin "yok"
+  ✗ d15-c5-s91-vadesiz-ertesi-gun.json k1:takvim:hareket:acilis:K: elle {"amount": 90000, "dueDate": "2026-06-10", "direction": "in", "label": "Tahsil Edilecek Borç", "state": "overdue", "days": -6, "cari": "K", "person": "Kaan Açılış"} · kâhin "yok"
+  ✗ d15-c5-s91-vadesiz-ertesi-gun.json k1:takvim:hareket:acilis:KA: elle {"amount": 40000, "dueDate": "2026-06-12", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -4, "cari": "KA", "person": "Kemal Alacaklı"} · kâhin "yok"
+  ✗ d15-c5-s91-vadesiz-ertesi-gun.json k1:takvim:hareket:p1: elle {"amount": 50000, "dueDate": "2026-06-01", "direction": "in", "label": "Tahsil Edilecek Borç", "state": "overdue", "days": -15, "cari": "P", "person": "Pınar Kısmi"} · kâhin "yok"
+  ✗ d15-c5-s91-vadesiz-ertesi-gun.json k1:takvim:hareket:r1: elle {"amount": 50000, "dueDate": "2026-06-01", "direction": "in", "label": "Tahsil Edilecek Borç", "state": "overdue", "days": -15, "cari": "R", "person": "Rıza Çek"} · kâhin "yok"
+  ✗ d15-c5-s91-vadesiz-ertesi-gun.json k1:takvim:cariToplam:S: elle 45000 · kâhin "ANAHTAR YOK"
+  ✗ d15-c5-s91-vadesiz-ertesi-gun.json k1:vadeTakip:cariToplam:S: elle 45000 · kâhin "ANAHTAR YOK"
+  ✗ d15-c5-s91-vadesiz-ertesi-gun.json k1:projeksiyon:cariToplam:S: elle 45000 · kâhin "ANAHTAR YOK"
+  ✗ d15-c5-s91-vadesiz-ertesi-gun.json k1:takvim:cariToplam:S2: elle 25000 · kâhin "ANAHTAR YOK"
+  ✗ d15-c5-s91-vadesiz-ertesi-gun.json k1:vadeTakip:cariToplam:S2: elle 25000 · kâhin "ANAHTAR YOK"
+  ✗ d15-c5-s91-vadesiz-ertesi-gun.json k1:projeksiyon:cariToplam:S2: elle 25000 · kâhin "ANAHTAR YOK"
+  ✗ d15-c5-s91-vadesiz-ertesi-gun.json k1:takvim:cariToplam:Q: elle 60000 · kâhin "ANAHTAR YOK"
+  ✗ d15-c5-s91-vadesiz-ertesi-gun.json k1:takvim:cariToplam:Q2: elle 35000 · kâhin "ANAHTAR YOK"
+  ✗ d15-c5-s91-vadesiz-ertesi-gun.json k1:vadeTakip:cariToplam:Q2: elle 35000 · kâhin "ANAHTAR YOK"
+  ✗ d15-c5-s91-vadesiz-ertesi-gun.json k1:takvim:cariToplam:A: elle 70000 · kâhin "ANAHTAR YOK"
+  ✗ d15-c5-s91-vadesiz-ertesi-gun.json k1:takvim:cariKalemSayisi: elle {"catal": [8, 9, 10, 11, 12]} · kâhin 1
+  ✗ d15-c5-s91-vadesiz-ertesi-gun.json k1:projeksiyon:cari: elle {"catal": [8, 9, 10, 11, 12]} · kâhin 1
+d15-c5-s91-vadesiz-ertesi-gun.json: 39 elle denetim, 21 kırmızı
+  ✗ d16-c5-s92-net-gorunum.json k1:hareket:s1:kalan: elle 400000 · kâhin 1000000
+  ✗ d16-c5-s92-net-gorunum.json k1:hareket:p1:kalan: elle 0 · kâhin 600000
+  ✗ d16-c5-s92-net-gorunum.json k1:takvim:hareket:s1: elle {"amount": 400000, "dueDate": "2026-03-31", "direction": "in", "label": "Tahsil Edilecek Borç", "state": "overdue", "days": -15, "cari": "M1", "person": "Murat Elle"} · kâhin {"amount": 1000000, "dueDate": "2026-03-31", "direction": "in", "label": "Tahsil Edilecek Borç", "state": "overdue", "days": -15, "cari": "M1", "person": "Murat Elle"}
+  ✗ d16-c5-s92-net-gorunum.json k1:vadeTakip:hareket:s1: elle {"amount": 400000, "date": "2026-03-31", "direction": "in"} · kâhin {"amount": 1000000, "date": "2026-03-31", "direction": "in"}
+  ✗ d16-c5-s92-net-gorunum.json k1:vadeTakip:hareket:p1: elle "yok" · kâhin "ANAHTAR YOK"
+  ✗ d16-c5-s92-net-gorunum.json k1:projeksiyon:hareket:s1: elle {"amount": 400000, "date": "2026-03-31", "direction": "in"} · kâhin {"amount": 1000000, "date": "2026-03-31", "direction": "in"}
+  ✗ d16-c5-s92-net-gorunum.json k1:takvim:cariToplam:M1: elle 400000 · kâhin 1000000
+  ✗ d16-c5-s92-net-gorunum.json k1:takvim:fatura:FS: elle {"amount": 400000, "direction": "in"} · kâhin {"amount": 1000000, "direction": "in"}
+  ✗ d16-c5-s92-net-gorunum.json k1:takvim:fatura:FP: elle "yok" · kâhin {"amount": 600000, "direction": "out"}
+  ✗ d16-c5-s92-net-gorunum.json k1:vadeTakip:fatura:FS: elle {"amount": 400000, "direction": "in"} · kâhin {"amount": 1000000, "direction": "in"}
+  ✗ d16-c5-s92-net-gorunum.json k1:vadeTakip:fatura:FP: elle "yok" · kâhin {"amount": 600000, "direction": "out"}
+  ✗ d16-c5-s92-net-gorunum.json k1:projeksiyon:fatura:FS: elle {"amount": 400000, "direction": "in"} · kâhin {"amount": 1000000, "direction": "in"}
+  ✗ d16-c5-s92-net-gorunum.json k1:hareket:s3:kalan: elle 400000 · kâhin 1000000
+  ✗ d16-c5-s92-net-gorunum.json k1:hareket:p3:kalan: elle 0 · kâhin 600000
+  ✗ d16-c5-s92-net-gorunum.json k1:takvim:hareket:s3: elle {"amount": 400000, "dueDate": "2026-03-31", "direction": "in", "label": "Tahsil Edilecek Borç", "state": "overdue", "days": -15, "cari": "M3", "person": "Mert Artı"} · kâhin {"amount": 1000000, "dueDate": "2026-03-31", "direction": "in", "label": "Tahsil Edilecek Borç", "state": "overdue", "days": -15, "cari": "M3", "person": "Mert Artı"}
+  ✗ d16-c5-s92-net-gorunum.json k1:cari:M3:gecikmis: elle 400000 · kâhin 900000
+  ✗ d16-c5-s92-net-gorunum.json k1:hareket:s4:kalan: elle 0 · kâhin 1000000
+  ✗ d16-c5-s92-net-gorunum.json k1:hareket:p4:kalan: elle 200000 · kâhin 1200000
+  ✗ d16-c5-s92-net-gorunum.json k1:takvim:hareket:s4: elle "yok" · kâhin {"amount": 1000000, "dueDate": "2026-03-31", "direction": "in", "label": "Tahsil Edilecek Borç", "state": "overdue", "days": -15, "cari": "M4", "person": "Melek Alacaklı"}
+  ✗ d16-c5-s92-net-gorunum.json k1:takvim:hareket:p4: elle {"amount": 200000, "dueDate": "2026-04-20", "direction": "out", "label": "Ödenecek Borç", "state": "upcoming", "days": 5, "cari": "M4", "person": "Melek Alacaklı"} · kâhin {"amount": 1200000, "dueDate": "2026-04-20", "direction": "out", "label": "Ödenecek Borç", "state": "upcoming", "days": 5, "cari": "M4", "person": "Melek Alacaklı"}
+  ✗ d16-c5-s92-net-gorunum.json k1:vadeTakip:hareket:p4: elle {"amount": 200000, "date": "2026-04-20", "direction": "out"} · kâhin {"amount": 1200000, "date": "2026-04-20", "direction": "out"}
+  ✗ d16-c5-s92-net-gorunum.json k1:hareket:b5:kalan: elle 400000 · kâhin 500000
+  ✗ d16-c5-s92-net-gorunum.json k1:hareket:a5:kalan: elle 0 · kâhin 100000
+  ✗ d16-c5-s92-net-gorunum.json k1:takvim:hareket:b5: elle {"amount": 400000, "dueDate": "2026-03-31", "direction": "in", "label": "Tahsil Edilecek Borç", "state": "overdue", "days": -15, "cari": "M5", "person": "Beşir Net"} · kâhin {"amount": 500000, "dueDate": "2026-03-31", "direction": "in", "label": "Tahsil Edilecek Borç", "state": "overdue", "days": -15, "cari": "M5", "person": "Beşir Net"}
+  ✗ d16-c5-s92-net-gorunum.json k1:takvim:hareket:a5: elle "yok" · kâhin {"amount": 100000, "dueDate": "2026-04-10", "direction": "out", "label": "Ödenecek Borç", "state": "overdue", "days": -5, "cari": "M5", "person": "Beşir Net"}
+  ✗ d16-c5-s92-net-gorunum.json k1:vadeTakip:hareket:b5: elle {"amount": 400000, "date": "2026-03-31", "direction": "in"} · kâhin {"amount": 500000, "date": "2026-03-31", "direction": "in"}
+  ✗ d16-c5-s92-net-gorunum.json k1:vadeTakip:hareket:a5: elle "yok" · kâhin {"amount": 100000, "date": "2026-04-10", "direction": "out"}
+  ✗ d16-c5-s92-net-gorunum.json k1:hareket:b7a:kalan: elle 50000 · kâhin 60000
+  ✗ d16-c5-s92-net-gorunum.json k1:hareket:b7b:kalan: elle 0 · kâhin 40000
+  ✗ d16-c5-s92-net-gorunum.json k1:hareket:a7:kalan: elle 0 · kâhin 50000
+  ✗ d16-c5-s92-net-gorunum.json k1:cari:M7:gecikmis: elle 0 · kâhin 40000
+  ✗ d16-c5-s92-net-gorunum.json k1:hareket:a11:kalan: elle 0 · kâhin 50000
+  ✗ d16-c5-s92-net-gorunum.json k1:hareket:b11:kalan: elle 0 · kâhin 30000
+  ✗ d16-c5-s92-net-gorunum.json k1:hareket:b11b:kalan: elle 20000 · kâhin 40000
+  ✗ d16-c5-s92-net-gorunum.json k1:hareket:at1:kalan: elle 25000 · kâhin 30000
+  ✗ d16-c5-s92-net-gorunum.json k1:takvim:fatura:AT1: elle "yok" · kâhin {"amount": 40000, "direction": "out"}
+  ✗ d16-c5-s92-net-gorunum.json k1:takvim:hareket:at1: elle {"amount": 25000, "dueDate": "2026-04-20", "direction": "out", "label": "Ödenecek Borç", "state": "upcoming", "days": 5, "cari": "T1", "person": "Tedarik Stok"} · kâhin {"amount": 30000, "dueDate": "2026-04-20", "direction": "out", "label": "Ödenecek Borç", "state": "upcoming", "days": 5, "cari": "T1", "person": "Tedarik Stok"}
+  ✗ d16-c5-s92-net-gorunum.json k1:takvim:cariToplam:T1: elle -25000 · kâhin "ANAHTAR YOK"
+  ✗ d16-c5-s92-net-gorunum.json k1:takvim:cariKalemSayisi: elle 9 · kâhin 13
+  ✗ d16-c5-s92-net-gorunum.json k1:projeksiyon:cari: elle 9 · kâhin 16
+d16-c5-s92-net-gorunum.json: 81 elle denetim, 40 kırmızı
+  ✗ d17-c5-s93-verilen-avans.json k1:cari:T:gecikmis: elle 20000 · kâhin 0
+  ✗ d17-c5-s93-verilen-avans.json k1:cari:TS:gecikmis: elle 10000 · kâhin 0
+  ✗ d17-c5-s93-verilen-avans.json k1:cari:TG:gecikmis: elle 15000 · kâhin 0
+  ✗ d17-c5-s93-verilen-avans.json k1:cari:TA1:gecikmis: elle 60000 · kâhin 0
+  ✗ d17-c5-s93-verilen-avans.json k1:cari:MU:gecikmis: elle 10000 · kâhin 0
+  ✗ d17-c5-s93-verilen-avans.json k1:takvim:cariKalemSayisi: elle {"catal": [0, 1, 2, 3, 4, 5, 6]} · kâhin 0
+  ✗ d17-c5-s93-verilen-avans.json k1:projeksiyon:cari: elle {"catal": [1, 2, 3, 4, 5, 6, 7]} · kâhin 1
+d17-c5-s93-verilen-avans.json: 37 elle denetim, 7 kırmızı
+  ✗ d18-c5-s93-avans-ertesi-gun.json k1:cari:T:gecikmis: elle 20000 · kâhin 0
+  ✗ d18-c5-s93-avans-ertesi-gun.json k1:cari:TB:gecikmis: elle 40000 · kâhin 0
+  ✗ d18-c5-s93-avans-ertesi-gun.json k1:cari:TS:gecikmis: elle 10000 · kâhin 0
+  ✗ d18-c5-s93-avans-ertesi-gun.json k1:cari:TG:gecikmis: elle 15000 · kâhin 0
+  ✗ d18-c5-s93-avans-ertesi-gun.json k1:cari:TA1:gecikmis: elle 60000 · kâhin 0
+  ✗ d18-c5-s93-avans-ertesi-gun.json k1:cari:MU:gecikmis: elle 10000 · kâhin 0
+  ✗ d18-c5-s93-avans-ertesi-gun.json k1:takvim:cariKalemSayisi: elle {"catal": [0, 1, 2, 3, 4, 5, 6]} · kâhin 0
+d18-c5-s93-avans-ertesi-gun.json: 12 elle denetim, 7 kırmızı
+  ✗ d19-c5-s92-okuma-ayrisan.json k1:hareket:n4a:vade: elle "2026-04-30" · kâhin "ANAHTAR YOK"
+  ✗ d19-c5-s92-okuma-ayrisan.json k1:hareket:n1b:kalan: elle YOK (tanımsız) · kâhin 1000000
+  ✗ d19-c5-s92-okuma-ayrisan.json k1:hareket:n1a:kalan: elle YOK (tanımsız) · kâhin 0
+  ✗ d19-c5-s92-okuma-ayrisan.json k1:takvim:hareket:n1b: elle YOK (tanımsız) · kâhin {"amount": 1000000, "dueDate": "2026-03-31", "direction": "in", "label": "Tahsil Edilecek Borç", "state": "overdue", "days": -15, "cari": "N1", "person": "Nazan Sonradan"}
+  ✗ d19-c5-s92-okuma-ayrisan.json k1:vadeTakip:hareket:n1b: elle YOK (tanımsız) · kâhin {"amount": 1000000, "date": "2026-03-31", "direction": "in"}
+  ✗ d19-c5-s92-okuma-ayrisan.json k1:projeksiyon:hareket:n1b: elle YOK (tanımsız) · kâhin {"amount": 1000000, "date": "2026-03-31", "direction": "in"}
+  ✗ d19-c5-s92-okuma-ayrisan.json k1:cari:N1:gecikmis: elle YOK (tanımsız) · kâhin 1000000
+  ✗ d19-c5-s92-okuma-ayrisan.json k1:cari:N1:acikToplam: elle YOK (tanımsız) · kâhin 1000000
+  ✗ d19-c5-s92-okuma-ayrisan.json k1:takvim:cariToplam:N1: elle YOK (tanımsız) · kâhin 1000000
+  ✗ d19-c5-s92-okuma-ayrisan.json k1:hareket:n2b:kalan: elle YOK (tanımsız) · kâhin 20000
+  ✗ d19-c5-s92-okuma-ayrisan.json k1:hareket:n2a:kalan: elle YOK (tanımsız) · kâhin 30000
+  ✗ d19-c5-s92-okuma-ayrisan.json k1:takvim:hareket:n2a: elle YOK (tanımsız) · kâhin "yok"
+  ✗ d19-c5-s92-okuma-ayrisan.json k1:cari:N2:gecikmis: elle YOK (tanımsız) · kâhin 0
+  ✗ d19-c5-s92-okuma-ayrisan.json k1:takvim:fatura:NF: elle YOK (tanımsız) · kâhin {"amount": 20000, "direction": "in"}
+  ✗ d19-c5-s92-okuma-ayrisan.json k1:takvim:fatura:NAF: elle YOK (tanımsız) · kâhin {"amount": 40000, "direction": "out"}
+  ✗ d19-c5-s92-okuma-ayrisan.json k1:vadeTakip:fatura:NF: elle YOK (tanımsız) · kâhin {"amount": 20000, "direction": "in"}
+  ✗ d19-c5-s92-okuma-ayrisan.json k1:cari:N3:gecikmis: elle YOK (tanımsız) · kâhin 0
+  ✗ d19-c5-s92-okuma-ayrisan.json k1:cari:N3:acikToplam: elle YOK (tanımsız) · kâhin -20000
+  ✗ d19-c5-s92-okuma-ayrisan.json k1:cari:N4:gecikmis: elle YOK (tanımsız) · kâhin 30000
+  ✗ d19-c5-s92-okuma-ayrisan.json k1:hareket:n5b:kalan: elle YOK (tanımsız) · kâhin 0
+  ✗ d19-c5-s92-okuma-ayrisan.json k1:hareket:n5a:kalan: elle YOK (tanımsız) · kâhin 30000
+  ✗ d19-c5-s92-okuma-ayrisan.json k1:cari:N5:gecikmis: elle YOK (tanımsız) · kâhin 0
+  ✗ d19-c5-s92-okuma-ayrisan.json k1:hareket:n6b:kalan: elle YOK (tanımsız) · kâhin 0
+  ✗ d19-c5-s92-okuma-ayrisan.json k1:takvim:hareket:n6b: elle YOK (tanımsız) · kâhin "yok"
+  ✗ d19-c5-s92-okuma-ayrisan.json k1:cari:N6:gecikmis: elle YOK (tanımsız) · kâhin 0
+  ✗ d19-c5-s92-okuma-ayrisan.json belirsiz kaydı yok: cari N1 net görünüm tanımsız + okumalar ayrışıyor
+  ✗ d19-c5-s92-okuma-ayrisan.json belirsiz kaydı yok: cari N1 gecikmiş tutarı tanımsız
+  ✗ d19-c5-s92-okuma-ayrisan.json belirsiz kaydı yok: cari N2 net görünüm tanımsız + okumalar ayrışıyor
+  ✗ d19-c5-s92-okuma-ayrisan.json belirsiz kaydı yok: cari N3 net görünüm tanımsız + okumalar ayrışıyor
+  ✗ d19-c5-s92-okuma-ayrisan.json belirsiz kaydı yok: cari N4 net görünüm tanımsız + taksit kartı
+  ✗ d19-c5-s92-okuma-ayrisan.json belirsiz kaydı yok: cari N5 net görünüm tanımsız + okumalar ayrışıyor
+  ✗ d19-c5-s92-okuma-ayrisan.json belirsiz kaydı yok: cari N6 net görünüm tanımsız + verilen avans satırı
+d19-c5-s92-okuma-ayrisan.json: 47 elle denetim, 32 kırmızı
+ESKİ KÂHİN KIRMIZISI: 142/286 elle denetim kırmızı, 144 aynı (beklenen: kırmızı > 0; her kırmızının eski değeri yukarıda)
+# tests 142
+# pass 142
+# fail 0
+142/142 denetim geçti

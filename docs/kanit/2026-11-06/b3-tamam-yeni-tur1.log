@@ -1,0 +1,20 @@
+# B3 T1 ölçüm: [[1,856,122880,14287,0,100,47,809],[2,860,241664,24337,0,0,52,1617],[3,49,356352,30307,0,0,49,1617],[4,47,475136,40357,0,0,47,1617],[5,42,593920,50407,0,0,42,1617],[6,53,708608,56377,0,0,47,1623],[7,38,827392,66427,0,0,44,1617],[8,48,946176,76477,0,0,48,1617],[9,56,1060864,82447,0,0,50,1623],[10,45,1179648,92497,0,0,43,1625]]
+# B3 sıçrama: ileti 100 sonrası gerçek saat +61000 ms
+# B3 tur süresi: ileti 200 · 6279 ms (başlangıçtan 6279 ms)
+# B3 tur süresi: ileti 400 · 2381 ms (başlangıçtan 8660 ms)
+# B3 tur süresi: ileti 600 · 3214 ms (başlangıçtan 11874 ms)
+# B3 tur süresi: ileti 800 · 2990 ms (başlangıçtan 14864 ms)
+# B3 tur süresi: ileti 1000 · 3308 ms (başlangıçtan 18172 ms)
+# B3 tur süresi: ileti 1200 · 2652 ms (başlangıçtan 20824 ms)
+# B3 tur süresi: ileti 1400 · 2971 ms (başlangıçtan 23795 ms)
+# B3 tur süresi: ileti 1600 · 3605 ms (başlangıçtan 27400 ms)
+# B3 tur süresi: ileti 1800 · 2769 ms (başlangıçtan 30169 ms)
+# B3 tur süresi: ileti 2000 · 2878 ms (başlangıçtan 33047 ms)
+# tests 1
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+AssertionError [ERR_ASSERTION]: PDF sayfaları yeniden kullanılmıyor (tur 1: 856, tur 2–10: 860, 49, 47, 42, 53, 38, 48, 56, 45)
+[zorla] test/whatsapp-b3-buyume-249.test.mjs · sıçrama turları [1] (iş 100) · ara bakımlı tur [1] · artışı 0 tur [] · ön koşul BEKLENDİĞİ GİBİ · test KIRMIZI (çıkış 1)

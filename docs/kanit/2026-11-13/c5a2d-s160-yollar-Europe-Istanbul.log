@@ -1,0 +1,133 @@
+TAP version 13
+# Subtest: S160 = A — Banka'dan Ters Kaydet / Düzelt (KDV'li masrafın faturası): kilitli tahsilatın bağını düşüren iptal 409
+    # Subtest: Ters Kaydet 409 — tahsilat kilitli dönemde (05.10); banka olayı, fatura, bağ ve kilitli defter aynı
+    ok 1 - Ters Kaydet 409 — tahsilat kilitli dönemde (05.10); banka olayı, fatura, bağ ve kilitli defter aynı
+      ---
+      duration_ms: 14.284652
+      type: 'test'
+      ...
+    # Subtest: Ters Kaydet 409 — tahsilat tam kilit günü; banka olayı, fatura, bağ ve kilitli defter aynı
+    ok 2 - Ters Kaydet 409 — tahsilat tam kilit günü; banka olayı, fatura, bağ ve kilitli defter aynı
+      ---
+      duration_ms: 6.891486
+      type: 'test'
+      ...
+    # Subtest: Düzelt (Ters Kaydet'i çağırır) 409 — yeni işlem yazılmaz, banka olayı / fatura / bağ / kilitli defter aynı
+    ok 3 - Düzelt (Ters Kaydet'i çağırır) 409 — yeni işlem yazılmaz, banka olayı / fatura / bağ / kilitli defter aynı
+      ---
+      duration_ms: 7.740061
+      type: 'test'
+      ...
+    # Subtest: kilit DIŞINDAKİ tahsilat bağlıysa Ters Kaydet serbest (200): fatura iptal, bağ düşer, kilitli defter aynı
+    ok 4 - kilit DIŞINDAKİ tahsilat bağlıysa Ters Kaydet serbest (200): fatura iptal, bağ düşer, kilitli defter aynı
+      ---
+      duration_ms: 29.805732
+      type: 'test'
+      ...
+    # Subtest: ret yalnız TAHSİLAT yönünde: kilitli ÖDEME ve kilitli VERİLEN EVRAK bağlı faturada Ters Kaydet serbest (200); kilitli defter aynı
+    ok 5 - ret yalnız TAHSİLAT yönünde: kilitli ÖDEME ve kilitli VERİLEN EVRAK bağlı faturada Ters Kaydet serbest (200); kilitli defter aynı
+      ---
+      duration_ms: 47.032106
+      type: 'test'
+      ...
+    # Subtest: kilit kaldırılınca Ters Kaydet serbest; yeniden kilitleme çalışır ve öbür kilitli bağ yine korunur
+    ok 6 - kilit kaldırılınca Ters Kaydet serbest; yeniden kilitleme çalışır ve öbür kilitli bağ yine korunur
+      ---
+      duration_ms: 197.390982
+      type: 'test'
+      ...
+    1..6
+ok 1 - S160 = A — Banka'dan Ters Kaydet / Düzelt (KDV'li masrafın faturası): kilitli tahsilatın bağını düşüren iptal 409
+  ---
+  duration_ms: 1482.960868
+  type: 'suite'
+  ...
+# Subtest: S160 = A — e-Belge (e-Arşiv) iptal akışı: kilitli tahsilatın bağını düşüren iptal 409, EDM'ye hiç gidilmez
+    # Subtest: e-Arşiv iptali 409 — tahsilat kilitli dönemde (09.10); EDM'ye HİÇ istek yok; belge, bağ ve kilitli defter aynı
+    ok 1 - e-Arşiv iptali 409 — tahsilat kilitli dönemde (09.10); EDM'ye HİÇ istek yok; belge, bağ ve kilitli defter aynı
+      ---
+      duration_ms: 14.189711
+      type: 'test'
+      ...
+    # Subtest: e-Arşiv iptali 409 — tahsilat tam kilit günü; EDM'ye HİÇ istek yok; belge, bağ ve kilitli defter aynı
+    ok 2 - e-Arşiv iptali 409 — tahsilat tam kilit günü; EDM'ye HİÇ istek yok; belge, bağ ve kilitli defter aynı
+      ---
+      duration_ms: 6.889288
+      type: 'test'
+      ...
+    # Subtest: kilit DIŞINDAKİ tahsilat bağlıysa e-Arşiv iptali serbest (200): EDM'de iptal (CancelInvoice bir kez), bağ düşer
+    ok 3 - kilit DIŞINDAKİ tahsilat bağlıysa e-Arşiv iptali serbest (200): EDM'de iptal (CancelInvoice bir kez), bağ düşer
+      ---
+      duration_ms: 47.654916
+      type: 'test'
+      ...
+    # Subtest: kilit kaldırılınca e-Arşiv iptali serbest (EDM'de iptal); yeniden kilitleme çalışır ve öbür kilitli bağ yine korunur (EDM'ye gidilmeden)
+    ok 4 - kilit kaldırılınca e-Arşiv iptali serbest (EDM'de iptal); yeniden kilitleme çalışır ve öbür kilitli bağ yine korunur (EDM'ye gidilmeden)
+      ---
+      duration_ms: 221.903636
+      type: 'test'
+      ...
+    1..4
+ok 2 - S160 = A — e-Belge (e-Arşiv) iptal akışı: kilitli tahsilatın bağını düşüren iptal 409, EDM'ye hiç gidilmez
+  ---
+  duration_ms: 1153.654256
+  type: 'suite'
+  ...
+# Subtest: S160 = A — kilitli dönemdeki tahsilatın fatura bağını düşüren iptal / silme 409; kilitli defter değişmez
+    # Subtest: iptal 409 — şüpheli VAR; bağ, fatura ve kilitli defter aynı
+    ok 1 - iptal 409 — şüpheli VAR; bağ, fatura ve kilitli defter aynı
+      ---
+      duration_ms: 11.396901
+      type: 'test'
+      ...
+    # Subtest: iptal 409 — şüpheli YOK (kural şüpheliye bağlanmaz); bağ, fatura ve kilitli defter aynı
+    ok 2 - iptal 409 — şüpheli YOK (kural şüpheliye bağlanmaz); bağ, fatura ve kilitli defter aynı
+      ---
+      duration_ms: 7.614888
+      type: 'test'
+      ...
+    # Subtest: iptal 409 — tahsilat tam kilit günü; bağ, fatura ve kilitli defter aynı
+    ok 3 - iptal 409 — tahsilat tam kilit günü; bağ, fatura ve kilitli defter aynı
+      ---
+      duration_ms: 5.378966
+      type: 'test'
+      ...
+    # Subtest: silme (iptali çağırır) 409 — fatura silinmedi, bağ ve kilitli defter aynı
+    ok 4 - silme (iptali çağırır) 409 — fatura silinmedi, bağ ve kilitli defter aynı
+      ---
+      duration_ms: 5.489382
+      type: 'test'
+      ...
+    # Subtest: Kapatılacak Fatura ile bağlanmış KİLİTLİ alınan evrak: iptal 409 (evrakın bağı kalır)
+    ok 5 - Kapatılacak Fatura ile bağlanmış KİLİTLİ alınan evrak: iptal 409 (evrakın bağı kalır)
+      ---
+      duration_ms: 2.659281
+      type: 'test'
+      ...
+    # Subtest: kilit DIŞINDAKİ tahsilat bağlıysa iptal serbest (200)
+    ok 6 - kilit DIŞINDAKİ tahsilat bağlıysa iptal serbest (200)
+      ---
+      duration_ms: 20.521087
+      type: 'test'
+      ...
+    # Subtest: kilit kaldırılınca iptal serbest; yeniden kilitleme çalışır (yönetici yolu)
+    ok 7 - kilit kaldırılınca iptal serbest; yeniden kilitleme çalışır (yönetici yolu)
+      ---
+      duration_ms: 191.696996
+      type: 'test'
+      ...
+    1..7
+ok 3 - S160 = A — kilitli dönemdeki tahsilatın fatura bağını düşüren iptal / silme 409; kilitli defter değişmez
+  ---
+  duration_ms: 1254.036533
+  type: 'suite'
+  ...
+1..3
+# tests 17
+# suites 3
+# pass 17
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4540.94745

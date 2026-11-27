@@ -1,0 +1,52 @@
+Sen DestekOfis projesinde DÜZELTME ajanısın (2.5.0 — D2 TUR 3 + Ç5-K TUR 2: dar kontrolün D2 tur 2 + Ç5-K birleşiminde bulduğu ORTA 2 + seçilmiş DÜŞÜK'ler; ikisi TEK tur, TEK dar kontrol görecek). Kasa açılış kapısı para çekirdeğidir — eforun xhigh. Kendi dalında commit edersin, PUSH YAPMAZSIN. Yanıtın Türkçe.
+
+## Hazırlık
+1. Worktree'de `git merge --ff-only claude/epic-thompson-w0lc2l` (çalışma dalı; kod 78855096 ile aynı, sonrası yalnız belge); olmazsa ve kendi commit'in yoksa `git reset --hard claude/epic-thompson-w0lc2l`.
+2. `ln -s /home/user/ofis---y-netimi/node_modules node_modules` (`npm ci` YOK). Tarayıcı: `PLAYWRIGHT_BROWSERS_PATH=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/pw-1194`.
+3. ÖNCE oku: `CLAUDE.md` (dersler 1–52; özellikle 6, 7, 9, 10, 17, 23, 27, 28, 34, 38, 42, 44, 47, 48, 50, 51, 52; Yazım düzeni; Kullanım kılavuzu); `docs/BAGIMSIZ-DOGRULAMA-PRENSIBI.md`; `docs/erp/C5K-KASA-TASARIM.md`; `docs/devir/D2-ALTYAPI-TASARIM.md` §12–§13; `docs/2.5.0-IS-LISTESI.md` D'de S12, S20, S26, S87, Z9, K2 (arşiv değişmiş: eski şema 409, son şema uyarı) ve "BAŞ MİMAR KARARI 10.11" ile başlayan "DK-D2C5K" satırı (bu turun kararları).
+4. Dar kontrolün yeniden üretim betikleri (OKUNUR, kopyalanıp uyarlanabilir; klasöre YAZILMAZ): `/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/dk-d2c5k-af62/betik/` — p3-ekran-uyari.mjs, p3b-uyari-gunluk.mjs (ORTA-1), p5-wal-arsiv.mjs (ORTA-2), p12-store-duzeyi.mjs (DÜŞÜK-1), mutasyon.mjs (yaşayan mutantlar), ortak.mjs; ham çıktılar `…/dk-d2c5k-af62/kanit/`.
+
+## İş (yalnız bunlar — DURMA KURALI; kapsam dışı bulgu düzeltilmez, raporlanır)
+
+### 1. ORTA-1 (Ç5-K; GERİLEME) — S20 uyarısı "sapma / Fark Var" hatası gibi görünüyor ve ilk yazımı tam kapıya düşürüyor
+Bulgu: `server/lib/integrity.mjs:651` denetimi `cash:before-opening` `ok:false, severity:"warning"` dönüyor ama ekran (`client/assets/admin.js:1138`) ve Defter Mutabakatı raporu (`server/routes/report-center.mjs:709`) yalnız `legacy` alanına bakıyor → Yönetim › Sistem'de kırmızı "1 denetimde sapma var", raporda "Fark Var" + "yöneticiye bildirin"; `server/lib/integrity-scope.mjs:120` `familyOf` kodu tanımıyor → "all" → açılıştan sonraki ilk nakit yazımı tam kapı (105.000 satırda 13 ms → 1.221 ms); geri yüklemeden sonraki tarama günlüğe "kapının görmediği yeni sapma" + `integrity.alert`. 2.4.9'da aynı veri "N denetim tamam"dı.
+KARAR (S20 = A "Mutabakat Testi uyarı verir"; BAŞ MİMAR 10.11 — sunum, para kuralı değil): bu denetim SAPMA DEĞİL UYARIDIR —
+ a) Yönetim › Sistem: sarı uyarı (kırmızı hata değil), sunucunun `hint` metni görünür; başka sapma yoksa "N denetim tamam" bilgisi bozulmaz (uyarı ayrı satır / ek).
+ b) Defter Mutabakatı raporu (ekran / PDF / Excel aynı): satırın durumu "Uyarı" (Yazım düzeni), özet "Sonuç" bu satır yüzünden "Fark Var" OLMAZ, "yöneticiye bildirin" alt başlığı bu satır yüzünden çıkmaz. Mevcut `legacy` düzeneği ("Eski Sürümden Kalan") yeniden kullanılabilir AMA metin Silinenler'den geri alınan / yedekten gelen satır için de doğru olmalı ("eski sürümden kalan" deme; "Kasa açılışından önce tarihli N nakit hareketi" + hint). En küçük yol hangisiyse (ör. `legacy: count, gateCount: 0` + bu koda özel etiket) onu seç, gerekçesini yaz.
+ c) Kapı: `familyOf("cash:before-opening")` tam kapıyı TETİKLEMEZ (yalnız tam taramada üretilen uyarı); açılıştan sonraki ilk yazım süzgeçli yolda kalır; uyarı "yeni sapma" zili / günlük kaydı üretmez (sayı ARTARSA da uyarıdır — S12 yeni satırı zaten reddeder).
+ d) Testler: sunucu (denetim alanları, familyOf, yeniden açılıştan sonraki ilk yazımın kapı yolu `scoped`, günlükte "yeni sapma" yok) + EKRAN testi (emsal test/e2e/senaryo-226 İ8: sarı, kırmızı değil, hint yazılı; rapor satırı "Uyarı", Sonuç "Fark Var" değil; temiz veride değişiklik yok). Uyarı ile GERÇEK bir sapma birlikteyken sapma yine kırmızı / "Fark Var" (uyarı gerçeği gizlemez — test).
+
+### 2. ORTA-2 (D2 tur 2; arşiv verisi kaybı ailesi) — iki aşamalı göç arşivin yanındaki `-wal` / `-journal`'ı yok sayıp siliyor
+Bulgu: `server/lib/devir/archive-open.mjs:115` yalnız ana dosyayı kopyalar, `:132` taşımadan önce asıl dosyanın `-wal` / `-shm`'ini siler, `:31–36` özet yalnız ana dosyadan → WAL'da kesinleşmiş ama ana dosyaya işlenmemiş kayıt sessizce kaybolur (p5: kasa 56 → 55; eski kod 56). Bugün arşiv üreten ürün yolu yok (D4) — KARAR (BAŞ MİMAR 10.11): yine de ŞİMDİ düzeltilir (D4'e bırakılmaz).
+ a) `verifyArchive` / `prepareArchive`: arşivin yanında BOŞ OLMAYAN `-wal` ya da `-journal` varsa arşiv "değişmiş" sayılır (K2 aynen: eski şema → 409 archive-changed, son şema → uyarı), GÖÇ ETMEZ ve yan dosyayı SİLMEZ. Boş (0 bayt) `-wal` / `-shm` zararsızdır. Çalışma kopyasının kendi `-wal`'ı (programın ürettiği) bu kurala girmez.
+ b) Körü körüne `-wal` silme kalkar (yalnız (a)'dan geçmiş, yani boş / yok durumda temizlik).
+ c) `docs/devir/D2-ALTYAPI-TASARIM.md`'ye §14 "tur 3" + D4 sözleşmesi cümlesi: "arşiv yan dosyasız (checkpoint + kapalı) bırakılır, özet ondan sonra alınır".
+ d) Testler: WAL'lı arşiv (eski şema → 409, dosyalar ve satır sayısı değişmedi; son şema → uyarı, salt okunur açılışta WAL'daki satır görünür mü — bugünkü davranışı ölç ve yaz), sıcak `-journal` varyantı (kurulabiliyorsa; kurulamıyorsa DOĞRULANMADI), boş `-wal`. Dosya silen / taşıyan test: Windows'ta açık tutamak (ders 48) — testte dosyayı kapatmadan silme yok.
+
+### 3. DÜŞÜK-1 (Ç5-K; bugün ürün yolundan ulaşılamıyor, tetiklenirse yanlış para → şimdi kapatılır)
+`server/lib/cash-opening.mjs:132, :143` "bu işlemde eklendi" sezgisi (MAX(rowid)) başka bağlantı yazınca kabul yönünde kapanıyor (p12: RED → dış yazımdan sonra KABUL → RED). Düzeltme: işlem kapsamında eklenen satır kimlikleri kesin tutulur (ör. `db.mjs` kapsamlı ekleme izi `scope.inserted`; en küçük, ortak katmana en az dokunan yol) ve denetim onu okur. Test: p12'nin üç adımı (RED / RED / RED) + bugünkü 19 API yolunda davranış değişmedi (dar kontrolün p1c / p1b mantığı). Ortak katmana (`db.mjs`) dokunursan komşu: sema-kapisi-bs7 + geri yükleme testleri + db / işlem testleri (test/ taramasıyla — ders 10).
+
+### 4. DÜŞÜK-3 / DÜŞÜK-4 (yalnız test) — yaşayan mutantlara test
+K5 (açılış silinince önbellek), K6 (olaysız satırın taşınması), K8 (açılış önbelleği damgası; 002 şirketi + yedekten geri yükleme sonrası), K14 (uyarının `sample` metni), D13 (devir yedeği süzgeci: çalışma kopyası VE göç öncesi kopya yedeğe girmez — ürün yolundan), D10 (iş 2 ile). Her yeni test ilgili mutantta kırmızı görülür.
+
+## Kanıt
+- Her yeni test ESKİ kodda (`git archive claude/epic-thompson-w0lc2l | tar -x` → `/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-<kısa>/`; ders 23, 25) kırmızı, nedeni iletide okunur (ders 38); yeni kodda yeşil; TZ=UTC ve TZ=Europe/Istanbul.
+- Mutasyon: bu turun her ürün değişikliğine en az bir mutant + dar kontrolün yaşayan 8 mutantı (K5, K6, K8, K14, D13, D10 yakalanmalı; K7 ve D9 eşdeğer / platform — yaz).
+- G2 komşu (taramayla): `kasa-acilis-once-250` (41/41 kalmalı), cash-opening / integrity / integrity-scope / report-center / devir çağıranlarının testleri, sema-kapisi-bs7, geri yükleme, Mutabakat Testi testleri (integrity*), senaryo-226 ve Defter Mutabakatı raporunu açan e2e'ler (ders 28: beklentisi değişen e2e koşulur).
+- Ölçüm (ders 47, 52): YAPMA — ana oturum sakin makinede yapar; yalnız "ilk yazım kapı yolu = scoped" işlevsel testle gösterilir.
+- Kılavuz: kullanıcıya görünen metin değişirse HTML + `docs/kilavuz/pdf-uret.mjs` + `pdf-denetle.mjs` (ders 42); teknik ayrıntı kılavuza girmez.
+- Koşular `KANIT_DIR=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-kanit node tools/kanit.mjs kos d2t3-<ad> -- <komut>`; program başlatan her koşu `HUKUK_LICENSE_URL=http://127.0.0.1:9`; yük koşuları `flock -s -n /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olcum.lock` (kilit doluysa bekleme döngüsü yok — ders 50); uzun koşu baştan 2 saat sınırla.
+
+## Kurallar
+- YENİ testleri YENİ dosyalara yaz (ör. `test/kasa-acilis-uyari-250.test.mjs`, `test/devir-arsiv-wal-250.test.mjs`); `test/kasa-acilis-once-250.test.mjs` DEĞİŞTİRİLMEZ (başka ajan aynı dosyada çalışıyor — birleşim çakışması). Yeni test dosyası ci.yml / package.json test listesine girmesi gerekiyorsa (e2e ise ci.yml + ci-kapi-listesi; ders 49) ekle ve raporla.
+- `server/routes/{accounts,invoices,plans,overview}.mjs`, `server/lib/accounts.mjs`, `server/lib/obligation-queue.mjs` YAZILMAZ (Ç5-B'nin dosyaları; ayrı dalda). `test/bagimsiz/**` YAZILMAZ.
+- Tam `npm test` YOK (ana oturum koşar). `pkill` / joker `rm` YOK; iş bitince yalnız kendi tam yollarını sil. Commit'e yalnız kendi yolların (ders 44).
+- Tasarım notu: `docs/erp/C5K-KASA-TASARIM.md`'ye "tur 2" bölümü (ne değişti, neden, kime ne görünür).
+- Kendi arka plan işin sürerken turunu rapor vermeden BİTİRME; sonucu bekle, sonra raporla.
+- Commit iletisi sonunda tam olarak:
+  Co-Authored-By: Claude <noreply@anthropic.com>
+  Claude-Session: https://claude.ai/code/session_01EhegDvmPQ9hx2ibfitm6og
+  (model adı YOK).
+
+## Rapor
+İş iş: değişen dosya:satır, karar ↔ kod, yeni testler + eski kodda kırmızı nedeni + yeşil (iki TZ), mutantlar, komşu sayıları, e2e'ler, kılavuz; ana oturumun yeniden koşacağı komutlar + beklenen sayılar; BAŞ MİMARA (seçtiğin sunum yolu ve gerekçesi); KULLANICIYA SORULMALI (iki seçenek + öneri; uç durumsa üçüncü seçenek "Uç durum böyle kalsın (BİLİNEN SINIR)"); DOĞRULANMADI; DENENMEYEN.

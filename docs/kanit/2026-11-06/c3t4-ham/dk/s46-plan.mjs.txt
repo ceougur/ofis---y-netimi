@@ -1,0 +1,125 @@
+// DAR KONTROL Ç3 tur 3 — S46 = A (KULLANICI KARARI 06.11 10:14): "açılış onarımı, eski sürüm DIŞI bir nedenle (dış silme, program hatası) eksilen donmuş dönemi o dönemi donduran
+// koşunun KENDİ kuralıyla yeniden dondurur — ledger.snapshot.frozen izi duruyorsa (2.5.0 dondurmuştu); iz yoksa S13 gereği 2.4.9 kopyasıyla."
+// Bileşim (U3'ün TERSİ): (…, 30.06] bu programın 2.5.0 koşusu (izli), (30.06, 31.12] eski sürümün ilerlettiği kilidin GAP_RULE (2.4.9) onarım koşusu (bu program dondurdu → izli).
+// Bütün donmuş satırlar dışarıdan silinir (izler durur) → açılış planı: [(…, 30.06] 2.5.0, (30.06, 31.12] 2.4.9]. Planın İLK dilimi güncel kuraldadır.
+// Kip (argv[3]):
+//   tam      — kesintisiz: plan uygulanır mı (denetim)
+//   kapanis  — plan sürerken (ilk dilim yazım adımında) program kapanır → yeniden açılış
+//   aynigun  — ilk dilim hata verir (kart: "kilidi yeniden kaydedin") → yönetici AYNI günü (31.12) yeniden kaydeder
+// Beklenen (S46 = A): (…, 30.06] 2.5.0, (30.06, 31.12] 2.4.9; görünen = kayıtlı = canlı.
+// Kullanım: node s46-plan.mjs <kod kökü> <kip>
+import { LOCK, MID, NOW, ENV, ROOT, imp, must, raw, runsOf, rulesIn, seed, setLockRaw, sleep, traced, whole } from "./ortak.mjs";
+
+const mode = process.argv[3] || "tam";
+const { loginAdmin, removeTestDir, startTestServer } = await imp("test/helpers.mjs");
+const { lockAndWait, waitForFreeze } = await imp("test/fixtures/donma-bekle.mjs");
+const { LEDGER_SNAPSHOT_TRIGGERS_V47 } = await imp("server/lib/migrations.mjs");
+const out = { kok: ROOT, kip: mode };
+const settle = async server => {
+  const S = server.app.ledger.snapshots;
+  for (let i = 0; i < 20; i += 1) {
+    await S.runPending();
+    if (!S.state().pending) break;
+  }
+};
+const first = await startTestServer({ now: { time: NOW, fixed: true }, env: ENV });
+const dirs = { dataDir: first.dataDir, backupDir: first.backupDir };
+let server = null;
+try {
+  const admin = await loginAdmin(first);
+  await seed(admin);
+  if (process.env.SIRA === "u3") {
+    // U3 sırası (karşılaştırma): (…, 30.06] eski sürüm kilidi → 2.4.9 onarım koşusu; (30.06, 31.12] bu programın 2.5.0 kilidi. Planın İLK dilimi eski kurallı (2.4.9).
+    await first.app.close();
+    setLockRaw(dirs.dataDir, MID);
+    server = await startTestServer({ now: { time: NOW, fixed: true }, env: ENV, ...dirs });
+    await settle(server);
+    await lockAndWait(await loginAdmin(server), LOCK);
+    out.beklenen_u3 = { "…-30.06": "2.4.9", "30.06-31.12": "2.5.0" };
+  } else {
+    await lockAndWait(admin, MID);
+    await first.app.close();
+    // Eski sürüm (≤ 2.4.9) kilidi 31.12'ye ilerletir (koşu açmadan ayar yazar; T2 / U3 deseni).
+    setLockRaw(dirs.dataDir, LOCK);
+    server = await startTestServer({ now: { time: NOW, fixed: true }, env: ENV, ...dirs });
+    await settle(server);
+  }
+  out.bilesim_once = runsOf(server.app.store).map(run => ({ ...run, iz: traced(server.app.store, run.no) }));
+  out.kurallar_once = { "…-30.06": rulesIn(server.app.store, "", MID), "30.06-31.12": rulesIn(server.app.store, MID, LOCK) };
+  await server.app.close();
+  server = null;
+  // Dış silme (izler DURUR): tetikleyici kaldırılır, satırlar silinir, tetikleyiciler kurulur (test/donmus-defter-tur3-250.test.mjs wipe ile aynı).
+  out.silinen = raw(dirs.dataDir, db => {
+    db.exec("BEGIN IMMEDIATE");
+    db.exec("DROP TRIGGER IF EXISTS ledger_snapshots_no_delete");
+    const removed = Number(db.prepare("DELETE FROM ledger_snapshots WHERE date > ''").run().changes);
+    db.exec(LEDGER_SNAPSHOT_TRIGGERS_V47);
+    db.exec("COMMIT");
+    return removed;
+  });
+  if (mode === "tam") {
+    server = await startTestServer({ now: { time: NOW, fixed: true }, env: ENV, ...dirs });
+    out.onarim = server.app.context.snapshotRepair;
+    out.ilk_bekleyen = server.app.ledger.snapshots.state().pending;
+    await settle(server);
+  } else {
+    // Planın ilk dilimi yazım adımında tutulur (kapanis) ya da hata verir (aynigun).
+    let batches = 0;
+    let release = () => {};
+    const held = new Promise(resolve => {
+      release = resolve;
+    });
+    const hook = {
+      fn: async phase => {
+        if (phase !== "batch") return;
+        batches += 1;
+        if (batches === 2) {
+          if (mode === "aynigun") throw new Error("test: dondurma düştü (disk / bellek benzetimi)");
+          await held;
+        }
+      },
+    };
+    server = await startTestServer({ now: { time: NOW, fixed: true }, env: ENV, ...dirs, __testFreezeHook: hook, freezeBatchLines: 5 });
+    out.onarim = server.app.context.snapshotRepair;
+    out.ilk_bekleyen = server.app.ledger.snapshots.state().pending;
+    out.plan_izi = server.app.store.get("SELECT payload_json AS p FROM audit_events WHERE type = 'ledger.snapshot.plan' ORDER BY rowid DESC LIMIT 1")?.p || null;
+    for (let i = 0; i < 1000 && batches < 2; i += 1) await sleep(10);
+    out.onkosul_parca = batches;
+    if (mode === "kapanis") {
+      out.onkosul_durum = server.app.ledger.snapshots.status();
+      const closing = server.app.close();
+      release();
+      await closing;
+      server = await startTestServer({ now: { time: NOW, fixed: true }, env: ENV, ...dirs });
+      out.ikinci_onarim = server.app.context.snapshotRepair;
+      out.ikinci_bekleyen = server.app.ledger.snapshots.state().pending;
+      await settle(server);
+    } else {
+      for (let i = 0; i < 500 && server.app.ledger.snapshots.status().running; i += 1) await sleep(10);
+      out.onkosul_durum = server.app.ledger.snapshots.status();
+      hook.fn = null;
+      const admin2 = await loginAdmin(server);
+      const view = await must("kart", admin2.get("/api/workspace/ledger/lock"));
+      out.kart = { lockedUntil: view.lockedUntil, frozenThrough: view.frozenThrough, pending: view.freeze.pending, error: view.freeze.error, active: view.freeze.active };
+      // Kartın önerisi: "kilidi yeniden kaydedin" — aynı gün (31.12).
+      const put = await admin2.put("/api/admin/period-lock", { lockedUntil: LOCK });
+      out.ayni_gun_yanit = put.status;
+      await waitForFreeze(admin2);
+      await settle(server);
+    }
+  }
+  const store = server.app.store;
+  out.kosular = runsOf(store).map(run => ({ ...run, iz: traced(store, run.no) }));
+  out.kurallar_sonra = { "…-30.06": rulesIn(store, "", MID), "30.06-31.12": rulesIn(store, MID, LOCK) };
+  out.beklenen_S46A = out.beklenen_u3 || { "…-30.06": "2.5.0", "30.06-31.12": "2.4.9" };
+  out.S46A_uyuyor = out.kurallar_sonra["…-30.06"] === out.beklenen_S46A["…-30.06"] && out.kurallar_sonra["30.06-31.12"] === out.beklenen_S46A["30.06-31.12"];
+  out.butunluk = whole(server);
+} catch (error) {
+  out.hata = String(error?.stack || error);
+} finally {
+  if (server) await server.app.close().catch(() => {});
+  await first.app.close().catch(() => {});
+  removeTestDir(first.root);
+}
+console.log(JSON.stringify(out, null, 1));
+process.exit(0);

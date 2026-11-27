@@ -1,0 +1,240 @@
+TAP version 13
+# (node:29865) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: G8 tek geçiş: fatura durumları ve vadeli elle satırların Kalan'ı aynı kapama geçişinden; sonuç cari başına yolla aynı
+    # Subtest: tek geçiş: yazımdan sonra iki harita için carilerin defteri en çok BİR KEZ kurulur; ikinci çağrılar önbellekten
+    ok 1 - tek geçiş: yazımdan sonra iki harita için carilerin defteri en çok BİR KEZ kurulur; ikinci çağrılar önbellekten
+      ---
+      duration_ms: 29.596513
+      type: 'test'
+      ...
+    # Subtest: toplu yol = cari başına yol: her fatura durumu ve her vadeli carinin her satırı (D1 olayları dahil)
+    ok 2 - toplu yol = cari başına yol: her fatura durumu ve her vadeli carinin her satırı (D1 olayları dahil)
+      ---
+      duration_ms: 16.034551
+      type: 'test'
+      ...
+    # Subtest: kapsam: elle satır haritası elle Borç / Alacak satırı olan carilerin satırlarını taşır (faturasız vadeli cari dahil; vadesiz cari de — S1)
+    ok 3 - kapsam: elle satır haritası elle Borç / Alacak satırı olan carilerin satırlarını taşır (faturasız vadeli cari dahil; vadesiz cari de — S1)
+      ---
+      duration_ms: 6.481067
+      type: 'test'
+      ...
+    # Subtest: bayatlık: yazımdan sonra yeni değer; işlem içinde hesaplanan sonuç önbelleğe yazılmaz (geri alınınca eski değer)
+    ok 4 - bayatlık: yazımdan sonra yeni değer; işlem içinde hesaplanan sonuç önbelleğe yazılmaz (geri alınınca eski değer)
+      ---
+      duration_ms: 43.464301
+      type: 'test'
+      ...
+    1..4
+ok 1 - G8 tek geçiş: fatura durumları ve vadeli elle satırların Kalan'ı aynı kapama geçişinden; sonuç cari başına yolla aynı
+  ---
+  duration_ms: 1172.332559
+  type: 'suite'
+  ...
+# (node:29866) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 Ç5-B — Tek Yükümlülük Kuyruğu (API)
+    # Subtest: B1: bütün ekranlar aynı sayı (cari kartı = liste = Anlık Durum = mobil cari listesi = Vade Takip = zil; fatura durumu)
+        # Subtest: cari kartı: Gecikmiş Borç 1.100 (3 kalem), bakiye 1.400; eski alan (taksit) ayrı
+        ok 1 - cari kartı: Gecikmiş Borç 1.100 (3 kalem), bakiye 1.400; eski alan (taksit) ayrı
+          ---
+          duration_ms: 8.465365
+          type: 'test'
+          ...
+        # Subtest: cari listesi satırı ve 'Gecikmiş Borcu Olan' süzgeci aynı sayı; sıralama TYK'ya göre
+        ok 2 - cari listesi satırı ve 'Gecikmiş Borcu Olan' süzgeci aynı sayı; sıralama TYK'ya göre
+          ---
+          duration_ms: 4.209243
+          type: 'test'
+          ...
+        # Subtest: Anlık Durum alacak gecikmişi = cari listesinin toplamı (bu sunucuda tek gecikmiş cari bu)
+        ok 3 - Anlık Durum alacak gecikmişi = cari listesinin toplamı (bu sunucuda tek gecikmiş cari bu)
+          ---
+          duration_ms: 14.529393
+          type: 'test'
+          ...
+        # Subtest: Rapor Merkezi Cari Listesi: report-center TYK'ya geçene kadar eski anlam (geciken taksit 300; cari kartı Gecikmiş Borç 1.100)
+        ok 4 - Rapor Merkezi Cari Listesi: report-center TYK'ya geçene kadar eski anlam (geciken taksit 300; cari kartı Gecikmiş Borç 1.100)
+          ---
+          duration_ms: 8.766355
+          type: 'test'
+          ...
+        # Subtest: Vade Takip: carinin vadesi geçmiş kalemleri toplamı = gecikmiş; aynı borç bir kez (fatura 500, borç 300, taksit 300)
+        ok 5 - Vade Takip: carinin vadesi geçmiş kalemleri toplamı = gecikmiş; aynı borç bir kez (fatura 500, borç 300, taksit 300)
+          ---
+          duration_ms: 12.903933
+          type: 'test'
+          ...
+        # Subtest: zil / takvim: aynı kalemler (ufuk +7 gün); fatura durumu Vadesi Geçti, Kalan 500
+        ok 6 - zil / takvim: aynı kalemler (ufuk +7 gün); fatura durumu Vadesi Geçti, Kalan 500
+          ---
+          duration_ms: 12.458984
+          type: 'test'
+          ...
+        # Subtest: S50: taksit kartı ekranı taksit kalanını kuyruktan gösterir; kartın kendi hesabı (Kalan 600) değişmez
+        ok 7 - S50: taksit kartı ekranı taksit kalanını kuyruktan gösterir; kartın kendi hesabı (Kalan 600) değişmez
+          ---
+          duration_ms: 2.571869
+          type: 'test'
+          ...
+        1..7
+    ok 1 - B1: bütün ekranlar aynı sayı (cari kartı = liste = Anlık Durum = mobil cari listesi = Vade Takip = zil; fatura durumu)
+      ---
+      duration_ms: 167.037482
+      type: 'suite'
+      ...
+    # Subtest: S50 = A: kart seçilmeden alınan tahsilat ayrı kartın vadesi gelmiş taksitini kapatır; Taksitler ve zil bunu gösterir
+    ok 2 - S50 = A: kart seçilmeden alınan tahsilat ayrı kartın vadesi gelmiş taksitini kapatır; Taksitler ve zil bunu gösterir
+      ---
+      duration_ms: 80.803508
+      type: 'test'
+      ...
+    # Subtest: S52 / S72 / S73: Ödeme Sözü gecikmişi değiştirmez; söz günü DAHİL 'Ödeme Sözü Var'; söz geçince düşer
+    ok 3 - S52 / S72 / S73: Ödeme Sözü gecikmişi değiştirmez; söz günü DAHİL 'Ödeme Sözü Var'; söz geçince düşer
+      ---
+      duration_ms: 58.532036
+      type: 'test'
+      ...
+    # Subtest: düzeltmede cari değişimi (S54 / S57 / S79 / S80 / S81 / S83 / S84 / S85; sıra K10-1)
+        # Subtest: S57: bağlı (Kapatılacak Fatura) kaydın carisi bağ değişmeden düzeltilmez → 409 entry-link-first; kayıt değişmez
+        ok 1 - S57: bağlı (Kapatılacak Fatura) kaydın carisi bağ değişmeden düzeltilmez → 409 entry-link-first; kayıt değişmez
+          ---
+          duration_ms: 50.815477
+          type: 'test'
+          ...
+        # Subtest: S79 = A (S54 gibi): aynı düzeltmede cari + bağ değişirse kabul — bağ yeni carinin belgesine; eski fatura yeniden açılır
+        ok 2 - S79 = A (S54 gibi): aynı düzeltmede cari + bağ değişirse kabul — bağ yeni carinin belgesine; eski fatura yeniden açılır
+          ---
+          duration_ms: 179.904007
+          type: 'test'
+          ...
+        # Subtest: bağsız kaydın carisi düzeltilir (S57 uygulanmaz); iki carinin bakiyesi ve kuyruğu yeniden kurulur
+        ok 3 - bağsız kaydın carisi düzeltilir (S57 uygulanmaz); iki carinin bakiyesi ve kuyruğu yeniden kurulur
+          ---
+          duration_ms: 101.824555
+          type: 'test'
+          ...
+        # Subtest: S80 / S83 / S84 = A: fatura formunda alınan / yapılan peşinin carisi ya da bağı → 409 invoice-payment-edit ('faturayı düzenleyin')
+        ok 4 - S80 / S83 / S84 = A: fatura formunda alınan / yapılan peşinin carisi ya da bağı → 409 invoice-payment-edit ('faturayı düzenleyin')
+          ---
+          duration_ms: 101.353609
+          type: 'test'
+          ...
+# (node:29866) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:29866) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+        # Subtest: K10-1: kilitli dönemdeki peşinin carisi → önce KILITLI_DONEM (409 period-locked)
+        ok 5 - K10-1: kilitli dönemdeki peşinin carisi → önce KILITLI_DONEM (409 period-locked)
+          ---
+          duration_ms: 255.723828
+          type: 'test'
+          ...
+        # Subtest: S81 = A: Normal Cari tahsilat aynı düzeltmede şüpheli kaydı açık bir cariye alınıp 120 bakiyesini aşarsa red (doubtful-normal-exceeds)
+        ok 6 - S81 = A: Normal Cari tahsilat aynı düzeltmede şüpheli kaydı açık bir cariye alınıp 120 bakiyesini aşarsa red (doubtful-normal-exceeds)
+          ---
+          duration_ms: 129.146122
+          type: 'test'
+          ...
+        # Subtest: S85 = A (K10-3): Normal Cari kaydın yalnız TARİHİ 120'nin küçük olduğu güne alınırsa sınır yeni günde ölçülür → red
+        ok 7 - S85 = A (K10-3): Normal Cari kaydın yalnız TARİHİ 120'nin küçük olduğu güne alınırsa sınır yeni günde ölçülür → red
+          ---
+          duration_ms: 65.455107
+          type: 'test'
+          ...
+        1..7
+    ok 4 - düzeltmede cari değişimi (S54 / S57 / S79 / S80 / S81 / S83 / S84 / S85; sıra K10-1)
+      ---
+      duration_ms: 884.91534
+      type: 'suite'
+      ...
+    # Subtest: artımlı önbellek (tasarım §5): yazımdan sonra yalnız dokunulan cari yeniden kurulur; her carinin sonucu cari başına baştan kurulumla aynı
+    ok 5 - artımlı önbellek (tasarım §5): yazımdan sonra yalnız dokunulan cari yeniden kurulur; her carinin sonucu cari başına baştan kurulumla aynı
+      ---
+      duration_ms: 37.222226
+      type: 'test'
+      ...
+    # Subtest: mutabakat kapısının list()'i (iç kimlik 'ledger' / 'integrity', ids) TYK hesaplamaz
+    ok 6 - mutabakat kapısının list()'i (iç kimlik 'ledger' / 'integrity', ids) TYK hesaplamaz
+      ---
+      duration_ms: 4.200689
+      type: 'test'
+      ...
+    1..6
+ok 2 - 2.5.0 Ç5-B — Tek Yükümlülük Kuyruğu (API)
+  ---
+  duration_ms: 1879.211621
+  type: 'suite'
+  ...
+# (node:29867) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 Ç5-B tur 2a — TYK önbelleği (Y-3): iz bütün girdileri kapsar, izi değişmeyen yazımda önbellek korunur
+    # Subtest: cariye dokunmayan yazım (stok girişi, oturum açma, cari notu, Kasa ayarı) bütün carileri yeniden kurmaz; cari yazımı yalnız o cariyi
+    ok 1 - cariye dokunmayan yazım (stok girişi, oturum açma, cari notu, Kasa ayarı) bütün carileri yeniden kurmaz; cari yazımı yalnız o cariyi
+      ---
+      duration_ms: 748.832473
+      type: 'test'
+      ...
+# (node:29867) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:29867) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: iz kolonları tek tek (durağan saat): yalnız bağ / kartın Kayıt Tarihi / taksit vadesi / dönem kilidi değişen yazımdan sonra önbellekli sonuç = baştan kurulan
+    ok 2 - iz kolonları tek tek (durağan saat): yalnız bağ / kartın Kayıt Tarihi / taksit vadesi / dönem kilidi değişen yazımdan sonra önbellekli sonuç = baştan kurulan
+      ---
+      duration_ms: 898.44983
+      type: 'test'
+      ...
+# (node:29867) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# \# tohum 1: {"alacak:200":5,"alis:200":3,"alis:400":2,"alisIadesi:200":4,"borc:200":14,"dokunmayan:-":1,"dokunmayan:200":9,"duzelt:200":10,"elleKart:200":2,"fatura:200":7,"fatura:409":2,"geriAl:-":4,"geriAl:200":3,"kartDurumu:200":1,"kartDuzenle:-":1,"kartHareketi:-":13,"kartTahsilati:-":4,"kartTahsilati:200":1,"kartTahsilati:400":1,"kilit:200":2,"mevcutBorcKarti:200":2,"mevcutBorcKarti:400":1,"odeme:200":3,"sil:-":1,"sil:200":7,"stokSatis:200":7,"stokSatis:409":1,"supheli:-":1,"supheli:200":1,"tahsilat:200":15,"taksit:-":3,"taksit:200":2,"verilenCek:200":1,"yeniBorcKarti:200":5,"yeniBorcKarti:409":1}
+    # Subtest: tohum 1 (durağan saat, 140 yazım): her yazım türünden sonra önbellekli sonuç = baştan kurulan
+    ok 3 - tohum 1 (durağan saat, 140 yazım): her yazım türünden sonra önbellekli sonuç = baştan kurulan
+      ---
+      duration_ms: 3325.865806
+      type: 'test'
+      ...
+# (node:29867) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:29867) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# \# tohum 2: {"alacak:409":2,"alis:200":5,"alisIadesi:200":2,"borc:200":6,"borc:409":2,"dokunmayan:-":7,"dokunmayan:200":2,"duzelt:-":8,"duzelt:200":3,"elleKart:-":3,"fatura:200":3,"fatura:409":12,"geriAl:-":2,"kartDurumu:-":1,"kartDurumu:200":2,"kartDuzenle:-":1,"kartDuzenle:200":1,"kartHareketi:-":7,"kartTahsilati:-":4,"kartTahsilati:200":2,"kilit:200":2,"mevcutBorcKarti:-":1,"mevcutBorcKarti:200":2,"mevcutBorcKarti:400":2,"odeme:200":3,"odeme:409":4,"sil:-":4,"sil:200":2,"sil:409":1,"stokSatis:200":3,"stokSatis:409":2,"tahsilat:200":7,"tahsilat:409":5,"taksit:-":6,"taksit:200":7,"verilenCek:200":5,"yeniBorcKarti:200":4,"yeniBorcKarti:409":5}
+    # Subtest: tohum 2 (durağan saat, 140 yazım): her yazım türünden sonra önbellekli sonuç = baştan kurulan
+    ok 4 - tohum 2 (durağan saat, 140 yazım): her yazım türünden sonra önbellekli sonuç = baştan kurulan
+      ---
+      duration_ms: 2510.077823
+      type: 'test'
+      ...
+# (node:29867) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:29867) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# \# tohum 3: {"alacak:200":7,"alis:200":4,"alisIadesi:200":1,"borc:200":11,"dokunmayan:-":3,"dokunmayan:200":8,"duzelt:-":2,"duzelt:200":8,"elleKart:-":4,"elleKart:200":1,"elleKart:400":1,"fatura:200":5,"geriAl:-":2,"geriAl:200":2,"kartDurumu:-":1,"kartDuzenle:-":2,"kartDuzenle:200":1,"kartHareketi:-":4,"kartHareketi:200":1,"kartTahsilati:-":3,"kartTahsilati:200":1,"kartTahsilati:400":1,"kartTahsilati:409":1,"kilit:200":3,"mevcutBorcKarti:-":2,"mevcutBorcKarti:200":1,"mevcutBorcKarti:400":1,"odeme:200":2,"sil:200":2,"stokSatis:200":6,"stokSatis:409":1,"supheli:-":2,"supheli:200":1,"tahsilat:200":10,"taksit:-":3,"taksit:200":2,"verilenCek:200":2,"yeniBorcKarti:200":6,"yeniBorcKarti:400":2}
+    # Subtest: tohum 3 (akan saat, 120 yazım): her yazım türünden sonra önbellekli sonuç = baştan kurulan
+    ok 5 - tohum 3 (akan saat, 120 yazım): her yazım türünden sonra önbellekli sonuç = baştan kurulan
+      ---
+      duration_ms: 2587.013898
+      type: 'test'
+      ...
+    # Subtest: yedekten geri yükleme ve Silinenler'den geri alma sonrası önbellek bayat kalmaz (önbellekli = baştan kurulan)
+    ok 6 - yedekten geri yükleme ve Silinenler'den geri alma sonrası önbellek bayat kalmaz (önbellekli = baştan kurulan)
+      ---
+      duration_ms: 438.568106
+      type: 'test'
+      ...
+    1..6
+ok 3 - 2.5.0 Ç5-B tur 2a — TYK önbelleği (Y-3): iz bütün girdileri kapsar, izi değişmeyen yazımda önbellek korunur
+  ---
+  duration_ms: 10511.054024
+  type: 'suite'
+  ...
+1..3
+# tests 28
+# suites 5
+# pass 28
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 10856.904264

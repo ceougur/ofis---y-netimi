@@ -1,0 +1,32 @@
+{
+  "ad": "c3-tamam-mutasyon",
+  "komut": "node test/donmus-defter-250-mutasyon.mjs --kopya /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3-tamam-a1/mutasyon-9d507460",
+  "commit": "9d507460347ac764298d99875a2803c1239475b7",
+  "dal": "worktree-agent-ad96cd3b37191bfb1",
+  "kirli": 0,
+  "izlenmeyen": 25,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T01:38:45.313Z",
+  "sure_sn": 130.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 23,
+    "gecen": 23,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-06/c3-tamam-mutasyon.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad96cd3b37191bfb1",
+  "ham_cikti_sha256": "9a860778825a301f933e2febacba30be970c28540e3194c77b2a83b31479052f",
+  "ham_cikti_bayt": 2156
+}

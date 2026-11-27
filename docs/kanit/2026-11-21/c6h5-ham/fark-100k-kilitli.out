@@ -1,0 +1,6 @@
+anahtar 57 · durumlar {'fis': 1, 'fisten-sonra': 18, 'kilit 2026-09-30': 1, 'kilit-0930': 18, 'once': 18, 'yonetim': 1}
+kural-farki nedenli yanıt 54 · bilgi satırlı yanıt 0 · 200 olmayan okuma 0
+  100k-kilitli|fis: tur4 {"status":200,"no":1} · yeni {"status":200,"no":1}
+  100k-kilitli|kilit 2026-09-30|PUT: tur4 200 · yeni 200
+  100k-kilitli|yonetim: tur4 {"disabled":false,"code":"","lines":14,"excluded":7} · yeni {"disabled":false,"code":"","lines":14,"excluded":7}
+SONUÇ: 0 fark / 57

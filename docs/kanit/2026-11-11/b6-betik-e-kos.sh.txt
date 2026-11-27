@@ -1,0 +1,22 @@
+#!/bin/bash
+# Birleşik tur 6 — E: kâhin adımları önce (eski kopya = taban dbf635be) / sonra (worktree) + liste üreticisinin eski listeyle karşılaştırması (KAHIN_YAPIM_ASAMASI ile kendi kopyam).
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+W=/home/user/ofis---y-netimi/.claude/worktrees/agent-a115f88e3014ea777
+B=$S/birlesik6-b6
+export HUKUK_LICENSE_URL=http://127.0.0.1:9 KANIT_DIR=$S/birlesik6-kanit
+cd "$S/birlesik6-eski" || exit 1
+node "$W/tools/kanit.mjs" kos b6-e-kahin-cari-eski -- npm run test:kahin-cari
+node "$W/tools/kanit.mjs" kos b6-e-kahin-defter-eski -- npm run test:kahin-defter
+cd "$W" || exit 1
+node tools/kanit.mjs kos b6-e-kahin-cari-yeni -- npm run test:kahin-cari
+node tools/kanit.mjs kos b6-e-kahin-defter-yeni -- npm run test:kahin-defter
+# Üretici 1: eski liste = depodaki liste (kod değişmedi → yeni 0 / kapanan 0 / değişen 0; dosya bayt bayt aynı)
+cp "$W/test/bagimsiz/cari/YAPIM-ASAMASI.json" "$B/yapim-deneme-1.json"
+KAHIN_YAPIM_ASAMASI="$B/yapim-deneme-1.json" node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs --yapim-asamasi-yaz --mutasyonsuz > "$B/e-uretici-1.txt" 2>&1
+echo "uretici-1 cikis $?" >> "$B/e-uretici-1.txt"
+cmp "$W/test/bagimsiz/cari/YAPIM-ASAMASI.json" "$B/yapim-deneme-1.json" && echo "uretici-1: depodaki listeyle BAYT BAYT AYNI" >> "$B/e-uretici-1.txt"
+# Üretici 2: eski liste değiştirilmiş (elle etiketli bir kaydın program değeri +1000, bir kayıt silinmiş, olmayan bir kayıt eklenmiş)
+node "$B/yapim-boz.mjs" "$W/test/bagimsiz/cari/YAPIM-ASAMASI.json" "$B/yapim-deneme-2.json" > "$B/e-uretici-2-bozma.txt" 2>&1 || exit 1
+KAHIN_YAPIM_ASAMASI="$B/yapim-deneme-2.json" node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs --yapim-asamasi-yaz --mutasyonsuz > "$B/e-uretici-2.txt" 2>&1
+echo "uretici-2 cikis $?" >> "$B/e-uretici-2.txt"
+echo BITTI

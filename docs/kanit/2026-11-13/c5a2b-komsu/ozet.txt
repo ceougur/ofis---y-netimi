@@ -1,0 +1,22 @@
+komsu UTC exit=0
+# tests 337
+# pass 337
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+komsu Europe/Istanbul exit=0
+# tests 337
+# pass 337
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+senaryo-kasa-acilis-uyari-250 exit=0 # pass 20 # fail 0 
+senaryo-donem-kilidi-ilerleme-250 exit=0 # pass 39 # fail 0 
+senaryo-226 exit=0 
+senaryo-213 exit=0 
+senaryo-211 exit=0 
+senaryo-acilis-duzeni-250 UTC exit=0 # pass 27 # fail 0 
+senaryo-acilis-duzeni-250 TABAN exit=1 # pass 10 # fail 2 
+BITTI

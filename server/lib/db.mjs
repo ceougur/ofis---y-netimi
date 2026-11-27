@@ -3,10 +3,18 @@ import { DatabaseSync } from "node:sqlite";
 
 // Kullanıcı isteklerinin yazımları kilitli dosyada bu kadar bekler (sonra SQLITE_BUSY). Arka plan işleri kısa sınamayla atlar (probeWritable; İş P1).
 export const BUSY_TIMEOUT_MS = 10_000;
+// openDatabase'in açılış PRAGMA'ları (journal_mode / synchronous) kilitli ya da kurtarılan dosyada bu kadar bekler (2.5.0; aşağıda).
+export const OPEN_BUSY_TIMEOUT_MS = 2_000;
 
 export function openDatabase(dbPath, { readOnly = false } = {}) {
   const db = readOnly ? new DatabaseSync(dbPath, { readOnly: true }) : new DatabaseSync(dbPath);
   try {
+    // 2.5.0 (CI #1007 Windows): bekleme süresi İLK ayar. journal_mode PRAGMA'sı dosyayı okur (kilit + WAL kurtarması); süre ayarlanmadan
+    // koşunca başka bağlantı kilit tutarken ya da WAL'ı kurtarırken (çökme sonrası / taze -shm ile eşzamanlı ilk açılış) beklemeden
+    // SQLITE_BUSY / SQLITE_BUSY_RECOVERY (261) ile düşüyordu. Açılışta kısa süre (OPEN_BUSY_TIMEOUT_MS): kurtarma ve başka bağlantının
+    // kapanış denetim noktası milisaniyeler sürer; dosyayı başka program özel kilitle tutuyorsa şirket isteği (senkron açılış, olay döngüsü
+    // kilitli) 10 sn değil bu kadar bekleyip 503 alır. Açılış bitince kullanıcı yazımlarının süresi (BUSY_TIMEOUT_MS).
+    db.exec(`PRAGMA busy_timeout = ${OPEN_BUSY_TIMEOUT_MS};`);
     // WAL + synchronous FULL (v2.0.6): her COMMIT diske işlenir; elektrik kesilse de tamamlanmış işlem kaybolmaz, yarım
     // işlem kalmaz (geri alınır). Yerel ofis programında yazma sıklığı düşük; güvenlik hız maliyetine değer.
     if (!readOnly) db.exec("PRAGMA journal_mode = WAL; PRAGMA synchronous = FULL;");
@@ -82,7 +90,10 @@ export function createStore(db) {
   const FINANCIAL = new Set(["payments", "cash_entries", "accounts", "account_entries", "plans", "plan_items", "plan_entries", "stock_items", "stock_moves", "cheques", "cheque_events",
     "fin_events", "bank_lines", "bank_accounts", "pos_terminals", "pos_sales", "pos_items", "cheque_collections",
     // 2.3.0 İz 1: şüpheli alacak kayıtları ve karşılıkları (128/129; lib/bank/doubtful.mjs) — para dışı ama yevmiyeyi değiştirir, kapıdan geçer.
-    "doubtful_receivables", "doubtful_provisions"]);
+    "doubtful_receivables", "doubtful_provisions",
+    // 2.5.0 Ç2: saklanan fiş defteri (lib/ledger-vouchers.mjs) — yevmiyeye satır yazar; her yazım tam kapıdan geçer (integrity-scope FULL_TABLES). Fatura ve KDV mahsubu
+    // tabloları (invoices, vat_offsets) bilerek eklenmedi: 2.0.15'ten beri BİLİNEN SINIR, ayrı iş (docs/erp/C2-FIS-DEFTERI-TASARIM.md §5).
+    "ledger_vouchers", "ledger_voucher_lines"]);
   const WRITE = /^\s*(?:INSERT(?:\s+OR\s+\w+)?\s+INTO|UPDATE(?:\s+OR\s+\w+)?|DELETE\s+FROM|REPLACE\s+INTO)\s+["`]?(\w+)/i;
   const guards = [];
   // v2.0.22 (yük ölçümü): carinin yalnız BİLGİ kolonlarına (ad, telefon, adres, not, grup, ek alan, vergi bilgisi…) yazan
@@ -222,11 +233,16 @@ export function createStore(db) {
   const SCOPE_TABLES = new Set([...FINANCIAL, "invoices", "invoice_lines", "invoice_offsets"]);
   let scope = null;
   let trackedChanges = 0;
-  const freshScope = () => ({ rows: new Map(), before: new Map(), unknown: "" });
-  const scopeRows = table => {
-    if (!scope.rows.has(table)) scope.rows.set(table, new Set());
-    return scope.rows.get(table);
+  // 2.5.0 Ç5-K tur 2 (dar kontrol DÜŞÜK-1): inserted = bu işlemde EKLENEN satırların rowid'i; born = önceki hâli (before) bu işlemde eklenmiş satırın hâli olan
+  // rowid'ler (işlem ÖNCESİ hâl değil — lib/cash-opening.mjs "önceki hâl" eşlemesi bunları saymaz). Kesin iz: önceden cash-opening "son COMMIT'teki en büyük rowid"
+  // sezgisiyle buluyordu; başka bağlantı yazınca (data_version) sezgi kabul yönünde kapanıyordu. Birleşik tur 6 (DK-D2T3 DÜŞÜK-1): rowid'i işlem başındaki en büyük
+  // rowid'den büyük olan önceki hâl de born (store dışından eklenmiş satır; işaret K6'nın BEGIN'de okuduğu money.marks — para kaynağı tabloları).
+  const freshScope = () => ({ rows: new Map(), before: new Map(), inserted: new Map(), born: new Map(), unknown: "" });
+  const setIn = (map, table) => {
+    if (!map.has(table)) map.set(table, new Set());
+    return map.get(table);
   };
+  const scopeRows = table => setIn(scope.rows, table);
   const UPSERT = /\bOR\s+REPLACE\b|^\s*REPLACE\s+INTO|\bON\s+CONFLICT\b/i;
   function readBefore(table, sql, args) {
     let parsed;
@@ -248,8 +264,15 @@ export function createStore(db) {
       const rows = store.all(`SELECT rowid AS __rowid, * FROM ${table}${parsed.where ? ` WHERE ${parsed.where}` : ""}`, ...args.slice(parsed.setParams));
       if (!scope.before.has(table)) scope.before.set(table, new Map());
       const before = scope.before.get(table);
+      // Birleşik tur 6 (DK-D2T3 DÜŞÜK-1): işlem başındaki en büyük rowid'den (money:event işareti, BEGIN'de) BÜYÜK rowid'li satır da bu işlemde doğmuştur — store
+      // dışından (aynı bağlantıda db.prepare / db.exec) eklenip sonra store ile düzeltilen satırın eklendiği hâli işlem öncesi hâl sayılmaz. Silinen en büyük
+      // satırın rowid'ini alan yeni satır işaretten büyük değildir; onu inserted (store ile eklendiyse) ya da kimlik eşlemesi (cash-opening) yakalar.
+      const mark = money?.marks.get(table);
       for (const row of rows) {
-        if (!before.has(row.__rowid)) before.set(row.__rowid, row);
+        if (!before.has(row.__rowid)) {
+          before.set(row.__rowid, row);
+          if (scope.inserted.get(table)?.has(row.__rowid) || (mark !== undefined && Number(row.__rowid) > mark)) setIn(scope.born, table).add(row.__rowid);
+        }
         if (parsed.verb === "UPDATE") scopeRows(table).add(row.__rowid);
       }
       return rows;
@@ -262,8 +285,12 @@ export function createStore(db) {
     if (!/^\s*(INSERT|REPLACE)/i.test(sql)) return;
     const changes = Number(result?.changes) || 0;
     const last = Number(result?.lastInsertRowid) || 0;
-    if (changes > 0 && last > 0) for (let k = 0; k < changes; k += 1) scopeRows(table).add(last - changes + 1 + k);
-    else if (changes > 0) scope.unknown ||= `${table}: eklenen satır kimliği yok`;
+    if (changes > 0 && last > 0) {
+      for (let k = 0; k < changes; k += 1) {
+        scopeRows(table).add(last - changes + 1 + k);
+        setIn(scope.inserted, table).add(last - changes + 1 + k);
+      }
+    } else if (changes > 0) scope.unknown ||= `${table}: eklenen satır kimliği yok`;
   }
   function afterLedgerInsert(table, sql, result) {
     if (!policy.sources.has(table) || !/^\s*(INSERT|REPLACE)/i.test(sql)) return;
@@ -316,6 +343,44 @@ export function createStore(db) {
       // asıl hata yeniden fırlatılır
     }
   };
+  // 2.5.0 BS-6 (2.4.9 DB-TX KÖR NOKTA; yeniden üretildi: iç store.tx'te önbellek taşması WAL'a yazarken G/Ç hatası → SQLite işlemin TAMAMINI kendiliğinden
+  // geri aldı, derinlik 1 kaldı; hatayı yakalayıp süren kodun sonraki store.run yazımları işlemsiz (kendiliğinden kesinleşerek) diske gitti, dış işlem
+  // "cannot commit - no transaction is active" ile düştü — işlemin ilk yarısı geri alınmış, ikinci yarısı yazılmış). Derinlik > 0 iken bağlantıda işlem
+  // yoksa yazım YAPILMAZ: store.run / setSetting / iç store.tx (SAVEPOINT işlem dışında yeni işlem açar, RELEASE onu kesinleştirirdi) ve en dış COMMIT açık
+  // hata fırlatır; ileti işlemi bozan ilk hatayı söyler (ders 21: asıl hata ezilmez). isTransaction bilinmiyorsa (null; Node < 22.16) bugünkü yol.
+  let lostBy = null; // bu en dış işlemde, işlemi kendiliğinden geri aldıran ilk hata
+  const noteLost = error => {
+    if (depth > 0 && !lostBy && error?.code !== "ERR_TX_LOST" && openTx() === false) lostBy = error;
+  };
+  const lostTx = () =>
+    Object.assign(new Error(`Veri tabanı işlemi yarıda kesildi: SQLite işlemi kendiliğinden geri aldı${lostBy?.message ? ` (ilk hata: ${lostBy.message})` : ""}. Bu yazım yapılmadı; işlemin tamamı geri alındı, yeniden deneyin.`), { code: "ERR_TX_LOST", ...(lostBy ? { cause: lostBy } : {}) });
+  const assertLive = () => {
+    if (depth > 0 && openTx() === false) throw lostTx();
+  };
+  // 2.5.0 BİRLEŞİK TUR 5 (AH dar kontrol ORTA-1): store.exec ve yazım yapabilen store.get / store.all (INSERT / UPDATE / DELETE … RETURNING, DDL, PRAGMA atama, WITH …) de
+  // BS-6 korumasında — kayıptan sonra exec INSERT diske gidiyor, DROP TABLE / DROP TRIGGER (Sıfırla'nın tetikleyici yolu) ve göçün PRAGMA user_version'ı işlemsiz kesinleşiyordu,
+  // ileti "yazım yapılmadı" diyordu. Yalnız açıkça okuma olan deyim (SELECT / VALUES / EXPLAIN ile başlayan, atamasız PRAGMA) denetimsiz geçer; geri kalan her deyim (WITH dahil)
+  // yazım sayılır. Okuma ya da exec hatası işlemi kendiliğinden geri aldırdıysa (yeniden üretildi: işlem içindeki SELECT önbellek taşırırken G/Ç hatası) ERR_TX_LOST iletisindeki
+  // "ilk hata" o hatadır.
+  const READ_SQL = /^\s*(?:SELECT|VALUES|EXPLAIN)\b|^\s*PRAGMA\s+[\w.]+\s*(?:\([^)]*\))?\s*;?\s*$/i;
+  const writeKinds = new Map();
+  const mayWrite = sql => {
+    let kind = writeKinds.get(sql);
+    if (kind === undefined) {
+      kind = !READ_SQL.test(sql);
+      writeKinds.set(sql, kind);
+    }
+    return kind;
+  };
+  const query = (method, sql, args) => {
+    if (depth > 0 && mayWrite(sql)) assertLive();
+    try {
+      return prepare(sql)[method](...args);
+    } catch (error) {
+      noteLost(error);
+      throw error;
+    }
+  };
   const store = {
     /**
      * 2.4.8 İş P1 (lib/write-lock.mjs): dosya şimdi yazılabilir mi — SENKRON kısa sınama (busy_timeout ms; BEGIN IMMEDIATE + ROLLBACK), bitince busy_timeout
@@ -327,9 +392,10 @@ export function createStore(db) {
       return probeWritableDb(db, ms);
     },
     db,
-    get: (sql, ...args) => prepare(sql).get(...args),
-    all: (sql, ...args) => prepare(sql).all(...args),
+    get: (sql, ...args) => query("get", sql, args),
+    all: (sql, ...args) => query("all", sql, args),
     run: (sql, ...args) => {
+      assertLive();
       const table = writesTo(sql);
       if (table && FINANCIAL.has(table) && !infoOnly(table, sql)) {
         if (depth === 0 && (guards.length || policy?.ledger.has(table))) return store.tx(() => store.run(sql, ...args));
@@ -339,13 +405,27 @@ export function createStore(db) {
       const scoped = Boolean(scope && depth > 0 && table && SCOPE_TABLES.has(table) && !infoOnly(table, sql));
       const before = scoped ? readBefore(table, sql, args) : null;
       if (watched) beforeLedgerWrite(table, sql, args, before);
-      const result = prepare(sql).run(...args);
+      let result;
+      try {
+        result = prepare(sql).run(...args);
+      } catch (error) {
+        noteLost(error);
+        throw error;
+      }
       trackedChanges += Number(result?.changes) || 0;
       if (watched) afterLedgerInsert(table, sql, result);
       if (scoped) afterScopedInsert(table, sql, result);
       return result;
     },
-    exec: sql => db.exec(sql),
+    exec: sql => {
+      assertLive();
+      try {
+        return db.exec(sql);
+      } catch (error) {
+        noteLost(error);
+        throw error;
+      }
+    },
     /** Mutabakat denetimi ekle: fn({ tables }) — hata fırlatırsa işlem geri alınır; after() başarılı COMMIT sonrası. */
     addCommitGuard(guard) {
       guards.push(guard);
@@ -413,6 +493,7 @@ export function createStore(db) {
       if (depth === 0) {
         db.exec("BEGIN IMMEDIATE");
         dangling = false; // BEGIN geçti: önceden açık kalan işlem yok
+        lostBy = null;
         touched = new Set();
         touchedEvents = new Set();
         money = policy ? freshMoney() : null;
@@ -422,7 +503,11 @@ export function createStore(db) {
         const marksAt = performance.now();
         if (money) for (const table of policy.sources.keys()) money.marks.set(table, Number(prepare(`SELECT COALESCE(MAX(rowid), 0) AS m FROM ${table}`).get().m) || 0);
         txStats.marksMs = performance.now() - marksAt;
-      } else db.exec(`SAVEPOINT ${savepoint}`);
+      } else {
+        // BS-6: dış işlem kendiliğinden geri alındıysa SAVEPOINT yeni bir işlem açar, RELEASE onu kapısız kesinleştirirdi.
+        assertLive();
+        db.exec(`SAVEPOINT ${savepoint}`);
+      }
       // İç işlem (SAVEPOINT) geri alınırsa onun içinde görülen K6 ihlali de düşer.
       const violationsAt = money ? money.violations.length : 0;
       depth += 1;
@@ -448,6 +533,8 @@ export function createStore(db) {
         }
         depth -= 1;
         left = true;
+        // BS-6: işlem kendiliğinden geri alındıysa (yakalanıp yutulan hata) COMMIT / RELEASE "no transaction" iletisiyle asıl nedeni örtmesin.
+        if (openTx() === false) throw lostTx();
         if (depth === 0) {
           db.exec("COMMIT");
           money = null;
@@ -472,15 +559,17 @@ export function createStore(db) {
         } else {
           undo(`ROLLBACK TO ${savepoint}; RELEASE ${savepoint}`);
           if (money) money.violations.length = Math.min(money.violations.length, violationsAt);
+          noteLost(error);
         }
         throw error;
       }
     },
     setting(key, fallback = null) {
-      const row = prepare("SELECT value FROM settings WHERE key = ?").get(key);
+      const row = query("get", "SELECT value FROM settings WHERE key = ?", [key]);
       return row ? row.value : fallback;
     },
     setSetting(key, value, userId = null) {
+      assertLive();
       const result = prepare("INSERT INTO settings (key, value, updated_at, updated_by) VALUES (?, ?, ?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at, updated_by = excluded.updated_by")
         .run(key, String(value ?? ""), new Date().toISOString(), userId);
       trackedChanges += Number(result?.changes) || 0;

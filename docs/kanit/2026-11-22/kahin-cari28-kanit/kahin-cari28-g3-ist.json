@@ -1,0 +1,32 @@
+{
+  "ad": "kahin-cari28-g3-ist",
+  "komut": "python3 -I -B docs/kanit/2026-11-22/kahin-cari28-arac/karsilastir.py --eski /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc28-a5c/eski/test/bagimsiz/cari --yeni test/bagimsiz/cari --dokum /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc28-a5c/kanit/kahin-cari28-g3-dokum-ist.json",
+  "commit": "e7b0e9f30097af1c2c0ca2d68eac414d8bd0a347",
+  "dal": "worktree-agent-a5cd991d0d986ba51",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-22T10:50:12.434Z",
+  "sure_sn": 38.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 670,
+    "gecen": 670,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc28-a5c/kanit/2026-11-22/kahin-cari28-g3-ist.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a5cd991d0d986ba51",
+  "ham_cikti_sha256": "d5bdbdf9100f20ef9ee66d2672eed51e62c2e37053ba0d0d3bf7fb76ec61b50c",
+  "ham_cikti_bayt": 1845
+}

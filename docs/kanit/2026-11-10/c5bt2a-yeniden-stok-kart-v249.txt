@@ -1,0 +1,77 @@
+{
+ "a_kart": {
+  "id": "plan-3267dd73-3d1c-4222-9f60-5813c6fb5bb3",
+  "kayitTarihi": "2025-09-15"
+ },
+ "a": {
+  "bakiye": 1000,
+  "eskiGeciken": 500,
+  "gecikmisListe": 500,
+  "vade": [
+   "plan:1. taksit:500@2026-10-10",
+   "plan:2. taksit:500@2026-11-10"
+  ],
+  "vadeGecikmis": 500,
+  "zil": [
+   "plan:1. taksit:500:overdue"
+  ],
+  "kalan": [],
+  "faturalar": [],
+  "kartlar": [
+   {
+    "state": "overdue",
+    "items": [
+     500,
+     500
+    ],
+    "own": 1000
+   }
+  ]
+ },
+ "b_kartYaniti": 200,
+ "b": {
+  "bakiye": 1000,
+  "eskiGeciken": 500,
+  "gecikmisListe": 500,
+  "vade": [
+   "plan:1. taksit:500@2026-10-10",
+   "plan:2. taksit:500@2026-11-10"
+  ],
+  "vadeGecikmis": 500,
+  "zil": [
+   "plan:1. taksit:500:overdue"
+  ],
+  "kalan": [
+   "debt:1000→1000"
+  ],
+  "faturalar": [],
+  "kartlar": [
+   {
+    "state": "overdue",
+    "items": [
+     500,
+     500
+    ],
+    "own": 1000
+   }
+  ]
+ },
+ "taksitListesi_active": [
+  "DK Stok Kartı:overdue:1000",
+  "DK Geriye Tarihli Kart:overdue:1000"
+ ],
+ "taksitListesi_overdue": [
+  "DK Stok Kartı:overdue:1000",
+  "DK Geriye Tarihli Kart:overdue:1000"
+ ],
+ "taksitListesi_done": [],
+ "taksitListesi_all": [
+  "DK Stok Kartı:overdue:1000",
+  "DK Geriye Tarihli Kart:overdue:1000"
+ ],
+ "mutabakat": {
+  "status": 200,
+  "ok": true,
+  "bad": []
+ }
+}

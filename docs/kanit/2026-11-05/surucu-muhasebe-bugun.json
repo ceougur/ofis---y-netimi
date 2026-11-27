@@ -1,0 +1,32 @@
+{
+  "ad": "surucu-muhasebe-bugun",
+  "komut": "node test/bagimsiz/muhasebe-surucu/kos.mjs --paralel 3 --cikti docs/kanit/2026-11-05/surucu-muhasebe-bugun --veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/surucu-muhasebe-veri-bugun",
+  "commit": "7981a056911e98b443df7af014a1da4605c2d9a8",
+  "dal": "worktree-agent-a64680bb6bb82a79e",
+  "kirli": 0,
+  "izlenmeyen": 12,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T19:21:19.832Z",
+  "sure_sn": 163.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3734,
+    "gecen": 3088,
+    "basarisiz": 646,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 646 başarısız, 0 iptal",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/surucu-muhasebe-bugun.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a64680bb6bb82a79e",
+  "ham_cikti_sha256": "43e3f27b2ed24efc54999e2560656f40d08062cc4e96237688908890b644223d",
+  "ham_cikti_bayt": 52467
+}

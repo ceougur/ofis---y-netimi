@@ -40,7 +40,8 @@ describe("Kabul 17–28: POS (BSMV Dahil; valör, taksit, iade)", () => {
     const calendar = await calendarOf(ctx.api);
     assert.deepEqual(calendar.rows.map(row => [row.valueDate, row.netMinor, row.kind]), [["2026-10-12", kurus(9750), "pos"]], "valör 12.10.2026");
     const subs = await subBalances(ctx.api);
-    assert.equal(kurus(subs["108.01"]?.balance || 0), kurus(10000), "108.01 = 10.000 (B 108.01 / A 120)");
+    // BEKLENTİ BİLEREK DEĞİŞTİ (2.5.0 Ç7a tur 2b, KG-6 = A — kullanıcı 05.11 17:16 (5): POS komisyonu satış (çekim) günü B 653 / A 108, valörde net): satış günü B 653 250 / A 108.01 250 → bankaya geçmemiş NET alacak.
+    assert.equal(kurus(subs["108.01"]?.balance || 0), kurus(9750), "108.01 = 9.750 (B 108.01 10.000 / A 120 · B 653 250 / A 108.01 250)");
     await posCheck(ctx.api, "kabul 22");
   });
 
@@ -103,20 +104,25 @@ describe("Kabul 17–28: POS (BSMV Dahil; valör, taksit, iade)", () => {
     await settle(ctx.api);
     assert.equal(await balanceOf(ctx.api, base.acc.ziraat.id), kurus(96750), "Ziraat 96.750");
     const trial = await trialBalances(ctx.api);
-    assert.equal(kurus(trial["653"] || 0), kurus(250), "İade Edilmez: 653 = 250 kalır");
+    // BEKLENTİ BİLEREK DEĞİŞTİ (2.5.0 Ç7a tur 2b, KG-6 = A — kullanıcı 05.11 17:16 (5): POS komisyonu satış (çekim) günü B 653 / A 108, valörde net): taksitli satışın (12.10) komisyonu 420 satış gününde → 653 = 250 + 420.
+    assert.equal(kurus(trial["653"] || 0), kurus(670), "İade Edilmez: 653 = 250 kalır + taksitli satışın 420'si satış gününde");
     const subs = await subBalances(ctx.api);
-    assert.equal(kurus(subs["108.01"]?.balance || 0), kurus(12000), "108.01 = 12.000 (taksitli satış bekliyor)");
+    assert.equal(kurus(subs["108.01"]?.balance || 0), kurus(11580), "108.01 = 11.580 (taksitli satış bekliyor; NET — KG-6)");
     const summary = await summaryOf(ctx.api);
     assert.equal(summary.posPending.netMinor, kurus(11580), "POS Bekleyen (Net) 11.580");
     await posCheck(ctx.api, "kabul 28");
   });
 
-  it("adım 33 mizanının POS satırları (ekstre adımları 2.3.0'da): 108.01 = 12.000, 610 = 2.500, 653 = 250; Borç = Alacak", async () => {
+  it("adım 33 mizanının POS satırları (ekstre adımları 2.3.0'da): 108.01 = 11.580 (KG-6: net), 610 = 2.500, 653 = 670; Borç = Alacak", async () => {
     const trial = await trialBalances(ctx.api);
-    assert.equal(kurus(trial["108"] || 0), kurus(12000));
+    // BEKLENTİ BİLEREK DEĞİŞTİ (2.5.0 Ç7a tur 2b, KG-6 = A — kullanıcı 05.11 17:16 (5): POS komisyonu satış (çekim) günü B 653 / A 108, valörde net): 12.000 brüt − 420 komisyon (satış günü).
+    assert.equal(kurus(trial["108"] || 0), kurus(11580));
+    assert.equal(kurus(trial["653"] || 0), kurus(670), "653 = 250 + 420");
     assert.equal(kurus(trial["610"] || 0), kurus(2500), "610 Satıştan İadeler 2.500");
     assert.equal(kurus(trial["600"] || 0), -kurus(35000), "600 Satışlar 35.000 (A)");
-    assert.equal(kurus(trial["391"] || 0), -kurus(6500), "391 Hesaplanan KDV 6.500 (A)");
+    // BEKLENTİ BİLEREK DEĞİŞTİ (2.5.0 Ç7b, KG-8 = A — kullanıcı 05.11 17:16: satıştan iade KDV'si B 191, KDVK 35): 391 = satışların KDV'si 7.000 (A); iadenin KDV'si 500 191'in borcunda.
+    assert.equal(kurus(trial["391"] || 0), -kurus(7000), "391 Hesaplanan KDV 7.000 (A)");
+    assert.equal(kurus(trial["191"] || 0), kurus(500), "191 satıştan iade KDV'si 500 (B)");
     const ledger = await must("mizan", ctx.api.get("/api/workspace/ledger"));
     assert.equal(kurus(ledger.trial.totals.debit), kurus(ledger.trial.totals.credit));
   });

@@ -19,6 +19,7 @@
 // satırlarından, yanıt biçimi kara kutu yoklamasından (not defteri yokla3.mjs).
 //
 //   node test/bagimsiz/cari/kos.mjs [senaryo.json …] [--tohum 1-3 --islem 60] [--tur ux18|s1] [--cikti <klasör>] [--mutasyonsuz] [--legacy | --kural 2.4.5|2.4.6]
+//   node test/bagimsiz/cari/kos.mjs --yapim-asamasi-yaz [--mutasyonsuz]   (S100: YAPIM-ASAMASI.json'u bugünkü farklardan yazar — aşağıda "YAPIM AŞAMASI listesi")
 //
 // Ne yapar:
 //   1. Her senaryoyu ayrı, boş bir programda koşar (test/helpers.mjs startTestServer; sahte saat = senaryonun "bugun"ü 09:00'dan akar;
@@ -51,10 +52,16 @@ let dosyalar = argv.filter((a, i) => a.endsWith(".json") && argv[i - 1] !== "--c
 // Bağımsız çağrı (dosya ve tohum verilmeden): bütün elle senaryolar + rastgele tohum 1–2 × 60 işlem (UX18 /2 ve S1 /3; --legacy'de rastgele yok).
 const LEGACY = argv.includes("--legacy");
 // Kural seti: --legacy → 2.4.4; değilse --kural (varsayılan 2.4.9; 2.4.6 / 2.4.5 karşılaştırma için)
-const KURAL = LEGACY ? "2.4.4" : opt("--kural") || "2.4.9";
-if (!["2.4.4", "2.4.5", "2.4.6", "2.4.9"].includes(KURAL)) throw new Error(`kural seti bilinmiyor: ${KURAL}`);
-// "<KURAL> kararıyla değişen beklenti" sınıfı: bir önceki kural setinin kâhin çıktısıyla fark (2.4.6 ↔ 2.4.5, 2.4.9 ↔ 2.4.6)
-const ONCEKI = { "2.4.6": "2.4.5", "2.4.9": "2.4.6" }[KURAL] || null;
+// 2.5.0 (06.11.2026; KARARLAR.md §13): kural seti "2.5.0" VARSAYILAN — 2.4.9 + Ç5 (açılış 519, KG-5, S49, tek yükümlülük kuyruğu, B1 gecikmiş); `--kural 2.4.9` eski beklentiler
+const KURAL = LEGACY ? "2.4.4" : opt("--kural") || "2.5.0";
+if (!["2.4.4", "2.4.5", "2.4.6", "2.4.9", "2.5.0"].includes(KURAL)) throw new Error(`kural seti bilinmiyor: ${KURAL}`);
+// "<KURAL> kararıyla değişen beklenti" sınıfı: bir önceki kural setinin kâhin çıktısıyla fark (2.4.6 ↔ 2.4.5, 2.4.9 ↔ 2.4.6, 2.5.0 ↔ 2.4.9)
+const ONCEKI = { "2.4.6": "2.4.5", "2.4.9": "2.4.6", "2.5.0": "2.4.9" }[KURAL] || null;
+// 2.5.0 C13.5: carinin B1 gecikmiş tutarını cari kartı yanıtından okuyan eşleme — Ç5-B kod ajanı verir (ör. r => r.totals?.overdue); null → "okunamadı"
+const GECIKMIS_ALAN = r => r.totals?.overdueDebt; // 2.5.0 Ç5-B: cari kartının TYK gecikmişi (totals.overdue ESKİ anlam — WhatsApp Ç5-C'ye kadar)
+// 2.5.0 bakım 2 C14.3 (KARARLAR.md §14): carisiz evrakın karşılıksızında programın "cari seç" sorusuna verilen yanıtın gövde alanı — Ç5-A kod ajanı verir
+// (ör. (a, ids) => ({ accountId: ids.cari[a.cari] })); null → `karsiliksiz {cari}` adımı GÖNDERİLMEZ, okuma hatası yazılır (sonuç yeşil sayılmaz)
+const KARSILIKSIZ_CARI = (a, ids) => ({ accountId: ids.cari[a.cari] }); // 2.5.0 Ç5-A (S48 / S66): karşılıksız ucunun isteğe bağlı cari alanı
 const VARSAYILAN = !dosyalar.length && !opt("--tohum");
 if (VARSAYILAN) dosyalar = readdirSync(path.join(HERE, "senaryolar")).filter(f => f.endsWith(".json")).sort().map(f => path.join(HERE, "senaryolar", f));
 const TOHUM = opt("--tohum") || (VARSAYILAN ? "1-2" : null);
@@ -466,6 +473,20 @@ async function kos(senaryo) {
           durum(a, await api("POST", `/api/workspace/stock/${ids.mal}/moves`, { ...neden, qty: "1", unitPrice: tlMetin(kurusOf(a.tutar)), pay: "account", accountId: ids.cari[a.cari], date: t }));
           break;
         }
+        case "stok_satis_taksit": {
+          // bakım 7 eşlemesi (ana oturum; yalnız eşleme): stoktan açık hesap satış + AYNI işlemde taksitlendirme — POST /api/workspace/stock/:id/moves {…, installments:
+          // {count, firstDue, everyMonths: 1}}. Kart kimliği yanıtta yok → işlemden önce / sonra kart listesi karşılaştırılır (tam bir yeni kart beklenir); kart adı ids.kart'a yazılır
+          // (kart_tahsilat ve kart:<ad>:… okumaları bu adla çalışır). Mal kartı ilk kullanımda açılır (stok_satis_hesap ile aynı).
+          if (!ids.mal) ids.mal = (await api("POST", "/api/workspace/stock", { kind: "goods", code: `KAHIN-MAL${ids.malSilinen ? `-${ids.malSilinen + 1}` : ""}`, name: "Kâhin Malı", unit: "Adet", openingQty: "100000", salePrice: "100" })).data?.id;
+          // status=all: avansla kapanmış satışın kartı "Bitti" doğar — varsayılan liste (etkin kartlar) onu göstermez
+          const kartlarOnce = new Set(((await api("GET", "/api/workspace/plans?status=all")).data?.plans || []).map(x => x.id));
+          const r = await api("POST", `/api/workspace/stock/${ids.mal}/moves`, { kind: "out", qty: "1", unitPrice: tlMetin(kurusOf(a.tutar)), pay: "account", accountId: ids.cari[a.cari], date: t,
+            installments: { count: String(a.taksit || 1), firstDue: a.ilkVade, everyMonths: 1 } });
+          durum(a, r);
+          const yeniKartlar = ((await api("GET", "/api/workspace/plans?status=all")).data?.plans || []).filter(x => !kartlarOnce.has(x.id) && x.accountId === ids.cari[a.cari]);
+          ids.kart[a.ad] = { id: yeniKartlar.length === 1 ? yeniKartlar[0].id : undefined, cari: a.cari };
+          break;
+        }
         case "supheli_al": {
           // KS7 / PLAN §3.11b/2: Şüpheli Alacağa Al — POST /api/workspace/accounts/:id/doubtful {amount, date, reason} → { record: { id } } (yoklama 5)
           const r = await api("POST", `/api/workspace/accounts/${ids.cari[a.cari]}/doubtful`, { amount: tlMetin(kurusOf(a.tutar)), date: t, reason: "other" });
@@ -578,9 +599,12 @@ async function kos(senaryo) {
           break;
         }
         case "kart_tahsilat": {
-          const planlar = (await api("GET", "/api/workspace/plans")).data?.plans || [];
-          const pl = planlar.find(x => x.caseKey === ids.anahtar[a.kayit]);
-          durum(a, await api("POST", `/api/workspace/plans/${pl?.id}/entries`, { kind: "in", amount: tlMetin(kurusOf(a.tutar)), date: t, method: "cash", cashForce: true, similarOk: true }));
+          // bakım 17 eşlemesi (yalnız eşleme): adımın fazlasiniAvansYaz alanı = 'Kalanı Aşan Tutar' sorusuna 'Fazlasını Avans Yaz' yanıtı → isteğin overpay alanı; alan yoksa istek eskisi gibi (program kalanı aşan tutarı reddeder).
+          // bakım 6 eşlemesi (yalnız eşleme): Taksitler'den açılan kartın (kart_ac) Taksit Tahsilatı — kart kimliği ids.kart'tan; Tablodan Aktar kartı kayıt anahtarıyla (eskisi gibi)
+          const kartId = ids.kart[a.kayit]?.id;
+          const planlar = kartId ? [] : (await api("GET", "/api/workspace/plans")).data?.plans || [];
+          const pl = kartId ? { id: kartId } : planlar.find(x => x.caseKey === ids.anahtar[a.kayit]);
+          durum(a, await api("POST", `/api/workspace/plans/${pl?.id}/entries`, { kind: "in", amount: tlMetin(kurusOf(a.tutar)), date: t, method: "cash", cashForce: true, similarOk: true, ...(a.fazlasiniAvansYaz ? { overpay: true } : {}) }));
           break;
         }
         case "geri_al": {
@@ -635,7 +659,11 @@ async function kos(senaryo) {
         case "tahsil":
         case "ciro": {
           const action = { karsiliksiz: "bounce", tahsil: "collect", ciro: "endorse" }[a.islem];
-          durum(a, await api("POST", `/api/workspace/cheques/${ids.evrak[a.evrak]}/actions`, { action, date: t, method: "cash", cashForce: true, ...(a.islem === "ciro" ? { accountId: ids.cari[a.cari] } : {}) }));
+          if (a.islem === "karsiliksiz" && a.cari && !KARSILIKSIZ_CARI) {
+            hatalar.push(`${a.id}: karşılıksızda cari seçimi eşlemesi yok (KARSILIKSIZ_CARI — Ç5-A verir) — adım gönderilmedi`);
+            break;
+          }
+          durum(a, await api("POST", `/api/workspace/cheques/${ids.evrak[a.evrak]}/actions`, { action, date: t, method: "cash", cashForce: true, ...(a.islem === "ciro" ? { accountId: ids.cari[a.cari] } : {}), ...(a.islem === "karsiliksiz" && a.cari ? KARSILIKSIZ_CARI(a, ids) : {}) }));
           break;
         }
         case "evrak_sil": {
@@ -748,6 +776,50 @@ async function kos(senaryo) {
           durum(a, await api("POST", `/api/workspace/invoices/${ids.fatura[a.fatura]}/cancel`, { reason: "Kâhin denemesi" }));
           break;
         }
+        case "kart_kapat":
+        case "kart_yeniden_ac": {
+          // bakım 24 (KARARLAR.md §36 Y24-1; yalnız eşleme — kara kutu yoklaması 21.11, kahin-cari24-arac/yokla1.mjs / yokla3.mjs): Kartı Kapat 'Borçta Kalsın' = PUT /plans/:id {status: "closed"},
+          // Yeniden Aç = {status: "active"} (kapanış günü sunucunun bugünü — gövdeden verilemiyor). Kart: kart_ac kartı (ids.kart) ya da taksitli faturanın KENDİ kartı (fatura kartının planId'si)
+          let pid = a.kart ? ids.kart[a.kart]?.id : ids.faturaKart?.[a.fatura];
+          if (!a.kart && !pid) {
+            // yoklama 4 (kahin-cari24-arac/yokla4.mjs): taksitli faturanın kartı fatura kartının `planId` alanında (plan listesinde faturaya bağ alanı yok)
+            pid = (await api("GET", `/api/workspace/invoices/${ids.fatura[a.fatura]}`)).data?.planId || null;
+            if (pid) (ids.faturaKart ||= {})[a.fatura] = pid;
+          }
+          if (!pid) hatalar.push(`${a.id}: kapatılacak kartın kimliği okunamadı (${a.kart || a.fatura})`);
+          durum(a, await api("PUT", `/api/workspace/plans/${pid}`, { status: a.islem === "kart_kapat" ? "closed" : "active" }));
+          if (a.kart) (ids.kapatilan ||= new Set()).add(a.kart);
+          break;
+        }
+        case "fatura_duzenle": {
+          // bakım 25 (§37 Y25-1; yalnız eşleme — girdi §4 + kara kutu yoklaması kahin-cari25-arac/yokla*.mjs): KESİLMİŞ faturanın Düzenle'si = POST /invoices/:id/edit, gövde faturanın ayrıntısından
+          // (scenario, accountId, issueDate, lines — tek kalemin qty = adet, payment — ayrıntının ödeme bölümü, force); yalnız miktar farklı. Yanıt kodu + gövde durum()'da (ders 3: 409 / 4xx "yapıldı" sayılmaz).
+          // KAHIN_DUZENLE_UC=put: bakım 24'ün eski eşlemesi (PUT — yalnız taslak; bağdaştırıcı mutantı, kos'un dişi için)
+          const fid = ids.fatura[a.fatura];
+          const g = (await api("GET", `/api/workspace/invoices/${fid}`)).data || {};
+          const lines = (g.lines || []).map(l => ({ ...l, qty: a.adet }));
+          let rd;
+          if (process.env.KAHIN_DUZENLE_UC === "put") {
+            rd = await api("PUT", `/api/workspace/invoices/${fid}`, { ...g, lines, updatedAt: g.updatedAt });
+          } else {
+            const p0 = g.payment || {};
+            // yoklama 1 / 2: ayrıntının payment'ında biçim `mode` ("open" / "installments"), `rest` TUTARDIR — gövdede `rest` = biçim; vade ayrıntının dueDate'i
+            const payment = { cash: p0.cash || [], cheques: p0.cheques || [], endorse: p0.endorse || [], rest: p0.mode || "open", dueDate: g.dueDate || "", installments: p0.installments ?? null };
+            rd = await api("POST", `/api/workspace/invoices/${fid}/edit`, { scenario: g.scenario, accountId: g.accountId, issueDate: g.issueDate, lines, payment, force: false });
+          }
+          durum(a, rd);
+          ham[`duzenle:${a.id}`] = { http: rd.status, yanit: rd.status === 200 ? undefined : rd.data };
+          // bakım 27 (§39 Y27-3 — yalnız okuma eşlemesi, kural DEĞİL): reddedilen Düzenle'den sonra da taksitli faturanın kendi kartı okunur ('kart DEĞİŞMEZ'in denetimi; kimlik Düzenle'den önceki ayrıntının planId'si)
+          if (rd.status !== 200 && g.planId) (ids.faturaKart ||= {})[a.fatura] = g.planId;
+          if (rd.status === 200) {
+            ids.faturaTutar[a.fatura] = Math.round((ids.faturaTutar[a.fatura] * a.adet) / (ids.faturaAdet[a.fatura] || 1));
+            ids.faturaAdet[a.fatura] = a.adet;
+            // bakım 25 (yoklama 2): taksitli faturanın kendi kartı Düzenle'den sonra ayrıntının `planId`'sinden yeniden okunur (program yeni kart kimliği verebiliyor); kontrol `kart:fatura:<F>:*` yazar
+            const pid2 = (await api("GET", `/api/workspace/invoices/${fid}`)).data?.planId;
+            if (pid2) (ids.faturaKart ||= {})[a.fatura] = pid2;
+          }
+          break;
+        }
         case "kontrol": {
           const k = a.id;
           const hesaplar = (await api("GET", "/api/workspace/accounts?status=all&limit=500")).data?.accounts || [];
@@ -781,6 +853,8 @@ async function kos(senaryo) {
             P[`${k}:cari:${ad}:silinebilir`] = typeof r.data.deleteBlock === "string" ? r.data.deleteBlock === "" : "okunamadı";
             P[`${k}:cari:${ad}:pasif`] = r.data.status === "passive" ? true : r.data.status === "active" ? false : `durum:${r.data.status}`;
             ham[`${k}:cari:${ad}:deleteBlock`] = r.data.deleteBlock; // ders 38: nedenin metni
+            // 2.5.0 C13.5 (KARARLAR.md §13): B1 gecikmiş tutarı — alan adı Ç5-B'nin ortak yardımcısında verilir (GECIKMIS_ALAN); verilene kadar "okunamadı" (ders 4)
+            if (a.gecikmis) P[`${k}:cari:${ad}:gecikmis`] = GECIKMIS_ALAN ? kurus(GECIKMIS_ALAN(r.data)) : "okunamadı";
           }
           for (const [ad, id] of Object.entries(ids.fatura)) {
             if (!id) continue;
@@ -794,8 +868,30 @@ async function kos(senaryo) {
               hatalar.push(`${k} fatura ${ad} okunamadı (${r.status})`);
               continue;
             }
-            P[`${k}:fatura:${ad}:acik`] = kurus(r.data.open);
+            // bakım 23 (KARARLAR.md §35 — S229 / S230 = A; API sözleşmesi girdi §2): `fatura:acik` faturanın KENDİ açığıdır (kapama kuralıyla) — `ownOpen`; eski program sürümlerinde
+            // alan yoktur, orada `open` kendi açıktır. GÖSTERİLEN açık (`open`; Mevcut Borç kartının aldığı kısım düşülmüş), kartların aldığı kısım (`inPlan`) ve 'Taksitte' durumu
+            // (ödeme durumu `payState` = "installment" — yoklama 21.11: belge durumu `status` ayrı alandır) ayrı anahtarlar. `inPlan` yoksa: `ownOpen` de yoksa `open` kendi açıktır → kartın aldığı kısım 0
+            // (sözleşme: gösterilen = kendi − kartın aldığı); `ownOpen` varken `inPlan` yoksa "alan yok". Öbür alan yoksa "alan yok" (okunamayan boş değildir — ders 4).
+            const sahip = (o, x) => Boolean(o) && typeof o === "object" && x in o;
+            const kendi = sahip(r.data, "ownOpen") ? r.data.ownOpen : r.data.open;
+            P[`${k}:fatura:${ad}:acik`] = kurus(kendi);
+            P[`${k}:fatura:${ad}:gosterilen`] = sahip(r.data, "open") ? kurus(r.data.open) : "alan yok";
+            P[`${k}:fatura:${ad}:kartta`] = sahip(r.data, "inPlan") ? kurus(r.data.inPlan) : !sahip(r.data, "ownOpen") && sahip(r.data, "open") ? 0 : "alan yok";
+            P[`${k}:fatura:${ad}:taksitte`] = sahip(r.data, "payState") ? r.data.payState === "installment" : "alan yok";
+            ham[`${k}:fatura:${ad}`] = { open: r.data.open, ownOpen: r.data.ownOpen, inPlan: r.data.inPlan, status: r.data.status, payState: r.data.payState, ownPayState: r.data.ownPayState }; // ders 38: ham alanlar (bakım 24: ownPayState — girdi §2, denetlenmez)
             if (r.data.status === "cancelled") P[`${k}:fatura:${ad}:durum`] = "iptal";
+          }
+          {
+            // bakım 23 (S230 = A): Faturalar LİSTESİ'ndeki gösterilen açık ve durum — fatura kartıyla aynı olmalı (`liste:gosterilen` / `liste:taksitte`; satır bulunamazsa "satır yok")
+            const lr = await api("GET", "/api/workspace/invoices?limit=500");
+            const liste = Array.isArray(lr.data) ? lr.data : lr.data?.invoices || lr.data?.items || null;
+            ham[`${k}:faturaListesi`] = { status: lr.status, anahtarlar: lr.data && typeof lr.data === "object" ? Object.keys(lr.data).slice(0, 20) : null, ilk: Array.isArray(liste) ? liste[0] ?? null : null };
+            for (const [ad, id] of Object.entries(ids.fatura)) {
+              if (!id || P[`${k}:fatura:${ad}:gosterilen`] === undefined) continue;
+              const s = Array.isArray(liste) ? liste.find(x => x.id === id) : undefined;
+              P[`${k}:fatura:${ad}:liste:gosterilen`] = !Array.isArray(liste) ? "okunamadı" : !s ? "satır yok" : "open" in s ? kurus(s.open) : "alan yok";
+              P[`${k}:fatura:${ad}:liste:taksitte`] = !Array.isArray(liste) ? "okunamadı" : !s ? "satır yok" : "payState" in s ? s.payState === "installment" : "alan yok";
+            }
           }
           const planlar = (await api("GET", "/api/workspace/plans")).data?.plans || [];
           for (const [no, anahtar] of Object.entries(ids.anahtar)) {
@@ -815,12 +911,24 @@ async function kos(senaryo) {
             if (!d) continue;
             Object.assign(P, { [`${k}:kart:${ad}:toplam`]: kurus(d?.totals?.total), [`${k}:kart:${ad}:odenen`]: kurus(d?.totals?.paid), [`${k}:kart:${ad}:kalan`]: kurus(d?.totals?.remaining), [`${k}:kart:${ad}:mevcutBorc`]: Boolean(d?.coversBalance) });
             (d?.items || []).forEach((it, i) => (P[`${k}:kart:${ad}:taksit${i + 1}:odenen`] = kurus(it.paid)));
+            // bakım 24 (§36 Y24-1; girdi §2 "kart kapalıyken (`status` 'closed') de `remaining` kartın güncel kalanı"): Kartı Kapat / Yeniden Aç görmüş kartın durumu
+            if (ids.kapatilan?.has(ad)) P[`${k}:kart:${ad}:kapali`] = d.status === "closed" ? true : d.status === "active" ? false : `durum:${d.status}`;
+            ham[`${k}:kart:${ad}`] = { status: d.status, closedAt: d.closedAt, total: d.totals?.total, remaining: d.totals?.remaining, items: (d.items || []).map(it => [it.dueDate, it.planDueDate, it.amount, it.paid]) }; // ders 38
+          }
+          for (const [fad, pid] of Object.entries(ids.faturaKart || {})) {
+            // bakım 24 (§36 Y24-1 / Y24-4): taksitli faturanın KENDİ kartı (Kartı Kapat / Yeniden Aç görmüş) — kapalı mı, tutarı, Kalan
+            const pr = await api("GET", `/api/workspace/plans/${pid}`);
+            if (pr.status !== 200) { hatalar.push(`${k} fatura ${fad} kartı okunamadı (${pr.status})`); continue; }
+            P[`${k}:kart:fatura:${fad}:kapali`] = pr.data.status === "closed" ? true : pr.data.status === "active" ? false : `durum:${pr.data.status}`;
+            P[`${k}:kart:fatura:${fad}:toplam`] = kurus(pr.data.totals?.total);
+            P[`${k}:kart:fatura:${fad}:kalan`] = kurus(pr.data.totals?.remaining);
+            ham[`${k}:kart:fatura:${fad}`] = { status: pr.data.status, total: pr.data.totals?.total, remaining: pr.data.totals?.remaining, items: (pr.data.items || []).map(it => [it.dueDate, it.planDueDate, it.amount, it.paid]) };
           }
           P[`${k}:kasa`] = kurus((await api("GET", "/api/workspace/cash")).data?.totals?.balance);
           const led = await api("GET", "/api/workspace/ledger");
           if (led.status === 200) {
             // Mizan okundu: bakiyesi sıfır olan hesap programın listesinde yer almayabilir → 0 (okunamadı değil).
-            for (const kod of ["100", "101", "120", "121", "320", "600", "610", "770"]) P[`${k}:mizan:${kod}`] = 0;
+            for (const kod of ["100", "101", "120", "121", "320", "500", "519", "600", "610", "770"]) P[`${k}:mizan:${kod}`] = 0; // 2.5.0 Ç5-A: 500 / 519 de (sıfır bakiye okundu)
             for (const h of led.data.trial.accounts) if (Math.round(h.balance * 100)) P[`${k}:mizan:${h.code}`] = Math.round(h.balance * 100);
             ids.mizan[k] = Object.fromEntries(led.data.trial.accounts.map(h => [h.code, Math.round(h.balance * 100)]).filter(([, v]) => v).sort());
             // /3: "Yevmiye DEĞİŞMEZ" — mizan önceki kontroldekiyle aynı mı (vade alanı değişikliğinden sonra)
@@ -1099,6 +1207,113 @@ function bilinenMutantlari() {
 }
 const BILINEN = bilinenYukle();
 
+// ───────── YAPIM AŞAMASI listesi (S100 = A, KULLANICI KARARI 10.11.2026 17:54 UTC; docs/2.5.0-IS-LISTESI.md D): Ç5 paket paket (K, B, A, C) ana dala giriyor, kâhin
+// kullanıcı kararlarının TAMAMINI bekliyor. Bugünkü farklar kararı / bekleyen paketiyle etiketlenip SABİTLENİR (YAPIM-ASAMASI.json); kâhinin beklentisi DEĞİŞMEZ. BİLİNEN'den
+// (kullanıcının ERTELEDİĞİ farklar) AYRI dosyadır, aynı katılıkta: TAM ad (senaryo + denetim anahtarı; joker yok), fark = senaryo + anahtar + beklenen + program dördüyle
+// TAM eşleşir. Listedeki fark "YAPIM AŞAMASI" diye ayrı sayılır (geçti de başarısız da SAYILMAZ: "N/M denetim geçti" satırında payda ve paydan düşülür); listede OLMAYAN
+// fark, değeri (beklenen ya da program) DEĞİŞEN fark ve KAPANDIĞI hâlde listede duran kayıt BAŞARISIZ (liste yalnız küçülür). Okuma hatası da kayıt olabilir
+// (anahtar "OKUMA HATASI: <ileti>", beklenen null, program "okunamadı"). Yalnız varsayılan kural setinde (2.5.0) uygulanır; --legacy / --kural <eski> koşuları
+// bugünkü gibi (liste okunmaz, çıktıya satır eklenmez). Yayın adayında liste BOŞ olmalı: tools/release.mjs dolu listeyle imzalı paket üretmez (kanit.mjs yapimAsamasiGate).
+//   node test/bagimsiz/cari/kos.mjs --yapim-asamasi-yaz [--mutasyonsuz]   # yalnız geliştirici: bugünkü farklardan listeyi yazar (CI çağırmaz)
+const YAPIM_UYGULANIR = !LEGACY && KURAL === "2.5.0";
+const YAPIM_YAZ = argv.includes("--yapim-asamasi-yaz");
+if (YAPIM_YAZ && !(YAPIM_UYGULANIR && VARSAYILAN)) throw new Error("--yapim-asamasi-yaz yalnız varsayılan koşuda (senaryo / tohum / --kural / --legacy verilmeden) çalışır");
+const YAPIM_YOLU = process.env.KAHIN_YAPIM_ASAMASI || path.join(HERE, "YAPIM-ASAMASI.json"); // KAHIN_YAPIM_ASAMASI: yalnız mekanizmanın kendi denemesi için başka liste
+const YAPIM_PAKETLER = ["Ç5-A", "Ç5-B tur 2", "Ç5-C", "eşleme", "Ç7b", "S255 izleyen tur 4", "AYRIŞTIRILMADI"]; // bakım 24: "Ç7b" — S234 / S237 kart küçülmesinin programda henüz yapılmayan kısmı (girdi §1 (e) / (f)); bakım 28: "S255 izleyen tur 4" — S255 = A'nın kodu (ayrı kod turu; görev metni)
+const OKUMA_ONEKI = "OKUMA HATASI: ";
+const YAPIM_ALANLAR = ["senaryo", "anahtar", "beklenen", "program", "sinif", "kural", "paket"];
+function yapimYukle() {
+  if (!YAPIM_UYGULANIR || YAPIM_YAZ) return { kayitlar: [], hatalar: [] };
+  let ham;
+  try {
+    ham = JSON.parse(readFileSync(YAPIM_YOLU, "utf8"));
+  } catch (e) {
+    return { kayitlar: [], hatalar: [`YAPIM-ASAMASI.json okunamadı (${path.basename(YAPIM_YOLU)}: ${e.code || e.message}) — liste boş SAYILMAZ (ders 4)`] };
+  }
+  const kayitlar = Array.isArray(ham?.kayitlar) ? ham.kayitlar : [];
+  const hatalar = Array.isArray(ham?.kayitlar) ? [] : ["YAPIM-ASAMASI.json: \"kayitlar\" dizisi yok"];
+  const gorulen = new Set();
+  const elleAdlar = new Set(readdirSync(path.join(HERE, "senaryolar")).filter(f => f.endsWith(".json")).map(f => f.replace(/\.json$/, "")));
+  for (const [i, e] of kayitlar.entries()) {
+    for (const alan of YAPIM_ALANLAR) if (!e || typeof e !== "object" || !(alan in e)) hatalar.push(`YAPIM-ASAMASI.json kayıt ${i}: "${alan}" alanı yok`);
+    if (!e || typeof e !== "object") continue;
+    if (typeof e.senaryo !== "string" || typeof e.anahtar !== "string") hatalar.push(`YAPIM-ASAMASI.json kayıt ${i}: senaryo / anahtar metin olmalı`);
+    const okuma = String(e.anahtar).startsWith(OKUMA_ONEKI);
+    // joker / kalıp karakteri yasak (tam ad gerekir); okuma hatası kaydında ileti metni serbesttir ama TAM eşleşir (alt dizgi yok)
+    if (/[*?\[\]]/.test(`${e.senaryo}${okuma ? "" : e.anahtar}`)) hatalar.push(`YAPIM-ASAMASI.json kayıt ${i}: joker / kalıp karakteri yasak (tam ad gerekir): ${e.senaryo} ${e.anahtar}`);
+    if (okuma && (e.beklenen !== null || e.program !== "okunamadı")) hatalar.push(`YAPIM-ASAMASI.json kayıt ${i}: okuma hatası kaydında beklenen null, program "okunamadı" olmalı: ${e.senaryo} ${e.anahtar}`);
+    if (!elleAdlar.has(e.senaryo) && !String(e.senaryo).startsWith("rastgele-")) hatalar.push(`YAPIM-ASAMASI.json kayıt ${i}: senaryo yok (bayat kayıt): ${e.senaryo}`);
+    if (!YAPIM_PAKETLER.includes(e.paket)) hatalar.push(`YAPIM-ASAMASI.json kayıt ${i}: paket bilinmiyor (${JSON.stringify(e.paket)}; geçerli: ${YAPIM_PAKETLER.join(", ")}): ${e.senaryo} ${e.anahtar}`);
+    const ad = `${e.senaryo}|${e.anahtar}`;
+    if (gorulen.has(ad)) hatalar.push(`YAPIM-ASAMASI.json kayıt ${i}: çift kayıt ${ad}`);
+    gorulen.add(ad);
+  }
+  return { kayitlar, hatalar };
+}
+// Okuma hataları liste karşılaştırması için fark biçimine çevrilir (aynı ileti bir senaryoda iki kez görünürse ikincisi " #2" alır — tam ad korunur)
+function okumaFarklari(hatalar) {
+  const sayac = new Map();
+  return hatalar.map(h => {
+    const n = (sayac.get(h) || 0) + 1;
+    sayac.set(h, n);
+    return { anahtar: `${OKUMA_ONEKI}${h}${n > 1 ? ` #${n}` : ""}`, beklenen: null, program: "okunamadı", etiket: "OKUMA", kural: "okuma hatası (ders 4)", sinif: "OKUMA HATASI", okuma: true, metin: h };
+  });
+}
+// mut (yalnız liste mutantları için; BİLİNEN mutantlarıyla aynı ilke): 1 senaryo adı yok sayılır · 2 alt dizgi eşleşmesi (joker) · 3 program değeri karşılaştırılmaz ·
+// 4 kapanan kayıt denetlenmez · 5 kâhin beklentisi karşılaştırılmaz. BİLİNEN değişti / kapandı satırları listeyle eşleşmez (yalnız gerçek farklar ve okuma hataları).
+function yapimAyir(senaryoAd, denetimler, farklar, liste, mut = 0) {
+  const eslesir = (e, f) => (mut === 1 || e.senaryo === senaryoAd) && (mut === 2 ? f.anahtar.includes(e.anahtar) : e.anahtar === f.anahtar);
+  const aday = f => !String(f.sinif).startsWith("BİLİNEN");
+  const kalan = [], yapim = [];
+  for (const f of farklar) {
+    const e = aday(f) ? liste.find(x => eslesir(x, f)) : null;
+    if (!e) { kalan.push(f); continue; }
+    if ((mut === 3 || esit(f.program, e.program)) && (mut === 5 || esit(f.beklenen, e.beklenen))) yapim.push({ ...f, paket: e.paket });
+    else kalan.push({ ...f, okuma: false, sinif: "YAPIM AŞAMASI DEĞİŞTİ", kural: `${f.kural} · değer değişti: liste program ${JSON.stringify(e.program)} / kâhin ${JSON.stringify(e.beklenen)} (${e.paket}) — şimdi program ${JSON.stringify(f.program)} / kâhin ${JSON.stringify(f.beklenen)}` });
+  }
+  if (mut !== 4) {
+    for (const e of liste.filter(x => (mut === 1 || x.senaryo === senaryoAd))) {
+      if (farklar.some(f => aday(f) && eslesir(e, f))) continue;
+      kalan.push({ anahtar: e.anahtar, beklenen: e.beklenen, program: e.anahtar in denetimler ? "tuttu" : String(e.anahtar).startsWith(OKUMA_ONEKI) ? "okuma hatası yok" : "denetim yok", etiket: "YAPIM AŞAMASI",
+        sinif: "YAPIM AŞAMASI KAPANDI", kural: `YAPIM AŞAMASI KAPANDI — listeden silin (${e.paket}; liste program ${JSON.stringify(e.program)})` });
+    }
+  }
+  return { kalan, yapim };
+}
+// Liste mutantlarının dişi: sentetik durumlarda doğru eşleştirici ile her mutant en az bir durumda farklı sonuç vermeli (ders 7)
+function yapimMutantlari() {
+  const L = [{ senaryo: "S", anahtar: "k1:kalem:2026/101", beklenen: 1, program: 2, paket: "Ç5-A" }, { senaryo: "S", anahtar: "k1:acilis:X", beklenen: 5, program: 6, paket: "Ç5-B tur 2" },
+    { senaryo: "S", anahtar: `${OKUMA_ONEKI}k1 mizan okunamadı (500)`, beklenen: null, program: "okunamadı", paket: "eşleme" }];
+  const F = (anahtar, beklenen, program) => ({ anahtar, beklenen, program, etiket: "KULLANICI", kural: "deneme", sinif: "BULGU" });
+  const O = metin => okumaFarklari([metin])[0];
+  const durumlar = [
+    ["S", { "k1:kalem:2026/101": {}, "k1:kalem:2026/1012": {}, "k1:acilis:X": {} }, [F("k1:kalem:2026/101", 1, 2), F("k1:kalem:2026/1012", 1, 2), F("k1:acilis:X", 5, 6), O("k1 mizan okunamadı (500)"), O("k1 mizan okunamadı (5001)")]],
+    ["T", { "k1:kalem:2026/101": {} }, [F("k1:kalem:2026/101", 1, 2)]],
+    ["S", { "k1:kalem:2026/101": {}, "k1:acilis:X": {} }, [F("k1:kalem:2026/101", 1, 3), F("k1:acilis:X", 5, 6), O("k1 mizan okunamadı (500)")]],
+    ["S", { "k1:kalem:2026/101": {}, "k1:acilis:X": {} }, [F("k1:acilis:X", 5, 6)]],
+    ["S", { "k1:kalem:2026/101": {}, "k1:acilis:X": {} }, [F("k1:kalem:2026/101", 9, 2), F("k1:acilis:X", 5, 6), O("k1 mizan okunamadı (500)")]],
+    ["S", { "k1:kalem:2026/101": {} }, [{ ...F("k1:kalem:2026/101", 1, 2), sinif: "BİLİNEN KAPANDI" }, F("k1:acilis:X", 5, 6), O("k1 mizan okunamadı (500)")]],
+  ];
+  const imza = mut => JSON.stringify(durumlar.map(([s, d, f]) => { const r = yapimAyir(s, d, f, L, mut); return [r.yapim.map(x => x.anahtar), r.kalan.map(x => `${x.anahtar}:${x.sinif}`)]; }));
+  const dogru = imza(0);
+  const adlar = { 1: "senaryo adı yok sayılır", 2: "alt dizgi (joker) eşleşmesi", 3: "program değeri karşılaştırılmaz", 4: "kapanan kayıt denetlenmez", 5: "kâhin beklentisi karşılaştırılmaz" };
+  return Object.entries(adlar).map(([n, ad]) => ({ n, ad, yakalandi: imza(Number(n)) !== dogru }));
+}
+// Paket etiketi (yalnız --yapim-asamasi-yaz): kural / ileti metni AÇIKÇA gösteriyorsa; göstermiyorsa ya da birden çok pakete işaret ediyorsa "AYRIŞTIRILMADI"
+// (tahminle doldurulmaz — ana oturum ayrıştırır). Ölçütler görev metninden (ya-listesi-istem.txt §2): açılış karşılığı 519 / carisiz evrak S49 → Ç5-A;
+// S91–S99 → Ç5-B tur 2; koşucudaki boş eşleme (KARSILIKSIZ_CARI; GECIKMIS_ALAN boşsa okunamayan değer) → eşleme.
+function yapimPaketi(f) {
+  const metin = `${f.kural ?? ""} ${f.okuma ? f.anahtar : ""}`;
+  const isaret = new Set();
+  if (/KARSILIKSIZ_CARI|GECIKMIS_ALAN/.test(metin)) isaret.add("eşleme");
+  if (/açılış karşılığı 519|\bS49\b/.test(metin)) isaret.add("Ç5-A");
+  if (/\bS9[1-9]\b/.test(metin)) isaret.add("Ç5-B tur 2");
+  if (/\bÇ5-C\b/.test(metin)) isaret.add("Ç5-C");
+  if (/§36 Y24-/.test(metin)) isaret.add("Ç7b"); // bakım 24: S234 / S237 / KAPSAM (a)–(f) kuralları (kart küçülmesi, Düzenle, iki kart)
+  return isaret.size === 1 ? { paket: [...isaret][0] } : { paket: "AYRIŞTIRILMADI", not: isaret.size ? `kural metni birden çok pakete işaret ediyor: ${[...isaret].join(", ")}` : "kural metni paketi göstermiyor" };
+}
+const YAPIM = yapimYukle();
+
 const GECERSIZ_DENETIM = [];
 const DEGISEN = [];          // <KURAL> kararıyla değişen beklenti (senaryo başına; 2.4.6 ↔ 2.4.5, 2.4.9 ↔ 2.4.6)
 const SINIF = { ic: 0, ks9: 0, dis: 0 }; // programla farkların bu sınıfta / KS9 madde 10 yolunda (yalnız 2.4.6) / dışında olanları
@@ -1107,11 +1322,15 @@ let genelToplam = 0;
 let genelFark = 0;
 let okumaHatasi = 0;
 let genelBilinen = 0;
+let genelYapim = 0;          // YAPIM AŞAMASI kayıtlarıyla eşleşen farklar + okuma hataları (geçti de başarısız da sayılmaz)
+let genelYapimDenetim = 0;   // bunların denetim olanları (okuma hatası olmayanlar) — "N/M denetim geçti" satırında payda ve paydan düşülür
+const yapimHepsi = [];
+const yapimYazilacak = [];
 const bilinenHepsi = [];
 const ozet = [];
 for (const dosya of dosyalar) {
   const senaryo = JSON.parse(readFileSync(dosya, "utf8"));
-  const { program, hatalar, gunluk, ham } = await kos(senaryo);
+  const { program, hatalar: okumaHatalari, gunluk, ham } = await kos(senaryo);
   writeFileSync(path.join(OUT, `${senaryo.ad}.ham.json`), JSON.stringify(ham, null, 1));
   const beklenen = model(dosya);
   // 2.4.5 kararıyla geçersiz DENETİMLER (K4.1, C0): varsayılan kipte /1 /2 senaryosunda 2.4.4 kural setinin yazıp 2.4.5'in yazmadığı denetimler (yalnız --legacy'de koşar)
@@ -1146,17 +1365,34 @@ for (const dosya of dosyalar) {
     }
   }
   // /3: BILINEN kaydının `kural` alanı varsa yalnız o kural setinde uygulanır (2.4.5'te konusu kalkan Takvim / Açılış Bakiyesi kayıtları "2.4.4")
-  const { kalan: farklar, bilinen } = bilinenAyir(senaryo.ad, beklenen.denetimler, tumFarklar, BILINEN.kayitlar.filter(e => !e.kural || e.kural === KURAL));
+  const { kalan: bilinenSonrasi, bilinen } = bilinenAyir(senaryo.ad, beklenen.denetimler, tumFarklar, BILINEN.kayitlar.filter(e => !e.kural || e.kural === KURAL));
+  // YAPIM AŞAMASI (yalnız 2.5.0 varsayılan kural seti; öbür kiplerde farklar ve okuma hataları aynen geçer — çıktı bugünkü gibi)
+  let farklar = bilinenSonrasi;
+  let hatalar = okumaHatalari;
+  let yapim = [];
+  if (YAPIM_UYGULANIR) {
+    const ayrim = yapimAyir(senaryo.ad, beklenen.denetimler, [...bilinenSonrasi, ...okumaFarklari(okumaHatalari)], YAPIM.kayitlar);
+    yapim = ayrim.yapim;
+    farklar = ayrim.kalan.filter(f => !f.okuma);
+    hatalar = ayrim.kalan.filter(f => f.okuma).map(f => f.metin);
+    // --yapim-asamasi-yaz: liste bugünkü farklardan (BİLİNEN değişti / kapandı satırları hariç — onlar BİLİNEN listesinin sorunu, yazım reddedilir)
+    if (YAPIM_YAZ) for (const f of ayrim.kalan) yapimYazilacak.push({ senaryo: senaryo.ad, f, sinif246: f.sinif246 });
+  }
+  const yapimDenetim = yapim.filter(y => !y.okuma).length;
   genelToplam += toplam;
   genelFark += farklar.length;
   genelBilinen += bilinen.length;
+  genelYapim += yapim.length;
+  genelYapimDenetim += yapimDenetim;
   bilinenHepsi.push(...bilinen.map(b => ({ senaryo: senaryo.ad, ...b })));
+  yapimHepsi.push(...yapim.map(y => ({ senaryo: senaryo.ad, anahtar: y.anahtar, paket: y.paket })));
   okumaHatasi += hatalar.length;
   writeFileSync(path.join(OUT, `${senaryo.ad}.program.json`), JSON.stringify(program, null, 1));
   writeFileSync(path.join(OUT, `${senaryo.ad}.kahin.json`), JSON.stringify(beklenen, null, 1));
   writeFileSync(path.join(OUT, `${senaryo.ad}.api-gunlugu.json`), JSON.stringify(gunluk, null, 1));
-  writeFileSync(path.join(OUT, `${senaryo.ad}.fark.json`), JSON.stringify({ toplam, farklar, bilinen, hatalar }, null, 1));
-  console.log(`${senaryo.ad}: ${toplam - farklar.length - bilinen.length}/${toplam} tuttu${bilinen.length ? ` · BİLİNEN ${bilinen.length}` : ""}${hatalar.length ? ` · OKUMA HATASI ${hatalar.length}: ${hatalar.join("; ")}` : ""}`);
+  writeFileSync(path.join(OUT, `${senaryo.ad}.fark.json`), JSON.stringify({ toplam, farklar, bilinen, hatalar, ...(YAPIM_UYGULANIR ? { yapimAsamasi: yapim } : {}) }, null, 1));
+  const paketDagilimi = liste => Object.entries(liste.reduce((s, y) => ({ ...s, [y.paket]: (s[y.paket] || 0) + 1 }), {})).sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)).map(([p, n]) => `${p} ${n}`).join(", ");
+  console.log(`${senaryo.ad}: ${toplam - farklar.length - bilinen.length - yapimDenetim}/${toplam} tuttu${bilinen.length ? ` · BİLİNEN ${bilinen.length}` : ""}${yapim.length ? ` · YAPIM AŞAMASI ${yapim.length} (${paketDagilimi(yapim)})` : ""}${hatalar.length ? ` · OKUMA HATASI ${hatalar.length}: ${hatalar.join("; ")}` : ""}`);
   for (const b of bilinen) console.log(`  ≈ [BİLİNEN] ${b.anahtar}: program ${JSON.stringify(b.program)} · kâhin ${JSON.stringify(b.beklenen)} (${b.kaynak})`);
   if (degisen) {
     const ic = farklar.filter(f => f.sinif246 === SINIF_ADI).length;
@@ -1185,7 +1421,7 @@ if (!argv.includes("--mutasyonsuz")) {
   const kipler = d => {
     if (gecersizMi(d)) return ["2.4.4"];
     const ana = KURAL === "2.4.4" ? "2.4.5" : KURAL;
-    if (JSON.parse(readFileSync(d, "utf8")).dil === "destekofis-cari/3") return ["2.4.9", "2.4.6", "2.4.5"]; // her kipte üç kural seti (2.4.9 / 2.4.6 mutantları --legacy / --kural 2.4.5'te de)
+    if (JSON.parse(readFileSync(d, "utf8")).dil === "destekofis-cari/3") return ["2.5.0", "2.4.9", "2.4.6", "2.4.5"]; // her kipte dört kural seti (2.5.0 Ç5 mutantları 200–213 yalnız 2.5.0'da; 2.4.9 / 2.4.6 mutantları --legacy / --kural 2.4.5'te de)
     return [ana, "2.4.4"];
   };
   // Tek Python sürecinde (model.py --mutasyon-tara): her mutant için ilk 3 yakalayan (dosya, kip) — 100+ mutant × 40+ dosya × 1–2 kip, süreç başlatma maliyeti yok
@@ -1205,13 +1441,89 @@ for (const m of bilinenMutantlari()) {
   if (!m.yakalandi) kacan += 1;
   console.log(`  liste mutasyonu ${m.n} (${m.ad}): ${m.yakalandi ? "YAKALANDI" : "YAKALANMADI"}`);
 }
-writeFileSync(path.join(OUT, "ozet.json"), JSON.stringify({ kip: LEGACY ? "legacy (2.4.4 kuralları, anahtarlar açık)" : KURAL, ozet, oncekiKural: ONCEKI, degisen: DEGISEN, farkSinifi: ONCEKI ? SINIF : null, genelToplam, genelFark, okumaHatasi, kacan, bilinen: genelBilinen, bilinenKayitlar: bilinenHepsi, bilinenListesiHatalari: BILINEN.hatalar, atlanan: ATLANAN, gecersizDenetim: GECERSIZ_DENETIM }, null, 1));
+// YAPIM AŞAMASI listesi: geçersiz kayıt / okunamayan dosya BAŞARISIZ; liste mutantları (yalnız uygulandığı kipte — öbür kiplerde çıktı bugünkü gibi)
+if (YAPIM_UYGULANIR) {
+  for (const h of YAPIM.hatalar) console.log(`  ✗ [YAPIM AŞAMASI LİSTESİ] ${h}`);
+  genelFark += YAPIM.hatalar.length;
+  for (const m of yapimMutantlari()) {
+    if (!m.yakalandi) kacan += 1;
+    console.log(`  yapım aşaması listesi mutasyonu ${m.n} (${m.ad}): ${m.yakalandi ? "YAKALANDI" : "YAKALANMADI"}`);
+  }
+}
+writeFileSync(path.join(OUT, "ozet.json"), JSON.stringify({ kip: LEGACY ? "legacy (2.4.4 kuralları, anahtarlar açık)" : KURAL, ozet, oncekiKural: ONCEKI, degisen: DEGISEN, farkSinifi: ONCEKI ? SINIF : null, genelToplam, genelFark, okumaHatasi, kacan, bilinen: genelBilinen, bilinenKayitlar: bilinenHepsi, bilinenListesiHatalari: BILINEN.hatalar, atlanan: ATLANAN, gecersizDenetim: GECERSIZ_DENETIM, ...(YAPIM_UYGULANIR ? { yapimAsamasi: genelYapim, yapimAsamasiDenetim: genelYapimDenetim, yapimAsamasiKayitlar: yapimHepsi, yapimAsamasiListesiHatalari: YAPIM.hatalar } : {}) }, null, 1));
+// --yapim-asamasi-yaz: listeyi bugünkü farklardan yazar (sıralı, zaman damgasız — iki ardışık koşu aynı dosyayı üretmeli). BİLİNEN listesi sorunluysa YAZMAZ.
+if (YAPIM_YAZ) {
+  const bilinenSorun = yapimYazilacak.filter(({ f }) => String(f.sinif).startsWith("BİLİNEN"));
+  if (bilinenSorun.length || BILINEN.hatalar.length) {
+    console.log(`\n✗ YAPIM-ASAMASI.json YAZILMADI: BİLİNEN listesinde ${bilinenSorun.length + BILINEN.hatalar.length} sorun (değişti / kapandı / geçersiz kayıt) — önce BILINEN.json incelenir`);
+    process.exit(1);
+  }
+  const sirala = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
+  // Ana oturumun ELLE ayrıştırdığı etiket korunur: kural metni paketi göstermiyorsa (AYRIŞTIRILMADI) ve eski dosyada aynı senaryo + anahtar için
+  // elle verilmiş bir paket varsa o paket ve notu aynen kalır (yeniden üretim ayrıştırmayı silmesin). Eski dosya okunamıyorsa etiket korunmaz.
+  const elle = new Map();
+  // Birleşik tur 6 (dar kontrol DK-D2T3 DÜŞÜK-6): eski listenin bütün kayıtları (anahtar → beklenen / program / paket) — yeniden üretim eski listeyle karşılaştırılır
+  // (yeni / kapanan / değeri değişen sayıları ve anahtarları yazılır); DEĞERİ değişen kayıtta elle etiket korunur ama nota "değer değişti: <eski> → <yeni>" eklenir
+  // (önceden etiket ve not değer değişse de uyarısız taşınıyordu; c10'da program 999 + elle not → yeniden üretim 4 yazdı, etiket + not aynen).
+  const eski = new Map();
+  let eskiOkunamadi = "";
+  try {
+    for (const e of JSON.parse(readFileSync(YAPIM_YOLU, "utf8"))?.kayitlar ?? []) {
+      if (!e || typeof e !== "object") continue;
+      eski.set(`${e.senaryo}|${e.anahtar}`, e);
+      if (YAPIM_PAKETLER.includes(e.paket) && e.paket !== "AYRIŞTIRILMADI") elle.set(`${e.senaryo}|${e.anahtar}`, { paket: e.paket, ...(e.not ? { not: e.not } : {}) });
+    }
+  } catch (e) {
+    eskiOkunamadi = e.code || e.message; // eski liste yok / okunamıyor: etiketler yalnız kural metninden, karşılaştırma "okunamadı"
+  }
+  const deger = e => `program ${JSON.stringify(e.program)} / kâhin ${JSON.stringify(e.beklenen)}`;
+  const degisen = [];
+  const kayitlar = yapimYazilacak.map(({ senaryo, f, sinif246 }) => {
+    const ad = `${senaryo}|${f.anahtar}`;
+    const oto = yapimPaketi(f);
+    let { paket, not } = oto.paket === "AYRIŞTIRILMADI" && elle.has(ad) ? elle.get(ad) : oto;
+    const onceki = eski.get(ad);
+    if (onceki && !(esit(onceki.program, f.program) && esit(onceki.beklenen, f.beklenen))) {
+      const iz = `değer değişti: ${deger(onceki)} → ${deger(f)}`;
+      not = not ? `${not} · ${iz}` : iz;
+      degisen.push({ ad, paket, iz, korundu: paket === elle.get(ad)?.paket && oto.paket === "AYRIŞTIRILMADI" });
+    }
+    return { senaryo, anahtar: f.anahtar, beklenen: f.beklenen, program: f.program, sinif: `${f.sinif} ${f.etiket}${sinif246 ? ` · ${sinif246}` : ""}`, kural: f.kural, paket, ...(not ? { not } : {}) };
+  }).sort((a, b) => sirala(a.senaryo, b.senaryo) || sirala(a.anahtar, b.anahtar));
+  const yeniAdlar = new Set(kayitlar.map(k => `${k.senaryo}|${k.anahtar}`));
+  const yeni = kayitlar.filter(k => !eski.has(`${k.senaryo}|${k.anahtar}`));
+  const kapanan = [...eski.values()].filter(e => !yeniAdlar.has(`${e.senaryo}|${e.anahtar}`));
+  const dosya = {
+    aciklama: "Cari kâhini ↔ program YAPIM AŞAMASI listesi (S100 = A, KULLANICI KARARI 10.11.2026 17:54 UTC; docs/2.5.0-IS-LISTESI.md D). Ç5 paket paket ana dala girerken bugünkü farklar kararı / bekleyen paketiyle sabitlenir; kâhinin beklentisi DEĞİŞMEZ. Listede OLMAYAN fark, değeri DEĞİŞEN fark ve KAPANDIĞI hâlde listede duran kayıt kırmızıdır (liste yalnız küçülür). Yayın adayında liste BOŞ olmalı (tools/release.mjs). BİLİNEN.json'dan (kullanıcının ERTELEDİĞİ farklar) AYRIDIR.",
+    kural: KURAL,
+    uretim: "node test/bagimsiz/cari/kos.mjs --yapim-asamasi-yaz (varsayılan koşu: bütün elle senaryolar + rastgele tohum 1–2 × 60 işlem)",
+    paketler: YAPIM_PAKETLER,
+    kayitlar,
+  };
+  writeFileSync(YAPIM_YOLU, `${JSON.stringify(dosya, null, 1)}\n`);
+  const dag = Object.entries(kayitlar.reduce((s, k) => ({ ...s, [k.paket]: (s[k.paket] || 0) + 1 }), {})).map(([p, n]) => `${p} ${n}`).join(", ");
+  console.log(`\nYAPIM-ASAMASI.json YAZILDI (${path.relative(ROOT, YAPIM_YOLU) || YAPIM_YOLU}): ${kayitlar.length} kayıt (${kayitlar.filter(k => k.anahtar.startsWith(OKUMA_ONEKI)).length} okuma hatası) — paketlere göre: ${dag || "yok"}. Bu bir denetim sonucu DEĞİLDİR; liste varsayılan koşuyla denetlenir.`);
+  // Eski listeyle fark (ana oturumun birleşim dökümü: her yeni kayıt paketine ayrılır, kapanan ve değeri değişen ayrıca okunur).
+  if (eskiOkunamadi) console.log(`ESKİ LİSTEYLE FARK: eski liste okunamadı (${eskiOkunamadi}) — karşılaştırılmadı; ${kayitlar.length} kaydın hepsi yeni sayılmalı.`);
+  else {
+    console.log(`ESKİ LİSTEYLE FARK: yeni ${yeni.length}, kapanan ${kapanan.length}, değeri değişen ${degisen.length} (eski liste ${eski.size} kayıt → yeni ${kayitlar.length})`);
+    for (const k of yeni) console.log(`  + yeni: ${k.senaryo} ${k.anahtar} · ${deger(k)} · paket ${k.paket}${k.not ? ` (${k.not})` : ""}`);
+    for (const e of kapanan) console.log(`  − kapanan: ${e.senaryo} ${e.anahtar} · ${deger(e)} · paket ${e.paket}`);
+    for (const d of degisen) console.log(`  ~ değeri değişen: ${d.ad.replace("|", " ")} · ${d.iz} · paket ${d.paket}${d.korundu ? " (elle etiket korundu — yeniden ayrıştırın)" : ""}`);
+  }
+  process.exit(0);
+}
 if (!LEGACY) console.log(`\nGEÇERSİZ DENETİM (2.4.5 kararıyla; --legacy'de koşar — KARARLAR.md §8 C0): ${GECERSIZ_DENETIM.reduce((t, x) => t + x.adet, 0)} denetim, ${GECERSIZ_DENETIM.length} senaryo${GECERSIZ_DENETIM.length ? ` — ${GECERSIZ_DENETIM.map(x => `${x.senaryo} ${x.adet}`).join(", ")}` : ""}`);
 console.log(`\nATLANAN (${LEGACY ? "/3 — yalnız varsayılan kipte koşar" : "2.4.5 kararıyla geçersiz — --legacy ile koşar"}): ${ATLANAN.length}${ATLANAN.length ? ` — ${ATLANAN.join(", ")}` : ""}`);
 if (KURAL === "2.4.6") console.log(`\n2.4.6 KARARIYLA DEĞİŞEN BEKLENTİ (KARARLAR.md §9 C0b): ${DEGISEN.reduce((t, x) => t + x.adet, 0)} denetim, ${DEGISEN.filter(x => x.adet).length} senaryo · programla farkların ${SINIF.ic}'i bu sınıfta, ${SINIF.ks9}'i KS9 (madde 10: faturasız Alış İadesi yolu 2.4.5'te yok), ${SINIF.dis}'i SINIF DIŞI`);
 if (KURAL === "2.4.9") console.log(`\n2.4.9 KARARIYLA DEĞİŞEN BEKLENTİ (KARARLAR.md §12; 2.4.6 kâhinine göre): ${DEGISEN.reduce((t, x) => t + x.adet, 0)} denetim, ${DEGISEN.filter(x => x.adet).length} senaryo · programla farkların ${SINIF.ic}'i bu sınıfta, ${SINIF.dis}'i SINIF DIŞI`);
-console.log(`\nÖZET [${LEGACY ? "legacy" : KURAL}]: ${dosyalar.length} senaryo, ${genelToplam} denetim, ${genelFark} fark (BULGU ${ozet.reduce((s, o) => s + o.bulgu, 0)}), ${genelBilinen} bilinen sınır (BILINEN.json; başarısız sayılmaz), ${okumaHatasi} okuma hatası, ${kacan} yakalanmayan mutasyon, ${ATLANAN.length} atlanan senaryo. Ham çıktı: ${OUT}`);
+if (KURAL === "2.5.0") console.log(`\n2.5.0 KARARIYLA DEĞİŞEN BEKLENTİ (KARARLAR.md §13; 2.4.9 kâhinine göre): ${DEGISEN.reduce((t, x) => t + x.adet, 0)} denetim, ${DEGISEN.filter(x => x.adet).length} senaryo · programla farkların ${SINIF.ic}'i bu sınıfta, ${SINIF.dis}'i SINIF DIŞI`);
+const yapimDagilimi = Object.entries(yapimHepsi.reduce((s, y) => ({ ...s, [y.paket]: (s[y.paket] || 0) + 1 }), {})).sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)).map(([p, n]) => `${p} ${n}`).join(", ");
+console.log(`\nÖZET [${LEGACY ? "legacy" : KURAL}]: ${dosyalar.length} senaryo, ${genelToplam} denetim, ${genelFark} fark (BULGU ${ozet.reduce((s, o) => s + o.bulgu, 0)}), ${genelBilinen} bilinen sınır (BILINEN.json; başarısız sayılmaz), ${YAPIM_UYGULANIR ? `${genelYapim} yapım aşaması (YAPIM-ASAMASI.json; paketlere göre: ${yapimDagilimi || "yok"}; ${genelYapimDenetim} denetim + ${genelYapim - genelYapimDenetim} okuma hatası; geçti de başarısız da sayılmaz — yayın adayında liste BOŞ olmalı), ` : ""}${okumaHatasi} okuma hatası, ${kacan} yakalanmayan mutasyon, ${ATLANAN.length} atlanan senaryo. Ham çıktı: ${OUT}`);
 if (genelBilinen) console.log(`BİLİNEN SINIRLAR (${genelBilinen}): ${bilinenHepsi.map(b => `${b.senaryo} ${b.anahtar}`).join("; ")}`);
-// "geçti" sayısı bilinen sınırları içerir (başarısız sayılmaz — CI kapısı); ayrıntısı yukarıdaki BİLİNEN satırlarında ve ozet.json "bilinen" alanında
-console.log(`${Math.max(0, genelToplam - genelFark - okumaHatasi - kacan)}/${genelToplam} denetim geçti${genelBilinen ? ` (${genelBilinen} bilinen sınır dahil)` : ""}`);
+// "geçti" sayısı bilinen sınırları içerir (başarısız sayılmaz — CI kapısı); ayrıntısı yukarıdaki BİLİNEN satırlarında ve ozet.json "bilinen" alanında.
+// YAPIM AŞAMASI kayıtları (S100) "geçti" SAYILMAZ: payda ve paydan düşülür (başarısız da sayılmaz; kanit.mjs başarısız = payda − pay = fark + okuma hatası + yakalanmayan mutasyon)
+// Birleşik tur 6 (dar kontrol DK-D2T3 DÜŞÜK-5): paydan ve paydadan YALNIZ denetim olan yapım aşaması kayıtları düşülür (genelYapimDenetim) — okuma hatası kayıtları
+// denetim değildir (genelToplam'da yoklar); önceden onlar da düşülüyor, satır gerçek denetim sayısından az yazıyordu (12.205 ↔ 12.212). Başarısız sayısı (payda − pay) aynı.
+console.log(`${Math.max(0, genelToplam - genelFark - okumaHatasi - kacan - genelYapimDenetim)}/${genelToplam - genelYapimDenetim} denetim geçti${genelBilinen ? ` (${genelBilinen} bilinen sınır dahil)` : ""}${genelYapim ? ` (${genelYapim} yapım aşaması ayrı sayıldı — ${genelYapimDenetim} denetim + ${genelYapim - genelYapimDenetim} okuma hatası; geçti sayılmadı)` : ""}`);
 process.exitCode = genelFark || okumaHatasi || kacan ? 1 : 0;

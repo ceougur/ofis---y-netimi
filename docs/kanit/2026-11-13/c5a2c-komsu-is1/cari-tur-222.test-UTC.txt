@@ -1,0 +1,44 @@
+TAP version 13
+# (node:2366) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: tür hücresi: tek tür tanınır; iki tür birden ve tanınmayan değer türe atanmaz
+ok 1 - tür hücresi: tek tür tanınır; iki tür birden ve tanınmayan değer türe atanmaz
+  ---
+  duration_ms: 2.031568
+  type: 'test'
+  ...
+# Subtest: Excel'den cari yükleme: Tür Değerleri
+    # Subtest: ön izleme: Tür kolonundaki değerler, programın okuması ve belirsiz satırlar için uyarı
+    ok 1 - ön izleme: Tür kolonundaki değerler, programın okuması ve belirsiz satırlar için uyarı
+      ---
+      duration_ms: 22.360732
+      type: 'test'
+      ...
+    # Subtest: seçim yapılmadan yükleme: belirsiz satırlar varsayılan türle açılır ve satır numarasıyla raporlanır (sessiz Tedarikçi yok)
+    ok 2 - seçim yapılmadan yükleme: belirsiz satırlar varsayılan türle açılır ve satır numarasıyla raporlanır (sessiz Tedarikçi yok)
+      ---
+      duration_ms: 52.45124
+      type: 'test'
+      ...
+    # Subtest: değer başına seçim (typeMap): seçilen türle açılır, açılış bakiyesi o türe göre
+    ok 3 - değer başına seçim (typeMap): seçilen türle açılır, açılış bakiyesi o türe göre
+      ---
+      duration_ms: 39.507447
+      type: 'test'
+      ...
+    1..3
+ok 2 - Excel'den cari yükleme: Tür Değerleri
+  ---
+  duration_ms: 590.474946
+  type: 'suite'
+  ...
+1..2
+# tests 4
+# suites 1
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 928.501147
+cikis=0

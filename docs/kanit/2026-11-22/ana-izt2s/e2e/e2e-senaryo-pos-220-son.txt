@@ -1,0 +1,15 @@
+  ✓ yıllık: 2026 | Ziraat Fiziki POS | POS Satışı | BSMV Dahil | 3 | ₺25.000,00 | ₺738,10 | ₺36,90 |  | ₺24.225,00 | %3,10 · 2026 | Ziraat Fiziki POS | POS İadesi | BSMV Dahil | 1 | -₺3.000,00 |  |  |  | -₺3.000,00 | %0,00 · 2026 | Ziraat Mobil POS | POS Satışı | BSMV Dahil | 1 | ₺1.000,00 | ₺19,05 | ₺0,95 |  | ₺980,00 | %2,00
+
+■ Raporlar → Banka Masraf Raporu: POS komisyonu 653 · matrah 238,10 + BSMV 11,90 = 250; Faturası Beklenen Komisyonlar boş (KDV'li POS yok)
+  ✓ POS komisyon satırı: 12.10.2026 | BNK-2026-000007 | Ziraat Bankası · Ana TL Hesabı | POS Komisyonu · Ziraat Fiziki POS | 653 Komisyon Giderleri | ₺238,10 | ₺11,90 | ₺0,00 | ₺250,00 |  | POS Gün Sonu · Ziraat Fiziki POS
+  ✓ TOPLAM: TOPLAM |  |  |  |  | ₺238,10 | ₺11,90 | ₺0,00 | ₺250,00 |  | 
+  ✓ Faturası Beklenen Komisyonlar: 0 satır (KDV'li POS yok)
+
+■ POS sekmesi: Onay Bekleyen ve Komisyon Faturaları boş durum metni; POS'lar listesi iki POS
+  ✓ Onay Bekleyen boş
+  ✓ Komisyon Faturaları: KDV'li POS yok
+  ✓ POS'lar: 2
+  ✓ POS ekranlarında yazım düzeni (her sözcüğün ilk harfi büyük)
+  ✓ sayfa hatası yok
+
+✓ senaryo-pos-220: 113 geçti, 0 kaldı · ekran görüntüleri /dev/shm/izt2-sinama/test/e2e/artifacts/senaryo-pos-220

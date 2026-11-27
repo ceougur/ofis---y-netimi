@@ -1,0 +1,32 @@
+{
+  "ad": "kahin2-anaoturum-test-UTC",
+  "komut": "python3 -I test/bagimsiz/muhasebe/test_model.py",
+  "commit": "ed59e291b7b012370a9e4453ef2d13c55195e3b3",
+  "dal": "claude/epic-thompson-w0lc2l",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T22:48:09.195Z",
+  "sure_sn": 13.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 114,
+    "gecen": 114,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/kahin2-anaoturum-test-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "ab8890e0c89b3e1997c0b90405a0ce31b5b67641fa9c57d7bf3511b6c973aa37",
+  "ham_cikti_bayt": 267
+}

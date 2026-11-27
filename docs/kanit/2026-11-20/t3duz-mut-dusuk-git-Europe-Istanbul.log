@@ -1,0 +1,7 @@
+D1 YAKALANDI — N11 — kilit = fiş günü fiş kilitli sayılmaz (<= yerine <) (çıkış 1; değer true; çökme false; beklenen neden true; 1 kırmızı)
+D2 YAKALANDI — N7 — komisyon hesabı ayarı okunmaz (hep 653) (çıkış 1; değer true; çökme false; beklenen neden true; 1 kırmızı)
+D3 YAKALANDI — N8 — Hesabı Atanmamış listesinin rozeti yöne bakmaz (hep giriş) (çıkış 1; değer true; çökme false; beklenen neden true; 1 kırmızı)
+D4 YAKALANDI — G1 — '(tüm hareketler)' satırları açılışta sayılmışları düşmez (çıkış 1; değer true; çökme false; beklenen neden true; 1 kırmızı)
+D5 YAKALANDI — G1 — devir açılışta sayılmış satırları düşmez (çıkış 1; değer true; çökme false; beklenen neden true; 1 kırmızı)
+D6 YAKALANDI — S181 — bağlı evrakın reddi eski iletide (sarmalayıcı yok) (çıkış 1; değer true; çökme false; beklenen neden true; 2 kırmızı)
+SONUÇ: 6 / 6 yakalandı

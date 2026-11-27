@@ -531,8 +531,9 @@ export function createUpdater({
   }
 
   // ---------- Etkinleştirme / onay / geri dönüş ----------
-  function activate({ version, previous, backup, schemaBefore }) {
-    const data = writeCurrent(appsDir, { version, previous, pending: true, backup, schemaBefore, selectedAt: new Date().toISOString() });
+  // companies (2.5.0 BS-7): 001 dışındaki şirketlerin { id, code, schemaBefore, backup } listesi — elektrik kesintisinden sonraki deneme de geri dönebilsin.
+  function activate({ version, previous, backup, schemaBefore, companies }) {
+    const data = writeCurrent(appsDir, { version, previous, pending: true, backup, schemaBefore, companies: Array.isArray(companies) && companies.length ? companies : undefined, selectedAt: new Date().toISOString() });
     addHistory("activated", { version, previous });
     return data;
   }

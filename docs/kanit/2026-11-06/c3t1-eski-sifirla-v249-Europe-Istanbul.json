@@ -1,0 +1,32 @@
+{
+  "ad": "c3t1-eski-sifirla-v249-Europe-Istanbul",
+  "komut": "env TZ=Europe/Istanbul node --disable-warning=ExperimentalWarning test/donmus-defter-eski-sifirla-250.mjs --eski /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t1-v249-ccf0b0ca",
+  "commit": "1f9ffb69c8deb53d1b53124f3cbd7f9f9aad72e8",
+  "dal": "worktree-agent-a247c14721558ab77",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T03:57:48.810Z",
+  "sure_sn": 3.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 18,
+    "gecen": 18,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t1-kanit/kanit/2026-11-06/c3t1-eski-sifirla-v249-Europe-Istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a247c14721558ab77",
+  "ham_cikti_sha256": "99a91fe87404d2bc7267368e8789df3e83d89146a32adc35d6574565cf29c183",
+  "ham_cikti_bayt": 2143
+}

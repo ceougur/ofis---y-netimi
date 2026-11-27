@@ -1,0 +1,32 @@
+{
+  "ad": "bs7-anaoturum-birim-ist",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-timeout=300000 test/sema-kapisi-bs7.test.mjs test/update-flow.test.mjs",
+  "commit": "5402b712093022ef06006a9c4ee0fbfe0c2b4462",
+  "dal": "claude/epic-thompson-w0lc2l",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T18:00:24.515Z",
+  "sure_sn": 22.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 10,
+    "gecen": 10,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/bs7-anaoturum-birim-ist.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "ebd76191f6e2d5a7ced8e53a3e5c97973ff91a1d25c52819b48734371d9b6b38",
+  "ham_cikti_bayt": 3477
+}

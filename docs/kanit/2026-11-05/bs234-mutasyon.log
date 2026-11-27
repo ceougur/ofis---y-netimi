@@ -1,0 +1,22 @@
+taban test/bs2-kart-iade-ekstre-250.test.mjs: 2 geçti / 0 kaldı (çıkış 0)
+taban test/e2e/senaryo-kart-iade-gecmis-250.mjs: 8 geçti / 0 kaldı (çıkış 0)
+taban test/bs3-silinmis-kayit-250.test.mjs: 4 geçti / 0 kaldı (çıkış 0)
+taban test/bs4-birlesik-rapor-250.test.mjs: 4 geçti / 0 kaldı (çıkış 0)
+ok 1 - BS-2 (a) UM4c: Ayrıntılı Cari Ekstre fatura kökenli dal cardRefund'u yok sayar · KIRMIZI (1 başarısız) · beklenen neden ""08.10.2026","POS"" görüldü
+ok 2 - BS-2 (b): kayıt geçmişi ekran metni cardRefund'u yok sayar · KIRMIZI (2 başarısız) · beklenen neden "cari tahsilatı (POS)" görüldü
+ok 3 - BS-3 (d): stok düzeltmesi işlem içinde hareketi yeniden denetlemez · KIRMIZI (1 başarısız) · beklenen neden "stok hareketi düzeltmesi: yazım reddedilmeli (404) — yanıt 409" görüldü
+ok 4 - BS-3 (f): tahsilat düzeltmesi işlem içinde tahsilatı yeniden denetlemez · KIRMIZI (1 başarısız) · beklenen neden "tahsilat düzeltmesi: yazım reddedilmeli (404) — yanıt 200" görüldü
+ok 5 - BS-3 (g): taksit düzeltmesi işlem içinde taksiti yeniden denetlemez · KIRMIZI (1 başarısız) · beklenen neden "taksit düzeltmesi: yazım reddedilmeli (404) — yanıt 200" görüldü
+ok 6 - BS-3 (g) ileti: taksit iletisi eski kısa hâline döner · KIRMIZI (2 başarısız) · beklenen neden "ileti “Taksit bulunamadı.”" görüldü
+ok 7 - BS-4: açılamayan şirketin hatası yakalanmaz (500) · KIRMIZI (3 başarısız) · beklenen neden "dosya silinmiş: ekran: rapor üretilmez (409) — yanıt 500" görüldü
+ok 8 - BS-4: kısmi toplam — açılamayan şirket atlanır, rapor kalanlarla üretilir · KIRMIZI (3 başarısız) · beklenen neden "dosya silinmiş: ekran: rapor üretilmez (409) — yanıt 200" görüldü
+ok 9 - BS-4: ileti şirketin kodunu ve adını söylemez · KIRMIZI (3 başarısız) · beklenen neden "ileti “Bir şirketin veri dosyası bulunamadı" görüldü
+ok 10 - BS-4: kayıp dosyada kod ayrımı düşer (her zaman company-unavailable) · KIRMIZI (2 başarısız) · beklenen neden "code “company-unavailable” (beklenen “company-data-missing”)" görüldü
+1..10
+# tests 10
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+10/10 mutasyon beklenen nedenle yakalandı

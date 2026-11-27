@@ -108,7 +108,9 @@ describe("KS7 API: Değersiz Alacak ve faturasız stok iadesi carinin en eski a�
     const did = await takeDoubtful(acc, "1500", day(-20));
     assert.equal(await left(acc, d.id), 1000, "şüpheliye alma: borç kaydı açık kalır");
     assert.deepEqual(await invoice(inv), ["overdue", 500], "şüpheliye alma: fatura açık kalır");
-    assert.deepEqual(await duesOf(acc), [["account", 1000], ["invoice", 500]], "şüpheliye alma: takvimde iki kalem sürer");
+    // 2.5.0 Ç5-B (bilerek güncellendi; BAŞ MİMAR M13 + kullanıcı kararı S3): şüpheliye alınan tutar açık borç kalemlerinden S2 sırasıyla ŞÜPHELİ KUYRUĞUNA geçer —
+    // kalemler ödenmiş sayılmaz (Kalan ve fatura açığı sürer), ama takvim / zil / Vade Takip kalemi değildir (Vade Takip'te "Şüpheli Alacak" ayrı satır). 2.4.5'te sürüyordu.
+    assert.deepEqual(await duesOf(acc), [], "şüpheliye alma: 1.500 şüpheli kuyruğunda — takvimde kalem yok");
     const before_ = await facts();
     await writeOff(acc, did, "1500", day(-10));
     assert.equal((await card(acc)).totals.balance, 0, "değersiz: bakiye 0");
@@ -131,14 +133,17 @@ describe("KS7 API: Değersiz Alacak ve faturasız stok iadesi carinin en eski a�
     const inv = await sale(acc, day(-50), "500");
     const did = await takeDoubtful(acc, "1500", day(-20));
     const card1 = await writeOff(acc, did, "600", day(-10));
-    assert.equal(await left(acc, d.id), 400, "en eski (elle borç) 600 kapandı");
-    assert.deepEqual(await invoice(inv), ["overdue", 500], "fatura (daha yeni) açık");
-    assert.deepEqual(await duesOf(acc), [["account", 400], ["invoice", 500]]);
+    // 2.5.0 Ç5-B (bilerek güncellendi; kullanıcı kararı S2 "vadesi en önce gelen"): Değersiz Alacak Yaz önce vadesi en önce gelen faturayı (vade bugün−50), sonra borcun
+    // 100'ünü kapatır (2.4.5'te kayıt tarihi sırası: önce borç). Kalan 900 şüpheli kuyruğunda (M13): takvimde kalem yok.
+    assert.equal(await left(acc, d.id), 900, "vadesi en önce gelen fatura 500 kapandı, borçtan 100");
+    assert.deepEqual(await invoice(inv), ["paid", 0], "fatura (vadesi önce) kapandı");
+    assert.deepEqual(await duesOf(acc), [], "kalan 900 şüpheli kuyruğunda (M13)");
     const entry = server.app.store.get("SELECT id FROM account_entries WHERE account_id = ? AND source = 'doubtful'", acc.id);
     assert.ok(entry && card1, "Değersiz Alacak satırı yazıldı");
     await must("değersiz satırını sil", api.del(`/api/workspace/accounts/${acc.id}/doubtful/${did}/write-offs/${entry.id}`));
     assert.equal(await left(acc, d.id), 1000, "silinince borç yeniden açık");
-    assert.deepEqual(await duesOf(acc), [["account", 1000], ["invoice", 500]]);
+    assert.deepEqual(await invoice(inv), ["overdue", 500], "silinince fatura yeniden açık");
+    assert.deepEqual(await duesOf(acc), [], "1.500 yeniden şüpheli kuyruğunda (M13)");
   });
 
   it("(a) faturasız stok Satış İadesi (açık hesap) en eskiden kapatır: vadeli borç ve fatura; iade silinince yeniden açılır; bakiye ve Kasa değişmez", async () => {
@@ -148,10 +153,11 @@ describe("KS7 API: Değersiz Alacak ve faturasız stok iadesi carinin en eski a�
     const before_ = await facts();
     const ret = await stockMove(acc, { kind: "in", reason: "return", qty: "12", date: day(-5) });
     assert.equal((await card(acc)).totals.balance, 300, "bakiye 1.000 + 500 − 1.200");
-    assert.equal(await left(acc, d.id), 0, "en eski borç kapandı");
-    assert.deepEqual(await invoice(inv), ["overdue", 300], "(d) fatura 200'ü kapandı, 300 açık");
-    assert.deepEqual(await duesOf(acc), [["invoice", 300]], "takvimde yalnız faturanın kalanı");
-    assert.deepEqual(await vadeOf(acc), [["invoice", 300]], "Vade Takip takvimle aynı");
+    // 2.5.0 Ç5-B (bilerek güncellendi; kullanıcı kararı S2): iade önce vadesi en önce gelen faturayı (vade bugün−50) kapatır, kalan 700 borçtan (2.4.5'te önce borç).
+    assert.equal(await left(acc, d.id), 300, "fatura 500, borç 700 kapandı → borç 300");
+    assert.deepEqual(await invoice(inv), ["paid", 0], "(d) fatura (vadesi önce) kapandı");
+    assert.deepEqual(await duesOf(acc), [["account", 300]], "takvimde yalnız borcun kalanı");
+    assert.deepEqual(await vadeOf(acc), [["account", 300]], "Vade Takip takvimle aynı");
     const after_ = await facts();
     const cash = text => JSON.parse(text).cash;
     assert.deepEqual(cash(after_), cash(before_), "açık hesaba iade Kasa'yı değiştirmez");

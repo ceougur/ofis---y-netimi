@@ -1,0 +1,4 @@
+taban ["test/koruma-taban-ailesi-250.test.mjs"]: 18 geçti / 0 kaldı / 0 atlandı (çıkış 0)
+G1 G: yeni bir denetim eski veriyi tutmuyor (cari ailesinde her açılışta sapma): YAKALANDI (çıkış 1, 1 geçti / 17 kaldı; ilk kırmızı: surum-2.0.16-zincir: her şirkette taban sapmalarının ailesi zararsız; Borç Yaz ve Kasa Giriş süzgeçli yolda :: +   'party:accounts→party' | +   'party:accounts→party' | +   'party:accounts→party' | +   'party:accounts→party')
+G2 G: taban sapmasının ailesi yanlış hesaplanır (ileri tarihli eski satır → all) — fikstürde ileri tarihli satır yoksa YAŞAR (bilgi): YAŞADI (çıkış 0, 18 geçti / 0 kaldı)
+SONUÇ: 1/2 mutasyon yakalandı

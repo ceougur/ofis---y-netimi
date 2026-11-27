@@ -1,0 +1,56 @@
+TAP version 13
+# Subtest: 2.5.0 G1 — Graph API sürümü tek yerden (program + kapıcı)
+    # Subtest: program ve kapıcı aynı Graph sürümünü kullanır; biçim vNN.0
+    not ok 1 - program ve kapıcı aynı Graph sürümünü kullanır; biçim vNN.0
+      ---
+      duration_ms: 1.638039
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wkucuk-mut-G1a-kapici-surumu-farkli/test/whatsapp-g1-graph-surum-250.test.mjs:28:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kapıcının kod değişimi (oauth/access_token) ve bağlama sayfasının FB.init sürümü programınkiyle aynı
+        
+        'v25.0' !== 'v26.0'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'v26.0'
+      actual: 'v25.0'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wkucuk-mut-G1a-kapici-surumu-farkli/test/whatsapp-g1-graph-surum-250.test.mjs:30:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:466:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:435:3)
+        node:internal/per_context/primordials:466:9
+        Array.map (<anonymous>)
+      ...
+    # Subtest: kaynakta (server/, bulut/, istemcinin WhatsApp dosyaları) başka yerde Graph sürümü yazılı değil
+    ok 2 - kaynakta (server/, bulut/, istemcinin WhatsApp dosyaları) başka yerde Graph sürümü yazılı değil
+      ---
+      duration_ms: 62.742844
+      type: 'test'
+      ...
+    1..2
+not ok 1 - 2.5.0 G1 — Graph API sürümü tek yerden (program + kapıcı)
+  ---
+  duration_ms: 65.347322
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wkucuk-mut-G1a-kapici-surumu-farkli/test/whatsapp-g1-graph-surum-250.test.mjs:27:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 1
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 147.562948

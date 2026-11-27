@@ -1,0 +1,44 @@
+== cari UTC 12:49:37 yük 1.06 1.05 1.04 4/135 19983
+cari UTC rc=0 12:58:35
+
+ÖZET [2.5.0]: 105 senaryo, 24613 denetim, 0 fark (BULGU 0), 7 bilinen sınır (BILINEN.json; başarısız sayılmaz), 0 yapım aşaması (YAPIM-ASAMASI.json; paketlere göre: yok; 0 denetim + 0 okuma hatası; geçti de başarısız da sayılmaz — yayın adayında liste BOŞ olmalı), 0 okuma hatası, 0 yakalanmayan mutasyon, 12 atlanan senaryo. Ham çıktı: /tmp/kahin-cari-95wXTT
+BİLİNEN SINIRLAR (7): b3y-taahhut-alacak-bakiye k1:k4:akis; b3y-taahhut-alacak-bakiye k1:k4:kisiler; b3y-taahhut-alacak-bakiye k1:k4:vade; b3y-taahhut-alacak-bakiye k1:rapor:2026/1012:borc; b3y-taahhut-alacak-bakiye k1:rapor:2026/1012:grup; b3y-taahhut-alacak-bakiye k1:rapor:2026/1013:borc; b3y-taahhut-alacak-bakiye k1:rapor:2026/1013:grup
+24613/24613 denetim geçti (7 bilinen sınır dahil)
+
+[kanit] izt4-kahin-cari-utc: GEÇTİ · çıkış 0 · 24613/24613 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit d32aca8 +1 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4
+== defter UTC 12:58:35 yük 3.25 2.93 2.06 3/163 22528
+defter UTC rc=0 12:58:40
+  mutasyon 32 (D10 (S12 B): Kasa açılışından önce tarihli Kasa hareketi kabul): tam senaryoda YAKALANDI · bu koşuda yakalandı
+  mutasyon 33 (D10 (B11 B): açılıştan önceye alınan düzeltme kabul): tam senaryoda YAKALANDI · bu koşuda yakalandı
+
+ÖZET: 187 denetim, 0 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-defter-pv4imp
+
+[kanit] izt4-kahin-defter-utc: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit d32aca8 +3 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4
+== cari Europe/Istanbul 12:58:40 yük 3.28 2.95 2.07 3/167 22644
+cari Europe/Istanbul rc=0 13:08:00
+
+ÖZET [2.5.0]: 105 senaryo, 24613 denetim, 0 fark (BULGU 0), 7 bilinen sınır (BILINEN.json; başarısız sayılmaz), 0 yapım aşaması (YAPIM-ASAMASI.json; paketlere göre: yok; 0 denetim + 0 okuma hatası; geçti de başarısız da sayılmaz — yayın adayında liste BOŞ olmalı), 0 okuma hatası, 0 yakalanmayan mutasyon, 12 atlanan senaryo. Ham çıktı: /tmp/kahin-cari-bBgjKg
+BİLİNEN SINIRLAR (7): b3y-taahhut-alacak-bakiye k1:k4:akis; b3y-taahhut-alacak-bakiye k1:k4:kisiler; b3y-taahhut-alacak-bakiye k1:k4:vade; b3y-taahhut-alacak-bakiye k1:rapor:2026/1012:borc; b3y-taahhut-alacak-bakiye k1:rapor:2026/1012:grup; b3y-taahhut-alacak-bakiye k1:rapor:2026/1013:borc; b3y-taahhut-alacak-bakiye k1:rapor:2026/1013:grup
+24613/24613 denetim geçti (7 bilinen sınır dahil)
+
+[kanit] izt4-kahin-cari-europe-istanbul: GEÇTİ · çıkış 0 · 24613/24613 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit d32aca8 +5 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4
+== defter Europe/Istanbul 13:08:00 yük 2.78 2.97 2.54 4/165 24943
+defter Europe/Istanbul rc=0 13:08:06
+  mutasyon 32 (D10 (S12 B): Kasa açılışından önce tarihli Kasa hareketi kabul): tam senaryoda YAKALANDI · bu koşuda yakalandı
+  mutasyon 33 (D10 (B11 B): açılıştan önceye alınan düzeltme kabul): tam senaryoda YAKALANDI · bu koşuda yakalandı
+
+ÖZET: 187 denetim, 0 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-defter-1S28Fc
+
+[kanit] izt4-kahin-defter-europe-istanbul: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit d32aca8 +7 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4
+== yapım 13:08:06
+yapım rc=0
+  yapım aşaması listesi mutasyonu 1 (senaryo adı yok sayılır): YAKALANDI
+  yapım aşaması listesi mutasyonu 2 (alt dizgi (joker) eşleşmesi): YAKALANDI
+  yapım aşaması listesi mutasyonu 3 (program değeri karşılaştırılmaz): YAKALANDI
+  yapım aşaması listesi mutasyonu 4 (kapanan kayıt denetlenmez): YAKALANDI
+  yapım aşaması listesi mutasyonu 5 (kâhin beklentisi karşılaştırılmaz): YAKALANDI
+
+YAPIM-ASAMASI.json YAZILDI (../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/izt4-ad3/yapim-yeni.json): 0 kayıt (0 okuma hatası) — paketlere göre: yok. Bu bir denetim sonucu DEĞİLDİR; liste varsayılan koşuyla denetlenir.
+ESKİ LİSTEYLE FARK: yeni 0, kapanan 0, değeri değişen 0 (eski liste 0 kayıt → yeni 0)
+depo 0 yeni 0 ayni
+BITTI

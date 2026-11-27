@@ -9,7 +9,9 @@ import { toMinor } from "../lib/minor.mjs";
 import { bankForm } from "../lib/bank/module-ref.mjs";
 import { posMetaOf } from "../lib/bank/pos.mjs";
 import { canUser } from "../lib/permissions.mjs";
-import { allocate, dayText, distribute, isoDay, mapHeaders, parseDay } from "../lib/plans.mjs";
+import { allocate, dayText, daysUntil, distribute, isoDay, mapHeaders, parseDay } from "../lib/plans.mjs";
+import { createAccountLines } from "../lib/account-lines.mjs";
+import { waivesRemaining, waivesSql } from "../lib/accounts.mjs";
 import { extractSchedules, spreadPaid } from "../lib/insight/schedules.mjs";
 import { tabContext } from "../lib/insight/dues.mjs";
 import { planStatementPdf, receiptPdf } from "../lib/plan-report.mjs";
@@ -18,6 +20,9 @@ import { tablePdf, tl } from "../lib/report-pdf.mjs";
 import { methodInput } from "../lib/pay-method.mjs";
 import { systemClock } from "../lib/clock.mjs";
 import { IMPORT_SCOPES, createImportRequests } from "../lib/import-request.mjs";
+import { assertRowVersion, rowVersion, sameFields } from "../lib/row-version.mjs";
+import { recordingHidden } from "../lib/cash-opening.mjs";
+import { foldPersonName } from "../lib/names.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 // v2.0.26 (G6): toplu aktarımda bir satırın iç işlemini geri alıp nedeniyle atlamak için (kapanmış dönem).
@@ -86,27 +91,78 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     return groups;
   };
   // Aynı adlı grup ikinci kez açılmaz (Excel'den yüklemede de kullanılır); ad boşsa null döner.
-  function ensureGroup(user, name, parentId = null) {
+  // folded (isteğe bağlı; 2.5.0 S231 = A): içe aktarmanın grup bulucusu (groupFinder) — verilirse NOCASE bulamayınca Türkçe harf katlamalı TEK grup
+  // (S228 sırası); açılan grup bulucuya eklenir. Elle grup açma, tek kart ve tek cari formu bulucusuz çağırır (bugünkü kural DEĞİŞMEZ).
+  function ensureGroup(user, name, parentId = null, folded = null) {
     const clean = limited(name, 80, "Grup adı");
     if (!clean) return null;
     const found = store.get("SELECT id FROM plan_groups WHERE name = ? COLLATE NOCASE AND COALESCE(parent_id, '') = ?", clean, parentId || "");
     if (found) return found.id;
+    const similar = folded ? folded.find(clean, parentId) : "";
+    if (similar) return similar;
     const id = newId("group");
     const position = (store.get("SELECT COALESCE(MAX(position), 0) AS p FROM plan_groups WHERE COALESCE(parent_id, '') = ?", parentId || "")?.p || 0) + 1;
     store.run("INSERT INTO plan_groups (id, parent_id, name, position, created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)", id, parentId, clean, position, user.id, now(), now());
     audit(user, "plan.group.created", id, { name: clean, parentId });
+    folded?.add(id, clean, parentId);
     return id;
   }
-  const resolveGroups = (body, user) => {
+  // 2.5.0 S231 = A (S228 sırası): içe aktarmalarda (taksit Excel / Sheets, cari Excel / Sheets, Tablodan Aktar) grup / alt grup adı, NOCASE (yalnız A–Z)
+  // karşılaştırması bulamazsa Türkçe harf katlamalı (lib/names.mjs foldPersonName: I / ı, İ / i, Ş Ğ Ü Ö Ç, boşluk) aynı üst gruptaki TEK gruba bağlanır;
+  // birden çok aday varsa bulunamaz (çağıran bugünkü gibi yeni grup açar). Ad haritası yükleme başına BİR KEZ, ilk sorulduğunda tek okumayla kurulur
+  // (ders 47); yüklemede açılan grup add ile eklenir (harita kurulmadan önceki add gereksiz: kurulurken güncel tablo okunur). Haritadaki aday geri
+  // alınmış iç işlemde (kilitli dönem satırı) açılmış olabilir: YALNIZ bu yüklemede eklenen aday için güncel satır kimlikle okunup ad yeniden denetlenir
+  // (haritayı kuran okumadaki gruplar yükleme içinde silinmez / yeniden adlandırılmaz). created (isteğe bağlı): gerçekten açılan grubun kimliği bildirilir.
+  function groupFinder({ created = null } = {}) {
+    let map = null;
+    const fresh = new Set();
+    const keyOf = (folded, parentId) => `${parentId || ""}\u0000${folded}`;
+    const put = (id, name, parentId) => {
+      const key = keyOf(foldPersonName(name), parentId);
+      let ids = map.get(key);
+      if (!ids) map.set(key, (ids = new Set()));
+      ids.add(id);
+    };
+    const ready = () => {
+      if (!map) {
+        map = new Map();
+        for (const row of store.all("SELECT id, parent_id AS parentId, name FROM plan_groups")) put(row.id, row.name, row.parentId);
+      }
+      return map;
+    };
+    const alive = (id, parentId, wanted) => {
+      const row = store.get("SELECT name FROM plan_groups WHERE id = ? AND COALESCE(parent_id, '') = ?", id, parentId || "");
+      return Boolean(row) && foldPersonName(row.name) === wanted;
+    };
+    return {
+      add(id, name, parentId = null) {
+        if (map && id) {
+          put(id, name, parentId);
+          fresh.add(id);
+        }
+        if (id) created?.(id);
+      },
+      find(name, parentId = null) {
+        const wanted = foldPersonName(name);
+        if (!wanted) return "";
+        const ids = ready().get(keyOf(wanted, parentId));
+        if (!ids?.size) return "";
+        const live = [...ids].filter(id => !fresh.has(id) || alive(id, parentId, wanted));
+        return live.length === 1 ? live[0] : "";
+      },
+    };
+  }
+  // folded (isteğe bağlı; yalnız içe aktarma — cari Excel / Sheets): ensureGroup'a geçer. Tek kart ve tek cari formu vermez.
+  const resolveGroups = (body, user, folded = null) => {
     let groupId = text(body.groupId) || null;
     let subgroupId = text(body.subgroupId) || null;
     // Ad yazılmışsa (yeni grup) oluşturulur; kimlik verilmişse doğrulanır.
-    if (!groupId && text(body.groupName)) groupId = ensureGroup(user, body.groupName);
+    if (!groupId && text(body.groupName)) groupId = ensureGroup(user, body.groupName, null, folded);
     if (groupId && !groupOrNull(groupId)) throw new HttpError(400, "Seçilen grup artık yok; listeyi yenileyin.");
     if (groupId && groupOrNull(groupId).parentId) throw new HttpError(400, "Alt grup, grup olarak seçilemez.");
     if (!subgroupId && text(body.subgroupName)) {
       if (!groupId) throw new HttpError(400, "Alt grup için önce grup seçin.");
-      subgroupId = ensureGroup(user, body.subgroupName, groupId);
+      subgroupId = ensureGroup(user, body.subgroupName, groupId, folded);
     }
     if (subgroupId) {
       const sub = groupOrNull(subgroupId);
@@ -170,13 +226,14 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   });
 
   // ---------- Kart okuma ----------
-  const PLAN_SQL = `SELECT p.id, p.account_id AS accountId, p.ref_no AS refNo, p.registered_on AS registeredOn, p.case_key AS caseKey, p.case_source AS caseSource, p.case_title AS caseTitle, p.group_id AS groupId, p.subgroup_id AS subgroupId, p.name, p.note, p.phone, p.total, p.status, p.covers_balance AS coversBalance,
+  const PLAN_SQL = `SELECT p.id, p.account_id AS accountId, p.ref_no AS refNo, p.registered_on AS registeredOn, p.case_key AS caseKey, p.case_source AS caseSource, p.case_title AS caseTitle, p.group_id AS groupId, p.subgroup_id AS subgroupId, p.name, p.note, p.phone, p.total, p.status, p.covers_balance AS coversBalance, p.closed_at AS closedAt, p.close_rule AS closeRule,
       p.invoice_id AS invoiceId, COALESCE((SELECT i.number FROM invoices i WHERE i.id = p.invoice_id), '') AS invoiceNumber,
       p.created_by AS createdBy, p.created_at AS createdAt, p.updated_at AS updatedAt, COALESCE(u.display_name, '') AS actorName,
       COALESCE(g.name, '') AS groupName, COALESCE(s.name, '') AS subgroupName, COALESCE(ac.name, '') AS accountName, COALESCE(ac.ref_no, '') AS accountRef
     FROM plans p LEFT JOIN users u ON u.id = p.created_by LEFT JOIN plan_groups g ON g.id = p.group_id LEFT JOIN plan_groups s ON s.id = p.subgroup_id
       LEFT JOIN accounts ac ON ac.id = p.account_id AND ac.deleted_at IS NULL`;
-  const itemsOf = planId => store.all("SELECT id, seq, due_date AS dueDate, amount, note FROM plan_items WHERE plan_id = ? ORDER BY due_date, seq", planId);
+  // updatedAt: taksit düzeltme formunun iyimser kilidi (BİRLEŞİK TUR 3, YAN-B).
+  const itemsOf = planId => store.all("SELECT id, seq, due_date AS dueDate, amount, note, updated_at AS updatedAt FROM plan_items WHERE plan_id = ? ORDER BY due_date, seq", planId);
   const entriesOf = planId =>
     store.all(
       `SELECT e.id, e.item_id AS itemId, e.kind, e.amount, e.date, e.note, e.method, e.receipt_no AS receiptNo, e.cheque_id AS chequeId, e.opening, e.fin_ref AS finRef, e.created_by AS createdBy, e.created_at AS createdAt, e.updated_at AS updatedAt,
@@ -215,6 +272,187 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     };
   };
   const detail = (id, user) => shape(planRow(id), user);
+  // 2.5.0 Ç5-B (S50 = A, M1a, M1e, K8-3): cariye bağlı kartın taksit kalanı TEK YÜKÜMLÜLÜK KUYRUĞU'ndan (lib/obligation-queue.mjs) — kart seçilmeden alınan cari tahsilatının
+  // kapattığı pay dahil ("Taksitler, zil ve takvim bunu gösterir"); accountPaid = o pay. Görünüm katmanı: kartın kendi hesabı (allocate; shape / forAccount / summariesByAccount —
+  // cari defteri ve WhatsApp Ç5-C'ye kadar bunu okur) DEĞİŞMEZ. Carisiz eski kartta ve işlem içinde allocate aynen.
+  const queueOf = () => (store.inTransaction ? null : invoices()?.allObligations?.() || null);
+  function withQueue(plan, ledger, all, day = today()) {
+    const map = plan.accountId && all ? all.get(plan.accountId)?.installments.get(plan.id) : null;
+    if (!map) return ledger;
+    const closed = plan.status === "closed";
+    // 2.5.0 Ç7b tur 3b (karar (6) "Borçta Kalsın", S205 = A): kalanı düşülmüş (eski kural) kapalı kart bugünkü gibi kartın kendi hesabıyla ve "Kapalı" kalemlerle gösterilir (frozen);
+    // Borçta Kalsın ile kapatılmış kartın kalanı carinin borcunda durur → kuyruktan AÇIK kart gibi gösterilir (Ödenen / Kalan / durum), kalemin günü kuyruğun vadesi (kapanışın
+    // ertesi günü; kapanıştan önce vadesi geçmiş kalem kendi vadesinde — lib/accounts.mjs keptDueSql, Tek Yükümlülük Kuyruğu'nun girdisi). Kartın durumu "Kapalı" kalır.
+    const frozen = closed && waivesRemaining(plan);
+    const kept = closed && !frozen;
+    const items = ledger.items.map(item => {
+      const row = map.get(item.id);
+      const remaining = roundMoney(Math.min(item.amount, row ? row.remaining : 0));
+      const accountPaid = row ? roundMoney(row.byAccount) : 0;
+      const dueDate = kept && row?.vade ? row.vade : item.dueDate;
+      const days = kept && row?.vade ? daysUntil(row.vade, day) : item.days;
+      const state = remaining <= 0.005 ? "paid" : frozen ? "closed" : days < 0 ? "overdue" : days === 0 ? "today" : days <= 7 ? "upcoming" : "open";
+      // held: kalanın şüpheli kuyruğundaki kısmı (M13) — takvim / zil / Vade Takip kalemine girmez (S3; Vade Takip'te şüpheli ayrı satır).
+      const held = row ? roundMoney(Math.min(remaining, row.doubtful || 0)) : 0;
+      // ownRemaining: kartın KENDİ hesabıyla kalan (allocate) — S118 = B (tur 2b-2): tahsilat formunun önerdiği tutar bundan (sınır ve soru da kartın kendi kalanından).
+      // paid (Ç5-B kapanış düzeltmesi, S129 = A — KULLANICI KARARI 12.11 13:26 AYNEN: "taksit satırının 'Ödenen'i de TEK KUYRUKTAN gösterilir (ekranda tek sayı …)"):
+      // satırın Ödenen'i = taksitin kuyrukta TAHSİL EDİLEN kısmı (lib/obligation-queue.mjs `collected`: kart tahsilatı + kart seçilmeden alınan tahsilatın / avansın payı);
+      // kartın kendi tahsilatı ownPaid'de. Kapatılmış kartta bugünkü gösterim AYNEN (kural yazılmadı — kapanış dar kontrolünün kapsam dışı gözlemi).
+      // returned (birleşik tur 8, S151 = B / S158 = A): satırın faturasız iade / Değersiz Alacak ile kapanan kısmı — tahsilat değildir, Ödenen'e girmez, ayrı gösterilir.
+      const paid = frozen ? item.paid : roundMoney(Math.min(item.amount, row ? row.collected || 0 : 0));
+      const returned = frozen || !row ? 0 : roundMoney(Math.max(0, Math.min(item.amount - paid, row.returned || 0)));
+      return { ...item, ...(kept ? { dueDate, days, planDueDate: item.dueDate } : {}), remaining, ownRemaining: item.remaining, paid, returned, ownPaid: item.paid, held, accountPaid, partial: remaining > 0.005 && remaining < item.amount - 0.005, state };
+    });
+    // Ç5-B tur 2a (O-3): taksitlere bölünmemiş kalan ("rest") ve Taksit İadesi ("back") kuyruk kalanındadır (kalemleri queueExtras: takvim / zil / Vade Takip / nakit akışı).
+    // Ç5-B tur 2b-2 (ekran yürüyüşü 1 Y2; BAŞ MİMAR KARARI 11.11 05:48 — sunum, S91 = A'nın sonucu): bu kalemin günü geçmişse kart da "Gecikti" sayılır (Taksitler'in Geciken
+    // sekmesi, liste göstergesi, kart penceresindeki Geciken kutusu) — zil / Vade Takip / cari kartındaki gecikmişle AYNI sayı. Geciken tutarı (totals.overdue) bu kalemi de
+    // sayar, taksit sayısı (overdueCount) yalnız taksitleri; kalemler ayrı (overdueExtras — kutu metni "taksitlendirilmemiş kalan"ı ayrı söyler). Bugün açılan taksitsiz
+    // kart Gecikti olmaz (kalemin günü kartın açılış günü; ertesi günden — S1).
+    const extras = queueExtras(plan, all, day);
+    const lateExtras = extras.filter(item => item.state === "overdue");
+    const overdue = items.filter(item => item.state === "overdue");
+    const next = items.find(item => item.remaining > 0.005 && item.state !== "closed") || null;
+    const remaining = roundMoney(items.reduce((sum, item) => sum + item.remaining, 0) + extras.reduce((sum, item) => sum + item.remaining, 0));
+    const accountPaid = roundMoney(items.reduce((sum, item) => sum + item.accountPaid, 0));
+    let state = ledger.state;
+    // Ç5-B tur 2b-1 (DK-C5BT2A G-2; beklenen v2.4.9 lib/plans.mjs allocate "total > 0 && kalan 0 && hepsi ödendi"): kuyruk kalanı Mevcut Borç kartında taksitlere
+    // bölünmemiş borcu İÇERMEZ (o kısım alttaki borç kalemi olarak kalır — lib/accounts.mjs coverTotal = min(tutar, taksitler)); taksiti olmayan kartta taksit listesi boş →
+    // "hepsi ödendi" doğru sayılıyor, kart açılır açılmaz "Bitti" oluyordu (v2.4.9: Aktif). Bitti için ayrıca: kartın KENDİ kalanı 0 (v2.4.9 kuralı) YA DA taksiti olup
+    // taksitlere bölünmemiş kapsam kalmamış (S50 = A: kart seçilmeden alınan tahsilatın kapattığı taksitler — bugünkü gibi). Taksitsiz kart yalnız kartın kendi tahsilatıyla
+    // ya da Kartı Kapat ile kapanır.
+    const ownLeft = roundMoney(ledger.totals?.remaining ?? 0);
+    const unplanned = plan.coversBalance ? roundMoney(Math.max(0, (ledger.totals?.total ?? 0) - (ledger.totals?.planned ?? 0))) : 0;
+    const settled = (ledger.totals?.total ?? 0) > 0.005 && remaining <= 0.005 && items.every(item => item.state === "paid") && (ownLeft <= 0.005 || (items.length > 0 && unplanned <= 0.005));
+    if (!closed) state = settled ? "done" : overdue.length || lateExtras.length ? "overdue" : "active";
+    const overdueExtras = lateExtras.map(item => ({ key: item.key, label: item.label, amount: item.remaining }));
+    // S129 = A (KULLANICI KARARI 12.11 13:26 AYNEN: "taksit kartının penceresindeki 'Tahsil Edilen' / 'Kalan' göstergeleri, Taksitler listesindeki aynı sütunlar ve taksit
+    // satırının 'Ödenen'i de TEK KUYRUKTAN gösterilir (ekranda tek sayı: örnekte kart 900, bağsız tahsilat 500 → Tahsil Edilen 500 · Kalan 400; kart 600, bağsız tahsilat
+    // 800 → Kalan 0 · Tamamlandı); tahsilat formunun sınırı / sorusu / önerilen tutarı S118 = B'deki gibi kartın KENDİ kalanından kalır"): totals.paid / totals.remaining
+    // GÖSTERİLEN sayılardır (shownTotals); kartın kendi hesabı totals.ownPaid / ownRemaining (lib/plans.mjs allocate) — sınır, Mutabakat Testi, mutabakat motoru bunları okur.
+    const shown = frozen ? { paid: ledger.totals.paid, remaining: ledger.totals.remaining, returned: 0 } : shownTotals(plan, ledger.totals, collectedOf(map), returnedOf(map));
+    return {
+      ...ledger,
+      items,
+      // ownOverdue: kartın kendi hesabıyla gecikmiş (taksit − kart tahsilatı; eski anlam) — onarım / göç karşılaştırmaları için.
+      totals: { ...ledger.totals, paid: shown.paid, remaining: shown.remaining, returned: shown.returned, queueRemaining: remaining, accountPaid, overdue: roundMoney(overdue.reduce((sum, item) => sum + item.remaining, 0) + lateExtras.reduce((sum, item) => sum + item.remaining, 0)), overdueCount: overdue.length, overdueRest: roundMoney(lateExtras.reduce((sum, item) => sum + item.remaining, 0)), overdueExtras, ownOverdue: ledger.totals.overdue ?? 0 },
+      next: next ? { id: next.id, seq: next.seq, dueDate: next.dueDate, remaining: next.remaining, days: next.days, state: next.state } : null,
+      // S118 = B: kartın KENDİ hesabıyla sıradaki taksit (formun önerdiği tutar; ledger.next = allocate).
+      ownNext: ledger.next || null,
+      state,
+    };
+  }
+  // S129 = A — kartın GÖSTERİLEN tahsil edileni ve kalanı (kart penceresi, Taksitler listesi, cari kartı, PDF / Excel / raporlar aynı sayı):
+  //   Tahsil Edilen = taksitlerin (ve taksitlendirilmemiş kalanın) kuyrukta TAHSİL EDİLEN kısmı (`collected`: kart tahsilatı + kart seçilmeden alınan tahsilatın / avansın
+  //                   payı) = satırların Ödenen toplamı; Mevcut Borç kartının taksitlere BÖLÜNMEMİŞ kısmına yazılan kart tahsilatı (o kısım kuyrukta kartın kalemi değildir —
+  //                   alttaki borç kalemi olarak durur) kartın kendi hesabından, bugünkü gibi eklenir.
+  //   Kalan = Toplam − Tahsil Edilen (kâhin KARARLAR Y6-4: "Kart kalan = toplam − ödenen").
+  // Karar örnekleri yalnız PARAYLA kapanışı söyler. Para dışı kapanışta (elle Alacak / alış faturasıyla netleşme, iade ya da kırpma — EK-2B 32) karar yok: o tutar "tahsil
+  // edilen" sayılmaz, kartın göstergesi bugünkü gibi kalır (kapanış düzeltme turu raporu "TOPLU SORULACAKLAR").
+  const collectedOf = map => {
+    let sum = 0;
+    for (const [key, row] of map) if (key !== "back") sum += row.collected || 0;
+    return roundMoney(sum);
+  };
+  // Birleşik tur 8 (S151 = B, S158 = A): taksitlerin (ve taksitlendirilmemiş kalanın) faturasız iade / Değersiz Alacak ile kapanan kısmı.
+  const returnedOf = map => {
+    let sum = 0;
+    for (const [key, row] of map) if (key !== "back") sum += row.returned || 0;
+    return roundMoney(sum);
+  };
+  //   Birleşik tur 8 (S151 = B, S158 = A): iade / Değersiz Alacak ile kapanan kısım Tahsil Edilen DEĞİLDİR, `returned` (İade ile Kapanan) olarak ayrı durur; Kalan = Toplam −
+  //   Tahsil Edilen − İade ile Kapanan (Kalan'ın sayısı değişmez: önceden iade Tahsil Edilen'in içindeydi). Tahsil Edilen + Kalan + İade ile Kapanan = Toplam (fazla tahsilat hariç).
+  function shownTotals(plan, totals, collected, returnedRaw = 0) {
+    const total = totals.total || 0;
+    const unplannedPaid = plan.coversBalance ? Math.max(0, Math.min(totals.extra || 0, totals.unplanned || 0)) : 0;
+    // Kartın KENDİ fazla tahsilatı (kart toplamını aşan; K8 "Fazlasını Avans Yaz" — plan §3.10/3) bugünkü gibi Tahsil Edilen'de görünür ("fazla ₺…" notuyla; karar yok).
+    const over = Math.max(0, roundMoney((totals.ownPaid ?? totals.paid ?? 0) - total));
+    const paid = roundMoney(Math.min(total, collected + unplannedPaid) + over);
+    const returned = roundMoney(Math.max(0, Math.min(returnedRaw, total - Math.min(total, collected + unplannedPaid))));
+    return { paid, remaining: roundMoney(Math.max(0, total - paid - returned)), returned };
+  }
+  // Cari kartı / Cari Listesi (routes/accounts.mjs): kartın özetine (kartın kendi hesabı) aynı gösterilen sayıları verir. tyk: carinin kuyruğu (obligationsFor / allObligations
+  // öğesi); yoksa ya da kart kapalıysa null (özet değişmez). Dönüş { paid, remaining }.
+  function shownTotalsOf(plan, tyk) {
+    const map = tyk && !waivesRemaining(plan) ? tyk.installments?.get(plan.id) : null;
+    if (!map || !plan.totals) return null;
+    return shownTotals(plan, plan.totals, collectedOf(map), returnedOf(map));
+  }
+  // Birleşik tur 8 (S142 = A — KULLANICI KARARI 13.11 03:44 AYNEN: "cari kartındaki taksit kartı satırında durum etiketi ve 'sıradaki taksit' de aynı (tek) hesaptan"): cari
+  // kartının taksit kartı özeti kart penceresinin görünümünü (detailView ile aynı withQueue) taşır — Tahsil Edilen / Kalan, durum, geciken taksit sayısı, sıradaki taksit.
+  // plan: forAccount öğesi (kartın kendi hesabı + taksitleri); tyk: carinin kuyruğu. Kuyruk yoksa (carisiz, işlem içi) null — özet kartın kendi hesabında kalır.
+  function queueSummaryOf(plan, tyk) {
+    if (!tyk || !plan?.accountId || !Array.isArray(plan.items) || !plan.totals) return null;
+    const view = withQueue(plan, plan, new Map([[plan.accountId, tyk]]));
+    return view === plan ? null : { totals: view.totals, state: view.state, next: view.next };
+  }
+  // Ç5-B tur 2a (O-3, S91 = A — vadesiz kayıt kayıt gününde vadeli kalem; C5 §2.10 madde 9 "Vade Takip gecikmiş tutarı = gecikmiş"): kuyruğun kart kalemlerinden TAKSİT
+  // OLMAYANLAR — kartın taksitlere bölünmemiş kalanı (vade = kartın açılış günü) ve Taksit İadesi (iadeler tahsilatı aşınca; vade = son iade günü) — takvim / zil / Vade Takip /
+  // nakit akışı kalemidir. Önceden gecikmişte sayılıyor, bu listelerde görünmüyordu (dar kontrol DK-C5B O-3). Kapatılmış kartta yok (kalan Kartı Kapat ile kapanır).
+  const QUEUE_EXTRAS = [["rest", "Taksitlendirilmemiş Kalan"], ["back", "Taksit İadesi"]];
+  function queueExtras(plan, all, day) {
+    // 2.5.0 Ç7b tur 3b: Borçta Kalsın ile kapatılmış kartın kalemleri de (kalan borçta); kalanı düşülmüş eski kapalı kartta yok.
+    const map = plan.accountId && all && !waivesRemaining(plan) ? all.get(plan.accountId)?.installments.get(plan.id) : null;
+    if (!map) return [];
+    const out = [];
+    for (const [key, label] of QUEUE_EXTRAS) {
+      const row = map.get(key);
+      const remaining = roundMoney(row?.remaining || 0);
+      if (!row || !(remaining > 0.005)) continue;
+      const days = daysUntil(row.vade, day);
+      const state = days < 0 ? "overdue" : days === 0 ? "today" : days <= 7 ? "upcoming" : "open";
+      out.push({ id: key, key, seq: 0, label, dueDate: row.vade, amount: roundMoney(row.amount), remaining, held: roundMoney(Math.min(remaining, row.doubtful || 0)), days, state, partial: remaining < roundMoney(row.amount) - 0.005 });
+    }
+    return out;
+  }
+  // Ç5-B tur 2b-1 (DK-C5BT2A G-1; tasarım §5 "tek cari: her istekte hesaplanır"): kart ekranı ve kartın yazım yanıtları kuyruğu YALNIZ kartın carisi için kurar
+  // (invoices.obligationsFor — önbelleğin artımlı yolunun cari başına kurduğu sonuçla aynı işlev). Önceden bütün carilerin kuyruğu (allObligations → allSettled) okunuyordu:
+  // yazımdan hemen sonra bütün carilerin izi yeniden hesaplanıyordu (100 bin satırda kart tahsilatı yanıtı ~0,15 → ~1,1 sn). Eşdeğerlik: test/tyk-tur2b1-250.test.mjs
+  // (yanıt = ardından okuma = bütün carilerin kuyruğu). Liste (Taksitler) bütün carilerin kuyruğunu okumayı sürdürür.
+  const AUDITOR = { id: "plans", role: "admin", permissions: [] };
+  const queueFor = accountId => (store.inTransaction ? null : queueBuild(accountId));
+  // 2.5.0 Ç7b aday düzeltme turu (YB-1; ana oturumun ekran yürüyüşü ORTA bulgusu): kuyruğu işlem İÇİNDE de kuran yol — YALNIZ Kartı Kapat onayının denetimi (shownRemaining)
+  // çağırır. invoices.obligationsOf işlem içinde önbelleğe okumaz / yazmaz (kesinleşmemiş veri saklanmaz); queueFor / queueOf'un işlem içindeki davranışı (kuyruk yok) DEĞİŞMEDİ.
+  function queueBuild(accountId) {
+    if (!accountId) return null;
+    const module = invoices();
+    if (!module?.obligationsOf || module.legacyView) return null;
+    const ledgerOf = () => {
+      try {
+        return accounts()?.detail ? accounts().detail(accountId, AUDITOR, { withRemaining: false }).ledger || null : null;
+      } catch {
+        return null; // silinmiş cari: kuyruk yok (carisiz kart gibi kartın kendi hesabı)
+      }
+    };
+    // Ç5-B son tur (hız): aynı veri durumunda carinin kuyruğu bir kez kurulur (invoices.obligationsOf — yazım yanıtından hemen sonraki kart okuması yeniden kurmaz).
+    const result = module.obligationsOf(accountId, ledgerOf);
+    return result ? new Map([[accountId, result]]) : null;
+  }
+  // Kart ekranı (GET): kartın kendi hesabı + kuyruk görünümü.
+  const detailView = (id, user) => {
+    const plan = planRow(id);
+    const shaped = shape(plan, user);
+    const view = withQueue(plan, shaped, queueFor(plan.accountId));
+    return view === shaped ? shaped : { ...shaped, ...view };
+  };
+  // 2.5.0 Ç7b aday düzeltme turu (YB-1): kart penceresinin GÖSTERDİĞİ kalan (detailView ile aynı kural — S129 = A tek kuyruk: totals.remaining) işlemin İÇİNDE, güncel kartla.
+  // Önceden denetim detail() → shape() okuyordu: işlem içinde kuyruk kurulmadığı için kartın KENDİ hesabı (allocate) çıkıyordu — cari kartından tahsilat girilmiş kartta pencere
+  // "Kalan 2.500" diye onay alıyor, sunucu "güncel kalan 3.000,00 TL" diye reddediyordu (pencere ikinci kez soruyordu). Karşılaştırma yazımla aynı işlemde (BEGIN IMMEDIATE):
+  // denetimle yazım arasına başka yazım giremez. Carisiz kart / eski kapama görünümü: kuyruk yok → kartın kendi kalanı (pencere de onu gösterir).
+  const shownRemaining = (plan, user) => {
+    const shaped = shape(plan, user);
+    const view = withQueue(plan, shaped, queueBuild(plan.accountId));
+    return roundMoney(Number(view?.totals?.remaining) || 0);
+  };
+  // Yazım yanıtı (kart açma / düzenleme / durum, Otomatik Dağıt, taksit ve tahsilat işlemleri): okumayla aynı görünüm (O-2) + bütün carilerin kuyruk önbelleği BURADA yenilenir.
+  // Ç5-B son tur (hız; iş listesi D "HIZ KABUL ÖLÇÜMÜ" 11.11 08:49 — hedef: çalışma dalına göre yazım + ilk okumalar toplamı ve hiçbir TEK yol kötüleşmesin): tur 2b-1 yanıtı
+  // tek carinin kuyruğuna indirince bütün carilerin izinin taranması (100 bin satırda ~1 sn) yazımdan sonraki İLK liste / zil okumasına kaymıştı (zil 1,9–2,1 → 3,1–3,3 sn).
+  // Tarama yeniden yazım yanıtında (çalışma dalındaki yeri); carinin kuyruğu yine BİR kez kurulur (obligationsOf'un sonucu artımlı yenilemede kullanılır — invoices.mjs).
+  // İz taramasını yazımdan da okumadan da kaldırmak "kirli küme" tasarımıdır (önbelleğin yapısal işi; tasarım notu §13.3 — bu turda yapılmadı).
+  const writeView = (id, user) => {
+    const view = detailView(id, user);
+    queueOf();
+    return view;
+  };
 
   // Sıra No (v2.0.5): Excel'deki "S.N" kolonu ya da kart açılırken verilen numara. Sayı olanlar sayı gibi sıralanır
   // ("2" < "10"); boş ya da sayı olmayan numara en sona.
@@ -266,6 +504,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       entries.get(entry.planId).push(entry);
     }
     const day = today();
+    const queue = queueOf();
     const needle = String(q || "").toLocaleLowerCase("tr-TR").trim();
     const digits = needle.replace(/\D/g, "");
     const totals = { total: 0, paid: 0, remaining: 0, overdue: 0, overdueCount: 0, month: 0, count: 0 };
@@ -280,7 +519,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
         const refHit = String(plan.refNo || "").toLocaleLowerCase("tr-TR") === needle;
         if (!hay.includes(needle) && !phoneHit && !refHit) continue;
       }
-      const ledger = allocate(plan, items.get(plan.id) || [], entries.get(plan.id) || [], { today: day });
+      const ledger = withQueue(plan, allocate(plan, items.get(plan.id) || [], entries.get(plan.id) || [], { today: day }), queue, day);
       if (status === "active" && !["active", "overdue"].includes(ledger.state)) continue;
       if (status === "overdue" && ledger.state !== "overdue") continue;
       if (status === "done" && ledger.state !== "done") continue;
@@ -290,6 +529,8 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       totals.remaining = roundMoney(totals.remaining + ledger.totals.remaining);
       totals.overdue = roundMoney(totals.overdue + ledger.totals.overdue);
       totals.overdueCount += ledger.totals.overdueCount;
+      // Y2 (tur 2b-2): gecikmiş taksitlendirilmemiş kalan / Taksit İadesi (tutar totals.overdue'da; ayrıca gösterilir).
+      totals.overdueRest = roundMoney((totals.overdueRest || 0) + (ledger.totals.overdueRest || 0));
       totals.month = roundMoney(totals.month + ledger.items.filter(item => item.dueDate.startsWith(month) && item.remaining > 0.005 && item.state !== "closed").reduce((sum, item) => sum + item.remaining, 0));
       totals.count += 1;
       out.push({
@@ -371,10 +612,10 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
         tl(plan.totals.paid),
         tl(plan.totals.remaining),
         plan.next ? `${dayText(plan.next.dueDate)} · ${plan.next.seq}. taksit` : "",
-        `${STATE_TEXT[plan.state] || ""}${plan.totals.overdueCount ? ` · ${plan.totals.overdueCount} taksit geciken` : ""}`,
+        `${STATE_TEXT[plan.state] || ""}${plan.totals.overdueCount ? ` · ${plan.totals.overdueCount} taksit geciken` : ""}${plan.totals.overdueRest ? ` · taksitlendirilmemiş kalan ${tl(plan.totals.overdueRest)} geciken` : ""}`,
         plan.note || "",
       ]),
-      summary: [["Kart", String(data.totals.count)], ["Kalan Alacak", tl(data.totals.remaining)], ["Geciken", `${tl(data.totals.overdue)} · ${data.totals.overdueCount} taksit`], ["Bu Ay Beklenen", tl(data.totals.month)], ["Tahsil Edilen", tl(data.totals.paid)]],
+      summary: [["Kart", String(data.totals.count)], ["Kalan Alacak", tl(data.totals.remaining)], ["Geciken", `${tl(data.totals.overdue)} · ${data.totals.overdueCount} taksit${data.totals.overdueRest ? ` + taksitlendirilmemiş kalan ${tl(data.totals.overdueRest)}` : ""}`], ["Bu Ay Beklenen", tl(data.totals.month)], ["Tahsil Edilen", tl(data.totals.paid)]],
       userName: user.display_name || user.username || "",
       // Liste okula ya da veliye verilebilir: altbilgide program adı değil firma adı (v2.0.6).
       ...header.pdf({ brand: office() }),
@@ -437,23 +678,73 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     if (!account) return 0;
     let covered = 0;
     for (const plan of account.plans || []) {
-      if (plan.id === exceptPlanId || plan.status === "closed") continue;
+      // 2.5.0 Ç7b tur 3b: Borçta Kalsın ile kapatılmış Mevcut Borç kartı borcu taşımayı sürdürür (Tek Yükümlülük Kuyruğu'nda kalemleri kapanış ertesinden vadeli) — aynı borç yeni
+      // kartla ikinci kez taksitlendirilmez (kart Yeniden Aç ile açılır); kalanı düşülmüş eski kart sayılmaz (bugünkü gibi).
+      if (plan.id === exceptPlanId || waivesRemaining(plan)) continue;
       const row = store.get("SELECT covers_balance AS c FROM plans WHERE id = ?", plan.id);
       if (row?.c) covered = roundMoney(covered + Math.max(0, (Number(plan.totals?.total) || 0) - (Number(plan.totals?.paid) || 0)));
     }
     return roundMoney(Math.max(0, (Number(account.totals?.balance) || 0) - covered));
   }
-  // Kartı sondaki taksitlerden geriye doğru küçültür (tahsilat bağlı taksit satırı silinmez, sıfırlanır). Yeni toplamı döndürür.
-  function cutPlan(plan, cut, user, { accountId = "", reason = "" } = {}) {
-    let rest = cut;
-    for (const item of itemsOf(plan.id).reverse()) {
+  // 2.5.0 Ç7b tur 3 — karar (4) / 2B-S3 = A (docs/erp/C7B-FATURA-TASARIM.md §16.3): kart küçülmesi vadesi EN ÖNCE gelen taksitin AÇIK kısmından başlar; ödenmiş kısma
+  // dokunulmaz (açık kısım kart ekranının kendi hesabıyla — lib/plans.mjs allocate; bağlı tahsilat önce kendi taksitine). Açık kısım yetmezse artanı eski yönle (sondan) —
+  // çağıranlar keseni kartın kalanıyla sınırladığından olmaz. Önceden taksitler SONDAN geriye kesiliyordu (vadesi uzak taksit önce gidiyordu).
+  // Dönüş: [{ item, take }] — kesilecek taksitler sırasıyla (açılış onarımının kilit denetimi de bunu okur: cutTargets).
+  // open (2.5.0 Ç7b tur 3 devamı — kabul B'nin d42 farkı, ders 6): verilirse taksitin AÇIK kısmı Tek Yükümlülük Kuyruğu'ndan okunur (kart ekranının gösterdiği Kalan — S129;
+  // itemId → kuyruk satırı). Yalnız trimCovers verir: orada küçülen tutar kuyruğun dağıtamadığı FAZLADIR — bağsız alacak (faturasız stok iadesi, Alacak Yaz) en önce gelen taksiti
+  // kuyrukta ZATEN kapatmıştır; kartın kendi hesabıyla (allocate) "açık" sayılan o taksit kesilirse alacak carinin öbür borcuna kayar (d42 T1: kart Kalan 500 · elle borç 200;
+  // kararın ve kâhinin beklediği kart 200 · elle borç 500 — S140 = A / S151 = B). İade faturası / iptal yolları (shrinkPlan, closeForInvoice) kartın kendi hesabını okur (karar (4)).
+  // order "tail" (2.5.0 Ç7b tur 3 devam 3 — S218 = B; tasarım §16.9): YALNIZ açılış onarımı (2.1.0; 2.0.24–2.0.26'da yanlış büyümüş kartı küçülten) ve onun kilit aynası — ESKİ YÖN:
+  // son taksitten geriye, taksit tutarından (onarım eski bir hatayı geri alır; 2.1.0'dan beri her kurulum bu kartları bu yönle onardı). Karar (4) yalnız YENİ küçülmeler içindir
+  // (iade, iptal / silme, trimCovers). Ziyaret edilen her taksit (kesilen 0 olsa da) döner — eski cutPlan / ayna döngüsüyle birebir.
+  function cutTargets(planId, cut, open = null, { order = "due" } = {}) {
+    const items = itemsOf(planId);
+    if (order === "tail") {
+      const tail = [];
+      let rest = roundMoney(Number(cut) || 0);
+      for (const item of [...items].reverse()) {
+        if (!(rest > 0.005)) break;
+        const take = roundMoney(Math.min(rest, Number(item.amount) || 0));
+        tail.push({ item, take });
+        rest = roundMoney(rest - take);
+      }
+      return tail;
+    }
+    const shaped = open
+      ? new Map(items.map(item => [item.id, roundMoney(Math.max(0, Math.min(Number(item.amount) || 0, Number(open.get(item.id)?.remaining) || 0)))]))
+      : new Map(allocate({ total: 0 }, items, entriesOf(planId), { today: today() }).items.map(item => [item.id, item.remaining]));
+    const out = [];
+    const left = new Map(items.map(item => [item.id, Number(item.amount) || 0]));
+    let rest = roundMoney(Number(cut) || 0);
+    for (const item of items) {
       if (!(rest > 0.005)) break;
-      const take = roundMoney(Math.min(rest, Number(item.amount) || 0));
+      const take = roundMoney(Math.min(rest, shaped.get(item.id) || 0));
+      if (!(take > 0.005)) continue;
+      out.push({ item, take });
+      left.set(item.id, roundMoney(left.get(item.id) - take));
+      rest = roundMoney(rest - take);
+    }
+    for (const item of [...items].reverse()) {
+      if (!(rest > 0.005)) break;
+      const take = roundMoney(Math.min(rest, left.get(item.id)));
+      if (!(take > 0.005)) continue;
+      const found = out.find(row => row.item.id === item.id);
+      if (found) found.take = roundMoney(found.take + take);
+      else out.push({ item, take });
+      left.set(item.id, roundMoney(left.get(item.id) - take));
+      rest = roundMoney(rest - take);
+    }
+    return out;
+  }
+  // Kartı karar (4) sırasıyla küçültür (tahsilat bağlı taksit satırı silinmez, sıfırlanır). Yeni toplamı döndürür.
+  // log (2.5.0 İzleyen küçük tur — S238 = A; tasarım §19.3): verilirse kesilen her taksit (kimlik, sıra, vade, not, kesilen) eklenir — iade belgesine yazılır, iade iptali aynı taksitlere geri yazar.
+  function cutPlan(plan, cut, user, { accountId = "", reason = "", open = null, order = "due", log = null } = {}) {
+    for (const { item, take } of cutTargets(plan.id, cut, open, { order })) {
+      if (log && take > 0.005) log.push({ id: item.id, seq: item.seq, dueDate: item.dueDate, note: item.note || "", take: roundMoney(take) });
       const amount = roundMoney((Number(item.amount) || 0) - take);
       const linked = store.get("SELECT 1 AS found FROM plan_entries WHERE item_id = ?", item.id);
       if (amount <= 0.005 && !linked) store.run("DELETE FROM plan_items WHERE id = ?", item.id);
       else store.run("UPDATE plan_items SET amount = ?, updated_at = ? WHERE id = ?", amount, now(), item.id);
-      rest = roundMoney(rest - take);
     }
     const total = roundMoney(plan.total - cut);
     store.run(`UPDATE plans SET ${FREEZE_CLOSE}, total = ?, updated_by = ?, updated_at = ? WHERE id = ?`, total, user.id, now(), plan.id);
@@ -461,15 +752,18 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     return total;
   }
   // v2.0.24: iade faturası asıl faturayı taksitlendiren kartı (kendi kartı ya da faturayı kapsayan Mevcut Borç kartı)
-  // küçültür; kalanı (toplam − net tahsilat) aşılmaz. Küçülen tutarı döndürür.
-  function shrinkPlan(user, planId, amount, note = "") {
-    const row = store.get("SELECT id, name, total, status, account_id AS accountId FROM plans WHERE id = ? AND deleted_at IS NULL", planId);
-    if (!row || row.status === "closed") return 0;
+  // küçültür; kalanı (toplam − net tahsilat) aşılmaz. Küçülen tutarı döndürür. order "tail" yalnız açılış onarımında (S218 = B — cutTargets).
+  // 2.5.0 S234 = A (docs/erp/C7B-FATURA-TASARIM.md §18.2): karar (4) Borçta Kalsın ile kapatılmış (kalanı carinin borcunda) karta da uygulanır — kart küçülür, Kalan = carinin karttaki
+  // borcu. Kalanı düşülmüş eski kurallı ('2.4.9') kapalı kart bugünkü gibi küçülmez (kalanı zaten borçta değil); açılış onarımı (order "tail") kapalı kartı bugünkü gibi atlar.
+  const shrinkable = (row, order = "due") => Boolean(row) && (row.status !== "closed" || (order !== "tail" && !waivesRemaining(row)));
+  function shrinkPlan(user, planId, amount, note = "", { order = "due", log = null } = {}) {
+    const row = store.get("SELECT id, name, total, status, close_rule AS closeRule, account_id AS accountId FROM plans WHERE id = ? AND deleted_at IS NULL", planId);
+    if (!shrinkable(row, order)) return 0;
     const plan = { id: row.id, name: row.name, total: Number(row.total) || 0 };
     const left = roundMoney(Math.max(0, plan.total - Math.max(0, netPaid(plan.id))));
     const cut = roundMoney(Math.min(Number(amount) || 0, left));
     if (!(cut > 0.005)) return 0;
-    cutPlan(plan, cut, user, { accountId: row.accountId, reason: note || "İade" });
+    cutPlan(plan, cut, user, { accountId: row.accountId, reason: note || "İade", order, log });
     return cut;
   }
   function leftOf(planId) {
@@ -481,28 +775,48 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     const row = store.get("SELECT total FROM plans WHERE id = ? AND deleted_at IS NULL", planId);
     return row ? roundMoney((Number(row.total) || 0) - Math.max(0, netPaid(planId))) : 0;
   }
+  // 2.5.0 Ç7b tur 3 devamı: carinin kart taksitlerinin kuyruktaki kalanı (planId → itemId → kuyruk satırı; TL) — trimCovers'ın küçülme sırası (cutTargets open). İşlem içinde de
+  // kurulur (obligationsOf'un işlem yolu — önbelleğe yazmaz). Eski kapama görünümünde (legacyView) ya da kuyruk kurulamazsa null → kartın kendi hesabı.
+  function openByQueue(accountId, ledger) {
+    const module = invoices();
+    if (!accountId || !ledger || !module?.obligationsOf || module.legacyView) return null;
+    try {
+      return module.obligationsOf(accountId, () => ledger)?.installments || null;
+    } catch {
+      return null;
+    }
+  }
   // v2.0.13 (simülasyon bulgusu "iade taksitten düşmüyor"): cariye alacak yazılınca (müşteri iadesi) borç, mevcut borcu
   // taksitlendiren kartların kalanından küçük kalabilir. Kartlar borçtan büyük kalmasın: fazlası en yeni karttan
   // başlayarak, son taksitten geriye doğru düşülür (ödenmiş taksitlere dokunulmaz). Aynı işlemin içinde çalışır.
-  function trimCovers(accountId, user, note = "") {
-    const account = accounts()?.detail ? accounts().detail(accountId, user) : null;
+  // Hız (ders 47; 2.5.0 Ç7b tur 3 devam 3 — kabul E): yalnız defter (bakiye), kart özetinin KENDİ toplamları ve defter satırları okunur → withRemaining: false (Tek Yükümlülük
+  // Kuyruğu ve Kalan eki kurulmaz; shown olmadan özet ve bakiye iki yolda aynı — eşdeğerlik test/c7b-tur3-hiz-250.test.mjs). Kuyruk gerekirse openByQueue kendisi kurar.
+  // 2.5.0 S234 = A (§18.2): Borçta Kalsın ile kapatılmış Mevcut Borç kartı da kırpılır (kalanı carinin borcundadır — karar (4) kapalı karta da); kalanı düşülmüş eski kurallı kapalı kart
+  // bugünkü gibi atlanır. closed: false — İPTAL yolu (settleCoverOnCancel; S226 = C: iptalde kapalı kart bugünkü gibi değişmez).
+  function trimCovers(accountId, user, note = "", { closed = true } = {}) {
+    const account = accounts()?.detail ? accounts().detail(accountId, user, { withRemaining: false }) : null;
     if (!account) return [];
     const covering = [];
     for (const plan of account.plans || []) {
-      if (plan.status === "closed") continue;
-      const row = store.get("SELECT covers_balance AS c, total, created_at AS createdAt, invoice_id AS invoiceId FROM plans WHERE id = ?", plan.id);
+      if (plan.status === "closed" && !closed) continue;
+      const row = store.get("SELECT covers_balance AS c, total, status, close_rule AS closeRule, created_at AS createdAt, invoice_id AS invoiceId FROM plans WHERE id = ?", plan.id);
+      if (!shrinkable(row)) continue;
       // v2.0.24: faturanın kendi kartı faturanın açığını izler (iade faturasıyla küçülür); bakiyeye göre kırpılmaz.
       if (row?.c && !row.invoiceId) covering.push({ id: plan.id, name: plan.name, total: Number(row.total) || 0, createdAt: row.createdAt, left: Math.min(Number(row.total) || 0, Math.max(0, (Number(plan.totals?.total) || 0) - Math.max(0, Number(plan.totals?.paid) || 0))) });
     }
     const covered = covering.reduce((sum, plan) => roundMoney(sum + plan.left), 0);
     let excess = roundMoney(covered - Math.max(0, Number(account.totals?.balance) || 0));
+    let queue;
     const changedPlans = [];
     for (const plan of covering.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))) {
       if (!(excess > 0.005)) break;
       const cut = roundMoney(Math.min(excess, plan.left));
       if (!(cut > 0.005)) continue;
-      const total = cutPlan(plan, cut, user, { accountId, reason: note || "İade / alacak" });
-      changedPlans.push({ id: plan.id, name: plan.name, from: plan.total, to: total, cut });
+      // Kuyruk (in-tx, carinin defterinden — invoices.obligationsOf) yalnız gerçekten kesilecek kart varsa bir kez kurulur (ders 47).
+      if (queue === undefined) queue = openByQueue(accountId, account.ledger);
+      const items = [];
+      const total = cutPlan(plan, cut, user, { accountId, reason: note || "İade / alacak", open: queue?.get(plan.id) || null, log: items });
+      changedPlans.push({ id: plan.id, name: plan.name, from: plan.total, to: total, cut, items });
       excess = roundMoney(excess - cut);
     }
     return changedPlans;
@@ -533,9 +847,11 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   // closed_at, 2.0.13 öncesi kapatılmışta son güncelleme günü; Kayıt Tarihi'nden önce değil). O gün kapanmış dönemdeyse kart yeniden
   // açılmaz, silinmez, geri yüklenmez; tutarı, carisi, tahsilatı ve iadesi değişmez (vazgeçilen tutar kilitli mizandadır; kilit izi
   // integrity.mjs "plans_close_lock"). Önceden yalnız Kayıt Tarihi ve ilk tahsilat soruluyor, kilitli mizan sessizce değişiyordu.
+  // 2.5.0 Ç7b tur 3b (§17.1): YALNIZ kalanı düşülmüş (eski kural, göç 53 '2.4.9') kartta — Borçta Kalsın kartının kapanışı defter olayı değildir (689 yok; lib/accounts.mjs
+  // waivesRemaining), kilitli günde kapanmış olsa da Yeniden Aç / tahsilat / silme kapanış gününe takılmaz (Kayıt Tarihi ve tahsilat günlerinin kendi kilitleri aynen).
   const closeDayOf = planId => {
-    const row = store.get("SELECT status, COALESCE(closed_at, substr(updated_at, 1, 10)) AS closedOn, COALESCE(NULLIF(registered_on, ''), substr(created_at, 1, 10)) AS startOn FROM plans WHERE id = ?", planId);
-    if (!row || row.status !== "closed") return "";
+    const row = store.get("SELECT status, close_rule AS closeRule, COALESCE(closed_at, substr(updated_at, 1, 10)) AS closedOn, COALESCE(NULLIF(registered_on, ''), substr(created_at, 1, 10)) AS startOn FROM plans WHERE id = ?", planId);
+    if (!row || !waivesRemaining(row)) return "";
     return row.closedOn && row.closedOn > row.startOn ? row.closedOn : row.startOn;
   };
   function assertCloseOpen(planId, what) {
@@ -592,21 +908,37 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     });
     changed(user, { planId: id });
     changed(user, { kind: "accounts", accountId: result.accountId || "" });
-    ok(res, result);
+    // Ç5-B tur 2a (O-2): yazım yanıtı okumayla (GET) AYNI görünüm — kartın kendi hesabı + kuyruk (işlem kesinleştikten sonra; işlem içinde kuyruk okunmaz).
+    ok(res, writeView(id, user));
   });
 
   router.get("/api/workspace/plans/:id", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "plans.view");
-    ok(res, detail(params.id, user));
+    ok(res, detailView(params.id, user));
   });
 
+  // 2.5.0 BİRLEŞİK TUR 3 (3a; iyimser kilit, lib/row-version.mjs): kart düzenleme formu açıldığı andaki kartın sürümünü (updatedAt) gönderir; kart o andan sonra
+  // değiştiyse (başka biri tutarı / adı düzeltti, cari adı değişti) 409 plan-stale. Önceden tam form (bütün alanlar) öbür kişinin düzeltmesini sessizce geri yazıyordu
+  // (B tutarı 1.000 → 1.200 yaptı, yalnız notu değiştiren A'nın formu 1.000'i yazdı). Gövdede updatedAt yoksa (Kartı Kapat / Yeniden Aç, eski istemci) denetim yok.
+  const PLAN_STALE = { code: "plan-stale", message: "Bu taksit kartı siz açtıktan sonra başka biri tarafından değiştirildi; değişikliğiniz kaydedilmedi. Kartı yenileyip yeniden deneyin." };
   router.put("/api/workspace/plans/:id", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "plans.manage");
-    const previous = planRow(params.id);
+    const opened = planRow(params.id);
     const body = await readJson(req);
+    let wrote = false;
     const result = store.tx(() => {
+      // Kart yazım işleminin İÇİNDE yeniden okunur (birleşik tur 1 deseni): gövde beklenirken kart değiştiyse denetimler ve gövdede olmayan alanlar GÜNCEL karttan;
+      // silindiyse 404.
+      const previous = planRow(opened.id);
       const input = planInput({ ...previous, ...body }, user, previous);
       const status = body.status === undefined ? previous.status : body.status === "closed" ? "closed" : "active";
+      // 2.5.0 BİRLEŞİK TUR 4 (tur 3 dar kontrolü ORTA-1; Kasa açılışındaki desen): "değişiklik yok" kısa yolu işlemin İÇİNDE, GÜNCEL kartla ve sürüm denetiminden
+      // ÖNCE — birleşmiş girdi kartta yazılacak her alanda güncel kartla aynıysa hiçbir şey yazılmaz, 200 + güncel kart. Önceden yanıtı kopan KENDİ kaydının yeniden
+      // gönderimi (aynı form, eski sürüm) 409 "değişikliğiniz kaydedilmedi" alıyordu (kaydedilmişti). Carisiz eski kart (ilk düzenlemede cari açılır) kısa yola girmez.
+      const sameAccount = Boolean(previous.accountId) && (input.accountId || previous.accountId) === previous.accountId;
+      if (sameAccount && status === previous.status && sameFields(previous, input, { texts: ["name", "phone", "note", "refNo", "registeredOn", "caseKey", "caseSource", "caseTitle", "groupId", "subgroupId"], numbers: ["total"] })) return detail(previous.id, user);
+      assertRowVersion(body, previous, PLAN_STALE);
+      wrote = true;
       // v2.0.23 (gözden geçirme): faturanın kendi taksit kartının tutarı ve carisi faturadan gelir; burada değişince fatura ile
       // kart ayrışıyordu (fatura 3.000 açık, kart 2.000). Ad, grup, not ve kapatma burada serbest.
       if (previous.invoiceId && (roundMoney(input.total) !== roundMoney(Number(previous.total) || 0) || (input.accountId && input.accountId !== previous.accountId))) {
@@ -626,6 +958,16 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       if (previous.status === "closed" && status !== "closed") assertCloseOpen(previous.id, "Kart yeniden açılamaz.");
       else if (previous.status === "closed" && moneyChange) assertCloseOpen(previous.id, "Kartın tutarı, carisi ve Kayıt Tarihi değiştirilemez.");
       if (previous.status !== "closed" && status === "closed") period?.assertOpen(today(), "Kartın kapatılma günü");
+      // 2.5.0 Ç7b (YB-1; docs/erp/C7B-FATURA-TASARIM.md §2.4): Kartı Kapat onayı eskimiş "Kalan X" ile verilemez — istemci onayladığı kalanı gönderir (closeRemaining, TL); işlemin
+      // İÇİNDE kartın GÜNCEL kalanı (kart penceresinin gösterdiği totals.remaining) kuruşu kuruşuna aynı değilse 409 plan-close-stale + güncel kalan; istemci güncel kalanla yeniden
+      // sorar. Alan yoksa (eski istemci) bugünkü gibi. Kapatmanın defter / cari etkisi DEĞİŞMEDİ (karar (6) / KG-23 → Ç7b tur 3).
+      if (previous.status !== "closed" && status === "closed" && body.closeRemaining !== undefined && body.closeRemaining !== null) {
+        // Ç7b aday düzeltme turu: kart penceresinin GÖSTERDİĞİ kalan (shownRemaining; işlem içinde kuyruk dahil) — önceden kartın kendi hesabı (detail) okunuyordu.
+        const current = shownRemaining(previous, user);
+        if (Math.round(current * 100) !== Math.round((Number(body.closeRemaining) || 0) * 100)) {
+          throw new HttpError(409, `Kartın kalanı siz onayladıktan sonra değişti; güncel kalan ${new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(current)} TL. Kartı Kapat yeniden sorulacak.`, { code: "plan-close-stale", remaining: current });
+        }
+      }
       if (accountId !== previous.accountId) assertPartyOpen(previous.id);
       // v2.0.23 (3. gözden geçirme): Mevcut Borç kartı açıldığı andaki borcu taksitlendirir; tutarı sonradan büyütülünce kart
       // yeni borcu da sayıyor ya da başka faturayı "ödenmiş" gösteriyordu. Yeni borç için yeni kart açılır.
@@ -639,7 +981,9 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
         accountId, input.refNo, input.registeredOn, input.caseKey, input.caseSource, input.caseTitle, input.groupId, input.subgroupId, input.name, input.note, input.phone, input.total, status, user.id, now(), previous.id,
       );
       // Kapatma tarihi (v2.0.13): vazgeçilen kalan ana defterde bu tarihte yazılır; yeniden açılınca silinir.
-      if (status !== previous.status) store.run("UPDATE plans SET closed_at = ? WHERE id = ?", status === "closed" ? today() : null, previous.id);
+      // 2.5.0 Ç7b tur 3b (karar (6) "Borçta Kalsın"; §17.1): kapatma kuralı işareti durum değişince '' (Borçta Kalsın) — Yeniden Aç → yeniden Kapat YENİ kuralla (eski kurallı kart
+      // yeniden açılınca düşülen kalan bugünkü gibi geri gelir; yeni kapatma kalanı borçta bırakır).
+      if (status !== previous.status) store.run("UPDATE plans SET closed_at = ?, close_rule = '' WHERE id = ?", status === "closed" ? today() : null, previous.id);
       // v2.1.0 (§3.11 bank:event): tahsilatların işlem başlığı kopyasındaki cari (party_id) kartın carisinden gelir; cari değişince
       // kopyalar aynı işlemde yenilenir (bank.post "assign"; para satırı değişmez).
       if (accountId !== previous.accountId && bank) {
@@ -649,9 +993,11 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       audit(user, "plan.updated", previous.id, { previous: { name: previous.name, total: previous.total, status: previous.status, accountId: previous.accountId }, ...input, accountId, status });
       return detail(previous.id, user);
     });
-    changed(user, { planId: previous.id });
-    changed(user, { kind: "accounts", accountId: result.accountId || "" });
-    ok(res, result);
+    if (wrote) {
+      changed(user, { planId: opened.id });
+      changed(user, { kind: "accounts", accountId: result.accountId || "" });
+    }
+    ok(res, writeView(result.id, user));
   });
 
   router.delete("/api/workspace/plans/:id", async ({ req, res, params, url }) => {
@@ -678,8 +1024,8 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       store.run("UPDATE plans SET deleted_by = ?, deleted_at = ? WHERE id = ?", user.id, now(), plan.id);
       audit(user, "plan.deleted", plan.id, { name: plan.name, total: plan.total });
     };
-    if (bank) bank.post({ user, module: "plans", op: "delete", prev: { planId: plan.id, name: plan.name, total: plan.total }, write: remove });
-    else store.tx(remove);
+    // Birleşik tur 8 (DK-B7 ORTA-1; BAŞ MİMAR KARARI 13.11 09:54): silinirken görünürlüğü kalkan nakit satırlarının özeti Silinenler için yazılır (lib/cash-opening.mjs recordingHidden).
+    recordingHidden(store, "plan", plan.id, () => (bank ? bank.post({ user, module: "plans", op: "delete", prev: { planId: plan.id, name: plan.name, total: plan.total }, write: remove }) : store.tx(remove)));
     changed(user, { planId: plan.id });
     changed(user, { kind: "cash" });
     ok(res, { id: plan.id });
@@ -706,7 +1052,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       return detail(plan.id, user);
     });
     changed(user, { planId: plan.id });
-    ok(res, result);
+    ok(res, writeView(result.id, user));
   });
 
   // ---------- Taksitler (elle) ----------
@@ -717,7 +1063,8 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   };
   const itemOf = (planId, itemId) => {
     const item = store.get("SELECT id, seq, due_date AS dueDate, amount, note FROM plan_items WHERE plan_id = ? AND id = ?", planId, limited(itemId, 120, "Taksit"));
-    if (!item) throw new HttpError(404, "Taksit bulunamadı.");
+    // 2.5.0 BS-3 (g): ileti cari / stok / tahsilat düzeltmesiyle aynı üslupta (silinmiş olabileceği söylenir).
+    if (!item) throw new HttpError(404, "Taksit bulunamadı. Başka biri silmiş olabilir.");
     return item;
   };
   router.post("/api/workspace/plans/:id/items", async ({ req, res, params }) => {
@@ -736,21 +1083,38 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       audit(user, "plan.item.created", id, { planId: plan.id, ...input });
     });
     changed(user, { planId: plan.id });
-    ok(res, detail(plan.id, user));
+    ok(res, writeView(plan.id, user));
   });
+  // 2.5.0 BİRLEŞİK TUR 3 (YAN-B; iyimser kilit, lib/row-version.mjs): taksit düzeltme formu açıldığı andaki taksitin sürümünü (updatedAt) gönderir; taksit o andan sonra
+  // değiştiyse 409 plan-item-stale. Önceden tam form öbür kişinin düzeltmesini sessizce geri yazıyordu (B taksiti 500 → 300 yaptı, yalnız vadeyi değiştiren A'nın formu
+  // 500'ü yazdı). Gövdede updatedAt yoksa (eski istemci) denetim yok.
+  const ITEM_STALE = { code: "plan-item-stale", message: "Bu taksit siz açtıktan sonra başka biri tarafından değiştirildi; düzeltmeniz kaydedilmedi. Kartı yenileyip yeniden deneyin." };
   router.put("/api/workspace/plans/:id/items/:itemId", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "plans.manage");
     const plan = planRow(params.id);
-    const previous = itemOf(plan.id, params.itemId);
-    const input = itemInput({ ...previous, ...(await readJson(req)) }, plan);
-    if (!(input.amount > 0)) throw new HttpError(400, "Taksit tutarı sıfırdan büyük olmalı.");
-    store.tx(() => {
-      assertPlanLive(plan.id);
+    const opened = itemOf(plan.id, params.itemId);
+    const body = await readJson(req);
+    // Erken doğrulama (alan iletileri); karar aşağıda işlemin İÇİNDE güncel taksitle yinelenir.
+    const early = itemInput({ ...opened, ...body }, plan);
+    if (!(early.amount > 0)) throw new HttpError(400, "Taksit tutarı sıfırdan büyük olmalı.");
+    const wrote = store.tx(() => {
+      const live = planRow(plan.id); // assertPlanLive: gövde beklenirken kart silindiyse 404
+      // 2.5.0 BS-3 (g): gövde beklenirken TAKSİT silinirse 404 (kart denetimiyle aynı desen; önceden UPDATE 0 satır, 200 ve "taksit düzeltildi" geçmişi).
+      // BİRLEŞİK TUR 3: taksit işlemin içinde GÜNCEL hâliyle okunur; sürüm denetimi, gövdede olmayan alanlar ve Değişiklik Geçmişi'nin "önceki"si ondan.
+      const previous = itemOf(plan.id, opened.id);
+      const input = itemInput({ ...previous, ...body }, live);
+      if (!(input.amount > 0)) throw new HttpError(400, "Taksit tutarı sıfırdan büyük olmalı.");
+      // 2.5.0 BİRLEŞİK TUR 4 (tur 3 dar kontrolü ORTA-1; Kasa açılışındaki desen): "değişiklik yok" kısa yolu burada — işlemin İÇİNDE, GÜNCEL taksitle, sürüm
+      // denetiminden ÖNCE. Vade, tutar ve açıklama güncel taksitle aynıysa hiçbir şey yazılmaz (200 + güncel kart): yanıtı kopan kendi düzeltmesinin yeniden
+      // gönderimi 409 "düzeltmeniz kaydedilmedi" almaz (kaydedilmişti); öbür kişi aynı değeri girmişse de 409 yok. Farklı içerikte sürüm denetimi aynen.
+      if (sameFields(previous, input, { texts: ["dueDate", "note"], numbers: ["amount"] })) return false;
+      assertRowVersion(body, rowVersion(store, "plan_items", previous.id), ITEM_STALE);
       store.run("UPDATE plan_items SET due_date = ?, amount = ?, note = ?, updated_at = ? WHERE id = ?", input.dueDate, input.amount, input.note, now(), previous.id);
       audit(user, "plan.item.updated", previous.id, { planId: plan.id, previous, ...input });
+      return true;
     });
-    changed(user, { planId: plan.id });
-    ok(res, detail(plan.id, user));
+    if (wrote) changed(user, { planId: plan.id });
+    ok(res, writeView(plan.id, user));
   });
   router.delete("/api/workspace/plans/:id/items/:itemId", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "plans.manage");
@@ -762,7 +1126,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       audit(user, "plan.item.deleted", previous.id, { planId: plan.id, ...previous });
     });
     changed(user, { planId: plan.id });
-    ok(res, detail(plan.id, user));
+    ok(res, writeView(plan.id, user));
   });
 
   // ---------- Hareketler: tahsilat ve ödeme/iade ----------
@@ -783,6 +1147,8 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     if (!entry) throw new HttpError(404, "Hareket bulunamadı. Başka biri silmiş olabilir.");
     return entry;
   };
+  // 2.5.0 BİRLEŞİK TUR 1 (YB-1): hareket düzeltmesinde iyimser kilit (lib/row-version.mjs; gövdede updatedAt varsa).
+  const ENTRY_STALE = { code: "plan-entry-stale", message: "Bu taksit hareketi siz açtıktan sonra başka biri tarafından değiştirildi; düzeltmeniz kaydedilmedi. Kartı yenileyip yeniden deneyin." };
   const requireEntryRight = (user, entry) => {
     if (entry.chequeId) throw new HttpError(409, "Bu tahsilat bir çek/senetten geldi; Çek/Senet'teki evraktan düzeltin (karşılıksız, geri al ya da sil).", { code: "cheque-linked", chequeId: entry.chequeId });
     if (entry.opening && !canUser(user, "plans.manage")) throw new HttpError(403, "Açılış (devir) kaydını yalnızca yönetici, uzman ve muhasebe değiştirebilir.");
@@ -830,7 +1196,9 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       } else {
         const hint = !avans ? "" : manage ? ` Gerçekten bu karta avans yazılacaksa "${AVANS}" ile kaydedin.` : " Bu karta avans yazılacaksa yöneticinize başvurun.";
         if (rule === "plan-paid") throw new HttpError(409, `Bu kart ödendi (kalan ${tl(0)}); ${what}. Fazla alınan parayı sonraki karta ya da cari tahsilatına (avans) yazın.${hint}`, { code: "plan-paid", planId, remaining: 0, amount, excess });
-        throw new HttpError(409, `Tutar kartın kalanını aşıyor: kalan ${tl(left)}, girilen ${tl(amount)}, fazlası ${tl(excess)}; ${what}. Kalan kadar yazın; fazlasını sonraki karta ya da cari tahsilatına (avans) yazın.${hint}`, { code: "plan-overpay", planId, remaining: left, amount, excess });
+        // Birleşik tur 8 (dar kontrol Ç5-B kapanış 2 DÜŞÜK-C): soru metni formun açıklamasındaki nitelemeyi taşır — sınır kartın KENDİ kalanıdır (S118 = B, kural değişmedi);
+        // kart penceresi tek kuyruktan daha küçük Kalan gösterebilir (S129 = A).
+        throw new HttpError(409, `Tutar kartın kalanını aşıyor: kartın kendi tahsilatlarına göre kalan ${tl(left)}, girilen ${tl(amount)}, fazlası ${tl(excess)}; ${what}. Kalan kadar yazın; fazlasını sonraki karta ya da cari tahsilatına (avans) yazın.${hint}`, { code: "plan-overpay", planId, remaining: left, amount, excess });
       }
     }
     if (itemId) {
@@ -895,38 +1263,54 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       changed(user, { kind: "cash" });
       touchedCase(user, plan);
     }
-    ok(res, { ...detail(plan.id, user), entryId: created?.replayed ? created.refId : id, ...(created?.replayed ? { replayed: true } : {}) });
+    ok(res, { ...writeView(plan.id, user), entryId: created?.replayed ? created.refId : id, ...(created?.replayed ? { replayed: true } : {}) });
   });
   router.put("/api/workspace/plans/:id/entries/:entryId", async ({ req, res, params }) => {
     const user = auth.requirePermission(req, "plans.collect");
     const plan = planRow(params.id);
-    const previous = entryOf(plan.id, params.entryId);
-    requireEntryRight(user, previous);
-    period?.assertOpen(previous.date, "Bu taksit hareketi");
+    // Gövde okunmadan önceki denetimler yalnız erken yanıt içindir (yok / yetkisiz / kilitli dönem); karar aşağıda işlemin İÇİNDE güncel satırla yinelenir.
+    const opened = entryOf(plan.id, params.entryId);
+    requireEntryRight(user, opened);
+    period?.assertOpen(opened.date, "Bu taksit hareketi");
     assertCloseOpen(plan.id, "Kartın tahsilatı ve iadesi değiştirilemez.");
     const body = await readJson(req);
-    const input = entryInput({ ...previous, ...body, kind: previous.kind }, plan.id);
-    assertNetPaid(plan.id, previous.kind === "in" ? input.amount : -input.amount, previous.id);
-    cash?.guardChange?.(previous, input, body.cashForce === true);
-    // Açılış (devir) satırı para satırı değildir: hesaba bağlanmaz.
-    const moved = (previous.method || "cash") !== input.method || Math.abs(Number(previous.amount) - input.amount) > 0.004 || previous.date !== input.date;
-    const finRef = previous.opening ? "" : banking.ref({ method: input.method, value: body.bankAccountId, date: input.date, previous: { method: previous.method || "cash", finRef: previous.finRef }, changed: moved, posId: body.posId, posRefundOf: body.posRefundOf });
-    if (finRef !== (previous.finRef || "")) banking.requireOut(user, previous.kind === "out", finRef);
-    const k7 = banking.negative([previous.finRef, finRef], previous.date < input.date ? previous.date : input.date, banking.forced(body));
+    // 2.5.0 BİRLEŞİK TUR 1 (YB-1; routes/accounts.mjs PUT entries ile aynı): kartın net tahsilatı, K8 kalanı, Kasa ve banka (K7) denetimleri, gövdeyle
+    // birleştirme ve Değişiklik Geçmişi'nin "önceki"si yazım işleminin İÇİNDE yeniden okunan güncel hareketten (önceden isteğin başındaki okuma gövde beklenirken
+    // eskiyordu: arada başka kullanıcı aynı hareketi düzeltirse Kasa "Engelle" atlanıyor, küçülen tahsilat "büyümüyor" sayılıp K8 sorusu atlanıyordu). Gövdede
+    // updatedAt varsa iyimser kilit: hareket form açıldıktan sonra değiştiyse 409.
+    const current = []; // bank.post'un "prev"i: prepare güncel satırı koyar (adım 3 ondan sonra okur)
+    let step = null;
     const result = bank.post({
       user,
       module: "plan",
       op: "update",
-      prev: previous,
+      prev: current,
       requestId: banking.requestId(req, body),
       scope: "plan.entry.update",
-      body: { ...body, entryId: previous.id },
+      body: { ...body, entryId: opened.id },
       // K8 (2.3.0, plan §3.10/3 update): yalnız tutarı BÜYÜYEN tahsilat düzeltmesinde kartın kalanı (bu satır hariç) işlemin içinde yeniden okunur.
       prepare: () => {
         assertPlanLive(plan.id);
+        // 2.5.0 BS-3 (f): gövde beklenirken TAHSİLAT silinirse 404 (kart denetimiyle aynı desen; önceden UPDATE 0 satır, 200 ve "düzeltildi" geçmişi).
+        const previous = entryOf(plan.id, opened.id);
+        assertRowVersion(body, rowVersion(store, "plan_entries", previous.id), ENTRY_STALE);
+        requireEntryRight(user, previous);
+        period?.assertOpen(previous.date, "Bu taksit hareketi");
+        assertCloseOpen(plan.id, "Kartın tahsilatı ve iadesi değiştirilemez.");
+        const input = entryInput({ ...previous, ...body, kind: previous.kind }, plan.id);
+        assertNetPaid(plan.id, previous.kind === "in" ? input.amount : -input.amount, previous.id);
+        cash?.guardChange?.(previous, input, body.cashForce === true);
+        // Açılış (devir) satırı para satırı değildir: hesaba bağlanmaz.
+        const moved = (previous.method || "cash") !== input.method || Math.abs(Number(previous.amount) - input.amount) > 0.004 || previous.date !== input.date;
+        const finRef = previous.opening ? "" : banking.ref({ method: input.method, value: body.bankAccountId, date: input.date, previous: { method: previous.method || "cash", finRef: previous.finRef }, changed: moved, posId: body.posId, posRefundOf: body.posRefundOf });
+        if (finRef !== (previous.finRef || "")) banking.requireOut(user, previous.kind === "out", finRef);
+        const k7 = banking.negative([previous.finRef, finRef], previous.date < input.date ? previous.date : input.date, banking.forced(body));
+        current.push(previous);
+        step = { previous, input, finRef, k7 };
         if (previous.kind === "in" && !previous.opening && toMinor(input.amount) > toMinor(Number(previous.amount) || 0)) assertRoom(user, plan.id, input.amount, { overpay: body.overpay === true, exceptId: previous.id, op: "update" });
       },
       write: () => {
+        const { previous, input, finRef, k7 } = step;
         k7.capture();
         // Açılış (opening) satırı para satırı değildir: olay almaz; eski (olaysız) tahsilat düzeltilince olay alır.
         const eventId = bank.eventFor("plan_entries", { kind: previous.kind, date: input.date, method: input.method, opening: previous.opening ? 1 : 0, cheque_id: previous.chequeId || "", fin_ref: finRef, event_id: previous.eventId, pos: finRef ? posMetaOf(body) : null });
@@ -935,13 +1319,13 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
         syncInvoiceCard(user, plan.id);
         return { id: previous.id };
       },
-      guard: k7.guard,
+      guard: (outcome, ctx) => step?.k7.guard?.(outcome, ctx),
     });
-    k7.prime(result);
+    step?.k7.prime(result);
     changed(user, { planId: plan.id });
     changed(user, { kind: "cash" });
     touchedCase(user, plan);
-    ok(res, detail(plan.id, user));
+    ok(res, writeView(plan.id, user));
   });
   router.delete("/api/workspace/plans/:id/entries/:entryId", async ({ req, res, params, url }) => {
     const user = auth.requirePermission(req, "plans.collect");
@@ -972,7 +1356,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     changed(user, { planId: plan.id });
     changed(user, { kind: "cash" });
     touchedCase(user, plan);
-    ok(res, detail(plan.id, user));
+    ok(res, writeView(plan.id, user));
   });
 
   // ---------- PDF: ekstre ve makbuz ----------
@@ -981,14 +1365,16 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   const header = createReportHeader({ store });
   router.get("/api/workspace/plans/:id/ekstre.pdf", async ({ req, res, params, url }) => {
     const user = auth.requirePermission(req, "plans.view");
-    const plan = detail(params.id, user);
+    // S129 = A: ekstre kart penceresiyle AYNI sayıları basar (gösterge, satırın Ödenen / Kalan / Durum'u — kuyruk görünümü; önce kartın kendi hesabıydı: ekran ≠ PDF).
+    const plan = detailView(params.id, user);
     const pdf = planStatementPdf(plan, { ...header.pdf(), userName: user.display_name || user.username || "", now: clock() });
     audit(user, "plan.statement.exported", plan.id, { name: plan.name });
     sendBuffer(res, pdf, { type: "application/pdf", name: `Taksit-ekstresi ${plan.name}.pdf`, inline: url.searchParams.get("download") !== "1" });
   });
   router.get("/api/workspace/plans/:id/entries/:entryId/makbuz.pdf", async ({ req, res, params, url }) => {
     const user = auth.requirePermission(req, "plans.view");
-    const plan = detail(params.id, user);
+    // S129 = A: makbuzdaki Tahsil edilen / Kalan borç kart penceresiyle aynı (kuyruk görünümü).
+    const plan = detailView(params.id, user);
     const entry = plan.entries.find(item => item.id === params.entryId);
     if (!entry) throw new HttpError(404, "Hareket bulunamadı.");
     // Açılış (devir) kaydı programda alınmış bir tahsilat değildir; makbuzu kesilmez (v2.0.8).
@@ -1058,7 +1444,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       if (!byTab.has(tab)) byTab.set(tab, []);
       byTab.get(tab).push(row);
     }
-    const fold = value => String(value ?? "").normalize("NFC").toLocaleLowerCase("tr-TR").replace(/\s+/g, " ").trim();
+    const fold = foldPersonName; // S223: kişi adı karşılaştırmasının tek yardımcısı (lib/names.mjs; sonuç önceki yerel katlamayla aynı)
     const digits = value => String(value ?? "").replace(/\D/g, "");
     const index = new Map();
     const now = clock();
@@ -1122,6 +1508,31 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       // Sıra No kolonu yoksa ya da hücre boşsa numara mevcut en büyük numaradan devam eder.
       let autoRef = Number(nextRef()) - 1;
       const groupsBefore = new Set(store.all("SELECT id FROM plan_groups").map(row => row.id));
+      // 2.5.0 Ç7b P7 (S219 = A): açık kartlar (ad + grup → sahibinin carisi ve telefonu) yükleme başına BİR KEZ okunur, bu yüklemede açılan kart
+      // eklenir (ders 47: satır başına kart taraması yok). Ad eşleşmesi SQLite NOCASE ile aynı: yalnız ASCII harfler katlanır (cari eşleştirmesi gibi).
+      // 2.5.0 S223 = A / S228 = A: ikinci harita Türkçe katlamalı adla (lib/names.mjs foldPersonName); bugünkü (NOCASE) denetim kişinin kartını bulamazsa
+      // (sonuç "") yalnız Türkçe katlamada aynı olup NOCASE'te farklı yazılan kartlara bakılır. Cari de aynı sırayla (people: yükleme başına ad haritası).
+      const nocase = value => String(value).replace(/[A-Z]/g, letter => letter.toLowerCase());
+      const cardKey = (cardName, groupId) => `${nocase(cardName)}\u0000${groupId || ""}`;
+      const foldKey = (cardName, groupId) => `${foldPersonName(cardName)}\u0000${groupId || ""}`;
+      const openCards = new Map();
+      const foldedCards = new Map();
+      const people = accounts()?.personIndex ? accounts().personIndex() : null;
+      const folded = groupFinder(); // S231 = A: yükleme başına grup bulucusu (NOCASE bulamazsa Türkçe harf katlamalı tek grup)
+      const push = (map, key, card) => {
+        if (!map.has(key)) map.set(key, []);
+        map.get(key).push(card);
+      };
+      const addCard = (cardName, groupId, card) => {
+        push(openCards, cardKey(cardName, groupId), card);
+        push(foldedCards, foldKey(cardName, groupId), card);
+      };
+      for (const card of store.all(
+        `SELECT p.name, COALESCE(p.group_id, '') AS groupId, CASE WHEN a.id IS NULL THEN '' ELSE p.account_id END AS accountId, CASE WHEN a.id IS NULL THEN p.phone ELSE a.phone END AS phone
+         FROM plans p LEFT JOIN accounts a ON a.id = p.account_id AND p.account_id <> '' AND a.deleted_at IS NULL
+         WHERE p.deleted_at IS NULL`,
+      ))
+        addCard(card.name, card.groupId, { accountId: card.accountId, phone: card.phone });
       rows.forEach((row, index) => {
         if (!Array.isArray(row) || !row.some(value => String(value ?? "").trim())) return;
         const name = cell(row, col.name).slice(0, 160);
@@ -1173,15 +1584,25 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
         let start;
         try {
           ({ person, outcome, accountId, start } = store.tx(() => {
-            const g = groupName ? ensureGroup(user, groupName) : null;
-            const sg = g && subgroupName ? ensureGroup(user, subgroupName, g) : null;
-            const duplicate = store.get("SELECT id FROM plans WHERE deleted_at IS NULL AND name = ? COLLATE NOCASE AND COALESCE(group_id, '') = ?", name, g || "");
-            if (duplicate) throw new SkippedRow("Aynı adla açık kart var");
+            const g = groupName ? ensureGroup(user, groupName, null, folded) : null;
+            const sg = g && subgroupName ? ensureGroup(user, subgroupName, g, folded) : null;
+            // 2.5.0 Ç7b P7 (S219 = A): aynı ad + aynı gruptaki açık kart yalnız AYNI KİŞİNİNSE satır atlanır; kişi kartın bağlanacağı cariyi bulan
+            // kuralla (routes/accounts.mjs planDuplicate → planPerson / samePerson) belirlenir. Telefonu farklı aynı adlı kişinin kartı kendi carisiyle
+            // açılır; kişi kesin seçilemiyorsa atlanır (çift kart / borç açılmaz). Önceden yalnız ada bakılıyordu (aynı adlı ikinci kişinin kartı açılmıyordu).
+            const cards = openCards.get(cardKey(name, g)) || [];
+            const asked = { name, phone, groupId: g || "", caseKey: record?.key || "", caseSource: record ? source : "" };
+            let duplicate = accounts()?.planDuplicate ? accounts().planDuplicate(asked, cards, people) : cards.length ? "same" : "";
+            if (!duplicate && accounts()?.planDuplicate) {
+              const folded = (foldedCards.get(foldKey(name, g)) || []).filter(card => !cards.includes(card));
+              if (folded.length) duplicate = accounts().planDuplicate(asked, folded, people);
+            }
+            if (duplicate === "same") throw new SkippedRow("Aynı adla açık kart var");
+            if (duplicate === "unknown") throw new SkippedRow("Aynı adlı birden çok kişi var; telefonunu ekleyip yeniden yükleyin");
             if (record?.carded) throw new SkippedRow("Tablodaki kaydının taksit kartı zaten var");
             const who = { name, phone, note: cell(row, col.note).slice(0, 1000), registeredOn, groupId: g, subgroupId: sg, caseKey: record?.key || "", caseSource: record ? source : "", caseTitle: record?.title || "" };
             // Cari (v2.0.6): aynı ad ve telefonla (ya da telefonsuz aynı ad ve grupla) tek bir cari varsa ona bağlanır; yoksa açılır.
             const result = {};
-            const id = accounts()?.createFromPlan(user, who, result) || "";
+            const id = accounts()?.createFromPlan(user, who, result, people) || "";
             const ownerDay = !excelDay && id && !result.created ? store.get("SELECT registered_on AS day FROM accounts WHERE id = ?", id)?.day || "" : "";
             const day = scheduledStart(ownerDay || registeredOn, items);
             const reason = lockedStartReason(day);
@@ -1198,6 +1619,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
         if (outcome.created) undo.accounts.push(accountId);
         if (outcome.linked) undo.accountLinks.push({ accountId, caseKey: person.caseKey });
         const created = createScheduled(user, { ...person, registeredOn: start, accountId, refNo, total }, { importId, items, openingDate: today(), openingNote: "Excel'de ödenmiş (açılış)" });
+        addCard(person.name, person.groupId, { accountId, phone: accountId ? store.get("SELECT phone FROM accounts WHERE id = ?", accountId)?.phone ?? "" : person.phone });
         if (!items.length && total > 0) store.run("UPDATE plans SET total = ? WHERE id = ?", roundMoney(total), created.id);
         undo.plans.push(created.id);
         undo.openings.push(...created.openingIds);
@@ -1245,13 +1667,15 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     return ledger.items.map(item => {
       const remaining = roundMoney(Math.min(item.remaining, room));
       room = roundMoney(room - remaining);
-      return remaining === item.remaining ? item : { ...item, remaining, partial: remaining > 0.005 && remaining < item.amount - 0.005 };
+      return remaining === item.remaining ? item : { ...item, remaining, ...(item.held ? { held: Math.min(item.held, remaining) } : {}), partial: remaining > 0.005 && remaining < item.amount - 0.005 };
     });
   }
   function dueItems(day = today()) {
     const out = [];
-    const plans = store.all(`${PLAN_SQL} WHERE p.deleted_at IS NULL AND p.status = 'active'`);
+    // 2.5.0 Ç7b tur 3b (karar (6) "… ertesi günden gecikmiş, hatırlatma gider"): Borçta Kalsın ile kapatılmış kartın kalanı da zile / takvime girer (kalanı düşülmüş eski kart girmez).
+    const plans = store.all(`${PLAN_SQL} WHERE p.deleted_at IS NULL AND NOT ${waivesSql("p")}`);
     if (!plans.length) return out;
+    const queue = queueOf();
     const items = new Map();
     for (const item of store.all("SELECT id, plan_id AS planId, seq, due_date AS dueDate, amount FROM plan_items ORDER BY due_date, seq")) {
       if (!items.has(item.planId)) items.set(item.planId, []);
@@ -1263,9 +1687,10 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       entries.get(entry.planId).push(entry);
     }
     for (const plan of plans) {
-      const ledger = allocate(plan, items.get(plan.id) || [], entries.get(plan.id) || [], { today: day });
-      for (const item of capToRemaining(ledger)) {
-        if (item.remaining <= 0.005 || item.state === "open" || item.state === "closed") continue;
+      const ledger = withQueue(plan, allocate(plan, items.get(plan.id) || [], entries.get(plan.id) || [], { today: day }), queue, day);
+      for (const item of [...capToRemaining(ledger), ...queueExtras(plan, queue, day)]) {
+        const amount = roundMoney(item.remaining - (item.held || 0));
+        if (amount <= 0.005 || item.state === "open" || item.state === "closed") continue;
         const where = [plan.groupName, plan.subgroupName].filter(Boolean).join(" › ");
         out.push({
           id: `plan|${plan.id}|${item.id}`,
@@ -1278,12 +1703,12 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
           caseSource: plan.caseSource || "",
           caseTitle: plan.caseTitle || "",
           tab: "",
-          label: `${item.seq}. taksit`,
+          label: item.key ? item.label : `${item.seq}. taksit`,
           kind: "date",
           dueDate: item.dueDate,
           dueText: dayText(item.dueDate),
-          amount: item.remaining,
-          partial: item.partial,
+          amount,
+          partial: item.partial || amount < item.remaining - 0.005,
           days: item.days,
           state: item.state === "today" ? "today" : item.state === "overdue" ? "overdue" : "upcoming",
           phone: plan.phone,
@@ -1297,12 +1722,14 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     return out;
   }
   // Nakit akışı (v2.0.7): açık kartların kalanı olan TÜM taksitleri (vade penceresi yok; ayrımı rapor motoru yapar).
-  function openItems(day = today()) {
+  function openItems(day = today(), { withoutDoubtful = false } = {}) {
     const out = [];
     const plans = store.all(
-      "SELECT p.id, p.name, p.phone, p.ref_no AS refNo, p.total, p.status, p.account_id AS accountId, COALESCE(a.name, '') AS accountName FROM plans p LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL WHERE p.deleted_at IS NULL AND p.status = 'active'",
+      // 2.5.0 Ç7b tur 3b: Borçta Kalsın ile kapatılmış kartın kalanı da açık alacaktır (Vade Takip, nakit akışı, yaşlandırma); kalanı düşülmüş eski kart girmez.
+      `SELECT p.id, p.name, p.phone, p.ref_no AS refNo, p.total, p.status, p.close_rule AS closeRule, p.account_id AS accountId, COALESCE(a.name, '') AS accountName FROM plans p LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL WHERE p.deleted_at IS NULL AND NOT ${waivesSql("p")}`,
     );
     if (!plans.length) return out;
+    const queue = queueOf();
     const items = new Map();
     for (const item of store.all("SELECT id, plan_id AS planId, seq, due_date AS dueDate, amount FROM plan_items ORDER BY due_date, seq")) {
       if (!items.has(item.planId)) items.set(item.planId, []);
@@ -1314,11 +1741,13 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       entries.get(entry.planId).push(entry);
     }
     for (const plan of plans) {
-      const ledger = allocate(plan, items.get(plan.id) || [], entries.get(plan.id) || [], { today: day });
-      for (const item of capToRemaining(ledger)) {
-        if (item.remaining <= 0.005 || item.state === "closed") continue;
+      const ledger = withQueue(plan, allocate(plan, items.get(plan.id) || [], entries.get(plan.id) || [], { today: day }), queue, day);
+      for (const item of [...capToRemaining(ledger), ...queueExtras(plan, queue, day)]) {
+        // withoutDoubtful (Vade Takip; 2.5.0 Ç5-B M13): kalanın şüpheli kuyruğundaki kısmı kalem değildir. Nakit akışı ve yaşlandırma (dilimlere dahil) bugünkü gibi.
+        const amount = roundMoney(item.remaining - (withoutDoubtful ? item.held || 0 : 0));
+        if (amount <= 0.005 || item.state === "closed") continue;
         // Vade takip (v2.0.9) kartı, cariyi ve taksiti de gösterir; nakit akışı yalnız tarih/tutar/kaynağı okur.
-        out.push({ date: item.dueDate, direction: "in", amount: item.remaining, source: "plan", label: `${item.seq}. taksit${item.partial ? " (kalan)" : ""}`, party: plan.name, ref: { type: "plan", id: plan.id }, seq: item.seq, fullAmount: item.amount, partial: Boolean(item.partial), phone: plan.phone || "", refNo: plan.refNo || "", accountId: plan.accountId || "", accountName: plan.accountName || "" });
+        out.push({ date: item.dueDate, direction: "in", amount, source: "plan", label: `${item.key ? item.label : `${item.seq}. taksit`}${item.partial || amount < item.remaining - 0.005 ? " (kalan)" : ""}`, party: plan.name, ref: { type: "plan", id: plan.id }, seq: item.seq, fullAmount: item.amount, partial: Boolean(item.partial) || amount < item.remaining - 0.005, phone: plan.phone || "", refNo: plan.refNo || "", accountId: plan.accountId || "", accountName: plan.accountName || "" });
       }
     }
     return out;
@@ -1329,11 +1758,20 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   };
 
   // Kayda bağlı kartlar (v2.0.6): kişinin kartı için taksitleriyle; açık olanlar önce.
+  // Birleşik tur 8 (S129 = A — dar kontrol Ç5-B kapanış 2 ORTA-A): kaydın detayındaki "Taksit Planı" bölümü ve oradan açılan Tahsilat penceresi kart penceresiyle AYNI görünüm
+  // (detailView: kartın kendi hesabı + kuyruk görünümü; formun sınırı ownRemaining / ownNext — S118 = B). Carinin kuyruğu cari başına bir kez kurulur.
   function forCase(caseKey, caseSource, user) {
     if (!caseKey) return [];
+    const queues = new Map();
     return store
       .all(`${PLAN_SQL} WHERE p.deleted_at IS NULL AND p.case_key = ? AND (? = '' OR p.case_source = ?) ORDER BY (p.status = 'active') DESC, p.created_at`, caseKey, caseSource || "", caseSource || "")
-      .map(plan => shape(plan, user));
+      .map(plan => {
+        const shaped = shape(plan, user);
+        if (!plan.accountId) return shaped;
+        if (!queues.has(plan.accountId)) queues.set(plan.accountId, queueFor(plan.accountId));
+        const view = withQueue(plan, shaped, queues.get(plan.accountId));
+        return view === shaped ? shaped : { ...shaped, ...view };
+      });
   }
   // Kayda bağlı kartların hareketleri: kişinin işlem geçmişinde tahsilat / ödeme olarak listelenir.
   function entriesForCase(caseKey, caseSource) {
@@ -1349,7 +1787,28 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
 
   // Cari (v2.0.6): carilerin taksit özetleri tek geçişte (liste ve bakiye için) ve bir carinin kartları ayrıntılı.
   // accountIds (v2.1.0, §3.11): yalnız bu carilerin kartları (mutabakat kapısı dokunulan carileri denetler).
-  function summariesByAccount(accountIds = null) {
+  // Birleşik tur 8 (S142 = A; hız kabulü — Cari Listesi her kartta tam withQueue ile %20–40 yavaşlıyordu): Cari Listesi satırının ihtiyacı olan kuyruk görünümü yalnız sıradaki
+  // taksit ve geciken taksit sayısı — withQueue'nun AYNI kuralı (taksit kalanı = min(tutar, kuyruk kalanı); durum gün sayısından; sıradaki = kalanı olan ilk taksit). Kapatılmış
+  // ya da kuyruğu olmayan kartta null (satır kartın kendi hesabında). Eşdeğerlik: test/tyk-birlesik8-ekranlar-250 (Cari Listesi = kart penceresi).
+  function queueBrief(plan, ledger, all) {
+    const map = plan.accountId && all && plan.status !== "closed" ? all.get(plan.accountId)?.installments.get(plan.id) : null;
+    if (!map) return null;
+    let next = null;
+    let overdueCount = 0;
+    for (const item of ledger.items) {
+      const row = map.get(item.id);
+      const remaining = roundMoney(Math.min(item.amount, row ? row.remaining : 0));
+      if (remaining <= 0.005) continue;
+      const days = item.days;
+      const state = days < 0 ? "overdue" : days === 0 ? "today" : days <= 7 ? "upcoming" : "open";
+      if (state === "overdue") overdueCount += 1;
+      if (!next) next = { id: item.id, seq: item.seq, dueDate: item.dueDate, remaining, days, state };
+    }
+    return { next, overdueCount };
+  }
+  // queue (birleşik tur 8, S142 = A): bütün carilerin kuyruğu (kullanıcı isteğindeki Cari Listesi) — verilirse özete kart penceresinin durumu / sıradaki taksiti / geciken taksit
+  // sayısı `view` alanında eklenir; totals / state / next kartın KENDİ hesabında kalır (bakiye ve Mutabakat Testi onları okur).
+  function summariesByAccount(accountIds = null, { queue = null } = {}) {
     const only = accountIds ? JSON.stringify([...accountIds]) : null;
     const plans = only ? store.all(`${PLAN_SQL} WHERE +p.deleted_at IS NULL AND p.account_id <> '' AND p.account_id IN (SELECT value FROM json_each(?))`, only) : store.all(`${PLAN_SQL} WHERE p.deleted_at IS NULL AND p.account_id <> ''`);
     const out = new Map();
@@ -1368,77 +1827,23 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     const day = today();
     for (const plan of plans) {
       const ledger = allocate(plan, items.get(plan.id) || [], entries.get(plan.id) || [], { today: day });
+      const view = queue ? queueBrief(plan, ledger, queue) : null;
       if (!out.has(plan.accountId)) out.set(plan.accountId, []);
-      out.get(plan.accountId).push({ id: plan.id, name: plan.name, total: plan.total, coversBalance: Boolean(plan.coversBalance), status: plan.status, state: ledger.state, totals: ledger.totals, next: ledger.next, itemCount: ledger.items.length });
+      out.get(plan.accountId).push({ id: plan.id, name: plan.name, total: plan.total, coversBalance: Boolean(plan.coversBalance), status: plan.status, closeRule: plan.closeRule, state: ledger.state, totals: ledger.totals, next: ledger.next, itemCount: ledger.items.length, ...(view ? { view } : {}) });
     }
     return out;
   }
-  // v2.0.24: iadelerin Mevcut Borç kartlarından düştüğü tutar (iade belgesinde payment_json.coverCuts; iptal/silinen iade
-  // sayılmaz). Kartın kapsamı açıldığı andaki tutarla kurulur (lib/accounts.mjs coverTotal): iadenin kapattığı borç kartın
-  // payından düşer; küçülen tutar başka (daha eski) bir faturayı kapsamdan çıkarıp aynı borcu iki kez saydırmaz.
-  // 2.4.9 R2 (ders 47): forAccount (cari kartı, kartın WhatsApp çekirdeği waFacts) her çağrıda bütün iadeleri tarıyordu — 1.001 iadeli şirkette 2.000 kişilik
-  // elle alıcı listesi 10,9 sn, olay döngüsü ~10 sn. Tarama KURALI AYNEN (scanReturnCuts); sonuç veri tabanına bir yazma olana kadar saklanır: total_changes()
-  // bu bağlantının her INSERT/UPDATE/DELETE'inde (store dışı db.prepare/exec dahil) artar, data_version başka bir bağlantının kesinleşen yazmasında değişir
-  // (fatura listesi settleKey, stok rozeti alerts, banka toplamları money-lines ile aynı kural). Veri tabanı işleminin İÇİNDE saklı değer ne okunur ne yazılır
-  // (geri alınan işlemde total_changes azalmaz — GG2): işlem içinde her çağrı eskisi gibi tarar. Saklanan Map salt okunurdur (çağıranlar yalnız get eder).
-  // Kart kimliğiyle SQL'de süzmek (instr) denendi, yetmedi: çağrı başına 1,56 ms (tam tarama 2,64 ms) — 1.310 kartlı caride ~2 sn.
-  let cutsCache = { stamp: "", cuts: null };
-  function returnCuts() {
-    if (store.inTransaction || typeof store.changeCounters !== "function") return scanReturnCuts();
-    const counters = store.changeCounters();
-    const stamp = `${counters.total}|${counters.version}`;
-    if (cutsCache.cuts && cutsCache.stamp === stamp) return cutsCache.cuts;
-    const cuts = scanReturnCuts();
-    cutsCache = { stamp, cuts };
-    return cuts;
-  }
-  function scanReturnCuts() {
-    const out = new Map();
-    for (const row of store.all("SELECT payment_json AS j FROM invoices WHERE kind = 'sale_return' AND status = 'issued' AND payment_json LIKE '%coverCuts%'")) {
-      let cuts = {};
-      try {
-        cuts = JSON.parse(row.j || "{}").coverCuts || {};
-      } catch {
-        cuts = {};
-      }
-      for (const [planId, cut] of Object.entries(cuts)) out.set(planId, roundMoney((out.get(planId) || 0) + (Number(cut) || 0)));
-    }
-    return out;
-  }
-  // Mizan (v2.0.7): tüm carilerin kartları, hareketleriyle; carinin defteri (accountLedger) Cari kartıyla aynı girdiyi alır.
-  function ledgerPlansByAccount() {
-    const out = new Map();
-    const plans = store.all("SELECT id, account_id AS accountId, name, total, status, covers_balance AS coversBalance, registered_on AS registeredOn, created_at AS createdAt, updated_at AS updatedAt FROM plans WHERE deleted_at IS NULL AND account_id <> ''");
-    if (!plans.length) return out;
-    const seqs = new Map();
-    const counts = new Map();
-    const planned = new Map();
-    for (const item of store.all("SELECT id, plan_id AS planId, seq, amount FROM plan_items")) {
-      seqs.set(item.id, item.seq);
-      counts.set(item.planId, (counts.get(item.planId) || 0) + 1);
-      planned.set(item.planId, (planned.get(item.planId) || 0) + (Number(item.amount) || 0));
-    }
-    const entries = new Map();
-    for (const entry of store.all("SELECT id, plan_id AS planId, item_id AS itemId, kind, amount, date, note, receipt_no AS receiptNo, opening, cheque_id AS chequeId, created_at AS createdAt FROM plan_entries ORDER BY date, created_at, rowid")) {
-      if (!entries.has(entry.planId)) entries.set(entry.planId, []);
-      entries.get(entry.planId).push({ ...entry, opening: Boolean(entry.opening), itemSeq: entry.itemId ? seqs.get(entry.itemId) || null : null });
-    }
-    const cutsOf = returnCuts();
-    for (const plan of plans) {
-      const own = entries.get(plan.id) || [];
-      const paid = roundMoney(own.reduce((sum, entry) => sum + (entry.kind === "in" ? Number(entry.amount) || 0 : -(Number(entry.amount) || 0)), 0));
-      if (!out.has(plan.accountId)) out.set(plan.accountId, []);
-      out.get(plan.accountId).push({ ...plan, itemCount: counts.get(plan.id) || 0, planned: roundMoney(planned.get(plan.id) || 0), returnCuts: cutsOf.get(plan.id) || 0, totals: { paid }, entries: own });
-    }
-    return out;
-  }
+  const { returnCuts, saleSources, ledgerPlansByAccount } = createAccountLines({ store });
   function forAccount(accountId, user) {
     if (!accountId) return [];
     const cutsOf = returnCuts();
-    return store.all(`${PLAN_SQL} WHERE p.deleted_at IS NULL AND p.account_id = ? ORDER BY (p.status = 'active') DESC, p.created_at`, accountId).map(plan => {
+    const imported = new Set(store.all("SELECT id FROM plans WHERE account_id = ? AND import_id <> ''", accountId).map(row => row.id));
+    const rows = store.all(`${PLAN_SQL} WHERE p.deleted_at IS NULL AND p.account_id = ? ORDER BY (p.status = 'active') DESC, p.created_at`, accountId);
+    const sales = saleSources(rows.filter(plan => plan.coversBalance && !imported.has(plan.id)).map(plan => plan.id));
+    return rows.map(plan => {
       const shaped = shape(plan, user);
       const seqOf = new Map(shaped.items.map(item => [item.id, item.seq]));
-      return { ...shaped, itemCount: shaped.items.length, returnCuts: cutsOf.get(plan.id) || 0, entries: shaped.entries.map(entry => ({ ...entry, itemSeq: entry.itemId ? seqOf.get(entry.itemId) || null : null })) };
+      return { ...shaped, itemCount: shaped.items.length, returnCuts: cutsOf.get(plan.id) || 0, importId: imported.has(plan.id) ? "import" : "", saleMoveId: sales.get(plan.id) || "", entries: shaped.entries.map(entry => ({ ...entry, itemSeq: entry.itemId ? seqOf.get(entry.itemId) || null : null })) };
     });
   }
   // Carinin toplu taksitlendirmesi (routes/accounts.mjs): kartı cariye bağlı açar, isterse taksitleri dağıtır.
@@ -1446,7 +1851,8 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   // refNo verilirse (toplu taksitlendirme sayacı) kart tablosu her kartta yeniden taranmaz.
   // v2.0.13: coversBalance = carinin mevcut borcunu (veresiye satış, açılış) taksitlendirir; ikinci kez borç yazmaz.
   // v2.0.15: faturadan açılan kartın Kayıt Tarihi fatura tarihidir (registeredOn) ve kart faturaya bağlıdır (invoiceId).
-  function createForAccount(user, account, { total, count = 0, firstDue = "", everyMonths = 1, name = "", note = "", refNo = "", coversBalance = false, registeredOn: fixedOn = "", invoiceId = "" }) {
+  // saleMoveId (Ç5-B kapanış düzeltmesi, ORTA-1): stoktan veresiye satışla açılan kartın satışı (stok hareketi) — kartın açılış izine yazılır (saleSources okur).
+  function createForAccount(user, account, { total, count = 0, firstDue = "", everyMonths = 1, name = "", note = "", refNo = "", coversBalance = false, registeredOn: fixedOn = "", invoiceId = "", saleMoveId = "" }) {
     const id = newId("plan");
     const amount = roundMoney(Number(total) || 0);
     const registeredOn = fixedOn || (account.registeredOn && account.registeredOn <= today() ? account.registeredOn : today());
@@ -1459,45 +1865,113 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     );
     if (count > 0 && amount > 0) replaceItems(id, distribute({ total: amount, count: Math.min(count, MAX_ITEMS), firstDue, everyMonths }));
     if (invoiceId) store.run("UPDATE plans SET invoice_id = ? WHERE id = ?", invoiceId, id);
-    audit(user, "plan.created", id, { name: name || account.name, total: amount, accountId: account.id, bulk: true, coversBalance, invoiceId });
+    audit(user, "plan.created", id, { name: name || account.name, total: amount, accountId: account.id, bulk: true, coversBalance, invoiceId, saleMoveId: coversBalance && !invoiceId ? String(saleMoveId || "") : "" });
     return id;
   }
   // Satıştan iade iptal edilince (v2.0.15): iadenin küçülttüğü taksit kartı geri büyür — tutar son taksite eklenir; kart,
   // faturanın taksitlendirilen kalanını aşmaz (cap). Kapatılmış kart değişmez.
-  function growForInvoice(user, planId, amount, cap, note = "") {
-    const plan = store.get("SELECT id, name, total, status FROM plans WHERE id = ? AND deleted_at IS NULL", planId);
-    if (!plan || plan.status === "closed") return null;
+  // 2.5.0 S234 = A (§18.2): küçülmenin tersi — Borçta Kalsın ile kapatılmış kart da (iade kapalı kartı küçültür; iade iptali / düzenlemesi geri büyütür, son taksite — S216 = C).
+  // Kalanı düşülmüş eski kurallı kapalı kart bugünkü gibi değişmez.
+  // items (2.5.0 İzleyen küçük tur — S238 = A, tasarım §19.3): iadenin kestiği taksitler (cutPlan log'u; iade belgesinde kayıtlı) — büyüme önce bunlara TERS sırayla geri yazılır (taksit duruyorsa tutarı
+  // artar, silinmişse aynı kimlik / sıra / vade / notla yeniden açılır: iade hiç olmamış gibi). Kayıtla karşılanmayan büyüme (kaydı olmayan eski iade) bugünkü gibi son taksite.
+  function growForInvoice(user, planId, amount, cap, note = "", { items = null } = {}) {
+    const plan = store.get("SELECT id, name, total, status, close_rule AS closeRule FROM plans WHERE id = ? AND deleted_at IS NULL", planId);
+    if (!shrinkable(plan)) return null;
     const grow = roundMoney(Math.min(Number(amount) || 0, (Number(cap) || 0) - (Number(plan.total) || 0)));
     if (!(grow > 0.005)) return null;
-    const last = store.get("SELECT id, amount FROM plan_items WHERE plan_id = ? ORDER BY due_date DESC, seq DESC LIMIT 1", plan.id);
     const stamp = now();
-    if (last) store.run("UPDATE plan_items SET amount = ?, updated_at = ? WHERE id = ?", roundMoney((Number(last.amount) || 0) + grow), stamp, last.id);
+    let rest = grow;
+    for (const row of Array.isArray(items) ? [...items].reverse() : []) {
+      if (!(rest > 0.005)) break;
+      const back = roundMoney(Math.min(rest, Number(row?.take) || 0));
+      if (!(back > 0.005) || !row?.id) continue;
+      const found = store.get("SELECT id, plan_id AS planId, amount FROM plan_items WHERE id = ?", row.id);
+      if (found && found.planId !== plan.id) continue;
+      if (found) store.run("UPDATE plan_items SET amount = ?, updated_at = ? WHERE id = ?", roundMoney((Number(found.amount) || 0) + back), stamp, found.id);
+      else store.run("INSERT INTO plan_items (id, plan_id, seq, due_date, amount, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", row.id, plan.id, Number(row.seq) || 1, String(row.dueDate || today()), back, String(row.note || ""), stamp, stamp);
+      rest = roundMoney(rest - back);
+    }
+    const last = rest > 0.005 ? store.get("SELECT id, amount FROM plan_items WHERE plan_id = ? ORDER BY due_date DESC, seq DESC LIMIT 1", plan.id) : null;
+    if (!(rest > 0.005)) {
+      // kayıtlı taksitler büyümenin tamamını karşıladı
+    } else if (last) store.run("UPDATE plan_items SET amount = ?, updated_at = ? WHERE id = ?", roundMoney((Number(last.amount) || 0) + rest), stamp, last.id);
     else {
       // v2.0.17 (stres testi bulgusu): iade kartı tümüyle küçültmüşse (taksit satırı kalmamışsa) iade iptalinde borç
       // yeniden karta yazılır — yeni bir taksit satırı açılır (vade: son tahsilat tarihi ya da bugün). Aksi hâlde cari
       // borçlanır ama taksit kartı 0'da kalır (kart ile cari uyuşmaz).
       const lastEntry = store.get("SELECT MAX(date) AS date FROM plan_entries WHERE plan_id = ?", plan.id)?.date || "";
       const seq = (store.get("SELECT COALESCE(MAX(seq), 0) AS n FROM plan_items WHERE plan_id = ?", plan.id)?.n || 0) + 1;
-      store.run("INSERT INTO plan_items (id, plan_id, seq, due_date, amount, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", newId("item"), plan.id, seq, lastEntry > today() ? lastEntry : today(), grow, note || "İade iptali", stamp, stamp);
+      store.run("INSERT INTO plan_items (id, plan_id, seq, due_date, amount, note, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", newId("item"), plan.id, seq, lastEntry > today() ? lastEntry : today(), rest, note || "İade iptali", stamp, stamp);
     }
-    store.run("UPDATE plans SET total = ?, updated_by = ?, updated_at = ? WHERE id = ?", roundMoney((Number(plan.total) || 0) + grow), user.id, stamp, plan.id);
+    store.run(`UPDATE plans SET ${FREEZE_CLOSE}, total = ?, updated_by = ?, updated_at = ? WHERE id = ?`, roundMoney((Number(plan.total) || 0) + grow), user.id, stamp, plan.id);
     audit(user, "plan.grown", plan.id, { from: plan.total, to: roundMoney((Number(plan.total) || 0) + grow), reason: note || "İade iptali" });
     return { id: plan.id, grow };
   }
-  // Fatura iptalinde faturanın kartı: tahsilatı yoksa kaldırılır (Silinenler'e gitmez; fatura iptalle geri gelmez).
-  // Tahsilat varsa iptal durur: para alınmıştır; borcu düşürmek için iade faturası kesilir (kart kalana göre küçülür).
-  function removeForInvoice(user, invoiceId) {
+  // Fatura iptalinde faturanın kartı: tahsilatı yoksa kaldırılır (Silinenler'e gitmez; fatura iptalle geri gelmez — EK-2B 35).
+  // 2.5.0 Ç7b tur 3 — S15 = A (docs/erp/C7B-FATURA-TASARIM.md §16.4): tahsilatı varsa iptal KABUL — kartın kalanı karar (4) sırasıyla kesilir (kart tutarı = net tahsilat), kart
+  // kapanır; kartın tahsilatları carinin alacağı olarak kalır (fatura borcu kalkınca avans; yeni madde yok, kalan 0 olduğundan "kalan düşüldü" satırı / 689 yazılmaz).
+  // paid: "reject" — Düzenle ve Sil yolları (eski etkiler geri alınırken) tahsilatlı kartta bugünkü gibi 409 (muhasebe kâhini s58: tahsilatlı kartta silme red).
+  function removeForInvoice(user, invoiceId, { paid: paidRule = "reject" } = {}) {
     const ids = [];
     for (const plan of store.all("SELECT id, name FROM plans WHERE invoice_id = ? AND deleted_at IS NULL", invoiceId)) {
       const paid = store.get("SELECT COUNT(*) AS n FROM plan_entries WHERE plan_id = ?", plan.id).n;
-      if (paid) throw new HttpError(409, `Faturanın taksit kartında (“${plan.name}”) ${paid} tahsilat var; fatura iptal edilemez. Borcu düşürmek için iade faturası kesin.`, { code: "plan-has-payments", planId: plan.id });
+      if (paid && paidRule !== "close") throw new HttpError(409, `Faturanın taksit kartında (“${plan.name}”) ${paid} tahsilat var; fatura bu yoldan kaldırılamaz. Faturayı İptal Et ile iptal edin (kartın tahsilatları carinin avansı olur) ya da borcu düşürmek için iade faturası kesin.`, { code: "plan-has-payments", planId: plan.id });
       const linked = cheques()?.countForPlan ? cheques().countForPlan(plan.id) : 0;
       if (linked) throw new HttpError(409, `Faturanın taksit kartına sayılmış ${linked} çek/senet var; önce evrakı karttan ayırın.`, { code: "plan-has-cheques", planId: plan.id });
+      if (paid) {
+        // Kartı Kapat'la önceden kapatılmış kart (kalanı düşülmüş — "Kart kapatıldı · kalan düşüldü"): iptal kalanı ikinci kez düşerdi (bakiye −tutar) → bugünkü gibi 409
+        // S217 = A (D 20.11 04:15 (5)): ileti "Önce kartı Yeniden Aç ile açın." (Yeniden Aç → İptal Et görünür yolu; Borçta Kalsın tur 3b'de yeniden sınanır).
+        if (store.get("SELECT status FROM plans WHERE id = ?", plan.id)?.status === "closed") throw new HttpError(409, `Faturanın taksit kartı (“${plan.name}”) kapatılmış ve ${paid} tahsilatı var; fatura iptal edilemez. Önce kartı Yeniden Aç ile açın.`, { code: "plan-has-payments", planId: plan.id });
+        closeForInvoice(user, plan.id, { reason: "invoice-cancelled", invoiceId });
+        ids.push(plan.id);
+        continue;
+      }
       store.run("UPDATE plans SET deleted_by = ?, deleted_at = ?, updated_at = ? WHERE id = ?", user.id, now(), now(), plan.id);
       audit(user, "plan.deleted", plan.id, { name: plan.name, invoiceId, reason: "invoice-cancelled" });
       ids.push(plan.id);
     }
     return ids;
+  }
+  // 2.5.0 Ç7b tur 3 — S15 = A / S206 = A / S211 = A (§16.4): borcu kalkan kart kapanır. Kalanı varsa karar (4) sırasıyla kesilir (kart tutarı = net tahsilat; fazlası zaten carinin
+  // alacağıdır — avans), kart kapanır (kapatma günü bugün; kilitliyse 409 — Kartı Kapat'la aynı kural). Kalan 0 olduğundan kapanış maddesi / "kalan düşüldü" satırı yazılmaz.
+  // Aynı işlemin içinde çağrılır. Kapanmış ya da silinmiş kart değişmez.
+  function closeForInvoice(user, planId, { reason = "invoice-cancelled", invoiceId = "", note = "" } = {}) {
+    const row = store.get("SELECT id, name, total, status, account_id AS accountId, invoice_id AS invoiceId FROM plans WHERE id = ? AND deleted_at IS NULL", planId);
+    if (!row || row.status === "closed") return false;
+    period?.assertOpen(today(), "Kartın kapatılma günü");
+    // Faturanın KENDİ kartı (S15): iptal edilen faturanın kartı faturadan AYRILIR (invoice_id boşalır — kapının "faturayla açılan kart yalnız kesilmiş faturada yaşar" kuralı;
+    // iz audit'te) ve tutarı 0'a iner — kart artık borç taşımaz; tahsilatlarının tamamı kartın fazlasıdır: carinin bağsız alacağı (avans; Tek Yükümlülük Kuyruğu "Taksit kartından
+    // artan ödeme" — kartın son tahsilat gününde). Mevcut Borç kartı (S206 / S211): kalanı kadar kesilir (tutar = net tahsilat).
+    const own = Boolean(row.invoiceId);
+    const cut = own ? roundMoney(Number(row.total) || 0) : leftOf(row.id);
+    if (cut > 0.005) cutPlan({ id: row.id, name: row.name, total: Number(row.total) || 0 }, cut, user, { accountId: row.accountId, reason: note || "Fatura iptali" });
+    store.run(`UPDATE plans SET status = 'closed', closed_at = ?, close_rule = '', ${own ? "invoice_id = '', " : ""}updated_by = ?, updated_at = ? WHERE id = ?`, today(), user.id, now(), row.id);
+    audit(user, "plan.updated", row.id, { previous: { status: row.status, total: row.total, invoiceId: row.invoiceId || "" }, status: "closed", reason, invoiceId: invoiceId || row.invoiceId || "", total: roundMoney((Number(row.total) || 0) - (cut > 0.005 ? cut : 0)) });
+    return true;
+  }
+  // Hız (ders 47): carinin açık Mevcut Borç kartı (faturasız, covers_balance) var mı — yoksa iptalin kart yolu (kapsama okuması, cari kartı) hiç hesaplanmaz.
+  const hasOpenCover = accountId => Boolean(accountId && store.get("SELECT 1 AS found FROM plans WHERE account_id = ? AND deleted_at IS NULL AND status = 'active' AND covers_balance = 1 AND invoice_id = '' LIMIT 1", accountId));
+  // 2.5.0 İzleyen küçük tur (S234-c; tasarım §19.5): küçülebilecek Mevcut Borç kartı (açık ya da Borçta Kalsın ile kapatılmış — shrinkable) var mı — Düzenle'nin kapsam okumasından önce (ders 47).
+  const hasShrinkableCover = accountId => Boolean(accountId && store.get("SELECT 1 AS found FROM plans WHERE account_id = ? AND deleted_at IS NULL AND covers_balance = 1 AND invoice_id = '' AND (status = 'active' OR (status = 'closed' AND close_rule = '')) LIMIT 1", accountId));
+  // 2.5.0 Ç7b tur 3 — S206 = A / S210 = A / S211 = A (+ karar (4); docs/erp/C7B-FATURA-TASARIM.md §16.4, §16.8): fatura iptal edilince carinin borcu düşer.
+  //  (1) Faturayı içine almış Mevcut Borç kartları (coverIds — çağıran iptalden ÖNCE faturanın kart paylarından okur) KAPANIR: kalanı karar (4) sırasıyla kesilir (kart tutarı = net
+  //      tahsilat), kartın tahsilatları carinin alacağı olarak kalır (avans). Kartta başka borç da varsa (S210 — elle Borç + fatura) o borç kartın dışına çıkar, kendi vadesiyle
+  //      carinin kuyruğuna döner (kart artık onu taksitlendirmez); bakiye değişmez. Kalan 0 olduğundan kapanış maddesi / "kalan düşüldü" satırı yazılmaz.
+  //      Önceden (tur 3'ün ilk kodu) çok kalemli kart faturanın payı kadar küçülüp AÇIK kalıyordu (karar (4)'ün genel metni) — S210 = A özel kararı genelin önünde (D 20.11 04:15 (3)).
+  //  (2) Faturayı içine almamış öbür Mevcut Borç kartları borçtan büyük kalırsa iade / alacaktaki kuralla (trimCovers — en yeni karttan, karar (4) sırasıyla; kartın kalanıyla sınırlı,
+  //      fazlası carinin avansı) küçülür; bu küçülmeyle kalanı 0'a inen kart da kapanır (borcu kalkan kart kalmaz). Dönüş: değişen kartlar.
+  function settleCoverOnCancel(user, accountId, note = "", { coverIds = [] } = {}) {
+    const changedIds = [];
+    if (!hasOpenCover(accountId)) return changedIds;
+    for (const planId of coverIds) {
+      const own = store.get("SELECT 1 AS found FROM plans WHERE id = ? AND account_id = ? AND deleted_at IS NULL AND status = 'active' AND covers_balance = 1 AND invoice_id = ''", planId, accountId);
+      if (own && closeForInvoice(user, planId, { reason: "cover-invoice-cancelled", note })) changedIds.push(planId);
+    }
+    for (const plan of trimCovers(accountId, user, note || "Fatura iptali", { closed: false })) {
+      if (!changedIds.includes(plan.id)) changedIds.push(plan.id);
+      if (leftOf(plan.id) <= 0.005) closeForInvoice(user, plan.id, { reason: "cover-invoice-cancelled", note });
+    }
+    return changedIds;
   }
   // Cari adı/telefonu değişince, adı/telefonu eski cariyle aynı olan kartlar da güncellenir (farklı adlı kart dokunulmaz).
   function followAccount(accountId, previous, next) {
@@ -1587,5 +2061,5 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
   // ikinci kez saymaz; aktarma "kartı var" der.
   const linkedCases = source => new Set(store.all("SELECT case_key AS k FROM plans WHERE deleted_at IS NULL AND case_key <> '' AND case_source = ?", source || "").map(row => row.k));
 
-  return { uncoveredDebt, assertRestorable, assertCloseOpen, assertRoom, closeDayOf, trimCovers, shrinkPlan, leftOf, signedLeftOf, syncInvoiceCard, cashEntries, dueItems, openItems, fingerprint, ledgerPlansByAccount, list, detail, forCase, entriesForCase, summariesByAccount, forAccount, createForAccount, removeForInvoice, growForInvoice, followAccount, countForAccount, receiptSeq, nextRef, validDistribution: distributionInput, resolveGroups, groupTree, ensureGroup, createScheduled, scheduledStart, lockedStartReason, adoptPayment, adoptAccountEntry, linkedCases };
+  return { shownTotalsOf, queueSummaryOf, queueLedger: (plan, ledger, queue, day) => withQueue(plan, ledger, queue, day), queueAll: queueOf, uncoveredDebt, assertRestorable, assertCloseOpen, assertRoom, closeDayOf, trimCovers, shrinkPlan, cutTargets, settleCoverOnCancel, hasOpenCover, hasShrinkableCover, leftOf, signedLeftOf, syncInvoiceCard, cashEntries, dueItems, openItems, fingerprint, ledgerPlansByAccount, list, detail, forCase, entriesForCase, summariesByAccount, forAccount, createForAccount, removeForInvoice, growForInvoice, followAccount, countForAccount, receiptSeq, nextRef, validDistribution: distributionInput, resolveGroups, groupTree, ensureGroup, groupFinder,createScheduled, scheduledStart, lockedStartReason, adoptPayment, adoptAccountEntry, linkedCases };
 }

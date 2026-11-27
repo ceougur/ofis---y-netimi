@@ -1,0 +1,9 @@
+#!/bin/bash
+# Ç5-A tur 1d İş E (b) + İş D (c): G2 komşular (118 dosya; tur 1c + bu turun ürün dosyalarını adıyla / API yoluyla anan + İş A'nın okuyucuları), tek TZ. Kullanım: g2.sh <TZ>
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+W=/home/user/ofis---y-netimi/.claude/worktrees/agent-ac0e51d0f24e4542e
+tz=$1; t=$(echo $tz | tr '/' '-')
+export HUKUK_LICENSE_URL=http://127.0.0.1:9 KANIT_DIR=$S/c5a1d-kanit PLAYWRIGHT_BROWSERS_PATH=$S/pw-1194
+cd $W || exit 1
+TZ=$tz node tools/kanit.mjs kos c5a1d-isE-g2-son-$t -- node --disable-warning=ExperimentalWarning --test --test-concurrency=1 $(cat $S/c5a1d-is/g2-son.txt) > $S/c5a1d-is/g2-son-$t.out 2>&1
+echo "g2 $tz çıkış $?"

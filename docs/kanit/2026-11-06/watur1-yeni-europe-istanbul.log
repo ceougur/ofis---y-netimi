@@ -1,0 +1,205 @@
+TAP version 13
+# (node:18825) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 WhatsApp tur 1 — S33 / S43: bildirim yolu işareti yalnız imzalı (Yol 2) ve tanınan bildirimle, şirket düzeyinde
+    # Subtest: T1-1 S33 · Yol 2 · İMZASIZ tek bildirim (kendi iletisi → 401, tanınmayan → 200) işaret koymaz: TTL + 1 sa'te iş Meta Kabul Etti, kişi Daha Önce Gönderildi (gönderilecek DEĞİL)
+    ok 1 - T1-1 S33 · Yol 2 · İMZASIZ tek bildirim (kendi iletisi → 401, tanınmayan → 200) işaret koymaz: TTL + 1 sa'te iş Meta Kabul Etti, kişi Daha Önce Gönderildi (gönderilecek DEĞİL)
+      ---
+      duration_ms: 2150.536085
+      type: 'test'
+      ...
+    # Subtest: T1-2 S33 karşı yüzü · Yol 2 · İMZALI ve tanınan bildirim işareti koyar: teslim bilgisi gelmeyen iş TTL + 1 sa'te Süresi Doldu, kişi gönderilecek (K3)
+    ok 2 - T1-2 S33 karşı yüzü · Yol 2 · İMZALI ve tanınan bildirim işareti koyar: teslim bilgisi gelmeyen iş TTL + 1 sa'te Süresi Doldu, kişi gönderilecek (K3)
+      ---
+      duration_ms: 1725.339924
+      type: 'test'
+      ...
+    # Subtest: T1-3 S43 · Yol 2 · wamid'i TANINMAYAN İMZALI delivered + read → 200 × 2 ama işaret yok: TTL + 1 sa'te Meta Kabul Etti, Daha Önce Gönderildi
+    ok 3 - T1-3 S43 · Yol 2 · wamid'i TANINMAYAN İMZALI delivered + read → 200 × 2 ama işaret yok: TTL + 1 sa'te Meta Kabul Etti, Daha Önce Gönderildi
+      ---
+      duration_ms: 1977.458224
+      type: 'test'
+      ...
+    # Subtest: T1-4 Y18-13 · Yol 2 · yanıtı kaybolan (Sonucu Belirsiz) iletinin İMZALI sent'i iş kimliğiyle TANINIR ve işareti KOYAR: C Gönderildi; TTL + 1 sa'te A ve C Süresi Doldu, ikisi gönderilecek
+    ok 4 - T1-4 Y18-13 · Yol 2 · yanıtı kaybolan (Sonucu Belirsiz) iletinin İMZALI sent'i iş kimliğiyle TANINIR ve işareti KOYAR: C Gönderildi; TTL + 1 sa'te A ve C Süresi Doldu, ikisi gönderilecek
+      ---
+      duration_ms: 2032.269453
+      type: 'test'
+      ...
+    # Subtest: T1-5 S43 · Yol 1 · wamid'i tanınmayan İMZASIZ delivered → 200 ama işaret yok: TTL + 1 sa'te Meta Kabul Etti, Daha Önce Gönderildi
+    ok 5 - T1-5 S43 · Yol 1 · wamid'i tanınmayan İMZASIZ delivered → 200 ama işaret yok: TTL + 1 sa'te Meta Kabul Etti, Daha Önce Gönderildi
+      ---
+      duration_ms: 1375.487037
+      type: 'test'
+      ...
+    # Subtest: T1-6 Yol 1 AYNEN · kendi iletisinin İMZASIZ sent'i kabul edilir ve işareti koyar: TTL + 1 sa'te Süresi Doldu, kişi gönderilecek
+    ok 6 - T1-6 Yol 1 AYNEN · kendi iletisinin İMZASIZ sent'i kabul edilir ve işareti koyar: TTL + 1 sa'te Süresi Doldu, kişi gönderilecek
+      ---
+      duration_ms: 1733.132826
+      type: 'test'
+      ...
+    1..6
+ok 1 - 2.5.0 WhatsApp tur 1 — S33 / S43: bildirim yolu işareti yalnız imzalı (Yol 2) ve tanınan bildirimle, şirket düzeyinde
+  ---
+  duration_ms: 10996.00029
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 WhatsApp tur 1 — S33 ETKİLEŞİMİ: aynı WABA'da iki şirket; işaret kipe göre, şirket + imza düzeyinde
+    # Subtest: T1-7 001 Yol 1 + 002 Yol 2 · 001'in meşru İMZASIZ teslimi 002'yi işaretlemez: 002'nin işi TTL + 1 sa'te Meta Kabul Etti + Daha Önce Gönderildi; 001'in teslimsiz işi kendi işaretiyle Süresi Doldu
+    ok 1 - T1-7 001 Yol 1 + 002 Yol 2 · 001'in meşru İMZASIZ teslimi 002'yi işaretlemez: 002'nin işi TTL + 1 sa'te Meta Kabul Etti + Daha Önce Gönderildi; 001'in teslimsiz işi kendi işaretiyle Süresi Doldu
+      ---
+      duration_ms: 2017.481085
+      type: 'test'
+      ...
+    # Subtest: T1-8 ters yön · 002'nin (Yol 2) İMZALI bildirimi 001'i (Yol 1) işaretlemez: 001'in teslimsiz işi Meta Kabul Etti, 002'ninki Süresi Doldu (BAŞ MİMAR KARARI — şirketler arası işaret yok)
+    ok 2 - T1-8 ters yön · 002'nin (Yol 2) İMZALI bildirimi 001'i (Yol 1) işaretlemez: 001'in teslimsiz işi Meta Kabul Etti, 002'ninki Süresi Doldu (BAŞ MİMAR KARARI — şirketler arası işaret yok)
+      ---
+      duration_ms: 1450.937034
+      type: 'test'
+      ...
+    1..2
+ok 2 - 2.5.0 WhatsApp tur 1 — S33 ETKİLEŞİMİ: aynı WABA'da iki şirket; işaret kipe göre, şirket + imza düzeyinde
+  ---
+  duration_ms: 3468.946093
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 WhatsApp tur 1 — S41: uygulama düzeyi adrese gelen bildirim (kaydı olan WABA) aynı kurallarla işlenir, Meta'daki adres hemen yeniden denetlenir
+    # Subtest: T1-9 Yol 1 · Meta'da alternatif adres YOK · uygulama düzeyi adrese İMZASIZ delivered → 200, iş Teslim Edildi, defterde teslim; adres Meta'ya YENİDEN kaydedilir (yeni gizli yol); TTL + 1 sa sonra Daha Önce Gönderildi
+    ok 1 - T1-9 Yol 1 · Meta'da alternatif adres YOK · uygulama düzeyi adrese İMZASIZ delivered → 200, iş Teslim Edildi, defterde teslim; adres Meta'ya YENİDEN kaydedilir (yeni gizli yol); TTL + 1 sa sonra Daha Önce Gönderildi
+      ---
+      duration_ms: 918.159897
+      type: 'test'
+      ...
+    # Subtest: T1-10 Yol 2 · uygulama düzeyi adrese İMZASIZ delivered → 401, yazılmaz; İMZALI delivered → 200, Teslim Edildi + işaret; adres denetimi iki bildirimde TEK kez
+    ok 2 - T1-10 Yol 2 · uygulama düzeyi adrese İMZASIZ delivered → 401, yazılmaz; İMZALI delivered → 200, Teslim Edildi + işaret; adres denetimi iki bildirimde TEK kez
+      ---
+      duration_ms: 1783.230284
+      type: 'test'
+      ...
+    # Subtest: T1-11 kaydı OLMAYAN WABA (zarftaki WABA bu kurulumda yok) · uygulama düzeyi adrese gelen bildirim düşer: 200, iş Meta Kabul Etti, defterde teslim yok, Meta'ya istek yok
+    ok 3 - T1-11 kaydı OLMAYAN WABA (zarftaki WABA bu kurulumda yok) · uygulama düzeyi adrese gelen bildirim düşer: 200, iş Meta Kabul Etti, defterde teslim yok, Meta'ya istek yok
+      ---
+      duration_ms: 1101.195738
+      type: 'test'
+      ...
+    # Subtest: T1-12 adres denetiminin sıklığı · adres Meta'da BİZİMKİ: okunur, dokunulmaz; 15 dk içinde ikinci bildirimde yeniden okunmaz, 16. dakikada yine okunur
+    ok 4 - T1-12 adres denetiminin sıklığı · adres Meta'da BİZİMKİ: okunur, dokunulmaz; 15 dk içinde ikinci bildirimde yeniden okunmaz, 16. dakikada yine okunur
+      ---
+      duration_ms: 1258.284142
+      type: 'test'
+      ...
+    # Subtest: T1-13 salt okunur lisans · uygulama düzeyi bildirim YİNE işlenir (kanca kabulü sürer) ama Meta'daki adres denetlenmez; şirket arka planda yazılamıyorsa (yazma kilidi / şema kapısı) 503 ve denetim yok
+    ok 5 - T1-13 salt okunur lisans · uygulama düzeyi bildirim YİNE işlenir (kanca kabulü sürer) ama Meta'daki adres denetlenmez; şirket arka planda yazılamıyorsa (yazma kilidi / şema kapısı) 503 ve denetim yok
+      ---
+      duration_ms: 1028.541274
+      type: 'test'
+      ...
+    1..5
+ok 3 - 2.5.0 WhatsApp tur 1 — S41: uygulama düzeyi adrese gelen bildirim (kaydı olan WABA) aynı kurallarla işlenir, Meta'daki adres hemen yeniden denetlenir
+  ---
+  duration_ms: 6090.056421
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 WhatsApp tur 1 — DÜŞÜK-2: kip şirket + WABA başına (hub.modeOf); adres denetimi sıklığı (app-webhook rechecks)
+    # Subtest: T1-14 hub.modeOf: özet (Yol 2, W2) yalnız W2'de geçer; W1'de makine defterindeki kip (Yol 1), bilinmeyen WABA'da null
+    ok 1 - T1-14 hub.modeOf: özet (Yol 2, W2) yalnız W2'de geçer; W1'de makine defterindeki kip (Yol 1), bilinmeyen WABA'da null
+      ---
+      duration_ms: 262.116264
+      type: 'test'
+      ...
+    # Subtest: T1-15 kanca · şirket ŞİMDİ başka WABA'da Yol 2; ESKİ WABA'daki Yol 1 iletisinin İMZASIZ teslimi, şirket dosyası açılamazken (kalıcı) → 200 + defterde teslim (kip o WABA'nın)
+    ok 2 - T1-15 kanca · şirket ŞİMDİ başka WABA'da Yol 2; ESKİ WABA'daki Yol 1 iletisinin İMZASIZ teslimi, şirket dosyası açılamazken (kalıcı) → 200 + defterde teslim (kip o WABA'nın)
+      ---
+      duration_ms: 230.85464
+      type: 'test'
+      ...
+    # Subtest: T1-16 rechecks: WABA başına ilk istek hemen; 15 dk içinde ve uçuştayken yok; öbür WABA ayrı; 15 dk sonra yine; görev hatası yutulur
+    ok 3 - T1-16 rechecks: WABA başına ilk istek hemen; 15 dk içinde ve uçuştayken yok; öbür WABA ayrı; 15 dk sonra yine; görev hatası yutulur
+      ---
+      duration_ms: 1.062698
+      type: 'test'
+      ...
+    1..3
+ok 4 - 2.5.0 WhatsApp tur 1 — DÜŞÜK-2: kip şirket + WABA başına (hub.modeOf); adres denetimi sıklığı (app-webhook rechecks)
+  ---
+  duration_ms: 494.468417
+  type: 'suite'
+  ...
+# (node:19137) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 WE — Elle Bağla webhook bilgileri: program gösterir, kurulum başına, gizli
+    # Subtest: WE-1 yönetici: Callback URL = ofisin adresi + /wa/kanca/<43>, Verify token 43 karakter; yeniden sorulunca ve öbür şirkette AYNI (kurulum başına); WABA'nın bildirim adresinden farklı
+    ok 1 - WE-1 yönetici: Callback URL = ofisin adresi + /wa/kanca/<43>, Verify token 43 karakter; yeniden sorulunca ve öbür şirkette AYNI (kurulum başına); WABA'nın bildirim adresinden farklı
+      ---
+      duration_ms: 1561.420719
+      type: 'test'
+      ...
+    # Subtest: WE-2 Meta doğrulaması: GET doğru belirteç → 200 challenge, yanlış / eksik → 403; POST (S41 = A) kaydı olan WABA'nınsa İŞLENİR (Yol 1: iş Teslim Edildi, defterde teslim; WABA düzeyinde işaret yok — tur 1); WABA adresi aynen çalışır
+    ok 2 - WE-2 Meta doğrulaması: GET doğru belirteç → 200 challenge, yanlış / eksik → 403; POST (S41 = A) kaydı olan WABA'nınsa İŞLENİR (Yol 1: iş Teslim Edildi, defterde teslim; WABA düzeyinde işaret yok — tur 1); WABA adresi aynen çalışır
+      ---
+      duration_ms: 1103.935864
+      type: 'test'
+      ...
+    # Subtest: WE-3 yetkisiz kullanıcı (Personel) göremez (403); belirteç ve gizli yol yöneticinin öbür yanıtlarında da yok (bağlantı, gönderim durumu, onay, sayaç, işlem geçmişi)
+    ok 3 - WE-3 yetkisiz kullanıcı (Personel) göremez (403); belirteç ve gizli yol yöneticinin öbür yanıtlarında da yok (bağlantı, gönderim durumu, onay, sayaç, işlem geçmişi)
+      ---
+      duration_ms: 1116.152839
+      type: 'test'
+      ...
+    # Subtest: WE-4 sızıntı yok: günlük, veri klasöründeki BÜTÜN dosyalar (şirket dosyası, makine defteri, WAL) ve yedek belirteci / gizli yolu AÇIK hâlde taşımaz; ayar yazılamazsa 503 + Türkçe ileti (değer yok)
+    ok 4 - WE-4 sızıntı yok: günlük, veri klasöründeki BÜTÜN dosyalar (şirket dosyası, makine defteri, WAL) ve yedek belirteci / gizli yolu AÇIK hâlde taşımaz; ayar yazılamazsa 503 + Türkçe ileti (değer yok)
+      ---
+      duration_ms: 833.1942
+      type: 'test'
+      ...
+    # Subtest: WE-5 kalıcılık: program yeniden açılınca ve Şirket Verisini Sıfırla'dan sonra AYNI değerler; secret.key değişince (veri başka bilgisayarda) yeni değerler, eski yol kapanır
+    ok 5 - WE-5 kalıcılık: program yeniden açılınca ve Şirket Verisini Sıfırla'dan sonra AYNI değerler; secret.key değişince (veri başka bilgisayarda) yeni değerler, eski yol kapanır
+      ---
+      duration_ms: 1468.278312
+      type: 'test'
+      ...
+    # Subtest: WE-6 ofisin uzaktan adresi hazır değil: ready false, adres boş, neden Türkçe cümle; belirteç yine gösterilir (aynı)
+    ok 6 - WE-6 ofisin uzaktan adresi hazır değil: ready false, adres boş, neden Türkçe cümle; belirteç yine gösterilir (aynı)
+      ---
+      duration_ms: 767.261273
+      type: 'test'
+      ...
+    # Subtest: WE-7 001 yeni şemalı, çift YOK: 001'den ve 002'den sorulunca 200 + ready false + Türkçe neden, değer boş; 001'e webhook ayarı yazılmaz; kapı kalkınca çift üretilir (çıkmaz yok)
+    ok 7 - WE-7 001 yeni şemalı, çift YOK: 001'den ve 002'den sorulunca 200 + ready false + Türkçe neden, değer boş; 001'e webhook ayarı yazılmaz; kapı kalkınca çift üretilir (çıkmaz yok)
+      ---
+      duration_ms: 2061.720156
+      type: 'test'
+      ...
+    # Subtest: WE-8 001 yeni şemalı, çift VAR: aynı değerler gösterilir (001 ve 002), Meta doğrulaması geçer, ayar satırı aynen; secret.key değişince yeni çift ÜRETİLMEZ (ready false + neden, satır aynen)
+    ok 8 - WE-8 001 yeni şemalı, çift VAR: aynı değerler gösterilir (001 ve 002), Meta doğrulaması geçer, ayar satırı aynen; secret.key değişince yeni çift ÜRETİLMEZ (ready false + neden, satır aynen)
+      ---
+      duration_ms: 2062.426921
+      type: 'test'
+      ...
+    # Subtest: WE-9 001 yedekten geri yüklenir (yedek çift gösterilmeden ÖNCE alınmış): çift AYNI, Meta'ya girilmiş eski çiftle doğrulama 200
+    ok 9 - WE-9 001 yedekten geri yüklenir (yedek çift gösterilmeden ÖNCE alınmış): çift AYNI, Meta'ya girilmiş eski çiftle doğrulama 200
+      ---
+      duration_ms: 1596.941326
+      type: 'test'
+      ...
+    # Subtest: WE-9 001 yedekten geri yüklenir (yedek çift gösterilmeden SONRA alınmış): çift AYNI, Meta'ya girilmiş eski çiftle doğrulama 200
+    ok 10 - WE-9 001 yedekten geri yüklenir (yedek çift gösterilmeden SONRA alınmış): çift AYNI, Meta'ya girilmiş eski çiftle doğrulama 200
+      ---
+      duration_ms: 1183.140419
+      type: 'test'
+      ...
+    1..10
+ok 5 - 2.5.0 WE — Elle Bağla webhook bilgileri: program gösterir, kurulum başına, gizli
+  ---
+  duration_ms: 13761.717964
+  type: 'suite'
+  ...
+1..5
+# tests 26
+# suites 5
+# pass 26
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 36155.046609

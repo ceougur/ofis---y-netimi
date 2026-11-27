@@ -1,0 +1,16 @@
+#!/bin/bash
+# Ana oturum: BİRLEŞİK TUR 7 ADAYI — ci.yml'deki KALAN kâhin adımları (öz eleştiri kuralı: adı 'kahin-' ile başlayan HER adım), sonra bütün ekran senaryoları.
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+W=$S/d2t3-ya-ag; K=$S/b7y-aday-kanit
+export KANIT_DIR=$K HUKUK_LICENSE_URL=http://127.0.0.1:9 PLAYWRIGHT_BROWSERS_PATH=$S/pw-1194
+cd $W || exit 1
+echo "kalan kâhin adımları başladı $(date -u +%T) yük $(cat /proc/loadavg) · ağaç $(git rev-parse --short HEAD)"
+grep -oE "kanit\.mjs kos kahin-[A-Za-z0-9_-]+ .*$" .github/workflows/ci.yml | sed 's/^kanit\.mjs kos //' > $K/kahin-liste.txt
+echo "ci.yml'deki kâhin adımı sayısı $(wc -l < $K/kahin-liste.txt)"
+while read -r ad komut; do
+  case "$ad" in kahin-defter|kahin-cari|kahin-tutar|kahin-maliyet) echo "ÖNCE KOŞULDU $ad"; continue;; esac
+  node tools/kanit.mjs kos b7y-$ad -- $komut > "$K/$ad.out" 2>&1 < /dev/null; c=$?
+  echo "$c $ad :: $komut :: $(tail -1 "$K/$ad.out" | cut -c1-160)"
+done < $K/kahin-liste.txt
+echo "kâhin adımları bitti $(date -u +%T) yük $(cat /proc/loadavg)"
+bash $S/b7y-e2e.sh

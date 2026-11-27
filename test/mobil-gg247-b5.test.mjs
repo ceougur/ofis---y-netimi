@@ -63,3 +63,50 @@ describe("B5 şirket seçimi / lisans denetimi → özet yüklemesi", () => {
     assert.equal(sayac() - once, 1, "erişim değişikliği tek güvenlik yüklemesi doğurmalı");
   });
 });
+
+// 2.5.0 W-1(a) dar kontrol ORTA-1 (aynı aile): ana ekran her açılışta WhatsApp bağlantı süresi bildirimini SORAR (POST …/whatsapp/connection/expiry-notice; bağlantı
+// yoksa da). İstek 200 döndüğü için "veri" sayılıp her açılışta tam özet yüklemesi doğuruyordu (dar kontrol betiği I: 10 saatte 30 açılış → 30 yükleme; günlük
+// sınır 40). Beklenen (B5 kararı ile aynı ilke): bildirim sorusu telefonun gördüğü veriyi değiştirmez → 0 yükleme; aynı zaman çizelgesinde gerçek veri yazımı yine
+// yükler (testin dişi: yükleme sayacı bu düzenekte gerçekten artabiliyor). Zaman çizelgesi dar kontrol betiğinden (16 dk × 4 oturma, sonra 20 dk arayla 30 açılış).
+describe("2.5.0 W-1(a) ORTA-1 — WhatsApp süre bildirimi sorusu → özet yüklemesi", () => {
+  let ctx;
+  const sayac = () => Number(ctx.kapi.r2.nesneler.get(`ofis/${ctx.ofis.id}/ozet.json`)?.customMetadata?.sayac || 0);
+  const ilerle = async ms => {
+    ctx.gercek.set(ctx.gercek.ms() + ms);
+    ctx.ofisSaati.set(ctx.ofisSaati.ms() + ms);
+    await ctx.sync.tick();
+    await ctx.sync.idle();
+  };
+  before(async () => {
+    ctx = await kurulum({ licenseId: "LIS-W1A-ORTA1" });
+    const { pair, login } = await ctx.yeniTelefon("admin", ADMIN_PASSWORD);
+    assert.equal(pair.status, 200, pair.text);
+    assert.equal(login.status, 200, login.text);
+    await ctx.sync.idle();
+    for (let i = 0; i < 4; i += 1) await ilerle(16 * 60_000); // kurulumun kendi yüklemesi biter
+  });
+  after(() => ctx?.close());
+
+  it("sınıflama: süre bildirimi sorusu yüklemez; WhatsApp bağlantısının gerçek değişiklikleri (kaydet / kaldır) ve benzer adlı uç veri kalır", () => {
+    assert.equal(yazmaTuru("POST", "/api/workspace/whatsapp/connection/expiry-notice"), null);
+    for (const [m, p] of [["PUT", "/api/workspace/whatsapp/connection"], ["DELETE", "/api/workspace/whatsapp/connection"], ["POST", "/api/workspace/whatsapp/connection/expiry-notice-x"], ["POST", "/api/workspace/whatsapp/batches"]])
+      assert.equal(yazmaTuru(m, p), "veri", `${m} ${p}`);
+  });
+
+  it("10 saatte 30 ana ekran açılışı (bildirim sorusu, yanıt 200) 0 özet yüklemesi; aynı çizelgede bir cari kaydı yükler", async () => {
+    const once = sayac();
+    assert.ok(once > 0, "kurulumda özet yüklenmiş olmalı");
+    const durumlar = {};
+    for (let i = 0; i < 30; i += 1) {
+      const r = await ctx.admin.post("/api/workspace/whatsapp/connection/expiry-notice", {});
+      durumlar[r.status] = (durumlar[r.status] || 0) + 1;
+      await ilerle(20 * 60_000);
+    }
+    assert.deepEqual(durumlar, { 200: 30 }, "ön koşul: istekler 200 (reddedilen istek başarı değildir — ders 3)");
+    assert.equal(sayac() - once, 0, `30 bildirim sorusu ${sayac() - once} özet yüklemesi doğurdu`);
+    const cari = await ctx.admin.post("/api/workspace/accounts", { name: "Yükleme Denetimi", phone: "0532 777 00 01" });
+    assert.equal(cari.status, 200, cari.text);
+    await ilerle(20 * 60_000);
+    assert.equal(sayac() - once, 1, "gerçek veri yazımı tek özet yüklemesi doğurmalı (düzenek yüklemeyi görebiliyor)");
+  });
+});

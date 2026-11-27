@@ -1,0 +1,30 @@
+  mutasyon 293 (Ç5 C26 / C27 (S145 B): tahsilat (bağsız / bağlı / Taksit Tahsilatı) hiç reddedilmez (borç açık şüphelinin altına düşse de; öbür türler denetlenir)): YAKALANDI (d39-c5-s130-supheli-kalemleri, d41-c5-s136-s139-s145-s148, d44-c5-s155-s158 …)
+  mutasyon 294 (Ç5 C26 / C27 (S155 sınır): adımdan sonra borç açık şüpheli tutara EŞİTKEN de ret): YAKALANDI (d41-c5-s136-s139-s145-s148, d44-c5-s155-s158)
+  mutasyon 295 (Ç5 C26 / C27 (S155 sınır): şüpheliyle AYNI günün alacak satırı denetimde şüpheliden düşmemiş ('önceki') sayılır): YAKALANDI (d41-c5-s136-s139-s145-s148)
+  mutasyon 296 (Ç5 C26 / C27 (S145 yarım): şüpheli tarihinden önceki her tahsilat ret (toplam borç yetse de)): YAKALANDI (c7b-supheli-kalan, d39-c5-s130-supheli-kalemleri, d41-c5-s136-s139-s145-s148 …)
+  mutasyon 297 (Ç5 C26 (S151 A): satış kartının 'Tahsil Edilen'i / taksit 'Ödenen'i faturasız stok iadesini sayar): YAKALANDI (d42-c5-s140-s151-satis-karti-iade, d44-c5-s155-s158)
+  mutasyon 298 (Ç5 C26 (S151 yarım): kartın 'Tahsil Edilen'i iadeyi saymaz ama taksit 'Ödenen'i sayar): YAKALANDI (d42-c5-s140-s151-satis-karti-iade, d44-c5-s155-s158)
+  mutasyon 299 (Ç5 C27 (S155 B): TARİH ölçüsü — her adımda şüpheli kaydının GÜNÜNDEKİ borç (o günün borç yönlü satırları dahil) şüpheli tutara yetmiyorsa ret; toplam ölçü yok): YAKALANDI (d44-c5-s155-s158)
+  mutasyon 300 (Ç5 C27 (S155 yarım): toplam ölçü yalnız tahsilatta (tahsilat / Taksit Tahsilatı); çek, Alacak Yaz, iade, borç silme, geri yükleme denetlenmez (kabul)): YAKALANDI (d41-c5-s136-s139-s145-s148, d44-c5-s155-s158)
+  mutasyon 301 (Ç5 C27 (S158 B): satış kartı OLMAYAN kartta 'Tahsil Edilen' / taksit 'Ödenen' iadeyi ve Değersiz'i sayar (yalnız satış kartında sayılmaz)): YAKALANDI (d42-c5-s140-s151-satis-karti-iade, d44-c5-s155-s158)
+  mutasyon 302 (Ç5 C27 (S158 yarım): yalnız faturasız stok iadesi sayılmaz — Değersiz ve iade faturası artanı 'Tahsil Edilen' / 'Ödenen'e sayılır): YAKALANDI (d44-c5-s155-s158)
+  liste mutasyonu 1 (senaryo adı yok sayılır): YAKALANDI
+  liste mutasyonu 2 (alt dizgi (joker) eşleşmesi): YAKALANDI
+  liste mutasyonu 3 (program değeri karşılaştırılmaz): YAKALANDI
+  liste mutasyonu 4 (kapanan kayıt denetlenmez): YAKALANDI
+  liste mutasyonu 5 (kâhin beklentisi karşılaştırılmaz): YAKALANDI
+  yapım aşaması listesi mutasyonu 1 (senaryo adı yok sayılır): YAKALANDI
+  yapım aşaması listesi mutasyonu 2 (alt dizgi (joker) eşleşmesi): YAKALANDI
+  yapım aşaması listesi mutasyonu 3 (program değeri karşılaştırılmaz): YAKALANDI
+  yapım aşaması listesi mutasyonu 4 (kapanan kayıt denetlenmez): YAKALANDI
+  yapım aşaması listesi mutasyonu 5 (kâhin beklentisi karşılaştırılmaz): YAKALANDI
+
+GEÇERSİZ DENETİM (2.4.5 kararıyla; --legacy'de koşar — KARARLAR.md §8 C0): 276 denetim, 23 senaryo — b2-ux18-karsiliksiz 12, b2-ux18-retler 6, b2-ux18-sira 10, b2-ux18-temel 18, b3b-k1-k4-donem-raporlar 18, b3c-k2-donem-ayni-no 6, b3d-c3-kisi-gruplama 2, b3e-vergi-sutunu 2, b3k-vergi-tek-kolon 10, b3n-borc-kolonu-kisi-ozniteligi 14, b3o-seyrek-kalan 14, b3q-takvim-kalemi 16, b3r-kalan-sifir-eksi 11, b3s-soz-tutari-kalemi 9, b3t-sozlesme-tutari 13, b3u-sozlesme-tarihi-soz-basliklari 13, b3v-taahhut-soz-miktari 16, b3w-yalniz-soz-tutari 22, b3x-yalin-soz-ve-tutar 19, b3y-taahhut-alacak-bakiye 15, b5-u1-nihai-tuketici 2, rastgele-ux18-1 14, rastgele-ux18-2 14
+
+ATLANAN (2.4.5 kararıyla geçersiz — --legacy ile koşar): 12 — b1-5a-bayat-ve-yeniden, b1-5a-tasima, b1-5b-borc, b1-5c-rapor, b3-u2-tablo-borcu, b3f-kayit-anahtari, b3g-tablo-bag-surekliligi, b3h-dosya-no-ve-devam, b3i-devam-ayni-icerik, b3j-ayni-ad-takas, b3m-dosya-no-degisimi, b3p-ayni-ad-telefon
+
+2.5.0 KARARIYLA DEĞİŞEN BEKLENTİ (KARARLAR.md §13; 2.4.9 kâhinine göre): 3364 denetim, 89 senaryo · programla farkların 0'i bu sınıfta, 0'i SINIF DIŞI
+
+ÖZET [2.5.0]: 90 senaryo, 16490 denetim, 0 fark (BULGU 0), 7 bilinen sınır (BILINEN.json; başarısız sayılmaz), 41 yapım aşaması (YAPIM-ASAMASI.json; paketlere göre: eşleme 17, Ç5-B tur 2 24; 41 denetim + 0 okuma hatası; geçti de başarısız da sayılmaz — yayın adayında liste BOŞ olmalı), 0 okuma hatası, 0 yakalanmayan mutasyon, 12 atlanan senaryo. Ham çıktı: /tmp/kahin-cari-O6Amre
+BİLİNEN SINIRLAR (7): b3y-taahhut-alacak-bakiye k1:k4:akis; b3y-taahhut-alacak-bakiye k1:k4:kisiler; b3y-taahhut-alacak-bakiye k1:k4:vade; b3y-taahhut-alacak-bakiye k1:rapor:2026/1012:borc; b3y-taahhut-alacak-bakiye k1:rapor:2026/1012:grup; b3y-taahhut-alacak-bakiye k1:rapor:2026/1013:borc; b3y-taahhut-alacak-bakiye k1:rapor:2026/1013:grup
+16449/16449 denetim geçti (7 bilinen sınır dahil) (41 yapım aşaması ayrı sayıldı — 41 denetim + 0 okuma hatası; geçti sayılmadı)

@@ -1,0 +1,85 @@
+{
+ "kartOncesi": {
+  "bakiye": -400,
+  "gecikmisKart": 0,
+  "gecikmisKartAdet": 0,
+  "eskiGeciken": 300,
+  "gecikmisListe": 0,
+  "vade": [],
+  "vadeGecikmis": 0,
+  "zil": [],
+  "kalan": [],
+  "faturalar": [],
+  "kartlar": [
+   {
+    "state": "done",
+    "items": [
+     0,
+     0
+    ],
+    "own": 600,
+    "queue": 0,
+    "accountPaid": 0
+   }
+  ]
+ },
+ "kartTahsilati": 200,
+ "sonra": {
+  "bakiye": -700,
+  "gecikmisKart": 0,
+  "gecikmisKartAdet": 0,
+  "eskiGeciken": 0,
+  "gecikmisListe": 0,
+  "vade": [],
+  "vadeGecikmis": 0,
+  "zil": [],
+  "kalan": [],
+  "faturalar": [],
+  "kartlar": [
+   {
+    "state": "done",
+    "items": [
+     0,
+     0
+    ],
+    "own": 300,
+    "queue": 0,
+    "accountPaid": 0
+   }
+  ]
+ },
+ "borcSonrasi": {
+  "bakiye": -200,
+  "gecikmisKart": 100,
+  "gecikmisKartAdet": 1,
+  "eskiGeciken": 0,
+  "gecikmisListe": 100,
+  "vade": [
+   "account:Tahsil Edilecek Borç:100@2026-10-10"
+  ],
+  "vadeGecikmis": 100,
+  "zil": [
+   "account:Tahsil Edilecek Borç:100:overdue"
+  ],
+  "kalan": [
+   "debt:500→100"
+  ],
+  "faturalar": [],
+  "kartlar": [
+   {
+    "state": "done",
+    "items": [
+     0,
+     0
+    ],
+    "own": 300,
+    "queue": 0,
+    "accountPaid": 0
+   }
+  ]
+ },
+ "kalemler": [
+  "entry|receivable|2026-10-10|500→100"
+ ],
+ "sigmaKalem": 100
+}

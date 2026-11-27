@@ -1,0 +1,16 @@
+# Ç5-B son tur — node --test TAP çıktısından kırmızı testlerin adı + hata iletisi (ders 38: kırmızının NEDENİ okunur). Kullanım: kirmizi-neden.py <çıktı dosyası> [ileti uzunluğu]
+import re, sys
+t = open(sys.argv[1], encoding='utf-8', errors='replace').read()
+width = int(sys.argv[2]) if len(sys.argv) > 2 else 300
+n = 0
+for b in re.split(r'\n(?=\s*not ok \d+ - )', t)[1:]:
+    if re.search(r"type: 'suite'", b[:600]):
+        continue
+    name = re.match(r'\s*not ok \d+ - (.*)', b).group(1)
+    err = re.search(r"error: (?:\|-\n\s+)?(.*?)\n(?:\s+\n|\s+code:)", b, re.S)
+    msg = ' '.join(x.strip() for x in (err.group(1) if err else '').split('\n'))[:width]
+    exp = re.search(r"expected: (.*)", b)
+    act = re.search(r"actual: (.*)", b)
+    n += 1
+    print(f'{n}. {name}\n     -> {msg}' + (f'\n     beklenen {exp.group(1)[:80]} · gelen {act.group(1)[:80]}' if exp and act else ''))
+print('kırmızı test sayısı:', n)

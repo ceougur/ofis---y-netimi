@@ -1,0 +1,15 @@
+
+■ C) BULGU-1 — iki kartlı caride ilk faturaya iade: ikinci kartın taksitleri açık, gecikmiş 0
+  ✓ ikinci kart Kalan ₺300,00: ₺300,00
+  ✓ ikinci kartın taksitleri 'Ödendi' değil (tabanda ödendi): is-open,is-open,is-open
+  ✓ bakiye 900, gecikmiş 0 (tabanda 300): 900 / 0
+
+■ D) S234-c — Düzenle ile 900 → 300: Mevcut Borç kartı 300'e küçülür
+    [soru] "Değişiklikler Kaydedilsin mi?" → Değişiklikleri Kaydet (beklenen soru)
+  ✓ bakiye 300 (Düzenle kaydedildi)
+  ✓ kart tutarı 300 (veri tabanı; tabanda 900): 300
+  ✓ kart penceresi Kalan ₺300,00 (tabanda ₺900,00): ₺300,00
+  ✓ Mutabakat Testi temiz
+  ✓ sayfa hatası yok
+
+✓ senaryo-izt-250: 20 geçti, 0 kaldı

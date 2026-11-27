@@ -1,0 +1,205 @@
+{
+ "aciklama": "S53: kilitli (göçte 2.4.9 kuralıyla donmuş) geçmiş yılın defteri değişmez, bilgi yok; fark Kural Değişikliği Farkı olarak görünür.",
+ "ad": "s90-s53-kilitli-gecmis-yil",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "bil/aktif_toplam": 25000,
+   "bil/kesin_degil": [
+    "ACILIS_OLABILIR_ONAY_BEKLIYOR",
+    "KAPANMAMIS_ONCEKI_YIL",
+    "KURAL_DEGISIKLIGI_FARKI"
+   ],
+   "bil/pasif/V.A": 12000,
+   "bil/pasif/V.F": 1000,
+   "bil/pasif/V.G": 0,
+   "bil/pasif/V.K": 12000,
+   "dm": {
+    "bilgi": [],
+    "olculmeyen": []
+   },
+   "fark": {
+    "500": 12000,
+    "519": -15000,
+    "602": 3000
+   },
+   "gt25/kalemler/A": 8000,
+   "gt25/kalemler/DNK": 8000,
+   "mz25/satirlar/500/bakiye": -12000,
+   "mz25/satirlar/519/bakiye": 0,
+   "mz25/satirlar/600/alacak": 5000,
+   "mz25/satirlar/602/bakiye": -3000,
+   "redler": []
+  }
+ },
+ "kapsam": [
+  "S53",
+  "Ç3",
+  "KG-15",
+  "KG-16",
+  "S47",
+  "W4",
+  "W15"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "K": 0,
+   "M": 4000,
+   "cari": "C3",
+   "id": "F0",
+   "tarih": "2024-05-01",
+   "tur": "satis_faturasi",
+   "yedekten": true
+  },
+  {
+   "tarih": "2025-01-01",
+   "tur": "kasa_acilis",
+   "tutar": 10000,
+   "yedekten": true
+  },
+  {
+   "cari": "C1",
+   "durum": "portfoy",
+   "evrak": "CK1",
+   "evrak_turu": "cek",
+   "tarih": "2025-01-01",
+   "tur": "evrak_acilis",
+   "tutar": 3000,
+   "yedekten": true,
+   "yon": "alinan"
+  },
+  {
+   "aciklama": "Açılış bakiyesi",
+   "cari": "C2",
+   "id": "BY1",
+   "tarih": "2025-01-02",
+   "tur": "borc_yaz",
+   "tutar": 2000,
+   "yedekten": true
+  },
+  {
+   "K": 0,
+   "M": 5000,
+   "cari": "C1",
+   "id": "F1",
+   "tarih": "2025-06-01",
+   "tur": "satis_faturasi",
+   "yedekten": true
+  },
+  {
+   "kural": "2.4.9",
+   "tarih": "2025-12-31",
+   "tur": "donem_kilitle"
+  },
+  {
+   "K": 0,
+   "M": 1000,
+   "cari": "C1",
+   "id": "F2",
+   "tarih": "2026-02-01",
+   "tur": "satis_faturasi"
+  },
+  {
+   "ad": "mz25",
+   "bas": "2025-01-01",
+   "rapor": "mizan",
+   "son": "2025-12-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "gt25",
+   "bas": "2025-01-01",
+   "rapor": "gelir_tablosu",
+   "son": "2025-12-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "bil",
+   "rapor": "bilanco",
+   "tarih": "2026-03-01",
+   "tur": "rapor"
+  },
+  {
+   "ad": "dm",
+   "rapor": "defter_mutabakati_bilgi",
+   "tarih": "2026-03-01",
+   "tur": "rapor"
+  },
+  {
+   "ad": "fark",
+   "rapor": "kural_farki",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

@@ -1,0 +1,43 @@
+{
+  "ad": "watur3-eski-tur1-t1-7-10-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 --test-reporter=spec --test-name-pattern=^T1-(7|10)  test/whatsapp-tur1-bildirim-yolu-250-yeni.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-11T08:17:11.397Z",
+  "sure_sn": 2.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 2,
+    "gecen": 0,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "T1-7 001 Yol 1 + 002 Yol 2 · 001'in meşru İMZASIZ teslimi 002'yi işaretlemez: 002'nin işi TTL + 1 sa'te Meta Kabul Etti + Daha Önce Gönderildi; 001'in teslimsiz işi kendi işaretiyle Süresi Doldu",
+      "konum": "test/whatsapp-tur1-bildirim-yolu-250-yeni.test.mjs:252:3",
+      "hata": "AssertionError [ERR_ASSERTION]: S90: öbür uygulamanın (002 — Yol 2) adresinden gelen bildirim 001'i işaretlemez · + actual - expected"
+    },
+    {
+      "ad": "T1-10 Yol 2 · uygulama düzeyi adrese İMZASIZ delivered → 401, yazılmaz; İMZALI delivered → 200, Teslim Edildi (işaret YOK — tur 3 S90); adres denetimi iki bildirimde TEK kez",
+      "konum": "test/whatsapp-tur1-bildirim-yolu-250-yeni.test.mjs:330:3",
+      "hata": "AssertionError [ERR_ASSERTION]: S90: uygulama düzeyi adres Yol 2'nin adresi değil → işaret konmadı · + actual - expected"
+    }
+  ],
+  "ham_cikti": "../watur3-kanit/2026-11-11/watur3-eski-tur1-t1-7-10-UTC.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur3-eski",
+  "ham_cikti_sha256": "29d22f837c4cbe58302920d74dcedf9eb93a63fdeb9435d548beaa2e2f1040f5",
+  "ham_cikti_bayt": 3459
+}

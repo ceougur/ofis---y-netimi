@@ -1,0 +1,32 @@
+{
+  "ad": "bt4-birim-yeni-utc",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/birlesik-tur4-degisiklik-yok-250.test.mjs test/birlesik-tur3-yaris-250.test.mjs",
+  "commit": "eb097607a7c7461f387224ddc7c897f74f49cb0a",
+  "dal": "worktree-agent-a8e6f2114d96e812f",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T07:28:29.902Z",
+  "sure_sn": 10.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 33,
+    "gecen": 33,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt4-kanit/2026-11-06/bt4-birim-yeni-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a8e6f2114d96e812f",
+  "ham_cikti_sha256": "5ff4440ea5cb78da4876b63472eb3847ef830d2e41348f37c141513204b3909a",
+  "ham_cikti_bayt": 13527
+}

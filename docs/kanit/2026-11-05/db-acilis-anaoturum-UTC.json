@@ -1,0 +1,32 @@
+{
+  "ad": "db-acilis-anaoturum-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/db-acilis-kilit-250.test.mjs",
+  "commit": "ee5663d6d711adea31cf1485fc64c995eafb8fe1",
+  "dal": "claude/epic-thompson-w0lc2l",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T23:51:12.342Z",
+  "sure_sn": 29.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 6,
+    "gecen": 6,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/db-acilis-anaoturum-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "2a9c383200343ae088b35f93fb570029dd378912fc1bfb9fa03652c88f4bb234",
+  "ham_cikti_bayt": 2477
+}

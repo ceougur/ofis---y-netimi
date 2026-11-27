@@ -1,0 +1,73 @@
+{
+  "ad": "c7bfix-eski-europeistanbul",
+  "komut": "node --test test/c7bfix-kart-kapat-kuyruk-250.test.mjs test/c7b-kart-kapat-onay-250.test.mjs",
+  "commit": "fce3d2723c943a1a67342257dfa70fe69593154d",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-20T23:46:40.913Z",
+  "sure_sn": 1.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 12,
+    "gecen": 4,
+    "basarisiz": 8,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 8 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Ç7b aday düzeltme — Kartı Kapat onayı pencerenin GÖSTERDİĞİ kalanla (S129 = A) › K1 en küçük örnek: cari kartından 500 → pencere 2.500 → TEK onayla kapanır; bakiye 2.500, 120 aynı",
+      "konum": "test/c7bfix-kart-kapat-kuyruk-250.test.mjs:74:3",
+      "hata": "K1: tek onayla kapanmalı — 409 {\"ok\":false,\"error\":\"Kartın kalanı siz onayladıktan sonra değişti; güncel kalan 3.000,00 TL. Kartı Kapat yeniden sorulacak.\",\"code\":\"plan-close-stale\",\"remaining\":3000} · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "Ç7b aday düzeltme — Kartı Kapat onayı pencerenin GÖSTERDİĞİ kalanla (S129 = A) › K2 karışık: Taksit Tahsilatı 1.000 + cari kartından 500 → pencere 1.500 → tek onay",
+      "konum": "test/c7bfix-kart-kapat-kuyruk-250.test.mjs:89:3",
+      "hata": "K2: tek onayla kapanmalı — 409 {\"ok\":false,\"error\":\"Kartın kalanı siz onayladıktan sonra değişti; güncel kalan 2.000,00 TL. Kartı Kapat yeniden sorulacak.\",\"code\":\"plan-close-stale\",\"remaining\":2000} · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "Ç7b aday düzeltme — Kartı Kapat onayı pencerenin GÖSTERDİĞİ kalanla (S129 = A) › K3 tahsilat silinir: eski onay 409 KALIR; güncel kalan pencerenin yeni sayısı",
+      "konum": "test/c7bfix-kart-kapat-kuyruk-250.test.mjs:99:3",
+      "hata": "K3a kart tahsilatı silindi: güncel kalan pencerenin yeniden göstereceği sayı · 3000 !== 2500 (beklenen 2500, gelen 3000)"
+    },
+    {
+      "ad": "Ç7b aday düzeltme — Kartı Kapat onayı pencerenin GÖSTERDİĞİ kalanla (S129 = A) › K4 tutar değişir: eski onay 409; güncel kalan pencerenin sayısı",
+      "konum": "test/c7bfix-kart-kapat-kuyruk-250.test.mjs:120:3",
+      "hata": "K4: güncel kalan pencerenin yeniden göstereceği sayı · 3600 !== 3100 (beklenen 3100, gelen 3600)"
+    },
+    {
+      "ad": "Ç7b aday düzeltme — Kartı Kapat onayı pencerenin GÖSTERDİĞİ kalanla (S129 = A) › K5 kalansız kart (pencere 0, kartın kendisi 600) tek onayla; tutar büyüyünce onay 0 → 409",
+      "konum": "test/c7bfix-kart-kapat-kuyruk-250.test.mjs:133:3",
+      "hata": "K5a: tek onayla kapanmalı — 409 {\"ok\":false,\"error\":\"Kartın kalanı siz onayladıktan sonra değişti; güncel kalan 600,00 TL. Kartı Kapat yeniden sorulacak.\",\"code\":\"plan-close-stale\",\"remaining\":600} · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "Ç7b aday düzeltme — Kartı Kapat onayı pencerenin GÖSTERDİĞİ kalanla (S129 = A) › K6 Mevcut Borç kartı (taksitli ve taksitsiz): pencerenin kalanıyla tek onay",
+      "konum": "test/c7bfix-kart-kapat-kuyruk-250.test.mjs:152:3",
+      "hata": "K6a: tek onayla kapanmalı — 409 {\"ok\":false,\"error\":\"Kartın kalanı siz onayladıktan sonra değişti; güncel kalan 3.000,00 TL. Kartı Kapat yeniden sorulacak.\",\"code\":\"plan-close-stale\",\"remaining\":3000} · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "Ç7b aday düzeltme — Kartı Kapat onayı pencerenin GÖSTERDİĞİ kalanla (S129 = A) › K7 Borçta Kalsın ile kapanmış kart Yeniden Aç → yine Kartı Kapat: pencerenin kalanıyla tek onay",
+      "konum": "test/c7bfix-kart-kapat-kuyruk-250.test.mjs:173:3",
+      "hata": "K7 ilk kapanış: tek onayla kapanmalı — 409 {\"ok\":false,\"error\":\"Kartın kalanı siz onayladıktan sonra değişti; güncel kalan 3.000,00 TL. Kartı Kapat yeniden sorulacak.\",\"code\":\"plan-close-stale\",\"remaining\":3000} · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "Ç7b aday düzeltme — Kartı Kapat onayı pencerenin GÖSTERDİĞİ kalanla (S129 = A) › K8 iki kart aynı caride: her kart kendi pencere sayısıyla tek onay",
+      "konum": "test/c7bfix-kart-kapat-kuyruk-250.test.mjs:185:3",
+      "hata": "K8 yeni kart: tek onayla kapanmalı — 409 {\"ok\":false,\"error\":\"Kartın kalanı siz onayladıktan sonra değişti; güncel kalan 1.000,00 TL. Kartı Kapat yeniden sorulacak.\",\"code\":\"plan-close-stale\",\"remaining\":1000} · 409 !== 200 (beklenen 200, gelen 409)"
+    }
+  ],
+  "ham_cikti": "../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7bfix-a66/kanit/2026-11-20/c7bfix-eski-europeistanbul.log",
+  "klasor": "/dev/shm/c7bfix-a66/eski",
+  "ham_cikti_sha256": "02aad7ea56dad849d00b76850be37eff5a30d4c0931fd7fb353643b77087e7d0",
+  "ham_cikti_bayt": 12050
+}

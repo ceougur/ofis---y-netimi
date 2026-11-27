@@ -1,0 +1,17 @@
+s109-s85-geri-yuklenmis-cari-tutar [TZ=Europe/Istanbul]: 27 olay · yapıldı 15 · red 2 · api_yok 0 · uygulanmadı 3 · sürücü hatası 0 · olay döngüsü en çok 131 ms
+    s109-s85-geri-yuklenmis-cari-tutar [Europe/Istanbul] öz denetim TAMAM · AYNI 42 · U 3 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (1 sn + 0 sn)
+s109-s85-geri-yuklenmis-cari-tutar [TZ=UTC]: 27 olay · yapıldı 15 · red 2 · api_yok 0 · uygulanmadı 3 · sürücü hatası 0 · olay döngüsü en çok 132 ms
+    s109-s85-geri-yuklenmis-cari-tutar [UTC] öz denetim TAMAM · AYNI 42 · U 3 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · red farkı 0 · adım farkı 0 (sınıfsız 0)  (2 sn + 0 sn)
+
+AYNI 84 · U 6 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · red farkı 0 · uygulanamayan olay 0 · sınıfsız adım farkı 0 · değişmez 0 · öz denetim bozuk 0 · koşu hatası 0
+Ölçüm (olay döngüsü en çok, ms): s109-s85-geri-yuklenmis-cari-tutar [UTC] 132 (koşu 2 sn; GET ledger ort 3 / en çok 6 ms) · s109-s85-geri-yuklenmis-cari-tutar [Europe/Istanbul] 131 (koşu 1 sn; GET ledger ort 3 / en çok 6 ms)
+BEKLEYEN KURAL FARKLARI (kimlik: senaryo / denetim [UTC]): Ç5-B 1/3 · Ç5-S12 1/3
+U etiketleri: 
+
+# tests 90
+# pass 90
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+Çıktı: /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-k4/surucu-taban-s109

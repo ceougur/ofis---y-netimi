@@ -1,0 +1,104 @@
+{
+ "kod": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a3c-k7/taban",
+ "dondurma": {
+  "coverage": "2026-07-12",
+  "lock": "2026-07-12",
+  "pending": null
+ },
+ "canliOnce": {
+  "Kilitli F1 Bağlı Nakit": {
+   "b120": 500,
+   "b128": 600,
+   "v249": {
+    "b120": 500,
+    "b128": 600
+   }
+  },
+  "Kilitli F2 Bağlı Çek": {
+   "b120": 900,
+   "b128": 200,
+   "v249": {
+    "b120": 900,
+    "b128": 200
+   }
+  },
+  "Kilitli F1 Bağlı Çek": {
+   "b120": 900,
+   "b128": 200,
+   "v249": {
+    "b120": 900,
+    "b128": 200
+   }
+  },
+  "Kilitli Bağsız Nakit": {
+   "b120": 900,
+   "b128": 200,
+   "v249": {
+    "b120": 900,
+    "b128": 200
+   }
+  },
+  "Kilitli S168 F2 Nakit 100": {
+   "b120": 0,
+   "b128": 1000,
+   "v249": {
+    "b120": 0,
+    "b128": 1000
+   }
+  },
+  "Kilitsiz F1 Bağlı Nakit": {
+   "b120": 500,
+   "b128": 600,
+   "v249": {
+    "b120": 500,
+    "b128": 600
+   }
+  },
+  "Kilitsiz F2 Bağlı Çek": {
+   "b120": 900,
+   "b128": 200,
+   "v249": {
+    "b120": 900,
+    "b128": 200
+   }
+  }
+ },
+ "mutabakatBulgu": [],
+ "kuralFarki": "öğe yok",
+ "onizleme": {
+  "status": 200,
+  "disabled": true,
+  "reason": "Düzeltilecek kural farkı yok.",
+  "lines": [],
+  "excluded": [],
+  "sources": [],
+  "keys": [
+   "lockedUntil",
+   "frozenThrough",
+   "today",
+   "date",
+   "count",
+   "lines",
+   "digest",
+   "totalMinor",
+   "excluded",
+   "sources",
+   "sourceCount",
+   "candidates",
+   "vouchers",
+   "disabled",
+   "reason",
+   "code"
+  ]
+ },
+ "acikDonemYazim": "200 ",
+ "canliSonra": {
+  "b120": 400,
+  "b128": 600,
+  "v249": {
+   "b120": 500,
+   "b128": 600
+  }
+ },
+ "mutabakatSonra": []
+}

@@ -1,0 +1,399 @@
+TAP version 13
+# Subtest: 2.5.0 BİRLEŞİK TUR 5 — açılış onarımının savunma kuralları (üst sınır, yeniden okuma, kirli işareti)
+    # Subtest: (a) üst sınır · toplu eleme: kart eski kuralın hedefini aşıyorsa (600 > 500) onarılmaz; aynı durumda hedefi aşmayan kart (500) onarılır
+    ok 1 - (a) üst sınır · toplu eleme: kart eski kuralın hedefini aşıyorsa (600 > 500) onarılmaz; aynı durumda hedefi aşmayan kart (500) onarılır
+      ---
+      duration_ms: 271.822033
+      type: 'test'
+      ...
+    # Subtest: (a) üst sınır · toplu okuma düştü (her aday cari başına yoldan): kart eski kuralın hedefini aşıyorsa (600 > 500) onarılmaz; aynı durumda hedefi aşmayan kart (500) onarılır
+    ok 2 - (a) üst sınır · toplu okuma düştü (her aday cari başına yoldan): kart eski kuralın hedefini aşıyorsa (600 > 500) onarılmaz; aynı durumda hedefi aşmayan kart (500) onarılır
+      ---
+      duration_ms: 189.563723
+      type: 'test'
+      ...
+    # Subtest: (b) yeniden okuma: toplu durum ONARIR derken cari başına yol onarma diyor → yazılmaz; toplu durum yanlış hedef veriyor → yazılan tutar cari başına yolunki
+    ok 3 - (b) yeniden okuma: toplu durum ONARIR derken cari başına yol onarma diyor → yazılmaz; toplu durum yanlış hedef veriyor → yazılan tutar cari başına yolunki
+      ---
+      duration_ms: 279.947981
+      type: 'test'
+      ...
+    # Subtest: (c) kirli işareti · aynı cari (iki satır aynı cariyi işaretler): ilk aday onarılınca o carinin toplu durumu bayat sayılır; sonraki aday cari başına yoldan okunup onarılır
+    ok 4 - (c) kirli işareti · aynı cari (iki satır aynı cariyi işaretler): ilk aday onarılınca o carinin toplu durumu bayat sayılır; sonraki aday cari başına yoldan okunup onarılır
+      ---
+      duration_ms: 164.961892
+      type: 'test'
+      ...
+    # Subtest: (c) kirli işareti · önceki adayın kartı sonrakinin carisine taşınmış (eski veri; yalnız KARTIN carisi satırı işaretler): ilk aday onarılınca o carinin toplu durumu bayat sayılır; sonraki aday cari başına yoldan okunup onarılır
+    ok 5 - (c) kirli işareti · önceki adayın kartı sonrakinin carisine taşınmış (eski veri; yalnız KARTIN carisi satırı işaretler): ilk aday onarılınca o carinin toplu durumu bayat sayılır; sonraki aday cari başına yoldan okunup onarılır
+      ---
+      duration_ms: 226.085368
+      type: 'test'
+      ...
+    # Subtest: (c) kirli işareti · iki fatura aynı caride, önceki adayın kartı üçüncü cariye taşınmış (eski veri; yalnız kartı TAŞIYAN faturanın carisi satırı işaretler): ilk aday onarılınca o carinin toplu durumu bayat sayılır; sonraki aday cari başına yoldan okunup onarılır
+    ok 6 - (c) kirli işareti · iki fatura aynı caride, önceki adayın kartı üçüncü cariye taşınmış (eski veri; yalnız kartı TAŞIYAN faturanın carisi satırı işaretler): ilk aday onarılınca o carinin toplu durumu bayat sayılır; sonraki aday cari başına yoldan okunup onarılır
+      ---
+      duration_ms: 227.448201
+      type: 'test'
+      ...
+    1..6
+ok 1 - 2.5.0 BİRLEŞİK TUR 5 — açılış onarımının savunma kuralları (üst sınır, yeniden okuma, kirli işareti)
+  ---
+  duration_ms: 1942.725101
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 BİRLEŞİK TUR 4 — taksit düzelt: 'değişiklik yok' kısa yolu
+    # Subtest: yanıtı kopan kendi düzeltmesi: aynı gövde (formun eski sürümü) ikinci kez → 200; tek yazım — Değişiklik Geçmişi 1, sürüm ilerlemez
+    ok 1 - yanıtı kopan kendi düzeltmesi: aynı gövde (formun eski sürümü) ikinci kez → 200; tek yazım — Değişiklik Geçmişi 1, sürüm ilerlemez
+      ---
+      duration_ms: 104.808715
+      type: 'test'
+      ...
+    # Subtest: koruma bozulmaz: yanıt koptuktan sonra B FARKLI değer girer → A'nın aynı gövdeli yeniden gönderimi 409, B'nin değeri durur
+    ok 2 - koruma bozulmaz: yanıt koptuktan sonra B FARKLI değer girer → A'nın aynı gövdeli yeniden gönderimi 409, B'nin değeri durur
+      ---
+      duration_ms: 103.298279
+      type: 'test'
+      ...
+    # Subtest: aynı içerik: A formu açar, B taksiti 300 yapar, A da (eskimiş formla) 300 kaydeder → 200, A hiçbir şey yazmaz
+    ok 3 - aynı içerik: A formu açar, B taksiti 300 yapar, A da (eskimiş formla) 300 kaydeder → 200, A hiçbir şey yazmaz
+      ---
+      duration_ms: 69.695324
+      type: 'test'
+      ...
+    # Subtest: GÖVDE YOLDAYKEN: A'nın gövdesi formun açıldığı hâliyle AYNI, B arada değiştirir → 409 (kısa yol güncel taksitle karşılaştırır, isteğin başındakiyle değil)
+    ok 4 - GÖVDE YOLDAYKEN: A'nın gövdesi formun açıldığı hâliyle AYNI, B arada değiştirir → 409 (kısa yol güncel taksitle karşılaştırır, isteğin başındakiyle değil)
+      ---
+      duration_ms: 401.208784
+      type: 'test'
+      ...
+    # Subtest: her alan tek tek: eskimiş formda yalnız vade ya da yalnız açıklama farklıysa 409 (farklı içerik 'aynı' sayılmaz)
+    ok 5 - her alan tek tek: eskimiş formda yalnız vade ya da yalnız açıklama farklıysa 409 (farklı içerik 'aynı' sayılmaz)
+      ---
+      duration_ms: 114.080484
+      type: 'test'
+      ...
+    1..5
+ok 2 - 2.5.0 BİRLEŞİK TUR 4 — taksit düzelt: 'değişiklik yok' kısa yolu
+  ---
+  duration_ms: 1623.127629
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 BİRLEŞİK TUR 4 — taksit kartı: 'değişiklik yok' kısa yolu
+    # Subtest: yanıtı kopan kendi kaydı: aynı form ikinci kez → 200; tek yazım — Değişiklik Geçmişi 1, sürüm ilerlemez
+    ok 1 - yanıtı kopan kendi kaydı: aynı form ikinci kez → 200; tek yazım — Değişiklik Geçmişi 1, sürüm ilerlemez
+      ---
+      duration_ms: 59.013728
+      type: 'test'
+      ...
+    # Subtest: koruma bozulmaz: yanıt koptuktan sonra B tutarı 1.200 yapar → A'nın yeniden gönderimi 409, 1.200 durur
+    ok 2 - koruma bozulmaz: yanıt koptuktan sonra B tutarı 1.200 yapar → A'nın yeniden gönderimi 409, 1.200 durur
+      ---
+      duration_ms: 74.54467
+      type: 'test'
+      ...
+    # Subtest: aynı içerik: B notu 'ortak' yapar, A da eskimiş formla 'ortak' kaydeder → 200, A yazmaz; Kartı Kapat iki kez → ikincisi yazmaz
+    ok 3 - aynı içerik: B notu 'ortak' yapar, A da eskimiş formla 'ortak' kaydeder → 200, A yazmaz; Kartı Kapat iki kez → ikincisi yazmaz
+      ---
+      duration_ms: 104.606817
+      type: 'test'
+      ...
+    # Subtest: GÖVDE YOLDAYKEN: A'nın formu açıldığı hâliyle AYNI, B arada tutarı değiştirir → 409
+    ok 4 - GÖVDE YOLDAYKEN: A'nın formu açıldığı hâliyle AYNI, B arada tutarı değiştirir → 409
+      ---
+      duration_ms: 363.383971
+      type: 'test'
+      ...
+    # Subtest: carisiz eski kart (göç öncesinden kalma): değişmemiş form da kısa yola girmez — ilk düzenlemede cari açılır (önceki davranış)
+    ok 5 - carisiz eski kart (göç öncesinden kalma): değişmemiş form da kısa yola girmez — ilk düzenlemede cari açılır (önceki davranış)
+      ---
+      duration_ms: 72.721276
+      type: 'test'
+      ...
+    # Subtest: her alan tek tek: B tutarı değiştirdi; A'nın eskimiş formu tutarı B'ninkiyle aynı, yalnız adı / telefonu / Sıra No'su farklı → 409
+    ok 6 - her alan tek tek: B tutarı değiştirdi; A'nın eskimiş formu tutarı B'ninkiyle aynı, yalnız adı / telefonu / Sıra No'su farklı → 409
+      ---
+      duration_ms: 66.384788
+      type: 'test'
+      ...
+    1..6
+ok 3 - 2.5.0 BİRLEŞİK TUR 4 — taksit kartı: 'değişiklik yok' kısa yolu
+  ---
+  duration_ms: 1344.919389
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 BİRLEŞİK TUR 4 — stok kartı: 'değişiklik yok' kısa yolu
+    # Subtest: yanıtı kopan kendi kaydı: aynı form ikinci kez → 200; tek yazım — Değişiklik Geçmişi 1, sürüm ilerlemez
+    ok 1 - yanıtı kopan kendi kaydı: aynı form ikinci kez → 200; tek yazım — Değişiklik Geçmişi 1, sürüm ilerlemez
+      ---
+      duration_ms: 38.606802
+      type: 'test'
+      ...
+    # Subtest: koruma bozulmaz: yanıt koptuktan sonra B fiyatlı ALIM girer (Alış Fiyatı 10 → 12) → A'nın yeniden gönderimi 409, 12 durur
+    ok 2 - koruma bozulmaz: yanıt koptuktan sonra B fiyatlı ALIM girer (Alış Fiyatı 10 → 12) → A'nın yeniden gönderimi 409, 12 durur
+      ---
+      duration_ms: 57.422936
+      type: 'test'
+      ...
+    # Subtest: aynı içerik: B Satış Fiyatı'nı 20 yapar, A da eskimiş formla 20 kaydeder → 200, A yazmaz
+    ok 3 - aynı içerik: B Satış Fiyatı'nı 20 yapar, A da eskimiş formla 20 kaydeder → 200, A yazmaz
+      ---
+      duration_ms: 38.01294
+      type: 'test'
+      ...
+    # Subtest: GÖVDE YOLDAYKEN: A'nın formu açıldığı hâliyle AYNI, B arada Satış Fiyatı'nı değiştirir → 409
+    ok 4 - GÖVDE YOLDAYKEN: A'nın formu açıldığı hâliyle AYNI, B arada Satış Fiyatı'nı değiştirir → 409
+      ---
+      duration_ms: 334.283399
+      type: 'test'
+      ...
+    # Subtest: her alan tek tek: B Satış Fiyatı'nı 20 yaptı; A'nın eskimiş formu 20 ile aynı, yalnız KDV oranı / Alış Fiyatı / not farklı → 409
+    ok 5 - her alan tek tek: B Satış Fiyatı'nı 20 yaptı; A'nın eskimiş formu 20 ile aynı, yalnız KDV oranı / Alış Fiyatı / not farklı → 409
+      ---
+      duration_ms: 40.236773
+      type: 'test'
+      ...
+    1..5
+ok 4 - 2.5.0 BİRLEŞİK TUR 4 — stok kartı: 'değişiklik yok' kısa yolu
+  ---
+  duration_ms: 1099.351677
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 BİRLEŞİK TUR 5 — alan alan: taze form + tek alan → 200, yeni değer veri tabanında, Değişiklik Geçmişi +1 (kısa yol değişikliği yutmaz)
+    # Subtest: taksit kartı · ad
+    ok 1 - taksit kartı · ad
+      ---
+      duration_ms: 66.193788
+      type: 'test'
+      ...
+    # Subtest: taksit kartı · ad yalnız büyük harf
+    ok 2 - taksit kartı · ad yalnız büyük harf
+      ---
+      duration_ms: 51.051187
+      type: 'test'
+      ...
+    # Subtest: taksit kartı · ad yalnız küçük harf
+    ok 3 - taksit kartı · ad yalnız küçük harf
+      ---
+      duration_ms: 43.237818
+      type: 'test'
+      ...
+    # Subtest: taksit kartı · telefon
+    ok 4 - taksit kartı · telefon
+      ---
+      duration_ms: 97.217584
+      type: 'test'
+      ...
+    # Subtest: taksit kartı · not
+    ok 5 - taksit kartı · not
+      ---
+      duration_ms: 52.23962
+      type: 'test'
+      ...
+    # Subtest: taksit kartı · Sıra No
+    ok 6 - taksit kartı · Sıra No
+      ---
+      duration_ms: 61.351224
+      type: 'test'
+      ...
+    # Subtest: taksit kartı · Kayıt Tarihi
+    ok 7 - taksit kartı · Kayıt Tarihi
+      ---
+      duration_ms: 60.633994
+      type: 'test'
+      ...
+    # Subtest: taksit kartı · kayıt bağı: yalnız caseKey
+    ok 8 - taksit kartı · kayıt bağı: yalnız caseKey
+      ---
+      duration_ms: 56.587537
+      type: 'test'
+      ...
+    # Subtest: taksit kartı · kayıt bağı: yalnız caseSource
+    ok 9 - taksit kartı · kayıt bağı: yalnız caseSource
+      ---
+      duration_ms: 73.240708
+      type: 'test'
+      ...
+    # Subtest: taksit kartı · kayıt bağı: yalnız caseTitle
+    ok 10 - taksit kartı · kayıt bağı: yalnız caseTitle
+      ---
+      duration_ms: 63.094529
+      type: 'test'
+      ...
+    # Subtest: taksit kartı · grup
+    ok 11 - taksit kartı · grup
+      ---
+      duration_ms: 80.304888
+      type: 'test'
+      ...
+    # Subtest: taksit kartı · alt grup
+    ok 12 - taksit kartı · alt grup
+      ---
+      duration_ms: 83.198281
+      type: 'test'
+      ...
+    # Subtest: taksit kartı · cari
+    ok 13 - taksit kartı · cari
+      ---
+      duration_ms: 70.039818
+      type: 'test'
+      ...
+    # Subtest: taksit kartı · toplam
+    ok 14 - taksit kartı · toplam
+      ---
+      duration_ms: 86.167309
+      type: 'test'
+      ...
+    # Subtest: taksit kartı · toplam 1 kuruş
+    ok 15 - taksit kartı · toplam 1 kuruş
+      ---
+      duration_ms: 140.180843
+      type: 'test'
+      ...
+    # Subtest: taksit kartı · durum (Kartı Kapat, yalnız status)
+    ok 16 - taksit kartı · durum (Kartı Kapat, yalnız status)
+      ---
+      duration_ms: 71.552955
+      type: 'test'
+      ...
+    # Subtest: taksit · vade
+    ok 17 - taksit · vade
+      ---
+      duration_ms: 54.264754
+      type: 'test'
+      ...
+    # Subtest: taksit · tutar
+    ok 18 - taksit · tutar
+      ---
+      duration_ms: 53.981883
+      type: 'test'
+      ...
+    # Subtest: taksit · tutar 1 kuruş
+    ok 19 - taksit · tutar 1 kuruş
+      ---
+      duration_ms: 57.536148
+      type: 'test'
+      ...
+    # Subtest: taksit · açıklama
+    ok 20 - taksit · açıklama
+      ---
+      duration_ms: 58.944167
+      type: 'test'
+      ...
+    # Subtest: taksit · açıklama yalnız büyük harf
+    ok 21 - taksit · açıklama yalnız büyük harf
+      ---
+      duration_ms: 79.077382
+      type: 'test'
+      ...
+    # Subtest: taksit · açıklama yalnız küçük harf
+    ok 22 - taksit · açıklama yalnız küçük harf
+      ---
+      duration_ms: 66.707539
+      type: 'test'
+      ...
+    # Subtest: stok kartı · tür (kritik seviyesi 0 olan ürün → hizmet)
+    ok 23 - stok kartı · tür (kritik seviyesi 0 olan ürün → hizmet)
+      ---
+      duration_ms: 31.220822
+      type: 'test'
+      ...
+    # Subtest: stok kartı · Stok Kodu
+    ok 24 - stok kartı · Stok Kodu
+      ---
+      duration_ms: 41.77928
+      type: 'test'
+      ...
+    # Subtest: stok kartı · Stok Kodu yalnız büyük harf
+    ok 25 - stok kartı · Stok Kodu yalnız büyük harf
+      ---
+      duration_ms: 36.901624
+      type: 'test'
+      ...
+    # Subtest: stok kartı · ad
+    ok 26 - stok kartı · ad
+      ---
+      duration_ms: 47.465171
+      type: 'test'
+      ...
+    # Subtest: stok kartı · ad yalnız büyük harf
+    ok 27 - stok kartı · ad yalnız büyük harf
+      ---
+      duration_ms: 40.552316
+      type: 'test'
+      ...
+    # Subtest: stok kartı · birim
+    ok 28 - stok kartı · birim
+      ---
+      duration_ms: 61.014337
+      type: 'test'
+      ...
+    # Subtest: stok kartı · kategori
+    ok 29 - stok kartı · kategori
+      ---
+      duration_ms: 42.587216
+      type: 'test'
+      ...
+    # Subtest: stok kartı · KDV oranı
+    ok 30 - stok kartı · KDV oranı
+      ---
+      duration_ms: 33.771854
+      type: 'test'
+      ...
+    # Subtest: stok kartı · not
+    ok 31 - stok kartı · not
+      ---
+      duration_ms: 39.74003
+      type: 'test'
+      ...
+    # Subtest: stok kartı · not yalnız büyük harf
+    ok 32 - stok kartı · not yalnız büyük harf
+      ---
+      duration_ms: 41.517304
+      type: 'test'
+      ...
+    # Subtest: stok kartı · kritik seviye
+    ok 33 - stok kartı · kritik seviye
+      ---
+      duration_ms: 46.379467
+      type: 'test'
+      ...
+    # Subtest: stok kartı · Alış Fiyatı
+    ok 34 - stok kartı · Alış Fiyatı
+      ---
+      duration_ms: 53.608512
+      type: 'test'
+      ...
+    # Subtest: stok kartı · Alış Fiyatı 0,0001
+    ok 35 - stok kartı · Alış Fiyatı 0,0001
+      ---
+      duration_ms: 50.831944
+      type: 'test'
+      ...
+    # Subtest: stok kartı · Satış Fiyatı
+    ok 36 - stok kartı · Satış Fiyatı
+      ---
+      duration_ms: 29.107233
+      type: 'test'
+      ...
+    # Subtest: stok kartı · Satış Fiyatı 1 kuruş
+    ok 37 - stok kartı · Satış Fiyatı 1 kuruş
+      ---
+      duration_ms: 34.741957
+      type: 'test'
+      ...
+    1..37
+ok 5 - 2.5.0 BİRLEŞİK TUR 5 — alan alan: taze form + tek alan → 200, yeni değer veri tabanında, Değişiklik Geçmişi +1 (kısa yol değişikliği yutmaz)
+  ---
+  duration_ms: 2761.566456
+  type: 'suite'
+  ...
+1..5
+# tests 59
+# suites 5
+# pass 59
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7428.016119

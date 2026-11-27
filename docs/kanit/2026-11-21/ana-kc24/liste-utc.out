@@ -1,0 +1,27 @@
+d53-c5-s234-kapali-kart-iade: 595/635 tuttu · YAPIM AŞAMASI 40 (Ç7b 40)
+  2.5.0 kararıyla değişen beklenti: 368 denetim · farkların 0/0'i bu sınıfta
+d54-c5-s234-acik-kart-iade: 346/347 tuttu · YAPIM AŞAMASI 1 (Ç7b 1)
+  2.5.0 kararıyla değişen beklenti: 184 denetim · farkların 0/0'i bu sınıfta
+d55-c5-s234-iade-iptal-gecikmis: 153/169 tuttu · YAPIM AŞAMASI 16 (Ç7b 16)
+  2.5.0 kararıyla değişen beklenti: 79 denetim · farkların 0/0'i bu sınıfta
+  liste mutasyonu 1 (senaryo adı yok sayılır): YAKALANDI
+  liste mutasyonu 2 (alt dizgi (joker) eşleşmesi): YAKALANDI
+  liste mutasyonu 3 (program değeri karşılaştırılmaz): YAKALANDI
+  liste mutasyonu 4 (kapanan kayıt denetlenmez): YAKALANDI
+  liste mutasyonu 5 (kâhin beklentisi karşılaştırılmaz): YAKALANDI
+  yapım aşaması listesi mutasyonu 1 (senaryo adı yok sayılır): YAKALANDI
+  yapım aşaması listesi mutasyonu 2 (alt dizgi (joker) eşleşmesi): YAKALANDI
+  yapım aşaması listesi mutasyonu 3 (program değeri karşılaştırılmaz): YAKALANDI
+  yapım aşaması listesi mutasyonu 4 (kapanan kayıt denetlenmez): YAKALANDI
+  yapım aşaması listesi mutasyonu 5 (kâhin beklentisi karşılaştırılmaz): YAKALANDI
+
+GEÇERSİZ DENETİM (2.4.5 kararıyla; --legacy'de koşar — KARARLAR.md §8 C0): 0 denetim, 0 senaryo
+
+ATLANAN (2.4.5 kararıyla geçersiz — --legacy ile koşar): 0
+
+2.5.0 KARARIYLA DEĞİŞEN BEKLENTİ (KARARLAR.md §13; 2.4.9 kâhinine göre): 631 denetim, 3 senaryo · programla farkların 0'i bu sınıfta, 0'i SINIF DIŞI
+
+ÖZET [2.5.0]: 3 senaryo, 1151 denetim, 0 fark (BULGU 0), 0 bilinen sınır (BILINEN.json; başarısız sayılmaz), 57 yapım aşaması (YAPIM-ASAMASI.json; paketlere göre: Ç7b 57; 57 denetim + 0 okuma hatası; geçti de başarısız da sayılmaz — yayın adayında liste BOŞ olmalı), 0 okuma hatası, 0 yakalanmayan mutasyon, 0 atlanan senaryo. Ham çıktı: /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-kc24/liste-utc
+1094/1094 denetim geçti (57 yapım aşaması ayrı sayıldı — 57 denetim + 0 okuma hatası; geçti sayılmadı)
+
+[kanit] ana-kahin-cari24-liste-utc: GEÇTİ · çıkış 0 · 1094/1094 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 85f70cd +1 değişmiş dosya · linux 6.18.44-fc-v726 x64 · Node v22.23.4

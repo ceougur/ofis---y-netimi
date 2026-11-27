@@ -1,0 +1,43 @@
+{
+  "ad": "bir-tur2-mutasyon-okuma-UTC",
+  "komut": "node --test --test-concurrency=1 /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur2-mut-okuma/test/birlesik-tur2-yaris-250.test.mjs",
+  "commit": "9659020fff5d5a8cff5ec6fc1e96d8997897d4a1",
+  "dal": "worktree-agent-aaea58f1418cba48a",
+  "kirli": 0,
+  "izlenmeyen": 11,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T01:49:22.129Z",
+  "sure_sn": 8.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 6,
+    "gecen": 4,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.0 BİRLEŞİK TUR 2 (c) — İKİNCİ SÜREÇ yazım kilidini tutarken düzeltme gelir: karar kilit alındıktan SONRA okunan satırla › Kasa Engelle (dört uç): dış süreç hareketi 100 → 10 yapıp kilidi tutarken yöneticinin 100 → 650 düzeltmesi gelir → 409 cash-blocked güncel satırla; Kasa 590",
+      "konum": "test/birlesik-tur2-yaris-250.test.mjs:280:3",
+      "hata": "cari: güncel satırla 409 cash-blocked olmalı — 200   | cari: hareket 650 (beklenen dış sürecin 10'u) | cari: Kasa -50 (beklenen 590) | stok: güncel satırla 409 cash-blocked olmalı — 200   | stok: hareket 650 (beklenen dış sürecin 10'u) | stok: Kasa -50 (beklenen 590) | taksit: güncel satırla 409 cash-blocked olmalı — 200   | taksit: hareket 650 (beklenen dış sürecin 10'u) | taksit: Kasa -50 (beklenen 590) | kasa: güncel satırla 409 cash-blocked olmalı — 200   | kasa: hareket 650 (beklenen dış sürecin 10'u) | kasa: Kasa -50 (beklenen 590) · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 BİRLEŞİK TUR 2 (c) — İKİNCİ SÜREÇ yazım kilidini tutarken düzeltme gelir: karar kilit alındıktan SONRA okunan satırla › kayıp güncelleme + iyimser kilit (cari): dış süreç açıklamayı değiştirir → yalnız tutarlı düzeltme açıklamayı KORUR; dış süreç sürümü ilerletince eski sürümle gelen düzeltme 409",
+      "konum": "test/birlesik-tur2-yaris-250.test.mjs:304:3",
+      "hata": "tutar düzeltildi, dış sürecin açıklaması korundu (bayat satır gövdeyle birleşmedi) · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-06/bir-tur2-mutasyon-okuma-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aaea58f1418cba48a",
+  "ham_cikti_sha256": "c12a48e9fb5b5f45c259e6abc31c942ccb480ae0358b53c4646b9f2060d9c470",
+  "ham_cikti_bayt": 8240
+}

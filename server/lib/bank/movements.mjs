@@ -21,7 +21,7 @@ import { addCalendarDays } from "../business-days.mjs";
 import { parseMinor, toMinor } from "../minor.mjs";
 import { buildXlsx } from "../xlsx-write.mjs";
 import { EVENT_TYPES, INTERNAL_TYPES, NON_MONEY_TYPES, STATUS_LABELS, TYPE_GROUPS, isBankVoucherType, typeLabel } from "./event-types.mjs";
-import { MONEY_ROLES } from "./voucher.mjs";
+import { MONEY_ROLES, effectiveGl } from "./voucher.mjs";
 import { CHEQUE_SUB_NAMES } from "./collections.mjs";
 import { BANK_SUBS } from "../cheque-gl.mjs";
 
@@ -178,8 +178,9 @@ export function createBankMovements({ store, money, accounts, ledger, period, no
   function voucherLines(event, map) {
     return store.all("SELECT role, gl, sub, ref, side, try_minor AS tryMinor, currency, fx_minor AS fxMinor, memo FROM bank_lines WHERE event_id = ? ORDER BY seq", event.id).map(line => ({
       role: line.role,
-      gl: line.gl,
-      glName: CHART[line.gl] || line.gl,
+      // 2.5.0 Ç5-A (B3): İşlem Kartı defterin hesabını gösterir — saklı "500" (açılış / Devir Kapanışı) 519 "Eşleştirilecek Açılış Bakiyeleri" (yevmiye ile aynı yardımcı).
+      gl: effectiveGl(line),
+      glName: CHART[effectiveGl(line)] || line.gl,
       sub: line.sub,
       subName: subName(map, line.sub),
       ref: line.ref,

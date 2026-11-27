@@ -1,0 +1,24 @@
+// Deneme: S168 durumunda F2'ye bağlı 700 nakit (fatura açığını aşan) ve F2'ye bağlı 500 nakit.
+import { boot, day, print } from "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2b-q4/betik/k.mjs";
+const h = await boot();
+const { api } = h;
+const app = h.server.app;
+const st = r => `${r.status}${r.status >= 400 ? " " + String(r.data?.code || r.data?.error?.code || "") + " " + String(r.data?.error?.message || r.data?.error || "") : ""}`;
+const hesap = id => { const b = { 120: 0, 128: 0 }; for (const e of app.ledger.build()) for (const l of e.lines || []) if (["120", "128"].includes(l.account) && l.party === id) b[l.account] += l.debit - l.credit; return `120 ${b[120] / 100} · 128 ${b[128] / 100}`; };
+const inv = async (a, date, amount) => (await api.post("/api/workspace/invoices", { scenario: "service_sale", accountId: a.id, issueDate: date, lines: [{ name: "Hizmet", qty: 1, unitPrice: amount, vatRate: 0 }], payment: { rest: "open" } })).data?.id;
+const out = {};
+const a = await h.account("Deneme");
+const f1 = await inv(a, day(-60), 1000);
+await api.post(`/api/workspace/accounts/${a.id}/doubtful`, { amount: 1000, date: day(-40), reason: "lawsuit" });
+const f2 = await inv(a, day(-30), 500);
+await api.post(`/api/workspace/accounts/${a.id}/entries`, { kind: "in", amount: "400", date: day(-20), method: "cash", cashForce: true, similarOk: true, doubtfulSkip: true });
+out.once = hesap(a.id);
+const n0 = app.store.get("SELECT COUNT(*) AS n FROM account_entries WHERE account_id = ?", a.id).n;
+out.f2_700 = st(await api.post(`/api/workspace/accounts/${a.id}/entries`, { kind: "in", amount: "700", date: day(-10), method: "cash", cashForce: true, similarOk: true, invoiceId: f2 }));
+out.satirSayisi = [n0, app.store.get("SELECT COUNT(*) AS n FROM account_entries WHERE account_id = ?", a.id).n];
+out.sonra700 = hesap(a.id);
+out.f2_500 = st(await api.post(`/api/workspace/accounts/${a.id}/entries`, { kind: "in", amount: "500", date: day(-10), method: "cash", cashForce: true, similarOk: true, invoiceId: f2 }));
+out.sonra500 = hesap(a.id);
+out.mutabakat = (app.integrity.scan().findings || []).map(f => f.code);
+print(out);
+await h.server.close();

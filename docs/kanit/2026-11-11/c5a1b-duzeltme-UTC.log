@@ -1,0 +1,294 @@
+TAP version 13
+# (node:18452) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Aşama 9 — çalışıyor mu: kabul 13–16 ve ücretli örnek (bağımsız beklenenle)
+    # Subtest: kabul 13–14 (Banka tarafı): Bugün Giriş 20.000 (ABC), Bugün Çıkış 0 (transferi saymaz), Transfer Çıkış 10.000
+    ok 1 - kabul 13–14 (Banka tarafı): Bugün Giriş 20.000 (ABC), Bugün Çıkış 0 (transferi saymaz), Transfer Çıkış 10.000
+      ---
+      duration_ms: 15.418909
+      type: 'test'
+      ...
+    # Subtest: kabul 15–16: Ziraat → Garanti 20.000, ücret 0 → Ziraat 90.000, Garanti 70.000, Gerçek Banka 160.000, Kasa + Banka 170.000; mizan bağımsız modelle
+    ok 2 - kabul 15–16: Ziraat → Garanti 20.000, ücret 0 → Ziraat 90.000, Garanti 70.000, Gerçek Banka 160.000, Kasa + Banka 170.000; mizan bağımsız modelle
+      ---
+      duration_ms: 62.802121
+      type: 'test'
+      ...
+    # Subtest: Hareketler'de iki bacak (Ziraat −20.000, Garanti +20.000); hesap süzgecinde yalnız kendi bacağı; tür süzgeci Bankalar Arası Transfer
+    ok 3 - Hareketler'de iki bacak (Ziraat −20.000, Garanti +20.000); hesap süzgecinde yalnız kendi bacağı; tür süzgeci Bankalar Arası Transfer
+      ---
+      duration_ms: 15.832389
+      type: 'test'
+      ...
+    # Subtest: Ters Kaydet (ekranın yolu) → Ziraat 110.000, Garanti 50.000; ters kaydın Transfer satırı (iç hareket, Bugün Giriş/Çıkış değişmez)
+    ok 4 - Ters Kaydet (ekranın yolu) → Ziraat 110.000, Garanti 50.000; ters kaydın Transfer satırı (iç hareket, Bugün Giriş/Çıkış değişmez)
+      ---
+      duration_ms: 39.443108
+      type: 'test'
+      ...
+    # Subtest: ücretli örnek: 20.000 + EFT 5,00 + BSMV 0,25 (BSMV Hariç) → Ziraat 89.994,75; Garanti 70.000; 770 = 5,25; Çıkış 5,25; Banka Masraf Raporu'nda
+    ok 5 - ücretli örnek: 20.000 + EFT 5,00 + BSMV 0,25 (BSMV Hariç) → Ziraat 89.994,75; Garanti 70.000; 770 = 5,25; Çıkış 5,25; Banka Masraf Raporu'nda
+      ---
+      duration_ms: 63.015042
+      type: 'test'
+      ...
+    # Subtest: Düzelt: tutar 3.000 → 1.500 ve ücret kaldırılır (ters + yeni, tek işlemde); alıcı formdan korunur, kaynak = hedef 400
+    ok 6 - Düzelt: tutar 3.000 → 1.500 ve ücret kaldırılır (ters + yeni, tek işlemde); alıcı formdan korunur, kaynak = hedef 400
+      ---
+      duration_ms: 64.173804
+      type: 'test'
+      ...
+    # Subtest: vadeli hesaba transfer ve vadeliden geri; valör ve kanal İşlem Kartı'nda
+    ok 7 - vadeli hesaba transfer ve vadeliden geri; valör ve kanal İşlem Kartı'nda
+      ---
+      duration_ms: 65.896377
+      type: 'test'
+      ...
+    1..7
+ok 1 - Aşama 9 — çalışıyor mu: kabul 13–16 ve ücretli örnek (bağımsız beklenenle)
+  ---
+  duration_ms: 1071.460073
+  type: 'suite'
+  ...
+# Subtest: Aşama 9 — nasıl bozarım
+    # Subtest: B1: TL → USD 400 bank-currency; metin farklı para birimini söyler, Döviz Al/Sat önermez; USD → USD de 400
+    ok 1 - B1: TL → USD 400 bank-currency; metin farklı para birimini söyler, Döviz Al/Sat önermez; USD → USD de 400
+      ---
+      duration_ms: 40.784949
+      type: 'test'
+      ...
+    # Subtest: B2: kaynak = hedef 400; alıcı seçilmedi 400
+    ok 2 - B2: kaynak = hedef 400; alıcı seçilmedi 400
+      ---
+      duration_ms: 7.128272
+      type: 'test'
+      ...
+    # Subtest: B5: kredi / vadeli / kart hesabından cari ödemesi 400; kredi ya da kart hesabına Bankalar Arası Transfer 400
+    ok 3 - B5: kredi / vadeli / kart hesabından cari ödemesi 400; kredi ya da kart hesabına Bankalar Arası Transfer 400
+      ---
+      duration_ms: 90.509849
+      type: 'test'
+      ...
+    # Subtest: B6: tutar ve ücret sınırları → 400; ücrette KDV'li kip 400; hiçbir satır yazılmaz
+    ok 4 - B6: tutar ve ücret sınırları → 400; ücrette KDV'li kip 400; hiçbir satır yazılmaz
+      ---
+      duration_ms: 21.865602
+      type: 'test'
+      ...
+    # Subtest: B7: pasif gönderen/alıcı 400; olmayan hesap 404
+    ok 5 - B7: pasif gönderen/alıcı 400; olmayan hesap 404
+      ---
+      duration_ms: 36.504432
+      type: 'test'
+      ...
+    # Subtest: B8: başka şirketin hesabı (?hofCompany=) 404; 001'e yazılmaz
+    ok 6 - B8: başka şirketin hesabı (?hofCompany=) 404; 001'e yazılmaz
+      ---
+      duration_ms: 220.873482
+      type: 'test'
+      ...
+# (node:18452) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: B9: kilitli dönem 409, ileri tarih 400, alıcının açılışından önce 409, valör 400, Benzer İşlem'de alıcı anahtarda
+    ok 7 - B9: kilitli dönem 409, ileri tarih 400, alıcının açılışından önce 409, valör 400, Benzer İşlem'de alıcı anahtarda
+      ---
+      duration_ms: 247.104713
+      type: 'test'
+      ...
+    # Subtest: B10: aynı istek iki kez → tek olay; aynı kimlik farklı gövde 409; Benzer İşlem (alıcı anahtarda)
+    ok 8 - B10: aynı istek iki kez → tek olay; aynı kimlik farklı gövde 409; Benzer İşlem (alıcı anahtarda)
+      ---
+      duration_ms: 102.722594
+      type: 'test'
+      ...
+    # Subtest: B11: personel 403; Transfer Yapma kaldırılan 403; Ters Kaydet bank.cancel ister
+    ok 9 - B11: personel 403; Transfer Yapma kaldırılan 403; Ters Kaydet bank.cancel ister
+      ---
+      duration_ms: 158.797219
+      type: 'test'
+      ...
+    # Subtest: B12: ekstreyle eşleşmiş transfer Ters Kaydet / Düzelt 409 bank-reconciled; eşleşme kaldırılınca ters kaydedilir
+    ok 10 - B12: ekstreyle eşleşmiş transfer Ters Kaydet / Düzelt 409 bank-reconciled; eşleşme kaldırılınca ters kaydedilir
+      ---
+      duration_ms: 40.59677
+      type: 'test'
+      ...
+    # Subtest: B13: banka fişi silinmez (DELETE yolu yok); ters kaydın ters kaydı ve ikinci Ters Kaydet 409
+    ok 11 - B13: banka fişi silinmez (DELETE yolu yok); ters kaydın ters kaydı ve ikinci Ters Kaydet 409
+      ---
+      duration_ms: 52.300537
+      type: 'test'
+      ...
+    # Subtest: B14: K7 Uyar → 409 cash-negative → negativeOk 200; Engelle → negativeOk ile de 409 cash-blocked
+    ok 12 - B14: K7 Uyar → 409 cash-negative → negativeOk 200; Engelle → negativeOk ile de 409 cash-blocked
+      ---
+      duration_ms: 87.522278
+      type: 'test'
+      ...
+    # Subtest: B15: planlı transfer — bakiye değişmez; Gerçekleştir iki bacak yazar; aynı hesaplı plan 400
+    ok 13 - B15: planlı transfer — bakiye değişmez; Gerçekleştir iki bacak yazar; aynı hesaplı plan 400
+      ---
+      duration_ms: 56.607908
+      type: 'test'
+      ...
+    # Subtest: B3: iki AYRI oturum ve bağlantıdan aynı anda iki transfer (Engelle) → biri 200, öbürü 409 cash-blocked; hesap eksiye düşmez
+    ok 14 - B3: iki AYRI oturum ve bağlantıdan aynı anda iki transfer (Engelle) → biri 200, öbürü 409 cash-blocked; hesap eksiye düşmez
+      ---
+      duration_ms: 188.459699
+      type: 'test'
+      ...
+    # Subtest: B17 (Aşama 6 \#80–81): ekstreyle eşleşmiş Kasa ↔ Banka transferini sil / düzelt → 409 bank-reconciled; personel transferi silemez (403)
+    ok 15 - B17 (Aşama 6 \#80–81): ekstreyle eşleşmiş Kasa ↔ Banka transferini sil / düzelt → 409 bank-reconciled; personel transferi silemez (403)
+      ---
+      duration_ms: 57.483528
+      type: 'test'
+      ...
+    # Subtest: B16: kapı bank:transfer — ham yazımla tek B / tek A kuralı bozulan transfer Mutabakat Testi'nde görünür
+    ok 16 - B16: kapı bank:transfer — ham yazımla tek B / tek A kuralı bozulan transfer Mutabakat Testi'nde görünür
+      ---
+      duration_ms: 44.730987
+      type: 'test'
+      ...
+    1..16
+ok 2 - Aşama 9 — nasıl bozarım
+  ---
+  duration_ms: 2028.526812
+  type: 'suite'
+  ...
+# (node:18461) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 Ç3 tamamlama — büyük okumada sıkı satırlar (lib/lean-rows.mjs)
+    # Subtest: B1: leanAll / leanRows = store.all — aynı anahtarlar, aynı sıra, aynı değerler (metin, tamsayı, ondalık, NULL, BLOB, büyük tamsayı; konumlu ve adlı parametre); tutma sınırı aşılınca da
+    ok 1 - B1: leanAll / leanRows = store.all — aynı anahtarlar, aynı sıra, aynı değerler (metin, tamsayı, ondalık, NULL, BLOB, büyük tamsayı; konumlu ve adlı parametre); tutma sınırı aşılınca da
+      ---
+      duration_ms: 20.606776
+      type: 'test'
+      ...
+    # Subtest: B2: sıkı satırlar V8'in hızlı kipinde (ayrı süreç, --allow-natives-syntax: %HasFastProperties); store.all'ın satırı bilgi için ölçülür
+    ok 2 - B2: sıkı satırlar V8'in hızlı kipinde (ayrı süreç, --allow-natives-syntax: %HasFastProperties); store.all'ın satırı bilgi için ölçülür
+      ---
+      duration_ms: 63.010907
+      type: 'test'
+      ...
+    # Subtest: B5: 2.4.9 kural kopyasını çağıran her yer sıkı depoyla çağırır (kaynak taraması; kopyanın kendisi değişmez)
+    ok 3 - B5: 2.4.9 kural kopyasını çağıran her yer sıkı depoyla çağırır (kaynak taraması; kopyanın kendisi değişmez)
+      ---
+      duration_ms: 62.216004
+      type: 'test'
+      ...
+    1..3
+ok 3 - 2.5.0 Ç3 tamamlama — büyük okumada sıkı satırlar (lib/lean-rows.mjs)
+  ---
+  duration_ms: 151.047563
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 Ç3 tamamlama — türetme ve donmuş defter sıkı satırlarla (eski sürüm verisi, güncel şema)
+    # Subtest: B3: Ana Defter türetmesi (güncel kural ve 2.4.9 kopyası) kaynak satırlarını store.all ile okumaz; çıktı store.all'lı türetmeyle BİREBİR; donmuş okuma ve Kural Değişikliği Farkı da store.all'sız
+    ok 1 - B3: Ana Defter türetmesi (güncel kural ve 2.4.9 kopyası) kaynak satırlarını store.all ile okumaz; çıktı store.all'lı türetmeyle BİREBİR; donmuş okuma ve Kural Değişikliği Farkı da store.all'sız
+      ---
+      duration_ms: 100.830019
+      type: 'test'
+      ...
+# (node:18461) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: B4: iş parçacığı kipi — donmuş satırlar parça parça üretilir (parça 7 satır: tam parçalar + eksik son parça); yazılan = türetilen (sayı, borç, alacak), donmuş = canlı; koşunun toplamları satırlarla aynı
+    ok 2 - B4: iş parçacığı kipi — donmuş satırlar parça parça üretilir (parça 7 satır: tam parçalar + eksik son parça); yazılan = türetilen (sayı, borç, alacak), donmuş = canlı; koşunun toplamları satırlarla aynı
+      ---
+      duration_ms: 266.450498
+      type: 'test'
+      ...
+    1..2
+ok 4 - 2.5.0 Ç3 tamamlama — türetme ve donmuş defter sıkı satırlarla (eski sürüm verisi, güncel şema)
+  ---
+  duration_ms: 700.171385
+  type: 'suite'
+  ...
+# (node:18476) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: S127 = A — eski kuralla donmuş yılın iki yanına düşen Excel kartı bir kez yazılır (v2.4.9 gerçek koduyla üretilmiş kilitli veri)
+    # Subtest: v2.4.9'un kendi sayıları (kâhin): mizan 120 = müşteri carileri, Mutabakat Testi tamam, kilit 31.12.2025
+    ok 1 - v2.4.9'un kendi sayıları (kâhin): mizan 120 = müşteri carileri, Mutabakat Testi tamam, kilit 31.12.2025
+      ---
+      duration_ms: 0.759904
+      type: 'test'
+      ...
+# (node:18476) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: göç penceresi (bekleyen 2.4.9 koşusu donmadan): karma mizan 120 = cariler; sonra donma tamamlanınca da (i, ii, iii, iv, ters)
+    ok 2 - göç penceresi (bekleyen 2.4.9 koşusu donmadan): karma mizan 120 = cariler; sonra donma tamamlanınca da (i, ii, iii, iv, ters)
+      ---
+      duration_ms: 388.506854
+      type: 'test'
+      ...
+    # Subtest: donmuş veri: cariler v2.4.9 ile aynı; mizan 120 = cariler; kilitli 2025 mizanı ve Yevmiye Defteri BAYT BAYT aynı; bütün zaman mizanında fark YALNIZ karar numaralı beklenen farklar
+    ok 3 - donmuş veri: cariler v2.4.9 ile aynı; mizan 120 = cariler; kilitli 2025 mizanı ve Yevmiye Defteri BAYT BAYT aynı; bütün zaman mizanında fark YALNIZ karar numaralı beklenen farklar
+      ---
+      duration_ms: 199.154048
+      type: 'test'
+      ...
+    # Subtest: Kural Değişikliği Farkı yalnız gerçekten kural farkı olan hesaplarda (500 / 519 / 602); 120'de kartın çift sayımından doğan fark YOK
+    ok 4 - Kural Değişikliği Farkı yalnız gerçekten kural farkı olan hesaplarda (500 / 519 / 602); 120'de kartın çift sayımından doğan fark YOK
+      ---
+      duration_ms: 2.365654
+      type: 'test'
+      ...
+    # Subtest: sınıflar: eski yapıya bağlı kartlar YALNIZ i / ii / ters (iii ve iv yeni kuralla); kartların yevmiye tarihleri
+    ok 5 - sınıflar: eski yapıya bağlı kartlar YALNIZ i / ii / ters (iii ve iv yeni kuralla); kartların yevmiye tarihleri
+      ---
+      duration_ms: 3.125477
+      type: 'test'
+      ...
+    # Subtest: vii: kilitli Kayıt Tarihli kart silinemez / Geri Al yapılamaz (409); açık dönemdeki açılış satırı düzeltilir → 120 = cariler
+    ok 6 - vii: kilitli Kayıt Tarihli kart silinemez / Geri Al yapılamaz (409); açık dönemdeki açılış satırı düzeltilir → 120 = cariler
+      ---
+      duration_ms: 264.44578
+      type: 'test'
+      ...
+# (node:18476) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:18476) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: vi: Kilidi Aç → Yeniden Kilitle — yıl GÜNCEL kuralla yeniden donar, kart yeni kuralla (yükleme günü), çift / eksik yok; kural farkı kalmaz
+    ok 7 - vi: Kilidi Aç → Yeniden Kilitle — yıl GÜNCEL kuralla yeniden donar, kart yeni kuralla (yükleme günü), çift / eksik yok; kural farkı kalmaz
+      ---
+      duration_ms: 372.040242
+      type: 'test'
+      ...
+    1..7
+ok 5 - S127 = A — eski kuralla donmuş yılın iki yanına düşen Excel kartı bir kez yazılır (v2.4.9 gerçek koduyla üretilmiş kilitli veri)
+  ---
+  duration_ms: 1262.231114
+  type: 'suite'
+  ...
+# Subtest: S127 — kilitsiz v2.4.9 verisi: viii (kilitsiz, hiçbir şey eski yapıya bağlanmaz) ve v (kilit güncellemeden SONRA konur)
+    # Subtest: viii: kilitsiz veride bağlı kart YOK; bütün kartlar KG-5 (yükleme günü, T − P); 120 = cariler; fark yalnız KG-5
+    ok 1 - viii: kilitsiz veride bağlı kart YOK; bütün kartlar KG-5 (yükleme günü, T − P); 120 = cariler; fark yalnız KG-5
+      ---
+      duration_ms: 225.85416
+      type: 'test'
+      ...
+# (node:18476) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:18476) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: v: kilit güncellemeden SONRA konur → yıl yeni kuralla donar; bağlı kart yok; 120 = cariler; kural farkı yok
+    ok 2 - v: kilit güncellemeden SONRA konur → yıl yeni kuralla donar; bağlı kart yok; 120 = cariler; kural farkı yok
+      ---
+      duration_ms: 280.235704
+      type: 'test'
+      ...
+    1..2
+ok 6 - S127 — kilitsiz v2.4.9 verisi: viii (kilitsiz, hiçbir şey eski yapıya bağlanmaz) ve v (kilit güncellemeden SONRA konur)
+  ---
+  duration_ms: 526.679044
+  type: 'suite'
+  ...
+1..6
+# tests 37
+# suites 6
+# pass 37
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6674.884636

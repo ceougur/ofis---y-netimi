@@ -1,0 +1,23 @@
+{
+ "Q4": {
+  "tahsil": 500,
+  "kalan": 500,
+  "iade": null,
+  "kendi": [
+   0,
+   1000
+  ],
+  "toplam": 1000,
+  "durum": "active",
+  "satirlar": [
+   "500|öd 500|kal 0|iade -|paid",
+   "500|öd 0|kal 500|iade -|open"
+  ],
+  "bakiye": 1000,
+  "gecikmis": 0,
+  "zil": 0,
+  "kartOzet": [
+   "active|500|500|next 2"
+  ]
+ }
+}

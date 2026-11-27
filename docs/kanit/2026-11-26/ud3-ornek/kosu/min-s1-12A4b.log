@@ -1,0 +1,31 @@
+küçüldü 87
+küçüldü 80
+küçüldü 73
+küçüldü 68
+küçüldü 63
+küçüldü 57
+küçüldü 52
+küçüldü 19
+küçüldü 18
+küçüldü 16
+küçüldü 15
+küçüldü 14
+küçüldü 13
+EN KÜÇÜK 13 adım
+  {"id": "c-s", "islem": "cari_ac", "ad": "S", "isim": "Rastgele Sigma Tedarik 12", "tarih": "2026-03-01", "tur": "tedarikci", "acilis": "3931,32", "acilisYon": "alacak", "acilisVade": "2026-03-02"}
+  {"id": "s002", "islem": "alis_iade", "cari": "S", "tutar": "1390,20", "tarih": "2026-03-03"}
+  {"id": "s006", "islem": "alis_iade", "cari": "S", "tutar": "510,48", "tarih": "2026-03-06"}
+  {"id": "s010", "islem": "alacak", "cari": "S", "tutar": "4000,00", "tarih": "2026-03-09", "vade": "2026-04-13"}
+  {"id": "s031", "islem": "odeme", "cari": "S", "tutar": "1213,20", "tarih": "2026-03-30"}
+  {"id": "s037", "islem": "tahsilat", "cari": "S", "tutar": "1160,31", "tarih": "2026-04-04"}
+  {"id": "s042", "islem": "odeme", "cari": "S", "tutar": "1003,39", "tarih": "2026-04-12"}
+  {"id": "s046", "islem": "odeme", "cari": "S", "tutar": "863,25", "tarih": "2026-04-17"}
+  {"id": "s059", "islem": "fatura", "ad": "A4", "cari": "S", "tur": "alis", "tutar": "1500,00", "tarih": "2026-05-06"}
+  {"id": "s068", "islem": "odeme", "cari": "S", "tutar": "2075,56", "tarih": "2026-05-17"}
+  {"id": "s078", "islem": "odeme", "cari": "S", "tutar": "1485,85", "tarih": "2026-05-25", "fatura": "A4"}
+  {"id": "s087", "islem": "stok_satis_hesap", "cari": "S", "tutar": "896,14", "tarih": "2026-06-03"}
+  {"id": "s088", "islem": "alis_iade", "cari": "S", "tutar": "1250,28", "tarih": "2026-06-03"}
+  {"id": "k1", "islem": "kontrol"}
+  fark k1:fatura:A4:acik P= 1415 K= 0 | SINIF DIŞI | S1 borç tarafı: alış faturası açığı = tutar − bağlı ödeme − en eskiden dağıtılan
+  fark k1:fatura:A4:gosterilen P= 1415 K= 0 | 2.5.0 kararıyla değişen | §35 Y23-4: kartın almadığı faturanın gösterilen açığı = kendi açığı
+  fark k1:fatura:A4:liste:gosterilen P= 1415 K= 0 | 2.5.0 kararıyla değişen | §35 Y23-4: kartın almadığı faturanın gösterilen açığı = kendi açığı

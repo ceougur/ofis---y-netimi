@@ -1,0 +1,86 @@
+#!/usr/bin/env python3
+"""Kâhin bakımı 6 — yeni / metni taşınan mutantlar DEĞERLE mi yakalanıyor (yalnız değişmezle değil)?
+
+python3 -I mutant_deger.py <kâhin klasörü>
+Her seçili mutant için test_model (Dosyalar / SenaryoHijyeni hariç, mutasyon.py ile aynı küme) koşulur; kırmızı testlerin iletisi sınıflanır:
+  DEGER    — elle beklenen / birim değeri farklı (assertEqual "... [A] <yol>" ya da birim değeri) ya da beklenmeyen red / kabul
+  DEGISMEZ — yalnız "değişmez" iletisi
+  HATA     — koşu hatası (istisna)
+Çıkış 0: her seçili mutant en az bir DEGER kırmızısıyla öldü.
+"""
+import contextlib
+import io
+import os
+import re
+import sys
+import unittest
+
+KOK = os.path.abspath(sys.argv[1])
+sys.path.insert(0, KOK)
+import mutasyon as MU  # noqa: E402
+
+SECILI = ("B52 ", "B52b ", "B60 ", "B61 ", "B62 ", "B63 ", "B64 ", "B65 ", "B66 ", "B67 ")
+
+
+def istisna_satiri(iz):
+    """Traceback'ten SONRAKİ ilk istisna satırı (unittest iletisi: 'AssertionError: Lists differ …', '… : s78 [A] yol')."""
+    satirlar = iz.splitlines()
+    for i, s in enumerate(satirlar):
+        if re.match(r"^[A-Za-z_.]+(Error|Exception|Red)\b", s) and not s.startswith(" "):
+            return s, "\n".join(satirlar[i:])
+    return satirlar[-1], satirlar[-1]
+
+
+def sinifla(iz):
+    bas, govde = istisna_satiri(iz)
+    if not bas.startswith("AssertionError"):
+        return "HATA", bas
+    if "senaryo hatası" in govde:
+        return "HATA", bas                              # modelin kendi susması / senaryo hatası
+    if "değişmez" in govde and not re.search(r"\[[A-Z0-9=]+\] (?!değişmez)", govde):
+        return "DEGISMEZ", bas
+    return "DEGER", bas
+
+
+def kos(src):
+    tm = MU.yukle(src)
+    suite = unittest.TestSuite()
+    for sinif in (tm.Yardimci, tm.OlayMaddeleri, tm.ElleSenaryolar, tm.Rastgele, tm.DegismezDenetcileri):
+        suite.addTests(unittest.defaultTestLoader.loadTestsFromTestCase(sinif))
+    with contextlib.redirect_stderr(io.StringIO()), contextlib.redirect_stdout(io.StringIO()):
+        r = unittest.TextTestRunner(stream=io.StringIO(), verbosity=0).run(suite)
+    out = []
+    for t, iz in r.failures + r.errors:
+        sinif, bas = sinifla(iz)
+        son = [s for s in iz.strip().splitlines() if s.strip()][-1]
+        out.append((t.id().split(".")[-1], sinif, (bas[:150] + " … " + son[-110:]) if son != bas else bas[:260]))
+    return r.testsRun, out
+
+
+def main():
+    with open(MU.MODEL, encoding="utf-8") as f:
+        src = f.read()
+    hepsi_deger = True
+    sayi = gecen = 0
+    for ad, deg in MU.MUTANTLAR:
+        if not ad.startswith(SECILI):
+            continue
+        n, out = kos(MU.mutant_kaynak(src, deg))
+        deger = [x for x in out if x[1] == "DEGER"]
+        sayi += 1
+        gecen += bool(deger)
+        print(f"{ad}\n  {len(out)}/{n} kırmızı; DEĞER {len(deger)}, DEĞİŞMEZ {sum(x[1] == 'DEGISMEZ' for x in out)}, HATA {sum(x[1] == 'HATA' for x in out)}")
+        for t, s, son in out[:8]:
+            print(f"    [{s}] {t}: {son}")
+        if not deger:
+            hepsi_deger = False
+            print("  !!! DEĞERLE YAKALANMADI")
+    MU.yukle(src)
+    print("SONUÇ:", "hepsi değerle yakalandı" if hepsi_deger else "DEĞERLE YAKALANMAYAN VAR")
+    # kanıt aracı (tools/kanit.mjs) node:test biçimini okur: her seçili mutant bir "test" (değerle yakalandıysa geçti)
+    print(f"# tests {sayi}\n# pass {gecen}\n# fail {sayi - gecen}\n# skipped 0")
+    return 0 if hepsi_deger and sayi else 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

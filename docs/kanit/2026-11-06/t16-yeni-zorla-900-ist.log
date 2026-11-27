@@ -1,0 +1,11 @@
+# T16 yarış denemesi: 3 deneme, defter-teslimden sonra olay döngüsü kilidi 900 ms, TZ Europe/Istanbul, klasör /home/user/ofis---y-netimi/.claude/worktrees/agent-a950fa1dca4746912
+deneme 1: çıkış 0 · YEŞİL · teslim +1746 → kilit +1770..+2670 → defter sonucu accepted (yazildi) +2699 (ön koşul OLUŞTU)
+deneme 2: çıkış 0 · YEŞİL · teslim +1705 → kilit +1739..+2639 → defter sonucu accepted (yazildi) +2662 (ön koşul OLUŞTU)
+deneme 3: çıkış 0 · YEŞİL · teslim +1475 → kilit +1492..+2392 → defter sonucu accepted (yazildi) +2408 (ön koşul OLUŞTU)
+# özet: 3/3 yeşil, 0 kırmızı; ön koşul oluşan deneme 3/3
+# tests 3
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

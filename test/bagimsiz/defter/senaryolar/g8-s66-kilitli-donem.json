@@ -1,0 +1,29 @@
+{
+  "aciklama": "2.5.0 Ç5 bakımı 2 — D4′ (S66 = A) × kilitli dönem: 2.4.9 → 2.5.0 göçü, kilit 31.12.2025 (S13: kilitli dönem 2.4.9 kuralıyla donar — CKE / CKG alış maddeleri B 101 / A 602 DONMUŞ; CKF kilitten sonra → S53 ile 649). Y1: donmuş CKE kilitten sonra karşılıksız, cari seçilmedi → B 649 / A 101 (karar hesabı açıkça veriyor; 602 donmuş yerinde). CKF cari seçilerek → B 120 / A 121. Y2 (kitap G-7): CKG'nin KİLİT GÜNÜ (31.12.2025) tarihli karşılıksızı RET; aynı evrakın kilidin ertesi günü (01.01.2026) tarihli karşılıksızı kabul (B 649 / A 101). Göç senaryosu: yalnız model.",
+  "simdi": "2026-02-20T17:00:00+03:00",
+  "bugun": "2026-02-20",
+  "olaylar": [
+    { "id": "M1", "tur": "cari", "ad": "Kilit Müşteri A.Ş.", "tip": "customer" },
+    { "id": "CKE", "tur": "cek_carisiz", "tarih": "2025-12-10", "yon": "alinan", "evrak": "cek", "tutar": 500, "no": "C-K8E", "vade": "2026-01-20" },
+    { "id": "CKG", "tur": "cek_carisiz", "tarih": "2025-12-15", "yon": "alinan", "evrak": "cek", "tutar": 400, "no": "C-K8G", "vade": "2026-01-25" },
+    { "id": "CKF", "tur": "cek_carisiz", "tarih": "2026-01-05", "yon": "alinan", "evrak": "senet", "tutar": 300, "no": "S-K8F", "vade": "2026-03-05" },
+    { "id": "G", "tur": "goc", "tarih": "2026-02-01", "kilit": "2025-12-31" },
+    { "id": "K1", "tur": "kontrol", "tarih": "2026-02-01" },
+    { "id": "CKEK", "tur": "karsiliksiz", "tarih": "2026-02-05", "cek": "CKE", "not": "Y1: donmuş eski evrak, cari seçilmedi — B 649 / A 101" },
+    { "id": "CKFK", "tur": "karsiliksiz", "tarih": "2026-02-06", "cek": "CKF", "cari": "M1", "not": "S66 A: cari seçildi — B 120 / A 121" },
+    { "id": "CKGK", "tur": "karsiliksiz", "tarih": "2025-12-31", "cek": "CKG", "beklenen": "ret", "not": "Y2 (G-7): kilit günü tarihli karşılıksız — ret" },
+    { "id": "CKGK2", "tur": "karsiliksiz", "tarih": "2026-01-01", "cek": "CKG", "not": "kilidin ertesi günü — kabul, B 649 / A 101" },
+    { "id": "K2", "tur": "kontrol", "tarih": "2026-02-20" }
+  ],
+  "elleBeklenenTL": {
+    "aciklama": "K1: 101 = 500 + 400 (donmuş), 121 = 300; 602 = −900 (donmuş 2.4.9 kuralı); 649 = −300 (CKF yeni kural). K2: 101 = 900 − 500 − 400 = 0; 121 = 0; 120 = 300; 602 = −900 (donmuş, değişmez); 649 = −300 + 500 + 400 = +600 (Y1: karşılıksızlar B 649); retler CKGK.",
+    "kontroller": {
+      "K1": { "101": 900, "121": 300, "602": -900, "649": -300 },
+      "K2": { "120": 300, "602": -900, "649": 600 }
+    },
+    "retler": ["CKGK"],
+    "acilisOlabilir": [],
+    "cari": { "Kilit Müşteri A.Ş.": 300 },
+    "yaslandirmaToplam": 300
+  }
+}

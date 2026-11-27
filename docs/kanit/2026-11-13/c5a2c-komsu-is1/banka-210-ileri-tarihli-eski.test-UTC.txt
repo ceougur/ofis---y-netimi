@@ -1,0 +1,108 @@
+TAP version 13
+# (node:1205) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: İleri tarihli eski hesapsız havale (gerçek v2.0.23 verisi; gerçek kurulum koşulu)
+    # Subtest: B6 liste: ileri tarihli iki satır ayrı işaretli, atanamaz, nedeni ve günü yazılı; geçmiş satır atanabilir
+    ok 1 - B6 liste: ileri tarihli iki satır ayrı işaretli, atanamaz, nedeni ve günü yazılı; geçmiş satır atanabilir
+      ---
+      duration_ms: 9.058587
+      type: 'test'
+      ...
+    # Subtest: B6 toplamlar tek formülden: Banka Genel Bakış, Hesaplar, ANLIK DURUM, Nakit Akış, Birleşik Rapor = 250 (bugüne kadar); ileri tarihli ayrı
+    ok 2 - B6 toplamlar tek formülden: Banka Genel Bakış, Hesaplar, ANLIK DURUM, Nakit Akış, Birleşik Rapor = 250 (bugüne kadar); ileri tarihli ayrı
+      ---
+      duration_ms: 148.998141
+      type: 'test'
+      ...
+    # Subtest: B3 Bu Hesaba Ata ileri tarihli → 409 bank-legacy-future (ledger-integrity değil), mesajda gün
+    ok 3 - B3 Bu Hesaba Ata ileri tarihli → 409 bank-legacy-future (ledger-integrity değil), mesajda gün
+      ---
+      duration_ms: 5.704132
+      type: 'test'
+      ...
+    # Subtest: B4 Bu Hesaba Ata [geçmiş + ileri] tek istekte → 409; geçmiş satır da bağlanmaz
+    ok 4 - B4 Bu Hesaba Ata [geçmiş + ileri] tek istekte → 409; geçmiş satır da bağlanmaz
+      ---
+      duration_ms: 11.265303
+      type: 'test'
+      ...
+    # Subtest: B5 sihirbaz seçili satır listesiyle ileri tarihli satır → 409 bank-legacy-future
+    ok 5 - B5 sihirbaz seçili satır listesiyle ileri tarihli satır → 409 bank-legacy-future
+      ---
+      duration_ms: 5.279744
+      type: 'test'
+      ...
+    # Subtest: B1 sihirbaz ön izleme: 1 satır bağlanacak (250), ileri tarihli 2 atlanacak (net 600, ilk D+5)
+    ok 6 - B1 sihirbaz ön izleme: 1 satır bağlanacak (250), ileri tarihli 2 atlanacak (net 600, ilk D+5)
+      ---
+      duration_ms: 3.042671
+      type: 'test'
+      ...
+    # Subtest: B1 + B11 sihirbaz 'tümü' → 200: geçmiş bağlandı, ileri tarihliler atlandı (yanıtta); aynı istek kimliğiyle tek çalışma
+    ok 7 - B1 + B11 sihirbaz 'tümü' → 200: geçmiş bağlandı, ileri tarihliler atlandı (yanıtta); aynı istek kimliğiyle tek çalışma
+      ---
+      duration_ms: 27.747199
+      type: 'test'
+      ...
+    # Subtest: B2 yalnız ileri tarihli kaldı → sihirbaz 409 bank-setup-empty (mesaj ileri tarihliyi söyler); ön izleme 200
+    ok 8 - B2 yalnız ileri tarihli kaldı → sihirbaz 409 bank-setup-empty (mesaj ileri tarihliyi söyler); ön izleme 200
+      ---
+      duration_ms: 4.580067
+      type: 'test'
+      ...
+    # Subtest: B7 yeni ileri tarihli havale yine 400 date-future (kapı ve dönem kuralı gevşemedi)
+    ok 9 - B7 yeni ileri tarihli havale yine 400 date-future (kapı ve dönem kuralı gevşemedi)
+      ---
+      duration_ms: 4.034335
+      type: 'test'
+      ...
+    # Subtest: B10 iki şirket: 002'nin ileri tarihli satırı 001'de yok; 002'de sihirbaz yalnız geçmiş 50'yi aktarır
+    ok 10 - B10 iki şirket: 002'nin ileri tarihli satırı 001'de yok; 002'de sihirbaz yalnız geçmiş 50'yi aktarır
+      ---
+      duration_ms: 36.098172
+      type: 'test'
+      ...
+    # Subtest: B8 gün D+5: verilen çek ödemesi (bugün) atanabilir → Bu Hesaba Ata 200; havale tahsilat 200 (A13); D+10 satırı hâlâ ileri
+    ok 11 - B8 gün D+5: verilen çek ödemesi (bugün) atanabilir → Bu Hesaba Ata 200; havale tahsilat 200 (A13); D+10 satırı hâlâ ileri
+      ---
+      duration_ms: 69.678285
+      type: 'test'
+      ...
+# (node:1205) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:1205) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: B9 gün D+11: kilitli döneme denk gelen satır atanamaz (409 period-locked), kilit kalkınca 200; mutabakat temiz
+    ok 12 - B9 gün D+11: kilitli döneme denk gelen satır atanamaz (409 period-locked), kilit kalkınca 200; mutabakat temiz
+      ---
+      duration_ms: 220.353062
+      type: 'test'
+      ...
+    # Subtest: B11 Geri Al: sihirbazın bağladığı geçmiş satır geri döner; sonradan atanan satırlara dokunulmaz
+    ok 13 - B11 Geri Al: sihirbazın bağladığı geçmiş satır geri döner; sonradan atanan satırlara dokunulmaz
+      ---
+      duration_ms: 21.552496
+      type: 'test'
+      ...
+    # Subtest: B12 aynı v2.0.23 verisi test kipinde (moneyStrict + gateVerify): ileri tarihli 409 bank-legacy-future, sihirbaz 200, tarih gelince 200
+    ok 14 - B12 aynı v2.0.23 verisi test kipinde (moneyStrict + gateVerify): ileri tarihli 409 bank-legacy-future, sihirbaz 200, tarih gelince 200
+      ---
+      duration_ms: 322.249102
+      type: 'test'
+      ...
+    1..14
+ok 1 - İleri tarihli eski hesapsız havale (gerçek v2.0.23 verisi; gerçek kurulum koşulu)
+  ---
+  duration_ms: 1948.530025
+  type: 'suite'
+  ...
+1..1
+# tests 14
+# suites 1
+# pass 14
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2374.913144
+cikis=0

@@ -1,0 +1,20 @@
+# B3 T1 ölçüm: [[1,1656,122880,14287,0,1,48,1608],[2,55,241664,24337,0,0,46,1617],[3,47,356352,30307,0,0,47,1617],[4,44,475136,40357,0,0,44,1617],[5,48,593920,50407,0,0,48,1617],[6,51,708608,56377,0,0,45,1623],[7,45,827392,66427,0,0,51,1617],[8,47,946176,76477,0,0,47,1617],[9,52,1060864,82447,0,0,46,1623],[10,50,1179648,92497,0,0,48,1625]]
+# B3 sıçrama: ileti 1 sonrası gerçek saat +61000 ms
+# B3 tur süresi: ileti 200 · 6346 ms (başlangıçtan 6346 ms)
+# B3 tur süresi: ileti 400 · 2872 ms (başlangıçtan 9218 ms)
+# B3 tur süresi: ileti 600 · 2675 ms (başlangıçtan 11893 ms)
+# B3 tur süresi: ileti 800 · 2632 ms (başlangıçtan 14525 ms)
+# B3 tur süresi: ileti 1000 · 3045 ms (başlangıçtan 17570 ms)
+# B3 tur süresi: ileti 1200 · 3166 ms (başlangıçtan 20736 ms)
+# B3 tur süresi: ileti 1400 · 2686 ms (başlangıçtan 23422 ms)
+# B3 tur süresi: ileti 1600 · 2485 ms (başlangıçtan 25907 ms)
+# B3 tur süresi: ileti 1800 · 3191 ms (başlangıçtan 29098 ms)
+# B3 tur süresi: ileti 2000 · 2868 ms (başlangıçtan 31966 ms)
+# B3 T1 havuz: 1584 sayfa (PDF ortalaması 32432 bayt × 200 / 4096)
+# tests 1
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+[zorla] test/whatsapp-b3-buyume-249.test.mjs · sıçrama turları [1] (iş 1) · ara bakımlı tur [1] · artışı 0 tur [] · ön koşul BEKLENDİĞİ GİBİ · test YEŞİL

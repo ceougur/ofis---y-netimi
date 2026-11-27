@@ -1,0 +1,8 @@
+182/186 denetim tuttu.
+FARKLAR:
+  ✗ cari Ahmet Yılmaz: program 4.500,00 · kâhin 5.600,00
+  ✗ yaşlandırma TOPLAM: program 78.205,00 · kâhin 75.005,00
+  ✗ yaşlandırma Ahmet Yılmaz: program 4.500,00 · kâhin 5.600,00
+  ✗ yaşlandırma —: program 3.200,00 · kâhin 0,00
+
+ÖZET: 186 denetim, 4 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1-kanit/defter-son

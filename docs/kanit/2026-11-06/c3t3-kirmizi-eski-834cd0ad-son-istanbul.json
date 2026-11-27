@@ -1,0 +1,83 @@
+{
+  "ad": "c3t3-kirmizi-eski-834cd0ad-son-istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/donmus-defter-tur3-250.test.mjs test/donmus-defter-kilit-ucu-250.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T11:02:08.277Z",
+  "sure_sn": 81.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 19,
+    "gecen": 9,
+    "basarisiz": 10,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 10 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.0 Ç3 tur 2 — dönem kilidi ucu: sıra (DÜŞÜK-1) ve arkada dondurma (İLERLEME) › K6: aynı güne yinelenen istek süren dondurmayı durdurmaz (koşu kaldığı yerden sürer, yenisi açılmaz); yazılan satırları silinmez — sonunda donmuş = canlı, görünen satır = koşunun kayıtlı satırı",
+      "konum": "test/donmus-defter-kilit-ucu-250.test.mjs:305:3",
+      "hata": "aynı güne yinelenen isteğin arka işi süren koşunun yazdığı satırları sildi (0 / 5) (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.5.0 Ç3 tur 3 — YÜKSEK-1: süren dondurmanın satırları silinmez; koşu tablo doğrulanmadan tamamlanmaz › T1 (p1): dondurma YAZIM adımındayken aynı güne yinelenen kilit süren koşunun satırlarını silmez — bitince görünen donmuş satır = kayıtlı = canlı; Hesap Planı Mizanı, Yevmiye Defteri ve karma mizan = canlı; Mutabakat Testi temiz",
+      "konum": "test/donmus-defter-tur3-250.test.mjs:115:3",
+      "hata": "aynı güne yinelenen kilidin arka işi süren koşunun yazdığı satırları sildi (0 / 15) (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.5.0 Ç3 tur 3 — YÜKSEK-1: süren dondurmanın satırları silinmez; koşu tablo doğrulanmadan tamamlanmaz › T3: koşunun satırı yazımdan sonra dışarıdan eksilirse (sayaç ↔ tablo farkı) koşu 'tamam' sayılmaz — görünür hata, kapsam yerinde, koşu bekler; aynı güne yeniden kilit baştan yazar ve tamamlar",
+      "konum": "test/donmus-defter-tur3-250.test.mjs:151:3",
+      "hata": "eksik satırlı koşu tamamlandı (kapsam 2026-12-31; koşular [{\"no\":1,\"kind\":\"freeze\",\"state\":\"done\",\"through\":\"2026-12-31\"},{\"no\":2,\"kind\":\"thaw\",\"state\":\"done\",\"through\":\"\"},{\"no\":3,\"kind\":\"freeze\",\"state\":\"done\",\"through\":\"2026-12-31\"}]) · '2026-12-31' !== '' (beklenen , gelen 2026-12-31)"
+    },
+    {
+      "ad": "2.5.0 Ç3 tur 3 — YÜKSEK-1: süren dondurmanın satırları silinmez; koşu tablo doğrulanmadan tamamlanmaz › T4 (ORTA-1): kilit geri çekilince bayat satır temizliği sürerken yeniden kilit 5 sn bütçesini aşmaz — 409 ledger-cleanup-running + Türkçe neden; kilit ve koşular değişmez; ilerleme görünür; temizlik bitince kilit 200 ve donar",
+      "konum": "test/donmus-defter-tur3-250.test.mjs:186:3",
+      "hata": "ön koşul: geri çekilen dönemin temizliği sürüyor (tutuldu): {\"running\":false,\"phase\":\"tamam\",\"done\":84,\"total\":84,\"run\":5,\"error\":\"\",\"coverage\":\"\",\"pending\":null,\"active\":false} · + actual - expected · + undefined"
+    },
+    {
+      "ad": "2.5.0 Ç3 tur 3 — YÜKSEK-1: süren dondurmanın satırları silinmez; koşu tablo doğrulanmadan tamamlanmaz › T6b (Ç3 küçük işler (b), etiketsiz): Mutabakat Günlüğü'nde 20.000 karakterde kesilmiş (geçersiz JSON) kayıt Mutabakat Testi'ni düşürmez — satır günlükte 'okunamadı' işaretiyle, öbür kayıtlar ayrıştırılır",
+      "konum": "test/donmus-defter-tur3-250.test.mjs:222:3",
+      "hata": "Mutabakat Testi kesik kayıtla düştü: 500 {\"ok\":false,\"error\":\"Sunucu işlemi tamamlayamadı.\"} · 500 !== 200 (beklenen 200, gelen 500)"
+    },
+    {
+      "ad": "2.5.0 Ç3 tur 3 — YÜKSEK-1: süren dondurmanın satırları silinmez; koşu tablo doğrulanmadan tamamlanmaz › T5 (Ç3 küçük işler (a), K4 ailesi): Defter Mutabakatı alt başlığı nedeni bilinmeyen ayrışmayı 'Defter kuralı program sürümüyle değişti' diye adlandırmaz — denetimin tarafsız iletisi + yeni işlemler engellenmez",
+      "konum": "test/donmus-defter-tur3-250.test.mjs:240:3",
+      "hata": "alt başlık nedeni bilinmeyen ayrışmayı \"kural değişti\" diye adlandırıyor: Defter kuralı program sürümüyle değişti (aşağıda “Kural Değişikliği Farkı”). Kilitli dönemin raporları donmuş defterden okunur, değişmez; yeni işlemler engellenmez. Fark Kural Farkı Düzeltme Fişi ile ilk açık güne alınır. (beklenen , gelen Defter kuralı program sürümüyle değişti (aşağıda “Kural Değişikliği Farkı”). Kilitli dönemin raporları donmuş defterden okunur, değişmez; yeni işlemler engellenmez. Fark Kural Farkı Düzeltme Fişi ile ilk açık güne alınır.)"
+    },
+    {
+      "ad": "2.5.0 Ç3 tur 3 — YÜKSEK-1 (p5): açılışta süren eski kurallı (2.4.9) dondurma + aynı güne kilit › T2 (p5): eski sürüm kilidi → açılış onarımının 2.4.9 koşusu yazım adımındayken aynı güne kilit → satırlar silinmez; koşu 2.4.9 kuralıyla tamamlanır, görünen = kayıtlı = canlı",
+      "konum": "test/donmus-defter-tur3-250.test.mjs:258:3",
+      "hata": "aynı güne kilidin arka işi eski kurallı süren koşunun satırlarını sildi (0 / 15) (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.5.0 Ç3 tur 3 — ORTA-1: program temizlik bitmeden kapanırsa temizlik açılışta sürer ve süren iş sayılır › T4b: geri çekilen dönemin temizliği yarıda kalır (kapanış) → açılışta sürer; ilerleme görünümü 'süren iş' der, yeniden kilit 409; bitince kilit 200",
+      "konum": "test/donmus-defter-tur3-250.test.mjs:301:3",
+      "hata": "ön koşul: temizlik tutuluyor · + actual - expected · + undefined"
+    },
+    {
+      "ad": "2.5.0 Ç3 tur 3 — S46 = A: eksilen donmuş dönem izi duruyorsa kendi kuralıyla, izsizse 2.4.9 kopyasıyla yeniden donar › U1: bu programın (2.5.0 kuralıyla) dondurduğu dönemin satırları dışarıdan silinir (iz durur) → açılışta aynı (2.5.0) kuralla yeniden donar; donmuş = canlı",
+      "konum": "test/donmus-defter-tur3-250.test.mjs:393:3",
+      "hata": "eksilen 2.5.0 dönemi 2.4.9 kuralıyla yeniden dondu (S46 = A: koşunun kendi kuralı 2.5.0): [{\"no\":1,\"kind\":\"freeze\",\"state\":\"done\",\"fromDate\":\"\",\"through\":\"2026-12-31\",\"rule\":\"2.5.0\",\"reason\":\"lock\"},{\"no\":2,\"kind\":\"thaw\",\"state\":\"done\",\"fromDate\":\"2026-12-31\",\"through\":\"\",\"rule\":\"\",\"reason\":\"repair\"},{\"no\":3,\"kind\":\"freeze\",\"state\":\"done\",\"fromDate\":\"\",\"through\":\"2026-12-31\",\"rule\":\"2.4.9\",\"reason\":\"repair\"}] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 Ç3 tur 3 — S46 = A: eksilen donmuş dönem izi duruyorsa kendi kuralıyla, izsizse 2.4.9 kopyasıyla yeniden donar › U3: karışık bileşim — (…, 30.06] 2.4.9 göç / onarım koşusu (izli), (30.06, 31.12] 2.5.0 koşusu (izli); satırların hepsi silinir → plan iki dilim: her dönem kendi kuralıyla",
+      "konum": "test/donmus-defter-tur3-250.test.mjs:441:3",
+      "hata": "plan dilimleri kendi kurallarıyla donmalı: [{\"no\":1,\"kind\":\"freeze\",\"state\":\"done\",\"fromDate\":\"\",\"through\":\"2026-06-30\",\"rule\":\"2.4.9\",\"reason\":\"repair\"},{\"no\":2,\"kind\":\"freeze\",\"state\":\"done\",\"fromDate\":\"2026-06-30\",\"through\":\"2026-12-31\",\"rule\":\"2.5.0\",\"reason\":\"lock\"},{\"no\":3,\"kind\":\"thaw\",\"state\":\"done\",\"fromDate\":\"2026-12-31\",\"through\":\"\",\"rule\":\"\",\"reason\":\"repair\"},{\"no\":4,\"kind\":\"freeze\",\"state\":\"done\",\"fromDate\":\"\",\"through\":\"2026-12-31\",\"rule\":\"2.4.9\",\"reason\":\"repair\"}] · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../c3t3-kanit/2026-11-06/c3t3-kirmizi-eski-834cd0ad-son-istanbul.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t3-eski-834cd0ad",
+  "ham_cikti_sha256": "bd96f49b4facd8d52d8452c90058146251cb3f21586fb45721a3970b1ea71968",
+  "ham_cikti_bayt": 23537
+}

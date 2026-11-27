@@ -1,0 +1,215 @@
+{
+ "aciklama": "S174 A: yazılmış Kural Farkı Düzeltme Fişi kendi yılında düzeltilmiş sayılır — kilit yıl sonunu aşınca yeni fiş yok; S197 = B (bakım 13): fişin sonraki yıldaki tersi farkı yeniden açar — yeni fiş ilk açık güne, önceki mali yılın farkı 671.",
+ "ad": "s111-s174-s180-kural-farki-kendi-yilinda",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "fark0": {
+    "500": 70000,
+    "602.90": -70000
+   },
+   "fark1": {},
+   "fark2": {},
+   "fark3": {
+    "500": 70000,
+    "602.90": -70000
+   },
+   "fark4": {},
+   "mz26/satirlar/120|C2/bakiye": 70000,
+   "mz26/satirlar/500/bakiye": 0,
+   "mz26/satirlar/602.90/bakiye": -70000,
+   "mz26/satirlar/671/bakiye": 0,
+   "mz26b/satirlar/500/bakiye": 0,
+   "mz26b/satirlar/602.90/bakiye": -70000,
+   "mz27/satirlar/500/bakiye": 0,
+   "mz27/satirlar/602.90/alacak": 0,
+   "mz27/satirlar/602.90/borc": 0,
+   "mz27/satirlar/602.90/devir": -70000,
+   "mz27/satirlar/671/bakiye": 0,
+   "mz27b/satirlar/500/alacak": 70000,
+   "mz27b/satirlar/500/bakiye": 0,
+   "mz27b/satirlar/500/borc": 70000,
+   "mz27b/satirlar/602.90/alacak": 0,
+   "mz27b/satirlar/602.90/bakiye": 0,
+   "mz27b/satirlar/602.90/borc": 70000,
+   "mz27b/satirlar/671/bakiye": -70000,
+   "mz27b/satirlar/681/bakiye": 0,
+   "redler": [
+    "KURAL_FARKI_YOK"
+   ]
+  }
+ },
+ "kapsam": [
+  "S174",
+  "S180",
+  "KG-15",
+  "M7",
+  "N-16",
+  "R-03",
+  "KG-16",
+  "Ş10"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "aciklama": "Açılış bakiyesi",
+   "cari": "C2",
+   "id": "BY1",
+   "tarih": "2026-10-02",
+   "tur": "borc_yaz",
+   "tutar": 70000,
+   "yedekten": true
+  },
+  {
+   "kural": "2.4.9",
+   "tarih": "2026-10-05",
+   "tur": "donem_kilitle"
+  },
+  {
+   "karar": "red",
+   "kaynak": "BY1",
+   "tur": "acilis_onayla"
+  },
+  {
+   "ad": "fark0",
+   "rapor": "kural_farki",
+   "tur": "rapor"
+  },
+  {
+   "tur": "kural_farki_duzelt"
+  },
+  {
+   "ad": "fark1",
+   "rapor": "kural_farki",
+   "tur": "rapor"
+  },
+  {
+   "tarih": "2026-12-31",
+   "tur": "donem_kilitle"
+  },
+  {
+   "tur": "kural_farki_duzelt"
+  },
+  {
+   "ad": "fark2",
+   "rapor": "kural_farki",
+   "tur": "rapor"
+  },
+  {
+   "ad": "mz26",
+   "bas": "2026-01-01",
+   "rapor": "mizan",
+   "son": "2026-12-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "mz27",
+   "bas": "2027-01-01",
+   "rapor": "mizan",
+   "son": "2027-12-31",
+   "tur": "rapor"
+  },
+  {
+   "fis": "fis2",
+   "tarih": "2027-01-15",
+   "tur": "fis_ters"
+  },
+  {
+   "ad": "fark3",
+   "rapor": "kural_farki",
+   "tur": "rapor"
+  },
+  {
+   "tur": "kural_farki_duzelt"
+  },
+  {
+   "ad": "fark4",
+   "rapor": "kural_farki",
+   "tur": "rapor"
+  },
+  {
+   "ad": "mz26b",
+   "bas": "2026-01-01",
+   "rapor": "mizan",
+   "son": "2026-12-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "mz27b",
+   "bas": "2027-01-01",
+   "rapor": "mizan",
+   "son": "2027-12-31",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

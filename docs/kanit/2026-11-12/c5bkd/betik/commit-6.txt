@@ -1,0 +1,32 @@
+2.5.0 Ç5-B kapanış düzeltmesi (6/6): yaşayan mutantların dişleri (DÜŞÜK-2) + mutabakat motoruna alt sınır ve Σ denetimi (DÜŞÜK-3)
+
+Yalnız test. Ürün kodu değişmedi.
+
+DÜŞÜK-2 — kapanış dar kontrolünde yaşayan 10 mutant: K5, K6, K24, K25 madde 1'de öldü; burada
+test/tyk-kapanis-dis-250.test.mjs (beklenenler karar metinlerinden):
+- K3 (S101 + karar (e)): aynı para iki kartta "avansla ödenmiş" sayılmaz — iki Mevcut Borç kartı,
+  ikincinin taşıdığı borcun yalnız PARAYLA kapanan 100'ü ödenmiş, Alacak'la kapanan 200 kırpılır.
+- K8 (S135 = C): F 600 + elle X 300 + taksitli fatura B 300, kart 900, karta 300 ⇒ X Kalan 0, F 600.
+- K22: Tablodan Aktar'ın çağırdığı servisle açılan aktarım kimlikli Mevcut Borç kartı kararların
+  dışında — cari kartı (tek cari yolu) = Cari Listesi (bütün cariler yolu) = Vade Takip.
+- K28 (S96 = A): ödeme kuruluşu POS'u, valörden önce tam iade → "POS Komisyon Tahsili" 300 sağlayıcı
+  carisine verilen avans; takvimde / zilde / Vade Takip'te ayrı kalem.
+- K35 (S105 = A): faturalı Alış İadesi de önceliklidir.
+- K1: gözlenebilir farkı bulunamadı — asıl ↔ mutant motor 40.000 rastgele caride (27.457'si çok
+  kartlı; aynı üretici K3'ü 2.000 carinin 430'unda ayırıyor) ve 100 bin satırlık verinin 1.484
+  carisinde birebir aynı (mutasyon listesinde not).
+Mutasyon listesine K3, K8, K22, K28, K35 eklendi (5 / 5 öldü).
+
+DÜŞÜK-3 — test/mutabakat/motor.mjs:
+- ALT SINIR: fatura durumunda kapanmış görünen her kuruşun bir kapatanı vardır — taksitli faturada
+  açık + kapatanların toplamı ≥ ödenecek. Fatura durumunda ilk taksiti kapalı sayan mutant (dar
+  kontrolün mutantı) 1. işlemde kırmızı; eski motorla yeşildi.
+- "Açık kalemlerin toplamı = modelin bağımsız cari bakiyesi" (koşucu programın kuyruğunu aynı
+  süreçten okur: test/mutabakat/sigma.mjs; kos.mjs bağlar). Kartın tüketemediği kısmı taksitlerden
+  düşmeyen mutant 46. işlemde kırmızı.
+- Dar kontrolün önerdiği "açık ≥ kartın kuyruk kalanı" KULLANILMADI: 500 işlemde yeşil, 5.000
+  işlemlik koşuda düzeltmeden ÖNCEKİ kodda da kırmızı (kart fazlası iki görünümde farklı dağılıyor —
+  S99 = A ile çelişen ayrı bulgu; teslim raporunda ve tasarım notu §14.6'da).
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01EhegDvmPQ9hx2ibfitm6og

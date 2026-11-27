@@ -2,25 +2,54 @@
 // Kasa'dan düşen hareket ana defterde de yoktur), yevmiyeyi ve mizanı kurar, mutabakat kapısını çalıştırır.
 //   GET /api/workspace/ledger?from=&to=  → mizan + mutabakat (Finans raporları yetkisi)
 // Rapor merkezi "Hesap Planı Mizanı", "Yevmiye Defteri" ve "Defter Mutabakatı" raporlarını bu servisten üretir.
-import { journal, moneyAccount, reconcile, trialBalance } from "../lib/general-ledger.mjs";
+import { ACCOUNT_PLAN, CHART, EXPORT_EXEMPTIONS, journal, moneyAccount, reconcile, trialBalance } from "../lib/general-ledger.mjs";
 import { DOUBTFUL_GL } from "../lib/doubtful-gl.mjs";
 import { doubtfulExpected, doubtfulRows, doubtfulUsed } from "../lib/bank/doubtful.mjs";
+import { systemClock } from "../lib/clock.mjs";
 import { HttpError, ok, readJson, text } from "../lib/http.mjs";
+import { VOUCHER_TYPES, createLedgerVouchers, voucherJournalRows } from "../lib/ledger-vouchers.mjs";
+import { createLedgerSnapshots } from "../lib/ledger-snapshots.mjs";
+import { createHash } from "node:crypto";
+import { nextDayOf, oldRulePinnedPlans, openingMatchBalance, openingMatchPlan, openingMatchTargets, postedRuleDiffCorrections, ruleDiffCorrectionPlan, ruleDiffCorrectionYear } from "../lib/ledger-opening.mjs";
+import { leanAll } from "../lib/lean-rows.mjs";
+import { coverBounds } from "../lib/bank/opening-cover.mjs";
+import { commissionGlOf, commissionReady, salesSql as commissionSalesSql, settledSql as commissionSettledSql } from "../lib/bank/pos-commission.mjs";
 import { roundMoney } from "../lib/money.mjs";
+import { CLOSE_RULE_WAIVE, waivedOf, waivesSql } from "../lib/accounts.mjs";
+import { oldCollectionSql, oldReturnVatSql, ruleShiftOf } from "../lib/ledger-rule-shift.mjs";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 // Carisiz evrak satırlarının yazım sırası tabanı (MM8): cari satırlarının rowid'lerinden büyük (aynı gün aynı sınıfta onlardan sonra gelir).
 const FREE_SEQ = 1e15;
+// İstemcinin istek kimliği (lib/idempotency.mjs FORMAT ile aynı): fişin istek kimliği "api:<kimlik>".
+const REQUEST_ID = /^[A-Za-z0-9_-]{16,100}$/;
+/**
+ * Mutabakat Günlüğü satırı (Mutabakat Testi yanıtı). 2.4.9 ve öncesi kaydın ayrıntısını 20.000 karakterde KESİYORDU (bank/repair: 2.0.26 "Tüm Hareketleri Sil" sonrası yüzlerce
+ * iptal başlığı; integrity taban kaydı): geçersiz JSON bütün yanıtı (HTTP 500) düşürmesin (Ç3 tur 3, Ç3 küçük işler (b)). Okunamayan ayrıntı BOŞ sayılmaz (ders 4): detail null,
+ * detailUnreadable true ve neden; satırın öbür alanları aynen.
+ */
+export function logRow(row) {
+  try {
+    return { ...row, detail: JSON.parse(row.detail || "[]") };
+  } catch {
+    return { ...row, detail: null, detailUnreadable: true, detailNote: `Kayıt ayrıntısı okunamadı (kesik ya da bozuk kayıt; ${String(row.detail || "").length} karakter).` };
+  }
+}
 
-export function registerLedgerRoutes(router, { store, auth, audit = () => {}, period = null, cash = () => null, accounts = () => null, integrity = () => null, money = null, pos = () => null }) {
+export function registerLedgerRoutes(router, { store, auth, audit = () => {}, events = null, period = null, now = systemClock, cash = () => null, accounts = () => null, integrity = () => null, money = null, pos = () => null, config = {}, log = null, canWriteInBackground = () => true, schemaGate = null, __testLedgerRule = null, __testFreezeHook = null, freezeBatchLines = 0 }) {
   const has = table => Boolean(store.get("SELECT 1 AS found FROM sqlite_master WHERE type = 'table' AND name = ?", table));
   // v2.1.0 (§3.11): para satırının hesap bağı (fin_ref; '' = Hesabı Atanmamış). v19 dosyasında (araçlar) kolon yoktur: ''.
   const refOf = (table, alias) => (store.all(`PRAGMA table_info(${table})`).some(column => column.name === "fin_ref") ? `${alias}.fin_ref` : "''");
+  const hasColumn = (table, name) => store.all(`PRAGMA table_info(${table})`).some(column => column.name === name);
   // Banka hesabı ve POS kartları (alt hesap kodları): yevmiyede moneyAccount, beklenenlerde yolun alt hesabı.
   function refs() {
     const out = { accounts: {}, pos: {} };
     if (has("bank_accounts")) for (const row of store.all("SELECT id, kind, gl, gl_sub AS glSub FROM bank_accounts")) out.accounts[row.id] = { kind: row.kind, gl: row.gl, glSub: row.glSub };
     if (has("pos_terminals")) for (const row of store.all("SELECT id, gl_sub AS glSub FROM pos_terminals")) out.pos[row.id] = { glSub: row.glSub };
+    // 2.5.0 Ç7a tur 2 (K-14 / K-15, S179 = A; lib/bank/opening-cover.mjs): hesabı atanmamış satırın "açılışta sayılmış" sınırları (yalnız okuma).
+    out.cover = coverBounds(store);
+    // 2.5.0 Ç7a tur 2b (KG-6, lib/bank/pos-commission.mjs): bekleyen POS kaleminin satış günü maddesinin komisyon hesabı (Banka Ayarları; yalnız okuma).
+    out.commissionGl = commissionGlOf(store);
     return out;
   }
   // filter (v2.1.0, §3.11 mutabakat kapısı "dokunulan varlıklar"): yalnız bu varlıkların satırları — { parties, plans, cheques, invoices,
@@ -54,8 +83,9 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
     // Aynı nedenle süzgeçte durum kolonlarının indeksi kapatılır (tekli +: değer aynı, yalnız indeks seçilmez): i.status = 'issued'
     // indeksi, kimlik kümesinin birincil anahtarından önce seçiliyordu (100.000 satırda ~55 ms).
     const X = filter ? "+" : "";
-    // Yalnız sorguda geçen adlı parametreler verilir (node:sqlite bilinmeyen adı reddeder).
-    const all = (sql, query = true) => (query ? store.all(sql, Object.fromEntries(Object.entries(params).filter(([name]) => sql.includes(`:${name})`)))) : []);
+    // Yalnız sorguda geçen adlı parametreler verilir (node:sqlite bilinmeyen adı reddeder). 2.5.0 Ç3 tamamlama (ders 47; lib/lean-rows.mjs): bütün geçmişin kaynak satırları
+    // sıkı nesnelerle okunur (store.all'ın sözlük kipli satırı ~1,35 KB; 1.000.000 satırda yalnız bunlar yığını doldurup programı çökertiyordu). Değerler aynı.
+    const all = (sql, query = true) => (query ? leanAll(store, sql, Object.fromEntries(Object.entries(params).filter(([name]) => sql.includes(`:${name})`)))) : []);
     const wanted = (...values) => !filter || values.some(Boolean);
     out.payments = all(`SELECT id, p.rowid AS seq, amount, date, note, method, ${refOf("payments", "p")} AS ref FROM payments p${where("p", [[set?.payments, own("m_payments")]])}`, wanted(set?.payments));
     // Kasa ↔ Banka transferinin nakit bacağı banka bacağının hesabını (ikiz satırın fin_ref'i) taşır: madde tek, banka tarafı onun hesabıdır.
@@ -77,23 +107,52 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
       const returned = collections
         ? "CASE WHEN e.source = 'cheque' AND e.kind = 'debt' AND c.direction = 'in' AND e.account_id = c.account_id AND EXISTS (SELECT 1 FROM cheque_collections k WHERE k.cheque_id = c.id AND k.status = 'returned') THEN 1 ELSE 0 END"
         : "0";
+      const entryKeys = [[set?.parties, "SELECT id FROM account_entries WHERE account_id IN $"], [set?.entries, own("m_entries")], [set?.cheques, "SELECT id FROM account_entries WHERE source = 'cheque' AND source_id IN $"]];
       out.accountEntries = all(
         `SELECT e.id, e.rowid AS seq, e.kind, e.amount, e.date, e.note, e.source, e.source_id AS sourceId, e.method, ${refOf("account_entries", "e")} AS ref, a.type AS accountType, e.account_id AS party,
                 COALESCE(c.direction, '') AS chequeDirection, COALESCE(c.instrument, '') AS chequeInstrument, COALESCE(m.reason, '') AS moveReason, ${returned} AS bankReturned,
                 e.invoice_id AS invoiceId, e.doubtful_skip AS doubtfulSkip
          FROM account_entries e ${J} accounts a ON a.id = e.account_id AND a.deleted_at IS NULL
            LEFT JOIN cheques c ON e.source = 'cheque' AND c.id = e.source_id
-           LEFT JOIN stock_moves m ON e.source = 'stock' AND m.id = e.source_id${where("e", [[set?.parties, "SELECT id FROM account_entries WHERE account_id IN $"], [set?.entries, own("m_entries")], [set?.cheques, "SELECT id FROM account_entries WHERE source = 'cheque' AND source_id IN $"]])}`,
+           LEFT JOIN stock_moves m ON e.source = 'stock' AND m.id = e.source_id${where("e", entryKeys)}`,
         wanted(set?.parties, set?.entries, set?.cheques),
       );
+      // 2.5.0 Ç5-A (§2.3; KG-16): açılış işaretten — Açılış Bakiyesi satırı (is_opening, göç 35) ve "Açılış Olabilir" durumu (opening_review, göç 48). Eski dosyada kolon yok.
+      // Ç5-A tur 1c (hız, ders 47; C5-ACILIS-TASARIM §13 H1): iki kolon bütün satırlarda okunmaz (100.000 satırda türetme başına ~100 ms satır dönüşümü) — yalnız işaretli ya da
+      // aday / onaylı satırların değerleri ayrı küçük sorguyla (AYNI süzgeçle) okunur ve o satır nesnelerine AYNI değerlerle yazılır. Öbür satırlarda alan yoktur: journal()'ın
+      // isOpeningEntry'si yine false (0 / '' / rejected ile aynı). Evrakın carisiz satırları (free-in / free-out; kendi isOpening'leri) aşağıda, bundan SONRA eklenir.
+      const entryOpening = hasColumn("account_entries", "is_opening");
+      const entryReview = hasColumn("account_entries", "opening_review");
+      if ((entryOpening || entryReview) && out.accountEntries.length) {
+        const flagged = new Map();
+        for (const row of all(
+          `SELECT e.id, ${entryOpening ? "e.is_opening" : "0"} AS isOpening, ${entryReview ? "e.opening_review" : "''"} AS openingReview FROM account_entries e
+           WHERE (${[entryOpening ? "e.is_opening = 1" : "", entryReview ? "e.opening_review IN ('candidate', 'confirmed')" : ""].filter(Boolean).join(" OR ")})${where("e", entryKeys, "AND")}`,
+          wanted(set?.parties, set?.entries, set?.cheques),
+        )) flagged.set(row.id, row);
+        if (flagged.size) {
+          for (const row of out.accountEntries) {
+            const flag = flagged.get(row.id);
+            if (flag) {
+              row.isOpening = flag.isOpening;
+              row.openingReview = flag.openingReview;
+            }
+          }
+        }
+      }
     }
     if (has("plans")) {
       // Kartın carisi silindiyse kart cari defterinde görünmez: ana defterde "carisiz kart" hesabında izlenir.
+      // 2.5.0 Ç5-A (KG-5; B5): yüklenen kart (import_id) — yükleme damgası (plan_imports.created_at; yerel günü journal()'da) ve açılış satırlarının toplamı (P). Eski dosyada: yok.
+      const imported = hasColumn("plans", "import_id") && has("plan_imports");
+      const planKeys = [[set?.parties, "SELECT id FROM plans WHERE account_id IN $"], [set?.plans, own("plans")]];
+      // 2.5.0 Ç7b tur 3b: kapatma kuralı (göç 53; lib/accounts.mjs waivedOf) — sütun yoksa (göç öncesi depo) eski veri = eski kural.
+      const closeRule = hasColumn("plans", "close_rule") ? "p.close_rule" : `'${CLOSE_RULE_WAIVE}'`;
       out.plans = all(
-        `SELECT p.id, p.rowid AS seq, p.total, p.status, p.covers_balance AS coversBalance, COALESCE(NULLIF(p.registered_on, ''), substr(p.created_at, 1, 10)) AS date, COALESCE(p.closed_at, substr(p.updated_at, 1, 10)) AS closedOn,
+        `SELECT p.id, p.rowid AS seq, p.total, p.status, ${closeRule} AS closeRule, p.covers_balance AS coversBalance, COALESCE(NULLIF(p.registered_on, ''), substr(p.created_at, 1, 10)) AS date, COALESCE(p.closed_at, substr(p.updated_at, 1, 10)) AS closedOn,
                 COALESCE(a.type, '') AS accountType, COALESCE(a.id, '') AS party,
                 COALESCE((SELECT SUM(CASE WHEN e.kind = 'in' THEN e.amount ELSE -e.amount END) FROM plan_entries e WHERE e.plan_id = p.id), 0) AS paid
-         FROM plans p LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL WHERE ${X}p.deleted_at IS NULL${where("p", [[set?.parties, "SELECT id FROM plans WHERE account_id IN $"], [set?.plans, own("plans")]], "AND")}`,
+         FROM plans p LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL WHERE ${X}p.deleted_at IS NULL${where("p", planKeys, "AND")}`,
         wanted(set?.parties, set?.plans),
       );
       // Doğrulama T11: taksite sayılmış evrakın karşılıksız ters kaydı (çekli 'out'); bankada tahsildeyken döndüyse alacağı 101.02 (satır bazında).
@@ -108,12 +167,57 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
          FROM plan_entries e ${J} plans p ON p.id = e.plan_id AND p.deleted_at IS NULL LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL${where("e", [[set?.parties, "SELECT pe.id FROM plans pp JOIN plan_entries pe ON pe.plan_id = pp.id WHERE pp.account_id IN $"], [set?.plans, "SELECT id FROM plan_entries WHERE plan_id IN $"], [set?.planEntries, own("m_plan_entries")], [set?.cheques, "SELECT id FROM plan_entries WHERE cheque_id IN $"]])}`,
         wanted(set?.parties, set?.plans, set?.planEntries, set?.cheques),
       );
+      // Ç5-A tur 1c (hız, ders 47; C5-ACILIS-TASARIM §13 H2): yüklenen kartın alanları (importId, importedAt, openingPaid — tur 1'deki AYNI SQL ifadeleri) ve taksit satırının
+      // planImported'ı (kartı yüklenmiş mi: p.import_id <> '') bütün kartlarda / satırlarda okunmaz; yalnız yüklenen kartlar (silinmemiş, import_id ≠ '') ayrı sorguyla okunur ve o
+      // kart nesnelerine / o kartların taksit satırlarına AYNI değerlerle yazılır. Süzgeçli yolda (kapı) sorgu yalnız okunan kartların ve taksit satırlarının kartlarıyla sınırlı
+      // (taksit satırının kartı kart süzgecinde olmayabilir). Öbür kartlarda / satırlarda alan yok (journal()'da '' / 0 ile aynı).
+      if (imported && (out.plans.length || out.planEntries.length)) {
+        const scope = filter ? [...new Set([...out.plans.map(plan => plan.id), ...out.planEntries.map(entry => entry.planId)])] : null;
+        const details = new Map();
+        for (const row of leanAll(
+          store,
+          `SELECT p.id, p.import_id AS importId, COALESCE((SELECT x.created_at FROM plan_imports x WHERE x.id = p.import_id), '') AS importedAt,
+                  COALESCE((SELECT SUM(e.amount) FROM plan_entries e WHERE e.plan_id = p.id AND e.kind = 'in' AND e.opening = 1), 0) AS openingPaid
+           FROM plans p WHERE ${X}p.deleted_at IS NULL AND p.import_id <> ''${scope ? " AND p.id IN (SELECT value FROM json_each(?))" : ""}`,
+          ...(scope ? [JSON.stringify(scope)] : []),
+        )) details.set(row.id, row);
+        if (details.size) {
+          for (const plan of out.plans) {
+            const detail = details.get(plan.id);
+            if (detail) {
+              plan.importId = detail.importId;
+              plan.importedAt = detail.importedAt;
+              plan.openingPaid = detail.openingPaid;
+            }
+          }
+          for (const entry of out.planEntries) if (details.has(entry.planId)) entry.planImported = 1;
+        }
+      }
+      // 2.5.0 Ç5-A tur 1b (S127 = A, "bir olay tek kez yazılır"; C5-ACILIS-TASARIM §12.1): KG-5'ten önceki kuralla donmuş dönemin iki yanına düşen yüklenen kart eski yapısıyla
+      // (journal() pinnedOld). Karar kart başına, süzgeçsiz verilir (süzgeçli kapı aynı kartı aynı kuralla görür). Donmuş koşu yoksa sorgu yok.
+      // Ç5-A tur 1d (İş F, hız; ders 47; C5-ACILIS-TASARIM §14.7): kart / taksit satırı okunmadıysa karar sorulmaz (işaretlenecek nesne yok); süzgeçli yolda yalnız okunan kartlar
+      // (ve taksit satırlarının kartları) değerlendirilir — karar kart başına olduğu için sonuç aynı (= süzgeçsiz karar ∩ okunan kartlar).
+      if (imported && (out.plans.length || out.planEntries.length)) {
+        const pinned = oldRulePinnedPlans(store, filter ? { ids: [...out.plans.map(plan => plan.id), ...out.planEntries.map(entry => entry.planId)] } : {});
+        if (pinned.size) {
+          for (const plan of out.plans) if (pinned.has(plan.id)) plan.pinnedOld = 1;
+          for (const entry of out.planEntries) if (pinned.has(entry.planId)) entry.planPinned = 1;
+        }
+      }
     }
     // Fatura (v2.0.15): yalnız kesilmiş olanlar (taslak ve iptal deftere girmez). Carisi silinmiş fatura olamaz (silme engelli).
+    // 2.5.0 Ç7b (KG-24 = A; BAŞ MİMAR KARARI B-3 = A): satış / SMM'nin ihracat istisna kodlu kalem payı (general-ledger exportSplit) — yalnız ihracat kalemi olan faturada, hesap
+    // başına [ihracat kalemleri neti, bütün kalemlerin neti] (kuruş, belge para birimi); öbür faturada NULL. invoice_lines(invoice_id, seq) indeksiyle fatura başına bir arama.
+    const exportCodes = EXPORT_EXEMPTIONS.map(code => `'${code}'`).join(", ");
+    const exportJson = has("invoice_lines")
+      ? `CASE WHEN i.kind IN ('sale', 'smm') AND EXISTS (SELECT 1 FROM invoice_lines l WHERE l.invoice_id = i.id AND l.exemption_code IN (${exportCodes}))
+              THEN (SELECT json_group_object(acc, json_array(e, t)) FROM (SELECT l.gl_account AS acc, SUM(CASE WHEN l.exemption_code IN (${exportCodes}) THEN CAST(ROUND(l.net * 100) AS INTEGER) ELSE 0 END) AS e,
+                    SUM(CAST(ROUND(l.net * 100) AS INTEGER)) AS t FROM invoice_lines l WHERE l.invoice_id = i.id GROUP BY l.gl_account)) END AS exportJson`
+      : "NULL AS exportJson";
     if (has("invoices")) {
       out.invoices = all(
         `SELECT i.id, i.rowid AS seq, i.kind, i.issue_date AS date, i.number, i.gl_json AS glJson, i.try_vat AS tryVat, i.try_withheld AS tryWithheld, i.try_stoppage AS tryStoppage,
-                i.try_payable AS tryPayable, a.type AS accountType, a.id AS party
+                i.try_payable AS tryPayable, a.type AS accountType, a.id AS party, ${exportJson}
          FROM invoices i ${J} accounts a ON a.id = i.account_id AND a.deleted_at IS NULL WHERE ${X}i.status = 'issued'${where("i", [[set?.parties, "SELECT id FROM invoices WHERE account_id IN $"], [set?.invoices, own("invoices")]], "AND")}`,
         wanted(set?.parties, set?.invoices),
       );
@@ -130,7 +234,15 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
     }
     // Banka Fişi satırları (v2.1.0): THP kodu, alt hesap ve kuruş yazım anında saklanır.
     if (has("bank_lines") && has("fin_events")) {
-      out.bankLines = all(`SELECT l.event_id AS eventId, e.rowid AS eventSeq, l.seq, l.gl, l.sub, l.side, l.try_minor AS tryMinor, e.date, e.no, e.description FROM bank_lines l ${J} fin_events e ON e.id = l.event_id${filter ? ` WHERE ${set?.events ? `l.event_id IN ${set.events}` : "0"}` : ""} ORDER BY e.date, l.event_id, l.seq`, wanted(set?.events));
+      // 2.5.0 Ç7a tur 2 (K-14; yalnız okuma): ref (hesabı atanmamış satır '') ve carry (Devir Kapanışı ya da ters kaydı — lib/bank/opening-cover.mjs CARRY_FLAG_SQL'in eşi).
+      out.bankLines = all(`SELECT l.event_id AS eventId, e.rowid AS eventSeq, l.seq, l.role, l.gl, l.sub, l.side, l.try_minor AS tryMinor, e.date, e.no, e.description, l.ref AS ref,
+        CASE WHEN e.type = 'carry_close' OR (e.type = 'reversal' AND EXISTS (SELECT 1 FROM fin_events o WHERE o.id = e.reversal_of AND o.type = 'carry_close')) THEN 1 ELSE 0 END AS carry FROM bank_lines l ${J} fin_events e ON e.id = l.event_id${filter ? ` WHERE ${set?.events ? `l.event_id IN ${set.events}` : "0"}` : ""} ORDER BY e.date, l.event_id, l.seq`, wanted(set?.events));
+    }
+    // 2.5.0 Ç7a tur 2b (KG-6 = A, S177 = A, S178 = A; lib/bank/pos-commission.mjs — yalnız okuma): POS kaydı başına TEK satır (satış / iade günü komisyon maddesi) ve gün fişi
+    // başına bağlı kalemlerin kesintisi (gün fişi türetmede net). Süzgeçli kurulumda (kapı) olaylarla — defter beklenenleri (money-lines groups) AYNI süzgeçle.
+    if (commissionReady(store) && has("fin_events") && has("bank_lines")) {
+      out.posCommission = all(commissionSalesSql(filter ? set?.events : null), wanted(set?.events));
+      out.posSettled = all(commissionSettledSql(filter ? set?.events : null), wanted(set?.events));
     }
     if (has("cheques")) {
       const eventOf = refOf("cheque_events", "ev") === "''" ? "''" : "ev.event_id";
@@ -143,8 +255,10 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
       // Cariye işlenmemiş evrak: carisi/kartı olmayan (ör. cari açılmamış bir kişiden alınan çek) ya da Excel'den
       // "carilere dokunmadan" alınan açılış portföyü. Cari etkisi yoktur; portföye girişi ve karşılıksız/iade çıkışı ana
       // defterde doğrudan gelir/gider karşılığıyla izlenir (portföy mutabakatı tutsun).
+      // 2.5.0 Ç5-A (§2.5; B4): açılış evrakı işaretten (cheques.is_opening, göç 49 — Excel "Açılış portföyü"); eski dosyada kolon yok: 0 (formdan carisiz evrak kuralı).
+      const chequeOpening = hasColumn("cheques", "is_opening") ? "c.is_opening" : "0";
       for (const row of all(
-        `SELECT c.id, c.rowid AS seq, c.direction, c.instrument, c.amount, c.issue_date AS date, c.status, c.serial_no AS serialNo,
+        `SELECT c.id, c.rowid AS seq, c.direction, c.instrument, c.amount, c.issue_date AS date, c.status, c.serial_no AS serialNo, ${chequeOpening} AS isOpening,
                 (SELECT ev.date FROM cheque_events ev WHERE ev.cheque_id = c.id AND ev.kind = 'bounce' ORDER BY ev.created_at DESC LIMIT 1) AS bouncedOn,
                 ${collections ? "EXISTS (SELECT 1 FROM cheque_collections k WHERE k.cheque_id = c.id AND k.status = 'returned')" : "0"} AS bankReturned,
                 EXISTS (SELECT 1 FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL
@@ -161,10 +275,11 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
         // Yazım sırası (MM8): evrakın rowid'i cari satırlarınınkiyle karşılaştırılamaz (başka tablo) → aynı gün cari satırlarından SONRA, evrakların
         // yazım sırasıyla (general-ledger journalOrder).
         const seq = FREE_SEQ + Number(row.seq);
+        const isOpening = Number(row.isOpening) === 1 ? 1 : 0;
         if (row.direction === "in") {
-          out.accountEntries.push({ id: `free-in:${row.id}`, seq, kind: "credit", amount: row.amount, date: row.date, note, source: "cheque", chequeDirection: "in", chequeInstrument: row.instrument, accountType: "", free: true });
-          if (row.status === "bounced" && row.bouncedOn && !row.hasDebt) out.accountEntries.push({ id: `free-bounce:${row.id}`, seq, kind: "debt", amount: row.amount, date: row.bouncedOn, note: `${note} · karşılıksız`, source: "cheque", chequeDirection: "in", chequeInstrument: row.instrument, accountType: "", free: true, bankReturned: Number(row.bankReturned) ? 1 : 0 });
-        } else out.accountEntries.push({ id: `free-out:${row.id}`, seq, kind: "debt", amount: row.amount, date: row.date, note, source: "cheque", chequeDirection: "out", chequeInstrument: row.instrument, accountType: "", free: true });
+          out.accountEntries.push({ id: `free-in:${row.id}`, seq, kind: "credit", amount: row.amount, date: row.date, note, source: "cheque", chequeDirection: "in", chequeInstrument: row.instrument, accountType: "", free: true, isOpening });
+          if (row.status === "bounced" && row.bouncedOn && !row.hasDebt) out.accountEntries.push({ id: `free-bounce:${row.id}`, seq, kind: "debt", amount: row.amount, date: row.bouncedOn, note: `${note} · karşılıksız`, source: "cheque", chequeDirection: "in", chequeInstrument: row.instrument, accountType: "", free: true, bounce: true, isOpening, bankReturned: Number(row.bankReturned) ? 1 : 0 });
+        } else out.accountEntries.push({ id: `free-out:${row.id}`, seq, kind: "debt", amount: row.amount, date: row.date, note, source: "cheque", chequeDirection: "out", chequeInstrument: row.instrument, accountType: "", free: true, isOpening });
       }
     }
     // Bankaya Tahsile Ver (plan §3.14): tahsil kayıtları (101.01 ↔ 101.02). Silinmiş evrakın kaydı (tahsildeyken silinemez) deftere girmez.
@@ -186,19 +301,33 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
     // 2.4.3 MM3: KDV Mahsup Fişleri (etkin ve geri alınmış; geri alınanın ters kaydı aynı gün). Süzgeçli kurulumda (kapının dokunulan varlıkları)
     // yüklenmez: mahsup tablosuna yazım tam kapıya düşer (integrity-scope "kapsam dışı").
     if (!filter && has("vat_offsets")) out.vatOffsets = store.all("SELECT id, rowid AS seq, month, date, out_minor AS outMinor, in_minor AS inMinor, carry_in_minor AS carryInMinor, carry_out_minor AS carryOutMinor, payable_minor AS payableMinor, status FROM vat_offsets ORDER BY date, created_at, rowid");
+    // 2.5.0 Ç2: saklanan fiş defteri (lib/ledger-vouchers.mjs; tek toplu sorgu). Süzgeçli kurulumda yüklenmez (KDV mahsubu gibi): fiş yazımı her zaman tam kapıya
+    // düşer (integrity-scope FULL_TABLES). Alt defter hesabına (beklenen bakiyesi olan her hesap: cari kontrol hesapları dahil) fiş yazılmaz — Ç2 tur 1: fiş denetiminde
+    // 400 (aşağıda subledgerAccounts); kapı ikinci katman (C2-FIS-DEFTERI-TASARIM.md §11).
+    if (!filter) out.vouchers = voucherJournalRows(store);
+    // 2.5.0 Ç7b tur 2c (KURAL GEÇİŞ GÜNÜ; lib/ledger-rule-shift.mjs): KG-3 / KG-8 / F-08'in eski ↔ yeni yönü — süzgeçli kurulumda da aynı (tek tanım; iki küçük sorgu).
+    out.ruleShift = ruleShiftOf(store);
     return out;
   }
-  // Carisiz evrakın karşı hesabı gelir/gider (602 / 770): journal() cariyi kontrol hesabı sayar; burada düzeltilir.
+  // 2.5.0 Ç5-A: carisiz evrakın karşı hesabı journal()'da (açılış evrakı 519, formdan carisiz 649.90 / 770.90 — S49); 2.4.9'da burada 602 / 770'e çevriliyordu.
   function build(filter = null) {
-    const source = rows(filter);
-    const entries = journal(source);
-    const free = new Set(source.accountEntries.filter(row => row.free).map(row => `account:${row.id}`));
-    for (const entry of entries) {
-      if (!free.has(entry.id)) continue;
-      for (const line of entry.lines) if (["120", "320", "336"].includes(line.account)) line.account = line.debit ? "770" : "602";
-    }
-    return entries;
+    const entries = journal(rows(filter));
+    // YALNIZ TEST (test/donmus-defter-250.test.mjs): kural değişikliği benzetimi — canlı türetmenin çıktısı değiştirilir (sürüm yükseltmesi). Üretimde kanca yok.
+    return __testLedgerRule?.fn ? __testLedgerRule.fn(entries) : entries;
   }
+  // 2.5.0 Ç3 — kilitli dönemin donmuş defteri (lib/ledger-snapshots.mjs; docs/erp/C3-DONDURMA-TASARIM.md). Kilit iki yoldan değişir (PUT period-lock ve fişlerin postAll
+  // lockThrough'u); ikisi de lockChanged'i kilitle aynı işlemde çağırır.
+  const snapshots = createLedgerSnapshots({
+    store, period, now, build: () => build(), integrity, events, log, dbPath: config?.dbPath || "", batchLines: freezeBatchLines || 500, hook: __testFreezeHook,
+    canWrite: () => !schemaGate && canWriteInBackground() !== false,
+    // Ç5-A tur 2b İş 2: "Düzeltildi" hesabı alt defter hesaplarını (fişe yazılmaz) bilir; subledgerAccounts aşağıda tanımlı (çağrı anında hazır).
+    subledger: () => subledgerAccounts(),
+  });
+  /**
+   * Karma yevmiye (Yevmiye Defteri, Hesap Planı Mizanı, Ç6 raporları): kilitli dönem donmuş defterden, açık dönem canlı türetmeden. to ≤ kapsam ise canlı türetme yapılmaz.
+   * Mutabakat (alt defter ↔ ana defter) ve kapı canlı türetmeyle (check(), build()) — alt defterler güncel kuralla.
+   */
+  const book = ({ from = "", to = "", live = null } = {}) => snapshots.book({ from, to, live });
   // Alt defterlerin kendi hesabı (beklenen bakiyeler): Kasa ve Banka yola göre, cariler türe göre, portföy durumuna göre.
   // accountList (v2.0.22): mutabakat denetimi aynı anda (aynı veriyle) cari listesini zaten hesapladıysa yeniden hesaplanmaz.
   // v2.1.0 (K5, §3.11): Kasa ve banka tarafı TEK KAYNAKTAN (lib/bank/money-lines.mjs) yol bazında: 100 = nakit, 102 = havale, 108 = POS,
@@ -206,17 +335,23 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
   // kullanmayan kurulumun Defter Mutabakatı ve Mutabakat Testi'nin denetim listesi 2.0.26 ile aynı kalır. Tanınmayan yol hiçbir beklenene
   // girmez (yevmiye onu 100'e yazar; fark 2.0.26'daki gibi görünür ve money:method yakalar).
   const groupsOf = () => (money ? money.groups() : []);
-  function expected(accountList = null, groups = groupsOf()) {
+  // every (2.5.0 Ç2 tur 1): yalnız kullanılınca açılan satırlar (309, 300, 121 / 321, 190, 128 / 129) de açılır — "bu kurulumda hangi hesaplar bir alt defterin hesabıdır"
+  // sorusunun yanıtı (subledgerAccounts; fiş koruması). Tutarlar every kipinde kullanılmaz (accountList ve groups boş verilir). Mutabakat her zaman every'siz çağırır.
+  function expected(accountList = null, groups = groupsOf(), { every = false } = {}) {
     const way = name => groups.filter(group => group.way === name).reduce((sum, group) => sum + Number(group.cents), 0);
     const used = kind => has("bank_accounts") && Boolean(store.get("SELECT 1 AS found FROM bank_accounts WHERE kind = ? LIMIT 1", kind));
     const out = { 100: roundMoney(way("cash") / 100), 102: roundMoney(way("bank") / 100), 108: roundMoney(way("card") / 100), 120: 0, 320: 0, 336: 0 };
-    if (used("card") || groups.some(group => group.way === "ccard")) out[309] = roundMoney(way("ccard") / 100);
-    if (used("loan") || groups.some(group => group.way === "loan")) out[300] = roundMoney(way("loan") / 100);
+    if (every || used("card") || groups.some(group => group.way === "ccard")) out[309] = roundMoney(way("ccard") / 100);
+    if (every || used("loan") || groups.some(group => group.way === "loan")) out[300] = roundMoney(way("loan") / 100);
     const list = accountList || (accounts()?.list ? accounts().list({ id: "ledger", role: "admin", permissions: [] }, { status: "all" }).accounts : []);
     for (const account of list) {
       const code = { customer: "120", supplier: "320", other: "336" }[account.type] || "120";
       out[code] = roundMoney(out[code] + (Number(account.balance) || 0));
     }
+    // 2.5.0 Ç7b (KG-3 = A; B-2): kayıt (dosya) tahsilatları 336.90'ın alacağındadır (cari değil) — 336'nın beklenenine kayıt alt defterinin kendi toplamıyla katılır.
+    // Tur 2c (KURAL GEÇİŞ GÜNÜ; lib/ledger-rule-shift.mjs): geçiş gününde / öncesinde tarihli tahsilat eski yönde (602) — 336'ya katılmaz.
+    const shift = ruleShiftOf(store);
+    if (has("payments")) out[336] = roundMoney(out[336] - Number(store.get(`SELECT COALESCE(SUM(CAST(ROUND(amount * 100) AS INTEGER)), 0) AS n FROM payments WHERE NOT ${oldCollectionSql(shift, "date")}`).n) / 100);
     // Çek/senet alt defteri (2.2.0 İz 4.2, plan §3.11a): portföydeki alınan çek 101, senet 121; ödenecek verilen çek 103, senet 321. 121/321
     // satırı yalnız senet girilmişse (silinmiş olsa da) açılır: senet kullanmayan kurulumun Defter Mutabakatı ve Mutabakat Testi'nin denetim
     // listesi 2.1.0 ile aynı kalır (300/309 kuralı gibi). Senedi olmayan veride yevmiye 121/321'e satır yazmaz.
@@ -232,7 +367,7 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
       );
       out[101] = roundMoney(sums.c101);
       out[103] = -roundMoney(sums.c103);
-      if (Number(sums.notes)) {
+      if (every || Number(sums.notes)) {
         out[121] = roundMoney(sums.c121);
         out[321] = -roundMoney(sums.c321);
       }
@@ -241,25 +376,33 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
     // kartın kalanı vazgeçilen alacaktır (sıfırlanır). Carili kartların alacağı cari bakiyesinin içindedir (120/320/336).
     if (has("plans")) {
       let open = 0;
+      // 2.5.0 Ç7b tur 3b: düşülen kalan TEK yardımcıdan (lib/accounts.mjs waivedOf; Borçta Kalsın kartında 0 — kalan 127'de kalır).
+      const closeRule = hasColumn("plans", "close_rule") ? "p.close_rule" : `'${CLOSE_RULE_WAIVE}'`;
       for (const plan of store.all(
-        `SELECT p.total, p.status, p.covers_balance AS coversBalance,
+        `SELECT p.total, p.status, ${closeRule} AS closeRule, p.covers_balance AS coversBalance,
                 COALESCE((SELECT SUM(CASE WHEN e.kind = 'in' THEN e.amount ELSE -e.amount END) FROM plan_entries e WHERE e.plan_id = p.id), 0) AS paid
          FROM plans p LEFT JOIN accounts a ON a.id = p.account_id AND a.deleted_at IS NULL WHERE p.deleted_at IS NULL AND a.id IS NULL`,
       )) {
         const total = plan.coversBalance ? 0 : Number(plan.total) || 0;
-        const left = roundMoney((Number(plan.total) || 0) - (Number(plan.paid) || 0));
-        open = roundMoney(open + total - (Number(plan.paid) || 0) - (plan.status === "closed" ? Math.max(0, left) : 0));
+        open = roundMoney(open + total - (Number(plan.paid) || 0) - waivedOf(plan, plan.paid));
       }
       out[127] = open;
     }
-    // Vergi hesapları (v2.0.15) — fatura alt defterinin kendi toplamları: 191 İndirilecek KDV (alış − alıştan iade), 391
-    // Hesaplanan KDV (satış − satıştan iade; tevkifat düşülmüş), 360 tevkifat ve stopaj (alıcı olarak kestiklerimiz),
+    // Vergi hesapları (v2.0.15) — fatura alt defterinin kendi toplamları: 191 İndirilecek KDV (alış + satıştan iade; Ç7b KG-8), 391
+    // Hesaplanan KDV (satış + alıştan iade; tevkifat düşülmüş; Ç7b F-08), 360 tevkifat ve stopaj (alıcı olarak kestiklerimiz),
     // 193 stopaj (müşterinin bizden kestiği). Borç bakiyesi artı.
     if (has("invoices")) {
+      // Tur 2c (KURAL GEÇİŞ GÜNÜ; lib/ledger-rule-shift.mjs): geçiş gününde / öncesinde ya da güncellemeden önce mahsup edilmiş (etkin) ayda iade KDV'si ESKİ yönde (satıştan iade 391'in
+      // borcunda, alıştan iade 191'in alacağında) — türetmeyle (journal) aynı tanım.
+      const old = oldReturnVatSql(shift, "i.issue_date");
       const sums = store.get(
-        `SELECT COALESCE(SUM(CASE kind WHEN 'purchase' THEN CAST(ROUND(try_vat * 100) AS INTEGER) WHEN 'purchase_return' THEN -CAST(ROUND(try_vat * 100) AS INTEGER) END), 0) AS v191,
+        // 2.5.0 Ç7b (KG-8 = A, F-07 / F-08; B-2): satıştan iade KDV'si 191'in borcunda (Ç7b öncesi 391'in borcunda), alıştan iade KDV'si 391'in alacağında (Ç7b öncesi 191'in alacağında).
+        `SELECT COALESCE(SUM(CASE WHEN kind = 'purchase' THEN CAST(ROUND(try_vat * 100) AS INTEGER)
+                                  WHEN kind = 'sale_return' AND NOT ${old} THEN CAST(ROUND(try_vat * 100) AS INTEGER) - CAST(ROUND(try_withheld * 100) AS INTEGER)
+                                  WHEN kind = 'purchase_return' AND ${old} THEN -CAST(ROUND(try_vat * 100) AS INTEGER) END), 0) AS v191,
                 COALESCE(SUM(CASE WHEN kind IN ('sale', 'smm') THEN -(CAST(ROUND(try_vat * 100) AS INTEGER) - CAST(ROUND(try_withheld * 100) AS INTEGER))
-                                  WHEN kind = 'sale_return' THEN CAST(ROUND(try_vat * 100) AS INTEGER) - CAST(ROUND(try_withheld * 100) AS INTEGER) END), 0) AS v391,
+                                  WHEN kind = 'sale_return' AND ${old} THEN CAST(ROUND(try_vat * 100) AS INTEGER) - CAST(ROUND(try_withheld * 100) AS INTEGER)
+                                  WHEN kind = 'purchase_return' AND NOT ${old} THEN -CAST(ROUND(try_vat * 100) AS INTEGER) END), 0) AS v391,
                 COALESCE(SUM(CASE kind WHEN 'purchase' THEN -(CAST(ROUND(try_withheld * 100) AS INTEGER) + CAST(ROUND(try_stoppage * 100) AS INTEGER))
                                        WHEN 'purchase_return' THEN CAST(ROUND(try_withheld * 100) AS INTEGER) + CAST(ROUND(try_stoppage * 100) AS INTEGER) END), 0) AS v360,
                 COALESCE(SUM(CASE WHEN kind IN ('sale', 'smm') THEN CAST(ROUND(try_stoppage * 100) AS INTEGER) END), 0) AS v193
@@ -281,7 +424,7 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
       const paid = store.get("SELECT COALESCE(SUM(CAST(json_extract(tax_json, '$.taxMinor') AS INTEGER)), 0) AS n FROM cash_entries WHERE tax_json <> '' AND kind = 'out' AND json_valid(tax_json)").n;
       if (paid) out[360] = roundMoney((out[360] || 0) + paid / 100);
     }
-    if (has("vat_offsets") && store.get("SELECT 1 AS found FROM vat_offsets LIMIT 1")) {
+    if (has("vat_offsets") && (every || store.get("SELECT 1 AS found FROM vat_offsets LIMIT 1"))) {
       const v = store.get("SELECT COALESCE(SUM(out_minor), 0) AS o, COALESCE(SUM(in_minor), 0) AS i, COALESCE(SUM(carry_out_minor - carry_in_minor), 0) AS c, COALESCE(SUM(payable_minor), 0) AS p FROM vat_offsets WHERE status = 'active'");
       out[391] = roundMoney((out[391] || 0) + v.o / 100);
       out[191] = roundMoney((out[191] || 0) - v.i / 100);
@@ -296,7 +439,7 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
     // Şüpheli Ticari Alacaklar (2.3.0 İz 1; plan §3.11b/4 "128 = Σ etkin şüpheli − kapananlar; 129 = Σ karşılık − çözülen"): ikinci yükleyici
     // (SQL alacak satırları + aynı ayırma kuralı; lib/bank/doubtful.mjs). Carinin kontrol hesabı (120/320/336) kalan şüpheli kadar düşer (cari
     // kartı bakiyesi değişmez: 120 + 128 = kart). 128/129 satırı yalnız şüpheli alacak kullanılmışsa açılır (300/309, 121/321 kuralı).
-    if (doubtfulUsed(store)) {
+    if (every || doubtfulUsed(store)) {
       const d = doubtfulExpected(store);
       for (const [control, minor] of d.byControl) out[control] = roundMoney((out[control] || 0) - minor / 100);
       out[DOUBTFUL_GL.doubtful] = roundMoney(d.openMinor / 100);
@@ -314,39 +457,325 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
     }
     return out;
   }
-  function check({ from = "", to = "", accountList = null } = {}) {
+  // book (2.5.0 Ç3): mizan karma yevmiyeden (kilitli dönem donmuş); mutabakat her zaman canlı türetmeyle.
+  function check({ from = "", to = "", accountList = null, book: useBook = false } = {}) {
     const entries = build();
-    const trial = trialBalance(entries, { from, to });
+    // Karma mizan: donmuş dönem SQL toplamıyla (snapshots.trial; trialBalance(book()) ile aynı sonuç).
+    const trial = useBook ? snapshots.trial({ from, to, live: entries }) : trialBalance(entries, { from, to });
     const groups = groupsOf();
     // Mutabakat tüm zamanlarla yapılır (alt defter bakiyeleri bugüne kadarki her şeyi içerir).
-    const reconciliation = reconcile(from || to ? trialBalance(entries) : trial, expected(accountList, groups));
+    const reconciliation = reconcile(from || to || useBook ? trialBalance(entries) : trial, expected(accountList, groups));
     return { entries, trial, reconciliation, groups };
   }
+  // Alt defterlerin hesapları (2.5.0 Ç2 tur 1; fiş koruması, lib/ledger-vouchers.mjs ownedAccounts): Defter Mutabakatı'nın beklenen bakiyelerinin anahtarları, modül
+  // kullanılmış olsun olmasın (every). Elle yazılmış ikinci liste yok: expected()'e yeni alt defter satırı eklenince fiş koruması da onu kapsar. Anahtarlar yalnız şemaya
+  // bağlıdır (tutarlar every kipinde boş veriyle hesaplanır) → örnek başına bir kez.
+  let owned = null;
+  const subledgerAccounts = () => (owned ??= new Set(Object.keys(expected([], [], { every: true }))));
+  // Kilitten önceki adım (2.2.0, plan §4.4/6) — PUT period-lock ve vouchers.postAll lockThrough AYNI işlev (Ç2 tur 1, madde 6): kilitlenecek döneme düşen vadesi gelmiş
+  // POS kalemleri önce bankaya aktarılır; hâlâ bekleyen varsa 409 bank-pending-before-lock + liste (uyarı; "Yine de Kilitle" = force).
+  const beforeLock = (target, force = false) => {
+    if (target) pos()?.beforeLock?.(String(target), force === true);
+  };
   router.get("/api/workspace/ledger", async ({ req, res, url }) => {
     auth.requirePermission(req, "overview.view");
     const from = text(url.searchParams.get("from"));
     const to = text(url.searchParams.get("to"));
     if ((from && !DATE.test(from)) || (to && !DATE.test(to))) throw new HttpError(400, "Geçerli bir tarih aralığı seçin.");
-    const { entries, trial, reconciliation } = check({ from, to });
+    const { entries, trial, reconciliation } = check({ from, to, book: true });
     ok(res, { trial, reconciliation, entryCount: entries.length });
   });
+  // 2.5.0 Ç3 tur 2 (docs/erp/C3-DONDURMA-TASARIM.md §18; plan §8 "1.000.000: hedef ≤ 2 dk, İLERLEME"): kilit ucu dondurmanın bitmesini SINIRSIZ BEKLEMEZ — kilit + bekleyen koşu
+  // (tek işlem) yazılınca arka iş (kapının kilit izi ayrı iş parçacığında ‖ bayat satırlar → dondurma; lockJobs) başlar, yanıt en çok LOCK_WAIT_MS bekler. 1.000.000 satırda dondurma
+  // ~85 sn: beklense istemcinin 30 sn sınırı (hof-core.js sendApi) başarılı kilidi "Sunucu zamanında yanıt vermedi" diye gösterirdi. Bu arada kilitli dönem bekleyen koşunun kuralıyla
+  // canlı okunur (K1). İlerleme: GET /api/workspace/ledger/lock → freeze (pending: bekleyen koşu, active: süren iş var).
+  const lockJobs = new Set();
+  let closing = false;
+  // Yanıtın arka işi bekleme bütçesi (ms; BAŞ MİMAR KARARI önerisi T2-2). Kısa iş (küçük / orta şirket) bütçe içinde biter: yanıt dondurma + iz bittikten sonra — eski davranış aynen
+  // (yanıttan sonra veri tabanına arka iş yazmaz: dondurma izi, satırlar; test/banka-230-supheli-bozma I/J "hiçbir şey yazılmaz" kilitten hemen sonra sayıların fotoğrafını çeker).
+  // Uzun iş (1.000.000) bütçe dolunca yanıt, dondurma arkada, kart ilerlemeyi gösterir. Kapının kilit izi dondurmayla PARALEL ölçülür: iz "bekliyor"ken tam kapı kilitli dönemin
+  // iz karşılaştırmasını (ikinci katman) yapamaz — kilitli satırı kapsam süzgecinin kilit nedeni dışından değiştiren yazım kabul edilir ve kendi (değişmiş) izini benimser
+  // (test/banka-210-gg-kapi D8). 100.000 satırda iz ~2,6 sn → bütçe içinde (dondurma ~8 sn arkada); 1.000.000'da iz ~29 sn → pencere BİLİNEN SINIR §18.
+  const LOCK_WAIT_MS = 5000;
+  const settleWithin = (promise, ms) =>
+    new Promise(resolve => {
+      const timer = setTimeout(resolve, ms);
+      timer.unref?.();
+      promise.then(() => {
+        clearTimeout(timer);
+        resolve();
+      });
+    });
+  // active: süren iş (dondurma, bayat satır temizliği — açılıştaki de, kilit izi). cleanup: temizlik ilerlemesi (Ç3 tur 3 ORTA-1; kart gösterir, sürerken Kilitle pasif).
+  function freezeView() {
+    const status = snapshots.status();
+    const waiting = snapshots.state().pending;
+    return { ...status, pending: waiting ? { no: waiting.no, from: waiting.from, through: waiting.through, rule: waiting.rule } : null, active: Boolean(status.running || status.cleanup?.running || lockJobs.size) };
+  }
+  /**
+   * Kilitten sonraki iki iş, PARALEL (job; uç yanıtı bunu LOCK_WAIT_MS kadar bekler): (1) kapının kilit izi ayrı iş parçacığında (digestOf); (2) bayat satırlar → bekleyen koşu
+   * (dondurma; onun izi de gelince freezeRun adoptLock karşılaştırır, fark Mutabakat Günlüğü'ne). Bu arada kilit başka güne alındıysa (başka istek) iz o kilidin izi değildir,
+   * benimsenmez. İz gelene kadar kapı "bekliyor"dur: kilitli döneme dokunan yazım (kapsam süzgecinin kilit nedeni) 409; bugün tarihli düzeltmeler (kilitli fişin Ters Kaydet'i)
+   * bu sınıfta değildir (test K8). Hata yanıtı düşürmez: günlüğe yazılır; koşu bekler ve sonraki kilitte / açılışta sürer.
+   */
+  function afterLock(lockedUntil) {
+    const gate = integrity();
+    const still = () => !closing && Boolean(lockedUntil) && period.lockedUntil() === lockedUntil && Boolean(gate?.adoptLock) && Boolean(gate.lockPending?.(lockedUntil));
+    const traced = (async () => {
+      if (!still()) return;
+      // YALNIZ TEST (test/donmus-defter-kilit-ucu-250.test.mjs K9): izi bütçeden uzun sürdürür (büyük şirket benzetimi). Üretimde kanca yok.
+      await __testFreezeHook?.fn?.("trace", { lock: lockedUntil });
+      // Kapanış başladıysa iz iş parçacığı hiç açılmaz (dosya tutamağı; Windows'ta dosya takası).
+      if (!still()) return;
+      const digest = await snapshots.digestOf(lockedUntil);
+      if (still()) gate.adoptLock({ lock: lockedUntil, digest });
+    })();
+    const frozen = (async () => {
+      if (closing) return;
+      await snapshots.purgeStale();
+      await snapshots.runPending();
+    })();
+    const job = Promise.allSettled([traced, frozen]).then(results => {
+      for (const [index, result] of results.entries()) {
+        if (result.status === "rejected") log?.warn?.(`Dönem kilidinden sonraki ${index ? "dondurma" : "kilit izi"} tamamlanamadı (${result.reason?.message || result.reason}); koşu bekliyor, sonraki kilitte ya da açılışta sürer.`);
+      }
+    });
+    const tracked = job.finally(() => lockJobs.delete(tracked));
+    lockJobs.add(tracked);
+    return { job: tracked, traced: traced.catch(() => {}) };
+  }
   // Dönem kilidi (v2.0.13): kilitli tarih ve öncesine hareket eklenemez/düzeltilemez/silinemez. Yalnız yönetici değiştirir.
   router.get("/api/workspace/ledger/lock", async ({ req, res }) => {
     auth.requirePermission(req, "overview.view");
-    ok(res, { lockedUntil: period?.lockedUntil() || "", today: period?.today() || "" });
+    ok(res, { lockedUntil: period?.lockedUntil() || "", today: period?.today() || "", frozenThrough: snapshots.coverage(), freeze: freezeView() });
   });
   router.put("/api/admin/period-lock", async ({ req, res }) => {
     const user = auth.requirePermission(req, "system.manage");
     if (!period) throw new HttpError(503, "Dönem kilidi hazır değil.");
     const body = await readJson(req);
+    // Yanıt bütçesi (LOCK_WAIT_MS) bütün uca: bayat satır temizliği + arka iş (Ç3 tur 3 ORTA-1). Süre ölçümü (iş saati değil): tekdüze saat.
+    const started = performance.now();
+    const budget = () => Math.max(0, LOCK_WAIT_MS - (performance.now() - started));
+    // Sıra (Ç3 tur 2, dar kontrol DÜŞÜK-1): doğrula → ön adım (POS) → süren dondurmayı durdur → kilit + koşu (tek işlem). Reddedilecek istek (geçersiz / gelecek tarih 400,
+    // POS 409) hiçbir şeye dokunmaz: süren dondurma sürer.
+    const target = period.checkLock(body?.lockedUntil);
+    beforeLock(target, body?.force === true);
     const previous = period.lockedUntil();
-    // 2.2.0 (plan §4.4/6): kilitlenecek döneme düşen vadesi gelmiş POS kalemleri önce bankaya aktarılır; hâlâ bekleyen varsa 409
-    // bank-pending-before-lock + liste (uyarı; "Yine de Kilitle" = force).
-    if (body?.lockedUntil) pos()?.beforeLock?.(String(body.lockedUntil), body.force === true);
-    const lockedUntil = period.setLock(body.lockedUntil);
+    // 2.5.0 Ç3 (§4): başka güne süren dondurma durdurulur; bayat satırlar (geri çekilmiş dönem) kilitten önce parça parça silinir.
+    // Ç3 tur 4 (ORTA-1): kilit DEĞİŞMİYORSA (aynı güne yeniden kaydetme) bekleyen koşu — günü kilitten önce olsa da (yeniden donma planının ilk dilimi, ilerletilmiş kilitte
+    // eski kurallı koşu) — durdurulmaz; lockChanged onu sürdürür (aynı ayrım lockNeedsCleanup'ta).
+    const waiting = snapshots.state().pending;
+    let stopped = false;
+    if (waiting && waiting.through !== target && target !== previous) {
+      await snapshots.cancel();
+      stopped = true;
+    }
+    let lockedUntil;
+    try {
+      // Ç3 tur 3 (ORTA-1; dar kontrol: 1.000.000 satırda "Kilidi Aç → Yeniden Kilitle" geri çekilen dönemin ~2,7 M bayat satırını kilitten önce bütçesiz siliyordu → istemcinin
+      // 30 sn sınırı). Yeni koşu açılacaksa ve kapsamın üstünde satır varsa temizlik (tek döngü; arkada sürüyorsa ona katılır) bütçe kadar beklenir; bitmediyse 409 + neden,
+      // temizlik arkada sürer, kart ilerlemesini gösterir. Kilit işleminin içinde büyük DELETE yok (ders 47). Gerekmiyorsa (geri çekme, aynı gün) hiç beklenmez.
+      if (snapshots.lockNeedsCleanup(target)) {
+        await settleWithin(snapshots.purgeStale().catch(error => log?.warn?.(`Donmuş defter: bayat satır temizliği tamamlanamadı (${error?.message || error}).`)), budget());
+        if (snapshots.lockNeedsCleanup(target)) {
+          throw new HttpError(409, "Önceki dönemin defter temizliği sürüyor; temizlik bitince yeniden kilitleyin. İlerleme bu kartta görünür.", { code: "ledger-cleanup-running", freeze: freezeView() });
+        }
+      }
+      // Kilit + donmuş defter koşusu aynı işlemde (kilit önce, donma arkasından; yarım durumda kilitli dönem bekleyen koşunun kuralıyla canlı okunur).
+      lockedUntil = store.tx(() => {
+        // Kilidin İŞLEMDEKİ önceki değeri (Ç3 tur 4): yukarıdaki beklemelerde (durdurma, temizlik) başka bir istek kilidi değiştirmiş olabilir; lockChanged'in "kilit değişmedi"
+        // kararı (bekleyen koşu sürer) bayat değere dayanmaz.
+        const previous = period.lockedUntil();
+        const value = period.setLock(target);
+        snapshots.lockChanged({ previous, next: value, user, reason: "lock" });
+        return value;
+      });
+    } catch (error) {
+      // Durdurulan koşu sahipsiz kalmaz: kilit yazılamadıysa (kapı, disk) önceki bekleyen koşu arkada sürer.
+      if (stopped) afterLock(period.lockedUntil());
+      throw error;
+    }
     audit(user, lockedUntil ? "ledger.period.locked" : "ledger.period.unlocked", "period", { previous, lockedUntil });
-    integrity()?.start?.();
-    ok(res, { lockedUntil });
+    // Kapının kilit izi ana iş parçacığında tam taramayla ölçülmez (önceden integrity.start(); 100.000 satırda saniyeler): iz dondurmanın / ayrı iş parçacığının anlık
+    // görüntüsünden gelir, o ana kadar "bekliyor" (kilitli döneme dokunan yazım reddedilir).
+    const gate = integrity();
+    if (gate?.adoptLock) gate.adoptLock({ lock: lockedUntil, digest: null });
+    else gate?.start?.();
+    // Yanıt arka iş (iz ‖ dondurma) bitince — bütçenin kalanı kadar (en çok LOCK_WAIT_MS); uzun işte iş arkada sürer.
+    await settleWithin(afterLock(lockedUntil).job, budget());
+    ok(res, { lockedUntil, frozenThrough: snapshots.coverage(), freeze: freezeView() });
+  });
+  // 2.5.0 Ç2 — saklanan fiş defteri (lib/ledger-vouchers.mjs). Kapanış / açılış / eşleştirme fişlerini Ç3, Ç5 ve D4 iç API'yle (vouchers) yazar; kullanıcıya serbest
+  // fiş girişi YOK (2.5.1). Fişler Yevmiye Defteri ve Hesap Planı Mizanı'nda görünür (ayrı ekran 2.5.1). Uçlar dönem kilidini koyabilen yetkiyle (system.manage):
+  //   GET  /api/admin/ledger/vouchers?from=&to=&type=   → fişler (satırlarıyla)
+  //   POST /api/admin/ledger/vouchers/:id/reverse        → ters kayıt fişi (R-03); gövde { date?, description?, requestId } ya da başlık x-hof-request
+  const vouchers = createLedgerVouchers({ store, period, now, onLockChanged: change => snapshots.lockChanged({ ...change, sync: true }), ownedAccounts: subledgerAccounts, beforeLock });
+  router.get("/api/admin/ledger/vouchers", async ({ req, res, url }) => {
+    auth.requirePermission(req, "system.manage");
+    const from = text(url.searchParams.get("from"));
+    const to = text(url.searchParams.get("to"));
+    const type = text(url.searchParams.get("type"));
+    if ((from && !DATE.test(from)) || (to && !DATE.test(to))) throw new HttpError(400, "Geçerli bir tarih aralığı seçin.", { code: "date-invalid" });
+    if (type && !Object.hasOwn(VOUCHER_TYPES, type)) throw new HttpError(400, "Fiş türü geçerli değil.", { code: "voucher-type" });
+    ok(res, { vouchers: vouchers.list({ from, to, type }) });
+  });
+  router.post("/api/admin/ledger/vouchers/:id/reverse", async ({ req, res, params }) => {
+    const user = auth.requirePermission(req, "system.manage");
+    const body = (await readJson(req)) || {};
+    const requestId = text(req.headers["x-hof-request"]) || text(body.requestId);
+    if (!REQUEST_ID.test(requestId)) throw new HttpError(400, "İstek kimliği gerekli.", { code: "request-id-invalid" });
+    const voucher = vouchers.reverse(user, text(params.id), { date: text(body.date), description: body.description, requestKey: `api:${requestId}` });
+    if (!voucher.replayed) events?.publish?.("workspace.changed", { kind: "ledger", actorId: user.id, actorName: user.display_name }, { except: user.id });
+    ok(res, { voucher, replayed: voucher.replayed === true });
+  });
+  // 2.5.0 Ç5-A tur 2b İş 2 — Kural Farkı Düzeltme Fişi (docs/erp/C5-ACILIS-TASARIM.md §3.3, §17.8; KG-15 A; EK-1 M7; BAŞ MİMAR B14 (a), B16; KULLANICI S76 = A, S164 = C):
+  //   GET  /api/admin/ledger/rule-diff-correction  → ön izleme: kilit, fiş tarihi (kilit + 1), satırlar (düzeltilmemiş kalan), dışarıda kalan alt defter farkı, farkı doğuran
+  //                                                   maddeler (hangi kayıt, hangi hesap), yazılmış düzeltmeler, pasiflik nedeni, satırların imzası
+  //   POST /api/admin/ledger/rule-diff-correction  → { requestId, digest, confirm: true }: imza ön izlemeninkiyle aynıysa fiş (rule-diff-correction, olağan sınıf) yazılır
+  // Yetki system.manage (fiş defteri ve dönem kilidiyle aynı). Kural Farkı kapıda koşmaz; fiş Ç2'nin post sözleşmesiyle (kilit, ileri tarih, alt defter hesabı, istek kimliği).
+  const SHOWN_SOURCES = 500;
+  const accountName = code => ACCOUNT_PLAN[code]?.ad || CHART[code] || code;
+  function lockedCandidates(lock) {
+    if (!lock || !has("account_entries") || !hasColumn("account_entries", "opening_review")) return 0;
+    return Number(store.get("SELECT COUNT(*) AS n FROM account_entries e JOIN accounts a ON a.id = e.account_id AND a.deleted_at IS NULL WHERE e.opening_review = 'candidate' AND e.date <= ?", lock)?.n) || 0;
+  }
+  function correctionView() {
+    const lock = period?.lockedUntil() || "";
+    const today = period?.today() || "";
+    const cover = snapshots.coverage();
+    const pendingFreeze = snapshots.state().pending;
+    const date = lock ? nextDayOf(lock) : "";
+    const posted = postedRuleDiffCorrections(store);
+    const diff = cover && !pendingFreeze ? snapshots.ruleDiff({ detail: true }) : { through: cover, count: 0, sample: [], balances: [], entries: [] };
+    // Eşleme yılı (671 / 681) TEK tanımdan (Yönetim satırı ile aynı — S174 = A, tur 2e); yazılmış fişler kendi yıllarıyla düşülür.
+    const year = ruleDiffCorrectionYear({ lock, cover, today });
+    const plan = ruleDiffCorrectionPlan({ diff, subledger: subledgerAccounts(), year, postedByYear: posted.byYear });
+    const candidates = lockedCandidates(lock);
+    let reason = "";
+    let code = "";
+    if (!lock) [reason, code] = ["Dönem kilidi yok; düzeltilecek kilitli dönem farkı yok.", "rule-diff-no-lock"];
+    else if (pendingFreeze || cover !== lock) [reason, code] = ["Kilitli dönemin defteri dondurulurken düzeltme fişi yazılmaz; dondurma bitince yeniden açın.", "rule-diff-freezing"];
+    else if (candidates) [reason, code] = [`Önce Açılış Olabilir listesini tamamlayın: kilitli dönemde onay bekleyen ${candidates} kayıt var (Yönetim › Sistem › Açılış Olabilir Kayıtlar).`, "rule-diff-candidates"];
+    else if (plan.ownYearOver?.length) {
+      // S185 = A: yılı eşleme yılından sonra olan fiş farkı aşıyor — kilitli döneme (eşleme yılına) fiş önerilmez; fiş kendi yılında ters kaydedilir (Ters Kaydet fişin kendi tarihiyle yazar).
+      const years = new Set(plan.ownYearOver.map(row => row.year));
+      const own = posted.active.filter(voucher => years.has(Number(String(voucher.date).slice(0, 4)))).map(voucher => vouchers.voucherNoText(voucher.year, voucher.no));
+      [reason, code] = [`Kural Farkı Düzeltme Fişi (${own.join(", ")}) kilitli dönemin farkından fazla (kilit, fişin yılından geriye alındı); bu döneme fiş önerilmez. Fişi aşağıdaki Yazılmış Düzeltme Fişleri'nden kendi yılında ters kaydedin; kalan fark varsa sonra burada görünür.`, "rule-diff-own-year"];
+    } else if (!plan.lines.length) [reason, code] = [posted.active.length ? "Fişle düzeltilebilen fark kalmadı." : "Düzeltilecek kural farkı yok.", "rule-diff-nothing"];
+    else if (date > today) [reason, code] = ["Kilit bugünün tarihinde; düzeltme fişi yarın yazılabilir.", "rule-diff-lock-today"];
+    const lines = plan.lines.map(line => ({ ...line, name: accountName(line.account) }));
+    const digest = createHash("sha256").update(JSON.stringify({ date, lines: plan.lines })).digest("hex").slice(0, 32);
+    const sources = plan.sources.slice(0, SHOWN_SOURCES).map(item => ({ ...item, deltas: item.deltas.map(delta => ({ ...delta, name: accountName(delta.account) })) }));
+    return {
+      lockedUntil: lock, frozenThrough: cover, today, date, count: diff.count, lines, digest,
+      totalMinor: plan.lines.reduce((sum, line) => sum + line.debit, 0),
+      excluded: plan.excluded.map(row => ({ ...row, name: accountName(row.account), reason: "Alt defter hesabı: bakiyesi kendi modülünün kayıtlarından gelir, fişle düzeltilmez (Kilidi Aç → Yeniden Kilitle ile kilitli dönem güncel kuralla yeniden donar)." })),
+      sources, sourceCount: plan.sources.length, candidates,
+      vouchers: posted.active.map(voucher => ({ ...voucher, noText: vouchers.voucherNoText(voucher.year, voucher.no) })),
+      disabled: Boolean(reason), reason, code,
+    };
+  }
+  router.get("/api/admin/ledger/rule-diff-correction", async ({ req, res }) => {
+    auth.requirePermission(req, "system.manage");
+    ok(res, correctionView());
+  });
+  router.post("/api/admin/ledger/rule-diff-correction", async ({ req, res }) => {
+    const user = auth.requirePermission(req, "system.manage");
+    const body = (await readJson(req)) || {};
+    const requestId = text(req.headers["x-hof-request"]) || text(body.requestId);
+    if (!REQUEST_ID.test(requestId)) throw new HttpError(400, "İstek kimliği gerekli.", { code: "request-id-invalid" });
+    const requestKey = `api:rule-diff:${requestId}`;
+    // Yinelenen istek (ağ, çift tıklama): ilk fiş döner (yeniden plan kurulmaz — fiş yazıldıktan sonra kalan fark yoktur).
+    const seen = store.get("SELECT id FROM ledger_vouchers WHERE request_key = ?", requestKey);
+    if (seen) return ok(res, { voucher: { ...vouchers.get(seen.id), replayed: true }, replayed: true });
+    if (body.confirm !== true) throw new HttpError(400, "Fiş, ön izlemedeki satırlar onaylanarak yazılır.", { code: "rule-diff-confirm" });
+    const view = correctionView();
+    if (view.disabled) throw new HttpError(view.code === "rule-diff-lock-today" ? 400 : 409, view.reason, { code: view.code });
+    // S164 = C + iki kişi aynı anda: kullanıcı ön izlemede gördüğü satırları onaylar; arada fark değiştiyse (başka fiş, aday kararı, kayıt) yazılmaz.
+    if (text(body.digest) !== view.digest) throw new HttpError(409, "Ön izlemeden sonra kural farkı değişti; ön izlemeyi yenileyip satırları yeniden gözden geçirin.", { code: "rule-diff-changed" });
+    const voucher = vouchers.post(user, {
+      type: "rule-diff-correction", date: view.date, description: `Kural Değişikliği Farkı (Kilitli Dönem: ${view.lockedUntil.split("-").reverse().join(".")} ve Öncesi)`,
+      source: "Kural Farkı Düzeltme", requestKey, lines: view.lines.map(({ account, sub, debit, credit }) => ({ account, sub, debit, credit })),
+    });
+    if (!voucher.replayed) events?.publish?.("workspace.changed", { kind: "ledger", actorId: user.id, actorName: user.display_name }, { except: user.id });
+    ok(res, { voucher, replayed: voucher.replayed === true });
+  });
+  // 2.5.0 Ç5-A tur 2c İş 1 — Açılış Eşleştirme Fişi (docs/erp/C5-ACILIS-TASARIM.md §2.7, §17.10; kural kitabı M-11; BAŞ MİMAR B10):
+  //   GET  /api/admin/ledger/opening-match?date=           → 519'un fiş tarihi gün sonu bakiyesi + açılış türlerine göre dökümü (karma defter), izinli hedef hesaplar, etkin
+  //                                                          eşleştirme fişleri, pasiflik nedeni (kilitli / ileri tarih / bakiye yok)
+  //   POST /api/admin/ledger/opening-match/preview         → { date, lines } — fişin satırları (+ kendiliğinden 519 satırı) ve fişten sonraki 519; ret yazmadan döner
+  //   POST /api/admin/ledger/opening-match                 → { requestId, date, lines, confirm: true } — yazım anında YENİDEN doğrulanır (iki kişi aynı anda: ikincisi güncel bakiyeyle)
+  // lines: [{ account, sub?, side: "debit" | "credit", amount }] (TL). Yetki system.manage (fiş defteri ve dönem kilidiyle aynı; Muhasebe 403). Kilit / ileri tarih / alt defter / istek
+  // kimliği Ç2'nin post sözleşmesiyle; 519'un ters bakiyeye geçmesi ve izinsiz hedef bu planla (lib/ledger-opening.mjs openingMatchPlan).
+  const MATCH_PARTS = { cash: "Kasa Açılışı", accounts: "Cari Açılışları", plans: "Taksit Kartları", stock: "Stok Açılışı", bank: "Banka Açılışları", unassigned: "Hesapsız Hareketler (Açılıştan Önce)", cheques: "Açılış Evrakı", vouchers: "Fişler", other: "Diğer" };
+  const dayText = iso => iso.split("-").reverse().join(".");
+  function matchDate(value) {
+    const date = text(value) || period?.today() || "";
+    if (!DATE.test(date)) throw new HttpError(400, "Geçerli bir fiş tarihi seçin.", { code: "date-invalid" });
+    return date;
+  }
+  /** Fiş tarihinin 519 durumu (karma defter: Yevmiye / Mizan'ın okuduğu) ve pasiflik nedeni. Bütün yol eşzamanlı: plan ile yazım arasında olay döngüsüne sıra verilmez. */
+  function matchState(date) {
+    const lock = period?.lockedUntil() || "";
+    const today = period?.today() || "";
+    const { balance, parts } = openingMatchBalance(book({ to: date }), date);
+    let reason = "";
+    let code = "";
+    if (date > today) [reason, code] = [`İleri tarihli fiş yazılamaz (${dayText(date)}).`, "date-future"];
+    else if (lock && date <= lock) [reason, code] = [`${dayText(lock)} ve öncesi kapatılmış (kilitli) dönemdir; fiş tarihi ${dayText(nextDayOf(lock))} ya da sonrası olmalı.`, "period-locked"];
+    else if (!balance) [reason, code] = ["Fiş tarihinde eşleştirilecek açılış bakiyesi (519) yok.", "opening-match-nothing"];
+    return { date, today, lockedUntil: lock, balance, parts, reason, code };
+  }
+  function activeMatches() {
+    if (!has("ledger_vouchers")) return [];
+    return store
+      .all("SELECT v.id, v.year, v.no, v.date, v.total_minor AS totalMinor FROM ledger_vouchers v WHERE v.type = 'opening-match' AND NOT EXISTS (SELECT 1 FROM ledger_vouchers r WHERE r.reversal_of = v.id) ORDER BY v.date, v.rowid")
+      .map(row => ({ id: row.id, date: row.date, totalMinor: Number(row.totalMinor), noText: vouchers.voucherNoText(Number(row.year), Number(row.no)) }));
+  }
+  function matchPlan(state, lines) {
+    if (state.code === "date-future") throw new HttpError(400, state.reason, { code: state.code });
+    if (state.code === "period-locked") throw new HttpError(409, state.reason, { code: state.code, lockedUntil: state.lockedUntil });
+    const plan = openingMatchPlan({ lines, balance: state.balance, subledger: subledgerAccounts() });
+    if (plan.error) {
+      const { status, code, message, ...extra } = plan.error;
+      throw new HttpError(status, message, { code, ...extra });
+    }
+    return { ...plan, lines: plan.lines.map(line => ({ ...line, name: accountName(line.account) })) };
+  }
+  router.get("/api/admin/ledger/opening-match", async ({ req, res, url }) => {
+    auth.requirePermission(req, "system.manage");
+    const state = matchState(matchDate(url.searchParams.get("date")));
+    ok(res, {
+      date: state.date, today: state.today, lockedUntil: state.lockedUntil, balanceMinor: state.balance,
+      parts: Object.entries(state.parts).filter(([, minor]) => minor).map(([kind, minor]) => ({ kind, label: MATCH_PARTS[kind], minor })),
+      targets: openingMatchTargets(subledgerAccounts()), vouchers: activeMatches(), disabled: Boolean(state.reason), reason: state.reason, code: state.code,
+    });
+  });
+  router.post("/api/admin/ledger/opening-match/preview", async ({ req, res }) => {
+    auth.requirePermission(req, "system.manage");
+    const body = (await readJson(req)) || {};
+    const state = matchState(matchDate(body.date));
+    const plan = matchPlan(state, body.lines);
+    ok(res, { date: state.date, balanceMinor: state.balance, afterMinor: plan.after, lines: plan.lines, totalMinor: plan.lines.reduce((sum, line) => sum + line.debit, 0) });
+  });
+  router.post("/api/admin/ledger/opening-match", async ({ req, res }) => {
+    const user = auth.requirePermission(req, "system.manage");
+    const body = (await readJson(req)) || {};
+    const requestId = text(req.headers["x-hof-request"]) || text(body.requestId);
+    if (!REQUEST_ID.test(requestId)) throw new HttpError(400, "İstek kimliği gerekli.", { code: "request-id-invalid" });
+    const requestKey = `api:opening-match:${requestId}`;
+    // Yinelenen istek (ağ, çift tıklama): ilk fiş döner (yeniden plan kurulmaz — ilk fiş 519'u zaten değiştirdi).
+    const seen = has("ledger_vouchers") ? store.get("SELECT id FROM ledger_vouchers WHERE request_key = ?", requestKey) : null;
+    if (seen) return ok(res, { voucher: { ...vouchers.get(seen.id), replayed: true }, replayed: true });
+    if (body.confirm !== true) throw new HttpError(400, "Fiş, ön izlemedeki satırlar onaylanarak yazılır.", { code: "opening-match-confirm" });
+    const date = matchDate(body.date);
+    const plan = matchPlan(matchState(date), body.lines);
+    const voucher = vouchers.post(user, {
+      type: "opening-match", date, description: "Açılış Eşleştirme (Eşleştirilecek Açılış Bakiyeleri)", source: "Açılış Eşleştirme", requestKey,
+      lines: plan.lines.map(({ account, sub, debit, credit }) => ({ account, sub, debit, credit })),
+    });
+    if (!voucher.replayed) events?.publish?.("workspace.changed", { kind: "ledger", actorId: user.id, actorName: user.display_name }, { except: user.id });
+    ok(res, { voucher, replayed: voucher.replayed === true, afterMinor: plan.after });
   });
   // Mutabakat testi (tüm denetimler) ve geri alınan işlemlerin günlüğü.
   router.get("/api/workspace/ledger/integrity", async ({ req, res }) => {
@@ -355,7 +784,7 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
     if (!service) throw new HttpError(503, "Mutabakat katmanı hazır değil.");
     // v2.1.0 (§3.11): Mutabakat Testi tam taramadır — kapının görmediği yeni sapma integrity_log'a ("scan") ve zile yazılır.
     const result = service.scan ? service.scan().result : service.run();
-    ok(res, { ...result, log: service.recent(50).map(row => ({ ...row, detail: JSON.parse(row.detail || "[]") })) });
+    ok(res, { ...result, log: service.recent(50).map(logRow) });
   });
   // Gözden geçirme B8 (Aşama 2): carinin yevmiyedeki kontrol hesabı (120/320/336) bakiyesi — partyBalances(journal(rows({ parties })))
   // ile AYNI kural, SQL toplamıyla (kuruş tamsayısı). Mutabakat kapısının süzgeci hareketi çok (binlerce satır) olan carilerde bunu
@@ -378,7 +807,7 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
           WHEN e.kind IN ('credit', 'in') THEN -${c("e.amount")}
           ELSE 0 END) FROM account_entries e WHERE e.account_id = a.id), 0)` : "0",
       has("plans") ? `COALESCE((SELECT SUM(CASE WHEN p.covers_balance THEN 0 ELSE ${c("p.total")} END
-          - CASE WHEN p.status = 'closed' THEN MAX(0, ${c(`(p.total - COALESCE((SELECT SUM(CASE WHEN x.kind = 'in' THEN x.amount ELSE -x.amount END) FROM plan_entries x WHERE x.plan_id = p.id), 0))`)}) ELSE 0 END)
+          - CASE WHEN ${waivesSql("p", { column: hasColumn("plans", "close_rule") })} THEN MAX(0, ${c(`(p.total - COALESCE((SELECT SUM(CASE WHEN x.kind = 'in' THEN x.amount ELSE -x.amount END) FROM plan_entries x WHERE x.plan_id = p.id), 0))`)}) ELSE 0 END)
           FROM plans p WHERE p.account_id = a.id AND +p.deleted_at IS NULL), 0)` : "0",
       has("plans") && has("plan_entries") ? `COALESCE((SELECT SUM(CASE WHEN pe.kind = 'in' THEN -${c("pe.amount")} ELSE ${c("pe.amount")} END) FROM plans p CROSS JOIN plan_entries pe ON pe.plan_id = p.id WHERE p.account_id = a.id AND +p.deleted_at IS NULL), 0)` : "0",
       has("invoices") ? `COALESCE((SELECT SUM(CASE WHEN ${c("i.try_payable")} <= 0 THEN 0 WHEN i.kind IN ('sale', 'smm', 'purchase_return') THEN ${c("i.try_payable")} WHEN i.kind IN ('sale_return', 'purchase') THEN -${c("i.try_payable")} ELSE 0 END) FROM invoices i WHERE i.account_id = a.id AND +i.status = 'issued'), 0)` : "0",
@@ -392,5 +821,15 @@ export function registerLedgerRoutes(router, { store, auth, audit = () => {}, pe
     const parts = [has("account_entries") ? "(SELECT COUNT(*) FROM account_entries e WHERE e.account_id = j.value)" : "0", has("invoices") ? "(SELECT COUNT(*) FROM invoices i WHERE i.account_id = j.value)" : "0", has("plans") && has("plan_entries") ? "(SELECT COUNT(*) FROM plans p CROSS JOIN plan_entries pe ON pe.plan_id = p.id WHERE p.account_id = j.value)" : "0"];
     return new Map(store.all(`SELECT j.value AS id, ${parts.join(" + ")} AS n FROM json_each(?) j`, list).map(row => [row.id, Number(row.n) || 0]));
   }
-  return { build, check, expected, expectedSubs, refs, partyTotals, partyRowCounts };
+  // Kapanış (app.close, açılış geri alması; Ç3 tur 2): süren dondurma durur (snapshots.close) ve kilitten sonraki arka iş (afterLock) biter — iz iş parçacığı dosyayı tutarken
+  // bağlantı kapanmaz (Windows'ta geri yükleme / silme dosya takası, ders 48). Öbür iç API aynen (server.app.ledger.snapshots).
+  const exposed = {
+    ...snapshots,
+    async close() {
+      closing = true;
+      await snapshots.close();
+      await Promise.allSettled([...lockJobs]);
+    },
+  };
+  return { build, book, check, expected, expectedSubs, refs, partyTotals, partyRowCounts, vouchers, snapshots: exposed, freezeView };
 }

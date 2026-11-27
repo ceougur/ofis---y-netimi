@@ -1,0 +1,142 @@
+s08-pos-kg6 [TZ=UTC]: 20 olay · yapıldı 14 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 25 ms
+    s08-pos-kg6 [UTC] öz denetim TAMAM · AYNI 26 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 3 · ÖLÇÜLEMEDİ 0 · SUSMA 0 (adım 0, ara 0) · red farkı 0 · adım farkı 6 (sınıfsız 6)  (1 sn + 0 sn)
+s08-pos-kg6 [TZ=Europe/Istanbul]: 20 olay · yapıldı 14 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 26 ms
+    s08-pos-kg6 [Europe/Istanbul] öz denetim TAMAM · AYNI 26 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 3 · ÖLÇÜLEMEDİ 0 · SUSMA 0 (adım 0, ara 0) · red farkı 0 · adım farkı 6 (sınıfsız 6)  (1 sn + 0 sn)
+s11-kasa-carisiz-kg3 [TZ=UTC]: 19 olay · yapıldı 16 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 27 ms
+    s11-kasa-carisiz-kg3 [UTC] öz denetim TAMAM · AYNI 18 · U 6 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · SUSMA 0 (adım 0, ara 2) · red farkı 0 · adım farkı 0 (sınıfsız 0)  (1 sn + 0 sn)
+s11-kasa-carisiz-kg3 [TZ=Europe/Istanbul]: 19 olay · yapıldı 16 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 34 ms
+    s11-kasa-carisiz-kg3 [Europe/Istanbul] öz denetim TAMAM · AYNI 18 · U 6 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · SUSMA 0 (adım 0, ara 2) · red farkı 0 · adım farkı 0 (sınıfsız 0)  (1 sn + 0 sn)
+s110-s179-hesapsiz-sinir-en-gec-acilis [TZ=Europe/Istanbul]: 11 olay · yapıldı 9 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 28 ms
+    s110-s179-hesapsiz-sinir-en-gec-acilis [Europe/Istanbul] öz denetim TAMAM · AYNI 34 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 4 · SUSMA 0 (adım 0, ara 0) · red farkı 0 · adım farkı 2 (sınıfsız 0)  (1 sn + 0 sn)
+s110-s179-hesapsiz-sinir-en-gec-acilis [TZ=UTC]: 11 olay · yapıldı 9 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 29 ms
+    s110-s179-hesapsiz-sinir-en-gec-acilis [UTC] öz denetim TAMAM · AYNI 34 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 4 · SUSMA 0 (adım 0, ara 0) · red farkı 0 · adım farkı 2 (sınıfsız 0)  (1 sn + 0 sn)
+s111-s174-s180-kural-farki-kendi-yilinda [TZ=Europe/Istanbul]: 22 olay · yapıldı 13 · red 1 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 137 ms
+    s111-s174-s180-kural-farki-kendi-yilinda [Europe/Istanbul] öz denetim TAMAM · AYNI 15 · U 0 · P 0 · K 0 · R 6 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · SUSMA 0 (adım 0, ara 0) · red farkı 0 · adım farkı 1 (sınıfsız 0)  (2 sn + 0 sn)
+s111-s174-s180-kural-farki-kendi-yilinda [TZ=UTC]: 22 olay · yapıldı 13 · red 1 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 164 ms
+    s111-s174-s180-kural-farki-kendi-yilinda [UTC] öz denetim TAMAM · AYNI 15 · U 0 · P 0 · K 0 · R 6 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · SUSMA 0 (adım 0, ara 0) · red farkı 0 · adım farkı 1 (sınıfsız 0)  (2 sn + 0 sn)
+s112-s181-bagli-tahsilat-120-siniri [TZ=UTC]: 24 olay · yapıldı 19 · red 3 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 31 ms
+    s112-s181-bagli-tahsilat-120-siniri [UTC] öz denetim TAMAM · AYNI 11 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · SUSMA 0 (adım 0, ara 0) · red farkı 0 · adım farkı 0 (sınıfsız 0)  (1 sn + 0 sn)
+s112-s181-bagli-tahsilat-120-siniri [TZ=Europe/Istanbul]: 24 olay · yapıldı 19 · red 3 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 44 ms
+    s112-s181-bagli-tahsilat-120-siniri [Europe/Istanbul] öz denetim TAMAM · AYNI 11 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · SUSMA 0 (adım 0, ara 0) · red farkı 0 · adım farkı 0 (sınıfsız 0)  (1 sn + 0 sn)
+s113-s87-r8-geri-alma [TZ=UTC]: 11 olay · yapıldı 7 · red 1 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 25 ms
+    s113-s87-r8-geri-alma [UTC] öz denetim TAMAM · AYNI 8 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · SUSMA 0 (adım 0, ara 0) · red farkı 0 · adım farkı 0 (sınıfsız 0)  (1 sn + 0 sn)
+s113-s87-r8-geri-alma [TZ=Europe/Istanbul]: 11 olay · yapıldı 7 · red 1 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 21 ms
+    s113-s87-r8-geri-alma [Europe/Istanbul] öz denetim TAMAM · AYNI 8 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · SUSMA 0 (adım 0, ara 0) · red farkı 0 · adım farkı 0 (sınıfsız 0)  (1 sn + 0 sn)
+s23-devir-pos-valor-kg6 [TZ=UTC]: 7 olay · yapıldı 3 · red 0 · api_yok 0 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 35 ms
+    s23-devir-pos-valor-kg6 [UTC] öz denetim TAMAM · AYNI 7 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 2 · ÖLÇÜLEMEDİ 0 · SUSMA 0 (adım 0, ara 0) · red farkı 0 · adım farkı 2 (sınıfsız 2)  (1 sn + 0 sn)
+s23-devir-pos-valor-kg6 [TZ=Europe/Istanbul]: 7 olay · yapıldı 3 · red 0 · api_yok 0 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 27 ms
+    s23-devir-pos-valor-kg6 [Europe/Istanbul] öz denetim TAMAM · AYNI 7 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 2 · ÖLÇÜLEMEDİ 0 · SUSMA 0 (adım 0, ara 0) · red farkı 0 · adım farkı 2 (sınıfsız 2)  (1 sn + 0 sn)
+s72-s21-pos-valor-resmi-tatil [TZ=UTC]: 33 olay · yapıldı 22 · red 0 · api_yok 0 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 27 ms
+    s72-s21-pos-valor-resmi-tatil [UTC] öz denetim TAMAM · AYNI 9 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 3 · ÖLÇÜLEMEDİ 0 · SUSMA 0 (adım 0, ara 0) · red farkı 0 · adım farkı 8 (sınıfsız 8)  (1 sn + 0 sn)
+s72-s21-pos-valor-resmi-tatil [TZ=Europe/Istanbul]: 33 olay · yapıldı 22 · red 0 · api_yok 0 · uygulanmadı 1 · sürücü hatası 0 · olay döngüsü en çok 26 ms
+    s72-s21-pos-valor-resmi-tatil [Europe/Istanbul] öz denetim TAMAM · AYNI 9 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 3 · ÖLÇÜLEMEDİ 0 · SUSMA 0 (adım 0, ara 0) · red farkı 0 · adım farkı 8 (sınıfsız 8)  (1 sn + 0 sn)
+s75-s25-c-nakit-havale-pos [TZ=UTC]: 33 olay · yapıldı 21 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 35 ms
+    s75-s25-c-nakit-havale-pos [UTC] öz denetim TAMAM · AYNI 27 · U 4 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · SUSMA 0 (adım 0, ara 0) · red farkı 0 · adım farkı 2 (sınıfsız 2)  (2 sn + 0 sn)
+s75-s25-c-nakit-havale-pos [TZ=Europe/Istanbul]: 33 olay · yapıldı 21 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 33 ms
+    s75-s25-c-nakit-havale-pos [Europe/Istanbul] öz denetim TAMAM · AYNI 27 · U 4 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · SUSMA 0 (adım 0, ara 0) · red farkı 0 · adım farkı 2 (sınıfsız 2)  (2 sn + 0 sn)
+s77-s27-pos-valor-yarim-gun [TZ=UTC]: 20 olay · yapıldı 12 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 27 ms
+    s77-s27-pos-valor-yarim-gun [UTC] öz denetim TAMAM · AYNI 4 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · SUSMA 0 (adım 0, ara 0) · red farkı 0 · adım farkı 6 (sınıfsız 6)  (1 sn + 0 sn)
+s77-s27-pos-valor-yarim-gun [TZ=Europe/Istanbul]: 20 olay · yapıldı 12 · red 0 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 43 ms
+    s77-s27-pos-valor-yarim-gun [Europe/Istanbul] öz denetim TAMAM · AYNI 4 · U 0 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · ÖLÇÜLEMEDİ 0 · SUSMA 0 (adım 0, ara 0) · red farkı 0 · adım farkı 6 (sınıfsız 6)  (1 sn + 0 sn)
+
+AYNI 318 · U 20 · P 0 · K 0 · R 14 · SINIFLANMADI 16 · ÖLÇÜLEMEDİ 8 · SUSMA 0 (adım 0, ara adım 4) · red farkı 0 · uygulanamayan olay 0 · sınıfsız adım farkı 48 · değişmez 0 · öz denetim bozuk 0 · koşu hatası 0
+Ölçüm (olay döngüsü en çok, ms): s111-s174-s180-kural-farki-kendi-yilinda [UTC] 164 (koşu 2 sn; GET ledger ort 5 / en çok 10 ms) · s111-s174-s180-kural-farki-kendi-yilinda [Europe/Istanbul] 137 (koşu 2 sn; GET ledger ort 5 / en çok 22 ms) · s112-s181-bagli-tahsilat-120-siniri [Europe/Istanbul] 44 (koşu 1 sn; GET ledger ort 5 / en çok 7 ms) · s77-s27-pos-valor-yarim-gun [Europe/Istanbul] 43 (koşu 1 sn; GET ledger ort 4 / en çok 6 ms) · s23-devir-pos-valor-kg6 [UTC] 35 (koşu 1 sn; GET ledger ort 5 / en çok 6 ms)
+BEKLEYEN KURAL FARKLARI (kimlik: senaryo / denetim [UTC]): D2–D4 2/2 · GÖRÜNÜM-YOK (açık kalemler: programda okunacak uç yok) 1/1 · Ç5-C 1/3 · Ç7b-KG3 1/6
+ÖLÇÜLEMEDİ (8; sürücü sınırı — geçmiş günlü rapor (program as-of okumaz) ya da siniflama.json'daki eşleme sınırı):
+  s110-s179-hesapsiz-sinir-en-gec-acilis [Europe/Istanbul] mz1 ana:108 program -30000 · kâhin 0 · bugün 0 (kök neden (adım): OLC-S110-KART-ACILISSIZ)
+  s110-s179-hesapsiz-sinir-en-gec-acilis [Europe/Istanbul] mz1 ana:309 program 0 · kâhin -30000 · bugün -30000 (kök neden (adım): OLC-S110-KART-ACILISSIZ)
+  s110-s179-hesapsiz-sinir-en-gec-acilis [Europe/Istanbul] mz1 alt:108.00 program -30000 · kâhin 0 · bugün 0 (kök neden (adım): OLC-S110-KART-ACILISSIZ)
+  s110-s179-hesapsiz-sinir-en-gec-acilis [Europe/Istanbul] mz1 alt:309.KK1 program 0 · kâhin -30000 · bugün -30000 (kök neden (adım): OLC-S110-KART-ACILISSIZ)
+  s110-s179-hesapsiz-sinir-en-gec-acilis [UTC] mz1 ana:108 program -30000 · kâhin 0 · bugün 0 (kök neden (adım): OLC-S110-KART-ACILISSIZ)
+  s110-s179-hesapsiz-sinir-en-gec-acilis [UTC] mz1 ana:309 program 0 · kâhin -30000 · bugün -30000 (kök neden (adım): OLC-S110-KART-ACILISSIZ)
+  s110-s179-hesapsiz-sinir-en-gec-acilis [UTC] mz1 alt:108.00 program -30000 · kâhin 0 · bugün 0 (kök neden (adım): OLC-S110-KART-ACILISSIZ)
+  s110-s179-hesapsiz-sinir-en-gec-acilis [UTC] mz1 alt:309.KK1 program 0 · kâhin -30000 · bugün -30000 (kök neden (adım): OLC-S110-KART-ACILISSIZ)
+U etiketleri: KG3-KAYIT 12
+
+FARKLAR (78; ilk 200):
+  s08-pos-kg6 [Europe/Istanbul] ADIM 2 tahsilat P1 {"alt":{"108.POS1":2500},"ana":{"108":2500,"653":-2500}} → SINIFLANMADI
+  s08-pos-kg6 [Europe/Istanbul] ADIM 4 tahsilat P2 {"alt":{"108.POS1":1000},"ana":{"108":1000,"653":-1000}} → SINIFLANMADI
+  s08-pos-kg6 [Europe/Istanbul] ADIM 5 iptal  {"alt":{"108.POS1":-1000},"ana":{"108":-1000,"653":1000}} → SINIFLANMADI
+  s08-pos-kg6 [Europe/Istanbul] ADIM 8g gun→rapor  {"alt":{"108.POS1":-2500},"ana":{"108":-2500,"653":2500}} → SINIFLANMADI
+  s08-pos-kg6 [Europe/Istanbul] ADIM 10 tahsilat P3 {"alt":{"108.POS1":1000},"ana":{"108":1000,"653":-1000}} → SINIFLANMADI
+  s08-pos-kg6 [Europe/Istanbul] ADIM 13g gun→rapor  {"alt":{"108.POS1":-1000},"ana":{"108":-1000,"653":1000}} → SINIFLANMADI
+  s08-pos-kg6 [Europe/Istanbul] bil10 ana:108 program 100000 · kâhin 97500 · bugün 97500 → SINIFLANMADI
+  s08-pos-kg6 [Europe/Istanbul] bil10 alt:108.POS1 program 100000 · kâhin 97500 · bugün 97500 → SINIFLANMADI
+  s08-pos-kg6 [Europe/Istanbul] gt10 ana:653 program 0 · kâhin 2500 · bugün 2500 → SINIFLANMADI
+  s08-pos-kg6 [UTC] ADIM 2 tahsilat P1 {"alt":{"108.POS1":2500},"ana":{"108":2500,"653":-2500}} → SINIFLANMADI
+  s08-pos-kg6 [UTC] ADIM 4 tahsilat P2 {"alt":{"108.POS1":1000},"ana":{"108":1000,"653":-1000}} → SINIFLANMADI
+  s08-pos-kg6 [UTC] ADIM 5 iptal  {"alt":{"108.POS1":-1000},"ana":{"108":-1000,"653":1000}} → SINIFLANMADI
+  s08-pos-kg6 [UTC] ADIM 8g gun→rapor  {"alt":{"108.POS1":-2500},"ana":{"108":-2500,"653":2500}} → SINIFLANMADI
+  s08-pos-kg6 [UTC] ADIM 10 tahsilat P3 {"alt":{"108.POS1":1000},"ana":{"108":1000,"653":-1000}} → SINIFLANMADI
+  s08-pos-kg6 [UTC] ADIM 13g gun→rapor  {"alt":{"108.POS1":-1000},"ana":{"108":-1000,"653":1000}} → SINIFLANMADI
+  s08-pos-kg6 [UTC] bil10 ana:108 program 100000 · kâhin 97500 · bugün 97500 → SINIFLANMADI
+  s08-pos-kg6 [UTC] bil10 alt:108.POS1 program 100000 · kâhin 97500 · bugün 97500 → SINIFLANMADI
+  s08-pos-kg6 [UTC] gt10 ana:653 program 0 · kâhin 2500 · bugün 2500 → SINIFLANMADI
+  s111-s174-s180-kural-farki-kendi-yilinda [Europe/Istanbul] RED #14 kural_farki_duzelt: kâhin KURAL_FARKI_YOK · program kabul → R
+  s111-s174-s180-kural-farki-kendi-yilinda [Europe/Istanbul] fark3 kural_farki:500 program 70000 · kâhin 0 · bugün — → R
+  s111-s174-s180-kural-farki-kendi-yilinda [Europe/Istanbul] fark3 kural_farki:602 program -70000 · kâhin 0 · bugün — → R
+  s111-s174-s180-kural-farki-kendi-yilinda [Europe/Istanbul] mz27b ana:500 program 0 · kâhin -70000 · bugün -70000 → R
+  s111-s174-s180-kural-farki-kendi-yilinda [Europe/Istanbul] mz27b ana:671 program -70000 · kâhin 0 · bugün 0 → R
+  s111-s174-s180-kural-farki-kendi-yilinda [Europe/Istanbul] son ana:500 program 0 · kâhin -70000 · bugün -70000 → R
+  s111-s174-s180-kural-farki-kendi-yilinda [Europe/Istanbul] son ana:671 program -70000 · kâhin 0 · bugün 0 → R
+  s111-s174-s180-kural-farki-kendi-yilinda [UTC] RED #14 kural_farki_duzelt: kâhin KURAL_FARKI_YOK · program kabul → R
+  s111-s174-s180-kural-farki-kendi-yilinda [UTC] fark3 kural_farki:500 program 70000 · kâhin 0 · bugün — → R
+  s111-s174-s180-kural-farki-kendi-yilinda [UTC] fark3 kural_farki:602 program -70000 · kâhin 0 · bugün — → R
+  s111-s174-s180-kural-farki-kendi-yilinda [UTC] mz27b ana:500 program 0 · kâhin -70000 · bugün -70000 → R
+  s111-s174-s180-kural-farki-kendi-yilinda [UTC] mz27b ana:671 program -70000 · kâhin 0 · bugün 0 → R
+  s111-s174-s180-kural-farki-kendi-yilinda [UTC] son ana:500 program 0 · kâhin -70000 · bugün -70000 → R
+  s111-s174-s180-kural-farki-kendi-yilinda [UTC] son ana:671 program -70000 · kâhin 0 · bugün 0 → R
+  s23-devir-pos-valor-kg6 [Europe/Istanbul] ADIM 2 tahsilat P1 {"alt":{"108.POS1":3000},"ana":{"108":3000,"653":-3000}} → SINIFLANMADI
+  s23-devir-pos-valor-kg6 [Europe/Istanbul] ADIM 4g gun→rapor  {"alt":{"108.POS1":-3000},"ana":{"108":-3000,"653":3000}} → SINIFLANMADI
+  s23-devir-pos-valor-kg6 [Europe/Istanbul] gt ana:653 program 3000 · kâhin 0 · bugün 0 → SINIFLANMADI
+  s23-devir-pos-valor-kg6 [Europe/Istanbul] gt_arsiv ana:653 program 0 · kâhin 3000 · bugün 3000 → SINIFLANMADI
+  s23-devir-pos-valor-kg6 [UTC] ADIM 2 tahsilat P1 {"alt":{"108.POS1":3000},"ana":{"108":3000,"653":-3000}} → SINIFLANMADI
+  s23-devir-pos-valor-kg6 [UTC] ADIM 4g gun→rapor  {"alt":{"108.POS1":-3000},"ana":{"108":-3000,"653":3000}} → SINIFLANMADI
+  s23-devir-pos-valor-kg6 [UTC] gt ana:653 program 3000 · kâhin 0 · bugün 0 → SINIFLANMADI
+  s23-devir-pos-valor-kg6 [UTC] gt_arsiv ana:653 program 0 · kâhin 3000 · bugün 3000 → SINIFLANMADI
+  s72-s21-pos-valor-resmi-tatil [Europe/Istanbul] ADIM 2 tahsilat P1 {"alt":{"108.POS1":1000},"ana":{"108":1000,"653":-1000}} → SINIFLANMADI
+  s72-s21-pos-valor-resmi-tatil [Europe/Istanbul] ADIM 6g gun→rapor  {"alt":{"108.POS1":-1000},"ana":{"108":-1000,"653":1000}} → SINIFLANMADI
+  s72-s21-pos-valor-resmi-tatil [Europe/Istanbul] ADIM 9 tahsilat P2 {"alt":{"108.POS1":600},"ana":{"108":600,"653":-600}} → SINIFLANMADI
+  s72-s21-pos-valor-resmi-tatil [Europe/Istanbul] ADIM 11g gun→rapor  {"alt":{"108.POS1":-600},"ana":{"108":-600,"653":600}} → SINIFLANMADI
+  s72-s21-pos-valor-resmi-tatil [Europe/Istanbul] ADIM 13 tahsilat P4 {"alt":{"108.POS1":200},"ana":{"108":200,"653":-200}} → SINIFLANMADI
+  s72-s21-pos-valor-resmi-tatil [Europe/Istanbul] ADIM 15g gun→rapor  {"alt":{"108.POS1":-200},"ana":{"108":-200,"653":200}} → SINIFLANMADI
+  s72-s21-pos-valor-resmi-tatil [Europe/Istanbul] ADIM 17 tahsilat P3 {"alt":{"108.POS1":400},"ana":{"108":400,"653":-400}} → SINIFLANMADI
+  s72-s21-pos-valor-resmi-tatil [Europe/Istanbul] ADIM 21g gun→rapor  {"alt":{"108.POS1":-400},"ana":{"108":-400,"653":400}} → SINIFLANMADI
+  s72-s21-pos-valor-resmi-tatil [Europe/Istanbul] mz ana:108 program 20000 · kâhin 19600 · bugün 19600 → SINIFLANMADI
+  s72-s21-pos-valor-resmi-tatil [Europe/Istanbul] mz ana:653 program 1800 · kâhin 2200 · bugün 2200 → SINIFLANMADI
+  s72-s21-pos-valor-resmi-tatil [Europe/Istanbul] mz alt:108.POS1 program 20000 · kâhin 19600 · bugün 19600 → SINIFLANMADI
+  s72-s21-pos-valor-resmi-tatil [UTC] ADIM 2 tahsilat P1 {"alt":{"108.POS1":1000},"ana":{"108":1000,"653":-1000}} → SINIFLANMADI
+  s72-s21-pos-valor-resmi-tatil [UTC] ADIM 6g gun→rapor  {"alt":{"108.POS1":-1000},"ana":{"108":-1000,"653":1000}} → SINIFLANMADI
+  s72-s21-pos-valor-resmi-tatil [UTC] ADIM 9 tahsilat P2 {"alt":{"108.POS1":600},"ana":{"108":600,"653":-600}} → SINIFLANMADI
+  s72-s21-pos-valor-resmi-tatil [UTC] ADIM 11g gun→rapor  {"alt":{"108.POS1":-600},"ana":{"108":-600,"653":600}} → SINIFLANMADI
+  s72-s21-pos-valor-resmi-tatil [UTC] ADIM 13 tahsilat P4 {"alt":{"108.POS1":200},"ana":{"108":200,"653":-200}} → SINIFLANMADI
+  s72-s21-pos-valor-resmi-tatil [UTC] ADIM 15g gun→rapor  {"alt":{"108.POS1":-200},"ana":{"108":-200,"653":200}} → SINIFLANMADI
+  s72-s21-pos-valor-resmi-tatil [UTC] ADIM 17 tahsilat P3 {"alt":{"108.POS1":400},"ana":{"108":400,"653":-400}} → SINIFLANMADI
+  s72-s21-pos-valor-resmi-tatil [UTC] ADIM 21g gun→rapor  {"alt":{"108.POS1":-400},"ana":{"108":-400,"653":400}} → SINIFLANMADI
+  s72-s21-pos-valor-resmi-tatil [UTC] mz ana:108 program 20000 · kâhin 19600 · bugün 19600 → SINIFLANMADI
+  s72-s21-pos-valor-resmi-tatil [UTC] mz ana:653 program 1800 · kâhin 2200 · bugün 2200 → SINIFLANMADI
+  s72-s21-pos-valor-resmi-tatil [UTC] mz alt:108.POS1 program 20000 · kâhin 19600 · bugün 19600 → SINIFLANMADI
+  s75-s25-c-nakit-havale-pos [Europe/Istanbul] ADIM 12 tahsilat PP {"alt":{"108.POS1":240},"ana":{"108":240,"653":-240}} → SINIFLANMADI
+  s75-s25-c-nakit-havale-pos [Europe/Istanbul] ADIM 13g gun→tahsilat  {"alt":{"108.POS1":-240},"ana":{"108":-240,"653":240}} → SINIFLANMADI
+  s75-s25-c-nakit-havale-pos [UTC] ADIM 12 tahsilat PP {"alt":{"108.POS1":240},"ana":{"108":240,"653":-240}} → SINIFLANMADI
+  s75-s25-c-nakit-havale-pos [UTC] ADIM 13g gun→tahsilat  {"alt":{"108.POS1":-240},"ana":{"108":-240,"653":240}} → SINIFLANMADI
+  s77-s27-pos-valor-yarim-gun [Europe/Istanbul] ADIM 2 tahsilat P1 {"alt":{"108.POS1":200},"ana":{"108":200,"653":-200}} → SINIFLANMADI
+  s77-s27-pos-valor-yarim-gun [Europe/Istanbul] ADIM 4g gun→rapor  {"alt":{"108.POS1":-200},"ana":{"108":-200,"653":200}} → SINIFLANMADI
+  s77-s27-pos-valor-yarim-gun [Europe/Istanbul] ADIM 7 tahsilat P2 {"alt":{"108.POS1":400},"ana":{"108":400,"653":-400}} → SINIFLANMADI
+  s77-s27-pos-valor-yarim-gun [Europe/Istanbul] ADIM 8g gun→satis_faturasi  {"alt":{"108.POS1":-400},"ana":{"108":-400,"653":400}} → SINIFLANMADI
+  s77-s27-pos-valor-yarim-gun [Europe/Istanbul] ADIM 9 tahsilat P3 {"alt":{"108.POS1":600},"ana":{"108":600,"653":-600}} → SINIFLANMADI
+  s77-s27-pos-valor-yarim-gun [Europe/Istanbul] ADIM 14g gun→rapor  {"alt":{"108.POS1":-600},"ana":{"108":-600,"653":600}} → SINIFLANMADI
+  s77-s27-pos-valor-yarim-gun [UTC] ADIM 2 tahsilat P1 {"alt":{"108.POS1":200},"ana":{"108":200,"653":-200}} → SINIFLANMADI
+  s77-s27-pos-valor-yarim-gun [UTC] ADIM 4g gun→rapor  {"alt":{"108.POS1":-200},"ana":{"108":-200,"653":200}} → SINIFLANMADI
+  s77-s27-pos-valor-yarim-gun [UTC] ADIM 7 tahsilat P2 {"alt":{"108.POS1":400},"ana":{"108":400,"653":-400}} → SINIFLANMADI
+  s77-s27-pos-valor-yarim-gun [UTC] ADIM 8g gun→satis_faturasi  {"alt":{"108.POS1":-400},"ana":{"108":-400,"653":400}} → SINIFLANMADI
+  s77-s27-pos-valor-yarim-gun [UTC] ADIM 9 tahsilat P3 {"alt":{"108.POS1":600},"ana":{"108":600,"653":-600}} → SINIFLANMADI
+  s77-s27-pos-valor-yarim-gun [UTC] ADIM 14g gun→rapor  {"alt":{"108.POS1":-600},"ana":{"108":-600,"653":600}} → SINIFLANMADI
+
+# tests 424
+# pass 338
+# fail 78
+# cancelled 0
+# skipped 8
+# todo 0
+Çıktı: /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/surucu3-a379/mutant1cikti

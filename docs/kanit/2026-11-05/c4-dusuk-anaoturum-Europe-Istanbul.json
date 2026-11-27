@@ -1,0 +1,32 @@
+{
+  "ad": "c4-dusuk-anaoturum-Europe-Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/defter-turu-c4.test.mjs test/hesap-plani-sinif-250.test.mjs test/yazim-duzeni.test.mjs test/platform-tasinabilirlik.test.mjs",
+  "commit": "ba27aaaacc26e1865550aa989503c7e8afbdeb6e",
+  "dal": "claude/epic-thompson-w0lc2l",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T20:54:26.232Z",
+  "sure_sn": 6.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 28,
+    "gecen": 28,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/c4-dusuk-anaoturum-Europe-Istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "b28dd61dfb072111ac0c378f8edb011ac19759eb67b890361998486096447ff5",
+  "ham_cikti_bayt": 9003
+}

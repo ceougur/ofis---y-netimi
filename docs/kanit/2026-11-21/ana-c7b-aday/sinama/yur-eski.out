@@ -1,0 +1,52 @@
+
+■ 1 Açık Faturalar — Tüm Cariler ve cari süzgeci
+     20.09.2026 | FIS2026000000001 | Alacak (Satış) | Yürüyüş Kısmi Müşteri | 02.09.2026 | ₺50.000,00 | ₺50.000,00 | 18 gün | 1–30 Gün
+     20.09.2026 | FIS2026000000002 | Alacak (Satış) | Yürüyüş Tam Müşteri | 02.09.2026 | ₺50.000,00 | ₺50.000,00 | 18 gün | 1–30 Gün
+      |  | TOPLAM Alacak |  |  | ₺100.000,00 | ₺100.000,00 |  | 
+      |  | TOPLAM Borç |  |  | ₺30.000,00 | ₺30.000,00 |  | 
+  ✗ BEKLENEN DEĞİL F1 satırında Kalan 20.000: false (beklenen true)
+  ✗ BEKLENEN DEĞİL F2 (kartın tamamı) satırı yok: true (beklenen false)
+     20.09.2026 | FIS2026000000001 | Alacak (Satış) | Yürüyüş Kısmi Müşteri | 02.09.2026 | ₺50.000,00 | ₺50.000,00 | 18 gün | 1–30 Gün
+      |  | TOPLAM Alacak |  |  | ₺50.000,00 | ₺50.000,00 |  | 
+      |  | TOPLAM Borç |  |  | ₺30.000,00 | ₺30.000,00 |  | 
+  ✗ BEKLENEN DEĞİL cari süzgeci: TOPLAM satırında Alacak 20.000: false (beklenen true)
+  ✗ BEKLENEN DEĞİL tam kapsanan cari: satır yok: 1 (beklenen 0)
+
+■ 2 Fatura kartı (kısmi): Açık 20.000, 'Taksit Kartında' bağlantısı karta gider
+  kalan satırı: Açık: ₺50.000,00 · başlık: [] · taksit kartında: []
+  ✗ BEKLENEN DEĞİL Açık satırı: false (beklenen true)
+  ✗ BEKLENEN DEĞİL Taksit Kartında satırı: [] (beklenen ["Taksit Kartında: Yürüyüş Kısmi Kartı · ₺30.000,00"])
+  ✗ ADIM YARIDA: page.click: Timeout 30000ms exceeded.
+
+■ 3 Tahsilat Ekle önerisi 20.000 ve Mahsup Et önerisi 20.000
+  ✗ BEKLENEN DEĞİL Mahsup Et önerisi: "30000" (beklenen "20000")
+  mahsup metni: Açık tutar ₺50.000,00. Seçilen karşı belgeyle karşılıklı kapanır; cari bakiyesi ve Kasa değişmez (bakiye zaten net). Mahsup fişi karttan kaldırılabilir.
+  ✗ BEKLENEN DEĞİL Tahsilat Ekle önerisi: "50000" (beklenen "20000")
+  tahsilat metni: Açık tutar ₺50.000,00. Cariden para alındı: bakiyeden düşer, Kasa'ya tahsilat olarak girer, makbuzu alınır. Bu faturaya bağlı kapatılır (fazlası carinin vadesi en önce gelen açık borcuna gider).
+  form kapandı
+  ✓ veri tabanı: F1'e bağlı tek 20.000 tahsilat: [["in",20000,true,"cash"]]
+  ✗ BEKLENEN DEĞİL tahsilattan sonra F1 durumu: "Açık: ₺30.000,00 · ödenen ₺20.000,00" (beklenen "Taksitte")
+
+■ 4 Fatura kartı (tam): 'Taksitte', Tahsilat Ekle yok
+  ✗ BEKLENEN DEĞİL kalan satırı: "Açık: ₺50.000,00" (beklenen "Taksitte")
+  ✗ BEKLENEN DEĞİL Tahsilat Ekle düğmesi: true (beklenen false)
+  ✗ BEKLENEN DEĞİL Taksit Kartında satırı: [] (beklenen ["Taksit Kartında: Yürüyüş Tam Kartı · ₺50.000,00"])
+  başlık rakamı: []
+
+■ 5 Faturalar listesi — Tüm ve 'Açık' süzgeci
+     02.09.202612:00 | FIS2026000000002Satış Faturası | Yürüyüş Tam MüşteriHizmet Satışı | Vadesi Geçti | ₺50.000,00 | ₺50.000,00
+     02.09.202612:00 | ALS-Y1Alış Faturası | Yürüyüş Kısmi MüşteriHizmet ve Gider Alışı | Vadesi Geçti | ₺30.000,00 | ₺30.000,00
+     02.09.202612:00 | FIS2026000000001Satış Faturası | Yürüyüş Kısmi MüşteriHizmet Satışı | Vadesi Geçti | ₺50.000,00 | ₺30.000,00
+  kutucuklar: ["Toplam (KDV Dahil)₺130.000,003 belge","KDV₺21.666,66","Açık Bakiye₺110.000,00","Vadesi Geçmiş₺110.000,00"]
+     [Açık] 02.09.202612:00 | FIS2026000000002Satış Faturası | Yürüyüş Tam MüşteriHizmet Satışı | Vadesi Geçti | ₺50.000,00 | ₺50.000,00
+     [Açık] 02.09.202612:00 | ALS-Y1Alış Faturası | Yürüyüş Kısmi MüşteriHizmet ve Gider Alışı | Vadesi Geçti | ₺30.000,00 | ₺30.000,00
+     [Açık] 02.09.202612:00 | FIS2026000000001Satış Faturası | Yürüyüş Kısmi MüşteriHizmet Satışı | Vadesi Geçti | ₺50.000,00 | ₺30.000,00
+  ✗ BEKLENEN DEĞİL 'Açık' süzgecinde F1 ve F2 (Taksitte) var: [false,false] (beklenen [true,true])
+  ✗ BEKLENEN DEĞİL Açık Bakiye kutucuğu (Taksitte satışlar açık sayılmaz; alış 30.000): "Açık Bakiye₺110.000,00" (beklenen "Açık Bakiye₺30.000,00")
+
+■ 6 Anlık Durum (API; masaüstünde fatura özeti kutusu yok — mobil / birleşik şirket raporu okur)
+  ✗ BEKLENEN DEĞİL açık / vadesi geçen satış: [80000,80000] (beklenen [0,0])
+  ✓ açık alış (alış faturası 30.000 kendi tarafında): 30000
+
+sayfa hatası: yok
+BEKLENEN DEĞİL: 16

@@ -1,0 +1,32 @@
+{
+  "ad": "kahineski4-kirmizi-eski-cari-ist",
+  "komut": "python3 -I -B docs/kanit/2026-11-06/kahineski4-arac/elle-karsilastir.py --model /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahineski4-a312/eski/test/bagimsiz/cari --kirmizi-bekle test/bagimsiz/cari/senaryolar/d14-c5-s91-vadesiz-kayit-gunu.json test/bagimsiz/cari/senaryolar/d15-c5-s91-vadesiz-ertesi-gun.json test/bagimsiz/cari/senaryolar/d16-c5-s92-net-gorunum.json test/bagimsiz/cari/senaryolar/d17-c5-s93-verilen-avans.json test/bagimsiz/cari/senaryolar/d18-c5-s93-avans-ertesi-gun.json test/bagimsiz/cari/senaryolar/d19-c5-s92-okuma-ayrisan.json",
+  "commit": "f49f9d97a72e2e8c2825822db001ab04db91ffe7",
+  "dal": "worktree-agent-a312f00ba9e5edd7b",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v338 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-10T13:14:27.388Z",
+  "sure_sn": 0.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 142,
+    "gecen": 142,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahineski4-a312/kanit/2026-11-10/kahineski4-kirmizi-eski-cari-ist.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a312f00ba9e5edd7b",
+  "ham_cikti_sha256": "18ddccf50d2b1e536a34b2aa861e0b11a18bbaf7ff0a121cd923beb28da33276",
+  "ham_cikti_bayt": 19644
+}

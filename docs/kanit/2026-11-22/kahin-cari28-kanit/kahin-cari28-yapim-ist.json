@@ -1,0 +1,151 @@
+{
+  "ad": "kahin-cari28-yapim-ist",
+  "komut": "node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs --yapim-asamasi-yaz --mutasyonsuz --cikti /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc28-a5c/yapim-ist",
+  "commit": "8d82df442297f4c6fc5afbef5acd5ab3fe4230db",
+  "dal": "worktree-agent-a5cd991d0d986ba51",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-22T11:57:12.551Z",
+  "sure_sn": 177.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": null,
+  "hukum": "BELİRSİZ",
+  "neden": "özet satırı tanınmadı",
+  "basarisiz_testler": [
+    {
+      "ad": "[BULGU KULLANICI] k0:cari:V10:gecikmis: program 20000 · kâhin 0 (C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vade",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k0:cari:V2:gecikmis: program 20000 · kâhin 0 (C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vades",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k0:cari:V7:gecikmis: program 30000 · kâhin 0 (C16.4 B1 gecikmiş = Σ net kuyrukta vadesi < bugün olan açık borç yönlü kalemler — karşı yönlü kalemler kendi belge tarihinde netleşir (S92 A + (5) A), verilen avans ödeme gününün ertesinden (S93 A), Ödeme Sözü değiştirmez (S52 A), vades",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k0:kart:KV10:kalan: program 60000 · kâhin 30000 (C13.4 · §36 Y24-3 … Y24-7: kart iade / Düzenle ile küçüldü ((4) 2B-S3 = A — vadesi en önce gelen açık taksitten; S234 / S237 = A; iade iptalinde aynı taksitlere geri — KAPSAM (c)))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k0:kart:KV10:odenen: program 0 · kâhin 30000 (C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50) · §36 Y24-3 … Y24-7: kart iade / Düzenle ile küçüldü ((4) 2B-S3 = A — vadesi en önce gelen açık taksitten; S234 / S237 = A; iade iptalinde aynı taksitlere g",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k0:kart:KV10:taksit1:odenen: program 0 · kâhin 20000 (C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat · §36 Y24-3 … Y24-7: kart iade / Düzenle ile küçüldü ((4) 2B-S3 = A — vadesi en önce gelen açık taksitten; S234 / S237 = A; iade iptalind",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k0:kart:KV10:taksit2:odenen: program 0 · kâhin 10000 (C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat · §36 Y24-3 … Y24-7: kart iade / Düzenle ile küçüldü ((4) 2B-S3 = A — vadesi en önce gelen açık taksitten; S234 / S237 = A; iade iptalind",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k0:kart:KV2:kalan: program 60000 · kâhin 30000 (C13.4)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k0:kart:KV2:odenen: program 0 · kâhin 30000 (C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k0:kart:KV2:taksit1:odenen: program 0 · kâhin 20000 (C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k0:kart:KV2:taksit2:odenen: program 0 · kâhin 10000 (C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k0:kart:KV3:kalan: program 60000 · kâhin 0 (C13.4)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k0:kart:KV3:odenen: program 0 · kâhin 60000 (C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k0:kart:KV3:taksit1:odenen: program 0 · kâhin 20000 (C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k0:kart:KV3:taksit2:odenen: program 0 · kâhin 20000 (C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k0:kart:KV3:taksit3:odenen: program 0 · kâhin 20000 (C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k0:kart:KV4:kalan: program 60000 · kâhin 0 (C13.4)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k0:kart:KV4:odenen: program 0 · kâhin 60000 (C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k0:kart:KV4:taksit1:odenen: program 0 · kâhin 20000 (C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k0:kart:KV4:taksit2:odenen: program 0 · kâhin 20000 (C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k0:kart:KV4:taksit3:odenen: program 0 · kâhin 20000 (C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k0:kart:KV7:kalan: program 90000 · kâhin 60000 (C13.4)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k0:kart:KV7:odenen: program 0 · kâhin 30000 (C13.4 TYK: kart tahsilatı + kart seçilmeden alınan tahsilatın kuyruk payı (S50))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k0:kart:KV7:taksit1:odenen: program 0 · kâhin 30000 (C13.4 TYK: vadesi ilk gelen açık taksitten (kart tahsilatı) + S2 sırasıyla bağsız tahsilat)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k0:kart:KV8:kalan: program 60000 · kâhin 0 (C13.4)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc28-a5c/kanit/2026-11-22/kahin-cari28-yapim-ist.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a5cd991d0d986ba51",
+  "ham_cikti_sha256": "6dfb3adeb64d7f6529946e3f0482e7efb72d011953b7a4fc340cb42a31932649",
+  "ham_cikti_bayt": 38278
+}

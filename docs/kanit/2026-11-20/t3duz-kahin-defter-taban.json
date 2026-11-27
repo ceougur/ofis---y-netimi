@@ -1,0 +1,32 @@
+{
+  "ad": "t3duz-kahin-defter-taban",
+  "komut": "npm run test:kahin-defter",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-20T06:50:29.496Z",
+  "sure_sn": 3.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "kahin-defter",
+    "toplam": 187,
+    "gecen": 187,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../t3duz-d3/k/2026-11-20/t3duz-kahin-defter-taban.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/t3duz-d2/taban",
+  "ham_cikti_sha256": "15f850e515ebe7dee70b13c07ee88ab4f6c2f3925f5a9d661905140bd9db135c",
+  "ham_cikti_bayt": 2825
+}

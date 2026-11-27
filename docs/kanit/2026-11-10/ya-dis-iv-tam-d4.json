@@ -1,0 +1,32 @@
+{
+  "ad": "ya-dis-iv-tam-d4",
+  "komut": "node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs test/bagimsiz/cari/senaryolar/d4-c5-s50-tek-kuyruk.json --mutasyonsuz --cikti /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ya-kos/dis-iv",
+  "commit": "77ea14c31b065831ca2838a9be43b34215b302d0",
+  "dal": "worktree-agent-ad614648682496b49",
+  "kirli": 3,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v338 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-10T18:13:02.195Z",
+  "sure_sn": 1.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 48,
+    "gecen": 48,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ya-kanit/2026-11-10/ya-dis-iv-tam-d4.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad614648682496b49",
+  "ham_cikti_sha256": "3e45cbd01dcf1ec99435b93cbc57e5a106b1b69b7ad3ae5395b9673868f9219b",
+  "ham_cikti_bayt": 1794
+}

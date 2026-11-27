@@ -1,0 +1,13 @@
+EŞDEĞERLİK (eski senaryolar; kural 2.5.0 + 2.4.9; mutasyonsuz + mutant 1–34): 490/490 bayt bayt aynı
+senaryo.json[2.4.3 olayları] 2.4.9 çıktısı çökmeden üretildi: True (75 olay; mizan kontrolü 5)
+
+YENİ SENARYOLAR — eski (bakım 1) kâhinde 2.5.0:
+  g6-s65-acilis-basi.json: eski kâhin ÇÖKTÜ — SystemExit: SK-1 KULLANICIYA SORULMALI: açıklamasında 'açılış' ortada geçen eski kayıt ('2025 açılış farkı') — kâhin bu durumu kurmaz
+  g6-s65-acilis-basi.json: yeni kâhin çalıştı
+  g7-s66-carisiz-karsiliksiz.json: eski kâhin ÇÖKTÜ — SystemExit: SK-2 KULLANICIYA SORULMALI: formdan girilmiş carisiz (açılış değil) evrakın karşılıksızı — kâhin bu durumu kurmaz
+  g7-s66-carisiz-karsiliksiz.json: yeni kâhin çalıştı
+  g8-s66-kilitli-donem.json: eski kâhin ÇÖKTÜ — SystemExit: SK-2 KULLANICIYA SORULMALI: formdan girilmiş carisiz (açılış değil) evrakın karşılıksızı — kâhin bu durumu kurmaz
+  g8-s66-kilitli-donem.json: yeni kâhin çalıştı
+# tests 490
+# pass 490
+# fail 0

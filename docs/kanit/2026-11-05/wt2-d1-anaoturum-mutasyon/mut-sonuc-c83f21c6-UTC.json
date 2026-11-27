@@ -1,0 +1,34 @@
+[
+ {
+  "id": "X1",
+  "what": "sharedWaba aynı veri dosyasını gösteren şirketi atlamaz (selfKey denetimi kalkar)",
+  "exit": 1,
+  "tests": 27,
+  "pass": 26,
+  "fail": 1,
+  "cancelled": 0,
+  "caught": true,
+  "failed": [
+   "aynı veri klasörünü gösteren iki şirket (Ayır'dan ÖNCE): öbür şirketin bağlantısı aynı ayar satırıdır, 'başka şirket' sayılmaz → Kaldır Meta"
+  ],
+  "errors": [
+   "|-"
+  ]
+ },
+ {
+  "id": "X7",
+  "what": "noteMetaError 'daha önce çalıştı' koşulunu yalnız 190'da uygular (0'da her belirteç Süresi Doldu)",
+  "exit": 1,
+  "tests": 27,
+  "pass": 26,
+  "fail": 1,
+  "cancelled": 0,
+  "caught": true,
+  "failed": [
+   "Sına yapılmamış (Meta'da hiç çalışmamış) belirteç kod 0 alırsa bağlantı Süresi Doldu OLMAZ (yanlış yazım; 190'ın kuralı — BAŞ MİMAR KARARI ("
+  ],
+  "errors": [
+   "\"hiç çalışmamış belirtecin kod 0'ı bağlantıyı Süresi Doldu yapmaz (geldi expired)\""
+  ]
+ }
+]

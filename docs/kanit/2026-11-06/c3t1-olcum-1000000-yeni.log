@@ -1,0 +1,11 @@
+hesapPlaniMizani2025-1 {"ms":68281,"olayDongusuEnCokMs":68283,"olcer":{"histogramMs":68283,"intervalMs":68281},"tepeRssMb":2147,"heapUsedMb":694,"hesap":29,"sha":"689058e90d730f3e"}
+yevmiye2025-1 {"ms":27782,"olayDongusuEnCokMs":27817,"olcer":{"histogramMs":27817,"intervalMs":27782},"tepeRssMb":1909,"heapUsedMb":1418,"madde":384686,"sha":"8cc8e525f41dacc2"}
+hesapPlaniMizani2025-2 {"ms":29845,"olayDongusuEnCokMs":29863,"olcer":{"histogramMs":29863,"intervalMs":29845},"tepeRssMb":1798,"heapUsedMb":1285,"hesap":29,"sha":"689058e90d730f3e"}
+yevmiye2025-2 {"ms":28403,"olayDongusuEnCokMs":28421,"olcer":{"histogramMs":28421,"intervalMs":28402},"tepeRssMb":2070,"heapUsedMb":1559,"madde":384686,"sha":"8cc8e525f41dacc2"}
+dondurma {"ms":96736,"olayDongusuEnCokMs":300,"olcer":{"histogramMs":300,"intervalMs":290},"coverage":"2025-12-31","error":"","satir":2741312}
+acilisOnarimi-1 {"ms":1662,"repair":{"action":"none","pending":false,"damaged":false}}
+acilisOnarimi-2 {"ms":1613,"repair":{"action":"none","pending":false,"damaged":false}}
+
+# tests 1
+# pass 1
+# fail 0

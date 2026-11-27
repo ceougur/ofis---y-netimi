@@ -1,0 +1,89 @@
+başladı 06:51:29 yük 1.13 1.27 1.52 · aday d2a37e3d = ana 6dab9d90 + tur 2e 866c2ab6
+yeni testler UTC çıkış 0 # tests 26 # pass 26 # fail 0 # cancelled 0 # skipped 0 
+yeni testler Europe/Istanbul çıkış 0 # tests 26 # pass 26 # fail 0 # cancelled 0 # skipped 0 
+taban kural-farki-yil-250 çıkış 1 # tests 7 # pass 1 # fail 6 # cancelled 0 # skipped 0 
+    not ok 1 - [y1] eşleme yılı tek tanım: ilk açık günün (kilit + 1) yılı; 30.12 / 31.12 sınırı; kilit yoksa donmuş dönem, o da yoksa bugün
+    not ok 2 - [y2] S174 = A: 2026'da yazılmış fiş (B 500 / A 602) kilit 31.12.2026'yı aşınca kendi yılında düzeltilmiş sayılır — 2027'de fiş önerilmez
+    not ok 3 - [y3] eski yıldan DÜZELTİLMEMİŞ fark + aynı yıl düzeltilmiş fark birlikte: yeni fiş yalnız düzeltilmemiş kısmı, 671'e
+    not ok 4 - [y4] eski biçim (yıl ayrımsız toplam) ve tek yıl fişi: sonuç expected − posted (bugünkü hesap AYNEN)
+    not ok 5 - [y5] fazla düzeltme yıl sonundan sonra: tutar doğru (700); fişin yılı eşleme yılından SONRA ise (kilit geri alındı) satırlar fişin tersi
+not ok 1 - Ç5-A tur 2e — Kural Farkı Düzeltme Fişi: yıl kuralı (saf plan)
+    not ok 1 - [y7] S174 = A uçtan uca: fiş 2026 → kilit 30.12 (602) → kilit 31.12 (671) → aday onayı → 'Fişle düzeltilebilen fark kalmadı' + Düzeltildi; ikinci fiş; ters kayıt; kilit
+not ok 2 - Ç5-A tur 2e — Kural Farkı Düzeltme Fişi: yıl kuralı (program, v2.4.9 verisi)
+      error: 'opening.ruleDiffCorrectionYear is not a function'
+      error: |-
+      name: 'AssertionError'
+      expected:
+      actual:
+      error: |-
+taban acilis-olabilir-yetki-250 çıkış 1 # tests 3 # pass 0 # fail 3 # cancelled 0 # skipped 0 
+    not ok 1 - rol × uç × kilitli / açık: Avukat ve Muhasebe kilitli adaya (kilit günü dahil) tek karar ve geri alma 403, açık adaya 200; personel her uçta 403; okuma uçları değişmez
+    not ok 2 - toplu: seçimde kilitli kayıt varsa İŞLEM BÜTÜN reddedilir (açık kayıt da yazılmaz), ileti yöneticiye kalan kayıtları sayar; yalnız açık kayıtlar 200; yönetici kilitliy
+    not ok 3 - kilit SONRADAN ilerleyip kararı kapsarsa geri alma yöneticide; kilit kaldırılınca bugünkü yetki geri gelir
+not ok 1 - Ç5-A tur 2e DÜŞÜK-4 — kilitli dönemdeki adayın kararı yalnız yöneticide
+      error: |-
+        200 !== 403
+      name: 'AssertionError'
+      expected: 403
+      actual: 200
+      error: |-
+taban kural-farki-duzeltme-250 çıkış 1 # tests 8 # pass 7 # fail 1 # cancelled 0 # skipped 0 
+    not ok 5 - [5] fazla düzeltme: fişten sonra kilit kaldırılır → uyarı (kilit olmasa da görünür); yeniden kilitlenir → yine fazla; ters kayıtla temiz
+not ok 1 - Ç5-A tur 2b İş 2 — Kural Farkı Düzeltme Fişi
+      error: 'ipucundaki ekran yeri (tur 2e DÜŞÜK-3)'
+      name: 'AssertionError'
+      expected:
+      actual: "Kilitli dönemde düzeltilecek kural farkı kalmadı (kilit kaldırıldı ya da dönem güncel kuralla yeniden dondu); Kural Farkı Düzeltme Fişi (Fiş 2026-000001) artık fazla — Yönetim › Kural Fa
+  error: '1 subtest failed'
+mutasyon çıkış 0
+N1 alt defter dışlaması tek tur (kararlı noktaya yinelenmez) => kural-farki-yil-250.test.mjs: çıkış 1 [ℹ tests 7 ℹ pass 6 ℹ fail 1] ✖ [y6] N1: alt defter dışlaması kararlı noktaya 
+N3 etkin düzeltme listesi ters kaydedilmişleri de sayar => kural-farki-yil-250.test.mjs: çıkış 1 [ℹ tests 7 ℹ pass 6 ℹ fail 1] ✖ [y7] S174 = A uçtan uca: fiş 2026 → kilit 30.12 (602)
+N4 Düzeltildi dışarıda kalan alt defter farkına bakmaz => kural-farki-duzeltme-250.test.mjs: çıkış 1 [ℹ tests 8 ℹ pass 7 ℹ fail 1] ✖ [8] S164 = C ikinci örnek: kilitli tahsilatın fa
+N9 zil / ekranın kilitli dönemdeki aday sayısı kilit gününü saymaz => kural-farki-yil-250.test.mjs: çıkış 1 [ℹ tests 7 ℹ pass 6 ℹ fail 1] ✖ [y7] S174 = A uçtan uca: fiş 2026 → k
+N10 B16 sıra zorlaması kilit günündeki adayı saymaz => kural-farki-yil-250.test.mjs: çıkış 1 [ℹ tests 7 ℹ pass 6 ℹ fail 1] ✖ [y7] S174 = A uçtan uca: fiş 2026 → kilit 30.12 (602) 
+N11 ön izlemenin 671/681 eşleme yılı fiş tarihinin değil bugünün yılı => kural-farki-yil-250.test.mjs: çıkış 1 [ℹ tests 7 ℹ pass 6 ℹ fail 1] ✖ [y7] S174 = A uçtan uca: fiş 2026
+N12 S160 sorgusu evrağın silinmiş olmasına bakmaz => s160-kilitli-tahsilat-bagi-250.test.mjs: çıkış 1 [ℹ tests 8 ℹ pass 7 ℹ fail 1] ✖ silinmiş evrak (Kapatılacak Fatura, kilitli tari
+E1 eşleme yılı = kilit + 1 yazılmış fişe de uygulanır (fiş kendi yılıyla düşülmez — taban davranışı) => kural-farki-yil-250.test.mjs: çıkış 1 [ℹ tests 7 ℹ pass 3 ℹ fail 4]
+E2 eşleme yılı kilit + 1 değil kilit gününün yılı => kural-farki-yil-250.test.mjs: çıkış 1 [ℹ tests 7 ℹ pass 5 ℹ fail 2] ✖ [y1] eşleme yılı tek tanım: ilk açık günün (kili
+E3 ters kaydın satırları kendi yılına sayılır (asıl fişin değil) => kural-farki-yil-250.test.mjs: çıkış 1 [ℹ tests 7 ℹ pass 6 ℹ fail 1] ✖ [y7] S174 = A uçtan uca: fiş 2026 → 
+E4 önceki yılın fişinin 671/681 satırı da ham farktan düşülür => kural-farki-yil-250.test.mjs: çıkış 1 [ℹ tests 7 ℹ pass 6 ℹ fail 1] ✖ [y3] eski yıldan DÜZELTİLMEMİŞ fark + 
+E5 kalan ham fark işaretten bağımsız hep 671 => kural-farki-yil-250.test.mjs: çıkış 1 [ℹ tests 7 ℹ pass 4 ℹ fail 3] ✖ [y3] eski yıldan DÜZELTİLMEMİŞ fark + aynı yıl düzeltilmi�
+E6 Yönetim satırı eski yıl kuralı (son etkin fişin yılı) => kural-farki-yil-250.test.mjs: çıkış 0 [ℹ tests 7 ℹ pass 7 ℹ fail 0]  ||  || kural-farki-duzeltme-250.test.mjs: çıkış 0
+E7 DÜŞÜK-4: kilitli satır yetkisi system.manage yerine accounts.manage => acilis-olabilir-yetki-250.test.mjs: çıkış 1 [ℹ tests 3 ℹ pass 0 ℹ fail 3] ✖ rol × uç × kilitli / açık: Av
+E8 DÜŞÜK-4: kilit günü sınırı (< yerine <=) => acilis-olabilir-yetki-250.test.mjs: çıkış 1 [ℹ tests 3 ℹ pass 1 ℹ fail 2] ✖ rol × uç × kilitli / açık: Avukat ve Muhasebe kilitl
+E9 DÜŞÜK-4: toplu kararda denetim yok (yalnız tek) => acilis-olabilir-yetki-250.test.mjs: çıkış 1 [ℹ tests 3 ℹ pass 2 ℹ fail 1] ✖ toplu: seçimde kilitli kayıt varsa İŞLEM BÜTÜN r
+E10 DÜŞÜK-4: tek kararda denetim yok => acilis-olabilir-yetki-250.test.mjs: çıkış 1 [ℹ tests 3 ℹ pass 0 ℹ fail 3] ✖ rol × uç × kilitli / açık: Avukat ve Muhasebe kilitli adaya (kil
+bitti
+mutag temiz mi: 0
+liste üretimi çıkış 0 · fark (BOŞ olmalı): []
+ci.yml'deki kâhin adımı sayısı 10
+0 kahin-defter UTC :: [kanit] c5a2e-kahin-defter-UTC: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit d2a37e3 +1 izlenmeyen · linux 
+0 kahin-defter Europe/Istanbul :: [kanit] c5a2e-kahin-defter-Europe-Istanbul: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit d2a37e3 +1 izlenmey
+0 kahin-cari UTC :: [kanit] c5a2e-kahin-cari-UTC: GEÇTİ · çıkış 0 · 17136/17136 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit d2a37e3 +1 izlenmeyen · linu
+0 kahin-cari Europe/Istanbul :: [kanit] c5a2e-kahin-cari-Europe-Istanbul: GEÇTİ · çıkış 0 · 17136/17136 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit d2a37e3 +1 izlenm
+0 kahin-tutar UTC :: [kanit] c5a2e-kahin-tutar-UTC: GEÇTİ · çıkış 0 · 3559/3559 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit d2a37e3 +1 izlenmeyen · linux
+0 kahin-ebelge-model UTC :: [kanit] c5a2e-kahin-ebelge-model-UTC: GEÇTİ · çıkış 0 · 114/114 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit d2a37e3 +1 izlenmeyen · 
+0 kahin-ebelge-mutasyon UTC :: [kanit] c5a2e-kahin-ebelge-mutasyon-UTC: GEÇTİ · çıkış 0 · 55/55 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit d2a37e3 +1 izlenmeyen ·
+0 kahin-ebelge-senaryo UTC :: [kanit] c5a2e-kahin-ebelge-senaryo-UTC: GEÇTİ · çıkış 0 · 27/27 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit d2a37e3 +1 izlenmeyen · 
+0 kahin-muhasebe-model UTC :: [kanit] c5a2e-kahin-muhasebe-model-UTC: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit d2a37e3 +1 izlenmeyen �
+0 kahin-muhasebe-mutasyon UTC :: [kanit] c5a2e-kahin-muhasebe-mutasyon-UTC: GEÇTİ · çıkış 0 · 277/277 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit d2a37e3 +1 izlenmeye
+0 kahin-maliyet UTC :: [kanit] c5a2e-kahin-maliyet-UTC: GEÇTİ · çıkış 0 · 41306/41306 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit d2a37e3 +1 izlenmeyen · l
+0 kahin-mobil-yazma UTC :: [kanit] c5a2e-kahin-mobil-yazma-UTC: GEÇTİ · çıkış 0 · 56/56 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit d2a37e3 +1 izlenmeyen · lin
+dört kapı testi çıkış 0 # tests 73 # pass 73 # fail 0 # cancelled 0 # skipped 0 
+değişen ürün dosyası 5 · komşu test dosyası 32
+komşular UTC çıkış 0 # tests 289 # pass 289 # fail 0 # cancelled 0 # skipped 0 
+komşular Europe/Istanbul çıkış 0 # tests 289 # pass 289 # fail 0 # cancelled 0 # skipped 0 
+ekran senaryosu: e2e-senaryo-iz1-kasa-acilis test:senaryo-iz1-kasa-acilis;e2e-senaryo-kasa-acilis-uyari-250 test:senaryo-kasa-acilis-uyari-250;e2e-senaryo-acilis-duzeni-250 test:senaryo-acilis-duzeni-250;e2e-senaryo-acilis-olabilir-250 test:senaryo-acilis-olabilir-250;e2e-senaryo-acilis-eslestirme-250 test:senaryo-acilis-eslestirme-250;e2e-acilis-yanit-yaris test:acilis-yanit-yaris;
+0 e2e-senaryo-iz1-kasa-acilis UTC 21/21 geçti, 0 başarısız
+0 e2e-senaryo-iz1-kasa-acilis Europe/Istanbul 21/21 geçti, 0 başarısız
+0 e2e-senaryo-kasa-acilis-uyari-250 UTC 20/20 geçti, 0 başarısız
+0 e2e-senaryo-kasa-acilis-uyari-250 Europe/Istanbul 20/20 geçti, 0 başarısız
+0 e2e-senaryo-acilis-duzeni-250 UTC 27/27 geçti, 0 başarısız
+0 e2e-senaryo-acilis-duzeni-250 Europe/Istanbul 27/27 geçti, 0 başarısız
+0 e2e-senaryo-acilis-olabilir-250 UTC 45/45 geçti, 0 başarısız
+0 e2e-senaryo-acilis-olabilir-250 Europe/Istanbul 45/45 geçti, 0 başarısız
+0 e2e-senaryo-acilis-eslestirme-250 UTC 29/29 geçti, 0 başarısız
+0 e2e-senaryo-acilis-eslestirme-250 Europe/Istanbul 29/29 geçti, 0 başarısız
+0 e2e-acilis-yanit-yaris UTC 12/12 geçti, 0 başarısız
+0 e2e-acilis-yanit-yaris Europe/Istanbul 12/12 geçti, 0 başarısız
+bitti 07:40:54 yük 3.02 2.89 3.41 · aday d2a37e3d · temiz mi: 0 · disk 7.7G

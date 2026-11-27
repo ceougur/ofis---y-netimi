@@ -93,7 +93,7 @@
       load.applied();
       view.listError = "";
       view.list = more && view.list ? { ...data, cheques: [...view.list.cheques, ...data.cheques] } : data;
-      if (view.mode === "list") renderList();
+      if (view.mode === "list") renderList({ background: quiet });
     } catch (error) {
       if (quiet) throw error;
       if (!load.current()) return;
@@ -136,7 +136,7 @@
   };
 
   // ---------- Liste ----------
-  function renderList() {
+  function renderList({ background = false } = {}) {
     const root = body();
     if (!root) return;
     const data = view.list;
@@ -154,7 +154,10 @@
         </tr>`,
       )
       .join("");
-    HOF.swap(root, `<div class="hof-plan-head">
+    // Birleşik tur 7 (DK-B6 DÜŞÜK-4 + kullanıcı notu 12.11 12:54): tarih süzgecine YAZARKEN her geçerli ara değerde (yıl 0002, 0020, 0202, 2026) liste yeniden yüklenip
+    // çubuk yeniden kuruluyordu — kutu yeni düğüm olunca imleç ilk bölüme düşüyor, sonraki tuşlar yanlış bölüme gidiyordu ("0002-06-07" / boş). Odak tarih kutularındayken
+    // (ya da arka plan yenilemesinde henüz uygulanmamış yazım varken) iki kutu yerinde kalır, çevresi yeni çizimden gelir (HOF.swapKeeping; birleşik tur 6'nın POS kalıbı).
+    HOF.swapKeeping(root, `<div class="hof-plan-head">
         <div class="hof-plan-title"><small>Alınan evrak portföye girer, tahsil edilince banka hesabına ya da Kasa'ya; verilen evrak ödenince bankadan ya da Kasa'dan çıkar.</small></div>
         <div class="hof-plan-actions" role="toolbar" aria-label="Çek / senet işlemleri">
           ${canManage() ? `<button type="button" class="hof-button hof-button-small" data-act="new-in">+ Çek / Senet Al</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="new-out">+ Çek / Senet Ver</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="import">Excel / Sheets’ten Yükle</button>` : ""}
@@ -164,12 +167,12 @@
       <div class="hof-plans-filters hof-chq-filters">
         <div class="hof-rep-presets" role="group" aria-label="Yön">${[["", "Tümü"], ["in", "Alınan"], ["out", "Verilen"]].map(([id, label]) => `<button type="button" class="hof-rep-chip ${view.direction === id ? "is-on" : ""}" data-direction="${id}">${label}</button>`).join("")}</div>
         <select data-filter="status" aria-label="Durum">${STATUS_OPTIONS.map(([id, label]) => `<option value="${id}" ${view.status === id ? "selected" : ""}>${label}</option>`).join("")}</select>
-        <label class="hof-rep-date"><span>Vade Başı</span><input type="date" data-filter="from" value="${esc(view.from)}"></label>
-        <label class="hof-rep-date"><span>Vade Sonu</span><input type="date" data-filter="to" value="${esc(view.to)}"></label>
+        <span data-list-dates style="display: contents"><label class="hof-rep-date"><span>Vade Başı</span><input type="date" data-filter="from" value="${esc(view.from)}"></label>
+        <label class="hof-rep-date"><span>Vade Sonu</span><input type="date" data-filter="to" value="${esc(view.to)}"></label></span>
         <input type="search" data-filter="q" value="${esc(view.q)}" placeholder="No, banka, kişi, not ara…" aria-label="Ara">
       </div>
       ${data ? `<div class="hof-rep-table"><table class="hof-table hof-chq-table"><thead><tr><th>Vade</th><th>Evrak</th><th>No / Banka</th><th>Kimden / Kime</th><th>Durum</th><th class="num">Tutar</th></tr></thead><tbody>${rows || `<tr><td colspan="6" class="hof-empty">${view.status === "open" && !view.q ? "Portföyde evrak yok. “+ Çek / senet al” ile ekleyin." : "Bu süzgeçte evrak yok."}</td></tr>`}</tbody></table></div>
-        <p class="hof-rep-note">${data.total.toLocaleString("tr-TR")} evrak · ${esc(money(data.listed.amount))}${data.hasMore ? ` · <button type="button" class="hof-link-button" data-act="more">Daha Fazla Göster</button>` : ""}</p>` : HOF.listPending(view.listError)}`);
+        <p class="hof-rep-note">${data.total.toLocaleString("tr-TR")} evrak · ${esc(money(data.listed.amount))}${data.hasMore ? ` · <button type="button" class="hof-link-button" data-act="more">Daha Fazla Göster</button>` : ""}</p>` : HOF.listPending(view.listError)}`, "[data-list-dates]", { pending: background });
   }
 
   // ---------- Kart ----------
@@ -417,6 +420,13 @@
         const own = action === "pay" ? cheque.bankAccountId || "" : "";
         // 2.7: seçicide bakiye — tutar evrakın tutarı (ödemede hesaptan çıkar, tahsilde girer).
         if (moneyAction && HOF.bank?.attachPicker) HOF.bank.attachPicker(dialog.querySelector("form"), { methodName: "method", value: own, ...(action === "pay" && cheque.instrument === "note" && !own ? { suggest: "note" } : {}), direction: action === "pay" ? "out" : "in", amount: () => Number(cheque.amount) || 0 });
+        // 2.5.0 Ç5-A (S48 = A, S66 = A): cariye işlenmemiş (carisiz) alınan evrak karşılıksız dönünce program cariyi sorar — seçilirse cari borçlanır, seçilmezse açılış geri alınmış
+        // (açılış evrakı) ya da evrakın geliri geri alınmış sayılır. Seçim isteğe bağlı.
+        if (action === "bounce" && cheque.direction === "in" && !cheque.accountId && !cheque.planId) {
+          const picker = HOF.accounts?.picker({ label: "Borçlanacak Cari", required: false, prefer: "customer", allowNew: { type: "customer" }, help: "Evrak bir cariye işlenmemiş. Karşılıksız tutarı bir cariye borç yazmak için seçin; boş bırakırsanız kimse borçlanmaz (açılış evrakında açılış geri alınmış sayılır).", name: "accountId" });
+          if (picker) dialog.querySelector('[name="date"]').closest(".hof-field").after(picker);
+          return;
+        }
         if (action !== "endorse") return;
         // v2.0.17 (müşteri: "cari bulunmuyor"): tür kısıtı yok — bütün cariler aranır, tedarikçiler üstte; "+ Yeni Cari".
         const picker = HOF.accounts?.picker({ label: "Ciro Edilen Cari", required: true, prefer: "supplier", allowNew: { type: "supplier" }, help: "Tedarikçi ya da müşteri: çekin kime verildiği. Bulunamazsa + Yeni Cari ile açın.", name: "accountId" });
@@ -634,7 +644,7 @@
       title: "Çek / Senet Portföyü: Kolonları Eşle",
       eyebrow: fileName,
       size: "wide",
-      intro: `${preview.rows} satır bulundu. Program başlıkları tanıdı; yanlışsa değiştirin. Keşideci adı birebir aynı olan tek cari varsa evrak o cariye bağlanır.`,
+      intro: `${preview.rows} satır bulundu. Program başlıkları tanıdı; yanlışsa değiştirin. Keşideci adı aynı olan (büyük / küçük harf ve boşluk farkı sayılmaz) tek cari varsa evrak o cariye bağlanır.`,
       fields: [
         ...preview.headers.map((header, index) => ({ name: `c${index}`, label: `${header || `${index + 1}. kolon`}${sample[index] !== undefined && String(sample[index]).trim() ? ` — ör. ${String(sample[index]).slice(0, 30)}` : ""}`, type: "select", value: preview.roles[index] === "extra" ? "" : preview.roles[index] || "", options: ROLE_OPTIONS.map(([value, label]) => ({ value, label })) })),
         { name: "direction", label: "Yön kolonu yoksa hepsi", type: "select", value: view.direction === "out" ? "out" : "in", options: [{ value: "in", label: "Alınan (müşteri evrakı, portföy)" }, { value: "out", label: "Verilen (kendi çekimiz / senedimiz)" }] },

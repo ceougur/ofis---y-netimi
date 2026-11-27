@@ -1,0 +1,33 @@
+Ç3 TUR 2 — dönem kilidi ucu: sıra (dar kontrol DÜŞÜK-1 → ORTA) ve arkada dondurma (plan §8 İLERLEME). Tasarım notu docs/erp/C3-DONDURMA-TASARIM.md §18.
+Taban 40473f17 (Ç3 + Ç2 tur 1). Ürün son: 66480b5f (7f5c4170 + kapanışta iz iş parçacığı açılmaz). Test son: 4af0aafc. Eski kod: git archive 40473f17 | tar -x → not defteri
+c3t2-eski-40473f17 (ders 23, 25); yeni testler oraya kopyalanıp koşuldu. Not: kanit.mjs kaydının "commit" alanı ÇALIŞMA AĞACININ HEAD'idir; --kod ile başka kökü ölçen kayıtlarda
+(c3t2-olcum-*-eski, c3t2-kirmizi-eski-*, c3t2-p7-eski-*) ölçülen kod ESKİ kopyadır (40473f17).
+
+YENİDEN ÜRETİM (ders 6)
+- c3t2-yeniden-uret-1m-eski / c3t2-olcum-1m-eski: 1.000.000 verisi (2.254.506 para satırı), gerçek routes/ledger.mjs ucu + HTTP (createApp YOK: 1 M açılışı 22 dk'da bitmiyor — AH), istemci 30 sn'de
+  keser (sendApi): kilit yanıtı YOK 30.003 / 30.004 ms "Sunucu zamanında yanıt vermedi. (client-timeout)"; sunucu kilidi koyup 91,6 / 82,5 sn'de dondurdu (2.741.312 satır).
+  (yeniden-uret kaydının "olay döngüsü 4.994 ms"si aracın ilk sürümünün yapaylığıydı: kurulumun eşzamanlı kopya + sayım boşluğu pencereye taşıyordu; araç düzeltildi.)
+- c3t2-p7-eski-40473f17-utc / -istanbul (dar kontrol p7'nin bekleme döngülü p7b'si): dondurma sürerken 2099-01-01 → 400; "SONUÇ: HATA — reddedilen istek süren dondurmayı durdurdu".
+  c3t2-p7-yeni-*: "SONUÇ: dondurma tamamlandı".
+- G2 komşu taramasının bulduğu iki gerileme (ara tasarım 4bf815ea "yanıt hemen"): banka-210-gg-kapi D8 eski 2/2 → 0/2 (iz bekliyorken ikinci katman yok); banka-230-supheli-bozma I/J
+  (dondurma izi audit_events +1 kilitten sonraki sayım fotoğrafından sonra). İkisi son kodda yeşil (c3t2-komsu-utc).
+- c3t2-ham (ham dosyalar): p7-eski-UTC.txt / p7-eski-Istanbul.txt (dar kontrol p7'nin eski koddaki çıktısı); k6-zorla-eski-test.txt — iz 3 sn sürünce (ZORLA_IZ_MS) süreli dondurma uçtan önce bitiyor, K6 ön koşulu düşüyor (ders 20); k-zorla-3000.txt — kapıyla tutulan
+  dondurmayla K1–K7 7/7.
+
+YEŞİL / KIRMIZI
+- c3t2-yeni-utc / -istanbul: K1–K9 + donmus-defter-250 + -yasam-250 = 29/29.
+- c3t2-kirmizi-eski-40473f17-utc / -istanbul: 1/9 (K1, K3, K4, K9 beklenen nedenle; K5–K8 ön koşul / alan yokluğu; K2 eski kodda da doğru).
+- c3t2-mutasyon: 32/32 (taban 34/34).
+- c3t2-komsu-utc: 162 dosya 1.841/1.841 (koşu 3a4737a5'te başladı; 66480b5f / 4af0aafc koşu sırasında girdi).
+- c3t2-komsu-istanbul (son kod 4af0aafc): 1.840/1.841; tek kırmızı banka-210-rapor-is-parcacigi-kapanis H2 "sorgusu süren iş parçacığı yuvada: 0" (rapor iş parçacığı testi; bu
+  turun farkına dokunmaz; yük 13–15). c3t2-rapor-is-parcacigi-istanbul-1..3: aynı dosya 3/3 yeşil. ZORLA (c3t2-ham/rapor-is-parcacigi-zorla.txt; 8 meşgul döngü, 4 çekirdek): son kod
+  2/3, eski 40473f17 3/3 aynı iletiyle kırmızı → önceden var olan test yarışı (100 ms zaman aşımı iş parçacığı SQL'e başlamadan dolunca terminate işler).
+- c3t2-komsu-utc-gecikme6000: HOF_TEST_DONMA_GECIKME_MS=6000 (> 5 sn bütçe), dönem kilidi koyan 37 komşu 583/583. Gecikme yalnız startTestServer'da işler →
+  c3t2-komsu-utc-gecikme6000-onkosul: o 18 dosya + ön koşul sayacı (c3t2-ham/onkosul-yukle.mjs, c3t2-ham/onkosul-6000.jsonl) 347/347; 120 PUT, 109'u 200, 57'si dondurma sürerken
+  yanıtlandı (18 dosyanın her birinde en az bir kez).
+- c3t2-e2e-*: 12 senaryo (yeni senaryo-donem-kilidi-ilerleme-250 22/22; senaryo-222 60/60; senaryo-banka-210 424/424 …).
+
+ÖLÇÜM (flock; yük her kayıtta "yuk")
+- c3t2-olcum-100k-gercek-eski: yanıt 8.425 ms (bekler), döngü 16–19 ms. c3t2-olcum-100k-gercek-yeni / -2 (son kod): yanıt 5.017 / 5.030 ms (bütçe), dondurma 11,2 / 13,3 sn arkada,
+  döngü en çok 27 / 47 ms (yük 7–8). c3t2-olcum-1m-yeni (son kod): yanıt 5.054 ms, iz 35,6 sn, dondurma 122,3 sn (yük 9–10), döngü en çok 75 ms.
+  Ara tasarımların sayıları tasarım notu §18 ÖLÇÜM tablosunda (kayıtlar üzerine yazıldı; aynı adla son kod).

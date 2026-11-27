@@ -1,4 +1,5 @@
 // 2.1.0 — Aşama 3 (Banka Hesapları), dilim 1: açılış bakiyesi, Açılışı Düzelt, Açılış Bakiyesi Gir ve kapının yeni denetimleri
+// 2.5.0 Ç5-A tur 1 — BEKLENTİ BİLEREK DEĞİŞTİ (G3: docs/erp/C5-ACILIS-TASARIM.md §2.2 / §11; KG-1, M-01 / M-04 / M-05 / M-07, B3): açılışların karşı hesabı 500 değil 519 "Eşleştirilecek Açılış Bakiyeleri" (banka fişinde saklı kod 500 kalır, türetmede 519). Tutarlar AYNI; yalnız hesap kodu.
 // (docs/BANKA-MODULU-PLAN.md §3.7/1, §3.8 "Açılış", §3.9 K7, §3.11 bank:opening / bank:voucher / bank:sub, §5.6, §12.5 kabul 1–4).
 //
 // ÇALIŞIYOR MU (kabul 1–4, sahte saat 08.10.2026):
@@ -40,7 +41,7 @@ describe("Aşama 3 — kabul 1–4 ve açılış kuralları", () => {
     assert.equal(subs["102.02"].name, "Garanti BBVA · Ana TL Hesabı");
     const trial = await trialBalances(ctx.api);
     assert.equal(trial["102"], 150000);
-    assert.equal(trial["500"], -150000);
+    assert.equal(trial["519"], -150000);
     const sumSubs = Object.entries(subs).filter(([sub]) => sub.startsWith("102.")).reduce((sum, [, row]) => sum + row.balance, 0);
     assert.equal(sumSubs, trial["102"], "102 = Σ102.*");
     const summary = await must("özet", ctx.api.get(`${BANK}/summary`));
@@ -111,7 +112,7 @@ describe("Aşama 3 — kabul 1–4 ve açılış kuralları", () => {
     const subs = await subBalances(ctx.api);
     assert.equal(subs["102.01"].balance, 90000);
     const trial = await trialBalances(ctx.api);
-    assert.equal(trial["500"] + trial["102"] + (trial["309"] || 0) + (trial["300"] || 0), 0, "500 karşılığı");
+    assert.equal(trial["519"] + trial["102"] + (trial["309"] || 0) + (trial["300"] || 0), 0, "500 karşılığı");
     // Aynı değerlerle yeniden gönderim değişiklik yazmaz.
     const same = await must("aynı açılış", ctx.api.post(`${BANK}/accounts/${accounts.ziraat.id}/opening`, { date: "2026-10-02", amount: "90.000", confirmed: true }));
     assert.equal(same.reversed, null);

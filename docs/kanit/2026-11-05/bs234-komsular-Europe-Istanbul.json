@@ -1,0 +1,38 @@
+{
+  "ad": "bs234-komsular-Europe-Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/accounts-stock.test.mjs test/asama0-226.test.mjs test/banka-210-gg-turler.test.mjs test/banka-210-gg2-bag.test.mjs test/banka-210-gg3-eski-satir.test.mjs test/banka-210-gg3-bag.test.mjs test/banka-210-post.test.mjs test/banka-210-yargic.test.mjs test/c1-tur1-249.test.mjs test/defter-243-stok-acilis.test.mjs test/gg243-dar3-stok.test.mjs test/iade-geri-odeme-246.test.mjs test/kapama-ks7-245.test.mjs test/silinenler-donem-kilidi-244.test.mjs test/stok-alis-iadesi-246.test.mjs test/banka-230-k8-taksit.test.mjs test/bulgu-223.test.mjs test/cari-vade-245.test.mjs test/cheques-overview.test.mjs test/defter-213.test.mjs test/iade-224.test.mjs test/inceleme-226-2.test.mjs test/kayit-tahsilat-244.test.mjs test/supheli-230-karar.test.mjs test/supheli-230-kontrol2.test.mjs test/banka-210-ertelenen.test.mjs test/banka-210-gg2-gosterge.test.mjs test/banka-210-ileri-tarihli-eski.test.mjs test/banka-210-raporlar.test.mjs test/banka-220-pos-iz3.test.mjs test/raporlar-210-banka.test.mjs test/sirketler-217.test.mjs test/guvenilirlik-221-bulgular.test.mjs test/guvenilirlik-221-ariza.test.mjs test/banka-210-ariza.test.mjs test/createapp-acilis-geri-alma-249.test.mjs test/ui-tur-a-249.test.mjs test/ekstre-ayrinti-245.test.mjs test/ekstre-ayrinti-247.test.mjs test/kart-iade-musteri-249.test.mjs test/banka-230-46-iade-iptal.test.mjs test/ci-kapi-listesi.test.mjs test/lisans-servisi-izolasyonu.test.mjs test/platform-tasinabilirlik.test.mjs test/yazim-duzeni.test.mjs test/kanit-araci.test.mjs test/gg243-cekirdek-kaynak.test.mjs test/form-izolasyon.test.mjs",
+  "commit": "1abb27240c345eed7605218428edb4f3a0bf739b",
+  "dal": "worktree-agent-a43c8fa8274cd88ab",
+  "kirli": 0,
+  "izlenmeyen": 18,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T21:07:50.279Z",
+  "sure_sn": 231.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 697,
+    "gecen": 696,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "ANLIK DURUM: karttaki rakamlar ekranlarla birebir aynı (rastgele 400 işlem) › Kasa, alacak, borç, kritik stok, mizan ve nakit akışı her adımda tutarlı",
+      "konum": "test/cheques-overview.test.mjs:384:3",
+      "hata": "adım 50: Kasa (bugüne kadar): 9192.09 ≠ 7950.7 (beklenen true, gelen false)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-05/bs234-komsular-Europe-Istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a43c8fa8274cd88ab",
+  "ham_cikti_sha256": "f0c4007616952abfdc74d9f79531b74b9fb455aedbf57689cfe078fd9c203f4b",
+  "ham_cikti_bayt": 262093
+}

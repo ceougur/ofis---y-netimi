@@ -1,0 +1,42 @@
+başladı 08:52:51 yük 1.68 1.84 1.89 3/141 32581 · ağaç 028e1b76
+değişen dört dosya UTC çıkış 0 [kanit] wa3y-degisen-UTC: GEÇTİ · çıkış 0 · 137/137 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 028e1b7 +1 izlenmeyen · linux 6.18.4
+değişen dört dosya Europe/Istanbul çıkış 0 [kanit] wa3y-degisen-Europe-Istanbul: GEÇTİ · çıkış 0 · 137/137 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 028e1b7 +1 izlenmeyen · 
+ESKİ KOD whatsapp-tur3-250 çıkış 1 [kanit] wa3y-eski-whatsapp-tur3-250: BAŞARISIZ (çıkış 1; 10 başarısız, 0 iptal) · çıkış 1 · 6/16 geçti, 10 başarısız, 0 iptal, 0 atl
+ESKİ KOD whatsapp-tur1-bildirim-yolu-250 çıkış 1 [kanit] wa3y-eski-whatsapp-tur1-bildirim-yolu-250: BAŞARISIZ (çıkış 1; 2 başarısız, 0 iptal) · çıkış 1 · 14/16 geçti, 2 başarısız, 0
+ESKİ KOD whatsapp-t-durum-karar-tablosu-248 çıkış 1 [kanit] wa3y-eski-whatsapp-t-durum-karar-tablosu-248: BAŞARISIZ (çıkış 1; 3 başarısız, 0 iptal) · çıkış 1 · 95/98 geçti, 3 başarısız
+komşu (whatsapp-*) Europe/Istanbul çıkış 0 [kanit] wa3y-komsu-ist: GEÇTİ · çıkış 0 · 650/650 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 028e1b7 +1 izlenmeyen · linux 6.18.44-
+1
+mutasyon çıkış 0 · # skipped 0 # todo 0 
+e2e senaryo-whatsapp çıkış 0 [kanit] wa3y-e2e-senaryo-whatsapp: GEÇTİ · çıkış 0 · 45/45 geçti, 0 başarısız, 0 iptal, 0 atlanan 
+e2e senaryo-whatsapp-ayar-248 çıkış 0 [kanit] wa3y-e2e-senaryo-whatsapp-ayar-248: GEÇTİ · çıkış 0 · 157/157 geçti, 0 başarısız, 0 iptal,
+e2e senaryo-whatsapp-donem-248 çıkış 0 [kanit] wa3y-e2e-senaryo-whatsapp-donem-248: GEÇTİ · çıkış 0 · 37/37 geçti, 0 başarısız, 0 iptal, 
+e2e senaryo-whatsapp-sablon-248 çıkış 0 [kanit] wa3y-e2e-senaryo-whatsapp-sablon-248: GEÇTİ · çıkış 0 · 50/50 geçti, 0 başarısız, 0 iptal,
+e2e senaryo-whatsapp-gonder-248 çıkış 0 [kanit] wa3y-e2e-senaryo-whatsapp-gonder-248: GEÇTİ · çıkış 0 · 189/189 geçti, 0 başarısız, 0 ipta
+e2e senaryo-whatsapp-kvkk-250 çıkış 0 [kanit] wa3y-e2e-senaryo-whatsapp-kvkk-250: GEÇTİ · çıkış 0 · 20/20 geçti, 0 başarısız, 0 iptal, 0
+e2e sema-kapisi-bs7 çıkış 0 [kanit] wa3y-e2e-sema-kapisi-bs7: GEÇTİ · çıkış 0 · 12/12 geçti, 0 başarısız, 0 iptal, 0 atlanan �
+e2e senaryo-220-yedek çıkış 0 [kanit] wa3y-e2e-senaryo-220-yedek: GEÇTİ · çıkış 0 · 38/38 geçti, 0 başarısız, 0 iptal, 0 atlanan
+sürücü ÖNCE çıkış 1 [kanit] wa3y-surucu-once: BAŞARISIZ (çıkış 1; 370 başarısız, 0 iptal) · çıkış 1 · 25/398 geçti, 370 başarısız, 0 iptal, 3 atlanan ·
+sürücü SONRA çıkış 1 [kanit] wa3y-surucu-sonra: BAŞARISIZ (çıkış 1; 370 başarısız, 0 iptal) · çıkış 1 · 25/398 geçti, 370 başarısız, 0 iptal, 3 atlanan �
+sürücü farkı çıkış 0
+=== DEĞİŞTİ S70-03-zincir-silme-talebi-ve-istemiyor-atlandi-eski-belirsiz-iletiye-gec-teslim kos→kos davranış farkı 20→7
+   KAPANAN durum_sayilari.Okundu: beklenen 1, program '<YOK>'
+   KAPANAN durum_sayilari.Teslim Edildi: beklenen 1, program '<YOK>'
+   KAPANAN isler.T1/ZI.atlanma_nedeni: beklenen None, program 'istemiyor'
+   KAPANAN isler.T1/ZI.durum: beklenen 'Okundu', program 'Atlandı'
+   KAPANAN isler.T1/ZS.atlanma_nedeni: beklenen None, program 'silme_talebi'
+   KAPANAN isler.T1/ZS.durum: beklenen 'Teslim Edildi', program 'Atlandı'
+   KAPANAN kontroller.K2.durum_sayilari.Atlandı: beklenen 1, program 2
+   KAPANAN kontroller.K2.durum_sayilari.Teslim Edildi: beklenen 1, program '<YOK>'
+   KAPANAN kontroller.K2.isler.T1/ZS: beklenen 'Teslim Edildi', program 'Atlandı'
+   KAPANAN kontroller.K3.durum_sayilari.Okundu: beklenen 1, program '<YOK>'
+   KAPANAN kontroller.K3.durum_sayilari.Teslim Edildi: beklenen 1, program '<YOK>'
+   KAPANAN kontroller.K3.isler.T1/ZI: beklenen 'Okundu', program 'Atlandı'
+   KAPANAN kontroller.K3.isler.T1/ZS: beklenen 'Teslim Edildi', program 'Atlandı'
+# senaryo 398 · aynı 397 · değişen 1 · davranış farkı 0 olan: önce 250, sonra 250
+TAM npm test çıkış 0 [kanit] wa3y-tam: GEÇTİ · çıkış 0 · 5309/5309 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 028e1b7 +1 izlenmeyen · linux 6.18.44-fc-v
+# tests 5309
+# pass 5309
+# fail 0
+# cancelled 0
+# skipped 0
+bitti 10:36:54 yük 1.20 0.93 0.91 3/118 19112 · disk 7.4G

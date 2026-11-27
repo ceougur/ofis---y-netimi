@@ -1,0 +1,32 @@
+{
+  "ad": "bt3-e2e-komsu-run",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/run.mjs",
+  "commit": "3360687f1b86ea67f9b1be3ac6fd84e3f36e7bf1",
+  "dal": "worktree-agent-a0712b8dfbfc9c5d9",
+  "kirli": 11,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T05:05:50.569Z",
+  "sure_sn": 172.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "e2e-run",
+    "toplam": 50,
+    "gecen": 50,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt3-kanit/2026-11-06/bt3-e2e-komsu-run.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a0712b8dfbfc9c5d9",
+  "ham_cikti_sha256": "b1a5efb573a6842c632f3b0e50b3ac4c9c914cc015a85f2009ccf058cfc6d781",
+  "ham_cikti_bayt": 5607
+}

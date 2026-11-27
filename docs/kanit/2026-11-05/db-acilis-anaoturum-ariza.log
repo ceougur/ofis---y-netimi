@@ -1,0 +1,348 @@
+TAP version 13
+# Subtest: A1 — Kurulum Sihirbazı ortasında SIGKILL (elektrik kesintisi)
+    # Subtest: işlem geçmişi yazılırken kesinti → bağ, Devir Kapanışı, kurulum kaydı, istek kaydı yok; aynı istek kimliğiyle yeniden çalışır; İşlem No boşluksuz
+    ok 1 - işlem geçmişi yazılırken kesinti → bağ, Devir Kapanışı, kurulum kaydı, istek kaydı yok; aynı istek kimliğiyle yeniden çalışır; İşlem No boşluksuz
+      ---
+      duration_ms: 1266.129448
+      type: 'test'
+      ...
+    1..1
+ok 1 - A1 — Kurulum Sihirbazı ortasında SIGKILL (elektrik kesintisi)
+  ---
+  duration_ms: 1270.833956
+  type: 'suite'
+  ...
+# Subtest: A2–A5 — banka verili iki şirkette disk dolu, geri yükleme arızası, kilitli dosya ve yedek tatbikatı
+    # Subtest: A2: 001'in yedeği alınırken disk dolu → 500 açık hata, yarım dosya yok; 001 ve 002'nin banka verisi aynı; yer açılınca yedek alınır
+    ok 1 - A2: 001'in yedeği alınırken disk dolu → 500 açık hata, yarım dosya yok; 001 ve 002'nin banka verisi aynı; yer açılınca yedek alınır
+      ---
+      duration_ms: 137.215251
+      type: 'test'
+      ...
+    # Subtest: A3: 002'nin geri yüklemesinde EIO ve EBUSY → 500, banka verisi aynı; hata geçince geri yükleme yedek anına döner
+    ok 2 - A3: 002'nin geri yüklemesinde EIO ve EBUSY → 500, banka verisi aynı; hata geçince geri yükleme yedek anına döner
+      ---
+      duration_ms: 728.37967
+      type: 'test'
+      ...
+    # Subtest: A4: 002'nin veri dosyası başka programca kilitli → banka uçları 503 company-unavailable (001'e düşmez); kilit kalkınca bakiyeler aynı
+    ok 3 - A4: 002'nin veri dosyası başka programca kilitli → banka uçları 503 company-unavailable (001'e düşmez); kilit kalkınca bakiyeler aynı
+      ---
+      duration_ms: 6205.169757
+      type: 'test'
+      ...
+    # Subtest: A5: yedek tatbikatı (002, hesaba bağlı veri): yedek → çalış → geri yükle → sayılar → yeniden çalış → yedek → geri yükle
+    ok 4 - A5: yedek tatbikatı (002, hesaba bağlı veri): yedek → çalış → geri yükle → sayılar → yeniden çalış → yedek → geri yükle
+      ---
+      duration_ms: 779.785653
+      type: 'test'
+      ...
+    1..4
+ok 2 - A2–A5 — banka verili iki şirkette disk dolu, geri yükleme arızası, kilitli dosya ve yedek tatbikatı
+  ---
+  duration_ms: 9122.317582
+  type: 'suite'
+  ...
+# Subtest: 2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır
+    # Subtest: T0 new DatabaseSync kurucusu düşer (olmayan dizin) → Node tutamak bırakmaz
+    ok 1 - T0 new DatabaseSync kurucusu düşer (olmayan dizin) → Node tutamak bırakmaz
+      ---
+      duration_ms: 2.777809
+      type: 'test'
+      ...
+    # Subtest: T1 002'nin users kök sayfası bozuk (gerçek bozulma) → 503 ×3; tutamak 0; dosya silinebilir
+    ok 2 - T1 002'nin users kök sayfası bozuk (gerçek bozulma) → 503 ×3; tutamak 0; dosya silinebilir
+      ---
+      duration_ms: 809.004049
+      type: 'test'
+      ...
+    # Subtest: T2 T1 + Yedekten Geri Yükle → 200; sonra açılır; "(deleted)" tutamak 0
+    ok 3 - T2 T1 + Yedekten Geri Yükle → 200; sonra açılır; "(deleted)" tutamak 0
+      ---
+      duration_ms: 806.901214
+      type: 'test'
+      ...
+    # Subtest: T3 göç ortasında düşme (göç 44 ALTER TABLE'da düşer) → 503; tutamak 0; user_version değişmez; göç öncesi yedek var; düzelince sonraki açılış göçleri yeniden koşar
+    ok 4 - T3 göç ortasında düşme (göç 44 ALTER TABLE'da düşer) → 503; tutamak 0; user_version değişmez; göç öncesi yedek var; düzelince sonraki açılış göçleri yeniden koşar
+      ---
+      duration_ms: 705.485923
+      type: 'test'
+      ...
+    # Subtest: T4 geç düşme after-open (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+    ok 5 - T4 geç düşme after-open (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+      ---
+      duration_ms: 2589.877011
+      type: 'test'
+      ...
+    # Subtest: T4 geç düşme after-migrations (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+    ok 6 - T4 geç düşme after-migrations (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+      ---
+      duration_ms: 2667.995168
+      type: 'test'
+      ...
+    # Subtest: T4 geç düşme after-users (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+    ok 7 - T4 geç düşme after-users (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+      ---
+      duration_ms: 2649.021489
+      type: 'test'
+      ...
+    # Subtest: T4 geç düşme after-dataset (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+    ok 8 - T4 geç düşme after-dataset (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+      ---
+      duration_ms: 2707.807438
+      type: 'test'
+      ...
+    # Subtest: T4 geç düşme after-integrity (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+    ok 9 - T4 geç düşme after-integrity (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+      ---
+      duration_ms: 2743.628125
+      type: 'test'
+      ...
+    # Subtest: T4 geç düşme after-register (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+    ok 10 - T4 geç düşme after-register (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+      ---
+      duration_ms: 2705.757381
+      type: 'test'
+      ...
+    # Subtest: T4 geç düşme after-app (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+    ok 11 - T4 geç düşme after-app (002) → tutamak 0; yetim zamanlayıcı / işçi kaydı / hub olay dinleyicisi yok; kapalı bağlantıya çarpan iş yok; sonra açılır
+      ---
+      duration_ms: 2699.072085
+      type: 'test'
+      ...
+    # Subtest: T5 kilitli dosya (AYRI SÜREÇ BEGIN EXCLUSIVE) → 503 (~10 sn); kilit kalkınca tutamak 0, sonraki istek 200, kapanınca 0
+    ok 12 - T5 kilitli dosya (AYRI SÜREÇ BEGIN EXCLUSIVE) → 503 (~10 sn); kilit kalkınca tutamak 0, sonraki istek 200, kapanınca 0
+      ---
+      duration_ms: 10821.605217
+      type: 'test'
+      ...
+    # Subtest: T6 geri alma adımı da düşer → istemciye giden 503 iletisi ASIL hatanın; öbür adımlar yine çalışır (tutamak 0); günlükte uyarı
+    ok 13 - T6 geri alma adımı da düşer → istemciye giden 503 iletisi ASIL hatanın; öbür adımlar yine çalışır (tutamak 0); günlükte uyarı
+      ---
+      duration_ms: 554.718651
+      type: 'test'
+      ...
+    # Subtest: T7 salt okunur lisans + T1 → 503; tutamak 0; sağlam şirkette salt okunur yanıt değişmez (GET 200, yazım 403 LICENSE_READ_ONLY)
+    ok 14 - T7 salt okunur lisans + T1 → 503; tutamak 0; sağlam şirkette salt okunur yanıt değişmez (GET 200, yazım 403 LICENSE_READ_ONLY)
+      ---
+      duration_ms: 810.449572
+      type: 'test'
+      ...
+    # Subtest: T8 iki şirket: 002 açılışı düşerken 001'e paralel istekler 200, 001'in tutamakları değişmez; sonra Şirket Sil 200 + klasör arşive taşındı
+    ok 15 - T8 iki şirket: 002 açılışı düşerken 001'e paralel istekler 200, 001'in tutamakları değişmez; sonra Şirket Sil 200 + klasör arşive taşındı
+      ---
+      duration_ms: 849.672637
+      type: 'test'
+      ...
+    # Subtest: T9 tekrar: bozuk 002'ye 10 ekran isteği + 10 WhatsApp durum bildirimi (kanca → appFor) → hepsi 503; tutamak 0
+    ok 16 - T9 tekrar: bozuk 002'ye 10 ekran isteği + 10 WhatsApp durum bildirimi (kanca → appFor) → hepsi 503; tutamak 0
+      ---
+      duration_ms: 910.643859
+      type: 'test'
+      ...
+    # Subtest: T10 yeni şirket ilk açılışta düşer (after-open) → dosya serbest, company.opened işareti yok; dosya kalkınca boş şirket açılır
+    ok 17 - T10 yeni şirket ilk açılışta düşer (after-open) → dosya serbest, company.opened işareti yok; dosya kalkınca boş şirket açılır
+      ---
+      duration_ms: 650.987377
+      type: 'test'
+      ...
+    # Subtest: T11 hub (001) after-integrity düşer (doğrudan createApp) → fırlatır; 001 + iki defter dosyası serbest; yetim zamanlayıcı yok; aynı veriyle ikinci createApp açılır
+    ok 18 - T11 hub (001) after-integrity düşer (doğrudan createApp) → fırlatır; 001 + iki defter dosyası serbest; yetim zamanlayıcı yok; aynı veriyle ikinci createApp açılır
+      ---
+      duration_ms: 861.646126
+      type: 'test'
+      ...
+    # Subtest: T11 hub (001) after-app düşer (doğrudan createApp) → fırlatır; 001 + iki defter dosyası serbest; yetim zamanlayıcı yok; aynı veriyle ikinci createApp açılır
+    ok 19 - T11 hub (001) after-app düşer (doğrudan createApp) → fırlatır; 001 + iki defter dosyası serbest; yetim zamanlayıcı yok; aynı veriyle ikinci createApp açılır
+      ---
+      duration_ms: 869.487305
+      type: 'test'
+      ...
+    # Subtest: T11 hub (001) after-app düşer, ÜRETİME YAKIN seçenekler (yedek + lisans + tünel zamanlayıcıları açık) → yetim zamanlayıcı yok; kapalı bağlantıya çarpan iş yok; dosyalar serbest
+    ok 20 - T11 hub (001) after-app düşer, ÜRETİME YAKIN seçenekler (yedek + lisans + tünel zamanlayıcıları açık) → yetim zamanlayıcı yok; kapalı bağlantıya çarpan iş yok; dosyalar serbest
+      ---
+      duration_ms: 2392.775435
+      type: 'test'
+      ...
+    # Subtest: T11 hub açılışında e-Belge kullanım defteri uyumsuz şema (CREATE INDEX düşer) → createApp fırlatır; defter ve 001 dosyası serbest; defter kalkınca açılır
+    ok 21 - T11 hub açılışında e-Belge kullanım defteri uyumsuz şema (CREATE INDEX düşer) → createApp fırlatır; defter ve 001 dosyası serbest; defter kalkınca açılır
+      ---
+      duration_ms: 463.522937
+      type: 'test'
+      ...
+    # Subtest: T11 hub açılışında WhatsApp gönderim defteri meta sayfası bozuk (ilk okuma düşer) → createApp fırlatır; defter ve 001 dosyası serbest; defter kalkınca açılır
+    ok 22 - T11 hub açılışında WhatsApp gönderim defteri meta sayfası bozuk (ilk okuma düşer) → createApp fırlatır; defter ve 001 dosyası serbest; defter kalkınca açılır
+      ---
+      duration_ms: 481.262575
+      type: 'test'
+      ...
+    # Subtest: T12 sağlam açılış: kanca verilmiş ama düşmüyor → davranış aynen; 002 kapanınca ve sunucu kapanınca tutamak 0
+    ok 23 - T12 sağlam açılış: kanca verilmiş ama düşmüyor → davranış aynen; 002 kapanınca ve sunucu kapanınca tutamak 0
+      ---
+      duration_ms: 670.904934
+      type: 'test'
+      ...
+    1..23
+ok 3 - 2.4.9 B1 — createApp açılışı yarıda düşünce dosya açık kalmaz, açılış geri alınır
+  ---
+  duration_ms: 41428.597946
+  type: 'suite'
+  ...
+# Subtest: yedek alırken kesinti ve disk dolu
+    # Subtest: yarıda kesilen yedek (.yaziliyor) listelenmez, geri yüklenemez; bir saatten eskisi sonraki yedekte temizlenir, tazesi kalır
+    ok 1 - yarıda kesilen yedek (.yaziliyor) listelenmez, geri yüklenemez; bir saatten eskisi sonraki yedekte temizlenir, tazesi kalır
+      ---
+      duration_ms: 49.734145
+      type: 'test'
+      ...
+    # Subtest: disk dolu (VACUUM INTO yarıda): açık hata, yarım dosya kalmaz, listede yeni yedek yok, canlı veri aynı
+    ok 2 - disk dolu (VACUUM INTO yarıda): açık hata, yarım dosya kalmaz, listede yeni yedek yok, canlı veri aynı
+      ---
+      duration_ms: 128.097235
+      type: 'test'
+      ...
+    1..2
+ok 4 - yedek alırken kesinti ve disk dolu
+  ---
+  duration_ms: 711.467389
+  type: 'suite'
+  ...
+# Subtest: geri yükleme ortasında hata: şirketin canlı verisi bozulmaz
+    # Subtest: kopyalama adımı hata verir (EIO): 500, veri aynı
+    ok 1 - kopyalama adımı hata verir (EIO): 500, veri aynı
+      ---
+      duration_ms: 120.143086
+      type: 'test'
+      ...
+    # Subtest: dosya değiştirme adımı hata verir (EBUSY: Windows'ta dosya başka programda açık): 500, veri aynı
+    ok 2 - dosya değiştirme adımı hata verir (EBUSY: Windows'ta dosya başka programda açık): 500, veri aynı
+      ---
+      duration_ms: 285.824727
+      type: 'test'
+      ...
+    # Subtest: hata geçince aynı geri yükleme çalışır; veri yedek anına döner
+    ok 3 - hata geçince aynı geri yükleme çalışır; veri yedek anına döner
+      ---
+      duration_ms: 256.580018
+      type: 'test'
+      ...
+    # Subtest: 001'in hazırlanan geri yüklemesi açılışta kopyalanamazsa sunucu mevcut veriyle açılır; sonuç ekranda
+    ok 4 - 001'in hazırlanan geri yüklemesi açılışta kopyalanamazsa sunucu mevcut veriyle açılır; sonuç ekranda
+      ---
+      duration_ms: 317.87068
+      type: 'test'
+      ...
+    1..4
+ok 5 - geri yükleme ortasında hata: şirketin canlı verisi bozulmaz
+  ---
+  duration_ms: 1682.139728
+  type: 'suite'
+  ...
+# Subtest: meşgul şirket: aynı anda ikinci işlem 409, veri isteği 503; hiçbir istek başka şirketin verisini görmez
+    # Subtest: geri yükleme sürerken (meşgul) geri yükleme, ad, sıfırlama, silme 409; veri isteği 503
+    ok 1 - geri yükleme sürerken (meşgul) geri yükleme, ad, sıfırlama, silme 409; veri isteği 503
+      ---
+      duration_ms: 88.186741
+      type: 'test'
+      ...
+    # Subtest: aynı şirkete aynı anda iki geri yükleme ve okuma: biri uygulanır, öbürü 409 ya da sırayla; okuma hiçbir zaman 001'in verisini görmez
+    ok 2 - aynı şirkete aynı anda iki geri yükleme ve okuma: biri uygulanır, öbürü 409 ya da sırayla; okuma hiçbir zaman 001'in verisini görmez
+      ---
+      duration_ms: 695.089795
+      type: 'test'
+      ...
+    1..2
+ok 6 - meşgul şirket: aynı anda ikinci işlem 409, veri isteği 503; hiçbir istek başka şirketin verisini görmez
+  ---
+  duration_ms: 1210.237019
+  type: 'suite'
+  ...
+# Subtest: kilitli, eksik ya da bozuk veri dosyası: 503 company-unavailable, 001'e düşmez, boş şirket açılmaz
+    # Subtest: başka program dosyayı kilitlemiş (SQLite özel kilit): 503; kilit kalkınca açılır
+    ok 1 - başka program dosyayı kilitlemiş (SQLite özel kilit): 503; kilit kalkınca açılır
+      ---
+      duration_ms: 4276.903338
+      type: 'test'
+      ...
+    # Subtest: veri dosyası bozuk (veri tabanı değil): 503
+    ok 2 - veri dosyası bozuk (veri tabanı değil): 503
+      ---
+      duration_ms: 204.250762
+      type: 'test'
+      ...
+    # Subtest: veri dosyası silinmiş: 503 (boş şirket AÇILMAZ); yedekten geri yüklenince veri döner
+    ok 3 - veri dosyası silinmiş: 503 (boş şirket AÇILMAZ); yedekten geri yüklenince veri döner
+      ---
+      duration_ms: 421.564529
+      type: 'test'
+      ...
+    # Subtest: veri klasörü tamamen silinmiş: 503; yedekten geri yüklenince veri döner
+    ok 4 - veri klasörü tamamen silinmiş: 503; yedekten geri yüklenince veri döner
+      ---
+      duration_ms: 216.106267
+      type: 'test'
+      ...
+    # Subtest: yeni açılan şirket (boş klasör) yine açılır
+    ok 5 - yeni açılan şirket (boş klasör) yine açılır
+      ---
+      duration_ms: 418.69242
+      type: 'test'
+      ...
+    1..5
+ok 7 - kilitli, eksik ya da bozuk veri dosyası: 503 company-unavailable, 001'e düşmez, boş şirket açılmaz
+  ---
+  duration_ms: 6007.73317
+  type: 'suite'
+  ...
+# Subtest: şirket listesi (sirketler.json) bozuk, boş ya da yarım yazılmış
+    # Subtest: bozuk JSON: sunucu açılır, 001'in verisi ve kullanıcılar yerinde
+    ok 1 - bozuk JSON: sunucu açılır, 001'in verisi ve kullanıcılar yerinde
+      ---
+      duration_ms: 579.400337
+      type: 'test'
+      ...
+    # Subtest: boş dosya: sunucu açılır, 001'in verisi ve kullanıcılar yerinde
+    ok 2 - boş dosya: sunucu açılır, 001'in verisi ve kullanıcılar yerinde
+      ---
+      duration_ms: 561.1815
+      type: 'test'
+      ...
+    # Subtest: boş liste: sunucu açılır, 001'in verisi ve kullanıcılar yerinde
+    ok 3 - boş liste: sunucu açılır, 001'in verisi ve kullanıcılar yerinde
+      ---
+      duration_ms: 607.588354
+      type: 'test'
+      ...
+    # Subtest: yarım kalmış kayıt (sirketler.json.tmp) asıl listeyi bozmaz
+    ok 4 - yarım kalmış kayıt (sirketler.json.tmp) asıl listeyi bozmaz
+      ---
+      duration_ms: 524.017697
+      type: 'test'
+      ...
+    # Subtest: bozuk sirketler.json: 002 ve sonraki şirketler kaybolmaz (veri klasörleri diskte duruyor)
+    ok 5 - bozuk sirketler.json: 002 ve sonraki şirketler kaybolmaz (veri klasörleri diskte duruyor)
+      ---
+      duration_ms: 562.235403
+      type: 'test'
+      ...
+    1..5
+ok 8 - şirket listesi (sirketler.json) bozuk, boş ya da yarım yazılmış
+  ---
+  duration_ms: 2835.201461
+  type: 'suite'
+  ...
+# Subtest: yedek adı süzgeci: .yaziliyor, -wal, .geri-yukleme yedek sayılmaz
+ok 9 - yedek adı süzgeci: .yaziliyor, -wal, .geri-yukleme yedek sayılmaz
+  ---
+  duration_ms: 0.219185
+  type: 'test'
+  ...
+1..9
+# tests 47
+# suites 8
+# pass 47
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 65470.466676

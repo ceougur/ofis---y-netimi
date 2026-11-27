@@ -1,0 +1,13 @@
+WK kâhin güncellemesi 12 (S7-a, S7-b) — eski 310 senaryonun TAM model sonucu: taban ↔ yeni
+Tarih: 2026-11-06T04:00Z (date -u). Yeni: commit 9ce64b4c (test/bagimsiz/whatsapp-248/kahin/senaryolar.json).
+Taban: b12a03d6 ağacındaki kahin/* dosyalarının değişiklikten ÖNCE not defterine alınmış kopyası
+  (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wk12-eski-b12a03d6/; kahin.py sha256 7fce6dcf…0292 = b12a03d6'daki dosya).
+Komut: python3 -I docs/kanit/2026-11-06/wk12-araclar/fark_eski_310.py <taban senaryolar.json> test/bagimsiz/whatsapp-248/kahin/senaryolar.json
+Çıkış kodu: 0 (0 = eski senaryoların hiçbiri değişmedi)
+---
+eski senaryo: 310  yeni senaryo: 318
+yeni dosyada OLMAYAN eski senaryo: 0 []
+yeni senaryo (8): ['S7A-01-elle-supheli-suphesiz-gecikmis-yok-elenir', 'S7A-02-elle-supheli-kuyrukta-suphesiz-kapanir-gonderimde-atlanir', 'S7A-03-gece-yarisi-suphesiz-vade-yerel-gun', 'S7B-01-sinirda-supheli-acilan-atlanir-yeni-gonderimde-elle-gider', 'S7B-02-duraklatmada-supheli-acilan-atlanir-elle-secilen-gider', 'S7B-03-kuyrukta-acilan-kayit-kapanirsa-gider', 'S7B-04-meta-bekletti-ikinci-denemede-supheli-atlanir', 'S7B-05-yeniden-denemede-supheli-atlanir-elle-isaret-tasinir']
+eski senaryolardan bayt bayt AYNI (girdi + elle + tam sonuç + başlık/kaynak/açıklama): 310/310
+DEĞİŞEN: 0
+üst alan 'kararlar': eklenen ['S7A', 'S7B'], çıkan [], değişen []

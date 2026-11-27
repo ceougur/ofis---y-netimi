@@ -1,0 +1,32 @@
+{
+  "ad": "wk250-anaoturum-depo-taramasi",
+  "komut": "node --test --test-concurrency=1 test/platform-tasinabilirlik.test.mjs test/kanit-araci.test.mjs test/lisans-servisi-izolasyonu.test.mjs",
+  "commit": "572b36c92316e47a4c7a6a1aebb252bdde40be98",
+  "dal": "claude/epic-thompson-w0lc2l",
+  "kirli": 0,
+  "izlenmeyen": 6,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T21:56:01.689Z",
+  "sure_sn": 4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 61,
+    "gecen": 61,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/wk250-anaoturum-depo-taramasi.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "308a1acfdf1e8b80f88d7460a91ba4932e48316ea8df74bd8e42b70a206256e3",
+  "ham_cikti_bayt": 17536
+}

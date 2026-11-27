@@ -1,0 +1,129 @@
+HIZ t3c · kilitsiz · tekrar 5 · başta 1.92 1.91 1.84 1/111 19640 · 16:42:32
+=== taban · başta 1.92 1.91 1.84 2/111 19646 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-hiz/taban · yük (başta) 1.72 1.86 1.83 · TZ Europe/Istanbul · açılış 21895.5 ms
+  İLK Mizan + mutabakat (GET ledger): durum 200 · 3400.5 ms · olay döngüsü en çok 3395.3 ms
+  İLK Yevmiye Defteri (rapor): durum 200 · 2174.3 ms · olay döngüsü en çok 2172.6 ms
+  İLK Hesap Planı Mizanı (rapor): durum 200 · 3233.2 ms · olay döngüsü en çok 0 ms
+  İLK Alt Hesap Mizanı (rapor): durum 200 · 432.2 ms · olay döngüsü en çok 0 ms
+  İLK Defter Mutabakatı (rapor): durum 200 · 11151.7 ms · olay döngüsü en çok 0 ms
+  İLK Mutabakat Testi (GET ledger/integrity): durum 200 · 6982.9 ms · olay döngüsü en çok 6983.5 ms
+  İLK Alacak Yaşlandırma (rapor): durum 200 · 2002.5 ms · olay döngüsü en çok 0 ms
+  İLK Cari Listesi: durum 200 · 840.7 ms · olay döngüsü en çok 6.1 ms
+  İLK zil (dues): durum 200 · 1985.5 ms · olay döngüsü en çok 10.3 ms
+  İLK cari kartı (şüpheli + bağlı): durum 200 · 190.9 ms · olay döngüsü en çok 188.7 ms
+  İLK cari kartı (şüphelisiz, en kalabalık): durum 200 · 234.6 ms · olay döngüsü en çok 0 ms
+  İLK YAZIM bağlı tahsilat (şüpheli cari; kapı): durum 200 · 386.2 ms · olay döngüsü en çok 0 ms
+  İLK YAZIM tahsilat (şüphelisiz cari; kapı): durum 200 · 291.7 ms · olay döngüsü en çok 0 ms
+  İLK Kural Farkı Düzeltme ön izlemesi: durum 200 · 127.8 ms · olay döngüsü en çok 0 ms
+  Mizan + mutabakat (GET ledger): durum 200 · en iyi 3085.8 ms · ortanca 3171 ms · olay döngüsü en çok 0 ms (n=5)
+  Yevmiye Defteri (rapor): durum 200 · en iyi 2079.9 ms · ortanca 2106 ms · olay döngüsü en çok 0 ms (n=5)
+  Hesap Planı Mizanı (rapor): durum 200 · en iyi 3049.8 ms · ortanca 3169.8 ms · olay döngüsü en çok 0 ms (n=5)
+  Alt Hesap Mizanı (rapor): durum 200 · en iyi 428.6 ms · ortanca 438.8 ms · olay döngüsü en çok 0 ms (n=5)
+  Defter Mutabakatı (rapor): durum 200 · en iyi 11050.3 ms · ortanca 11370 ms · olay döngüsü en çok 0 ms (n=5)
+  Mutabakat Testi (GET ledger/integrity): durum 200 · en iyi 6804.8 ms · ortanca 7068.9 ms · olay döngüsü en çok 0 ms (n=5)
+  Alacak Yaşlandırma (rapor): durum 200 · en iyi 1933.8 ms · ortanca 2025.6 ms · olay döngüsü en çok 0 ms (n=5)
+  Cari Listesi: durum 200 · en iyi 737.1 ms · ortanca 766.9 ms · olay döngüsü en çok 0 ms (n=5)
+  zil (dues): durum 200 · en iyi 1741.9 ms · ortanca 1958.2 ms · olay döngüsü en çok 10.1 ms (n=5)
+  cari kartı (şüpheli + bağlı): durum 200 · en iyi 165.6 ms · ortanca 169.9 ms · olay döngüsü en çok 176.6 ms (n=5)
+  cari kartı (şüphelisiz, en kalabalık): durum 200 · en iyi 210.2 ms · ortanca 213 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM bağlı tahsilat (şüpheli cari; kapı): durum 200 · en iyi 325.4 ms · ortanca 332.9 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM tahsilat (şüphelisiz cari; kapı): durum 200 · en iyi 274.6 ms · ortanca 285.5 ms · olay döngüsü en çok 0 ms (n=5)
+  Kural Farkı Düzeltme ön izlemesi: durum 200 · en iyi 2 ms · ortanca 2 ms · olay döngüsü en çok 0 ms (n=5)
+yük (sonda) 1.13 1.54 1.70
+çıkış 0 · sonda 1.13 1.54 1.70 1/111 19763
+=== aday · başta 1.13 1.54 1.70 1/111 19768 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-ya-ag · yük (başta) 1.16 1.52 1.69 · TZ Europe/Istanbul · açılış 21137.4 ms
+  İLK Mizan + mutabakat (GET ledger): durum 200 · 3256.7 ms · olay döngüsü en çok 3250.6 ms
+  İLK Yevmiye Defteri (rapor): durum 200 · 2214.8 ms · olay döngüsü en çok 2212.5 ms
+  İLK Hesap Planı Mizanı (rapor): durum 200 · 3345.4 ms · olay döngüsü en çok 0 ms
+  İLK Alt Hesap Mizanı (rapor): durum 200 · 536.7 ms · olay döngüsü en çok 0 ms
+  İLK Defter Mutabakatı (rapor): durum 200 · 11965.7 ms · olay döngüsü en çok 0 ms
+  İLK Mutabakat Testi (GET ledger/integrity): durum 200 · 7417.8 ms · olay döngüsü en çok 0 ms
+  İLK Alacak Yaşlandırma (rapor): durum 200 · 2098 ms · olay döngüsü en çok 0 ms
+  İLK Cari Listesi: durum 200 · 885 ms · olay döngüsü en çok 0 ms
+  İLK zil (dues): durum 200 · 2043.8 ms · olay döngüsü en çok 1719.7 ms
+  İLK cari kartı (şüpheli + bağlı): durum 200 · 144.7 ms · olay döngüsü en çok 142.3 ms
+  İLK cari kartı (şüphelisiz, en kalabalık): durum 200 · 164.9 ms · olay döngüsü en çok 0 ms
+  İLK YAZIM bağlı tahsilat (şüpheli cari; kapı): durum 200 · 388.4 ms · olay döngüsü en çok 0 ms
+  İLK YAZIM tahsilat (şüphelisiz cari; kapı): durum 200 · 184.5 ms · olay döngüsü en çok 0 ms
+  İLK Kural Farkı Düzeltme ön izlemesi: durum 200 · 161.2 ms · olay döngüsü en çok 0 ms
+  Mizan + mutabakat (GET ledger): durum 200 · en iyi 3123.1 ms · ortanca 3365.9 ms · olay döngüsü en çok 0 ms (n=5)
+  Yevmiye Defteri (rapor): durum 200 · en iyi 2045.2 ms · ortanca 2167 ms · olay döngüsü en çok 0 ms (n=5)
+  Hesap Planı Mizanı (rapor): durum 200 · en iyi 3107 ms · ortanca 3300.9 ms · olay döngüsü en çok 0 ms (n=5)
+  Alt Hesap Mizanı (rapor): durum 200 · en iyi 469.3 ms · ortanca 479 ms · olay döngüsü en çok 0 ms (n=5)
+  Defter Mutabakatı (rapor): durum 200 · en iyi 11198.9 ms · ortanca 11385.4 ms · olay döngüsü en çok 0 ms (n=5)
+  Mutabakat Testi (GET ledger/integrity): durum 200 · en iyi 7087.3 ms · ortanca 7296.6 ms · olay döngüsü en çok 0 ms (n=5)
+  Alacak Yaşlandırma (rapor): durum 200 · en iyi 1894.6 ms · ortanca 1978.9 ms · olay döngüsü en çok 0 ms (n=5)
+  Cari Listesi: durum 200 · en iyi 764.2 ms · ortanca 792.8 ms · olay döngüsü en çok 875 ms (n=5)
+  zil (dues): durum 200 · en iyi 1901.7 ms · ortanca 1948.7 ms · olay döngüsü en çok 18.8 ms (n=5)
+  cari kartı (şüpheli + bağlı): durum 200 · en iyi 119.6 ms · ortanca 121.7 ms · olay döngüsü en çok 138.5 ms (n=5)
+  cari kartı (şüphelisiz, en kalabalık): durum 200 · en iyi 143.5 ms · ortanca 177.5 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM bağlı tahsilat (şüpheli cari; kapı): durum 200 · en iyi 315.5 ms · ortanca 324.1 ms · olay döngüsü en çok 321.4 ms (n=5)
+  YAZIM tahsilat (şüphelisiz cari; kapı): durum 200 · en iyi 157.2 ms · ortanca 162.4 ms · olay döngüsü en çok 156 ms (n=5)
+  Kural Farkı Düzeltme ön izlemesi: durum 200 · en iyi 2 ms · ortanca 2 ms · olay döngüsü en çok 0 ms (n=5)
+yük (sonda) 1.40 1.41 1.61
+çıkış 0 · sonda 1.40 1.41 1.61 1/115 19808
+=== taban · başta 1.40 1.41 1.61 1/115 19813 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-hiz/taban · yük (başta) 1.29 1.38 1.59 · TZ Europe/Istanbul · açılış 21023.4 ms
+  İLK Mizan + mutabakat (GET ledger): durum 200 · 3485.6 ms · olay döngüsü en çok 3479.2 ms
+  İLK Yevmiye Defteri (rapor): durum 200 · 2332.9 ms · olay döngüsü en çok 2329.9 ms
+  İLK Hesap Planı Mizanı (rapor): durum 200 · 3580.3 ms · olay döngüsü en çok 0 ms
+  İLK Alt Hesap Mizanı (rapor): durum 200 · 457.3 ms · olay döngüsü en çok 0 ms
+  İLK Defter Mutabakatı (rapor): durum 200 · 11339.6 ms · olay döngüsü en çok 0 ms
+  İLK Mutabakat Testi (GET ledger/integrity): durum 200 · 7130.7 ms · olay döngüsü en çok 0 ms
+  İLK Alacak Yaşlandırma (rapor): durum 200 · 2135.2 ms · olay döngüsü en çok 0 ms
+  İLK Cari Listesi: durum 200 · 900.6 ms · olay döngüsü en çok 0 ms
+  İLK zil (dues): durum 200 · 2092.2 ms · olay döngüsü en çok 1818.2 ms
+  İLK cari kartı (şüpheli + bağlı): durum 200 · 188.5 ms · olay döngüsü en çok 186 ms
+  İLK cari kartı (şüphelisiz, en kalabalık): durum 200 · 239.4 ms · olay döngüsü en çok 0 ms
+  İLK YAZIM bağlı tahsilat (şüpheli cari; kapı): durum 200 · 363.1 ms · olay döngüsü en çok 0 ms
+  İLK YAZIM tahsilat (şüphelisiz cari; kapı): durum 200 · 312.3 ms · olay döngüsü en çok 0 ms
+  İLK Kural Farkı Düzeltme ön izlemesi: durum 200 · 131 ms · olay döngüsü en çok 0 ms
+  Mizan + mutabakat (GET ledger): durum 200 · en iyi 3150.9 ms · ortanca 3200.1 ms · olay döngüsü en çok 3531.6 ms (n=5)
+  Yevmiye Defteri (rapor): durum 200 · en iyi 2103.3 ms · ortanca 2225.1 ms · olay döngüsü en çok 0 ms (n=5)
+  Hesap Planı Mizanı (rapor): durum 200 · en iyi 3092.4 ms · ortanca 3269.6 ms · olay döngüsü en çok 0 ms (n=5)
+  Alt Hesap Mizanı (rapor): durum 200 · en iyi 448 ms · ortanca 460.6 ms · olay döngüsü en çok 0 ms (n=5)
+  Defter Mutabakatı (rapor): durum 200 · en iyi 11274.2 ms · ortanca 11862.7 ms · olay döngüsü en çok 0 ms (n=5)
+  Mutabakat Testi (GET ledger/integrity): durum 200 · en iyi 7159.5 ms · ortanca 7352.6 ms · olay döngüsü en çok 0 ms (n=5)
+  Alacak Yaşlandırma (rapor): durum 200 · en iyi 1985.2 ms · ortanca 2113.7 ms · olay döngüsü en çok 0 ms (n=5)
+  Cari Listesi: durum 200 · en iyi 770.8 ms · ortanca 809.2 ms · olay döngüsü en çok 0 ms (n=5)
+  zil (dues): durum 200 · en iyi 1825.3 ms · ortanca 1899.5 ms · olay döngüsü en çok 24 ms (n=5)
+  cari kartı (şüpheli + bağlı): durum 200 · en iyi 166.2 ms · ortanca 187.8 ms · olay döngüsü en çok 202.1 ms (n=5)
+  cari kartı (şüphelisiz, en kalabalık): durum 200 · en iyi 205.6 ms · ortanca 232.7 ms · olay döngüsü en çok 237.9 ms (n=5)
+  YAZIM bağlı tahsilat (şüpheli cari; kapı): durum 200 · en iyi 316.9 ms · ortanca 344.9 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM tahsilat (şüphelisiz cari; kapı): durum 200 · en iyi 274 ms · ortanca 290.8 ms · olay döngüsü en çok 0 ms (n=5)
+  Kural Farkı Düzeltme ön izlemesi: durum 200 · en iyi 2.1 ms · ortanca 2.1 ms · olay döngüsü en çok 0 ms (n=5)
+yük (sonda) 1.09 1.27 1.50
+çıkış 0 · sonda 1.09 1.26 1.50 1/110 19848
+=== aday · başta 1.09 1.26 1.50 1/110 19853 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-ya-ag · yük (başta) 1.06 1.24 1.49 · TZ Europe/Istanbul · açılış 20733 ms
+  İLK Mizan + mutabakat (GET ledger): durum 200 · 3455.8 ms · olay döngüsü en çok 3449.8 ms
+  İLK Yevmiye Defteri (rapor): durum 200 · 2203.5 ms · olay döngüsü en çok 2202 ms
+  İLK Hesap Planı Mizanı (rapor): durum 200 · 3149 ms · olay döngüsü en çok 0 ms
+  İLK Alt Hesap Mizanı (rapor): durum 200 · 525.2 ms · olay döngüsü en çok 0 ms
+  İLK Defter Mutabakatı (rapor): durum 200 · 11303.4 ms · olay döngüsü en çok 0 ms
+  İLK Mutabakat Testi (GET ledger/integrity): durum 200 · 7502 ms · olay döngüsü en çok 0 ms
+  İLK Alacak Yaşlandırma (rapor): durum 200 · 2061 ms · olay döngüsü en çok 0 ms
+  İLK Cari Listesi: durum 200 · 818.4 ms · olay döngüsü en çok 0 ms
+  İLK zil (dues): durum 200 · 2017.4 ms · olay döngüsü en çok 1715.5 ms
+  İLK cari kartı (şüpheli + bağlı): durum 200 · 134.7 ms · olay döngüsü en çok 132 ms
+  İLK cari kartı (şüphelisiz, en kalabalık): durum 200 · 159.6 ms · olay döngüsü en çok 0 ms
+  İLK YAZIM bağlı tahsilat (şüpheli cari; kapı): durum 200 · 346.1 ms · olay döngüsü en çok 0 ms
+  İLK YAZIM tahsilat (şüphelisiz cari; kapı): durum 200 · 161 ms · olay döngüsü en çok 0 ms
+  İLK Kural Farkı Düzeltme ön izlemesi: durum 200 · 143.1 ms · olay döngüsü en çok 0 ms
+  Mizan + mutabakat (GET ledger): durum 200 · en iyi 3256.4 ms · ortanca 3279.6 ms · olay döngüsü en çok 3365.9 ms (n=5)
+  Yevmiye Defteri (rapor): durum 200 · en iyi 2114.3 ms · ortanca 2135.9 ms · olay döngüsü en çok 0 ms (n=5)
+  Hesap Planı Mizanı (rapor): durum 200 · en iyi 3110.2 ms · ortanca 3138.3 ms · olay döngüsü en çok 0 ms (n=5)
+  Alt Hesap Mizanı (rapor): durum 200 · en iyi 473.2 ms · ortanca 508.3 ms · olay döngüsü en çok 0 ms (n=5)
+  Defter Mutabakatı (rapor): durum 200 · en iyi 11255.1 ms · ortanca 11826.9 ms · olay döngüsü en çok 0 ms (n=5)
+  Mutabakat Testi (GET ledger/integrity): durum 200 · en iyi 7327.5 ms · ortanca 7495.2 ms · olay döngüsü en çok 0 ms (n=5)
+  Alacak Yaşlandırma (rapor): durum 200 · en iyi 1997.3 ms · ortanca 2062.8 ms · olay döngüsü en çok 0 ms (n=5)
+  Cari Listesi: durum 200 · en iyi 773.5 ms · ortanca 797.9 ms · olay döngüsü en çok 775.4 ms (n=5)
+  zil (dues): durum 200 · en iyi 1910 ms · ortanca 1921.1 ms · olay döngüsü en çok 26 ms (n=5)
+  cari kartı (şüpheli + bağlı): durum 200 · en iyi 120 ms · ortanca 126.4 ms · olay döngüsü en çok 143.3 ms (n=5)
+  cari kartı (şüphelisiz, en kalabalık): durum 200 · en iyi 148.2 ms · ortanca 152.5 ms · olay döngüsü en çok 146 ms (n=5)
+  YAZIM bağlı tahsilat (şüpheli cari; kapı): durum 200 · en iyi 313.2 ms · ortanca 317.6 ms · olay döngüsü en çok 0 ms (n=5)
+  YAZIM tahsilat (şüphelisiz cari; kapı): durum 200 · en iyi 159.2 ms · ortanca 174.6 ms · olay döngüsü en çok 0 ms (n=5)
+  Kural Farkı Düzeltme ön izlemesi: durum 200 · en iyi 1.9 ms · ortanca 2.1 ms · olay döngüsü en çok 0 ms (n=5)
+yük (sonda) 1.29 1.26 1.44
+çıkış 0 · sonda 1.29 1.26 1.44 1/114 19939

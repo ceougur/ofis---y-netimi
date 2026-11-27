@@ -1,0 +1,308 @@
+TAP version 13
+# Subtest: Ç2 tur 3 — YAN BULGU 2: banka açılış onarımının kaydı kesilmiş JSON olmaz (2.0.26'ya dönüp Tüm Hareketleri Sil → 600 iptal başlığı)
+    # Subtest: 600 tahsilat → GERÇEK 2.0.26 'Tüm Hareketleri Sil' → güncel açılış: 600 başlık iptal; kayıt geçerli JSON (ilk 50 + counts); Mutabakat Testi 200; ikinci açılışta kayıt yinelenmez
+    not ok 1 - 600 tahsilat → GERÇEK 2.0.26 'Tüm Hareketleri Sil' → güncel açılış: 600 başlık iptal; kayıt geçerli JSON (ilk 50 + counts); Mutabakat Testi 200; ikinci açılışta kayıt yinelenmez
+      ---
+      duration_ms: 22930.572768
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-eski-bc495a1c/test/banka-onarim-kayit-250.test.mjs:33:3'
+      failureType: 'testCodeFailure'
+      error: 'onarım kaydının ayrıntısı geçerli JSON değil (20000 karakter, sonu ",\\"ev-0mw4qzr7g0000-81a98e27-81ab-4556\\",\\""): Unterminated string in JSON at position 20000 (line 1 column 20001)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      operator: 'fail'
+      stack: |-
+        file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-eski-bc495a1c/test/banka-onarim-kayit-250.test.mjs:68:20
+        withServer (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-eski-bc495a1c/test/banka-onarim-kayit-250.test.mjs:25:18)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-eski-bc495a1c/test/banka-onarim-kayit-250.test.mjs:57:9)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..1
+not ok 1 - Ç2 tur 3 — YAN BULGU 2: banka açılış onarımının kaydı kesilmiş JSON olmaz (2.0.26'ya dönüp Tüm Hareketleri Sil → 600 iptal başlığı)
+  ---
+  duration_ms: 22932.718294
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-eski-bc495a1c/test/banka-onarim-kayit-250.test.mjs:31:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Ç2 tur 3 — boundedDetail: sınırlı, her zaman geçerli JSON (lib/log-detail.mjs)
+    # Subtest: listeler ilk 50 öğe; kökün sayıları ve alanları aynen; çıktı her uzunlukta geçerli JSON
+    not ok 1 - listeler ilk 50 öğe; kökün sayıları ve alanları aynen; çıktı her uzunlukta geçerli JSON
+      ---
+      duration_ms: 0
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-eski-bc495a1c/test/fis-defteri-kayit-250.test.mjs:46:3'
+      failureType: 'cancelledByParent'
+      error: 'test did not finish before its parent and was cancelled'
+      code: 'ERR_TEST_FAILURE'
+      ...
+    # Subtest: eşlem nesnesi (çok anahtarlı) liste gibi ilk 50 anahtar; az anahtarlı kayıt nesnesi kısaltılmaz
+    not ok 2 - eşlem nesnesi (çok anahtarlı) liste gibi ilk 50 anahtar; az anahtarlı kayıt nesnesi kısaltılmaz
+      ---
+      duration_ms: 0
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-eski-bc495a1c/test/fis-defteri-kayit-250.test.mjs:57:3'
+      failureType: 'cancelledByParent'
+      error: 'test did not finish before its parent and was cancelled'
+      code: 'ERR_TEST_FAILURE'
+      ...
+    # Subtest: sınır içinde metin aşılırsa liste ÖNCE kısaltılır (öğeler bozulmaz), kayıt nesnesinin alanları ve kökün 20 alanı korunur; asla ortadan kesmez
+    not ok 3 - sınır içinde metin aşılırsa liste ÖNCE kısaltılır (öğeler bozulmaz), kayıt nesnesinin alanları ve kökün 20 alanı korunur; asla ortadan kesmez
+      ---
+      duration_ms: 0
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-eski-bc495a1c/test/fis-defteri-kayit-250.test.mjs:64:3'
+      failureType: 'cancelledByParent'
+      error: 'test did not finish before its parent and was cancelled'
+      code: 'ERR_TEST_FAILURE'
+      ...
+    # Subtest: maxList Infinity: sığan değer JSON.stringify ile BAYT BAYT aynı (integrity.mjs eşdeğerliği; rastgele yapılar, uzun metin, 1.000 öğeli liste); aşan değer geçerli ve sınır içinde
+    not ok 4 - maxList Infinity: sığan değer JSON.stringify ile BAYT BAYT aynı (integrity.mjs eşdeğerliği; rastgele yapılar, uzun metin, 1.000 öğeli liste); aşan değer geçerli ve sınır içinde
+      ---
+      duration_ms: 0
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-eski-bc495a1c/test/fis-defteri-kayit-250.test.mjs:81:3'
+      failureType: 'cancelledByParent'
+      error: 'test did not finish before its parent and was cancelled'
+      code: 'ERR_TEST_FAILURE'
+      ...
+    # Subtest: ders 47: uzun listenin kesilen öğeleri hiç okunmaz (öğe başına stringify döngüsü yok)
+    not ok 5 - ders 47: uzun listenin kesilen öğeleri hiç okunmaz (öğe başına stringify döngüsü yok)
+      ---
+      duration_ms: 0
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-eski-bc495a1c/test/fis-defteri-kayit-250.test.mjs:149:3'
+      failureType: 'cancelledByParent'
+      error: 'test did not finish before its parent and was cancelled'
+      code: 'ERR_TEST_FAILURE'
+      ...
+    1..5
+not ok 2 - Ç2 tur 3 — boundedDetail: sınırlı, her zaman geçerli JSON (lib/log-detail.mjs)
+  ---
+  duration_ms: 1.57413
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-eski-bc495a1c/test/fis-defteri-kayit-250.test.mjs:38:1'
+  failureType: 'hookFailed'
+  error: "Cannot find module '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-eski-bc495a1c/server/lib/log-detail.mjs' imported from /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-eski-bc495a1c/test/fis-defteri-kayit-250.test.mjs"
+  code: 'ERR_MODULE_NOT_FOUND'
+  stack: |-
+    finalizeResolution (node:internal/modules/esm/resolve:275:11)
+    moduleResolve (node:internal/modules/esm/resolve:865:10)
+    defaultResolve (node:internal/modules/esm/resolve:989:11)
+    #cachedDefaultResolve (node:internal/modules/esm/loader:747:20)
+    ModuleLoader.resolve (node:internal/modules/esm/loader:724:38)
+    ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:320:38)
+    onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:680:36)
+    TracingChannel.tracePromise (node:diagnostics_channel:350:14)
+    ModuleLoader.import (node:internal/modules/esm/loader:679:21)
+    defaultImportModuleDynamicallyForModule (node:internal/modules/esm/utils:222:31)
+  ...
+# Subtest: Ç2 tur 3 — YAN BULGU 1: onarımın kaydı kesilmiş JSON olmaz (475+ fiş; kaldırılan + kaldırılmayan toplamı)
+    # Subtest: 600 fiş eski sürüm sıfırlamasından artakalır → hepsi kaldırılır; kayıt geçerli JSON (ilk 50 kimlik, removedCount 600); Mutabakat Testi 200 ve günlüğünde; Mutabakat Günlüğü raporu 200
+    not ok 1 - 600 fiş eski sürüm sıfırlamasından artakalır → hepsi kaldırılır; kayıt geçerli JSON (ilk 50 kimlik, removedCount 600); Mutabakat Testi 200 ve günlüğünde; Mutabakat Günlüğü raporu 200
+      ---
+      duration_ms: 541.564333
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-eski-bc495a1c/test/fis-defteri-kayit-250.test.mjs:237:3'
+      failureType: 'testCodeFailure'
+      error: 'kaldırma kaydı (600): kayıt ayrıntısı geçerli JSON değil (20000 karakter, sonu "v-3244a143-1ead-45aa-bab0-010fac6549fd\\","): Unexpected end of JSON input'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      operator: 'fail'
+      stack: |-
+        parsed (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-eski-bc495a1c/test/fis-defteri-kayit-250.test.mjs:34:12)
+        file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-eski-bc495a1c/test/fis-defteri-kayit-250.test.mjs:249:22
+        withServer (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-eski-bc495a1c/test/fis-defteri-kayit-250.test.mjs:168:18)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-eski-bc495a1c/test/fis-defteri-kayit-250.test.mjs:241:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: kaldırılan 300 + kaldırılmayan 300 (izi duran fişten sonra yazılmış): iki kayıt da geçerli JSON — ilk 50 kimlik + removedCount 300 / keptCount 300; kuşku kaydı yinelenmez
+    not ok 2 - kaldırılan 300 + kaldırılmayan 300 (izi duran fişten sonra yazılmış): iki kayıt da geçerli JSON — ilk 50 kimlik + removedCount 300 / keptCount 300; kuşku kaydı yinelenmez
+      ---
+      duration_ms: 405.233294
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-eski-bc495a1c/test/fis-defteri-kayit-250.test.mjs:259:3'
+      failureType: 'testCodeFailure'
+      error: 'kaldırma kaydı (300 + 300): kayıt ayrıntısı geçerli JSON değil (20000 karakter, sonu "00-0000-0000\\",\\"lv-kayit-sonra-183-000000"): Unterminated string in JSON at position 20000 (line 1 column 20001)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      operator: 'fail'
+      stack: |-
+        parsed (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-eski-bc495a1c/test/fis-defteri-kayit-250.test.mjs:34:12)
+        file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-eski-bc495a1c/test/fis-defteri-kayit-250.test.mjs:268:23
+        withServer (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-eski-bc495a1c/test/fis-defteri-kayit-250.test.mjs:168:18)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-eski-bc495a1c/test/fis-defteri-kayit-250.test.mjs:265:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 50'den fazla kuşkulu fiş (sıfırlama izi yok, 60 fiş): kuşku kaydında ilk 50 kimlik + 50 neden + keptCount 60 — biçim tur 2'yle BAYT BAYT aynı (D5, D6)
+    ok 3 - 50'den fazla kuşkulu fiş (sıfırlama izi yok, 60 fiş): kuşku kaydında ilk 50 kimlik + 50 neden + keptCount 60 — biçim tur 2'yle BAYT BAYT aynı (D5, D6)
+      ---
+      duration_ms: 558.179787
+      type: 'test'
+      ...
+    1..3
+not ok 3 - Ç2 tur 3 — YAN BULGU 1: onarımın kaydı kesilmiş JSON olmaz (475+ fiş; kaldırılan + kaldırılmayan toplamı)
+  ---
+  duration_ms: 1515.974177
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-eski-bc495a1c/test/fis-defteri-kayit-250.test.mjs:225:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Ç2 tur 3 — K5 test boşlukları (dar kontrol D1, D2, D3): onarım yazım sırasının uçlarını doğru okur
+    # Subtest: D1: işlem geçmişini SİLMEYEN İKİNCİ sıfırlama izi — EN SON iz sayılır: eski sürüm sıfırlaması (1. iz) → izli fiş → silmeyen 2. iz ⇒ izsiz fiş KALIR (reset-without-wipe)
+    ok 1 - D1: işlem geçmişini SİLMEYEN İKİNCİ sıfırlama izi — EN SON iz sayılır: eski sürüm sıfırlaması (1. iz) → izli fiş → silmeyen 2. iz ⇒ izsiz fiş KALIR (reset-without-wipe)
+      ---
+      duration_ms: 404.178556
+      type: 'test'
+      ...
+    # Subtest: D2: iki izli fiş ARASINA düşen izsiz fiş — İZLİ İLK fiş sayılır: sıfırlamadan önceki fiş kaldırılır, aradaki izsiz fiş KALIR (after-traced)
+    not ok 2 - D2: iki izli fiş ARASINA düşen izsiz fiş — İZLİ İLK fiş sayılır: sıfırlamadan önceki fiş kaldırılır, aradaki izsiz fiş KALIR (after-traced)
+      ---
+      duration_ms: 394.713661
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-eski-bc495a1c/test/fis-defteri-kayit-250.test.mjs:328:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+            ids: [
+              'lv-74848820-0c7a-4a52-a0f4-696d7eb48849'
+            ],
+            kept: [
+              'lv-kayit-d2-m'
+            ],
+        -   keptCount: 1,
+        -   removedCount: 1,
+            resetAt: '2027-01-10T06:00:00.000Z'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        ids:
+          0: 'lv-74848820-0c7a-4a52-a0f4-696d7eb48849'
+        removedCount: 1
+        resetAt: '2027-01-10T06:00:00.000Z'
+        kept:
+          0: 'lv-kayit-d2-m'
+        keptCount: 1
+      actual:
+        ids:
+          0: 'lv-74848820-0c7a-4a52-a0f4-696d7eb48849'
+        resetAt: '2027-01-10T06:00:00.000Z'
+        kept:
+          0: 'lv-kayit-d2-m'
+      operator: 'deepStrictEqual'
+      stack: |-
+        file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-eski-bc495a1c/test/fis-defteri-kayit-250.test.mjs:342:14
+        withServer (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-eski-bc495a1c/test/fis-defteri-kayit-250.test.mjs:168:18)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-eski-bc495a1c/test/fis-defteri-kayit-250.test.mjs:337:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: D3: sıfırlama izinden ÖNCE ve SONRA iz — İLK iz sayılır: sıfırlama izi bir izden sonra yazılmışsa işlem geçmişini silmemiştir ⇒ izsiz fiş KALIR (son iz sıfırlamadan sonra olsa da)
+    ok 3 - D3: sıfırlama izinden ÖNCE ve SONRA iz — İLK iz sayılır: sıfırlama izi bir izden sonra yazılmışsa işlem geçmişini silmemiştir ⇒ izsiz fiş KALIR (son iz sıfırlamadan sonra olsa da)
+      ---
+      duration_ms: 505.887475
+      type: 'test'
+      ...
+    1..3
+not ok 4 - Ç2 tur 3 — K5 test boşlukları (dar kontrol D1, D2, D3): onarım yazım sırasının uçlarını doğru okur
+  ---
+  duration_ms: 1313.685909
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-eski-bc495a1c/test/fis-defteri-kayit-250.test.mjs:301:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Ç2 tur 3 — integrity.mjs: açılışta bulunan sapmanın kaydı ('baseline') sınırlı, sığan kayıtta eskisiyle BAYT BAYT aynı; her açılışta yinelenmez
+    # Subtest: 20.000'i aşan taban (5 × 6.000 karakterlik bozuk tarih): kayıt geçerli JSON ve sınır içinde, her sapma alanlarıyla; Mutabakat Testi 200; ikinci açılışta yeni satır yok
+    not ok 1 - 20.000'i aşan taban (5 × 6.000 karakterlik bozuk tarih): kayıt geçerli JSON ve sınır içinde, her sapma alanlarıyla; Mutabakat Testi 200; ikinci açılışta yeni satır yok
+      ---
+      duration_ms: 584.740471
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-eski-bc495a1c/test/fis-defteri-kayit-250.test.mjs:397:3'
+      failureType: 'testCodeFailure'
+      error: 'açılış 1: taban kaydı: kayıt ayrıntısı geçerli JSON değil (20000 karakter, sonu "9999999999999999999999999999999999999999"): Unterminated string in JSON at position 20000 (line 1 column 20001)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      operator: 'fail'
+      stack: |-
+        parsed (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-eski-bc495a1c/test/fis-defteri-kayit-250.test.mjs:34:12)
+        file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-eski-bc495a1c/test/fis-defteri-kayit-250.test.mjs:411:24
+        withServer (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-eski-bc495a1c/test/fis-defteri-kayit-250.test.mjs:168:18)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-eski-bc495a1c/test/fis-defteri-kayit-250.test.mjs:405:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: sığan taban (5 × 100 karakter): kayıt JSON.stringify(sapmalar) ile BAYT BAYT aynı (eski formül `.slice(0, 20000)` ile de); ikinci açılışta yeni satır yok
+    ok 2 - sığan taban (5 × 100 karakter): kayıt JSON.stringify(sapmalar) ile BAYT BAYT aynı (eski formül `.slice(0, 20000)` ile de); ikinci açılışta yeni satır yok
+      ---
+      duration_ms: 599.567248
+      type: 'test'
+      ...
+    # Subtest: G6 v2.4.9 GERÇEK kodu: v2.4.9'un yazdığı sığan taban kaydı güncel sürümde aynen kalır (yeni satır yok); kesik (20.000'i aşan) kayıttan sonra bir kez geçerli yeni kayıt, sonra yinelenmez
+    not ok 3 - G6 v2.4.9 GERÇEK kodu: v2.4.9'un yazdığı sığan taban kaydı güncel sürümde aynen kalır (yeni satır yok); kesik (20.000'i aşan) kayıttan sonra bir kez geçerli yeni kayıt, sonra yinelenmez
+      ---
+      duration_ms: 1695.374281
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-eski-bc495a1c/test/fis-defteri-kayit-250.test.mjs:441:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        uzunluk 6000, güncel açılış 1: taban satırı 1 (beklenen 2)
+        
+        1 !== 2
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 2
+      actual: 1
+      operator: 'strictEqual'
+      stack: |-
+        file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-eski-bc495a1c/test/fis-defteri-kayit-250.test.mjs:463:18
+        withServer (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-eski-bc495a1c/test/fis-defteri-kayit-250.test.mjs:168:18)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-eski-bc495a1c/test/fis-defteri-kayit-250.test.mjs:461:9)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 5 - Ç2 tur 3 — integrity.mjs: açılışta bulunan sapmanın kaydı ('baseline') sınırlı, sığan kayıtta eskisiyle BAYT BAYT aynı; her açılışta yinelenmez
+  ---
+  duration_ms: 2901.123238
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-eski-bc495a1c/test/fis-defteri-kayit-250.test.mjs:369:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..5
+# tests 15
+# suites 5
+# pass 4
+# fail 6
+# cancelled 5
+# skipped 0
+# todo 0
+# duration_ms 29584.209716

@@ -1,0 +1,79 @@
+.............F....................................................................................................F.......................................................
+======================================================================
+FAIL: test_senaryo_ve_beklenen_dosyalari_guncel (__main__.Dosyalar.test_senaryo_ve_beklenen_dosyalari_guncel)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-s57/test/bagimsiz/muhasebe/test_model.py", line 944, in test_senaryo_ve_beklenen_dosyalari_guncel
+    self.assertEqual(UB.main(denetle=True), 0, "python3 test/bagimsiz/muhasebe/uret_beklenen.py ile yeniden yazın")
+                     ~~~~~~~^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-s57/test/bagimsiz/muhasebe/uret_beklenen.py", line 54, in main
+    for yol, icerik in ((os.path.join(SEN, s["ad"] + ".json"), metin(s)), (os.path.join(BEK, s["ad"] + ".json"), metin(beklenen(s)))):
+                                                                                                                       ~~~~~~~~^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-s57/test/bagimsiz/muhasebe/uret_beklenen.py", line 41, in beklenen
+    r = M.kos(s, M.Kurallar.etiketten(et))
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-s57/test/bagimsiz/muhasebe/model.py", line 3825, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-s57/test/bagimsiz/muhasebe/model.py", line 2560, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-s57/test/bagimsiz/muhasebe/model.py", line 2585, in uygula
+    return self.kaynak(o, d)
+           ~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-s57/test/bagimsiz/muhasebe/model.py", line 2595, in kaynak
+    self._denetle(tur, tarih, v, d, yedek)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-s57/test/bagimsiz/muhasebe/model.py", line 2646, in _denetle
+    e = d.gecis().evrak.get(v["evrak"])
+        ~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-s57/test/bagimsiz/muhasebe/model.py", line 1794, in gecis
+    self._g, self._m, self._kq = Gecis(self, s14=plan).kos(), None, {}
+                                 ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-s57/test/bagimsiz/muhasebe/model.py", line 539, in kos
+    getattr(self, "_" + k.tur)(k)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-s57/test/bagimsiz/muhasebe/model.py", line 1086, in _evrak_karsiliksiz
+    raise AssertionError("senaryo hatası: formdan carisiz (açılış dışı) evrakın karşılıksızı / iadesi — karar metninde yok; kâhin susar "
+                         "(README bakım 8 W9, KULLANICIYA SORULMALI 4)")
+AssertionError: senaryo hatası: formdan carisiz (açılış dışı) evrakın karşılıksızı / iadesi — karar metninde yok; kâhin susar (README bakım 8 W9, KULLANICIYA SORULMALI 4)
+
+======================================================================
+FAIL: test_s99_s66_formdan_carisiz_evrak_karsiliksiz (__main__.ElleSenaryolar.test_s99_s66_formdan_carisiz_evrak_karsiliksiz)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-s57/test/bagimsiz/muhasebe/test_model.py", line 704, in test
+    r = M.kos(x, M.Kurallar.etiketten(et))
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-s57/test/bagimsiz/muhasebe/model.py", line 3825, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-s57/test/bagimsiz/muhasebe/model.py", line 2560, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-s57/test/bagimsiz/muhasebe/model.py", line 2585, in uygula
+    return self.kaynak(o, d)
+           ~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-s57/test/bagimsiz/muhasebe/model.py", line 2595, in kaynak
+    self._denetle(tur, tarih, v, d, yedek)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-s57/test/bagimsiz/muhasebe/model.py", line 2646, in _denetle
+    e = d.gecis().evrak.get(v["evrak"])
+        ~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-s57/test/bagimsiz/muhasebe/model.py", line 1794, in gecis
+    self._g, self._m, self._kq = Gecis(self, s14=plan).kos(), None, {}
+                                 ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-s57/test/bagimsiz/muhasebe/model.py", line 539, in kos
+    getattr(self, "_" + k.tur)(k)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8-s57/test/bagimsiz/muhasebe/model.py", line 1086, in _evrak_karsiliksiz
+    raise AssertionError("senaryo hatası: formdan carisiz (açılış dışı) evrakın karşılıksızı / iadesi — karar metninde yok; kâhin susar "
+                         "(README bakım 8 W9, KULLANICIYA SORULMALI 4)")
+AssertionError: senaryo hatası: formdan carisiz (açılış dışı) evrakın karşılıksızı / iadesi — karar metninde yok; kâhin susar (README bakım 8 W9, KULLANICIYA SORULMALI 4)
+
+----------------------------------------------------------------------
+Ran 170 tests in 15.149s
+
+FAILED (failures=2)
+# tests 170
+# pass 168
+# fail 2
+# skipped 0

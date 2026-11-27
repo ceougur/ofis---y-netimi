@@ -1,6 +1,6 @@
 // Senaryo İz 1.3 (2.2.0 iş listesi; K6 "KASA-ACILIS-649"), arayüzden, gerçek tıklama ve klavyeyle:
 //   Yönetici Kasa → Açılış Bakiyesi'nden devreden nakdi girer (insan hızında yazım) → Kasa'da "Açılış Bakiyesi · Kasa açılışı (devreden nakit)"
-//   satırı ve Nakit Kasa; Ana Defter'de B 100 / A 500 (649'a gelir yazılmaz); satırdaki ✎ ile "Kasa Açılış Bakiyesini Düzelt" (dolu gelir) →
+//   satırı ve Nakit Kasa; Ana Defter'de B 100 / A 519 (2.5.0 Ç5-A M-01; 649'a gelir yazılmaz); satırdaki ✎ ile "Kasa Açılış Bakiyesini Düzelt" (dolu gelir) →
 //   düzeltme aynı satırı değiştirir (ikinci açılış yok). Açılış tarihi Kasa'nın ilk hareketinden sonra girilemez (ekranda neden). Muhasebe
 //   kullanıcısı (Kasa yetkili, yönetici değil): Açılış Bakiyesi düğmesi yok, açılış satırında düzelt/sil yok.
 // Çalıştırma: node --disable-warning=ExperimentalWarning test/e2e/senaryo-iz1-kasa-acilis.mjs
@@ -135,7 +135,8 @@ try {
   ok(/26\.000,00/.test(kpi), `Nakit Kasa göstergesi ${kpi} (25.000 + 1.000)`);
   await shot(admin, "kasa-acilis-satiri");
   let t = await trial();
-  ok(t["100"] === 26000 && t["500"] === -25000 && t["649"] === -1000, `Ana Defter: 100 = 26.000 · 500 = −25.000 (açılış) · 649 = −1.000 (yalnız gelir) — ${JSON.stringify({ 100: t["100"], 500: t["500"], 649: t["649"] })}`);
+  // 2.5.0 Ç5-A (30.10 açılış düzeni; C5-ACILIS-TASARIM §2.2 M-01): Kasa açılışının karşı hesabı 500 değil 519 "Eşleştirilecek Açılış Bakiyeleri" (B 100 / A 519); 500'e fişsiz satır düşmez.
+  ok(t["100"] === 26000 && t["519"] === -25000 && !t["500"] && t["649"] === -1000, `Ana Defter: 100 = 26.000 · 519 = −25.000 (açılış) · 500 boş · 649 = −1.000 (yalnız gelir) — ${JSON.stringify({ 100: t["100"], 519: t["519"], 500: t["500"], 649: t["649"] })}`);
   ok((await must("Mutabakat Testi", api.get("/api/workspace/ledger/integrity"))).ok === true, "Mutabakat Testi tamam");
 
   console.log("\n■ Yönetici: açılış satırındaki ✎ → “Kasa Açılış Bakiyesini Düzelt” (dolu) → 30.000 → aynı satır düzelir");
@@ -152,7 +153,7 @@ try {
   const after = await openings();
   ok(after.length === 1 && after[0].id === opening.id && after[0].amount === 30000, "tek açılış satırı, aynı satır düzeldi");
   t = await trial();
-  ok(t["500"] === -30000 && t["649"] === -1000, `Ana Defter 500 = −30.000 (${t["500"]})`);
+  ok(t["519"] === -30000 && !t["500"] && t["649"] === -1000, `Ana Defter 519 = −30.000, 500 boş (519 ${t["519"]}, 500 ${t["500"]})`);
   await shot(admin, "kasa-acilis-duzeltildi");
 
   console.log("\n■ Muhasebe (Kasa yetkili, yönetici değil): Açılış Bakiyesi düğmesi yok; açılış satırında düzelt/sil yok; sıradan satırlarda var");

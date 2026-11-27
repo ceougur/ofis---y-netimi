@@ -1,0 +1,9 @@
+başta yük 1.18 1.29 1.82 1/128 22897 · 11:00:16 · kip kilitsiz · kod eski (/dev/shm/c6h2-eski)
+kod /dev/shm/c6h2-eski · yük (başta) 1.41 1.33 1.82 · TZ (yerel) · açılış 23373 ms
+donma: bekleyen koşu yok (kapsam —)
+veri: {"moves":80136,"items":1060,"entries":102295,"cash":11554,"invoices":34026}
+  Gelir Tablosu yıl 2026 (uç, iş parçacığı): durum 200 · en iyi 2834.9 ms · ortanca 2955.8 ms · en kötü 3301.4 ms · olay döngüsü en çok 14.5 ms (n=5) · örnek {"donemNetKari":5124820044,"smm":271342170,"kesinDegil":["smm-tahmini","bilgi-amacli"]}
+  Gelir Tablosu Ç2 2026 (uç, iş parçacığı): durum 200 · en iyi 2844 ms · ortanca 2985.5 ms · en kötü 3234.9 ms · olay döngüsü en çok 203.6 ms (n=5) · örnek {"donemNetKari":1083225870,"smm":-85145418,"kesinDegil":["smm-tahmini","bilgi-amacli"]}
+yük (sonda) 1.43 1.35 1.81
+çıkış 0
+sonda yük 1.43 1.35 1.81 1/133 23098 · 11:01:10

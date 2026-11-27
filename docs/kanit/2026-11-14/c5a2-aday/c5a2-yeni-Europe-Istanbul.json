@@ -1,0 +1,32 @@
+{
+  "ad": "c5a2-yeni-Europe-Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/acilis-duzeni-v249-250.test.mjs test/acilis-eslestirme-250.test.mjs test/acilis-olabilir-250.test.mjs test/defter-kaynak-iz-250.test.mjs test/goc-243-stok-acilis.test.mjs test/kilit-izi-alanlar-250.test.mjs test/kural-farki-duzeltme-250.test.mjs test/s160-iptal-yollari-250.test.mjs test/s160-kilitli-tahsilat-bagi-250.test.mjs",
+  "commit": "20a847ae8b6f4976606d806f6f6dbda0a1965122",
+  "dal": "sinama-c5a2",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v445 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-14T00:02:16.681Z",
+  "sure_sn": 62.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 90,
+    "gecen": 90,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../c5a2-kanit/2026-11-14/c5a2-yeni-Europe-Istanbul.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-ya-ag",
+  "ham_cikti_sha256": "fec632416d702c72f0d1a6da34ee91275a87e57e8b4767861b9231c481f77725",
+  "ham_cikti_bayt": 37588
+}

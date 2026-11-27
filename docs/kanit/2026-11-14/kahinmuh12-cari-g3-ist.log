@@ -1,0 +1,32 @@
+ÜRETİCİ: 20/20 aynı dizi (tur s1 + ux18, tohum 1–10 × 120 işlem)
+ADIMLAR: eski kopyadaki 100 elle senaryonun 0'inin adımları değişti: yok · izinli: yok · yeni elle senaryo: d47-c5-s168-s181-bagli-tahsilat
+EŞDEĞERLİK (2.4.9 / 2.4.6 / 2.4.5 / --legacy; eski kopyanın 100 elle + yeni kopyanın yeni 1 elle + 20 rastgele senaryo × 4 kip): 484/484 bayt bayt aynı
+G3 (kural 2.5.0; 121 senaryo — eski kopyanın 100 elle senaryosu + yeni elle + 20 rastgele): eski 50552 denetim · yeni 50537 denetim · değişen / kalkan / yeni toplam 83 · BEKLENMEYEN 0 · yalnız etiketi değişen 6
+  GENEL          degisen      2
+      örn. d44-c5-s155-s158 k1:kasa: 270000 → 300000
+      örn. d44-c5-s155-s158 k1:kasaRapor:giris: 270000 → 300000
+  GENEL          kalkan       2
+      örn. d47-c5-s168-s181-bagli-tahsilat k1:kasa: 50000 → "(denetim yok)"
+      örn. d47-c5-s168-s181-bagli-tahsilat k1:kasaRapor:giris: 50000 → "(denetim yok)"
+  S168           degisen     34
+      örn. d44-c5-s155-s158 adim:x9t:durum: "ret" → "ok"
+      örn. d44-c5-s155-s158 k1:cari:X9:bakiye: 100000 → 70000
+      örn. d44-c5-s155-s158 k1:fatura:FX9:acik: 100000 → 70000
+      örn. d47-c5-s168-s181-bagli-tahsilat adim:z1d1:durum: "ok" → "ret"
+  S168           kalkan      29
+      örn. d44-c5-s155-s158 k1:cari:X9:gecikmis: 10000 → "(denetim yok)"
+      örn. d44-c5-s155-s158 k1:projeksiyon:cariToplam:X9: 10000 → "(denetim yok)"
+      örn. d44-c5-s155-s158 k1:projeksiyon:fatura:FX9: {"amount": 10000, "direction": "in"} → "(denetim yok)"
+      örn. d44-c5-s155-s158 k1:takvim:cariToplam:X9: 10000 → "(denetim yok)"
+  S168           yeni        16
+      örn. d47-c5-s168-s181-bagli-tahsilat adim:z1d1:kod: "(denetim yok)" → "doubtful-writeoff-exceeds"
+      örn. d47-c5-s168-s181-bagli-tahsilat adim:z3d:kod: "(denetim yok)" → "doubtful-closed"
+      örn. d47-c5-s168-s181-bagli-tahsilat adim:z8d1:kod: "(denetim yok)" → "doubtful-writeoff-exceeds"
+      örn. d47-c5-s168-s181-bagli-tahsilat k1:cari:Z2:gecikmis: "(denetim yok)" → 50000
+G3 senaryo senaryo (sınıf/tür: adet; listede olmayan senaryoda fark 0):
+  d44-c5-s155-s158                         GENEL/degisen 2 · S168/degisen 3 · S168/kalkan 7
+  d47-c5-s168-s181-bagli-tahsilat          GENEL/kalkan 2 · S168/degisen 31 · S168/kalkan 22 · S168/yeni 16
+# tests 605
+# pass 605
+# fail 0
+605/605 denetim geçti

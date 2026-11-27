@@ -1,0 +1,21 @@
+{
+ "dil": "destekofis-cari/3",
+ "ad": "d1-c5-acilis-519",
+ "aciklama": "2.5.0 C13.1 (30.10 açılış düzeni; kitap M-02 / M-03; KG-1 A): Açılış Bakiyesi'nin karşı hesabı 519 — müşteri borçlu açılış B 120 / A 519, tedarikçi alacaklı açılış B 519 / A 320 (2.4.9'da alacaklı açılış mizanı kapatıyordu). Aynı adlı iki cari (D, E 'Ayşe Yılmaz') ayrı açılışlarıyla. 500 = 0.",
+ "dayanak": "KARARLAR.md §13 C13.1",
+ "bugun": "2026-06-15",
+ "adimlar": [
+  {"id": "ca", "islem": "cari_ac", "ad": "A", "isim": "Ali Açılış", "tarih": "2026-05-01", "acilis": "1000"},
+  {"id": "cb", "islem": "cari_ac", "ad": "B", "isim": "Berk Tedarik", "tur": "tedarikci", "tarih": "2026-05-01", "acilis": "600", "acilisYon": "alacak"},
+  {"id": "cc", "islem": "cari_ac", "ad": "C", "isim": "Cem Açılış", "tarih": "2026-05-01", "acilis": "400"},
+  {"id": "cd", "islem": "cari_ac", "ad": "D", "isim": "Ayşe Yılmaz", "tarih": "2026-05-01", "acilis": "300"},
+  {"id": "ce", "islem": "cari_ac", "ad": "E", "isim": "Ayşe Yılmaz", "tarih": "2026-05-02", "acilis": "200"},
+  {"id": "t1", "islem": "tahsilat", "cari": "C", "tutar": "150", "tarih": "2026-06-01"},
+  {"id": "k1", "islem": "kontrol"}
+ ],
+ "elleBeklenen": {
+  "k1:mizan:100": 15000, "k1:mizan:120": 175000, "k1:mizan:320": -60000, "k1:mizan:519": -130000, "k1:mizan:500": 0,
+  "k1:cari:A:bakiye": 100000, "k1:cari:B:bakiye": -60000, "k1:cari:C:bakiye": 25000, "k1:cari:D:bakiye": 30000, "k1:cari:E:bakiye": 20000,
+  "k1:kasa": 15000
+ }
+}

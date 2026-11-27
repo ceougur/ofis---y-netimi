@@ -1,0 +1,49 @@
+anahtar 874 · durumlar {'once': 468, 'yonetim': 26, 'fis': 9, 'fisten-sonra': 162, 'kilit 2026-09-30': 9, 'kilit-0930': 162, 'kilit 2025-12-31': 1, 'kilit-geri-2025': 18, 'ters': 1, 'ters-kayit': 18}
+kural-farki nedenli yanıt 204 · bilgi satırlı yanıt 153 · 200 olmayan okuma 0
+  acilis-kilitli|yonetim: tur4 {"disabled":true,"code":"rule-diff-candidates","lines":2,"excluded":0} · yeni {"disabled":true,"code":"rule-diff-candidates","lines":2,"excluded":0}
+  acilis-kilitsiz|yonetim: tur4 {"disabled":true,"code":"rule-diff-no-lock","lines":0,"excluded":0} · yeni {"disabled":true,"code":"rule-diff-no-lock","lines":0,"excluded":0}
+  alis-fatura-kilitli|yonetim: tur4 {"disabled":true,"code":"rule-diff-nothing","lines":0,"excluded":0} · yeni {"disabled":true,"code":"rule-diff-nothing","lines":0,"excluded":0}
+  alis-fatura-kilitsiz|yonetim: tur4 {"disabled":true,"code":"rule-diff-no-lock","lines":0,"excluded":0} · yeni {"disabled":true,"code":"rule-diff-no-lock","lines":0,"excluded":0}
+  banka-kilitli|fis: tur4 {"status":200,"no":1} · yeni {"status":200,"no":1}
+  banka-kilitli|kilit 2026-09-30|PUT: tur4 200 · yeni 200
+  banka-kilitli|yonetim: tur4 {"disabled":false,"code":"","lines":2,"excluded":0} · yeni {"disabled":false,"code":"","lines":2,"excluded":0}
+  banka-kilitsiz|yonetim: tur4 {"disabled":true,"code":"rule-diff-no-lock","lines":0,"excluded":0} · yeni {"disabled":true,"code":"rule-diff-no-lock","lines":0,"excluded":0}
+  bos-kilitli|yonetim: tur4 {"disabled":true,"code":"rule-diff-nothing","lines":0,"excluded":0} · yeni {"disabled":true,"code":"rule-diff-nothing","lines":0,"excluded":0}
+  bos-kilitsiz|yonetim: tur4 {"disabled":true,"code":"rule-diff-no-lock","lines":0,"excluded":0} · yeni {"disabled":true,"code":"rule-diff-no-lock","lines":0,"excluded":0}
+  cek-senet-kilitli|fis: tur4 {"status":200,"no":1} · yeni {"status":200,"no":1}
+  cek-senet-kilitli|kilit 2026-09-30|PUT: tur4 200 · yeni 200
+  cek-senet-kilitli|yonetim: tur4 {"disabled":false,"code":"","lines":2,"excluded":0} · yeni {"disabled":false,"code":"","lines":2,"excluded":0}
+  cek-senet-kilitsiz|yonetim: tur4 {"disabled":true,"code":"rule-diff-no-lock","lines":0,"excluded":0} · yeni {"disabled":true,"code":"rule-diff-no-lock","lines":0,"excluded":0}
+  elle-borc-alacak-kilitli|fis: tur4 {"status":200,"no":1} · yeni {"status":200,"no":1}
+  elle-borc-alacak-kilitli|kilit 2026-09-30|PUT: tur4 200 · yeni 200
+  elle-borc-alacak-kilitli|yonetim: tur4 {"disabled":false,"code":"","lines":4,"excluded":0} · yeni {"disabled":false,"code":"","lines":4,"excluded":0}
+  elle-borc-alacak-kilitsiz|yonetim: tur4 {"disabled":true,"code":"rule-diff-no-lock","lines":0,"excluded":0} · yeni {"disabled":true,"code":"rule-diff-no-lock","lines":0,"excluded":0}
+  kasa-kilitli|fis: tur4 {"status":200,"no":1} · yeni {"status":200,"no":1}
+  kasa-kilitli|kilit 2025-12-31|PUT: tur4 200 · yeni 200
+  kasa-kilitli|kilit 2026-09-30|PUT: tur4 200 · yeni 200
+  kasa-kilitli|yonetim: tur4 {"disabled":false,"code":"","lines":6,"excluded":0} · yeni {"disabled":false,"code":"","lines":6,"excluded":0}
+  kasa-kilitsiz|yonetim: tur4 {"disabled":true,"code":"rule-diff-no-lock","lines":0,"excluded":0} · yeni {"disabled":true,"code":"rule-diff-no-lock","lines":0,"excluded":0}
+  pos-kilitli|fis: tur4 {"status":200,"no":1} · yeni {"status":200,"no":1}
+  pos-kilitli|kilit 2026-09-30|PUT: tur4 200 · yeni 200
+  pos-kilitli|yonetim: tur4 {"disabled":false,"code":"","lines":2,"excluded":0} · yeni {"disabled":false,"code":"","lines":2,"excluded":0}
+  pos-kilitsiz|yonetim: tur4 {"disabled":true,"code":"rule-diff-no-lock","lines":0,"excluded":0} · yeni {"disabled":true,"code":"rule-diff-no-lock","lines":0,"excluded":0}
+  satis-fatura-kilitli|fis: tur4 {"status":200,"no":1} · yeni {"status":200,"no":1}
+  satis-fatura-kilitli|kilit 2026-09-30|PUT: tur4 200 · yeni 200
+  satis-fatura-kilitli|yonetim: tur4 {"disabled":false,"code":"","lines":2,"excluded":0} · yeni {"disabled":false,"code":"","lines":2,"excluded":0}
+  satis-fatura-kilitsiz|yonetim: tur4 {"disabled":true,"code":"rule-diff-no-lock","lines":0,"excluded":0} · yeni {"disabled":true,"code":"rule-diff-no-lock","lines":0,"excluded":0}
+  stok-kilitli|fis: tur4 {"status":200,"no":1} · yeni {"status":200,"no":1}
+  stok-kilitli|kilit 2026-09-30|PUT: tur4 200 · yeni 200
+  stok-kilitli|yonetim: tur4 {"disabled":false,"code":"","lines":4,"excluded":0} · yeni {"disabled":false,"code":"","lines":4,"excluded":0}
+  stok-kilitsiz|yonetim: tur4 {"disabled":true,"code":"rule-diff-no-lock","lines":0,"excluded":0} · yeni {"disabled":true,"code":"rule-diff-no-lock","lines":0,"excluded":0}
+  supheli-kilitli|fis: tur4 {"status":200,"no":1} · yeni {"status":200,"no":1}
+  supheli-kilitli|kilit 2026-09-30|PUT: tur4 200 · yeni 200
+  supheli-kilitli|yonetim: tur4 {"disabled":false,"code":"","lines":2,"excluded":0} · yeni {"disabled":false,"code":"","lines":2,"excluded":0}
+  supheli-kilitsiz|yonetim: tur4 {"disabled":true,"code":"rule-diff-no-lock","lines":0,"excluded":0} · yeni {"disabled":true,"code":"rule-diff-no-lock","lines":0,"excluded":0}
+  taksit-kilitli|fis: tur4 {"status":200,"no":1} · yeni {"status":200,"no":1}
+  taksit-kilitli|kilit 2026-09-30|PUT: tur4 200 · yeni 200
+  taksit-kilitli|ters: tur4 200 · yeni 200
+  taksit-kilitli|yonetim: tur4 {"disabled":false,"code":"","lines":2,"excluded":0} · yeni {"disabled":false,"code":"","lines":2,"excluded":0}
+  taksit-kilitsiz|yonetim: tur4 {"disabled":true,"code":"rule-diff-no-lock","lines":0,"excluded":0} · yeni {"disabled":true,"code":"rule-diff-no-lock","lines":0,"excluded":0}
+  vergi-kilitli|yonetim: tur4 {"disabled":true,"code":"rule-diff-nothing","lines":0,"excluded":0} · yeni {"disabled":true,"code":"rule-diff-nothing","lines":0,"excluded":0}
+  vergi-kilitsiz|yonetim: tur4 {"disabled":true,"code":"rule-diff-no-lock","lines":0,"excluded":0} · yeni {"disabled":true,"code":"rule-diff-no-lock","lines":0,"excluded":0}
+SONUÇ: 0 fark / 874

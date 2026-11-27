@@ -1,0 +1,26 @@
+// Ana oturum — S130 = A × Nakit Akışı (nakit tahmini): şüpheliye alınan tutar projeksiyon kalemlerinden düşüyor mu? (SK29 kurgusu: F 200 + Borç 1.000 + Borç 500, Şüpheli 900; bakiye 1.700)
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+const K = await import(pathToFileURL(path.join(process.cwd(), "betik/k.mjs")).href);
+const { boot, day, print } = K;
+const h = await boot({ now: { time: "2026-10-20T12:00:00+03:00", fixed: false } });
+const tick = () => h.server.clock.advance({ seconds: 37 });
+const out = {};
+try {
+  const a = await h.account("NA");
+  await h.sale(a, day(-150), 200, day(-150)); tick();
+  await h.entry(a, { kind: "debt", amount: "1000", date: day(-145), dueDate: day(-140), note: "B1000" }); tick();
+  await h.entry(a, { kind: "debt", amount: "500", date: day(-135), dueDate: day(-130), note: "B500" }); tick();
+  const oku = async () => {
+    const d = (await h.api.get(`/api/workspace/overview/nakit-akisi?from=${day(0)}&to=${day(30)}&overdue=1`)).data || {};
+    const rows = [...(d.rows || []), ...(d.overdue || [])].filter(r => r.party === a.name || JSON.stringify(r).includes(a.id));
+    const vt = (await h.api.get(`/api/workspace/overview/vade-takip?from=${day(-800)}&to=${day(800)}`)).data;
+    const v = (vt.rows || []).filter(r => r.party === a.name);
+    return { nakitAkisi: rows.map(r => `${r.source}:${r.direction}:${r.amount}@${r.date}`).sort(), nakitToplam: rows.reduce((s, r) => s + (r.amount || 0), 0), vadeTakip: v.map(r => `${r.source}:${r.amount}`).sort(), vadeToplam: v.reduce((s, r) => s + (r.amount || 0), 0), gecikmisToplamlari: d.overdueTotals };
+  };
+  out.once = await oku();
+  await h.must("şüpheliye al", h.api.post(`/api/workspace/accounts/${a.id}/doubtful`, { amount: "900", date: day(-30), reason: "lawsuit", note: "dava" }));
+  out.sonra = await oku();
+  out.bakiye = (await h.card(a)).totals?.balance;
+} catch (e) { out.HATA = String(e.message).slice(0, 400); } finally { await h.server.close(); }
+print(out);

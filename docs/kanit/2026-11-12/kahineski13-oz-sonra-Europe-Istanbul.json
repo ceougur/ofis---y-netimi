@@ -1,0 +1,32 @@
+{
+  "ad": "kahineski13-oz-sonra-Europe-Istanbul",
+  "komut": "python3 -I -B test/bagimsiz/defter/oz-test.py",
+  "commit": "5665174b7ab70004363d647a0626c529352e9df1",
+  "dal": "worktree-agent-a80a9c42411517418",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-12T08:30:51.869Z",
+  "sure_sn": 0.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 181,
+    "gecen": 181,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahineski13-kanit/2026-11-12/kahineski13-oz-sonra-Europe-Istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a80a9c42411517418",
+  "ham_cikti_sha256": "32268ff3c9ee925435a54fe36e3e68dd3cedabd8f8899ddf25e6303021568f46",
+  "ham_cikti_bayt": 3947
+}

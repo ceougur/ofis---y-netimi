@@ -1,0 +1,916 @@
+TAP version 13
+# Subtest: 2.1.0 temel sürüm: ertelenen banka özellikleri görünmez ve API'den çağrılamaz
+    # Subtest: Banka Ayarları (ekran verisi): Ekstre, Döviz, Kanal Alanı, Elle Banka Fişi ve Bağdaştırıcılar görünmez; POS'un ertelenen seçenekleri yok
+    ok 1 - Banka Ayarları (ekran verisi): Ekstre, Döviz, Kanal Alanı, Elle Banka Fişi ve Bağdaştırıcılar görünmez; POS'un ertelenen seçenekleri yok
+      ---
+      duration_ms: 13.234918
+      type: 'test'
+      ...
+    # Subtest: gizli ayar API'den değiştirilemez (400 bank-setting-later; kayıt değişmez); aynı (varsayılan) değer ve görünen ayar kaydedilir
+    ok 2 - gizli ayar API'den değiştirilemez (400 bank-setting-later; kayıt değişmez); aynı (varsayılan) değer ve görünen ayar kaydedilir
+      ---
+      duration_ms: 76.493681
+      type: 'test'
+      ...
+    # Subtest: eski kayıtta gizli ayar dolu olsa da etkisiz: Elle Banka Fişi kapalı kalır (409 bank-manual-off), Kambiyo Kârı (646) fişi yazılamaz
+    ok 3 - eski kayıtta gizli ayar dolu olsa da etkisiz: Elle Banka Fişi kapalı kalır (409 bank-manual-off), Kambiyo Kârı (646) fişi yazılamaz
+      ---
+      duration_ms: 20.985472
+      type: 'test'
+      ...
+    # Subtest: döviz, kur ve değerleme: hesap türlerinde ve fiş türlerinde yok; döviz hesabı, döviz fişi ve değerleme API'den 400; Genel Bakış features.fx kapalı
+    ok 4 - döviz, kur ve değerleme: hesap türlerinde ve fiş türlerinde yok; döviz hesabı, döviz fişi ve değerleme API'den 400; Genel Bakış features.fx kapalı
+      ---
+      duration_ms: 66.692989
+      type: 'test'
+      ...
+    # Subtest: POS: hesap türü değil; eksik gövdeli POS istekleri 4xx ve POS tablolarına yazılmaz; POS yokken ANLIK DURUM ve Birleşik Rapor'da POS Bekleyen / Blokeli POS yok
+    ok 5 - POS: hesap türü değil; eksik gövdeli POS istekleri 4xx ve POS tablolarına yazılmaz; POS yokken ANLIK DURUM ve Birleşik Rapor'da POS Bekleyen / Blokeli POS yok
+      ---
+      duration_ms: 39.9191
+      type: 'test'
+      ...
+    # Subtest: ekstre ve mutabakat: uç yok (404), ekstre tablolarına yazılmaz
+    ok 6 - ekstre ve mutabakat: uç yok (404), ekstre tablolarına yazılmaz
+      ---
+      duration_ms: 22.865865
+      type: 'test'
+      ...
+    # Subtest: Bankaya Tahsile Ver: çek işlemlerinde yok; 'deposit' işlemi reddedilir, çek durumu ve cheque_collections değişmez
+    ok 7 - Bankaya Tahsile Ver: çek işlemlerinde yok; 'deposit' işlemi reddedilir, çek durumu ve cheque_collections değişmez
+      ---
+      duration_ms: 59.379692
+      type: 'test'
+      ...
+    # Subtest: Kasa devir: Kasa'ya açılış/devir TÜRÜNDE hareket girilemez (400) ve ayrı devir ucu yok (Kasa açılışı 2.2.0 İz 1.3'te: Açılış Bakiyesi)
+    ok 8 - Kasa devir: Kasa'ya açılış/devir TÜRÜNDE hareket girilemez (400) ve ayrı devir ucu yok (Kasa açılışı 2.2.0 İz 1.3'te: Açılış Bakiyesi)
+      ---
+      duration_ms: 12.926383
+      type: 'test'
+      ...
+    # Subtest: Rapor Merkezi: Banka grubu 20 rapor (2.4.3: Banka ve POS Hareketleri dahil); Mutabakat, Kur Değerleme, POS Bekleyen / Valör listede yok ve 404 (ekran, PDF, Excel)
+    ok 9 - Rapor Merkezi: Banka grubu 20 rapor (2.4.3: Banka ve POS Hareketleri dahil); Mutabakat, Kur Değerleme, POS Bekleyen / Valör listede yok ve 404 (ekran, PDF, Excel)
+      ---
+      duration_ms: 41.982548
+      type: 'test'
+      ...
+    # Subtest: Roller ve Kişiye Özel Yetki kataloğu: ekstre ve mutabakat yetkileri görünmez; POS yetkileri görünür
+    ok 10 - Roller ve Kişiye Özel Yetki kataloğu: ekstre ve mutabakat yetkileri görünmez; POS yetkileri görünür
+      ---
+      duration_ms: 3.554509
+      type: 'test'
+      ...
+    1..10
+ok 1 - 2.1.0 temel sürüm: ertelenen banka özellikleri görünmez ve API'den çağrılamaz
+  ---
+  duration_ms: 822.652188
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 BİRLEŞİK TUR 3 — YAN-A Kasa Açılış Bakiyesi formu
+    # Subtest: A formu açar, B açılışı 5.000 → 4.000 düzeltir, A yalnız tarihi değiştirip formdaki 5.000'le kaydeder → 409 cash-opening-stale; açılış 4.000 / B'nin tarihi, A yazmadı
+    ok 1 - A formu açar, B açılışı 5.000 → 4.000 düzeltir, A yalnız tarihi değiştirip formdaki 5.000'le kaydeder → 409 cash-opening-stale; açılış 4.000 / B'nin tarihi, A yazmadı
+      ---
+      duration_ms: 69.305989
+      type: 'test'
+      ...
+    # Subtest: açılış YOKKEN açılan form: B arada 3.000 girer, A 7.000 gönderir → 409; tek açılış 3.000
+    ok 2 - açılış YOKKEN açılan form: B arada 3.000 girer, A 7.000 gönderir → 409; tek açılış 3.000
+      ---
+      duration_ms: 43.83301
+      type: 'test'
+      ...
+    # Subtest: form açılışla açıldı, B açılışı SİLDİ, A kaydeder → 409; yeni açılış açılmaz
+    ok 3 - form açılışla açıldı, B açılışı SİLDİ, A kaydeder → 409; yeni açılış açılmaz
+      ---
+      duration_ms: 52.489431
+      type: 'test'
+      ...
+    # Subtest: Kasa Engelle: eskimiş form açılışı düşürüp Kasa'yı eksiye düşürecek olsa da önce 409 cash-opening-stale (yanıltıcı Kasa iletisi önce çıkmaz)
+    ok 4 - Kasa Engelle: eskimiş form açılışı düşürüp Kasa'yı eksiye düşürecek olsa da önce 409 cash-opening-stale (yanıltıcı Kasa iletisi önce çıkmaz)
+      ---
+      duration_ms: 80.817092
+      type: 'test'
+      ...
+    # Subtest: GERİLEME: sürüm göndermeyen istemci eskisi gibi yazar; güncel formla düzeltme 200, kendi kaydından sonra ardışık ikinci düzeltme de 200; değişmeyen gövde 'değişiklik yok'
+    ok 5 - GERİLEME: sürüm göndermeyen istemci eskisi gibi yazar; güncel formla düzeltme 200, kendi kaydından sonra ardışık ikinci düzeltme de 200; değişmeyen gövde 'değişiklik yok'
+      ---
+      duration_ms: 86.18605
+      type: 'test'
+      ...
+    # Subtest: İKİNCİ SÜREÇ: dış bağlantı yazım kilidini tutarken açılışı 8.000 yapar; A'nın düzeltmesi kilit alındıktan sonra GÜNCEL sürümü görür → 409, 8.000 durur
+    ok 6 - İKİNCİ SÜREÇ: dış bağlantı yazım kilidini tutarken açılışı 8.000 yapar; A'nın düzeltmesi kilit alındıktan sonra GÜNCEL sürümü görür → 409, 8.000 durur
+      ---
+      duration_ms: 785.446624
+      type: 'test'
+      ...
+    1..6
+ok 2 - 2.5.0 BİRLEŞİK TUR 3 — YAN-A Kasa Açılış Bakiyesi formu
+  ---
+  duration_ms: 1741.156126
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 BİRLEŞİK TUR 3 — YAN-B taksit düzelt (plan_items)
+    # Subtest: A formu açar, B taksiti 500 → 300 yapar, A yalnız vadeyi değiştirip formdaki 500'le kaydeder → 409 plan-item-stale; taksit 300 / eski vade
+    ok 1 - A formu açar, B taksiti 500 → 300 yapar, A yalnız vadeyi değiştirip formdaki 500'le kaydeder → 409 plan-item-stale; taksit 300 / eski vade
+      ---
+      duration_ms: 54.670963
+      type: 'test'
+      ...
+    # Subtest: GÖVDE YOLDAYKEN: A'nın düzeltmesinin gövdesi beklenirken B taksiti düzeltir → karar işlemin içinde güncel taksitle: 409
+    ok 2 - GÖVDE YOLDAYKEN: A'nın düzeltmesinin gövdesi beklenirken B taksiti düzeltir → karar işlemin içinde güncel taksitle: 409
+      ---
+      duration_ms: 338.802244
+      type: 'test'
+      ...
+    # Subtest: GERİLEME: sürümsüz (eski istemci) 200; güncel sürümle 200; kendi kaydından sonra ardışık ikinci düzeltme 200; silinmiş taksit 404
+    ok 3 - GERİLEME: sürümsüz (eski istemci) 200; güncel sürümle 200; kendi kaydından sonra ardışık ikinci düzeltme 200; silinmiş taksit 404
+      ---
+      duration_ms: 73.502114
+      type: 'test'
+      ...
+    1..3
+ok 3 - 2.5.0 BİRLEŞİK TUR 3 — YAN-B taksit düzelt (plan_items)
+  ---
+  duration_ms: 962.600807
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 BİRLEŞİK TUR 3 — 3a taksit kartı (plans) ve stok kartı (stock_items)
+    # Subtest: Taksit kartı: B tutarı 1.000 → 1.200 yapar, A yalnız notu değiştirip formdaki 1.000'le kaydeder → 409 plan-stale; kart 1.200, not boş
+    ok 1 - Taksit kartı: B tutarı 1.000 → 1.200 yapar, A yalnız notu değiştirip formdaki 1.000'le kaydeder → 409 plan-stale; kart 1.200, not boş
+      ---
+      duration_ms: 47.805969
+      type: 'test'
+      ...
+    # Subtest: Taksit kartı: kart adı cari adıyla aynıyken cari yeniden adlandırılır (kartın adı da değişir, sürüm ilerler) → eskimiş kart formu 409; kartın yeni adı durur
+    ok 2 - Taksit kartı: kart adı cari adıyla aynıyken cari yeniden adlandırılır (kartın adı da değişir, sürüm ilerler) → eskimiş kart formu 409; kartın yeni adı durur
+      ---
+      duration_ms: 43.126779
+      type: 'test'
+      ...
+    # Subtest: Taksit kartı GÖVDE YOLDAYKEN: B kartı düzeltir → karar işlemin içinde güncel kartla: 409 (kart isteğin başında okunan hâliyle denetlenmez)
+    ok 3 - Taksit kartı GÖVDE YOLDAYKEN: B kartı düzeltir → karar işlemin içinde güncel kartla: 409 (kart isteğin başında okunan hâliyle denetlenmez)
+      ---
+      duration_ms: 335.921208
+      type: 'test'
+      ...
+    # Subtest: Taksit kartı GERİLEME: sürümsüz 200; güncel sürümle 200 ve ardışık ikinci 200; Kartı Kapat (yalnız status, sürümsüz) 200; tahsilat kartın sürümünü ilerletmez
+    ok 4 - Taksit kartı GERİLEME: sürümsüz 200; güncel sürümle 200 ve ardışık ikinci 200; Kartı Kapat (yalnız status, sürümsüz) 200; tahsilat kartın sürümünü ilerletmez
+      ---
+      duration_ms: 138.061167
+      type: 'test'
+      ...
+    # Subtest: Stok kartı: B Satış Fiyatı'nı 15 → 20 yapar, A yalnız notu değiştirip kaydeder → 409 stock-item-stale; 20 durur
+    ok 5 - Stok kartı: B Satış Fiyatı'nı 15 → 20 yapar, A yalnız notu değiştirip kaydeder → 409 stock-item-stale; 20 durur
+      ---
+      duration_ms: 35.146003
+      type: 'test'
+      ...
+    # Subtest: Stok kartı: form açıkken B fiyatlı ALIM girer (Alış Fiyatı 10 → 12) → A'nın eskimiş formu 409; Alış Fiyatı 12 durur
+    ok 6 - Stok kartı: form açıkken B fiyatlı ALIM girer (Alış Fiyatı 10 → 12) → A'nın eskimiş formu 409; Alış Fiyatı 12 durur
+      ---
+      duration_ms: 44.361228
+      type: 'test'
+      ...
+    # Subtest: Stok kartı GÖVDE YOLDAYKEN: B kartı düzeltir → 409 (güncel kartla)
+    ok 7 - Stok kartı GÖVDE YOLDAYKEN: B kartı düzeltir → 409 (güncel kartla)
+      ---
+      duration_ms: 329.41426
+      type: 'test'
+      ...
+    # Subtest: Stok kartı GERİLEME: sürümsüz 200; güncel sürümle 200 ve ardışık ikinci 200; silinmiş ürün 404
+    ok 8 - Stok kartı GERİLEME: sürümsüz 200; güncel sürümle 200 ve ardışık ikinci 200; silinmiş ürün 404
+      ---
+      duration_ms: 67.155556
+      type: 'test'
+      ...
+    1..8
+ok 4 - 2.5.0 BİRLEŞİK TUR 3 — 3a taksit kartı (plans) ve stok kartı (stock_items)
+  ---
+  duration_ms: 1477.758374
+  type: 'suite'
+  ...
+# Subtest: 6d K — kâhin senaryosu: Genel Toplam = kâhinin cari bakiyesi, kalem toplamı = defter
+    # Subtest: K1 ret yok; her carinin Ayrıntılı Ekstre Genel Toplam bakiyesi = kâhin; kalem toplamı = defter
+    ok 1 - K1 ret yok; her carinin Ayrıntılı Ekstre Genel Toplam bakiyesi = kâhin; kalem toplamı = defter
+      ---
+      duration_ms: 110.279095
+      type: 'test'
+      ...
+    # Subtest: K2 dönem sınırı: devir (dönem öncesi) + dönem = kâhin; dönem öncesi faturanın kalemi görünmez
+    ok 2 - K2 dönem sınırı: devir (dönem öncesi) + dönem = kâhin; dönem öncesi faturanın kalemi görünmez
+      ---
+      duration_ms: 76.890775
+      type: 'test'
+      ...
+    # Subtest: K3 yol ve belge no: tahsilat Nakit / Havale / EFT / POS, ödeme Kredi Kartı, çek / senet evrak no, fatura numarası
+    ok 3 - K3 yol ve belge no: tahsilat Nakit / Havale / EFT / POS, ödeme Kredi Kartı, çek / senet evrak no, fatura numarası
+      ---
+      duration_ms: 13.393771
+      type: 'test'
+      ...
+    1..3
+ok 5 - 6d K — kâhin senaryosu: Genel Toplam = kâhinin cari bakiyesi, kalem toplamı = defter
+  ---
+  duration_ms: 1799.937971
+  type: 'suite'
+  ...
+# Subtest: 6d B/E/Y/G — genel iskonto, SMM, taslak, iptal, Düzenle, aynı ad, 002, PDF/Excel, yetki, seçenek kapalı
+    # Subtest: B1 genel iskonto, KDV dahil, SMM stopajı: kalem toplamı = defter; taslak / iptal / eski kalem / öbür cari görünmez
+    ok 1 - B1 genel iskonto, KDV dahil, SMM stopajı: kalem toplamı = defter; taslak / iptal / eski kalem / öbür cari görünmez
+      ---
+      duration_ms: 8.14384
+      type: 'test'
+      ...
+    # Subtest: E1 ekran = PDF = Excel: aynı satırlar, aynı Dönem Toplamı / Genel Toplam
+    ok 2 - E1 ekran = PDF = Excel: aynı satırlar, aynı Dönem Toplamı / Genel Toplam
+      ---
+      duration_ms: 45.032516
+      type: 'test'
+      ...
+    # Subtest: Y1 Finans Raporları yetkisi olmayan: seçenek açık da kapalı da 403
+    ok 3 - Y1 Finans Raporları yetkisi olmayan: seçenek açık da kapalı da 403
+      ---
+      duration_ms: 94.563258
+      type: 'test'
+      ...
+    # Subtest: G1 seçenek kapalı: bugünkü ekstre (6 kolon, rowMarks yok, tek TOPLAM, aynı özet)
+    ok 4 - G1 seçenek kapalı: bugünkü ekstre (6 kolon, rowMarks yok, tek TOPLAM, aynı özet)
+      ---
+      duration_ms: 6.523866
+      type: 'test'
+      ...
+    # Subtest: B2 002 şirketi: kalemler o şirketin faturasından
+    ok 5 - B2 002 şirketi: kalemler o şirketin faturasından
+      ---
+      duration_ms: 214.617865
+      type: 'test'
+      ...
+    1..5
+ok 6 - 6d B/E/Y/G — genel iskonto, SMM, taslak, iptal, Düzenle, aynı ad, 002, PDF/Excel, yetki, seçenek kapalı
+  ---
+  duration_ms: 941.325392
+  type: 'suite'
+  ...
+# Subtest: Yargıç Y2/Y3 — açıklaması 'Açılış …' olan sıradan Kasa girişi açılış DEĞİLDİR (2.1.0 gibi 649)
+    # Subtest: 2, 3: yönetici ve muhasebe 'Açılış …' açıklamalı girişleri sıradan giriş olarak girer (200, 649); açılış yok; Mutabakat Testi tamam
+    ok 1 - 2, 3: yönetici ve muhasebe 'Açılış …' açıklamalı girişleri sıradan giriş olarak girer (200, 649); açılış yok; Mutabakat Testi tamam
+      ---
+      duration_ms: 95.690811
+      type: 'test'
+      ...
+    # Subtest: 3 (eski veri): birden çok 'Açılış …' girişi düzeltilir (muhasebe de); açıklama değişince işaret değişmez; kilitli dönemde 649 kalır
+    ok 2 - 3 (eski veri): birden çok 'Açılış …' girişi düzeltilir (muhasebe de); açıklama değişince işaret değişmez; kilitli dönemde 649 kalır
+      ---
+      duration_ms: 312.142579
+      type: 'test'
+      ...
+    # Subtest: 4: Kasa → Açılış Bakiyesi 'Açılış …' açıklamalı sıradan girişler varken de bir kez girilir; düğme var olanı düzeltir
+    ok 3 - 4: Kasa → Açılış Bakiyesi 'Açılış …' açıklamalı sıradan girişler varken de bir kez girilir; düğme var olanı düzeltir
+      ---
+      duration_ms: 101.9766
+      type: 'test'
+      ...
+    1..3
+ok 7 - Yargıç Y2/Y3 — açıklaması 'Açılış …' olan sıradan Kasa girişi açılış DEĞİLDİR (2.1.0 gibi 649)
+  ---
+  duration_ms: 1003.511054
+  type: 'suite'
+  ...
+# Subtest: İz 1.3 — Kasa → Açılış Bakiyesi (yalnız yönetici, bir kez, tarih, kilit, eksi bakiye, silme/geri yükleme)
+    # Subtest: 1, 5, 10: yönetici girer → B 100 / A 500; Kasa'da açılış satırı; muhasebe göremez değil ama giremez/düzeltemez/silemez
+    ok 1 - 1, 5, 10: yönetici girer → B 100 / A 500; Kasa'da açılış satırı; muhasebe göremez değil ama giremez/düzeltemez/silemez
+      ---
+      duration_ms: 79.38257
+      type: 'test'
+      ...
+    # Subtest: 6, 7: ilk hareketten (−8) sonraki tarihe açılış/düzeltme 409; ileri tarih 400; kilitli dönemde 409
+    ok 2 - 6, 7: ilk hareketten (−8) sonraki tarihe açılış/düzeltme 409; ileri tarih 400; kilitli dönemde 409
+      ---
+      duration_ms: 417.453123
+      type: 'test'
+      ...
+    # Subtest: 8: açılışı düşürmek Kasa'yı eksiye düşürecekse sorulur (cash-negative), onayla yazılır
+    ok 3 - 8: açılışı düşürmek Kasa'yı eksiye düşürecekse sorulur (cash-negative), onayla yazılır
+      ---
+      duration_ms: 54.657836
+      type: 'test'
+      ...
+    # Subtest: 9: yönetici siler → Silinenler; yönetici olmayan geri yükleyemez; yeni açılış girilince eskisi geri yüklenemez (409)
+    ok 4 - 9: yönetici siler → Silinenler; yönetici olmayan geri yükleyemez; yeni açılış girilince eskisi geri yüklenemez (409)
+      ---
+      duration_ms: 67.665937
+      type: 'test'
+      ...
+    1..4
+ok 8 - İz 1.3 — Kasa → Açılış Bakiyesi (yalnız yönetici, bir kez, tarih, kilit, eksi bakiye, silme/geri yükleme)
+  ---
+  duration_ms: 1118.414813
+  type: 'suite'
+  ...
+# Subtest: Ç5-K S12 = A: Kasa açılışından ÖNCE tarihli YENİ nakit hareketi her yolda 409; aynı gün ve sonra 200
+    # Subtest: 1 Kasa Giriş: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+    ok 1 - 1 Kasa Giriş: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+      ---
+      duration_ms: 56.0057
+      type: 'test'
+      ...
+    # Subtest: 1b Kasa Çıkış: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+    ok 2 - 1b Kasa Çıkış: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+      ---
+      duration_ms: 40.821485
+      type: 'test'
+      ...
+    # Subtest: 2 Bankadan Kasaya: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+    ok 3 - 2 Bankadan Kasaya: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+      ---
+      duration_ms: 52.959677
+      type: 'test'
+      ...
+    # Subtest: 2b Kasadan Bankaya: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+    ok 4 - 2b Kasadan Bankaya: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+      ---
+      duration_ms: 40.179797
+      type: 'test'
+      ...
+    # Subtest: 3 Kasa'dan Vergi Ödemesi: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+    ok 5 - 3 Kasa'dan Vergi Ödemesi: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+      ---
+      duration_ms: 42.133546
+      type: 'test'
+      ...
+    # Subtest: 4 cari nakit tahsilat: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+    ok 6 - 4 cari nakit tahsilat: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+      ---
+      duration_ms: 116.322084
+      type: 'test'
+      ...
+    # Subtest: 4b cari nakit ödeme: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+    ok 7 - 4b cari nakit ödeme: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+      ---
+      duration_ms: 45.894951
+      type: 'test'
+      ...
+    # Subtest: 5 satış faturası peşin nakit: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+    ok 8 - 5 satış faturası peşin nakit: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+      ---
+      duration_ms: 69.006099
+      type: 'test'
+      ...
+    # Subtest: 5b satıştan iade nakit para iadesi: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+    ok 9 - 5b satıştan iade nakit para iadesi: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+      ---
+      duration_ms: 81.125879
+      type: 'test'
+      ...
+    # Subtest: 6 taksit tahsilatı nakit: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+    ok 10 - 6 taksit tahsilatı nakit: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+      ---
+      duration_ms: 53.562811
+      type: 'test'
+      ...
+    # Subtest: 7 kayıt tahsilatı: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+    ok 11 - 7 kayıt tahsilatı: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+      ---
+      duration_ms: 33.966656
+      type: 'test'
+      ...
+    # Subtest: 9 çekin Kasa'dan tahsili: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+    ok 12 - 9 çekin Kasa'dan tahsili: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+      ---
+      duration_ms: 85.552267
+      type: 'test'
+      ...
+    # Subtest: 9b verilen çekin nakit ödemesi: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+    ok 13 - 9b verilen çekin nakit ödemesi: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+      ---
+      duration_ms: 74.097027
+      type: 'test'
+      ...
+    # Subtest: 10 nakit stok alımı: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+    ok 14 - 10 nakit stok alımı: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+      ---
+      duration_ms: 43.010952
+      type: 'test'
+      ...
+    # Subtest: 10b nakit stok satışı: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+    ok 15 - 10b nakit stok satışı: 2026-03-09 → 409 cash-before-opening (hiçbir şey yazılmaz), 2026-03-10 (aynı gün) → 200, 2026-03-11 → 200
+      ---
+      duration_ms: 40.261875
+      type: 'test'
+      ...
+    # Subtest: aynı işlemde eklenip hemen düzeltilen açılış öncesi nakit satırı YENİ harekettir (eklendiği hâli 'önceki hâl' sayılmaz — store düzeyi)
+    ok 16 - aynı işlemde eklenip hemen düzeltilen açılış öncesi nakit satırı YENİ harekettir (eklendiği hâli 'önceki hâl' sayılmaz — store düzeyi)
+      ---
+      duration_ms: 1.279252
+      type: 'test'
+      ...
+    # Subtest: nakit OLMAYAN eşleri açılıştan önce de 200 (Kasa'ya dokunmaz)
+    ok 17 - nakit OLMAYAN eşleri açılıştan önce de 200 (Kasa'ya dokunmaz)
+      ---
+      duration_ms: 105.484303
+      type: 'test'
+      ...
+    # Subtest: Mutabakat Testi temiz (yeni kural uyarı üretmez: açılıştan önce satır yok)
+    ok 18 - Mutabakat Testi temiz (yeni kural uyarı üretmez: açılıştan önce satır yok)
+      ---
+      duration_ms: 17.533291
+      type: 'test'
+      ...
+    1..18
+ok 9 - Ç5-K S12 = A: Kasa açılışından ÖNCE tarihli YENİ nakit hareketi her yolda 409; aynı gün ve sonra 200
+  ---
+  duration_ms: 1700.009828
+  type: 'suite'
+  ...
+# Subtest: Ç5-K B11 / T12 (düzeltme) — her test kendi kayıtlarıyla (eski kodda kırmızının nedeni S12'nin yokluğu)
+    # Subtest: B11 / T12: düzeltmeyle tarihi açılıştan önceye çekmek 409 (satır değişmez); açılış günü 200 — Kasa Giriş, cari, kayıt, taksit, stok, transfer
+    ok 1 - B11 / T12: düzeltmeyle tarihi açılıştan önceye çekmek 409 (satır değişmez); açılış günü 200 — Kasa Giriş, cari, kayıt, taksit, stok, transfer
+      ---
+      duration_ms: 34.885744
+      type: 'test'
+      ...
+    # Subtest: B11 / T12: açılıştan önce tarihli havale tahsilatını NAKDE çeviren düzeltme 409 (converted); havale olarak kalır
+    ok 2 - B11 / T12: açılıştan önce tarihli havale tahsilatını NAKDE çeviren düzeltme 409 (converted); havale olarak kalır
+      ---
+      duration_ms: 20.272124
+      type: 'test'
+      ...
+    1..2
+ok 10 - Ç5-K B11 / T12 (düzeltme) — her test kendi kayıtlarıyla (eski kodda kırmızının nedeni S12'nin yokluğu)
+  ---
+  duration_ms: 563.511781
+  type: 'suite'
+  ...
+# Subtest: Ç5-K R8 (açılışın düzeltilmesi) — ayrı şirket verisi
+    # Subtest: R8: açılışı ilk nakit hareketinden sonraya almak düzeltmede de 409 (tarih ve tutar biçimleri); öne almak 200 ve kural yeni tarihle işler (önbellek bayatlamaz)
+    ok 1 - R8: açılışı ilk nakit hareketinden sonraya almak düzeltmede de 409 (tarih ve tutar biçimleri); öne almak 200 ve kural yeni tarihle işler (önbellek bayatlamaz)
+      ---
+      duration_ms: 50.690007
+      type: 'test'
+      ...
+    1..1
+ok 11 - Ç5-K R8 (açılışın düzeltilmesi) — ayrı şirket verisi
+  ---
+  duration_ms: 463.378439
+  type: 'suite'
+  ...
+# Subtest: Ç5-K T11: açılışsız Kasa'da kural yok; açılış sonradan girilir
+    # Subtest: açılış yokken bütün yollar her tarihte 200; açılış (≤ ilk hareket) girilince kural işler; ilk hareketten sonraya açılış 409
+    ok 1 - açılış yokken bütün yollar her tarihte 200; açılış (≤ ilk hareket) girilince kural işler; ilk hareketten sonraya açılış 409
+      ---
+      duration_ms: 326.4652
+      type: 'test'
+      ...
+    1..1
+ok 12 - Ç5-K T11: açılışsız Kasa'da kural yok; açılış sonradan girilir
+  ---
+  duration_ms: 732.2343
+  type: 'suite'
+  ...
+# Subtest: Ç5-K Z9 + S26 / S40 / S44: Silinenler'den geri alınan açılış öncesi kayıt aynen döner, tarihi değişmeden düzeltilir, uyarı sürer
+    # Subtest: Silinenler'den geri yükleme 200 (S12 uygulanmaz); Mutabakat Testi 'Kasa Açılışından Önce Tarihli Hareket' UYARI (5 satır), sapma yok
+    ok 1 - Silinenler'den geri yükleme 200 (S12 uygulanmaz); Mutabakat Testi 'Kasa Açılışından Önce Tarihli Hareket' UYARI (5 satır), sapma yok
+      ---
+      duration_ms: 90.16993
+      type: 'test'
+      ...
+    # Subtest: YENİ açılış öncesi hareket geri yüklemeden sonra da 409 (S12 yalnız yeni kayıtta)
+    ok 2 - YENİ açılış öncesi hareket geri yüklemeden sonra da 409 (S12 yalnız yeni kayıtta)
+      ---
+      duration_ms: 2.840352
+      type: 'test'
+      ...
+    # Subtest: S26 / S40: tarihi değişmeden tutar ve açıklama düzeltmesi 200; uyarı sürer (sayı aynı)
+    ok 3 - S26 / S40: tarihi değişmeden tutar ve açıklama düzeltmesi 200; uyarı sürer (sayı aynı)
+      ---
+      duration_ms: 71.550251
+      type: 'test'
+      ...
+    # Subtest: S44: Kapatılacak Fatura bağı (ekle / kaldır) tarihi değişmeden 200
+    ok 4 - S44: Kapatılacak Fatura bağı (ekle / kaldır) tarihi değişmeden 200
+      ---
+      duration_ms: 56.761003
+      type: 'test'
+      ...
+    # Subtest: T12: aynı düzeltmede tarih açılıştan önceki BAŞKA güne → 409, tutar da yazılmaz (düzeltmenin tamamı)
+    ok 5 - T12: aynı düzeltmede tarih açılıştan önceki BAŞKA güne → 409, tutar da yazılmaz (düzeltmenin tamamı)
+      ---
+      duration_ms: 14.425022
+      type: 'test'
+      ...
+    # Subtest: açılıştan SONRAYA alınan kayıt kabul, uyarıdan çıkar; açılış öne alınınca uyarı kalkar
+    ok 6 - açılıştan SONRAYA alınan kayıt kabul, uyarıdan çıkar; açılış öne alınınca uyarı kalkar
+      ---
+      duration_ms: 45.663355
+      type: 'test'
+      ...
+    1..6
+ok 13 - Ç5-K Z9 + S26 / S40 / S44: Silinenler'den geri alınan açılış öncesi kayıt aynen döner, tarihi değişmeden düzeltilir, uyarı sürer
+  ---
+  duration_ms: 851.031008
+  type: 'suite'
+  ...
+# Subtest: Ç5-K önceki hâl eşlemesi — açılış öncesi (Silinenler'den geri yüklenmiş) kayıt tahsilatının Taksite Aktar / Geri Al'ı (aynı İşlem No) yeni hareket sayılmaz
+    # Subtest: ön koşul: geri yüklenen tahsilat açılıştan önce (uyarıda)
+    ok 1 - ön koşul: geri yüklenen tahsilat açılıştan önce (uyarıda)
+      ---
+      duration_ms: 15.138927
+      type: 'test'
+      ...
+    # Subtest: Taksite Aktar (aynı İşlem No ile karta taşınır) ve Geri Al 200 — yeni hareket sayılmaz; Kasa değişmez
+    ok 2 - Taksite Aktar (aynı İşlem No ile karta taşınır) ve Geri Al 200 — yeni hareket sayılmaz; Kasa değişmez
+      ---
+      duration_ms: 83.536021
+      type: 'test'
+      ...
+    1..2
+ok 14 - Ç5-K önceki hâl eşlemesi — açılış öncesi (Silinenler'den geri yüklenmiş) kayıt tahsilatının Taksite Aktar / Geri Al'ı (aynı İşlem No) yeni hareket sayılmaz
+  ---
+  duration_ms: 643.34296
+  type: 'suite'
+  ...
+# Subtest: Ç5-K S20 = A: v2.4.9'un GERÇEK koduyla üretilmiş açılış öncesi nakit satırları — göç ve yedekten geri yükleme
+    # Subtest: göç (2.4.9 verisi 2.5.0 ile açılır): satırlar aynen, mizan 2.4.9 ile aynı, Mutabakat Testi UYARI (4 satır), sapma yok
+    ok 1 - göç (2.4.9 verisi 2.5.0 ile açılır): satırlar aynen, mizan 2.4.9 ile aynı, Mutabakat Testi UYARI (4 satır), sapma yok
+      ---
+      duration_ms: 53.175639
+      type: 'test'
+      ...
+    # Subtest: S12 göçten sonra: yeni açılış öncesi nakit 409; aynı adlı öbür cariye de 409
+    ok 2 - S12 göçten sonra: yeni açılış öncesi nakit 409; aynı adlı öbür cariye de 409
+      ---
+      duration_ms: 66.282791
+      type: 'test'
+      ...
+    # Subtest: S26 / S40 / S44 (eski sürüm verisi): tutar, açıklama, Kapatılacak Fatura (başka faturaya, kaldır), Normal Cari Hesaba İşle düzeltmesi 200; uyarı sürer
+    ok 3 - S26 / S40 / S44 (eski sürüm verisi): tutar, açıklama, Kapatılacak Fatura (başka faturaya, kaldır), Normal Cari Hesaba İşle düzeltmesi 200; uyarı sürer
+      ---
+      duration_ms: 194.533321
+      type: 'test'
+      ...
+    # Subtest: fatura Düzenle (eski sürüm verisi, peşin nakitli fatura açılıştan önce): yalnız not 200 (aynı İşlem No), peşin tutarı 200 (aynı fatura, aynı gün), tarihi açılıştan önceki başka güne 409
+    ok 4 - fatura Düzenle (eski sürüm verisi, peşin nakitli fatura açılıştan önce): yalnız not 200 (aynı İşlem No), peşin tutarı 200 (aynı fatura, aynı gün), tarihi açılıştan önceki başka güne 409
+      ---
+      duration_ms: 93.774214
+      type: 'test'
+      ...
+    # Subtest: T12 (eski sürüm verisi): tarih açılıştan önceki başka güne 409 — bağ ve tutar da değişmez
+    ok 5 - T12 (eski sürüm verisi): tarih açılıştan önceki başka güne 409 — bağ ve tutar da değişmez
+      ---
+      duration_ms: 45.511983
+      type: 'test'
+      ...
+    # Subtest: S45 / S54 / S57: programda cari hareketinin carisi düzeltilemez — gövdedeki accountId yok sayılır, bağlı satır carisinde kalır (red edilecek istek kurulamaz; S54'ün 'kabul'ü yeni Cari alanı ister — routes/accounts.mjs, tasarım §4 B-K1)
+    ok 6 - S45 / S54 / S57: programda cari hareketinin carisi düzeltilemez — gövdedeki accountId yok sayılır, bağlı satır carisinde kalır (red edilecek istek kurulamaz; S54'ün 'kabul'ü yeni Cari alanı ister — routes/accounts.mjs, tasarım §4 B-K1)
+      ---
+      duration_ms: 49.333092
+      type: 'test'
+      ...
+    # Subtest: S56 = A: S44 düzeltmesi şüpheli caride 'Normal Cari' sınırını aşarsa 409 doubtful-normal-exceeds (kâhin SUPHELI_NORMAL_ASIM); satır değişmez — Kasa açılış kuralından ÖNCE (routes/accounts.mjs:773, 2.3.0'dan)
+    ok 7 - S56 = A: S44 düzeltmesi şüpheli caride 'Normal Cari' sınırını aşarsa 409 doubtful-normal-exceeds (kâhin SUPHELI_NORMAL_ASIM); satır değişmez — Kasa açılış kuralından ÖNCE (routes/accounts.mjs:773, 2.3.0'dan)
+      ---
+      duration_ms: 36.693202
+      type: 'test'
+      ...
+    # Subtest: S55 = A (bağ hedefin doğduğu gün) — kapama kuralı Ç5-B'nin (lib/invoice-settle.mjs); Ç5-K yalnız Kasa denetiminin kayıttan SONRA tarihli faturaya bağı engellemediğini ölçer
+    ok 8 - S55 = A (bağ hedefin doğduğu gün) — kapama kuralı Ç5-B'nin (lib/invoice-settle.mjs); Ç5-K yalnız Kasa denetiminin kayıttan SONRA tarihli faturaya bağı engellemediğini ölçer
+      ---
+      duration_ms: 82.509531
+      type: 'test'
+      ...
+    # Subtest: yedekten geri yükleme: 2.4.9 yedeği 2.5.0'a geri yüklenir — silinen açılış öncesi satır aynen döner, uyarı yeniden 4
+    ok 9 - yedekten geri yükleme: 2.4.9 yedeği 2.5.0'a geri yüklenir — silinen açılış öncesi satır aynen döner, uyarı yeniden 4
+      ---
+      duration_ms: 304.640773
+      type: 'test'
+      ...
+    1..9
+ok 15 - Ç5-K S20 = A: v2.4.9'un GERÇEK koduyla üretilmiş açılış öncesi nakit satırları — göç ve yedekten geri yükleme
+  ---
+  duration_ms: 1767.26398
+  type: 'suite'
+  ...
+# Subtest: Ç5-K gün dönümü ve iki şirket
+    # Subtest: tarihsiz giriş programın bugününe yazılır: açılış günü 00:00:30 ve 23:59:30 aynı gün 200; dünü (açılıştan önce) 409; gece yarısından sonra ertesi gün 200 (yerel saat, iki TZ)
+    ok 1 - tarihsiz giriş programın bugününe yazılır: açılış günü 00:00:30 ve 23:59:30 aynı gün 200; dünü (açılıştan önce) 409; gece yarısından sonra ertesi gün 200 (yerel saat, iki TZ)
+      ---
+      duration_ms: 61.213428
+      type: 'test'
+      ...
+    # Subtest: iki şirket: 001'in açılışı 002'yi etkilemez (002 açılışsız, aynı tarih 200); 002'nin açılışı 001'e sızmaz
+    ok 2 - iki şirket: 001'in açılışı 002'yi etkilemez (002 açılışsız, aynı tarih 200); 002'nin açılışı 001'e sızmaz
+      ---
+      duration_ms: 266.544745
+      type: 'test'
+      ...
+    1..2
+ok 16 - Ç5-K gün dönümü ve iki şirket
+  ---
+  duration_ms: 741.441643
+  type: 'suite'
+  ...
+# Subtest: 2.1.0 Rapor Merkezi BANKALI veriyle: bütün para raporları × bütün süzgeçler × ekran/PDF/Excel, bağımsız beklenenle
+    # Subtest: katalog: denenen her rapor katalogda ve süzgeç seçenekleri tanımlı (yeni banka raporları ayrı testte)
+    ok 1 - katalog: denenen her rapor katalogda ve süzgeç seçenekleri tanımlı (yeni banka raporları ayrı testte)
+      ---
+      duration_ms: 1.146476
+      type: 'test'
+      ...
+    # Subtest: kasa-hareketleri: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 2 - kasa-hareketleri: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 196.733349
+      type: 'test'
+      ...
+    # Subtest: kasa-gunluk: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 3 - kasa-gunluk: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 123.358441
+      type: 'test'
+      ...
+    # Subtest: kasa-kaynak: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 4 - kasa-kaynak: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 119.970879
+      type: 'test'
+      ...
+    # Subtest: kasa-aylik: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 5 - kasa-aylik: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 152.108792
+      type: 'test'
+      ...
+    # Subtest: hesap-mizani: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 6 - hesap-mizani: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 249.210269
+      type: 'test'
+      ...
+    # Subtest: yevmiye: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 7 - yevmiye: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 202.766534
+      type: 'test'
+      ...
+    # Subtest: defter-mutabakati: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 8 - defter-mutabakati: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 46.079868
+      type: 'test'
+      ...
+    # Subtest: mutabakat-gunlugu: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 9 - mutabakat-gunlugu: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 11.344486
+      type: 'test'
+      ...
+    # Subtest: banka-pos-hareketleri: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 10 - banka-pos-hareketleri: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 580.701089
+      type: 'test'
+      ...
+    # Subtest: mizan: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 11 - mizan: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 3319.017589
+      type: 'test'
+      ...
+    # Subtest: cari-listesi: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 12 - cari-listesi: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 271.874368
+      type: 'test'
+      ...
+    # Subtest: cari-ekstre: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 13 - cari-ekstre: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 1677.221574
+      type: 'test'
+      ...
+    # Subtest: cari-hareketleri: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 14 - cari-hareketleri: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 514.500416
+      type: 'test'
+      ...
+    # Subtest: cari-tahsilat: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 15 - cari-tahsilat: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 559.440179
+      type: 'test'
+      ...
+    # Subtest: alacak-yaslandirma: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 16 - alacak-yaslandirma: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 23.303607
+      type: 'test'
+      ...
+    # Subtest: fatura-satis: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 17 - fatura-satis: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 840.614607
+      type: 'test'
+      ...
+    # Subtest: fatura-alis: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 18 - fatura-alis: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 867.466492
+      type: 'test'
+      ...
+    # Subtest: fatura-iade: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 19 - fatura-iade: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 820.17875
+      type: 'test'
+      ...
+    # Subtest: kdv-ozeti: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 20 - kdv-ozeti: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 182.906049
+      type: 'test'
+      ...
+    # Subtest: ba-bs: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 21 - ba-bs: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 91.636164
+      type: 'test'
+      ...
+    # Subtest: urun-satis-karlilik: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 22 - urun-satis-karlilik: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 106.284398
+      type: 'test'
+      ...
+    # Subtest: cari-satis-alis: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 23 - cari-satis-alis: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 93.537674
+      type: 'test'
+      ...
+    # Subtest: gider-raporu: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 24 - gider-raporu: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 92.372267
+      type: 'test'
+      ...
+    # Subtest: stopaj-tevkifat: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 25 - stopaj-tevkifat: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 97.562462
+      type: 'test'
+      ...
+    # Subtest: acik-faturalar: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 26 - acik-faturalar: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 113.83864
+      type: 'test'
+      ...
+    # Subtest: taksit-kartlari: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 27 - taksit-kartlari: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 24.735527
+      type: 'test'
+      ...
+    # Subtest: taksit-vadeleri: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 28 - taksit-vadeleri: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 133.671903
+      type: 'test'
+      ...
+    # Subtest: geciken-taksitler: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 29 - geciken-taksitler: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 17.38472
+      type: 'test'
+      ...
+    # Subtest: taksit-performans: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 30 - taksit-performans: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 125.786733
+      type: 'test'
+      ...
+    # Subtest: taksit-tahsilatlari: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 31 - taksit-tahsilatlari: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 97.778796
+      type: 'test'
+      ...
+    # Subtest: cek-portfoy: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 32 - cek-portfoy: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 3459.498179
+      type: 'test'
+      ...
+    # Subtest: cek-hareketleri: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 33 - cek-hareketleri: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 101.768389
+      type: 'test'
+      ...
+    # Subtest: cek-vade-dagilimi: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 34 - cek-vade-dagilimi: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 8.050322
+      type: 'test'
+      ...
+    # Subtest: stok-durumu: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 35 - stok-durumu: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 91.349907
+      type: 'test'
+      ...
+    # Subtest: stok-hareketleri: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 36 - stok-hareketleri: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 95.202554
+      type: 'test'
+      ...
+    # Subtest: stok-ozet: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 37 - stok-ozet: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 215.087062
+      type: 'test'
+      ...
+    # Subtest: stok-kategori: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 38 - stok-kategori: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 9.471112
+      type: 'test'
+      ...
+    # Subtest: kayit-tahsilatlari: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 39 - kayit-tahsilatlari: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 118.515993
+      type: 'test'
+      ...
+    # Subtest: anahtar toplamlar bağımsız defterle (tüm zamanlar): Kasa, Gerçek Banka (hesap hesap), KDV, cari bakiyeleri, stok
+    ok 40 - anahtar toplamlar bağımsız defterle (tüm zamanlar): Kasa, Gerçek Banka (hesap hesap), KDV, cari bakiyeleri, stok
+      ---
+      duration_ms: 41.25225
+      type: 'test'
+      ...
+    # Subtest: Kasa Dökümü PDF: yalnız nakit satırları ve Güncel Kasa; banka bağlı hareketler (havale, Kasa ↔ Banka banka bacağı) girmez
+    ok 41 - Kasa Dökümü PDF: yalnız nakit satırları ve Güncel Kasa; banka bağlı hareketler (havale, Kasa ↔ Banka banka bacağı) girmez
+      ---
+      duration_ms: 11.77649
+      type: 'test'
+      ...
+    # Subtest: Nakit Akış: başlangıç = Nakit + Gerçek Banka (K10: Hesabı Atanmamış POS 900 hariç)
+    ok 42 - Nakit Akış: başlangıç = Nakit + Gerçek Banka (K10: Hesabı Atanmamış POS 900 hariç)
+      ---
+      duration_ms: 56.36889
+      type: 'test'
+      ...
+    # Subtest: Nakit Akış (90 gün): beklenen giriş/çıkış bağımsız (taksit, portföydeki senet, verilen çek); başlangıç Kasa + Gerçek Banka (K10)
+    ok 43 - Nakit Akış (90 gün): beklenen giriş/çıkış bağımsız (taksit, portföydeki senet, verilen çek); başlangıç Kasa + Gerçek Banka (K10)
+      ---
+      duration_ms: 19.208288
+      type: 'test'
+      ...
+    # Subtest: Vade Takip (tüm açık kalemler) ve zil/takvim: tahsil edilecek / ödenecek bağımsız; banka bağlı ödenmiş evrak ve faturalar listede yok
+    ok 44 - Vade Takip (tüm açık kalemler) ve zil/takvim: tahsil edilecek / ödenecek bağımsız; banka bağlı ödenmiş evrak ve faturalar listede yok
+      ---
+      duration_ms: 23.295187
+      type: 'test'
+      ...
+    # Subtest: ileri tarihli banka hareketi denemesi 400; raporlar değişmez (ileri tarih aralığında hareket raporları boş)
+    ok 45 - ileri tarihli banka hareketi denemesi 400; raporlar değişmez (ileri tarih aralığında hareket raporları boş)
+      ---
+      duration_ms: 25.248714
+      type: 'test'
+      ...
+    # Subtest: tek kayıt + şirket ayrımı: 002'de tek havale tahsilatı → 002 raporlarında tek satır; 001'in raporları değişmez; ?hofCompany= yetkisiz 403
+    ok 46 - tek kayıt + şirket ayrımı: 002'de tek havale tahsilatı → 002 raporlarında tek satır; 001'in raporları değişmez; ?hofCompany= yetkisiz 403
+      ---
+      duration_ms: 384.13202
+      type: 'test'
+      ...
+    # Subtest: yetki: rapor yetkisi olmayan personel bütün bankalı raporlarda 403 (ekran, PDF, Excel); dosya sızmaz
+    ok 47 - yetki: rapor yetkisi olmayan personel bütün bankalı raporlarda 403 (ekran, PDF, Excel); dosya sızmaz
+      ---
+      duration_ms: 223.344657
+      type: 'test'
+      ...
+# [raporlar-210-banka] rapor 38, birleşim 1350, istek 4050, denetlenen TOPLAM kolonu 1516
+    # Subtest: Mutabakat Testi tutarlı; özet sayılar
+    ok 48 - Mutabakat Testi tutarlı; özet sayılar
+      ---
+      duration_ms: 20.364573
+      type: 'test'
+      ...
+    1..48
+ok 17 - 2.1.0 Rapor Merkezi BANKALI veriyle: bütün para raporları × bütün süzgeçler × ekran/PDF/Excel, bağımsız beklenenle
+  ---
+  duration_ms: 18201.686796
+  type: 'suite'
+  ...
+1..17
+# tests 131
+# suites 17
+# pass 131
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 37684.196095

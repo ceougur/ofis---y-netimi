@@ -1,0 +1,33 @@
+# Birleşik tur 7 İş 1 mutantları: kopyada (argv[1]) integrity.mjs'e tek mutasyon uygular / geri alır.
+# Kullanım: python3 -I mutant1.py <kopya> <ad|orijinal>
+import shutil, sys
+root, name = sys.argv[1], sys.argv[2]
+p = root + '/server/lib/integrity.mjs'
+orig = p + '.orijinal'
+try:
+    open(orig).close()
+except FileNotFoundError:
+    shutil.copy(p, orig)
+shutil.copy(orig, p)
+if name == 'orijinal':
+    sys.exit(0)
+MUT = {
+    # Ma: kimliği yok sayıp sayıya döner (birleşik tur 6'nın kuralı: artış − işaretten sonraki açıklama SAYISI)
+    'Ma-sayi': [("      if (now) {\n        const prior", "      if (false) {\n        const prior"),
+                ("      let unexplained = count - previous; // kimliksiz uyarı (bugün yok): sayıyla",
+                 "      let unexplained = count - previous - (item.code === \"cash:before-opening\" ? [...explained.values()].filter(entry => entry.seq > since).length : 0);")],
+    # Mb: geri gelen kimlikler hiç düşmez (işaretten önceki açıklama da sayılır)
+    'Mb-dusmeyen': [("          if (!entry || entry.seq <= since || depth > 16) return false;", "          if (!entry || depth > 16) return false;")],
+    # Mc: küme her taramada sıfırdan kurulur (önceki küme yok)
+    'Mc-sifirdan': [("        const prior = noticeMark.keys.get(item.code) || NO_KEYS;", "        const prior = NO_KEYS;")],
+    # Md: kapının kabul ettiği kimlik değişimi önceki kimliğe bakmadan açıklar
+    'Md-from': [("          return !entry.from || prior.has(entry.from) || cleared(entry.from, depth + 1);", "          return true;")],
+    # Me: iş parçacığı taraması sürerken kesinleşen açıklama kaydında karşılaştırma yapılır (yarış denetimi kalkar)
+    'Me-yaris': [("    if (restoredAt !== cashRestoreMark(store)) return [];\n    const explained", "    const explained")],
+}
+t = open(p).read()
+for old, new in MUT[name]:
+    assert t.count(old) == 1, (name, old[:70], t.count(old))
+    t = t.replace(old, new)
+open(p, 'w').write(t)
+print('mutant', name)

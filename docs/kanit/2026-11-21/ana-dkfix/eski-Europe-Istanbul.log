@@ -1,0 +1,340 @@
+TAP version 13
+# K1 zincir: durumu değişen belge 12; karşılaştırılan yanıt 550; senet katlaması (2.2.0 İz 4.2) 0 yanıt, ekranla karşılaştırılan dosya 0; Nakit Akışı faturasız kalem (2.4.3 MM5) 264
+# Subtest: altın test: v2.0.26 ile bu dal aynı veride aynı Kasa, Banka ve POS, ANLIK DURUM, Ana Defter ve raporları gösterir
+    # Subtest: zincir fikstürü surum-2.0.26-zincir (2.0.16 → 2.0.26 gerçek sürüm koduyla, 4 şirket)
+    ok 1 - zincir fikstürü surum-2.0.26-zincir (2.0.16 → 2.0.26 gerçek sürüm koduyla, 4 şirket)
+      ---
+      duration_ms: 17251.654575
+      type: 'test'
+      ...
+# K1 motor: durumu değişen belge 9; karşılaştırılan yanıt 154; senet katlaması (2.2.0 İz 4.2, toplam) 8 yanıt, ekranla karşılaştırılan dosya 0; Nakit Akışı faturasız kalem (2.4.3 MM5) 288
+    # Subtest: v2.0.26'nın kendi koduyla üretilen veri (mutabakat motoru: 120 güne yayılmış 260 rastgele işlem, dönem kilidi, iade/iptal)
+    not ok 2 - v2.0.26'nın kendi koduyla üretilen veri (mutabakat motoru: 120 güne yayılmış 260 rastgele işlem, dönem kilidi, iade/iptal)
+      ---
+      duration_ms: 6503.304312
+      type: 'test'
+      location: '/dev/shm/ana-dkfix/eski/test/banka-210-altin.test.mjs:520:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        3 fark:
+        motor · 001 · admin · json /api/workspace/overview: Expected values to be strictly deep-equal:
+        + actual - expected
+        ... Skipped lines
+        
+          {
+            canReport: true,
+            cash: {
+              allEntries: -2611141.62,
+              balance: -2611141.62,
+        ...
+              openPurchase: 13839.72,
+        +     openSale: 14604.01,
+        -     openSale: 16444.98,
+              overduePurchase: 13839.72,
+        +     overdueSale: 10529.41
+        -     overdueSale: 12370.38
+            },
+            payable: {
+              accounts: 175091.59,
+              chequeCount: 1,
+              cheques: 17008.43,
+        
+        
+        motor · 001 · K1: FIS2026000000006: ekranda ödenen 106368 + açık 0 ≠ 290465 (kuruş)
+        
+        motor · 001 · K1: FIS2026000000006: iadesi olmayan caride durum değişti ["installment",106368,0] → ["overdue",106368,184097]
+        + actual - expected
+        
+        + [
+        +   'motor · 001 · admin · json /api/workspace/overview: Expected values to be strictly deep-equal:\n' +
+        +     '+ actual - expected\n' +
+        +     '... Skipped lines\n' +
+        +     '\n' +
+        +     '  {\n' +
+        +     '    canReport: true,\n' +
+        +     '    cash: {\n' +
+        +     '      allEntries: -2611141.62,\n' +
+        +     '      balance: -2611141.62,\n' +
+        +     '...\n' +
+        +     '      openPurchase: 13839.72,\n' +
+        +     '+     openSale: 14604.01,\n' +
+        +     '-     openSale: 16444.98,\n' +
+        +     '      overduePurchase: 13839.72,\n' +
+        +     '+     overdueSale: 10529.41\n' +
+        +     '-     overdueSale: 12370.38\n' +
+        +     '    },\n' +
+        +     '    payable: {\n' +
+        +     '      accounts: 175091.59,\n' +
+        +     '      chequeCount: 1,\n' +
+        +     '      cheques: 17008.43,\n',
+        +   'motor · 001 · K1: FIS2026000000006: ekranda ödenen 106368 + açık 0 ≠ 290465 (kuruş)',
+        +   'motor · 001 · K1: FIS2026000000006: iadesi olmayan caride durum değişti ["installment",106368,0] → ["overdue",106368,184097]'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: |-
+          motor · 001 · admin · json /api/workspace/overview: Expected values to be strictly deep-equal:
+          + actual - expected
+          ... Skipped lines
+          
+            {
+              canReport: true,
+              cash: {
+                allEntries: -2611141.62,
+                balance: -2611141.62,
+          ...
+                openPurchase: 13839.72,
+          +     openSale: 14604.01,
+          -     openSale: 16444.98,
+                overduePurchase: 13839.72,
+          +     overdueSale: 10529.41
+          -     overdueSale: 12370.38
+              },
+              payable: {
+                accounts: 175091.59,
+                chequeCount: 1,
+                cheques: 17008.43,
+          
+        1: 'motor · 001 · K1: FIS2026000000006: ekranda ödenen 106368 + açık 0 ≠ 290465 (kuruş)'
+        2: 'motor · 001 · K1: FIS2026000000006: iadesi olmayan caride durum değişti ["installment",106368,0] → ["overdue",106368,184097]'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/ana-dkfix/eski/test/banka-210-altin.test.mjs:566:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 1 - altın test: v2.0.26 ile bu dal aynı veride aynı Kasa, Banka ve POS, ANLIK DURUM, Ana Defter ve raporları gösterir
+  ---
+  duration_ms: 23756.913408
+  type: 'suite'
+  location: '/dev/shm/ana-dkfix/eski/test/banka-210-altin.test.mjs:496:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: altın test PDF karşılaştırması: 2.4.4 U3 yeniden yerleşim kuralı yalnız boşluğu ve kesik tutarın devamını kabul eder
+    # Subtest: aynı sayılar başka satır kırılımıyla ve kesiksiz özet tutarıyla: aynı
+    ok 1 - aynı sayılar başka satır kırılımıyla ve kesiksiz özet tutarıyla: aynı
+      ---
+      duration_ms: 0.480906
+      type: 'test'
+      ...
+    # Subtest: tablo tutarının son rakamı değişirse fark
+    ok 2 - tablo tutarının son rakamı değişirse fark
+      ---
+      duration_ms: 0.329071
+      type: 'test'
+      ...
+    # Subtest: kesik özet tutarı yeni tutarın öneki değilse fark; kesiğin devamına metin giremez
+    ok 3 - kesik özet tutarı yeni tutarın öneki değilse fark; kesiğin devamına metin giremez
+      ---
+      duration_ms: 0.239753
+      type: 'test'
+      ...
+    # Subtest: araya sözcük girerse ya da sözcük değişirse fark; Rapor Merkezi dışındaki PDF bu kurala girmez
+    ok 4 - araya sözcük girerse ya da sözcük değişirse fark; Rapor Merkezi dışındaki PDF bu kurala girmez
+      ---
+      duration_ms: 0.147374
+      type: 'test'
+      ...
+    1..4
+ok 2 - altın test PDF karşılaştırması: 2.4.4 U3 yeniden yerleşim kuralı yalnız boşluğu ve kesik tutarın devamını kabul eder
+  ---
+  duration_ms: 1.503175
+  type: 'suite'
+  ...
+# Subtest: S234 = A — karar (4) Borçta Kalsın ile kapatılmış karta da (kart küçülür, Kalan = carinin karttaki borcu)
+    # Subtest: T1 — kapalı Mevcut Borç kartı + iade: kart en önce gelen açık taksitten küçülür, Kalan her yerde 300; bakiye / gecikmiş / Mizan / Mutabakat Testi tabanla aynı; Yeniden Aç → Kapat 300
+    not ok 1 - T1 — kapalı Mevcut Borç kartı + iade: kart en önce gelen açık taksitten küçülür, Kalan her yerde 300; bakiye / gecikmiş / Mizan / Mutabakat Testi tabanla aynı; Yeniden Aç → Kapat 300
+      ---
+      duration_ms: 727.932969
+      type: 'test'
+      location: '/dev/shm/ana-dkfix/eski/test/dkfix-s234-kapali-kart-250.test.mjs:76:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kart tutarı 900 → 600 (karar (4); tabanda 900 kalıyordu)
+        
+        900 !== 600
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 600
+      actual: 900
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/ana-dkfix/eski/test/dkfix-s234-kapali-kart-250.test.mjs:84:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: T2 — kapanıştan önce vadesi geçmiş açık taksit: kesim o taksitten (karar (4)); 09.10 gecikmiş tabanla aynı
+    not ok 2 - T2 — kapanıştan önce vadesi geçmiş açık taksit: kesim o taksitten (karar (4)); 09.10 gecikmiş tabanla aynı
+      ---
+      duration_ms: 656.347847
+      type: 'test'
+      location: '/dev/shm/ana-dkfix/eski/test/dkfix-s234-kapali-kart-250.test.mjs:103:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kart 600
+        
+        900 !== 600
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 600
+      actual: 900
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/ana-dkfix/eski/test/dkfix-s234-kapali-kart-250.test.mjs:111:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T3 — iade kalanı aşar: kart net tahsilata iner, Kalan 0, fazlası avans; parası geri verilen iade kartı küçültmez
+    not ok 3 - T3 — iade kalanı aşar: kart net tahsilata iner, Kalan 0, fazlası avans; parası geri verilen iade kartı küçültmez
+      ---
+      duration_ms: 506.615262
+      type: 'test'
+      location: '/dev/shm/ana-dkfix/eski/test/dkfix-s234-kapali-kart-250.test.mjs:122:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kart tutarı = net tahsilat 300
+        
+        900 !== 300
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 300
+      actual: 900
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/ana-dkfix/eski/test/dkfix-s234-kapali-kart-250.test.mjs:130:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T4 — iade → iade İptal Et: kapalı kart geri büyür (son taksite), Kalan 600; bakiye / gecikmiş tabanla aynı
+    not ok 4 - T4 — iade → iade İptal Et: kapalı kart geri büyür (son taksite), Kalan 600; bakiye / gecikmiş tabanla aynı
+      ---
+      duration_ms: 621.372442
+      type: 'test'
+      location: '/dev/shm/ana-dkfix/eski/test/dkfix-s234-kapali-kart-250.test.mjs:146:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        iade sonrası 600
+        
+        900 !== 600
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 600
+      actual: 900
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/ana-dkfix/eski/test/dkfix-s234-kapali-kart-250.test.mjs:154:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T5 — ESKİ kuralla ('2.4.9', kalanı düşülmüş) kapanmış kart + iade: DEĞİŞMEZ
+    ok 5 - T5 — ESKİ kuralla ('2.4.9', kalanı düşülmüş) kapanmış kart + iade: DEĞİŞMEZ
+      ---
+      duration_ms: 606.691318
+      type: 'test'
+      ...
+    # Subtest: T6 — iptal (S226 = C): kapalı kartın içine aldığı faturanın İptal Et'i kapalı kartı DEĞİŞTİRMEZ (açık Mevcut Borç kartı da varken)
+    ok 6 - T6 — iptal (S226 = C): kapalı kartın içine aldığı faturanın İptal Et'i kapalı kartı DEĞİŞTİRMEZ (açık Mevcut Borç kartı da varken)
+      ---
+      duration_ms: 572.900241
+      type: 'test'
+      ...
+    # Subtest: T7 — taksitli faturanın KENDİ kartı Borçta Kalsın kapalı + iade: tutar 600, Tahsil Edilen 300, Kalan 300; iade İptal Et → 900 / Kalan 600
+    not ok 7 - T7 — taksitli faturanın KENDİ kartı Borçta Kalsın kapalı + iade: tutar 600, Tahsil Edilen 300, Kalan 300; iade İptal Et → 900 / Kalan 600
+      ---
+      duration_ms: 590.395889
+      type: 'test'
+      location: '/dev/shm/ana-dkfix/eski/test/dkfix-s234-kapali-kart-250.test.mjs:203:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kendi kartı 900 → 600 (karar (4); tabanda 900)
+        
+        900 !== 600
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 600
+      actual: 900
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/ana-dkfix/eski/test/dkfix-s234-kapali-kart-250.test.mjs:211:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T8 — iki kart aynı caride (kapalı eski + açık yeni): ilk faturanın iadesi kapalı kartı küçültür; iki kartın Kalan toplamı = bakiye
+    not ok 8 - T8 — iki kart aynı caride (kapalı eski + açık yeni): ilk faturanın iadesi kapalı kartı küçültür; iki kartın Kalan toplamı = bakiye
+      ---
+      duration_ms: 597.344297
+      type: 'test'
+      location: '/dev/shm/ana-dkfix/eski/test/dkfix-s234-kapali-kart-250.test.mjs:226:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kapalı kart 600
+        
+        900 !== 600
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 600
+      actual: 900
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/ana-dkfix/eski/test/dkfix-s234-kapali-kart-250.test.mjs:241:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T9 — açılış onarımının yolu (order 'tail') kapalı kartı küçültmez
+    ok 9 - T9 — açılış onarımının yolu (order 'tail') kapalı kartı küçültmez
+      ---
+      duration_ms: 491.951448
+      type: 'test'
+      ...
+    1..9
+not ok 3 - S234 = A — karar (4) Borçta Kalsın ile kapatılmış karta da (kart küçülür, Kalan = carinin karttaki borcu)
+  ---
+  duration_ms: 5374.151871
+  type: 'suite'
+  location: '/dev/shm/ana-dkfix/eski/test/dkfix-s234-kapali-kart-250.test.mjs:30:1'
+  failureType: 'subtestsFailed'
+  error: '6 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..3
+# tests 15
+# suites 3
+# pass 8
+# fail 7
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 30032.831845
+
+[kanit] başarısız testler (7):
+  ✖ altın test: v2.0.26 ile bu dal aynı veride aynı Kasa, Banka ve POS, ANLIK DURUM, Ana Defter ve raporları gösterir › v2.0.26'nın kendi koduyla üretilen veri (mutabakat motoru: 120 güne yayılmış 260 rastgele işlem, dönem kilidi, iade/iptal) [test/banka-210-altin.test.mjs:520:3] — 3 fark: · motor · 001 · admin · json /api/workspace/overview: Expected values to be strictly deep-equal: · + actual - expected
+  ✖ S234 = A — karar (4) Borçta Kalsın ile kapatılmış karta da (kart küçülür, Kalan = carinin karttaki borcu) › T1 — kapalı Mevcut Borç kartı + iade: kart en önce gelen açık taksitten küçülür, Kalan her yerde 300; bakiye / gecikmiş / Mizan / Mutabakat Testi tabanla aynı; Yeniden Aç → Kapat 300 [test/dkfix-s234-kapali-kart-250.test.mjs:76:3] — kart tutarı 900 → 600 (karar (4); tabanda 900 kalıyordu) · 900 !== 600 (beklenen 600, gelen 900)
+  ✖ S234 = A — karar (4) Borçta Kalsın ile kapatılmış karta da (kart küçülür, Kalan = carinin karttaki borcu) › T2 — kapanıştan önce vadesi geçmiş açık taksit: kesim o taksitten (karar (4)); 09.10 gecikmiş tabanla aynı [test/dkfix-s234-kapali-kart-250.test.mjs:103:3] — kart 600 · 900 !== 600 (beklenen 600, gelen 900)
+  ✖ S234 = A — karar (4) Borçta Kalsın ile kapatılmış karta da (kart küçülür, Kalan = carinin karttaki borcu) › T3 — iade kalanı aşar: kart net tahsilata iner, Kalan 0, fazlası avans; parası geri verilen iade kartı küçültmez [test/dkfix-s234-kapali-kart-250.test.mjs:122:3] — kart tutarı = net tahsilat 300 · 900 !== 300 (beklenen 300, gelen 900)
+  ✖ S234 = A — karar (4) Borçta Kalsın ile kapatılmış karta da (kart küçülür, Kalan = carinin karttaki borcu) › T4 — iade → iade İptal Et: kapalı kart geri büyür (son taksite), Kalan 600; bakiye / gecikmiş tabanla aynı [test/dkfix-s234-kapali-kart-250.test.mjs:146:3] — iade sonrası 600 · 900 !== 600 (beklenen 600, gelen 900)
+  ✖ S234 = A — karar (4) Borçta Kalsın ile kapatılmış karta da (kart küçülür, Kalan = carinin karttaki borcu) › T7 — taksitli faturanın KENDİ kartı Borçta Kalsın kapalı + iade: tutar 600, Tahsil Edilen 300, Kalan 300; iade İptal Et → 900 / Kalan 600 [test/dkfix-s234-kapali-kart-250.test.mjs:203:3] — kendi kartı 900 → 600 (karar (4); tabanda 900) · 900 !== 600 (beklenen 600, gelen 900)
+  ✖ S234 = A — karar (4) Borçta Kalsın ile kapatılmış karta da (kart küçülür, Kalan = carinin karttaki borcu) › T8 — iki kart aynı caride (kapalı eski + açık yeni): ilk faturanın iadesi kapalı kartı küçültür; iki kartın Kalan toplamı = bakiye [test/dkfix-s234-kapali-kart-250.test.mjs:226:3] — kapalı kart 600 · 900 !== 600 (beklenen 600, gelen 900)
+
+[kanit] ana-dkfix-eski-Europe-Istanbul: BAŞARISIZ (çıkış 1; 7 başarısız, 0 iptal) · çıkış 1 · 8/15 geçti, 7 başarısız, 0 iptal, 0 atlanan · commit 94a7b47 +3 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4

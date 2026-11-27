@@ -1,0 +1,270 @@
+▶ 2.5.0 WhatsApp tur 3 — S70 = A: Atlandı işe geç teslim her sırada Teslim Edildi / Okundu (kime kaç kez aynen)
+  ✖ W3T-70b zincir: işteki Yine de Gönder'in işi Silme Talebi / İstemiyor ile Atlandı → kaynağın ESKİ belirsiz iletisine geç teslim / okundu → zincir işi Teslim Edildi / Okundu; ileti 2, Bu Ay 2, aynı dönem Daha Önce; yinelenen ve sonraki failed etkisiz (2322.877827ms)
+  ✖ W3T-70c eski deneme: Meta Bekletti işin 2. denemesi istek sürerken silme talebi + geçici hata ile Atlandı (S42) → 1. iletisine geç teslim → Teslim Edildi; ileti 2 (aynen), Bu Ay 1, Daha Önce (469.891558ms)
+  ✖ W3T-70d J10 (Y20-3): zincir işi kaynağın teslimiyle 'Atlandı — Daha Önce Gönderildi'; AYNI denemenin yinelenen teslimi değiştirmez; ÖBÜR eski denemesine teslim → Teslim Edildi; ileti 2, Bu Ay 2 (2107.435721ms)
+  ✔ W3T-70a Meta Bekletti işi 2. deneme anında İstemiyor ile Atlandı → kendi 1. iletisine geç okundu → Okundu, POST 1 (S59 düzeni — eski kodda da yeşil: yolun komşusu) (439.739934ms)
+✖ 2.5.0 WhatsApp tur 3 — S70 = A: Atlandı işe geç teslim her sırada Teslim Edildi / Okundu (kime kaç kez aynen) (5341.172136ms)
+▶ 2.5.0 WhatsApp tur 3 — S71 = A: içerik + kart telefonu silinmiş Hatırlatma'da Yine de Gönder kişiyi ALMAZ (Telefon yok), iş Sonucu Belirsiz
+  ✔ W3T-71 işteki Yine de Gönder → 400 'Telefon yok' (bekleyen iş varken de — Zaten Kuyrukta'dan ÖNCE), iş Sonucu Belirsiz, ileti yok; telefon girilince Yine de Gönder alır, karttan gider (ilke 4) (1323.624991ms)
+✔ 2.5.0 WhatsApp tur 3 — S71 = A: içerik + kart telefonu silinmiş Hatırlatma'da Yine de Gönder kişiyi ALMAZ (Telefon yok), iş Sonucu Belirsiz (1323.927014ms)
+▶ 2.5.0 WhatsApp tur 3 — S90 = A: işareti yalnız şirketin ŞİMDİKİ kipinin uygulamasının adresi koyar; eski yolun geç bildirimi işi yine Teslim Edildi yapar
+  ✖ W3T-90a Yol 2 → Yol 1: ESKİ (B) adrese J1'in geç teslimi → J1 Teslim Edildi, işaret YOK → J2 TTL + 1 sa sonra Meta Kabul Etti + Daha Önce; sonra Yol 1'in kendi (A) adresi işareti koyar (570.239216ms)
+  ✖ W3T-90b Yol 2 → Yol 1: uygulama düzeyi adres (Elle Bağla'nın uygulaması) Yol 1'de işareti KOYAR; Yol 2'deyken gelen uygulama düzeyi bildirim koymaz, iş Teslim Edildi (476.988698ms)
+  ✖ W3T-90c geri dönüş Yol 1 → Yol 2 → Yol 1: her değişimde sıfırlanır; Yol 2 (B) adresinin geç bildirimi Yol 1'de işaret koymaz; tur 2 öncesi 'mixed' (sahibi bilinmeyen) yol koymaz (İLKEYLE); kipsiz iç çağrı eskisi gibi (541.596012ms)
+  ✔ W3T-90d Kaldır + aynı kiple (Yol 1) yeniden bağla: işaret KALIR (WT2-4); kendi (A) adresi koymaya devam eder (586.442973ms)
+✖ 2.5.0 WhatsApp tur 3 — S90 = A: işareti yalnız şirketin ŞİMDİKİ kipinin uygulamasının adresi koyar; eski yolun geç bildirimi işi yine Teslim Edildi yapar (2176.287156ms)
+▶ 2.5.0 WhatsApp tur 3 — salt okunur lisansta Webhook Bilgileri çifti ÜRETİLMEZ (GET /api/workspace/whatsapp/app-webhook)
+  ✖ W3T-WE salt okunur: çift yokken ready false + neden, ayar satırı YOK; yazılabilir lisansta üretilir; salt okunurda var olan çift AYNEN gösterilir; KVKK talebi açık (S62) (506.135086ms)
+✖ 2.5.0 WhatsApp tur 3 — salt okunur lisansta Webhook Bilgileri çifti ÜRETİLMEZ (GET /api/workspace/whatsapp/app-webhook) (506.609567ms)
+▶ 2.5.0 WhatsApp tur 3 — WT2-7 (Meta listeleme modeli: hepsi): Kaldır'ın "başka şirkette bağlı" denetimi kipe göre
+  ✖ W3T-27a hepsi · 001 Elle Bağla + 002 WhatsApp'ı Bağla aynı WABA: 001 Kaldır → A'nın aboneliği SİLİNİR (DELETE A), 002'nin B aboneliği durur, 002 bağlı (570.90934ms)
+  ✔ W3T-27b hepsi · iki şirket AYNI kip (Elle Bağla) aynı WABA: 001 Kaldır → abonelik SİLİNMEZ (002'nin teslimleri düşmez); 002 de kaldırınca silinir (567.416077ms)
+✖ 2.5.0 WhatsApp tur 3 — WT2-7 (Meta listeleme modeli: hepsi): Kaldır'ın "başka şirkette bağlı" denetimi kipe göre (1138.757212ms)
+▶ 2.5.0 WhatsApp tur 3 — WT2-7 (Meta listeleme modeli: kendi): Kaldır'ın "başka şirkette bağlı" denetimi kipe göre
+  ✖ W3T-27a kendi · 001 Elle Bağla + 002 WhatsApp'ı Bağla aynı WABA: 001 Kaldır → A'nın aboneliği SİLİNİR (DELETE A), 002'nin B aboneliği durur, 002 bağlı (602.864602ms)
+  ✔ W3T-27b kendi · iki şirket AYNI kip (Elle Bağla) aynı WABA: 001 Kaldır → abonelik SİLİNMEZ (002'nin teslimleri düşmez); 002 de kaldırınca silinir (559.769518ms)
+✖ 2.5.0 WhatsApp tur 3 — WT2-7 (Meta listeleme modeli: kendi): Kaldır'ın "başka şirkette bağlı" denetimi kipe göre (1162.973244ms)
+▶ 2.5.0 WhatsApp tur 3 — dar kontrol DÜŞÜK-1 / DÜŞÜK-2 (W-3 KVKK yeniden uygulaması)
+  ✖ W3T-D1 tur 2'den ÖNCEKİ kodun GERÇEK verisi (whatsapp-kvkk-hata-329d5d1b: silinmiş işin hata metninde numara) → açılış + ilk bakım turu: metin numarasız, veri klasörünün HİÇBİR dosyasında numara yok; talepsiz işe dokunulmaz (115.293859ms)
+  ✔ W3T-D2 (DK9): talepten SONRA açılan işin defter telefonu yeniden açılıştaki yeniden uygulamada SİLİNMEZ; talepten önceki iş silinmiş kalır (603.014598ms)
+✖ 2.5.0 WhatsApp tur 3 — dar kontrol DÜŞÜK-1 / DÜŞÜK-2 (W-3 KVKK yeniden uygulaması) (718.686499ms)
+ℹ tests 16
+ℹ suites 7
+ℹ pass 6
+ℹ fail 10
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 12721.099907
+
+✖ failing tests:
+
+test at test/whatsapp-tur3-250.test.mjs:71:3
+✖ W3T-70b zincir: işteki Yine de Gönder'in işi Silme Talebi / İstemiyor ile Atlandı → kaynağın ESKİ belirsiz iletisine geç teslim / okundu → zincir işi Teslim Edildi / Okundu; ileti 2, Bu Ay 2, aynı dönem Daha Önce; yinelenen ve sonraki failed etkisiz (2322.877827ms)
+  AssertionError [ERR_ASSERTION]: S70 (zincir): Atlandı zincir işleri Teslim Edildi / Okundu (eski kod: skipped, skipped)
+  + actual - expected
+  
+    [
+  +   'skipped',
+  +   'skipped'
+  -   'delivered',
+  -   'read'
+    ]
+  
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur3-eski/test/whatsapp-tur3-250.test.mjs:101:14)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1442:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 'skipped', 'skipped' ],
+    expected: [ 'delivered', 'read' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/whatsapp-tur3-250.test.mjs:118:3
+✖ W3T-70c eski deneme: Meta Bekletti işin 2. denemesi istek sürerken silme talebi + geçici hata ile Atlandı (S42) → 1. iletisine geç teslim → Teslim Edildi; ileti 2 (aynen), Bu Ay 1, Daha Önce (469.891558ms)
+  AssertionError [ERR_ASSERTION]: S70 (son deneme olmayan ileti): Teslim Edildi, hata kodu kalktı (eski kod: skipped)
+  + actual - expected
+  
+    [
+  +   'skipped',
+  +   131000
+  -   'delivered',
+  -   null
+    ]
+  
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur3-eski/test/whatsapp-tur3-250.test.mjs:146:14)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 'skipped', 131000 ],
+    expected: [ 'delivered', null ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/whatsapp-tur3-250.test.mjs:157:3
+✖ W3T-70d J10 (Y20-3): zincir işi kaynağın teslimiyle 'Atlandı — Daha Önce Gönderildi'; AYNI denemenin yinelenen teslimi değiştirmez; ÖBÜR eski denemesine teslim → Teslim Edildi; ileti 2, Bu Ay 2 (2107.435721ms)
+  AssertionError [ERR_ASSERTION]: Y20-3: J10 işi Teslim Edildi (eski kod: skipped)
+  + actual - expected
+  
+  + 'skipped'
+  - 'delivered'
+  
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur3-eski/test/whatsapp-tur3-250.test.mjs:182:14)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'skipped',
+    expected: 'delivered',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/whatsapp-tur3-250.test.mjs:350:3
+✖ W3T-90a Yol 2 → Yol 1: ESKİ (B) adrese J1'in geç teslimi → J1 Teslim Edildi, işaret YOK → J2 TTL + 1 sa sonra Meta Kabul Etti + Daha Önce; sonra Yol 1'in kendi (A) adresi işareti koyar (570.239216ms)
+  AssertionError [ERR_ASSERTION]: S90: eski (B) adresin bildirimi işaret KOYMADI (eski kod: işaret + kip manual)
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur3-eski/test/whatsapp-tur3-250.test.mjs:361:14)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1442:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/whatsapp-tur3-250.test.mjs:371:3
+✖ W3T-90b Yol 2 → Yol 1: uygulama düzeyi adres (Elle Bağla'nın uygulaması) Yol 1'de işareti KOYAR; Yol 2'deyken gelen uygulama düzeyi bildirim koymaz, iş Teslim Edildi (476.988698ms)
+  AssertionError [ERR_ASSERTION]: Yol 1 uygulamasının bildirimi Yol 2'de işaret koymaz, işi Teslim Edildi yapar
+  + actual - expected
+  
+    [
+      'delivered',
+  +   true
+  -   false
+    ]
+  
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur3-eski/test/whatsapp-tur3-250.test.mjs:384:14)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 'delivered', true ],
+    expected: [ 'delivered', false ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/whatsapp-tur3-250.test.mjs:393:3
+✖ W3T-90c geri dönüş Yol 1 → Yol 2 → Yol 1: her değişimde sıfırlanır; Yol 2 (B) adresinin geç bildirimi Yol 1'de işaret koymaz; tur 2 öncesi 'mixed' (sahibi bilinmeyen) yol koymaz (İLKEYLE); kipsiz iç çağrı eskisi gibi (541.596012ms)
+  AssertionError [ERR_ASSERTION]: eski (B) adres işaret koymaz, iş Teslim Edildi
+  + actual - expected
+  
+    [
+      'delivered',
+  +   true
+  -   false
+    ]
+  
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur3-eski/test/whatsapp-tur3-250.test.mjs:408:14)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Suite.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 'delivered', true ],
+    expected: [ 'delivered', false ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/whatsapp-tur3-250.test.mjs:443:3
+✖ W3T-WE salt okunur: çift yokken ready false + neden, ayar satırı YOK; yazılabilir lisansta üretilir; salt okunurda var olan çift AYNEN gösterilir; KVKK talebi açık (S62) (506.135086ms)
+  AssertionError [ERR_ASSERTION]: çift üretilmedi (eski kod: ready true + yeni çift) — {"ready":true,"callbackUrl":"http://ofis-tur3-we.destekofis.test/wa/kanca/PMB3E5EJm3wfyQxQBtedKilLhtBiY0jMIiiTJ9OCWvE","verifyToken":"TpWN72m4Nln_vuZXy2LQCVCsB6ibouq_X2I6VgnCt8U","reason":""}
+  + actual - expected
+  
+    [
+  +   true,
+  +   'http://ofis-tur3-we.destekofis.test/wa/kanca/PMB3E5EJm3wfyQxQBtedKilLhtBiY0jMIiiTJ9OCWvE',
+  +   'TpWN72m4Nln_vuZXy2LQCVCsB6ibouq_X2I6VgnCt8U'
+  -   false,
+  -   '',
+  -   ''
+    ]
+  
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur3-eski/test/whatsapp-tur3-250.test.mjs:469:18)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1442:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ true, 'http://ofis-tur3-we.destekofis.test/wa/kanca/PMB3E5EJm3wfyQxQBtedKilLhtBiY0jMIiiTJ9OCWvE', 'TpWN72m4Nln_vuZXy2LQCVCsB6ibouq_X2I6VgnCt8U' ],
+    expected: [ false, '', '' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/whatsapp-tur3-250.test.mjs:547:5
+✖ W3T-27a hepsi · 001 Elle Bağla + 002 WhatsApp'ı Bağla aynı WABA: 001 Kaldır → A'nın aboneliği SİLİNİR (DELETE A), 002'nin B aboneliği durur, 002 bağlı (570.90934ms)
+  AssertionError [ERR_ASSERTION]: farklı kipteki şirket aboneliği korumaz (eski kod: skipped / shared) — {"state":"skipped","reason":"shared","message":"Bağlantı bu şirketten kaldırıldı. Aynı WhatsApp Business hesabı bu bilgisayarda başka bir şirkette de bağlı olduğu için Meta'daki abonelik korundu; tamamen kaldırmak için o şirkette de Bağlantıyı Kaldır'ı kullanın. Orada kaldıramıyorsanız destekofis.net/veri-silme sayfasındaki adımları izleyin (öbür şirketin WhatsApp gönderimi de durur).","link":"https://destekofis.net/veri-silme"}
+  + actual - expected
+  
+    [
+      false,
+  +   'skipped'
+  -   'removed'
+    ]
+  
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur3-eski/test/whatsapp-tur3-250.test.mjs:552:16)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1442:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ false, 'skipped' ],
+    expected: [ false, 'removed' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/whatsapp-tur3-250.test.mjs:547:5
+✖ W3T-27a kendi · 001 Elle Bağla + 002 WhatsApp'ı Bağla aynı WABA: 001 Kaldır → A'nın aboneliği SİLİNİR (DELETE A), 002'nin B aboneliği durur, 002 bağlı (602.864602ms)
+  AssertionError [ERR_ASSERTION]: farklı kipteki şirket aboneliği korumaz (eski kod: skipped / shared) — {"state":"skipped","reason":"shared","message":"Bağlantı bu şirketten kaldırıldı. Aynı WhatsApp Business hesabı bu bilgisayarda başka bir şirkette de bağlı olduğu için Meta'daki abonelik korundu; tamamen kaldırmak için o şirkette de Bağlantıyı Kaldır'ı kullanın. Orada kaldıramıyorsanız destekofis.net/veri-silme sayfasındaki adımları izleyin (öbür şirketin WhatsApp gönderimi de durur).","link":"https://destekofis.net/veri-silme"}
+  + actual - expected
+  
+    [
+      false,
+  +   'skipped'
+  -   'removed'
+    ]
+  
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur3-eski/test/whatsapp-tur3-250.test.mjs:552:16)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1442:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ false, 'skipped' ],
+    expected: [ false, 'removed' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/whatsapp-tur3-250.test.mjs:586:3
+✖ W3T-D1 tur 2'den ÖNCEKİ kodun GERÇEK verisi (whatsapp-kvkk-hata-329d5d1b: silinmiş işin hata metninde numara) → açılış + ilk bakım turu: metin numarasız, veri klasörünün HİÇBİR dosyasında numara yok; talepsiz işe dokunulmaz (115.293859ms)
+  AssertionError [ERR_ASSERTION]: DÜŞÜK-1: eski metin bir kez temizlendi (eski kod: numara kalıyor) — Değerlerden biri geçersiz (ör. alıcı numarası). (Meta hata kodu 131009: Parameter value is not valid: to +90 532 111 22 33)
+      at TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur3-eski/test/whatsapp-tur3-250.test.mjs:603:14)
+      at async Test.run (node:internal/test_runner/test:1054:7)
+      at async Promise.all (index 0)
+      at async Suite.run (node:internal/test_runner/test:1442:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

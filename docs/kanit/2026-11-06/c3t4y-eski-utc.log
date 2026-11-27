@@ -1,0 +1,292 @@
+TAP version 13
+# Subtest: 2.5.0 Ç3 tur 4 — ORTA-1 (S46 = A): yeniden donma planı yarıda kesilince korunur — bileşim s46 (ilk dilim 2.5.0)
+    # Subtest: V1 s46 (dar kontrol "kapanis"): plan sürerken (ilk dilim yazım adımında) program kapanır → yeniden açılışta plan sürer; her dönem kendi kuralıyla, donmuş = canlı
+    not ok 1 - V1 s46 (dar kontrol "kapanis"): plan sürerken (ilk dilim yazım adımında) program kapanır → yeniden açılışta plan sürer; her dönem kendi kuralıyla, donmuş = canlı
+      ---
+      duration_ms: 2211.700315
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t4y-eski-f4a43cbd/test/donmus-defter-tur4-250.test.mjs:183:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        V1: (…, 30.06] 2.4.9 kuralıyla dondu (S46 = A: 2.5.0); koşular [{"no":1,"kind":"freeze","state":"done","fromDate":"","through":"2026-06-30","rule":"2.5.0","reason":"lock"},{"no":2,"kind":"freeze","state":"done","fromDate":"2026-06-30","through":"2026-12-31","rule":"2.4.9","reason":"repair"},{"no":3,"kind":"thaw","state":"done","fromDate":"2026-12-31","through":"","rule":"","reason":"repair"},{"no":4,"kind":"freeze","state":"abandoned","fromDate":"","through":"2026-06-30","rule":"2.5.0","reason":"repair"},{"no":5,"kind":"freeze","state":"done","fromDate":"","through":"2026-12-31","rule":"2.4.9","reason":"repair"}]
+        
+        '2.4.9' !== '2.5.0'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: '2.5.0'
+      actual: '2.4.9'
+      operator: 'strictEqual'
+      stack: |-
+        assertPlan (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t4y-eski-f4a43cbd/test/donmus-defter-tur4-250.test.mjs:124:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t4y-eski-f4a43cbd/test/donmus-defter-tur4-250.test.mjs:201:9)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: V2 s46 (dar kontrol "aynigun"): planın ilk dilimi hata verir (kart "kilidi yeniden kaydedin") → yönetici AYNI günü yeniden kaydeder → plan sürer; her dönem kendi kuralıyla
+    not ok 2 - V2 s46 (dar kontrol "aynigun"): planın ilk dilimi hata verir (kart "kilidi yeniden kaydedin") → yönetici AYNI günü yeniden kaydeder → plan sürer; her dönem kendi kuralıyla
+      ---
+      duration_ms: 2110.728211
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t4y-eski-f4a43cbd/test/donmus-defter-tur4-250.test.mjs:212:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        V2: (30.06, 31.12] 2.5.0 kuralıyla dondu (S46 = A: 2.4.9); koşular [{"no":1,"kind":"freeze","state":"done","fromDate":"","through":"2026-06-30","rule":"2.5.0","reason":"lock"},{"no":2,"kind":"freeze","state":"done","fromDate":"2026-06-30","through":"2026-12-31","rule":"2.4.9","reason":"repair"},{"no":3,"kind":"thaw","state":"done","fromDate":"2026-12-31","through":"","rule":"","reason":"repair"},{"no":4,"kind":"freeze","state":"abandoned","fromDate":"","through":"2026-06-30","rule":"2.5.0","reason":"repair"},{"no":5,"kind":"freeze","state":"done","fromDate":"","through":"2026-12-31","rule":"2.5.0","reason":"lock"}]
+        
+        '2.5.0' !== '2.4.9'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: '2.4.9'
+      actual: '2.5.0'
+      operator: 'strictEqual'
+      stack: |-
+        assertPlan (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t4y-eski-f4a43cbd/test/donmus-defter-tur4-250.test.mjs:125:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t4y-eski-f4a43cbd/test/donmus-defter-tur4-250.test.mjs:233:9)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: V3 s46: planın ilk dilimi YAZILIRKEN aynı güne yeniden kaydetme süren dondurmayı durdurmaz (baştan başlamaz, satırları silinmez); plan sürer
+    not ok 3 - V3 s46: planın ilk dilimi YAZILIRKEN aynı güne yeniden kaydetme süren dondurmayı durdurmaz (baştan başlamaz, satırları silinmez); plan sürer
+      ---
+      duration_ms: 6859.661873
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t4y-eski-f4a43cbd/test/donmus-defter-tur4-250.test.mjs:242:5'
+      failureType: 'testCodeFailure'
+      error: 'kilit değişmezken (aynı gün) planın dondurması durduruldu ya da baştan başladı: {"running":true,"phase":"yazım","done":5,"total":0,"run":5,"error":"","coverage":"","cleanup":{"running":false,"removed":0}}; koşular [{"no":1,"kind":"freeze","state":"done","fromDate":"","through":"2026-06-30","rule":"2.5.0","reason":"lock"},{"no":2,"kind":"freeze","state":"done","fromDate":"2026-06-30","through":"2026-12-31","rule":"2.4.9","reason":"repair"},{"no":3,"kind":"thaw","state":"done","fromDate":"2026-12-31","through":"","rule":"","reason":"repair"},{"no":4,"kind":"freeze","state":"abandoned","fromDate":"","through":"2026-06-30","rule":"2.5.0","reason":"repair"},{"no":5,"kind":"freeze","state":"pending","fromDate":"","through":"2026-12-31","rule":"2.5.0","reason":"lock"}]'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t4y-eski-f4a43cbd/test/donmus-defter-tur4-250.test.mjs:260:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: V4 s46: planın ilk dilimi hata verdi, denemenin artığı (bayat satırlar) duruyor → aynı güne yeniden kaydetme temizlik beklemez (409 yok; kilit değişmiyor, koşu açılmaz); plan sürer
+    not ok 4 - V4 s46: planın ilk dilimi hata verdi, denemenin artığı (bayat satırlar) duruyor → aynı güne yeniden kaydetme temizlik beklemez (409 yok; kilit değişmiyor, koşu açılmaz); plan sürer
+      ---
+      duration_ms: 6731.626699
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t4y-eski-f4a43cbd/test/donmus-defter-tur4-250.test.mjs:276:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        kilit değişmezken (aynı gün) temizlik istendi: 409 ledger-cleanup-running {"ok":false,"error":"Önceki dönemin defter temizliği sürüyor; temizlik bitince yeniden kilitleyin. İlerleme bu kartta görünür.","code":"ledger-cleanup-running","freeze":{"running":false,"phase":"hata","done":15,"total":0,"run":4,"error":"test: dondurma düştü (disk / bellek benzetimi)","coverage":"",
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t4y-eski-f4a43cbd/test/donmus-defter-tur4-250.test.mjs:296:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..4
+not ok 1 - 2.5.0 Ç3 tur 4 — ORTA-1 (S46 = A): yeniden donma planı yarıda kesilince korunur — bileşim s46 (ilk dilim 2.5.0)
+  ---
+  duration_ms: 17915.352666
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t4y-eski-f4a43cbd/test/donmus-defter-tur4-250.test.mjs:182:3'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 Ç3 tur 4 — ORTA-1 (S46 = A): yeniden donma planı yarıda kesilince korunur — bileşim u3 (ilk dilim 2.4.9)
+    # Subtest: V1 u3 (dar kontrol "kapanis"): plan sürerken (ilk dilim yazım adımında) program kapanır → yeniden açılışta plan sürer; her dönem kendi kuralıyla, donmuş = canlı
+    ok 1 - V1 u3 (dar kontrol "kapanis"): plan sürerken (ilk dilim yazım adımında) program kapanır → yeniden açılışta plan sürer; her dönem kendi kuralıyla, donmuş = canlı
+      ---
+      duration_ms: 2261.74274
+      type: 'test'
+      ...
+    # Subtest: V2 u3 (dar kontrol "aynigun"): planın ilk dilimi hata verir (kart "kilidi yeniden kaydedin") → yönetici AYNI günü yeniden kaydeder → plan sürer; her dönem kendi kuralıyla
+    ok 2 - V2 u3 (dar kontrol "aynigun"): planın ilk dilimi hata verir (kart "kilidi yeniden kaydedin") → yönetici AYNI günü yeniden kaydeder → plan sürer; her dönem kendi kuralıyla
+      ---
+      duration_ms: 2294.520258
+      type: 'test'
+      ...
+    # Subtest: V3 u3: planın ilk dilimi YAZILIRKEN aynı güne yeniden kaydetme süren dondurmayı durdurmaz (baştan başlamaz, satırları silinmez); plan sürer
+    not ok 3 - V3 u3: planın ilk dilimi YAZILIRKEN aynı güne yeniden kaydetme süren dondurmayı durdurmaz (baştan başlamaz, satırları silinmez); plan sürer
+      ---
+      duration_ms: 6764.892464
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t4y-eski-f4a43cbd/test/donmus-defter-tur4-250.test.mjs:242:5'
+      failureType: 'testCodeFailure'
+      error: 'kilit değişmezken (aynı gün) planın dondurması durduruldu ya da baştan başladı: {"running":true,"phase":"yazım","done":5,"total":0,"run":4,"error":"","coverage":"","cleanup":{"running":false,"removed":0}}; koşular [{"no":1,"kind":"freeze","state":"done","fromDate":"","through":"2026-06-30","rule":"2.4.9","reason":"repair"},{"no":2,"kind":"freeze","state":"done","fromDate":"2026-06-30","through":"2026-12-31","rule":"2.5.0","reason":"lock"},{"no":3,"kind":"thaw","state":"done","fromDate":"2026-12-31","through":"","rule":"","reason":"repair"},{"no":4,"kind":"freeze","state":"pending","fromDate":"","through":"2026-06-30","rule":"2.4.9","reason":"repair"}]'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t4y-eski-f4a43cbd/test/donmus-defter-tur4-250.test.mjs:260:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: V4 u3: planın ilk dilimi hata verdi, denemenin artığı (bayat satırlar) duruyor → aynı güne yeniden kaydetme temizlik beklemez (409 yok; kilit değişmiyor, koşu açılmaz); plan sürer
+    ok 4 - V4 u3: planın ilk dilimi hata verdi, denemenin artığı (bayat satırlar) duruyor → aynı güne yeniden kaydetme temizlik beklemez (409 yok; kilit değişmiyor, koşu açılmaz); plan sürer
+      ---
+      duration_ms: 7347.390248
+      type: 'test'
+      ...
+    1..4
+not ok 2 - 2.5.0 Ç3 tur 4 — ORTA-1 (S46 = A): yeniden donma planı yarıda kesilince korunur — bileşim u3 (ilk dilim 2.4.9)
+  ---
+  duration_ms: 18669.409038
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t4y-eski-f4a43cbd/test/donmus-defter-tur4-250.test.mjs:182:3'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 Ç3 tur 4 — ORTA-1: v2.4.9 GERÇEK koduyla ilerletilmiş kilit
+    # Subtest: X1 (v249-s46 ilerlet kapanis): plan sürerken program kapanır → yeniden açılışta (…, 30.06] 2.5.0, (30.06, 31.12] 2.4.9; donmuş = canlı; Mutabakat Testi temiz
+    not ok 1 - X1 (v249-s46 ilerlet kapanis): plan sürerken program kapanır → yeniden açılışta (…, 30.06] 2.5.0, (30.06, 31.12] 2.4.9; donmuş = canlı; Mutabakat Testi temiz
+      ---
+      duration_ms: 2356.319698
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t4y-eski-f4a43cbd/test/donmus-defter-tur4-250.test.mjs:317:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        X1: (…, 30.06] 2.4.9 kuralıyla dondu (S46 = A: 2.5.0); koşular [{"no":1,"kind":"freeze","state":"done","fromDate":"","through":"2026-06-30","rule":"2.5.0","reason":"lock"},{"no":2,"kind":"freeze","state":"done","fromDate":"2026-06-30","through":"2026-12-31","rule":"2.4.9","reason":"repair"},{"no":3,"kind":"thaw","state":"done","fromDate":"2026-12-31","through":"","rule":"","reason":"repair"},{"no":4,"kind":"freeze","state":"abandoned","fromDate":"","through":"2026-06-30","rule":"2.5.0","reason":"repair"},{"no":5,"kind":"freeze","state":"done","fromDate":"","through":"2026-12-31","rule":"2.4.9","reason":"repair"}]
+        
+        '2.4.9' !== '2.5.0'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: '2.5.0'
+      actual: '2.4.9'
+      operator: 'strictEqual'
+      stack: |-
+        assertPlan (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t4y-eski-f4a43cbd/test/donmus-defter-tur4-250.test.mjs:124:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t4y-eski-f4a43cbd/test/donmus-defter-tur4-250.test.mjs:335:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: X2 (v2.4.9 ilerletmesi + aynı gün): planın ilk dilimi hata verir → aynı güne yeniden kaydetme → (…, 30.06] 2.5.0, (30.06, 31.12] 2.4.9
+    not ok 2 - X2 (v2.4.9 ilerletmesi + aynı gün): planın ilk dilimi hata verir → aynı güne yeniden kaydetme → (…, 30.06] 2.5.0, (30.06, 31.12] 2.4.9
+      ---
+      duration_ms: 2484.947898
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t4y-eski-f4a43cbd/test/donmus-defter-tur4-250.test.mjs:347:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        X2: (30.06, 31.12] 2.5.0 kuralıyla dondu (S46 = A: 2.4.9); koşular [{"no":1,"kind":"freeze","state":"done","fromDate":"","through":"2026-06-30","rule":"2.5.0","reason":"lock"},{"no":2,"kind":"freeze","state":"done","fromDate":"2026-06-30","through":"2026-12-31","rule":"2.4.9","reason":"repair"},{"no":3,"kind":"thaw","state":"done","fromDate":"2026-12-31","through":"","rule":"","reason":"repair"},{"no":4,"kind":"freeze","state":"abandoned","fromDate":"","through":"2026-06-30","rule":"2.5.0","reason":"repair"},{"no":5,"kind":"freeze","state":"done","fromDate":"","through":"2026-12-31","rule":"2.5.0","reason":"lock"}]
+        
+        '2.5.0' !== '2.4.9'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: '2.4.9'
+      actual: '2.5.0'
+      operator: 'strictEqual'
+      stack: |-
+        assertPlan (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t4y-eski-f4a43cbd/test/donmus-defter-tur4-250.test.mjs:125:10)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t4y-eski-f4a43cbd/test/donmus-defter-tur4-250.test.mjs:364:7)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 3 - 2.5.0 Ç3 tur 4 — ORTA-1: v2.4.9 GERÇEK koduyla ilerletilmiş kilit
+  ---
+  duration_ms: 4841.952447
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t4y-eski-f4a43cbd/test/donmus-defter-tur4-250.test.mjs:316:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 Ç3 tur 4 — S13 = A: aynı güne yeniden kaydetme eski sürümün ilerlettiği dönemi güncel kurala geçirmez
+    # Subtest: W1: eski kurallı koşu + eski sürüm ilerletmesi + hata + aynı gün → (…, 30.06] ve (30.06, 31.12] 2.4.9; ilerletme izi yazılmaz; donmuş = canlı
+    not ok 1 - W1: eski kurallı koşu + eski sürüm ilerletmesi + hata + aynı gün → (…, 30.06] ve (30.06, 31.12] 2.4.9; ilerletme izi yazılmaz; donmuş = canlı
+      ---
+      duration_ms: 2087.362854
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t4y-eski-f4a43cbd/test/donmus-defter-tur4-250.test.mjs:377:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        eski sürümün ilerlettiği dönem (30.06, 31.12] 2.5.0 kuralıyla dondu (S13 = A: 2.4.9) — aynı güne yeniden kaydetme "bu program ilerletti" izi yazdı; koşular [{"no":1,"kind":"freeze","state":"done","fromDate":"","through":"2026-06-30","rule":"2.4.9","reason":"repair"},{"no":2,"kind":"freeze","state":"done","fromDate":"2026-06-30","through":"2026-12-31","rule":"2.5.0","reason":"lock"}]
+        
+        '2.5.0' !== '2.4.9'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: '2.4.9'
+      actual: '2.5.0'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t4y-eski-f4a43cbd/test/donmus-defter-tur4-250.test.mjs:416:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 4 - 2.5.0 Ç3 tur 4 — S13 = A: aynı güne yeniden kaydetme eski sürümün ilerlettiği dönemi güncel kurala geçirmez
+  ---
+  duration_ms: 2087.879797
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t4y-eski-f4a43cbd/test/donmus-defter-tur4-250.test.mjs:376:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 Ç3 tur 4 — DÜŞÜK-1: 'before-done' ve 'doğrulama' pencerelerinde aynı güne kilit yazılan koşunun satırlarını silmez
+    # Subtest: D1 before-done: koşu bu pencerede tutulurken aynı güne yinelenen kilit yazılan satırları silmez — satırlar = yazılan; bitince görünen = kayıtlı = canlı; Mutabakat Testi temiz
+    ok 1 - D1 before-done: koşu bu pencerede tutulurken aynı güne yinelenen kilit yazılan satırları silmez — satırlar = yazılan; bitince görünen = kayıtlı = canlı; Mutabakat Testi temiz
+      ---
+      duration_ms: 5252.40473
+      type: 'test'
+      ...
+    # Subtest: D2 doğrulama (ilk parça özetlendi): koşu bu pencerede tutulurken aynı güne yinelenen kilit yazılan satırları silmez — satırlar = yazılan; bitince görünen = kayıtlı = canlı; Mutabakat Testi temiz
+    not ok 2 - D2 doğrulama (ilk parça özetlendi): koşu bu pencerede tutulurken aynı güne yinelenen kilit yazılan satırları silmez — satırlar = yazılan; bitince görünen = kayıtlı = canlı; Mutabakat Testi temiz
+      ---
+      duration_ms: 10260.650137
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t4y-eski-f4a43cbd/test/donmus-defter-tur4-250.test.mjs:462:5'
+      failureType: 'testCodeFailure'
+      error: 'ön koşul: dondurma "verify" penceresinde tutuluyor ({"reached":null,"status":{"running":false,"phase":"tamam","done":84,"total":84,"run":1,"error":"","coverage":"","cleanup":{"running":false,"removed":0}}})'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: ~
+      operator: '=='
+      stack: |-
+        until (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t4y-eski-f4a43cbd/test/donmus-defter-tur4-250.test.mjs:57:10)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t4y-eski-f4a43cbd/test/donmus-defter-tur4-250.test.mjs:475:9)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 5 - 2.5.0 Ç3 tur 4 — DÜŞÜK-1: 'before-done' ve 'doğrulama' pencerelerinde aynı güne kilit yazılan koşunun satırlarını silmez
+  ---
+  duration_ms: 16599.734797
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t4y-eski-f4a43cbd/test/donmus-defter-tur4-250.test.mjs:433:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..5
+# tests 13
+# suites 5
+# pass 4
+# fail 9
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 60562.149277

@@ -1,0 +1,32 @@
+{
+  "ad": "kahinmuh13-defter-oz-ist",
+  "komut": "python3 -I -B test/bagimsiz/defter/oz-test.py",
+  "commit": "aab202235d58794230da5c73a00587b38312e7df",
+  "dal": "worktree-agent-a1cc7f1375640faa7",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v653 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-19T19:13:10.575Z",
+  "sure_sn": 0.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 263,
+    "gecen": 263,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmuh13-kanit/2026-11-19/kahinmuh13-defter-oz-ist.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a1cc7f1375640faa7",
+  "ham_cikti_sha256": "cbcd42cd50942a2048f417bfac9d92f7110911c49687cbf4447e9be8445f5505",
+  "ham_cikti_bayt": 4935
+}

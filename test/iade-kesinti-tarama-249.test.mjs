@@ -70,7 +70,9 @@ async function taramaSay(fn) {
   const asil = ctx.store.all;
   let n = 0;
   ctx.store.all = (sql, ...args) => {
-    if (/sale_return/.test(sql) && /coverCuts/.test(sql)) n += 1;
+    // 2.5.0 İzleyen küçük tur (tasarım §19.2): kuyruğun fatura satırı sorgusu iade belgesinin coverCuts'ını SÜTUN olarak taşır ("… AS coverCuts" — carinin kendi fatura satırları, tarama değil);
+    // sayılan yalnız iadelerin kesinti TARAMASI (bugünkü kural aynen).
+    if (/sale_return/.test(sql) && /coverCuts/.test(sql) && !/AS coverCuts/.test(sql)) n += 1;
     return asil.call(ctx.store, sql, ...args);
   };
   try {

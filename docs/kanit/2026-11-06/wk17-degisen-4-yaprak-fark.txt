@@ -1,0 +1,23 @@
+komut: TZ=UTC python3 -I /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wk17-calisma/araclar/yaprak_fark.py /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wk17-eski-7d6c6369/kahin/senaryolar.json test/bagimsiz/whatsapp-248/kahin/senaryolar.json S16-02 S30-01 S30-02 S30-03
+commit: bb920588 (+ çalışma ağacı)
+zaman: 2026-11-06T08:46:49Z
+---
+S16-02-yine-de-gonder-suphesiz-tutar-yok-elenir-ertesi-gun-gider: 4 yaprak değişti (4'i secenek → kesin)
+  beklenen[0].sonuc.kontroller.K1.durum_sayilari: {"secenek": [{"Sonucu Belirsiz": 1, "Teslim Edildi": 1}, {"Atlandı": 1, "Teslim Edildi": 1}]} → {"Atlandı": 1, "Teslim Edildi": 1}
+  beklenen[0].sonuc.kontroller.K1.isler.T1/X: {"secenek": ["Sonucu Belirsiz", "Atlandı"]} → "Atlandı"
+  beklenen[0].sonuc.yeniden.Y1.alinan: {"secenek": [[], ["X"]]} → ["X"]
+  beklenen[0].sonuc.yeniden.Y1.elenen: {"secenek": [{"X": "gecikmis_borc_yok"}, {}]} → {}
+S30-01-talep-duraklatildi-meta-bekletti-zincir-gonderilmez-belirsiz-iz-eler: 4 yaprak değişti (4'i secenek → kesin)
+  beklenen[0].sonuc.kontroller.K2.durum_sayilari: {"secenek": [{"Atlandı": 3, "Teslim Edildi": 1}, {"Duraklatıldı": 2, "Meta Bekletti (24 Saat Sonra Yeniden)": 1, "Teslim Edildi": 1}]} → {"Atlandı": 3, "Teslim Edildi": 1}
+  beklenen[0].sonuc.kontroller.K2.isler.T1/E: {"secenek": ["Atlandı", "Duraklatıldı"]} → "Atlandı"
+  beklenen[0].sonuc.kontroller.K2.isler.T2/B: {"secenek": ["Atlandı", "Duraklatıldı"]} → "Atlandı"
+  beklenen[0].sonuc.kontroller.K2.isler.T3/D: {"secenek": ["Atlandı", "Meta Bekletti (24 Saat Sonra Yeniden)"]} → "Atlandı"
+S30-02-talep-sinir-lisans-gonderilmez-belirsiz-hatirlatma-ayni-gun-elenir-ertesi-gun-gider: 3 yaprak değişti (3'i secenek → kesin)
+  beklenen[0].sonuc.kontroller.K1.durum_sayilari: {"secenek": [{"Atlandı": 2, "Sonucu Belirsiz": 1, "Teslim Edildi": 2}, {"Lisans Nedeniyle Durdu": 2, "Sonucu Belirsiz": 1, "Teslim Edildi": 2}]} → {"Atlandı": 2, "Sonucu Belirsiz": 1, "Teslim Edildi": 2}
+  beklenen[0].sonuc.kontroller.K1.isler.T1/LS: {"secenek": ["Atlandı", "Lisans Nedeniyle Durdu"]} → "Atlandı"
+  beklenen[0].sonuc.kontroller.K1.isler.T1/SB: {"secenek": ["Atlandı", "Lisans Nedeniyle Durdu"]} → "Atlandı"
+S30-03-bir-yil-dolumu-bekleyen-isler-gonderilmez-belirsiz-iz-eler: 3 yaprak değişti (3'i secenek → kesin)
+  beklenen[0].sonuc.kontroller.K2.durum_sayilari: {"secenek": [{"Atlandı": 2, "Sonucu Belirsiz": 1, "Teslim Edildi": 1}, {"Duraklatıldı": 2, "Sonucu Belirsiz": 1, "Teslim Edildi": 1}]} → {"Atlandı": 2, "Sonucu Belirsiz": 1, "Teslim Edildi": 1}
+  beklenen[0].sonuc.kontroller.K2.isler.T2/B: {"secenek": ["Atlandı", "Duraklatıldı"]} → "Atlandı"
+  beklenen[0].sonuc.kontroller.K2.isler.T3/HC: {"secenek": ["Atlandı", "Duraklatıldı"]} → "Atlandı"
+--- çıkış 0

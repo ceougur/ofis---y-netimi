@@ -1,0 +1,30 @@
+ÜRETİCİ: 20/20 aynı dizi (tur s1 + ux18, tohum 1–10 × 120 işlem)
+EŞDEĞERLİK (2.4.9 / 2.4.6 / 2.4.5 / --legacy; 87 elle (80 eski + 7 bakım 6) + 20 rastgele senaryo × 4 kip): 428/428 bayt bayt aynı
+G3 (kural 2.5.0; 100 senaryo — eski kopyanın 80 elle senaryosu + 20 rastgele): eski 44742 denetim · yeni 45346 denetim · değişen / kalkan / yeni toplam 604 · BEKLENMEYEN 0 · yalnız etiketi değişen 0
+  S102-S105      yeni       576
+      örn. d26-c5-bakim5-susan k1:cari:S10:acikEsitBakiye: "(denetim yok)" → false
+      örn. d26-c5-bakim5-susan k1:cari:S10:acikToplam: "(denetim yok)" → 0
+      örn. d26-c5-bakim5-susan k1:cari:S10:gecikmis: "(denetim yok)" → 0
+      örn. d26-c5-bakim5-susan k1:cari:S11:acikEsitBakiye: "(denetim yok)" → false
+  SK-13←S99      yeni         6
+      örn. d25-c5-s98-avans-sirasi k1:cari:R3:acikEsitBakiye: "(denetim yok)" → false
+      örn. d25-c5-s98-avans-sirasi k1:cari:R3:acikToplam: "(denetim yok)" → 10000
+      örn. d25-c5-s98-avans-sirasi k1:fatura:R3F:acik: "(denetim yok)" → 10000
+      örn. d26-c5-bakim5-susan k1:cari:S13:acikEsitBakiye: "(denetim yok)" → false
+  sayac          yeni        22
+      örn. rastgele-s1-2 k2:projeksiyon:cari: "(denetim yok)" → 6
+      örn. rastgele-s1-2 k2:takvim:cariKalemSayisi: "(denetim yok)" → 5
+      örn. rastgele-s1-2 k9:projeksiyon:cari: "(denetim yok)" → 10
+      örn. rastgele-s1-2 k9:takvim:cariKalemSayisi: "(denetim yok)" → 7
+G3 senaryo senaryo (sınıf/tür: adet):
+  d25-c5-s98-avans-sirasi                  SK-13←S99/yeni 3
+  d26-c5-bakim5-susan                      S102-S105/yeni 45 · SK-13←S99/yeni 3
+  rastgele-s1-10                           S102-S105/yeni 34 · sayac/yeni 2
+  rastgele-s1-2                            S102-S105/yeni 67 · sayac/yeni 4
+  rastgele-s1-4                            S102-S105/yeni 70 · sayac/yeni 2
+  rastgele-s1-5                            S102-S105/yeni 79 · sayac/yeni 4
+  rastgele-s1-8                            S102-S105/yeni 281 · sayac/yeni 10
+# tests 529
+# pass 529
+# fail 0
+529/529 denetim geçti

@@ -1,0 +1,59 @@
+TAP version 13
+# \# T8-sizinti {"yanitlar":[],"yanitSayisi":26,"yanitDurumlari":"kanca kaydı=200 önizleme=200 toplu iş=200 kanca POST=200 kanca GET=200 bağlantıyı sına=200 kendime deneme=200 bağlantı=200 gönderim durumu=200 geçmiş=200 istatistik=200 toplu liste=200 toplu ayrıntı=200 onay=200 ayarlar=200 işlem geçmişi=200 oturum (mobil)=200 cari (mobil)=200 cari liste (mobil)=200 genel bakış (mobil)=200 kasa (mobil)=200 taksitler (mobil)=200 rapor merkezi (mobil)=200 bağlantıyı sına (190 yankı)=502 toplu iş (190)=409 yedek=200","gunluk":[],"gunlukSatir":50,"islemGecmisi":[],"veriKlasoru":[],"veriDosyaSayisi":12,"yedek":[],"yedekDosyalari":["destekofis-001-2026-11-06T06-40-38-188Z-manuel.sqlite"],"yedekteSecretKey":false,"yedekDurum":200,"ciktilar":[{"url":"/api/workspace/accounts/account-f3eefd4c-3bed-42f2-8588-723db9c3b17c/ekstre.pdf","status":200,"bytes":31731,"hit":[]},{"url":"/api/workspace/accounts/liste.pdf","status":200,"bytes":32564,"hit":[]},{"url":"/api/workspace/accounts/export.xlsx","status":200,"bytes":3881,"hit":[]}]}
+# \# T8-appsecret {"programSatir":[],"kapiSatirSayisi":7,"kapiOrnek":["bulut/kapi/kapi.mjs:21://      2.4.8 W9: WA_UYGULAMA_SIRRI (gizli; DestekOfis Meta uygulamasının App Secret'ı — Yol 2 kanca imzası), WA_META_DOGRULAMA (gizli; uygulama düzeyindeki","bulut/kapi/wrangler.toml:43:\# GİZLİ: WA_UYGULAMA_SIRRI (Meta App Secret; W9 kanca imzasıyla AYNI değer) — `wrangler secret put WA_UYGULAMA_SIRRI`; kod → belirteç değişimi yalnız burada.","bulut/kapi/wa-bagla.mjs:5:// Akış (kod değişimi SUNUCUDA — Meta App Secret YALNIZ kapıcı gizlisinde, WA_UYGULAMA_SIRRI; programa, sayfaya, yanıta, günlüğe girmez):","bulut/kapi/wa-bagla.mjs:25:// (gizli; W9 kanca imzasıyla aynı App Secret), isteğe bağlı WA_GRAPH_URL (yalnız test), WA_KURULUM_EKLERI (JSON; FB.login extras — D0).","bulut/kapi/wa-bagla.mjs:81:// Meta'nın hata metni kullanıcıya gösterilmeden önce: tek satır, ≤ 200 karakter, verilen gizli değerler (App Secret, kod) çıkarılır."]}
+# Subtest: T8 — belirteç / kanca sırrı sızıntı taraması
+    # Subtest: API yanıtları, günlük, işlem geçmişi, veri klasörü, yedek, hata iletileri, PDF/Excel: belirteç, kanca gizli yolu ve doğrulama belirteci YOK
+    ok 1 - API yanıtları, günlük, işlem geçmişi, veri klasörü, yedek, hata iletileri, PDF/Excel: belirteç, kanca gizli yolu ve doğrulama belirteci YOK
+      ---
+      duration_ms: 1904.383061
+      type: 'test'
+      ...
+    # Subtest: App Secret program kaynağında yok (yalnız kapıcı); program sunucu kodunda kalıcı belirteç / sır sabiti yok
+    ok 2 - App Secret program kaynağında yok (yalnız kapıcı); program sunucu kodunda kalıcı belirteç / sır sabiti yok
+      ---
+      duration_ms: 62.430029
+      type: 'test'
+      ...
+    1..2
+ok 1 - T8 — belirteç / kanca sırrı sızıntı taraması
+  ---
+  duration_ms: 1968.33845
+  type: 'suite'
+  ...
+# \# T8-kanca {"yanlisYol":404,"kisaYol":404,"put":405,"yanlisDogrulama":403,"bozukJson":400,"yanlisYoldaDurum1":"accepted","bilinmeyen":{"status":200,"yazilan":0},"baskaSirket":{"status":200,"s001":"accepted","s002":"delivered"},"baskaNumara":{"status":200,"s001":"accepted"},"tekrar":{"s001":"delivered","buAy":2},"geriye":"read","sahte131049":{"status":200,"isDurumu":"held","toplu":"running","onceIleti":1,"sonraIleti":2,"sonDurum":"accepted"}}
+# Subtest: T8 — kanca saldırıları (imzasız / sahte / yeniden oynatılmış / başka şirket)
+    # Subtest: yanlış gizli yol 404, yanlış doğrulama belirteci 403; bilinmeyen wamid yazılmaz; 002'nin wamid'i yalnız 002'ye; yinelenen teslim sayacı ARTTIRMAZ; geriye giden durum yok sayılır; sahte imzasız 131049 → ?
+    ok 1 - yanlış gizli yol 404, yanlış doğrulama belirteci 403; bilinmeyen wamid yazılmaz; 002'nin wamid'i yalnız 002'ye; yinelenen teslim sayacı ARTTIRMAZ; geriye giden durum yok sayılır; sahte imzasız 131049 → ?
+      ---
+      duration_ms: 1412.391
+      type: 'test'
+      ...
+    1..1
+ok 2 - T8 — kanca saldırıları (imzasız / sahte / yeniden oynatılmış / başka şirket)
+  ---
+  duration_ms: 1412.663958
+  type: 'suite'
+  ...
+# \# T8-yetki {"personel":{"out":{"önizleme":"403:FORBIDDEN","toplu başlat":"403:FORBIDDEN","toplu liste":"403:FORBIDDEN","duraklat":"403:FORBIDDEN","devam":"403:FORBIDDEN","iptal":"403:FORBIDDEN","başarısızları yeniden dene":"403:FORBIDDEN","yine de gönder":"403:FORBIDDEN","onay yaz":"403:FORBIDDEN","bağlantı yaz":"403:FORBIDDEN","bağlantı sil":"403:FORBIDDEN","bağlantıyı sına":"403:FORBIDDEN","kendime deneme":"403:FORBIDDEN","kanca kaydı":"403:FORBIDDEN","ayar yaz":"403:FORBIDDEN"},"metaIstek":0},"saltOkunur":{"out":{"önizleme":"403:LICENSE_READ_ONLY","toplu başlat":"403:LICENSE_READ_ONLY","toplu liste":"200","duraklat":"403:LICENSE_READ_ONLY","devam":"403:LICENSE_READ_ONLY","iptal":"403:LICENSE_READ_ONLY","başarısızları yeniden dene":"403:LICENSE_READ_ONLY","yine de gönder":"403:LICENSE_READ_ONLY","onay yaz":"403:LICENSE_READ_ONLY","bağlantı yaz":"403:LICENSE_READ_ONLY","bağlantı sil":"403:LICENSE_READ_ONLY","bağlantıyı sına":"403:LICENSE_READ_ONLY","kendime deneme":"403:LICENSE_READ_ONLY","kanca kaydı":"403:LICENSE_READ_ONLY","ayar yaz":"403:LICENSE_READ_ONLY"},"metaIstek":0}}
+# Subtest: T8 — yetkisiz kullanıcı ve salt okunur lisans gönderim uçlarında
+    # Subtest: whatsapp.send yetkisiz personel ve salt okunur lisans: gönderim / onay / bağlantı / deneme / yeniden dene / yine de gönder uçları reddedilir, Meta'ya istek gitmez
+    ok 1 - whatsapp.send yetkisiz personel ve salt okunur lisans: gönderim / onay / bağlantı / deneme / yeniden dene / yine de gönder uçları reddedilir, Meta'ya istek gitmez
+      ---
+      duration_ms: 1328.183182
+      type: 'test'
+      ...
+    1..1
+ok 3 - T8 — yetkisiz kullanıcı ve salt okunur lisans gönderim uçlarında
+  ---
+  duration_ms: 1331.999867
+  type: 'suite'
+  ...
+1..3
+# tests 4
+# suites 3
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5208.208038

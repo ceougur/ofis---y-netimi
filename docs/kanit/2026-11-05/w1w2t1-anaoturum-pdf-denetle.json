@@ -1,0 +1,32 @@
+{
+  "ad": "w1w2t1-anaoturum-pdf-denetle",
+  "komut": "node docs/kilavuz/pdf-denetle.mjs",
+  "commit": "f3d50bb736cec8cdb861081a2e51e966d3ba6ce9",
+  "dal": "claude/epic-thompson-w0lc2l",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T20:41:26.526Z",
+  "sure_sn": 11.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 39,
+    "gecen": 39,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/w1w2t1-anaoturum-pdf-denetle.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "190e4ecf0ebafeed51490ec6a9bb3396cb4e7744694632b1c3622c8f9156d0a2",
+  "ham_cikti_bayt": 2211
+}

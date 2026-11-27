@@ -1,0 +1,34 @@
+HIZ KABUL birleşik tur 8b · nproc 4 · başta 1.64 3.03 2.31 2/130 3850 · 16:23:39
+=== taban · başta 1.64 3.03 2.31 1/130 3880 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8b-taban · yük (başta) 1.54 2.91 2.29
+  Vade Takip Bugün: durum 200 · en iyi 1360.1 ms · ortanca 1530.2 ms · olay döngüsü en çok 1576 ms (n=7) · 39325 satır · gecikmiş tahsil 161465902.62 / 26468 · ödeme 291258284.02 / 12425
+  Vade Takip 7 Gün: durum 200 · en iyi 1417.9 ms · ortanca 1486.1 ms · olay döngüsü en çok 1711.3 ms (n=7) · 39460 satır · gecikmiş tahsil 161465902.62 / 26468 · ödeme 291258284.02 / 12425
+  Vade Takip Tüm Açık: durum 200 · en iyi 1438 ms · ortanca 1531.5 ms · olay döngüsü en çok 1637.9 ms (n=7) · 41971 satır · gecikmiş tahsil 161465902.62 / 26468 · ödeme 291258284.02 / 12425
+  Vade Takip Gecikmiş: durum 200 · en iyi 1357.5 ms · ortanca 1416.1 ms · olay döngüsü en çok 1594.9 ms (n=7) · 38893 satır · gecikmiş tahsil 161465902.62 / 26468 · ödeme 291258284.02 / 12425
+yük (sonda) 1.59 2.70 2.25
+çıkış 0 · sonda 1.59 2.70 2.25 1/128 4161
+=== yeni · başta 1.59 2.70 2.25 1/130 4166 
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-a97f589d1520516a5 · yük (başta) 1.50 2.60 2.23
+  Vade Takip Bugün: durum 200 · en iyi 1351.1 ms · ortanca 1498.8 ms · olay döngüsü en çok 1736.4 ms (n=7) · 39325 satır · gecikmiş tahsil 161465902.62 / 26468 · ödeme 291258284.02 / 12425
+  Vade Takip 7 Gün: durum 200 · en iyi 1302.3 ms · ortanca 1434.9 ms · olay döngüsü en çok 1654.7 ms (n=7) · 39460 satır · gecikmiş tahsil 161465902.62 / 26468 · ödeme 291258284.02 / 12425
+  Vade Takip Tüm Açık: durum 200 · en iyi 1394.1 ms · ortanca 1461.8 ms · olay döngüsü en çok 1500.5 ms (n=7) · 41971 satır · gecikmiş tahsil 161465902.62 / 26468 · ödeme 291258284.02 / 12425
+  Vade Takip Gecikmiş: durum 200 · en iyi 1435 ms · ortanca 1529.1 ms · olay döngüsü en çok 1675.6 ms (n=7) · 38893 satır · gecikmiş tahsil 161465902.62 / 26468 · ödeme 291258284.02 / 12425
+yük (sonda) 1.40 2.41 2.18
+çıkış 0 · sonda 1.40 2.41 2.18 1/131 4304
+=== taban · başta 1.40 2.41 2.18 1/131 4307 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8b-taban · yük (başta) 1.41 2.35 2.16
+  Vade Takip Bugün: durum 200 · en iyi 1289.6 ms · ortanca 1497.9 ms · olay döngüsü en çok 1838.2 ms (n=7) · 39325 satır · gecikmiş tahsil 161465902.62 / 26468 · ödeme 291258284.02 / 12425
+  Vade Takip 7 Gün: durum 200 · en iyi 1401.6 ms · ortanca 1538.4 ms · olay döngüsü en çok 1824.5 ms (n=7) · 39460 satır · gecikmiş tahsil 161465902.62 / 26468 · ödeme 291258284.02 / 12425
+  Vade Takip Tüm Açık: durum 200 · en iyi 1368.3 ms · ortanca 1466 ms · olay döngüsü en çok 1677.7 ms (n=7) · 41971 satır · gecikmiş tahsil 161465902.62 / 26468 · ödeme 291258284.02 / 12425
+  Vade Takip Gecikmiş: durum 200 · en iyi 1375.4 ms · ortanca 1475.3 ms · olay döngüsü en çok 1799.4 ms (n=7) · 38893 satır · gecikmiş tahsil 161465902.62 / 26468 · ödeme 291258284.02 / 12425
+yük (sonda) 1.18 2.14 2.10
+çıkış 0 · sonda 1.18 2.14 2.10 1/134 4359
+=== yeni · başta 1.18 2.14 2.10 1/134 4362 
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-a97f589d1520516a5 · yük (başta) 1.26 2.10 2.09
+  Vade Takip Bugün: durum 200 · en iyi 1392.4 ms · ortanca 1432.6 ms · olay döngüsü en çok 1576 ms (n=7) · 39325 satır · gecikmiş tahsil 161465902.62 / 26468 · ödeme 291258284.02 / 12425
+  Vade Takip 7 Gün: durum 200 · en iyi 1438.1 ms · ortanca 1514.2 ms · olay döngüsü en çok 1761.6 ms (n=7) · 39460 satır · gecikmiş tahsil 161465902.62 / 26468 · ödeme 291258284.02 / 12425
+  Vade Takip Tüm Açık: durum 200 · en iyi 1168.3 ms · ortanca 1437.6 ms · olay döngüsü en çok 1452.3 ms (n=7) · 41971 satır · gecikmiş tahsil 161465902.62 / 26468 · ödeme 291258284.02 / 12425
+  Vade Takip Gecikmiş: durum 200 · en iyi 1336.6 ms · ortanca 1528.5 ms · olay döngüsü en çok 1642.1 ms (n=7) · 38893 satır · gecikmiş tahsil 161465902.62 / 26468 · ödeme 291258284.02 / 12425
+yük (sonda) 1.43 1.99 2.05
+çıkış 0 · sonda 1.43 1.99 2.05 1/131 4427
+bitti 16:28:21

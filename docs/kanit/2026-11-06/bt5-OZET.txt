@@ -1,0 +1,25 @@
+2.5.0 BİRLEŞİK TUR 5 — kanıt özeti (taban 578c12d4, kod + test commit'i 67689156; Linux, Node v22.23.4; makine başka ajanlarla paylaşımlı, yük ortalaması 7–11)
+
+YENİ KOD (67689156), iki saat dilimi — bt5-yeni-utc / bt5-yeni-ist: 87/87 + 87/87 (db-tx-kayip-250 6, whatsapp-we-webhook-bilgisi-250 14, sema-kapisi-bs7 4,
+  kapali-kart-ekstre-tarihi-250 4, birlesik-tur4-degisiklik-yok-250 53, acilis-onarimi-savunma-250 6).
+ESKİ KOD (578c12d4 git archive kopyası; yeni test dosyaları kopyaya) — bt5-eski/bt5-eski-578c-utc.txt, -ist.txt: 83 testten 75 geçti, 8 BEKLENEN kırmızı (iki TZ aynı):
+  k4 (exec INSERT / DROP TABLE / DROP TRIGGER / PRAGMA user_version / get-all RETURNING kayıptan sonra YAZDI; diskte {"rows":0,"tables":3,"trigger":1,"version":5} →
+  {"rows":6,"tables":2,"trigger":0,"version":77}), k5 (ERR_TX_LOST iletisinde "(ilk hata: …)" yok — Linux'ta gerçek SELECT G/Ç hatası dahil), kapalı kart 3 hücre
+  (cari kartı / Cari Ekstre / Tüm Cari Hareketleri 17.11.2026 ↔ Yevmiye 689 08.10.2026; v2.4.9 gerçek kodu dahil), WE-10 ve WE-11 (Meta'daki çiftle doğrulama 404
+  whatsapp-hook-missing), WE-13 (salt okunurda çift üretildi). 3fe5a92d'de de aynı (bt5-eski/we-eski-3fe5-utc.txt; WE-2 orada tur 1 beklentisiyle kırmızı — tur 1'den önce).
+  Yalnız test işleri (2, 3) tabanda yeşil (bt5-eski/ah-bt4-taban-578c-utc.txt 59/59) — dişleri mutantlarla.
+MUTASYON (bt5-mutasyon/mutasyon.out; bt5-mut kopyası = taban + bu tur; her mutanttan sonra dosya asıla döndü):
+  db D1–D7 7/7 öldü; kapalı kart A1–A4 4/4 (A1 = karşı mutant closed_at → updated_at); BT4 dar kontrolün K1/K5/K7/K9/K11/K12 + Y1–Y20 + bu turun Y22–Y27: 32/33 öldü
+  (Y2–Y19 HEPSİ öldü; yaşayan Y21 = yalnız kanal yayını, test veri tabanı / geçmiş ölçer — kapsam dışı); AH M5, M5b, M5c, M6, M9, M10 öldü, M6b YAŞADI = EŞDEĞER
+  (kanıt docs/erp/BIRLESIK-TUR5-NOT.md §2); WE W1, W2, R1, R2 4/4 öldü (W2 testi asılı bıraktı — geri yükleme hatasında açık tutamak; süreç pid ile durduruldu).
+KOMŞU (G2; test/ grep ∪ görev listesi; bt5-komsu-listesi.txt, 167 dosya): UTC 1948/1948; İstanbul 1947/1948 — tek kırmızı banka-210-rapor-is-parcacigi-kapanis H2
+  (bilinen yük yarışı, H2 işi ayrı dalda); yalnız koşuda 3/3 yeşil (bt5-eski/h2-yalniz-yeni-ist-*.txt). Kaynak tarayan kurallar bt5-statik-utc 76/76.
+E2E (67689156): banka-230-hareket-yaris 37/37 UTC + İst, senaryo-duzeltme-kilidi-tur3-250 110/110 UTC + İst, senaryo-cari-243 70/70 UTC + İst, sema-kapisi-bs7 12/12,
+  senaryo-whatsapp-ayar-248 157/157, uiux-a-243 51/51, senaryo-220-yedek 37/37, e2e (run.mjs) 50/50 — UTC.
+BANKA-230 ZORLA (bt5-banka-230-zorla/): HOF_ZORLA_B230=sira:5 eski test "31 geçti, 1 kaldı" (CI #1036 imzası) ↔ düzeltilmiş 37/37 (ön koşulu oluşan 6, yeniden denenen 1);
+  sira:5,7 eski 31/1 ↔ yeni 37/37 (yeniden denenen 2); sira:5,7,9 (C1'in üç denemesi) yeni de KIRMIZI "ön koşul 3 denemenin hiçbirinde oluşmadı" (diş) — aynı koşuda C2'nin
+  ilk denemesi zorlamasız 1467 ms ile oluşmadı (doğal yük yarışı), ikinci denemede oluştu; cpu:6 (CDP) eski ve yeni 37/37 (doğal yarış üretmedi).
+DAR KONTROL BETİKLERİ (okunarak, kopyalanmadan; bt5-dar-kontrol-betikleri/): bs6-exec-gercek (yeni: exec / exec-ddl diskte 0, settings tablosu duruyor; taban: dış satır 1,
+  settings tablosu 0), bs6-mesru (yeni 9/9 UYGUN; taban 2 BOŞLUK UYGUN DEĞİL), okuma-hatasi-dene (yeni "(ilk hata: disk I/O error)"), senaryo.mjs dosya-kayip /
+  tasima-anahtarli (yeni 200 / 200; taban 404 / 404), kapili-001-geri-don 200 iki kodda, p4-kapali-kart-tarih (yeni SABİT; taban KAYDI), p1-alanlar 75/75 iki kodda.
+YENİDEN KOŞ: bt5-betikler/ (kos-eski.sh, yeni-kos.sh, komsu-kos.sh, e2e-kos.sh, b230-zorla.sh, mutasyon.mjs + mut-kopya.sh, dk-betikler.sh).

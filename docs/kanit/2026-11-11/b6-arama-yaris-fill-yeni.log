@@ -1,0 +1,13 @@
+kip fill; kod bu ağaç; tarayıcı 153.0.8010.12; hazırlık: 5 hareket; aranacak İşlem No'lar BNK-2026-000005, BNK-2026-000004, BNK-2026-000003
+    [arama-zorla] ON-KOSUL: pencere odak alandayken, son tuştan 18 ms sonra yeniden çizildi (süzgeç çubuğu korundu); eski kutuda "BNK-2026-000004", şimdiki kutuda "BNK-2026-000004", odak kutuda
+✓ deneme 1 (ön koşul: odak alandayken, son tuştan 18 ms sonra yeniden çizim; o an kutuda "BNK-2026-000004"): yazılan "BNK-2026-000004"; kutu "BNK-2026-000004", odak kutuda, liste 1 satır [BNK-2026-000004], beklenen 1 satır, Süzgeçleri Temizle var
+    [arama-zorla] ON-KOSUL: pencere odak alandayken, son tuştan 11 ms sonra yeniden çizildi (süzgeç çubuğu korundu); eski kutuda "BNK-2026-000003", şimdiki kutuda "BNK-2026-000003", odak kutuda
+✓ deneme 2 (ön koşul: odak alandayken, son tuştan 11 ms sonra yeniden çizim; o an kutuda "BNK-2026-000003"): yazılan "BNK-2026-000003"; kutu "BNK-2026-000003", odak kutuda, liste 1 satır [BNK-2026-000003], beklenen 1 satır, Süzgeçleri Temizle var
+    [arama-zorla] ON-KOSUL: pencere odak alandayken, son tuştan 19 ms sonra yeniden çizildi (süzgeç çubuğu korundu); eski kutuda "BNK-2026-000005", şimdiki kutuda "BNK-2026-000005", odak kutuda
+✓ deneme 3 (ön koşul: odak alandayken, son tuştan 19 ms sonra yeniden çizim; o an kutuda "BNK-2026-000005"): yazılan "BNK-2026-000005"; kutu "BNK-2026-000005", odak kutuda, liste 1 satır [BNK-2026-000005], beklenen 1 satır, Süzgeçleri Temizle var
+    [arama-zorla] ON-KOSUL: pencere odak alandayken, son tuştan 9 ms sonra yeniden çizildi (süzgeç çubuğu korundu); eski kutuda "BNK-2026-000004", şimdiki kutuda "BNK-2026-000004", odak kutuda
+✓ deneme 4 (ön koşul: odak alandayken, son tuştan 9 ms sonra yeniden çizim; o an kutuda "BNK-2026-000004"): yazılan "BNK-2026-000004"; kutu "BNK-2026-000004", odak kutuda, liste 1 satır [BNK-2026-000004], beklenen 1 satır, Süzgeçleri Temizle var
+    [arama-zorla] ON-KOSUL: pencere odak alandayken, son tuştan 77 ms sonra yeniden çizildi (süzgeç çubuğu korundu); eski kutuda "BNK-2026-000003", şimdiki kutuda "BNK-2026-000003", odak kutuda
+✓ deneme 5 (ön koşul: odak alandayken, son tuştan 77 ms sonra yeniden çizim; o an kutuda "BNK-2026-000003"): yazılan "BNK-2026-000003"; kutu "BNK-2026-000003", odak kutuda, liste 1 satır [BNK-2026-000003], beklenen 1 satır, Süzgeçleri Temizle var
+
+TAMAM: 5 denetim geçti, 0 başarısız. (kip fill; ön koşul 5/5 denemede oluştu; 0 sayılmadı)

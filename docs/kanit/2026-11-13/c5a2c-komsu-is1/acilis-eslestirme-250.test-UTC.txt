@@ -1,0 +1,52 @@
+TAP version 13
+# (node:31377) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Ç5-A tur 2c İş 1 — Açılış Eşleştirme Fişi
+    # Subtest: ön izleme verisi: 519'un gün sonu bakiyesi ve açılış türlerine göre dökümü (toplam = bakiye); izinli hedefler alt defter hesabı ve 519 içermez
+    ok 1 - ön izleme verisi: 519'un gün sonu bakiyesi ve açılış türlerine göre dökümü (toplam = bakiye); izinli hedefler alt defter hesabı ve 519 içermez
+      ---
+      duration_ms: 12.294735
+      type: 'test'
+      ...
+    # Subtest: ret: izinsiz hedef (102, 120, 600, 519) 400 ESLESTIRME_HESAP; 519'u büyüten 409; ters bakiye 409 ESLESTIRME_TERS (aynı gün açılışı dahil, ertesi gün açılışı hariç); fiş yazılmaz
+    ok 2 - ret: izinsiz hedef (102, 120, 600, 519) 400 ESLESTIRME_HESAP; 519'u büyüten 409; ters bakiye 409 ESLESTIRME_TERS (aynı gün açılışı dahil, ertesi gün açılışı hariç); fiş yazılmaz
+      ---
+      duration_ms: 41.374008
+      type: 'test'
+      ...
+    # Subtest: kısmi + ikinci fiş (iki hedef) + fazlası ret; Açılış Karşılığı fiş satırlarını görür; cari / Kasa / banka / stok bakiyesi değişmez; aynı istek iki kez tek fiş
+    ok 3 - kısmi + ikinci fiş (iki hedef) + fazlası ret; Açılış Karşılığı fiş satırlarını görür; cari / Kasa / banka / stok bakiyesi değişmez; aynı istek iki kez tek fiş
+      ---
+      duration_ms: 78.837872
+      type: 'test'
+      ...
+    # Subtest: fişten sonra açık dönemde açılış silinir → 519 ters bakiye: ENGELLENMEZ; Mutabakat'ta bilgi satırı (zil / günlük değişmez); ters kayıtla geri döner
+    ok 4 - fişten sonra açık dönemde açılış silinir → 519 ters bakiye: ENGELLENMEZ; Mutabakat'ta bilgi satırı (zil / günlük değişmez); ters kayıtla geri döner
+      ---
+      duration_ms: 55.668712
+      type: 'test'
+      ...
+# (node:31377) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: iki kişi aynı anda kalanın tamamını eşleştirir: biri yazılır, öbürü güncel bakiyeyle (0) 409; Muhasebe 403; ileri tarih 400; kilitli tarih 409
+    ok 5 - iki kişi aynı anda kalanın tamamını eşleştirir: biri yazılır, öbürü güncel bakiyeyle (0) 409; Muhasebe 403; ileri tarih 400; kilitli tarih 409
+      ---
+      duration_ms: 347.08025
+      type: 'test'
+      ...
+    1..5
+ok 1 - Ç5-A tur 2c İş 1 — Açılış Eşleştirme Fişi
+  ---
+  duration_ms: 1133.398081
+  type: 'suite'
+  ...
+1..1
+# tests 5
+# suites 1
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1479.31836
+cikis=0

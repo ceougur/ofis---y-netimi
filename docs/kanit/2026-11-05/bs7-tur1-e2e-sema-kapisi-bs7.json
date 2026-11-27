@@ -1,0 +1,32 @@
+{
+  "ad": "bs7-tur1-e2e-sema-kapisi-bs7",
+  "komut": "npm run test:sema-kapisi-bs7",
+  "commit": "d3a312ab7b55cd4dfbdb05d782924d5f3848b9d9",
+  "dal": "worktree-agent-ac6f71161a5c927c0",
+  "kirli": 0,
+  "izlenmeyen": 15,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T18:31:56.784Z",
+  "sure_sn": 6.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 12,
+    "gecen": 12,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/bs7-tur1-e2e-sema-kapisi-bs7.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ac6f71161a5c927c0",
+  "ham_cikti_sha256": "81b92e1ad464056339a6f96d1524c2ce6742c0c26e760aaa9646e582026b23c8",
+  "ham_cikti_bayt": 1271
+}

@@ -1,0 +1,8 @@
+
+ATLANAN (2.4.5 kararıyla geçersiz — --legacy ile koşar): 12 — b1-5a-bayat-ve-yeniden, b1-5a-tasima, b1-5b-borc, b1-5c-rapor, b3-u2-tablo-borcu, b3f-kayit-anahtari, b3g-tablo-bag-surekliligi, b3h-dosya-no-ve-devam, b3i-devam-ayni-icerik, b3j-ayni-ad-takas, b3m-dosya-no-degisimi, b3p-ayni-ad-telefon
+
+2.5.0 KARARIYLA DEĞİŞEN BEKLENTİ (KARARLAR.md §13; 2.4.9 kâhinine göre): 8233 denetim, 101 senaryo · programla farkların 0'i bu sınıfta, 0'i SINIF DIŞI
+
+ÖZET [2.5.0]: 101 senaryo, 22832 denetim, 0 fark (BULGU 0), 7 bilinen sınır (BILINEN.json; başarısız sayılmaz), 38 yapım aşaması (YAPIM-ASAMASI.json; paketlere göre: Ç7b 38; 38 denetim + 0 okuma hatası; geçti de başarısız da sayılmaz — yayın adayında liste BOŞ olmalı), 0 okuma hatası, 0 yakalanmayan mutasyon, 12 atlanan senaryo. Ham çıktı: /tmp/kahin-cari-avUD04
+BİLİNEN SINIRLAR (7): b3y-taahhut-alacak-bakiye k1:k4:akis; b3y-taahhut-alacak-bakiye k1:k4:kisiler; b3y-taahhut-alacak-bakiye k1:k4:vade; b3y-taahhut-alacak-bakiye k1:rapor:2026/1012:borc; b3y-taahhut-alacak-bakiye k1:rapor:2026/1012:grup; b3y-taahhut-alacak-bakiye k1:rapor:2026/1013:borc; b3y-taahhut-alacak-bakiye k1:rapor:2026/1013:grup
+22794/22794 denetim geçti (7 bilinen sınır dahil) (38 yapım aşaması ayrı sayıldı — 38 denetim + 0 okuma hatası; geçti sayılmadı)

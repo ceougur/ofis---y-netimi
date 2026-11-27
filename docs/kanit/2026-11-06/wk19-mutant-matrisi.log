@@ -1,0 +1,67 @@
+ok 1 - M260 değerle 3 senaryo, istisna 0 — S58'in tersi (C seçeneği — bugünkü program): bağlantı yolu (kip) değişince 'bildirim yolu 
+  # değer S58-01-yol-1-den-yol-2-ye-teslim-suresinden-once-isaret-sifirlanir-sure-dolmaz: S58-01-yol-1-den-yol-2-ye-teslim-suresinden-once-isaret-sifirlanir-sure-dolmaz * [{}…] kontroller.K1.isler: elle {"T1/A": "Teslim Edildi", "T1/B": "Meta Kabul E
+  # değer S58-02-yol-2-den-yol-1-e-teslim-suresinden-sonra-sure-doldu-kalir-yeni-yolun-ilk-bildirimi: S58-02-yol-2-den-yol-1-e-teslim-suresinden-sonra-sure-doldu-kalir-yeni-yolun-ilk-bildirimi * [{}…] kontroller.K3.isler: elle {"T1/A": "Teslim Edildi", "T1/B": "
+  # değer S58-03-geri-donus-yol-1-yol-2-yol-1-her-degisim-sifirlar-eski-isaret-gelmez: S58-03-geri-donus-yol-1-yol-2-yol-1-her-degisim-sifirlar-eski-isaret-gelmez * [{}…] kontroller.K1.isler: elle {"T1/A": "Teslim Edildi", "T1/B": "Meta Kabul Etti
+ok 5 - M261 değerle 1 senaryo, istisna 0 — S58 (Y19-1/5) yön sınırı: işaret yalnız Yol 1 → Yol 2 değişiminde sıfırlanır — Yol 2 → Yol
+  # değer S58-02-yol-2-den-yol-1-e-teslim-suresinden-sonra-sure-doldu-kalir-yeni-yolun-ilk-bildirimi: S58-02-yol-2-den-yol-1-e-teslim-suresinden-sonra-sure-doldu-kalir-yeni-yolun-ilk-bildirimi * [{}…] kontroller.K3.isler: elle {"T1/A": "Teslim Edildi", "T1/B": "
+ok 7 - M262 değerle 1 senaryo, istisna 0 — S58 (Y19-5) geri dönüş sınırı: eski kipe dönünce o kipin önceki işareti geri gelir (işaret
+  # değer S58-03-geri-donus-yol-1-yol-2-yol-1-her-degisim-sifirlar-eski-isaret-gelmez: S58-03-geri-donus-yol-1-yol-2-yol-1-her-degisim-sifirlar-eski-isaret-gelmez * [{}…] kontroller.K1.isler: elle {"T1/A": "Teslim Edildi", "T1/B": "Meta Kabul Etti
+ok 9 - M263 değerle 3 senaryo, istisna 0 — S59'un tersi (B seçeneği — eski Y17-9 okuması): silme talebiyle Atlandı olmuş Meta Beklett
+  # değer S35-01-talep-aninda-kapanir-ayni-donem-yeni-gonderim-gider-meta-bekletti-gec-teslim: S35-01-talep-aninda-kapanir-ayni-donem-yeni-gonderim-gider-meta-bekletti-gec-teslim * [{}…] kontroller.K3.isler.T3/D: elle "Teslim Edildi" ≠ model "Atlandı"
+  # değer S59-01-talep-atlandi-meta-bekletti-gec-teslim-teslim-edildi-iptal-ile-karsilastirma: S59-01-talep-atlandi-meta-bekletti-gec-teslim-teslim-edildi-iptal-ile-karsilastirma * [{}…] kontroller.K2.isler: elle {"T1/D": "Teslim Edildi", "T2/E": {"secene
+  # değer S59-02-teslim-talepten-once-ve-sonra-iki-sira-teslim-edildi-ay-donumu: S59-02-teslim-talepten-once-ve-sonra-iki-sira-teslim-edildi-ay-donumu * [{}…] kontroller.K3.isler: elle {"T1/B": "Teslim Edildi", "T1/D": "Teslim Edildi"} ≠ mod
+ok 13 - M264 değerle 3 senaryo, istisna 0 — S59 (Y19-12) sınır: Atlandı işe geç teslim İptal / Durduruldu düzeninde — ekran karar susu
+  # değer S35-01-talep-aninda-kapanir-ayni-donem-yeni-gonderim-gider-meta-bekletti-gec-teslim: S35-01-talep-aninda-kapanir-ayni-donem-yeni-gonderim-gider-meta-bekletti-gec-teslim * [{}…] kontroller.K3.isler.T3/D: elle "Teslim Edildi" ≠ model {"secenek": [
+  # değer S59-01-talep-atlandi-meta-bekletti-gec-teslim-teslim-edildi-iptal-ile-karsilastirma: S59-01-talep-atlandi-meta-bekletti-gec-teslim-teslim-edildi-iptal-ile-karsilastirma * [{}…] kontroller.K2.isler: elle {"T1/D": "Teslim Edildi", "T2/E": {"secene
+  # değer S59-02-teslim-talepten-once-ve-sonra-iki-sira-teslim-edildi-ay-donumu: S59-02-teslim-talepten-once-ve-sonra-iki-sira-teslim-edildi-ay-donumu * [{}…] kontroller.K3.isler: elle {"T1/B": "Teslim Edildi", "T1/D": "Teslim Edildi"} ≠ mod
+ok 17 - M265 değerle 4 senaryo, istisna 0 — S60'ın tersi (B seçeneği): içeriği silinip Atlandı olan işin Meta'daki PDF'i bakım turunda
+  # değer S59-02-teslim-talepten-once-ve-sonra-iki-sira-teslim-edildi-ay-donumu: S59-02-teslim-talepten-once-ve-sonra-iki-sira-teslim-edildi-ay-donumu * [{}…] kontroller.K2.medya_silme: elle 2 ≠ model 1
+  # değer S60-01-atlandi-meta-bekletti-ve-s42-pdf-silinir-belirsiz-silinmez: S60-01-atlandi-meta-bekletti-ve-s42-pdf-silinir-belirsiz-silinmez * [{}…] kontroller.K1.medya_silme: elle 2 ≠ model 0
+  # değer S60-02-iptal-pdf-susuyor-atlandi-silinir-teslim-sonra-talep-bir-kez: S60-02-iptal-pdf-susuyor-atlandi-silinir-teslim-sonra-talep-bir-kez * [{}…] isler.T1/Y.medya_silme: elle 1 ≠ model 0
+  # değer S62-01-salt-okunurda-talep-acik-lisans-bekleyen-atlandi-belirsiz-iz-geri-yuklemede-uygulanir: S62-01-salt-okunurda-talep-acik-lisans-bekleyen-atlandi-belirsiz-iz-geri-yuklemede-uygulanir * [{}…] kontroller.K3.medya_silme: elle 3 ≠ model 2
+ok 22 - M266 değerle 4 senaryo, istisna 0 — S60 (Y19-16) zaman sınırı: 'bir sonraki bakım turu' yalnız açılışta — PDF program yeniden 
+  # değer S59-02-teslim-talepten-once-ve-sonra-iki-sira-teslim-edildi-ay-donumu: S59-02-teslim-talepten-once-ve-sonra-iki-sira-teslim-edildi-ay-donumu * [{}…] kontroller.K2.medya_silme: elle 2 ≠ model 1
+  # değer S60-01-atlandi-meta-bekletti-ve-s42-pdf-silinir-belirsiz-silinmez: S60-01-atlandi-meta-bekletti-ve-s42-pdf-silinir-belirsiz-silinmez * [{}…] kontroller.K1.medya_silme: elle 2 ≠ model 0
+  # değer S60-02-iptal-pdf-susuyor-atlandi-silinir-teslim-sonra-talep-bir-kez: S60-02-iptal-pdf-susuyor-atlandi-silinir-teslim-sonra-talep-bir-kez * [{}…] isler.T1/Y.medya_silme: elle 1 ≠ model 0
+  # değer S62-01-salt-okunurda-talep-acik-lisans-bekleyen-atlandi-belirsiz-iz-geri-yuklemede-uygulanir: S62-01-salt-okunurda-talep-acik-lisans-bekleyen-atlandi-belirsiz-iz-geri-yuklemede-uygulanir * [{}…] kontroller.K3.medya_silme: elle 3 ≠ model 2
+ok 27 - M267 değerle 1 senaryo, istisna 0 — S60 (Y19-15) kapsam sınırı: yalnız talep / dolum anında kapanan (S35) işte — S42 yanıtıyla
+  # değer S60-01-atlandi-meta-bekletti-ve-s42-pdf-silinir-belirsiz-silinmez: S60-01-atlandi-meta-bekletti-ve-s42-pdf-silinir-belirsiz-silinmez * [{}…] kontroller.K1.medya_silme: elle 2 ≠ model 1
+ok 29 - M268 değerle 2 senaryo, istisna 0 — S60 (Y19-17 a) kapsam sınırı: içeriği silinmiş Sonucu Belirsiz (kapanmamış) işin PDF'i de 
+  # değer S60-01-atlandi-meta-bekletti-ve-s42-pdf-silinir-belirsiz-silinmez: S60-01-atlandi-meta-bekletti-ve-s42-pdf-silinir-belirsiz-silinmez * [{}…] kontroller.K1.medya_silme: elle 2 ≠ model 4
+  # değer S62-01-salt-okunurda-talep-acik-lisans-bekleyen-atlandi-belirsiz-iz-geri-yuklemede-uygulanir: S62-01-salt-okunurda-talep-acik-lisans-bekleyen-atlandi-belirsiz-iz-geri-yuklemede-uygulanir * [{}…] kontroller.K3.medya_silme: elle 3 ≠ model 4
+ok 32 - M269 değerle 3 senaryo, istisna 0 — S61'in tersi (B seçeneği — eski Y17-17 yolu): içeriği ve kart telefonu silinmiş Ödeme Hatı
+  # değer S37-01-talep-sonrasi-hatirlatma-yeniden-dene-ve-yine-de-gonder-karttan-gider: S37-01-talep-sonrasi-hatirlatma-yeniden-dene-ve-yine-de-gonder-karttan-gider * [{}…] yeniden.Y1: elle {"elenen": {"RT": "telefonsuz"}, "alinan": ["RF"], "oneri"
+  # değer S61-01-hatirlatma-telefonsuz-alinmaz-is-basarisiz-ekstre-icerik-silindi-telefon-girilince-gider: S61-01-hatirlatma-telefonsuz-alinmaz-is-basarisiz-ekstre-icerik-silindi-telefon-girilince-gider * [{}…] yeniden.Y1: elle {"elenen": {"TK": "telefonsuz", "TY": "
+  # değer S61-02-telefon-yok-e2-nedenlerinden-once-yeni-gonderimle-ayni-sira: S61-02-telefon-yok-e2-nedenlerinden-once-yeni-gonderimle-ayni-sira * [{}…] yeniden.Y1: elle {"elenen": {"RD": "telefonsuz", "RS": "telefonsuz"}, "alinan": [], "
+ok 36 - M270 değerle 1 senaryo, istisna 0 — S61 (Y19-21) sıra sınırı: 'Telefon Yok' denetimi E2 nedenlerinden (Zaten Kuyrukta / Sonucu
+  # değer S61-02-telefon-yok-e2-nedenlerinden-once-yeni-gonderimle-ayni-sira: S61-02-telefon-yok-e2-nedenlerinden-once-yeni-gonderimle-ayni-sira * [{}…] yeniden.Y1: elle {"elenen": {"RD": "telefonsuz", "RS": "telefonsuz"}, "alinan": [], "
+ok 38 - M271 değerle 1 senaryo, istisna 0 — S61 (Y19-22) kapsam sınırı: Ekstre'ye de uygulanır — içeriği ve kart telefonu silinmiş Eks
+  # değer S61-01-hatirlatma-telefonsuz-alinmaz-is-basarisiz-ekstre-icerik-silindi-telefon-girilince-gider: S61-01-hatirlatma-telefonsuz-alinmaz-is-basarisiz-ekstre-icerik-silindi-telefon-girilince-gider * [{}…] yeniden.Y2: elle {"elenen": {"TE": "icerik_silindi"}, "a
+ok 40 - M272 değerle 3 senaryo, istisna 0 — S61 'neden görünür'ün tersi: kişi yeniden denemeye alınmaz ama yanıtta (elenen) görünmez
+  # değer S37-01-talep-sonrasi-hatirlatma-yeniden-dene-ve-yine-de-gonder-karttan-gider: S37-01-talep-sonrasi-hatirlatma-yeniden-dene-ve-yine-de-gonder-karttan-gider * [{}…] yeniden.Y1: elle {"elenen": {"RT": "telefonsuz"}, "alinan": ["RF"], "oneri"
+  # değer S61-01-hatirlatma-telefonsuz-alinmaz-is-basarisiz-ekstre-icerik-silindi-telefon-girilince-gider: S61-01-hatirlatma-telefonsuz-alinmaz-is-basarisiz-ekstre-icerik-silindi-telefon-girilince-gider * [{}…] yeniden.Y1: elle {"elenen": {"TK": "telefonsuz", "TY": "
+  # değer S61-02-telefon-yok-e2-nedenlerinden-once-yeni-gonderimle-ayni-sira: S61-02-telefon-yok-e2-nedenlerinden-once-yeni-gonderimle-ayni-sira * [{}…] yeniden.Y1: elle {"elenen": {"RD": "telefonsuz", "RS": "telefonsuz"}, "alinan": [], "
+ok 44 - M273 değerle 2 senaryo, istisna 0 — S62'nin tersi (B seçeneği — bugünkü 403): salt okunur lisansta silme talebi reddedilir — i
+  # değer S62-01-salt-okunurda-talep-acik-lisans-bekleyen-atlandi-belirsiz-iz-geri-yuklemede-uygulanir: S62-01-salt-okunurda-talep-acik-lisans-bekleyen-atlandi-belirsiz-iz-geri-yuklemede-uygulanir * [{}…] kontroller.K2.isler: elle {"T1/A": "Teslim Edildi", "T1/B":
+  # değer S62-02-salt-okunurda-talep-sinir-lisans-atlandi-yeni-gonderim-baslamaz-lisans-donunce-gider: S62-02-salt-okunurda-talep-sinir-lisans-atlandi-yeni-gonderim-baslamaz-lisans-donunce-gider * [{}…] kontroller.K2.isler: elle {"T1/A": "Teslim Edildi", "T1/BH":
+ok 47 - M274 değerle 2 senaryo, istisna 0 — S62 'sonuçları geçerli lisanstaki gibi'nin tersi: salt okunurda yalnız içerik silinir — be
+  # değer S62-01-salt-okunurda-talep-acik-lisans-bekleyen-atlandi-belirsiz-iz-geri-yuklemede-uygulanir: S62-01-salt-okunurda-talep-acik-lisans-bekleyen-atlandi-belirsiz-iz-geri-yuklemede-uygulanir * [{}…] kontroller.K2.isler: elle {"T1/A": "Teslim Edildi", "T1/B":
+  # değer S62-02-salt-okunurda-talep-sinir-lisans-atlandi-yeni-gonderim-baslamaz-lisans-donunce-gider: S62-02-salt-okunurda-talep-sinir-lisans-atlandi-yeni-gonderim-baslamaz-lisans-donunce-gider * [{}…] kontroller.K2.isler: elle {"T1/A": "Teslim Edildi", "T1/BH":
+ok 50 - M275 değerle 2 senaryo, istisna 0 — S63'ün tersi (C seçeneği — bugünkü program): WABA başına tek kanca kaydı — sonraki (farklı
+  # değer S63-01-iki-uygulama-once-a-sonra-b-kaydolur-teslim-bilgisi-iki-sirkette-isaret-ayri: S63-01-iki-uygulama-once-a-sonra-b-kaydolur-teslim-bilgisi-iki-sirkette-isaret-ayri * [{}…] kontroller.K1.isler: elle {"T1/A1": "Teslim Edildi", "T2/B1": "Meta 
+  # değer S63-02-iki-uygulama-sira-degisimi-once-b-sonra-a-kaydolur: S63-02-iki-uygulama-sira-degisimi-once-b-sonra-a-kaydolur * [{}…] kontroller.K1.isler: elle {"T1/B1": "Teslim Edildi", "T2/A1": "Meta Kabul Etti", "T3/B2": "Tes
+ok 53 - M276 değerle 3 senaryo, istisna 0 — S63 (Y19-28/29) sınır: kayıt şirket başına sayılır — AYNI uygulamalı ikinci şirketin kaydı
+  # değer S63-01-iki-uygulama-once-a-sonra-b-kaydolur-teslim-bilgisi-iki-sirkette-isaret-ayri: S63-01-iki-uygulama-once-a-sonra-b-kaydolur-teslim-bilgisi-iki-sirkette-isaret-ayri * [{}…] kontroller.K1.isler: elle {"T1/A1": "Teslim Edildi", "T2/B1": "Meta 
+  # değer S63-02-iki-uygulama-sira-degisimi-once-b-sonra-a-kaydolur: S63-02-iki-uygulama-sira-degisimi-once-b-sonra-a-kaydolur * [{}…] kontroller.K1.isler: elle {"T1/B1": "Teslim Edildi", "T2/A1": "Meta Kabul Etti", "T3/B2": "Tes
+  # değer S63-03-ayni-uygulama-iki-sirket-tek-kayit-isaret-yine-ayri: S63-03-ayni-uygulama-iki-sirket-tek-kayit-isaret-yine-ayri * [{}…] kontroller.K1.isler: elle {"T1/A1": "Teslim Edildi", "T2/B1": "Meta Kabul Etti", "T3/A2": "Te
+ok 57 - M277 değerle 3 senaryo, istisna 0 — S63 'her şirketin bildirim yolu ayrı' + BAŞ MİMAR 11:27 (1)'in tersi (eski kâhin): bildiri
+  # değer S63-01-iki-uygulama-once-a-sonra-b-kaydolur-teslim-bilgisi-iki-sirkette-isaret-ayri: S63-01-iki-uygulama-once-a-sonra-b-kaydolur-teslim-bilgisi-iki-sirkette-isaret-ayri * [{}…] kontroller.K1.isler: elle {"T1/A1": "Teslim Edildi", "T2/B1": "Meta 
+  # değer S63-02-iki-uygulama-sira-degisimi-once-b-sonra-a-kaydolur: S63-02-iki-uygulama-sira-degisimi-once-b-sonra-a-kaydolur * [{}…] kontroller.K1.isler: elle {"T1/B1": "Teslim Edildi", "T2/A1": "Meta Kabul Etti", "T3/B2": "Tes
+  # değer S63-03-ayni-uygulama-iki-sirket-tek-kayit-isaret-yine-ayri: S63-03-ayni-uygulama-iki-sirket-tek-kayit-isaret-yine-ayri * [{}…] kontroller.K1.isler: elle {"T1/A1": "Teslim Edildi", "T2/B1": "Meta Kabul Etti", "T3/A2": "Te
+1..18
+# tests 18
+# pass 18
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

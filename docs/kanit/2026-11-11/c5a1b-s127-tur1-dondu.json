@@ -1,0 +1,519 @@
+{
+ "schema": 49,
+ "mizan": {
+  "100": 11100,
+  "101": 2000,
+  "102": 20000,
+  "103": -300,
+  "120": 20700,
+  "121": 600,
+  "153": 2000,
+  "309": -700,
+  "320": -2250,
+  "391": -200,
+  "500": -33800,
+  "519": -7250,
+  "600": -1000,
+  "602": -11150,
+  "649": -500,
+  "770": 750
+ },
+ "mizan2025": {
+  "100": 10500,
+  "101": 1650,
+  "102": 20000,
+  "103": -300,
+  "120": 13400,
+  "121": 600,
+  "153": 2000,
+  "309": -700,
+  "320": -2250,
+  "500": -33800,
+  "602": -11150,
+  "649": -500,
+  "770": 550
+ },
+ "mizan2026": {
+  "100": 11100,
+  "101": 2000,
+  "102": 20000,
+  "103": -300,
+  "120": 20700,
+  "121": 600,
+  "153": 2000,
+  "309": -700,
+  "320": -2250,
+  "391": -200,
+  "500": -33800,
+  "519": -7250,
+  "600": -1000,
+  "602": -11150,
+  "649": -500,
+  "770": 750
+ },
+ "cari": {
+  "Müşteri Bir": 2300,
+  "Müşteri İki": 3100,
+  "Tedarikçi Bir": -2250,
+  "Kart Bir": 4500,
+  "Kart İki": 2400
+ },
+ "kdv": [
+  [
+   "Hesaplanan KDV (391)",
+   "200,00 TL"
+  ],
+  [
+   "İndirilecek KDV (191)",
+   "0,00 TL"
+  ],
+  [
+   "Alıcı Olarak Kesilen Tevkifat (2 No.lu)",
+   "0,00 TL"
+  ],
+  [
+   "Ödenecek KDV",
+   "200,00 TL"
+  ]
+ ],
+ "stok": [
+  [
+   "Un",
+   "100",
+   2000
+  ]
+ ],
+ "yevmiye2025": [
+  [
+   "02.01.2025",
+   "Stok açılışı",
+   "Açılış stoku: Un",
+   "153",
+   "2.000,00 TL",
+   ""
+  ],
+  [
+   "02.01.2025",
+   "Stok açılışı",
+   "Açılış stoku: Un",
+   "500",
+   "",
+   "2.000,00 TL"
+  ],
+  [
+   "02.01.2025",
+   "Kasa açılışı",
+   "Açılış Bakiyesi",
+   "100",
+   "10.000,00 TL",
+   ""
+  ],
+  [
+   "02.01.2025",
+   "Kasa açılışı",
+   "Açılış Bakiyesi",
+   "500",
+   "",
+   "10.000,00 TL"
+  ],
+  [
+   "02.01.2025",
+   "Cari (borç yaz)",
+   "Açılış bakiyesi",
+   "120",
+   "3.000,00 TL",
+   ""
+  ],
+  [
+   "02.01.2025",
+   "Cari (borç yaz)",
+   "Açılış bakiyesi",
+   "500",
+   "",
+   "3.000,00 TL"
+  ],
+  [
+   "02.01.2025",
+   "Cari (alacak yaz)",
+   "Açılış bakiyesi",
+   "500",
+   "2.000,00 TL",
+   ""
+  ],
+  [
+   "02.01.2025",
+   "Cari (alacak yaz)",
+   "Açılış bakiyesi",
+   "320",
+   "",
+   "2.000,00 TL"
+  ],
+  [
+   "02.01.2025",
+   "Cari (borç yaz)",
+   "Açılış bakiyesi",
+   "120",
+   "1.500,00 TL",
+   ""
+  ],
+  [
+   "02.01.2025",
+   "Cari (borç yaz)",
+   "Açılış bakiyesi",
+   "500",
+   "",
+   "1.500,00 TL"
+  ],
+  [
+   "02.01.2025",
+   "Çek / Senet",
+   "Cariye işlenmemiş evrak No AP-1",
+   "101.01",
+   "1.200,00 TL",
+   ""
+  ],
+  [
+   "02.01.2025",
+   "Çek / Senet",
+   "Cariye işlenmemiş evrak No AP-1",
+   "602",
+   "",
+   "1.200,00 TL"
+  ],
+  [
+   "02.01.2025",
+   "Çek / Senet",
+   "Cariye işlenmemiş evrak No AP-2",
+   "121.01",
+   "600,00 TL",
+   ""
+  ],
+  [
+   "02.01.2025",
+   "Çek / Senet",
+   "Cariye işlenmemiş evrak No AP-2",
+   "602",
+   "",
+   "600,00 TL"
+  ],
+  [
+   "02.01.2025",
+   "Çek / Senet",
+   "Cariye işlenmemiş evrak No AP-3",
+   "770",
+   "300,00 TL",
+   ""
+  ],
+  [
+   "02.01.2025",
+   "Çek / Senet",
+   "Cariye işlenmemiş evrak No AP-3",
+   "103",
+   "",
+   "300,00 TL"
+  ],
+  [
+   "02.01.2025",
+   "Banka fişi",
+   "Açılış Bakiyesi · Ziraat Bankası · Ana Hesap",
+   "102.01",
+   "20.000,00 TL",
+   ""
+  ],
+  [
+   "02.01.2025",
+   "Banka fişi",
+   "Açılış Bakiyesi · Ziraat Bankası · Ana Hesap",
+   "500",
+   "",
+   "20.000,00 TL"
+  ],
+  [
+   "02.01.2025",
+   "Banka fişi",
+   "Açılış Bakiyesi · Garanti BBVA · Kart",
+   "500",
+   "700,00 TL",
+   ""
+  ],
+  [
+   "02.01.2025",
+   "Banka fişi",
+   "Açılış Bakiyesi · Garanti BBVA · Kart",
+   "309.01",
+   "",
+   "700,00 TL"
+  ],
+  [
+   "01.02.2025",
+   "Cari (borç yaz)",
+   "AÇILIŞ BAKİYESİ",
+   "120",
+   "400,00 TL",
+   ""
+  ],
+  [
+   "01.02.2025",
+   "Cari (borç yaz)",
+   "AÇILIŞ BAKİYESİ",
+   "602",
+   "",
+   "400,00 TL"
+  ],
+  [
+   "01.02.2025",
+   "Cari (alacak yaz)",
+   "Açilış farkı",
+   "770",
+   "250,00 TL",
+   ""
+  ],
+  [
+   "01.02.2025",
+   "Cari (alacak yaz)",
+   "Açilış farkı",
+   "320",
+   "",
+   "250,00 TL"
+  ],
+  [
+   "01.03.2025",
+   "Cari (borç yaz)",
+   "Devir bakiyesi",
+   "120",
+   "100,00 TL",
+   ""
+  ],
+  [
+   "01.03.2025",
+   "Cari (borç yaz)",
+   "Devir bakiyesi",
+   "602",
+   "",
+   "100,00 TL"
+  ],
+  [
+   "01.04.2025",
+   "Çek / Senet",
+   "Cariye işlenmemiş evrak No FC-1",
+   "101.01",
+   "450,00 TL",
+   ""
+  ],
+  [
+   "01.04.2025",
+   "Çek / Senet",
+   "Cariye işlenmemiş evrak No FC-1",
+   "602",
+   "",
+   "450,00 TL"
+  ],
+  [
+   "01.05.2025",
+   "Kasa",
+   "Giriş",
+   "100",
+   "500,00 TL",
+   ""
+  ],
+  [
+   "01.05.2025",
+   "Kasa",
+   "Giriş",
+   "649",
+   "",
+   "500,00 TL"
+  ],
+  [
+   "01.10.2025",
+   "Taksit kartı",
+   "Taksitli satış / hizmet",
+   "120",
+   "6.000,00 TL",
+   ""
+  ],
+  [
+   "01.10.2025",
+   "Taksit kartı",
+   "Taksitli satış / hizmet",
+   "602",
+   "",
+   "6.000,00 TL"
+  ],
+  [
+   "01.10.2025",
+   "Taksit kartı",
+   "Taksitli satış / hizmet",
+   "120",
+   "2.400,00 TL",
+   ""
+  ],
+  [
+   "01.10.2025",
+   "Taksit kartı",
+   "Taksitli satış / hizmet",
+   "602",
+   "",
+   "2.400,00 TL"
+  ]
+ ],
+ "mutabakat": {
+  "ok": false,
+  "failures": [
+   {
+    "code": "ledger:rule-diff",
+    "name": "Kural Değişikliği Farkı (Kilitli Dönem: 31.12.2025 ve Öncesi)",
+    "notice": false,
+    "count": 15,
+    "difference": 44850
+   }
+  ],
+  "acilis": [
+   {
+    "code": "opening:519",
+    "ok": true,
+    "ledger": -42700,
+    "subledger": -42700
+   },
+   {
+    "code": "opening:500",
+    "ok": true,
+    "ledger": 0,
+    "subledger": 0
+   }
+  ]
+ },
+ "defterMutabakati": {
+  "subtitle": "Kilitli dönemin donmuş defteri güncel türetmeden farklı: neden defter kuralının program sürümüyle değişmesi ya da kilitli dönemin kaynak verisinin kapının görmediği bir yolla değişmesi olabilir. Kilitli dönemin raporları donmuş defterden okunur, değişmez. Kural farkı Kural Farkı Düzeltme Fişi ile ilk açık güne alınır. Yeni işlemler engellenmez (aşağıda “Kural Değişikliği Farkı”).",
+  "summary": [
+   [
+    "Çift Yönlü Denge",
+    "Borç = Alacak"
+   ],
+   [
+    "Sonuç",
+    "Fark Var"
+   ]
+  ],
+  "uyumsuz": [
+   [
+    "Denetim",
+    "Kural Değişikliği Farkı (Kilitli Dönem: 31.12.2025 ve Öncesi)",
+    "",
+    "",
+    "15 madde",
+    "Kural Değişikliği Farkı"
+   ],
+   [
+    "120",
+    "Alıcılar (Müşteri Carileri) — Kilitli Dönem (Donmuş Defter / Güncel Kural)",
+    "8.400,00 TL",
+    "0,00 TL",
+    "-8.400,00 TL",
+    "Kural Değişikliği Farkı"
+   ],
+   [
+    "500",
+    "Sermaye — Kilitli Dönem (Donmuş Defter / Güncel Kural)",
+    "-33.800,00 TL",
+    "0,00 TL",
+    "33.800,00 TL",
+    "Kural Değişikliği Farkı"
+   ],
+   [
+    "519",
+    "Eşleştirilecek Açılış Bakiyeleri — Kilitli Dönem (Donmuş Defter / Güncel Kural)",
+    "0,00 TL",
+    "-35.450,00 TL",
+    "-35.450,00 TL",
+    "Kural Değişikliği Farkı"
+   ],
+   [
+    "602",
+    "Diğer Gelirler (Hizmet, Taksitli Satış, Kayıt Tahsilatları) — Kilitli Dönem (Donmuş Defter / Güncel Kural)",
+    "-11.050,00 TL",
+    "0,00 TL",
+    "11.050,00 TL",
+    "Kural Değişikliği Farkı"
+   ],
+   [
+    "649",
+    "Diğer Olağan Gelir ve Kârlar — Kilitli Dönem (Donmuş Defter / Güncel Kural)",
+    "0,00 TL",
+    "-450,00 TL",
+    "-450,00 TL",
+    "Kural Değişikliği Farkı"
+   ],
+   [
+    "770",
+    "Genel Yönetim Giderleri — Kilitli Dönem (Donmuş Defter / Güncel Kural)",
+    "550,00 TL",
+    "0,00 TL",
+    "-550,00 TL",
+    "Kural Değişikliği Farkı"
+   ]
+  ]
+ },
+ "acilisOlabilir": {
+  "items": [
+   {
+    "id": "aentry-4c9b5a82-07ed-43d4-936a-e83b2d00bf99",
+    "accountId": "account-f7acf197-f1d1-47b3-8fdf-8a6516748e9c",
+    "accountName": "Müşteri İki",
+    "accountType": "customer",
+    "kind": "debt",
+    "amount": 1500,
+    "date": "2025-01-02",
+    "note": "Açılış bakiyesi",
+    "review": "candidate"
+   },
+   {
+    "id": "aentry-08601816-8857-4f4a-a43d-9fba14c17646",
+    "accountId": "account-f7acf197-f1d1-47b3-8fdf-8a6516748e9c",
+    "accountName": "Müşteri İki",
+    "accountType": "customer",
+    "kind": "debt",
+    "amount": 400,
+    "date": "2025-02-01",
+    "note": "AÇILIŞ BAKİYESİ",
+    "review": "candidate"
+   },
+   {
+    "id": "aentry-30da9fe2-42ed-4d22-ba07-bd50292d846b",
+    "accountId": "account-6ed505c2-5256-4353-8645-a90b85c56d96",
+    "accountName": "Tedarikçi Bir",
+    "accountType": "supplier",
+    "kind": "credit",
+    "amount": 250,
+    "date": "2025-02-01",
+    "note": "Açilış farkı",
+    "review": "candidate"
+   }
+  ],
+  "counts": {
+   "candidate": 3,
+   "confirmed": 0,
+   "rejected": 0
+  }
+ },
+ "kilit": {
+  "lockedUntil": "2025-12-31",
+  "today": "2026-11-10",
+  "frozenThrough": "2025-12-31",
+  "freeze": {
+   "running": false,
+   "phase": "tamam",
+   "done": 34,
+   "total": 34,
+   "run": 1,
+   "error": "",
+   "coverage": "2025-12-31",
+   "cleanup": {
+    "running": false,
+    "removed": 0
+   },
+   "pending": null,
+   "active": false
+  }
+ }
+}

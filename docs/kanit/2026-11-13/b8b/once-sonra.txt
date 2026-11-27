@@ -1,0 +1,22 @@
+=== taban
+late               | gecikmiş tahsil 610 / 7 | gecikmiş ödeme 100 / 2 | satır 9 | tahsil edilecek 610 | ödenecek 100 | bugün 0 | yaklaşan 0
+today              | gecikmiş tahsil 510 / 6 | gecikmiş ödeme 30 / 1 | satır 9 | tahsil edilecek 710 | ödenecek 30 | bugün 200 | yaklaşan 0
+next7              | gecikmiş tahsil 510 / 6 | gecikmiş ödeme 30 / 1 | satır 11 | tahsil edilecek 770 | ödenecek 30 | bugün 200 | yaklaşan 60
+next30             | gecikmiş tahsil 610 / 7 | gecikmiş ödeme 100 / 2 | satır 15 | tahsil edilecek 1070 | ödenecek 100 | bugün 200 | yaklaşan 260
+next90             | gecikmiş tahsil 610 / 7 | gecikmiş ödeme 100 / 2 | satır 15 | tahsil edilecek 1070 | ödenecek 100 | bugün 200 | yaklaşan 260
+open               | gecikmiş tahsil 610 / 7 | gecikmiş ödeme 100 / 2 | satır 15 | tahsil edilecek 1070 | ödenecek 100 | bugün 200 | yaklaşan 260
+elle bugün…bugün   | gecikmiş tahsil 510 / 6 | gecikmiş ödeme 30 / 1 | satır 9 | tahsil edilecek 710 | ödenecek 30 | bugün 200 | yaklaşan 0
+elle bugün…+7      | gecikmiş tahsil 510 / 6 | gecikmiş ödeme 30 / 1 | satır 11 | tahsil edilecek 770 | ödenecek 30 | bugün 200 | yaklaşan 60
+today late=0       | gecikmiş tahsil 100 / 1 | gecikmiş ödeme 0 / 0 | satır 3 | tahsil edilecek 300 | ödenecek 0 | bugün 200 | yaklaşan 0
+next7 late=0       | gecikmiş tahsil 100 / 1 | gecikmiş ödeme 0 / 0 | satır 5 | tahsil edilecek 360 | ödenecek 0 | bugün 200 | yaklaşan 60
+=== yeni
+late               | gecikmiş tahsil 610 / 7 | gecikmiş ödeme 100 / 2 | satır 9 | tahsil edilecek 610 | ödenecek 100 | bugün 0 | yaklaşan 0
+today              | gecikmiş tahsil 610 / 7 | gecikmiş ödeme 100 / 2 | satır 11 | tahsil edilecek 810 | ödenecek 100 | bugün 200 | yaklaşan 0
+next7              | gecikmiş tahsil 610 / 7 | gecikmiş ödeme 100 / 2 | satır 13 | tahsil edilecek 870 | ödenecek 100 | bugün 200 | yaklaşan 60
+next30             | gecikmiş tahsil 610 / 7 | gecikmiş ödeme 100 / 2 | satır 15 | tahsil edilecek 1070 | ödenecek 100 | bugün 200 | yaklaşan 260
+next90             | gecikmiş tahsil 610 / 7 | gecikmiş ödeme 100 / 2 | satır 15 | tahsil edilecek 1070 | ödenecek 100 | bugün 200 | yaklaşan 260
+open               | gecikmiş tahsil 610 / 7 | gecikmiş ödeme 100 / 2 | satır 15 | tahsil edilecek 1070 | ödenecek 100 | bugün 200 | yaklaşan 260
+elle bugün…bugün   | gecikmiş tahsil 510 / 6 | gecikmiş ödeme 30 / 1 | satır 9 | tahsil edilecek 710 | ödenecek 30 | bugün 200 | yaklaşan 0
+elle bugün…+7      | gecikmiş tahsil 510 / 6 | gecikmiş ödeme 30 / 1 | satır 11 | tahsil edilecek 770 | ödenecek 30 | bugün 200 | yaklaşan 60
+today late=0       | gecikmiş tahsil 100 / 1 | gecikmiş ödeme 0 / 0 | satır 3 | tahsil edilecek 300 | ödenecek 0 | bugün 200 | yaklaşan 0
+next7 late=0       | gecikmiş tahsil 100 / 1 | gecikmiş ödeme 0 / 0 | satır 5 | tahsil edilecek 360 | ödenecek 0 | bugün 200 | yaklaşan 60

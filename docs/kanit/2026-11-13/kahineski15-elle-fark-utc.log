@@ -1,0 +1,83 @@
+d12-c5-s69-soz-gunu-ve-gecmis.json: 6 elle beklenti değişti
+    değer                  k1:cari:F2:gecikmis: 0 → "(yok)"
+    değer                  k1:takvim:hareket:f2: {"amount": 45000, "dueDate": "2026-06-10", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "state": "overdue", "days": -5, "cari": "F2", "person": "Fikret Önce"} → "(yok)"
+    elleYok eklendi        k1:cari:F2:gecikmis: "" → "yok"
+    elleYok eklendi        k1:takvim:hareket:f2: "" → "yok"
+    elleBelirsiz eklendi   ["takvim kalemi f2", "S149 = C"]: "" → ""
+    elleBelirsiz eklendi   ["cari F2 gecikmiş tutarı tanımsız", "S149 = C"]: "" → ""
+d30-c5-s101-bitti-kart.json: 6 elle beklenti değişti
+    değer                  k1:kart:KQ1:odenen: 60000 → "(yok)"
+    değer                  k1:kart:KQ3:odenen: 60000 → "(yok)"
+    elleYok eklendi        k1:kart:KQ1:odenen: "" → "yok"
+    elleYok eklendi        k1:kart:KQ3:odenen: "" → "yok"
+    elleBelirsiz eklendi   ["kart KQ1", "S144 = C"]: "" → ""
+    elleBelirsiz eklendi   ["kart KQ3", "S144 = C"]: "" → ""
+d34-c5-s110-kendi-borcu.json: 3 elle beklenti değişti
+    değer                  k1:kart:KE10:kalan: 90000 → "(yok)"
+    elleYok eklendi        k1:kart:KE10:kalan: "" → "yok"
+    elleBelirsiz eklendi   ["kart KE10", "S143 = C"]: "" → ""
+d39-c5-s130-supheli-kalemleri.json: 29 elle beklenti değişti
+    değer                  adim:n11t:durum: "(yok)" → "ret"
+    değer                  k1:cari:N10:gecikmis: "(yok)" → 50000
+    değer                  k1:cari:N11:bakiye: 20000 → 50000
+    değer                  k1:cari:N11:gecikmis: "(yok)" → 0
+    değer                  k1:cari:N12:gecikmis: "(yok)" → 40000
+    değer                  k1:cari:N13a:gecikmis: "(yok)" → 30000
+    değer                  k1:cari:N1:gecikmis: "(yok)" → 80000
+    değer                  k1:cari:N1b:gecikmis: "(yok)" → 80000
+    değer                  k1:cari:N2:gecikmis: "(yok)" → 30000
+    değer                  k1:cari:N3:gecikmis: "(yok)" → 20000
+    değer                  k1:cari:N4:gecikmis: "(yok)" → 0
+    değer                  k1:cari:N5:gecikmis: "(yok)" → 20000
+    değer                  k1:cari:N6:gecikmis: "(yok)" → 20000
+    değer                  k1:cari:N7:gecikmis: "(yok)" → 20000
+    değer                  k1:cari:N8:gecikmis: "(yok)" → 20000
+    değer                  k1:hareket:n11x:kalan: 20000 → 50000
+    elleYok kalktı         k1:cari:N10:gecikmis: "yok" → ""
+    elleYok kalktı         k1:cari:N11:gecikmis: "yok" → ""
+    elleYok kalktı         k1:cari:N12:gecikmis: "yok" → ""
+    elleYok kalktı         k1:cari:N13a:gecikmis: "yok" → ""
+    elleYok kalktı         k1:cari:N1:gecikmis: "yok" → ""
+    elleYok kalktı         k1:cari:N1b:gecikmis: "yok" → ""
+    elleYok kalktı         k1:cari:N2:gecikmis: "yok" → ""
+    elleYok kalktı         k1:cari:N3:gecikmis: "yok" → ""
+    elleYok kalktı         k1:cari:N4:gecikmis: "yok" → ""
+    elleYok kalktı         k1:cari:N5:gecikmis: "yok" → ""
+    elleYok kalktı         k1:cari:N6:gecikmis: "yok" → ""
+    elleYok kalktı         k1:cari:N7:gecikmis: "yok" → ""
+    elleYok kalktı         k1:cari:N8:gecikmis: "yok" → ""
+d40-c5-s130-sus-bilinen-sinir.json: 29 elle beklenti değişti
+    değer                  k1:cari:Q3:gecikmis: "(yok)" → 70000
+    değer                  k1:cari:Q4:gecikmis: "(yok)" → 40000
+    değer                  k1:hareket:q4x:kalan: "(yok)" → 50000
+    değer                  k1:projeksiyon:cariToplam:Q4: "(yok)" → 40000
+    değer                  k1:projeksiyon:hareket:q4o: "(yok)" → {"amount": 20000, "date": "2026-06-02", "direction": "in"}
+    değer                  k1:projeksiyon:hareket:q4x: "(yok)" → {"amount": 20000, "date": "2026-06-01", "direction": "in"}
+    değer                  k1:takvim:cariToplam:Q4: "(yok)" → 40000
+    değer                  k1:takvim:hareket:q4o: "(yok)" → {"amount": 20000, "dueDate": "2026-06-02", "direction": "in", "label": "Tahsil Edilecek Borç", "state": "overdue", "days": -13, "cari": "Q4", "person": "Kenan Avanslı"}
+    değer                  k1:takvim:hareket:q4x: "(yok)" → {"amount": 20000, "dueDate": "2026-06-01", "direction": "in", "label": "Tahsil Edilecek Borç", "state": "overdue", "days": -14, "cari": "Q4", "person": "Kenan Avanslı"}
+    değer                  k1:vadeTakip:cariToplam:Q4: "(yok)" → 40000
+    değer                  k1:vadeTakip:hareket:q4o: "(yok)" → {"amount": 20000, "date": "2026-06-02", "direction": "in"}
+    değer                  k1:vadeTakip:hareket:q4x: "(yok)" → {"amount": 20000, "date": "2026-06-01", "direction": "in"}
+    elleYok kalktı         k1:cari:Q3:gecikmis: "yok" → ""
+    elleYok kalktı         k1:cari:Q4:gecikmis: "yok" → ""
+    elleYok kalktı         k1:projeksiyon:hareket:q4o: "yok" → ""
+    elleYok kalktı         k1:projeksiyon:hareket:q4x: "yok" → ""
+    elleYok kalktı         k1:takvim:cariToplam:Q4: "yok" → ""
+    elleYok kalktı         k1:takvim:hareket:q4o: "yok" → ""
+    elleYok kalktı         k1:takvim:hareket:q4x: "yok" → ""
+    elleYok kalktı         k1:vadeTakip:hareket:q4o: "yok" → ""
+    elleYok kalktı         k1:vadeTakip:hareket:q4x: "yok" → ""
+    elleBelirsiz kalktı    ["cari Q1 S130 görünümü tanımsız", "SK-28 (a)", "KULLANICIYA SORULMALI"]: "" → ""
+    elleBelirsiz kalktı    ["cari Q1b S130 görünümü tanımsız", "SK-28 (a)"]: "" → ""
+    elleBelirsiz kalktı    ["cari Q2 S130 görünümü tanımsız", "SK-28 (b)"]: "" → ""
+    elleBelirsiz kalktı    ["cari Q3 S130 görünümü tanımsız", "SK-27"]: "" → ""
+    elleBelirsiz kalktı    ["cari Q4 S130 görünümü tanımsız", "SK-27"]: "" → ""
+    elleBelirsiz eklendi   ["cari Q1 S130 görünümü tanımsız", "S137 = C", "BİLİNEN SINIR"]: "" → ""
+    elleBelirsiz eklendi   ["cari Q1b S130 görünümü tanımsız", "S137 = C"]: "" → ""
+    elleBelirsiz eklendi   ["cari Q2 S130 görünümü tanımsız", "S138 = C", "BİLİNEN SINIR"]: "" → ""
+yeni elle senaryo: d41-c5-s136-s139-s145-s148.json, d42-c5-s140-s151-satis-karti-iade.json, d43-c5-bilinen-sinir-sus15.json
+# tests 94
+# pass 94
+# fail 0
+94/94 denetim geçti

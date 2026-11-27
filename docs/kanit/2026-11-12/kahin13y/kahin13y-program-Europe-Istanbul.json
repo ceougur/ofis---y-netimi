@@ -1,0 +1,32 @@
+{
+  "ad": "kahin13y-program-Europe-Istanbul",
+  "komut": "npm run test:kahin-defter",
+  "commit": "a7ca89bb356912cf431e63bd5285838cfb656ab2",
+  "dal": "sinama-c5a1b-k13",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-12T09:07:54.925Z",
+  "sure_sn": 4.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "kahin-defter",
+    "toplam": 187,
+    "gecen": 187,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../kahin13y-kanit/2026-11-12/kahin13y-program-Europe-Istanbul.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-ya-ag",
+  "ham_cikti_sha256": "47a1f9242fdaa7c6e68206dcd7f983c307d6e5300733f85ddca161c8faee063f",
+  "ham_cikti_bayt": 2825
+}

@@ -1,0 +1,32 @@
+{
+  "ad": "bs234-anaoturum-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/bs2-kart-iade-ekstre-250.test.mjs test/bs3-silinmis-kayit-250.test.mjs test/bs4-birlesik-rapor-250.test.mjs test/ci-kapi-listesi.test.mjs",
+  "commit": "80d4a775c7f27393dfd3d60163e9908520163f4e",
+  "dal": "claude/epic-thompson-w0lc2l",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T21:23:59.140Z",
+  "sure_sn": 5.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 14,
+    "gecen": 14,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/bs234-anaoturum-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "087630ef66ebf28cc79676c5824b0c2eabc7685310c70a1d6f65980d171b4922",
+  "ham_cikti_bayt": 6715
+}

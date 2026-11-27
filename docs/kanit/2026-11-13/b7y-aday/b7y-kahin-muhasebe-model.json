@@ -1,0 +1,32 @@
+{
+  "ad": "b7y-kahin-muhasebe-model",
+  "komut": "python3 test/bagimsiz/muhasebe/test_model.py",
+  "commit": "5dc16feebc400f20457df0dcd9c5217a1b978ba4",
+  "dal": "sinama-b7",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v445 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-13T06:52:17.767Z",
+  "sure_sn": 18.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 187,
+    "gecen": 187,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../b7y-aday-kanit/2026-11-13/b7y-kahin-muhasebe-model.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-ya-ag",
+  "ham_cikti_sha256": "5b0f3cb3b1c52e299495ab17b3d28a29109d510e72fd9e8a6dddb96911176d73",
+  "ham_cikti_bayt": 340
+}

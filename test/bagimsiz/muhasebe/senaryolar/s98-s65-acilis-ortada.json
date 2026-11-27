@@ -1,0 +1,149 @@
+{
+ "aciklama": "S65: 'Açılış Olabilir' listesine yalnız açıklaması 'Açılış…' ile başlayan eski kayıt girer; ortada geçen sıradan Borç Yaz (602.90).",
+ "ad": "s98-s65-acilis-ortada",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "acilis_olabilir": [
+    "BY2"
+   ],
+   "ao": [
+    {
+     "cari": "C2",
+     "durum": "bekliyor",
+     "kaynak": "BY2",
+     "tarih": "2026-01-04",
+     "tutar": 300,
+     "yon": "borc"
+    }
+   ],
+   "bil/kesin_degil": [
+    "ACILIS_OLABILIR_ONAY_BEKLIYOR",
+    "TAMAMLANMAMIS_ACILIS"
+   ],
+   "bil/pasif/V.F": 700,
+   "bil/pasif/V.G": 300,
+   "mz/satirlar/519/bakiye": -300,
+   "mz/satirlar/602.90/bakiye": -700,
+   "redler": []
+  }
+ },
+ "kapsam": [
+  "S65",
+  "B6",
+  "KG-16",
+  "S47",
+  "C-01",
+  "Q1"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "aciklama": "2025 açılış farkı",
+   "cari": "C1",
+   "id": "BY1",
+   "tarih": "2026-01-03",
+   "tur": "borc_yaz",
+   "tutar": 700,
+   "yedekten": true
+  },
+  {
+   "aciklama": "Açılış farkı 2025",
+   "cari": "C2",
+   "id": "BY2",
+   "tarih": "2026-01-04",
+   "tur": "borc_yaz",
+   "tutar": 300,
+   "yedekten": true
+  },
+  {
+   "ad": "mz",
+   "bas": "2026-01-01",
+   "rapor": "mizan",
+   "son": "2026-01-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "ao",
+   "rapor": "acilis_olabilir",
+   "tarih": "2026-01-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "bil",
+   "rapor": "bilanco",
+   "tarih": "2026-01-31",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

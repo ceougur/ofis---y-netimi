@@ -1,0 +1,43 @@
+{
+  "ad": "bs7-mutasyon-m8-http-kapisi-yok",
+  "komut": "node --test test/sema-kapisi-bs7.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T17:35:07.709Z",
+  "sure_sn": 4.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 2,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "BS-7 şema sürüm kapısı › 002 yeni şemalı, 001 normal: 002 yalnız görüntülenir, 001 çalışır; 002 dosyası bayt bayt aynı mantıksal içerikte kalır",
+      "konum": "test/sema-kapisi-bs7.test.mjs:156:3",
+      "hata": "{\"ok\":false,\"error\":\"Sunucu işlemi tamamlayamadı.\"} · 500 !== 409 (beklenen 409, gelen 500)"
+    },
+    {
+      "ad": "BS-7 şema sürüm kapısı › 001 yeni şemalı, 002 normal: giriş ve okuma çalışır, 001'e veri yazılmaz; 002'ye geçilip çalışılır",
+      "konum": "test/sema-kapisi-bs7.test.mjs:216:3",
+      "hata": "{\"ok\":true,\"data\":{\"id\":\"cash-24053a5e-be66-44c0-9dc2-c4b0e82c375b\"}} · 200 !== 409 (beklenen 409, gelen 200)"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/ofis---y-netimi/.claude/worktrees/agent-a03e5f6803e8339cb/docs/kanit/2026-11-05/bs7-mutasyon-m8-http-kapisi-yok.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bs7-ccf0b0ca/mutasyon-m8-http-kapisi-yok",
+  "ham_cikti_sha256": "3845e963d321bb288e9b2dac0bef6433ed46651f275d91244258bdd75a686176",
+  "ham_cikti_bayt": 3872
+}

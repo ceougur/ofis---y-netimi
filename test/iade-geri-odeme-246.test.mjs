@@ -302,7 +302,10 @@ describe("DB1 API: cari kartından iade geri ödemesi iadeye bağlanır (Geri Ö
   const facts = async acc => {
     const ledger = await must("defter", api.get("/api/workspace/ledger"));
     const cash = await must("kasa", api.get("/api/workspace/cash"));
-    return JSON.stringify({ trial: ledger.trial, cash: cash.totals, balance: (await card(acc)).totals });
+    // 2.5.0 Ç5-B: cari kartı toplamlarına Tek Yükümlülük Kuyruğu'nun gecikmiş alanları eklendi (bağ değişince kuyruk bilerek değişir); "bakiye değişmez" denetimi
+    // para alanlarını karşılaştırır.
+    const { overdueDebt, overdueDebtCount, overdueSince, doubtfulQueue, promiseUntil, promiseActive, ...money } = (await card(acc)).totals;
+    return JSON.stringify({ trial: ledger.trial, cash: cash.totals, balance: money });
   };
   // Kırmızı kanıtta (eski kod, ders 38) ilk düşen denetim iş sonucu olsun (B'nin açığı): satır kimliği bağ kolonuna bakmadan okunur; kolon sonra.
   const lastEntry = acc => server.app.store.get("SELECT id FROM account_entries WHERE account_id = ? ORDER BY rowid DESC LIMIT 1", acc.id);
@@ -520,19 +523,25 @@ describe("DB1 API: cari kartından iade geri ödemesi iadeye bağlanır (Geri Ö
     await must("bağsız Ödeme", api.post(entries, { kind: "out", amount: "300", date: at(56), method: "cash", cashForce: true }));
     const pay = lastEntry(acc);
     assert.deepEqual(await invoice(b), ["overdue", 200], "bağsız: K-b önce kendi tarafı — Alacak kapandı, artan yok, iade B'yi kapatır");
-    assert.deepEqual(await duesOf(acc), [["account", 300], ["invoice", 200]], "takvim: B 200 + borç 300");
+    // 2.5.0 Ç5-B (bilerek güncellendi; kullanıcı kararları (5) "Bakiyeden Netleşsin" ve S2): takvim NET kuyruğu okur — elle Alacak 300 satış borcuna kendi tarihinde
+    // uygulanır (vadesi en önce gelen B: 500 → 200), stok iadesi 300 B'nin 200'ünü ve borcun 100'ünü kapatır; bağsız Ödeme 300 (müşteriye para iadesi, EK-1 §1 T-09)
+    // kendi gününde açık borç kalemidir. Σ takvim = bakiye 500. Fatura durumu (iki yönlü, yukarıda B 200) değişmedi.
+    // Ç5-B tur 2b-2 (bilerek güncellendi; KULLANICI S95 = A + S102 = A): bağsız Ödeme 300 önce KENDİ tarafının kalemini (elle Alacak 300) kapatır — önceki günün
+    // Alacak ↔ B netleşmesi geri alınır, B yeniden 300 açık; ödeme ayrı kalem değildir. Σ takvim = bakiye 500 (önce: borç 200 + ödeme kalemi 300).
+    assert.deepEqual(await duesOf(acc), [["account", 200], ["invoice", 300]], "takvim: borç 200 + B 300 (S95: ödeme Alacak'ı kapattı, netleşme geri alındı)");
     const facts0 = await facts(acc);
     await must("iadeye bağla", api.put(`${entries}/${pay.id}`, { refundOf: target }));
     assert.deepEqual(await invoice(b), ["overdue", 500], "bağlı: iadenin geri ödemesi — B 500");
-    assert.equal(await remaining(acc, credit.id), 300, "elle Alacak yeniden açık (bağlı geri ödeme onu kapatmaz)");
-    assert.deepEqual(await duesOf(acc), [["account", 300], ["invoice", 500]], "takvim bağ değişimini görür: B 500 + borç 300");
+    // Net kuyrukta (Kalan, takvim): bağ önce (iade ↔ geri ödemesi), elle Alacak 300 B'den düşer (karar (5)) → B 200, borç 300; Alacak'ın Kalan'ı 0.
+    assert.equal(await remaining(acc, credit.id), 0, "elle Alacak net kuyrukta B'den düştü (karar (5); fatura durumunda B 500)");
+    assert.deepEqual(await duesOf(acc), [["account", 300], ["invoice", 200]], "takvim bağ değişimini görür: borç 300 açıldı (iade artık geri ödemesine bağlı), B 200");
     assert.equal(await facts(acc), facts0, "bakiye, Kasa, mizan değişmez");
     const other = await setup("Önce Bağ Çek", { mode: "invoice" });
     const ob = new Set((await card(other.acc)).entries.map(row => row.id));
     const oc = (await must("elle Alacak", api.post(`/api/workspace/accounts/${other.acc.id}/entries`, { kind: "credit", amount: "300", date: other.at(55) }))).entries.find(row => !ob.has(row.id));
     await must("verilen çek (iadeye bağlı)", api.post("/api/workspace/cheques", { instrument: "cheque", direction: "out", accountId: other.acc.id, amount: 300, issueDate: other.at(56), dueDate: day(30), serialNo: "DB1-ONCE", invoiceId: other.target }));
     assert.deepEqual(await invoice(other.b), ["overdue", 500], "çek iadeye bağlı: B 500");
-    assert.equal(await remaining(other.acc, oc.id), 300, "elle Alacak açık (çek onu kapatmaz)");
+    assert.equal(await remaining(other.acc, oc.id), 0, "elle Alacak net kuyrukta B'den düştü (karar (5)); çek onu kapatmaz, iadeyi geri öder");
   });
 
   it("B1 (dar kontrol): satış 1.000 → stok iadesi 300 → bağsız Ödeme 300 → Mevcut Borcu Taksitlendir 1.000: borç kartla BİR kez — Vade Takip ve takvim 1.000 (fatura kalemi yok)", async () => {
@@ -547,7 +556,10 @@ describe("DB1 API: cari kartından iade geri ödemesi iadeye bağlanır (Geri Ö
     const vade = await vadeOf(acc);
     assert.deepEqual(vade, [["plan", 500], ["plan", 500]], "Vade Takip: kartın iki taksiti, fatura kalemi yok (5fa544c / 49c41f9: fatura 300 + kart 1.000 = 1.300)");
     assert.equal((await duesOf(acc)).filter(row => row[0] === "invoice").length, 0, "takvimde fatura kalemi yok");
-    assert.deepEqual(await invoice(sale.id), ["overdue", 1000], "fatura açığı 1.000 (iadenin geri ödemesi) — kartın kapsamında");
+    // S229 = A + S230 = A (20.11.2026): faturanın kendi açığı 1.000 (iadenin geri ödemesi) kartın kapsamında — faturada açık görünmez, 'Taksitte'.
+    assert.deepEqual(await invoice(sale.id), ["installment", 0], "fatura kartın kapsamında: gösterilen açık 0");
+    const own = await must("fatura oku", api.get(`/api/workspace/invoices/${sale.id}`));
+    assert.deepEqual([own.ownOpen, own.inPlan], [1000, 1000], "faturanın kendi açığı 1.000 = kartın payı");
   });
 
   it("B2 F1b (dar kontrol): satış A 1.000, Tahsilat 600 → A, A'nın iadesi 500 (100'ü açık), bağsız Ödeme 300 → A açık 200, iade açığı 0 (açık bağla aynı)", async () => {
@@ -570,7 +582,9 @@ describe("DB1 API: cari kartından iade geri ödemesi iadeye bağlanır (Geri Ö
       const acc = await must("cari", api.post("/api/workspace/accounts", { name: `DB1 Sıra ${label}`, type: "customer", registeredOn: day(-2000), phone: `0500 246 00 ${String((n += 1)).padStart(2, "0")}` }));
       const entries = `/api/workspace/accounts/${acc.id}/entries`;
       const stockReturn = () => must("stok iade", api.post(`/api/workspace/stock/${goods.id}/moves`, { kind: "in", reason: "return", qty: "3", unitPrice: "100", pay: "account", accountId: acc.id, date: day(t + 10) }));
-      const credit = () => must("elle Alacak", api.post(entries, { kind: "credit", amount: "200", date: day(t + 10), dueDate: day(t + 20) }));
+      // 2.5.0 Ç5-B (bilerek güncellendi; S2 / S68 "vadesi en önce gelen"): eşitlik bozucu (yazım sırası) ancak vadeler eşitken sınanır — elle Alacak VADESİZ (vade =
+      // belge günü = iadenin günü, S1). Vadeli Alacak (bugün+20) olsaydı iade (vade = kendi günü) her iki sırada önce kapanırdı.
+      const credit = () => must("elle Alacak", api.post(entries, { kind: "credit", amount: "200", date: day(t + 10) }));
       if (returnFirst) { await stockReturn(); await credit(); } else { await credit(); await stockReturn(); }
       const id = server.app.store.get("SELECT id FROM account_entries WHERE account_id = ? AND kind = 'credit' AND source = '' ORDER BY rowid DESC LIMIT 1", acc.id).id;
       const stamps = server.app.store.all("SELECT created_at AS c FROM account_entries WHERE account_id = ? ORDER BY rowid", acc.id).map(row => row.c);

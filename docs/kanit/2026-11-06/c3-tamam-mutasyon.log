@@ -1,0 +1,28 @@
+taban: 25 geçti / 0 kaldı (çıkış 0)
+ok 1 - kilitli dönemde güncel türetmeye düşme (karma okuma donmuş defteri okumaz): çıkış 1, 10 geçti / 3 kaldı
+ok 2 - donmuş satır kaybı (son parçadan bir satır düşer): çıkış 1, 4 geçti / 9 kaldı
+ok 3 - donmuş satır kaybı (okuma kapsam gününü atlar): çıkış 1, 5 geçti / 8 kaldı
+ok 4 - kilit günü donmaz (aralık kilit gününü dışlar): çıkış 1, 6 geçti / 7 kaldı
+ok 5 - kilit ile donma ayrışması (kanca önceki kilidi dondurur): çıkış 1, 6 geçti / 7 kaldı
+ok 6 - geri çekmede iz yok: çıkış 1, 12 geçti / 1 kaldı
+ok 7 - fark denetimi susuyor: çıkış 1, 12 geçti / 1 kaldı
+ok 8 - göçte 2.5.0 kuralı kullanılıyor: çıkış 1, 6 geçti / 1 kaldı
+ok 9 - UPDATE tetikleyicisi yok (satır): çıkış 1, 11 geçti / 2 kaldı
+ok 10 - DELETE tetikleyicisi yok (satır): çıkış 1, 12 geçti / 1 kaldı
+ok 11 - Şirket Verisini Sıfırla donmuş defteri silmez: çıkış 1, 18 geçti / 2 kaldı
+ok 12 - eski sürüm kilidinin açılış onarımı yok: çıkış 1, 6 geçti / 1 kaldı
+ok 13 - postAll lockThrough dondurmaz (kanca çağrılmaz): çıkış 1, 12 geçti / 1 kaldı
+ok 14 - kaynak izi denetimi yok: çıkış 1, 12 geçti / 1 kaldı
+ok 15 - bayat satırlar temizlenmez: çıkış 1, 12 geçti / 1 kaldı
+ok 16 - 2.4.9 kopyası değişti (649 yerine 642): çıkış 1, 16 geçti / 4 kaldı
+ok 17 - türetme kaynak satırlarını yine store.all ile okur (routes/ledger.mjs rows): çıkış 1, 4 geçti / 1 kaldı
+ok 18 - 2.4.9 kopyası ana iş parçacığında sıkı depo olmadan: çıkış 1, 3 geçti / 2 kaldı
+ok 19 - 2.4.9 kopyası iş parçacığında sıkı depo olmadan: çıkış 1, 4 geçti / 1 kaldı
+ok 20 - donmuş okuma yine store.all ile: çıkış 1, 4 geçti / 1 kaldı
+ok 21 - sıkı satırlar kopyalanmaz (sözlük kipli satır geçer): çıkış 1, 4 geçti / 1 kaldı
+ok 22 - kilit izi yine store.all ile (bütün kaynak satırları dizide): çıkış 1, 4 geçti / 1 kaldı
+ok 23 - akışlı fark denetimi yalnız güncelde olan maddeleri saymaz: çıkış 1, 4 geçti / 1 kaldı
+
+# tests 23
+# pass 23
+# fail 0

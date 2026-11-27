@@ -1,0 +1,23 @@
+başladı 11:47:08 yük 0.92 2.07 4.20 · aday 37b84449 · önceki aday 8391c97b ile ÜRÜN farkı (kâhin + kanıt + belgeler dışında BOŞ olmalı): []
+yeni testler UTC çıkış 0 # tests 40 # pass 40 # fail 0 # cancelled 0 # skipped 0 
+liste üretimi çıkış 0 · fark (BOŞ olmalı): [] ESKİ LİSTEYLE FARK: yeni 0, kapanan 0, değeri değişen 0 (eski liste 41 kayıt → yeni 41)
+ci.yml'deki kâhin adımı sayısı 10
+0 kahin-defter UTC :: [kanit] c5a1fy2-kahin-defter-UTC: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 37b8444 +1 izlenmeyen · linu ÖZET: 187 denetim, 0 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-defter-4AJYEE
+0 kahin-defter Europe/Istanbul :: [kanit] c5a1fy2-kahin-defter-Europe-Istanbul: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 37b8444 +1 izlenm ÖZET: 187 denetim, 0 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-defter-LUPq4t
+0 kahin-cari UTC :: [kanit] c5a1fy2-kahin-cari-UTC: GEÇTİ · çıkış 0 · 16449/16449 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 37b8444 +1 izlenmeyen · li ÖZET [2.5.0]: 90 senaryo, 16490 denetim, 0 fark (BULGU 0), 7 bilinen sınır (BILINEN.json; başarısız sayılmaz), 41 yapım aşaması (YAPIM-ASAMA
+0 kahin-cari Europe/Istanbul :: [kanit] c5a1fy2-kahin-cari-Europe-Istanbul: GEÇTİ · çıkış 0 · 16449/16449 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 37b8444 +1 izle ÖZET [2.5.0]: 90 senaryo, 16490 denetim, 0 fark (BULGU 0), 7 bilinen sınır (BILINEN.json; başarısız sayılmaz), 41 yapım aşaması (YAPIM-ASAMA
+0 kahin-tutar UTC :: [kanit] c5a1fy2-kahin-tutar-UTC: GEÇTİ · çıkış 0 · 3559/3559 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 37b8444 +1 izlenmeyen · lin ÖZET: 3 tohum × 50 satır, 3559 denetim, 0 fark (BULGU 0), 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-tutar-TtzzCn
+0 kahin-ebelge-model UTC :: [kanit] c5a1fy2-kahin-ebelge-model-UTC: GEÇTİ · çıkış 0 · 114/114 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 37b8444 +1 izlenmeyen � 
+0 kahin-ebelge-mutasyon UTC :: [kanit] c5a1fy2-kahin-ebelge-mutasyon-UTC: GEÇTİ · çıkış 0 · 55/55 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 37b8444 +1 izlenmeyen  
+0 kahin-ebelge-senaryo UTC :: [kanit] c5a1fy2-kahin-ebelge-senaryo-UTC: GEÇTİ · çıkış 0 · 27/27 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 37b8444 +1 izlenmeyen � 
+0 kahin-muhasebe-model UTC :: [kanit] c5a1fy2-kahin-muhasebe-model-UTC: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 37b8444 +1 izlenmeyen 
+0 kahin-muhasebe-mutasyon UTC :: [kanit] c5a1fy2-kahin-muhasebe-mutasyon-UTC: GEÇTİ · çıkış 0 · 277/277 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 37b8444 +1 izlenme 
+0 kahin-maliyet UTC :: [kanit] c5a1fy2-kahin-maliyet-UTC: GEÇTİ · çıkış 0 · 41306/41306 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 37b8444 +1 izlenmeyen · 
+0 kahin-mobil-yazma UTC :: [kanit] c5a1fy2-kahin-mobil-yazma-UTC: GEÇTİ · çıkış 0 · 54/54 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 37b8444 +1 izlenmeyen · l 
+.github/workflows/ci.yml ayrıştı
+.github/workflows/release.yml ayrıştı
+dört kapı testi çıkış 0 # tests 73 # pass 73 # fail 0 # cancelled 0 # skipped 0 
+kâhin bölümü bitti 12:24:12 yük 2.14 3.12 3.67 · temiz mi: 0
+TAM npm test çıkış 0 [kanit] c5a1fy2-tam: GEÇTİ · çıkış 0 · 5579/5579 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 37b8444 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · Node v
+# tests 5579 # pass 5579 # fail 0 # cancelled 0 # skipped 0 
+bitti 13:16:26 yük 2.40 2.28 2.36 · aday 37b84449 · temiz mi: 0 · disk 7.4G

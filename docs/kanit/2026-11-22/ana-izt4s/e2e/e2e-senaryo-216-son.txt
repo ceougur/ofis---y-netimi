@@ -1,0 +1,15 @@
+✓ taksit ödeme/iade yolları: Nakit, Havale / EFT, Kredi Kartı
+✓ Kasa'da yol sekmesi yok
+✓ Kasa in formunda yol seçici yok
+✓ Kasa tahsilat yolu sabit Nakit (Nakit)
+✓ Kasa out formunda yol seçici yok
+✓ Kasa ödeme yolu sabit Nakit (Nakit)
+✓ stok satış yolları: Yalnız Miktar (para yazılmaz) | Nakit (tahsil edildi) | POS (tahsil edildi) | Havale / EFT (tahsil edildi) | Açık Hesap (veresiye, müşteri borçlanır)
+✓ stok alım yolları: Yalnız Miktar (para yazılmaz) | Nakit (ödendi) | Kredi Kartı (ödendi) | Havale / EFT (ödendi) | Açık Hesap (tedarikçiye borçlanılır)
+✓ satış faturası PDF'i indi (35586 bayt)
+✓ kart kaleminde Stok Kodu FK-A4 (PDF aynı veriden basılır)
+✓ fatura Excel'i indi (5168 bayt)
+✓ Ürün Bazında Satış raporunda Stok Kodu kolonu (Stok Kodu; 1 satır)
+✓ stok raporunda Stok Kodu kolonu (Stok Kodu)
+
+54 / 54 kontrol geçti.

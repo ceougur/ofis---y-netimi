@@ -1,0 +1,91 @@
+// W1W2 düzeltme turu 1: mutasyon koşucusu (dar kontrolün dk-w1w2-betik/mutasyon.mjs'inden; yollar bu turun benzersiz klasörleri — ders 25).
+// Her mutasyon MUT kopyasında tek dosyada tam bir dizgeyi değiştirir (tam bir kez geçmeli), testleri koşar, dosyayı PRISTINE'den geri koyar.
+// Kullanım: node mutasyon.mjs [ad-süzgeci]   (TZ ve HUKUK_LICENSE_URL çağıran ortamdan; burada ayrıca verilir)
+import { spawnSync } from "node:child_process";
+import { appendFileSync, copyFileSync, readFileSync, writeFileSync } from "node:fs";
+import path from "node:path";
+
+const S = "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad";
+const MUT = path.join(S, "w1w2-tur1-mut-0cf8d897");
+const PRISTINE = path.join(S, "w1w2-tur1-yeni-0cf8d897");
+const OUT = process.argv[3] || path.join(S, "w1w2-tur1-betik", "mutasyon-sonuc.txt");
+const W = ["test/whatsapp-w1a-belirtec-suresi-250.test.mjs", "test/whatsapp-w2-kaldir-250.test.mjs", "test/whatsapp-w2-cekirdek-248.test.mjs", "test/whatsapp-w2-veri-248.test.mjs"];
+const MOB = ["test/mobil-gg247-b5.test.mjs"];
+
+const C = "server/lib/whatsapp/connection.mjs";
+const Q = "server/lib/whatsapp/queue.mjs";
+const D = "server/lib/whatsapp/defter.mjs";
+const R = "server/routes/whatsapp.mjs";
+const M = "server/lib/mobile-sync.mjs";
+const mutations = [
+  // ---- Dar kontrolün M1–M22'si (M16, M21 yeni koddaki dizgeye uyarlandı; anlamı aynı) ----
+  ["M1 defter stop:removed sayılır", D, "'stop:reset', 'stop:removed')", "'stop:reset')", W],
+  ["M2 iki Kaldır tek uçuş yok", C, "    if (removing) return removing;\n", "", W],
+  ["M3 sharedWaba yok sayılır", C, "      shared = Boolean(sharedWaba(record.wabaId));", "      shared = false;", W],
+  ["M4 yeniden kurulan bağlantı da silinir", C, '    if (same) store.run("DELETE FROM settings WHERE key = ?", SETTING_KEY);', '    store.run("DELETE FROM settings WHERE key = ?", SETTING_KEY);', W],
+  ["M5 Kaldır bekleyenleri durdurmaz", Q, '    for (const row of rows) stopBatch(row, REMOVED_REASON, "removed");', "    void rows;", W],
+  ["M6 bildirim gün denetimi yok", C, '    if (store.setting(key, "") === day) return { show: false, state: status.state, day };', "", W],
+  ["M7 190 her belirteçte Süresi Doldu", C, "    if (!tokenWorked(current) && Number(error.subcode) !== TOKEN_EXPIRED_SUBCODE) return;", "", W],
+  ["M8 Meta kabulü Süresi Doldu'yu kaldırmaz", C, "    write({ v: 1, ...current, tokenVerifiedAt: iso(), tokenExpired: null });", "    write({ v: 1, ...current, tokenVerifiedAt: iso() });", W],
+  ["M9 startBlock süre engeli yok", Q, "    const link = connection.sendBlock?.();\n    if (link) return link;", "    const link = null;", W],
+  ["M10 önizleme süre engeli yok", Q, "    const link = connection.sendBlock?.();\n    if (link) fail(409, link.message, link.code);", "    const link = null;", W],
+  ["M11 cc17dfe0 geri (PDF'teki kendi Meta hatası Süresi Doldu engeline yenilir)", Q, '    if (lateBlock && !(ownMetaError && lateBlock.code === "whatsapp-token-expired")) {', "    if (lateBlock) {", W],
+  ["M12 uyarı 6 gün", C, "export const TOKEN_WARN_DAYS = 7;", "export const TOKEN_WARN_DAYS = 6;", W],
+  ["M13 eski Yol 2 kaydı süresiz", C, '    const legacyEmbedded = !known && raw.mode === "embedded";', "    const legacyEmbedded = false;", W],
+  ["M14 deneme gönderimi süre engeli yok", C, '    if (expired?.state === "expired") fail(409, expired.message, "whatsapp-token-expired");', "", W],
+  ["M15 data_access yok sayılır", C, "    const endMs = Math.min(meta.fromIn ?? issuedMs + EMBEDDED_TOKEN_DAYS * DAY_MS, meta.fromData ?? Infinity);", "    const endMs = meta.fromIn ?? issuedMs + EMBEDDED_TOKEN_DAYS * DAY_MS;", W],
+  ["M16 süresi dolmuş belirteçle Meta'ya silme isteği", C, '    if (record.tokenExpired) return failedAtMeta(record, "expired", "erişim belirtecinin süresi dolmuş");', "", W],
+  ["M17 rota stopSending vermez", R, "    const removal = await connection.remove(user, { stopSending: () => queue?.stopForRemoval?.() || 0 });", "    const removal = await connection.remove(user, {});", W],
+  ["M18 bakım turu süresi dolmuşta da Meta'ya", C, '    if (!force && tokenStatus(record)?.state === "expired") return { skipped: "token-expired" };', "", W],
+  ["M19 Bağlantıyı Sına Süresi Doldu'yu kaldırmaz", C, "    saveResult({ lastTest: result, tokenVerifiedAt: result.at, tokenExpired: null }, record);", "    saveResult({ lastTest: result, tokenVerifiedAt: result.at }, record);", W],
+  ["M20 Meta 190 Süresi Doldu yazılmaz", C, "    write({ v: 1, ...current, tokenExpired: { at: iso(), code: Number(error.code), subcode: Number.isFinite(Number(error.subcode)) ? Number(error.subcode) : null } });", "", W],
+  ["M21 Kaldır Meta silme sonucu hep 'removed'", C, "    if (shared) {\n      // Çıkmaz yok", '    if (true) return { state: "removed", reason: "", message: "x" };\n    if (shared) {\n      // Çıkmaz yok', W],
+  ["M22 bitiş anı geçince Süresi Doldu yok (yalnız Meta)", C, "    const byClock = hasEnd && nowMs >= endMs;", "    const byClock = false;", W],
+  // ---- Bu turun düzeltmeleri ----
+  ["N1 ORTA-1: süre bildirimi sorusu yine 'veri' (mobil yükleme)", M, '  if (pathname === "/api/workspace/whatsapp/connection/expiry-notice") return null;', "", MOB],
+  ["N2 karar 19:15 yok: 190 §7a 13 yolunda (iş Başarısız)", Q, "    if (kind === \"pause\" && code === TOKEN_EXPIRED_CODE) {", "    if (false) {", W],
+  ["N3 190 alan iş Bekliyor'a dönmez (ileti aşamasında Gönderiliyor kalır)", Q, '      if (stage !== "check") updateJob(job.id, { state: "pending", next_at: null, sending_at: null, error_code: code, error_text: TOKEN_REJECTED_JOB });', "", W],
+  ["N4 190 duraklatma nedeni Meta'nın genel başlığı (Elle Bağla)", Q, "      const pause = connection.tokenRejectedPause?.() || { pauseCode: \"meta-token\", pauseReason: error.message };", "      const pause = { pauseCode: \"meta-token\", pauseReason: error.message };", W],
+  ["N5 Süresi Doldu olsa da yedek neden (meta-token)", C, '    if (block?.code === "whatsapp-token-expired") return { pauseCode: block.pauseCode, pauseReason: block.pauseReason };', "", W],
+  ["N6 yedek nedende yollar ters", C, '      read()?.mode === "embedded"\n', '      read()?.mode !== "embedded"\n', W],
+  ["N7 DÜŞÜK-2: silinen şirket de sayılır", R, " && exists(id));", ");", W],
+  ["N8a ortak WABA iletisinde veri silme adımı yok", C, ' Orada kaldıramıyorsanız ${DATA_DELETION_URL.replace(/^https:\\/\\//, "")} sayfasındaki adımları izleyin (öbür şirketin WhatsApp gönderimi de durur).`,', "`,", W],
+  ["N8b ortak WABA yanıtında veri silme bağlantısı yok", C, "        link: DATA_DELETION_URL,\n", "", W],
+  ["N9 DÜŞÜK-3: Kaldır kanca kaydına dokunmaz", C, '    if (meta.state === "removed") forgetHook(previous.wabaId);', "", W],
+  ["N10 kaldırılan kanca 'Kaydedilemedi' görünür (Kayıtlı Değil yerine)", C, "    if (!hook || hook.reason === HOOK_REMOVED) return {};", "    if (!hook) return {};", W],
+  ["N11 kaldırılan kanca adresi korunur (bakım saatlik bekler)", C, '      hooks.hookEvent({ ...hook, base: "", state: "failed"', '      hooks.hookEvent({ ...hook, state: "failed"', W],
+  ["N12 Meta tarafı uyarısında yollar ters", C, '${record.mode === "embedded" ? "DestekOfis uygulamasının', '${record.mode !== "embedded" ? "DestekOfis uygulamasının', W],
+];
+
+const only = process.argv[2] ? new RegExp(process.argv[2]) : null;
+writeFileSync(OUT, `# mutasyon koşusu ${new Date().toISOString()} kopya ${MUT} (temiz: ${PRISTINE})\n`, { flag: "a" });
+let caught = 0;
+let survived = 0;
+for (const [name, file, from, to, tests] of mutations) {
+  if (only && !only.test(name)) continue;
+  const target = path.join(MUT, file);
+  const text = readFileSync(target, "utf8");
+  const count = text.split(from).length - 1;
+  if (count !== 1) {
+    appendFileSync(OUT, `${name}: UYGULANAMADI (eşleşme ${count})\n`);
+    console.log(`${name}: UYGULANAMADI (${count})`);
+    continue;
+  }
+  writeFileSync(target, text.replace(from, to));
+  const run = spawnSync(process.execPath, ["--test", "--test-concurrency=1", ...tests], { cwd: MUT, env: { ...process.env, HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, encoding: "utf8", maxBuffer: 64 * 1024 * 1024, timeout: 900_000 });
+  copyFileSync(path.join(PRISTINE, file), target);
+  const out = `${run.stdout}\n${run.stderr}`;
+  const num = key => Number((out.match(new RegExp(`^# ${key} (\\d+)`, "m")) || [])[1] ?? NaN);
+  const failedNames = [...out.matchAll(/^ {4}not ok \d+ - (.{0,90})/gm)].map(m => m[1]);
+  const verdict = run.status !== 0 && num("fail") > 0 ? "YAKALANDI" : "SAĞ KALDI";
+  if (verdict === "YAKALANDI") caught += 1;
+  else survived += 1;
+  const line = `${name}: ${verdict} (çıkış ${run.status}, tests ${num("tests")}, fail ${num("fail")}, cancelled ${num("cancelled")}) ${failedNames.slice(0, 3).join(" | ")}`;
+  appendFileSync(OUT, `${line}\n`);
+  console.log(line);
+}
+const diff = spawnSync("diff", ["-rq", "--exclude=node_modules", "--exclude=data", path.join(PRISTINE, "server"), path.join(MUT, "server")], { encoding: "utf8" });
+const tail = `# özet: yakalandı ${caught}, sağ kaldı ${survived}; kopya geri koyma denetimi: ${diff.status === 0 ? "AYNI" : `FARKLI\n${diff.stdout}`}`;
+appendFileSync(OUT, `${tail}\n`);
+console.log(tail);
+process.exit(survived === 0 ? 0 : 1);

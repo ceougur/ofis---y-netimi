@@ -1,0 +1,43 @@
+{
+  "ad": "wkucuk-mut-WE1-belirtecsiz-dogrulama-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/whatsapp-we-webhook-bilgisi-250.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T06:27:58.252Z",
+  "sure_sn": 4.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 6,
+    "gecen": 4,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.0 WE — Elle Bağla webhook bilgileri: program gösterir, kurulum başına, gizli › WE-2 Meta doğrulaması: GET doğru belirteç → 200 challenge, yanlış / eksik → 403; POST 200 ama İŞLENMEZ (iş Meta Kabul Etti kalır, defterde teslim ve bildirim yolu işareti yok); WABA adresi aynen çalışır",
+      "konum": "test/whatsapp-we-webhook-bilgisi-250.test.mjs:74:3",
+      "hata": "yanlış belirteç · 200 !== 403 (beklenen 403, gelen 200)"
+    },
+    {
+      "ad": "2.5.0 WE — Elle Bağla webhook bilgileri: program gösterir, kurulum başına, gizli › WE-4 sızıntı yok: günlük, veri klasöründeki BÜTÜN dosyalar (şirket dosyası, makine defteri, WAL) ve yedek belirteci / gizli yolu AÇIK hâlde taşımaz; ayar yazılamazsa 503 + Türkçe ileti (değer yok)",
+      "konum": "test/whatsapp-we-webhook-bilgisi-250.test.mjs:139:3",
+      "hata": "Expected values to be strictly equal: · 200 !== 403 (beklenen 403, gelen 200)"
+    }
+  ],
+  "ham_cikti": "../wkucuk-kanit/2026-11-06/wkucuk-mut-WE1-belirtecsiz-dogrulama-UTC.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wkucuk-mut-WE1-belirtecsiz-dogrulama",
+  "ham_cikti_sha256": "8e38fbaf579ee51208ed9a8c7ec942e29b3f174838601412695e295a8d417ca5",
+  "ham_cikti_bayt": 5223
+}

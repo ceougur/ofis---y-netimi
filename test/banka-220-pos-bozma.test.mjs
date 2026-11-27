@@ -28,7 +28,8 @@ describe("POS seçimi: POS yoksa eski davranış (108.00); tek POS kendiliğinde
     await must("POS'lu tahsilat", collect(w.api, w.abc.id, { amount: "2.000" }));
     subs = await subBalances(w.api);
     assert.equal(kurus(subs["108.00"]?.balance || 0), kurus(1000), "eski satır 108.00'de kalır");
-    assert.equal(kurus(subs[pos.glSub]?.balance || 0), kurus(2000), "tek POS kendiliğinden seçildi");
+    // BEKLENTİ BİLEREK DEĞİŞTİ (2.5.0 Ç7a tur 2b, KG-6 = A — kullanıcı 05.11 17:16 (5): POS komisyonu satış (çekim) günü B 653 / A 108, valörde net): 2.000 − %2,5 = 1.950.
+    assert.equal(kurus(subs[pos.glSub]?.balance || 0), kurus(1950), "tek POS kendiliğinden seçildi (108.01 = net 1.950)");
     await posCheck(w.api, "önce/sonra");
   });
 
@@ -45,7 +46,8 @@ describe("POS seçimi: POS yoksa eski davranış (108.00); tek POS kendiliğinde
     expectStatus(await collect(w.api, w.abc.id, { amount: "300" }), 400, "pos-required", "iki POS");
     await must("seçili POS", collect(w.api, w.abc.id, { amount: "300", posId: second.id }));
     const subs = await subBalances(w.api);
-    assert.equal(kurus(subs["108.02"]?.balance || 0), kurus(300));
+    // BEKLENTİ BİLEREK DEĞİŞTİ (2.5.0 Ç7a tur 2b, KG-6 = A — kullanıcı 05.11 17:16 (5): POS komisyonu satış (çekim) günü B 653 / A 108, valörde net): 300 − %2,5 (7,50) = 292,50.
+    assert.equal(kurus(subs["108.02"]?.balance || 0), kurus(292.5));
     await posCheck(w.api, "iki POS");
   });
 });

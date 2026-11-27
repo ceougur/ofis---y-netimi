@@ -1,0 +1,158 @@
+{
+  "ad": "w3-surucu-eski-75f1aad9-disi-istanbul",
+  "komut": "node test/bagimsiz/whatsapp-248/surucu.mjs --senaryo CIFT-02-yanitsiz-yine-de-gonder,CIFT-09-basarisizlari-yeniden-dene,CIFT-13-veri-tasindi,KAYIP-05-meta-ulasilamaz,KAYIP-06-meta-ulasilamaz-uc-kisi,KISI-10-silindi-kuyrukta,ICERIK-04-turkce-emoji-satir-sonu,ICERIK-08-tum-hareketler,ICERIK-09-kuyrukta-bakiye-degisti,HESAP-0,ALICI-131049-iki-kez,SINIR-05-pencerede-sayili-alici,GUV-09-sahte-gercek-wamid,GUV-10-yetki-ve-baglanti-sirasi,GUV-11-yetki-lisans-onay-sirasi,K1-05-son-3-ay-7-gun,K1-06-tum-hareketler-7-gun,K2-02-tum-hareketler-bekleyen-yasi-yok-iptal-sonra,K6-01-yeniden-denemesi-belirsiz-elenir,K6-03-acilistan-once-belirsiz-geri-yukleme-sonrasi,K6-04-hic-basarisiz-olmamis-belirsiz-aday-degil,D3-02-yine-de-gonder-7-gun-yeni-gonderimden,D6-03-asilmis-belirsiz-son-3-ay-7-gun,D8-01-tasinan-veride-dosyadaki-ileti-sayilir,D8-02-tasinan-veride-yine-de-gonder,E1-01-dosyada-ve-defterde-belirsiz,E2-03-yeniden-denemede-kuyrukta-once-belirsiz,E4-02-tum-hareketler-sonraki-teslim-7-gun,G3-03-tasinan-teslim-son-3-ay-7-gun,G3-04-tasinan-asil-isin-yine-de-gonder-siniri,G4-01-sifirlama-meta-bekletti-sayilmaz,G4-02-sifirlama-meta-bekletti-gec-teslim-sayilir,G5-01-meta-bekletti-ikinci-deneme-belirsiz-elenir,G6-01-son-3-ay-ozel-aralik-7-gun,G6-02-ozel-aralik-tum-hareketler-kisiye-gore,G6-04-tum-hareketler-belirsiz-ozel-aralik,G6-05-son-3-ay-yeniden-deneme-asil-isin-gunu,H2-02-tasima-gonderiliyor-gec-kanca,H3-01-geri-yukleme-dosyasiz-gec-kabul,J1-01-duraklatilmis-meta-bekletti-teslim-is-kapanir,J1-03-silinmis-sirket-gec-bildirim,J1-04-asilmis-belirsiz-gec-teslim-iki-deneme,J1-05-asilmis-belirsiz-gec-teslim-yeni-deneme-basarisiz,J3-02-sifirlama-sonrasi-gec-failed-yeniden-gonderilir,J3-03-asilmis-belirsiz-gec-failed-kisi-almadi,J3-04-eski-denemenin-failed-i-simdiki-kabulu-bozmaz,J6-01-yanit-beklenirken-taninmayan-503-yineleme,J8-01-tum-hareketler-bu-ay-ayni-gun,J8-02-tum-hareketler-gecen-ay-ayni-gun,J8-03-tum-hareketler-kanon-sonraki-gun-bu-ay,J8-04-tum-hareketler-bekleyen-bu-ay-zaten-kuyrukta,J8-05-ay-sonu-tum-sonra-gecen-ay-gece-yarisi,J10-01-a-yine-de-gonder-sinirda-eski-teslim-gitmez,J10-02-a-yine-de-gonder-duraklatilmis-eski-teslim-gitmez,J10-03-c-belirsiz-zinciri-yeniden-deneme-eski-teslim-gitmez,J10-04-c-duz-yeniden-deneme-eski-teslim-ikinci-kopya-gider,J11-01-tum-hareketler-metni-acilis-gunu-sinirla-ertesi-gun,J11-02-hareketsiz-cari-metni-ve-eslik,J11-03-ertesi-gune-kayan-kisi-acilis-gunuyle-eslesir,J12-02-tum-hareketler-acilistan-sonra-tarihli-hareket-girmez,J12-03-tum-hareketler-sinirla-ertesi-gun-kuyrukta-hareket,SD1837-01-sure-dolunca-duraklar-yeniden-baglaninca-devam-yalniz-kalanlar,SD1837-02-yeniden-baglanmadan-devam-et-ileti-gitmez,SD1837-03-sure-dolunca-yeni-gonderim-baslamaz,SD1915-01-ileti-isteginde-190-bekleyenlere-doner,SD1915-02-pdf-yuklemesinde-190-bekleyenlere-doner,SD1915-03-meta-bekletti-ikinci-deneme-190-ilk-ileti-teslim-is-kapanir,SD1915-04-geri-yukleme-reddedilen-sayilmaz,SD1915-05-tasima-reddedilen-sayilmaz-kod-0,SW4-01-kod-0-ayni-sirketin-oburu-toplu-isi-de-duraklar,SW4-02-kod-0-pdf-yuklemesinde,S7-01-supheli-alacakli-otomatik-listeye-girmez,S7-02-supheli-alacakli-elle-secilir-suphelisiz-tutar,S7A-01-elle-supheli-suphesiz-gecikmis-yok-elenir,S7A-02-elle-supheli-kuyrukta-suphesiz-kapanir-gonderimde-atlanir,S7A-03-gece-yarisi-suphesiz-vade-yerel-gun,S7B-01-sinirda-supheli-acilan-atlanir-yeni-gonderimde-elle-gider,S7B-02-duraklatmada-supheli-acilan-atlanir-elle-secilen-gider,S7B-04-meta-bekletti-ikinci-denemede-supheli-atlanir,S7B-05-yeniden-denemede-supheli-atlanir-elle-isaret-tasinir,S16-01-yine-de-gonder-supheli-acik-elle-sayilir-suphesiz-tutarla-gider,S16-02-yine-de-gonder-suphesiz-tutar-yok-elenir-ertesi-gun-gider,S16-03-kayit-basmadan-once-kapanir-etiket-yok-butun-gecikmisle-gider,S16-04-s16-elle-isareti-zincirdeki-yeniden-denemeye-tasinir,S17-01-elle-supheli-suphesiz-net-borcla-sinirlanir,S17-02-gonderim-aninda-suphesiz-net-borc-yeniden-hesaplanir,NB5-01-net-borc-siniri-bize-alacakli-elenir,NB5-02-gonderim-aninda-bize-alacakli-atlanir-tutar-yeniden,S22-01-sinirda-bekleyen-yine-de-gonder-supheli-acilir-atlanir-yeniden-basma-gider,S22-02-duraklatildi-devam-et-atlanir-ayni-gun-yeni-is-belirsiz-yeniden-basma-gider,S22-03-zincirdeki-yeniden-denemede-supheli-atlanir-yeni-gonderimde-elle-gider,S22-04-kayit-gonderimden-once-kapanirsa-butun-gecikmisle-gider-acik-kalan-atlanir,S22-05-ay-sonu-gece-yarisi-atlanir-yerel-gunle-yeniden-basma,S22-06-meta-bekletti-ikinci-denemede-atlanir-yeniden-basma-gider,S23-01-sinirda-bekleyen-yeniden-basma-elle-sayilir-pencere-acilinca-gider,S23-02-duraklatildi-yeniden-basma-elle-devam-et-ile-gider-kayitsiz-zaten-kuyrukta,S23-03-zincirdeki-yeniden-deneme-beklerken-yeniden-basma-elle-gider,S23-04-meta-bekletti-beklerken-yeniden-basma-ikinci-denemede-gider,S23-05-yeniden-basmada-suphesiz-tutar-yok-iki-okuma-ileti-gitmez,S29-01-yeniden-basmada-tutar-yok-ertesi-gun-devam-et-gonderim-anindaki-tutarla-gider,S29-02-gece-yarisi-yerel-gun-tutar-dogar-utc-gunu-farkli,S29-03-meta-bekletti-ikinci-denemede-tutar-dogar-net-borcla-sinirli,S29-04-sinirda-yeni-gecikmis-kalem-eklenir-kayit-kapanirsa-butun-gecikmisle --uc hizli --tz Europe/Istanbul --cikti /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-kanit/surucu-eski-disi",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T11:18:13.779Z",
+  "sure_sn": 149.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 103,
+    "gecen": 0,
+    "basarisiz": 103,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 103 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "CIFT-02-yanitsiz-yine-de-gonder [hizli] (2 fark; davranış farkı 1; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "CIFT-09-basarisizlari-yeniden-dene [hizli] (3 fark; davranış farkı 1; gösterim: G1-borclu-eki 2)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "CIFT-13-veri-tasindi [hizli] (13 fark; davranış farkı 1; gösterim: G1-borclu-eki 1, G2-toplu-gosterim 3, G3-gonderilmeyen-icerik 8)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "KAYIP-05-meta-ulasilamaz [hizli] (26 fark; davranış farkı 26)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "KAYIP-06-meta-ulasilamaz-uc-kisi [hizli] (39 fark; davranış farkı 39)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "KISI-10-silindi-kuyrukta [hizli] (1 fark; davranış farkı 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "ICERIK-04-turkce-emoji-satir-sonu [hizli] (3 fark; davranış farkı 2; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "ICERIK-08-tum-hareketler [hizli] (3 fark; davranış farkı 2; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "ICERIK-09-kuyrukta-bakiye-degisti [hizli] (4 fark; davranış farkı 3; gösterim: G1-borclu-eki 2)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "HESAP-0 [hizli] (1 fark; davranış farkı 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "ALICI-131049-iki-kez [hizli] (2 fark; davranış farkı 1; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "SINIR-05-pencerede-sayili-alici [hizli] (4 fark; davranış farkı 1; gösterim: G1-borclu-eki 3)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "GUV-09-sahte-gercek-wamid [hizli] (8 fark; davranış farkı 7; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "GUV-10-yetki-ve-baglanti-sirasi [hizli] (2 fark; davranış farkı 2)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "GUV-11-yetki-lisans-onay-sirasi [hizli] (1 fark; davranış farkı 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "K1-05-son-3-ay-7-gun [hizli] (6 fark; davranış farkı 2; gösterim: G1-borclu-eki 4, G4-liste-icinde-ozel-yaprak 3)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "K1-06-tum-hareketler-7-gun [hizli] (6 fark; davranış farkı 4; gösterim: G1-borclu-eki 2)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "K2-02-tum-hareketler-bekleyen-yasi-yok-iptal-sonra [hizli] (10 fark; davranış farkı 4; gösterim: G1-borclu-eki 2, G3-gonderilmeyen-icerik 4)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "K6-01-yeniden-denemesi-belirsiz-elenir [hizli] (2 fark; davranış farkı 1; gösterim: G1-borclu-eki 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "K6-03-acilistan-once-belirsiz-geri-yukleme-sonrasi [hizli] (3 fark; davranış farkı 1; gösterim: G1-borclu-eki 2)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "K6-04-hic-basarisiz-olmamis-belirsiz-aday-degil [hizli] (3 fark; davranış farkı 1; gösterim: G1-borclu-eki 2)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "D3-02-yine-de-gonder-7-gun-yeni-gonderimden [hizli] (6 fark; davranış farkı 4; gösterim: G1-borclu-eki 2)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "D6-03-asilmis-belirsiz-son-3-ay-7-gun [hizli] (3 fark; davranış farkı 1; gösterim: G1-borclu-eki 2, G4-liste-icinde-ozel-yaprak 2)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "D8-01-tasinan-veride-dosyadaki-ileti-sayilir [hizli] (3 fark; davranış farkı 1; gösterim: G1-borclu-eki 2)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "D8-02-tasinan-veride-yine-de-gonder [hizli] (4 fark; davranış farkı 2; gösterim: G1-borclu-eki 2)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../w3-kanit/2026-11-06/w3-surucu-eski-75f1aad9-disi-istanbul.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/w3-eski-75f1aad9",
+  "ham_cikti_sha256": "7a5a23e1dc0c69400b1d3cb0720b9c43bb1c9443e2c812db6160742ec8dd35a4",
+  "ham_cikti_bayt": 56982
+}

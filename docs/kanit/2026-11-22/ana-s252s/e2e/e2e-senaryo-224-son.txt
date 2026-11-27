@@ -1,0 +1,25 @@
+  ✓ iki gönderim aynı istek kimliğiyle: 674a9fc6675825b8dd628191954efad3 · 674a9fc6675825b8dd628191954efad3
+  ✓ tek senet (1 senet)
+  ✓ ekran bildirimi: "Bu evrak zaten kaydedildi; ikinci kez yazılmadı."
+  ✓ senedi veren cari ekranda "₺650,00 Alacaklı" (beklenen 650,00 Alacaklı; bir kez)
+  ✓ Nakit Kasa değişmedi (evrak girişi para değil)
+
+■ 6a. K1: açık satış 600 → ekrandan 240 iade + 240 nakit geri ödeme → asıl fatura Açık 600, hayalet kapatan yok
+  ✓ iade faturası kaydedildi: IAD2026000000003 · 240
+  ✓ asıl fatura ekranda "Açık: ₺600,00" (beklenen Açık 600,00; K1 öncesi 360,00)
+  ✓ "Bu Faturayı Kapatanlar"da iadeden gelen "Fatura 240" yok ([])
+  ✓ iade kartı kapandı ("İade")
+  ✓ API ile aynı: fatura açık 600 / ödenen 0, iade açık 0, cari 600 (beklenen 600 / 0 / 0 / 600)
+
+■ 6b. K1: tamamı peşin satış 600 → ekrandan 240 iade (geri ödenmez) → iade kartında müşterinin alacağı 240; Açık Faturalar borç 240
+  ✓ iade faturası kaydedildi: IAD2026000000004
+  ✓ asıl fatura ekranda "Ödendi" (beklenen kapandı)
+  ✓ iade kartında "Mahsup edilmemiş iade (müşterinin alacağı): ₺240,00" (beklenen müşterinin alacağı 240,00)
+  ✓ Açık Faturalar: Açık Borç 240,00, iade satırı ["22.11.2026","IAD2026000000004","Borç (Satıştan İade)","K1 Peşin Müşteri","22.11.2026","240,00 TL","240,00 TL","","Vadesi Gelmemiş"]
+  ✓ API: iade açık 240, cari -240 (beklenen 240 / −240)
+
+■ Mutabakat
+  ✓ ana defter ↔ Kasa/Cari/Stok/Taksit/Çek tutarlı
+  ✓ sayfa hatası yok
+
+TAMAM: 69 denetim geçti, 0 başarısız.

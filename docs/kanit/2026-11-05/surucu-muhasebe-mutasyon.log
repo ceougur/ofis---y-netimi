@@ -1,0 +1,27 @@
+s01-satis-tahsilat-nakit [TZ=Europe/Istanbul]: 9 olay · yapıldı 5 · red 1 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 31 ms
+    s01-satis-tahsilat-nakit [Europe/Istanbul] öz denetim TAMAM · AYNI 15 · U 6 · P 0 · K 0 · R 0 · SINIFLANMADI 0 · red farkı 1 · adım farkı 0 (sınıfsız 0)  (1 sn + 0 sn)
+s11-kasa-carisiz-kg3 [TZ=Europe/Istanbul]: 18 olay · yapıldı 14 · red 1 · api_yok 0 · uygulanmadı 0 · sürücü hatası 0 · olay döngüsü en çok 30 ms
+    s11-kasa-carisiz-kg3 [Europe/Istanbul] öz denetim TAMAM · AYNI 18 · U 9 · P 0 · K 0 · R 0 · SINIFLANMADI 6 · red farkı 0 · adım farkı 1 (sınıfsız 1)  (2 sn + 0 sn)
+
+AYNI 33 · U 15 · P 0 · K 1 · R 0 · SINIFLANMADI 6 · red farkı 1 · uygulanamayan olay 0 · sınıfsız adım farkı 1 · değişmez 0 · öz denetim bozuk 0 · koşu hatası 0
+Ölçüm (olay döngüsü en çok, ms): s01-satis-tahsilat-nakit [Europe/Istanbul] 31 (koşu 1 sn; GET ledger ort 4 / en çok 6 ms) · s11-kasa-carisiz-kg3 [Europe/Istanbul] 30 (koşu 2 sn; GET ledger ort 4 / en çok 9 ms)
+U etiketleri: C5-ACILIS-519 12 · KG3-KAYIT 3
+
+FARKLAR (9; ilk 200):
+  s01-satis-tahsilat-nakit [Europe/Istanbul] RED #3 tahsilat: kâhin kabul · program 409 ledger-integrity → SINIFLANMADI
+  s11-kasa-carisiz-kg3 [Europe/Istanbul] RED #8 hesapsiz_hareket: kâhin kabul · program 400 bank-account-required → K
+  s11-kasa-carisiz-kg3 [Europe/Istanbul] ADIM 3 kasa_giris  {"ana":{"602":-20000,"649":20000}} → SINIFLANMADI
+  s11-kasa-carisiz-kg3 [Europe/Istanbul] gt ana:602 program -50000 · kâhin 0 · bugün -30000 → SINIFLANMADI
+  s11-kasa-carisiz-kg3 [Europe/Istanbul] gt ana:649 program 0 · kâhin -20000 · bugün -20000 → SINIFLANMADI
+  s11-kasa-carisiz-kg3 [Europe/Istanbul] mz ana:602 program -50000 · kâhin 0 · bugün -30000 → SINIFLANMADI
+  s11-kasa-carisiz-kg3 [Europe/Istanbul] mz ana:649 program 0 · kâhin -20000 · bugün -20000 → SINIFLANMADI
+  s11-kasa-carisiz-kg3 [Europe/Istanbul] son ana:602 program -50000 · kâhin 0 · bugün -30000 → SINIFLANMADI
+  s11-kasa-carisiz-kg3 [Europe/Istanbul] son ana:649 program 0 · kâhin -20000 · bugün -20000 → SINIFLANMADI
+
+# tests 57
+# pass 48
+# fail 9
+# cancelled 0
+# skipped 0
+# todo 0
+Çıktı: /home/user/ofis---y-netimi/.claude/worktrees/agent-a64680bb6bb82a79e/docs/kanit/2026-11-05/surucu-muhasebe-mutasyon

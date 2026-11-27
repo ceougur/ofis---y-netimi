@@ -1,0 +1,46 @@
+d37-c5-s126-faturali-kart  mutant 261:   9 elle değer kırmızı · L18, l18x, l18y
+d37-c5-s126-faturali-kart  mutant 262:   9 elle değer kırmızı · L18, l18x, l18y
+d37-c5-s126-faturali-kart  mutant 263:  18 elle değer kırmızı · L18, l18x, l18y
+d37-c5-s126-faturali-kart  mutant 264:   0 elle değer kırmızı · -
+d37-c5-s126-faturali-kart  mutant 265:  31 elle değer kırmızı · L1, L10, L12, L13, L15, L16a, L2, L3, L5, L6, L7, L8, L9, l10x, l13c, l16a, l17x, l17y, l18x, l18y, l1x, l2x, l3x, l5x, l6x, l7x, l8x, l9x
+d37-c5-s126-faturali-kart  mutant 266:  31 elle değer kırmızı · L1, L10, L12, L13, L15, L16a, L2, L3, L5, L6, L7, L8, L9, l10x, l13c, l16a, l17x, l17y, l18x, l18y, l1x, l2x, l3x, l5x, l6x, l7x, l8x, l9x
+d37-c5-s126-faturali-kart  mutant 267:  23 elle değer kırmızı · L13, L13b, L3, L4, L5, L7, l13b, l3x, l4x, l5x, l7x
+d37-c5-s126-faturali-kart  mutant 268:   0 elle değer kırmızı · -
+d37-c5-s126-faturali-kart  mutant 269:  63 elle değer kırmızı · L1, L10, L12, L13, L15, L16a, L17, L18, L2, L3, L4, L5, L6, L7, L8, L9
+d37-c5-s126-faturali-kart  mutant 270:  18 elle değer kırmızı · L1, L10, L16a, L2, L3, L5, L7, L8, L9, l10x, l16a, l1x, l2x, l3x, l5x, l7x, l8x, l9x
+d37-c5-s126-faturali-kart  mutant 271:  20 elle değer kırmızı · L13, L13b, L15, L3, L4, L5, L6, L7, l13b, l13c, l3x, l4x, l5x, l6x, l7x
+d37-c5-s126-faturali-kart  mutant 272:  39 elle değer kırmızı · L1, L10, L12, L13, L13b, L16a, L2, L3, L4, L5, L7, L8, L9, l10x, l16a, l1x, l2x, l3x, l5x, l7x, l8x, l9x
+d37-c5-s126-faturali-kart  mutant 273:  12 elle değer kırmızı · L1, L10, L12, L13b, L16a, L2, L3, L4, L5, L7, L8, L9
+d37-c5-s126-faturali-kart  mutant 274:  21 elle değer kırmızı · L1, L11, L12, L13, L13c, L15, L16a, L6, L7, L8, L9
+d36-c5-s122-kart-odemesi   mutant 261:  86 elle değer kırmızı · J1, J10, J11, J17a, J2, J3, J4, J5, J6, J8, j10b, j11b, j17a, j1x, j1y, j2x, j2y, j3x, j3y, j4x, j4y, j5x, j5y, j5z, j6y, j7x, j7y, j8x, j8y, j9x, j9y
+d36-c5-s122-kart-odemesi   mutant 262:  86 elle değer kırmızı · J1, J10, J11, J17a, J2, J3, J4, J5, J6, J8, j10b, j11b, j17a, j1x, j1y, j2x, j2y, j3x, j3y, j4x, j4y, j5x, j5y, j5z, j6y, j7x, j7y, j8x, j8y, j9x, j9y
+d36-c5-s122-kart-odemesi   mutant 263: 174 elle değer kırmızı · J1, J17a, J2, J4, J5, J6, J7, J8, J9, j17a, j1x, j1y, j2x, j2y, j3x, j3y, j4x, j4y, j5x, j5y, j5z, j6x, j6y, j7x, j7y, j8x, j8y, j9x, j9y
+d36-c5-s122-kart-odemesi   mutant 264:   0 elle değer kırmızı · -
+d36-c5-s122-kart-odemesi   mutant 265:  22 elle değer kırmızı · J13, j12x, j12y, j13x, j17a, j1x, j1y, j2x, j2y, j4x, j4y, j5x, j5z, j6x, j6y, j7x, j7y, j8x, j8y, j9x, j9y
+d36-c5-s122-kart-odemesi   mutant 266:  23 elle değer kırmızı · J13, j12x, j12y, j13x, j17a, j1x, j1y, j2x, j2y, j4x, j4y, j5x, j5y, j5z, j6x, j6y, j7x, j7y, j8x, j8y, j9x, j9y
+d36-c5-s122-kart-odemesi   mutant 267:  33 elle değer kırmızı · J11, J11b, j11b, j2x, j2y, j3x, j3y, j4x, j4y, j5x, j5y, j5z, j7x, j7y, j9x, j9y
+d36-c5-s122-kart-odemesi   mutant 268:  16 elle değer kırmızı · J2, J3, J4, J5, j2y, j3y, j4y, j5z
+d36-c5-s122-kart-odemesi   mutant 269:  51 elle değer kırmızı · J1, J11, J12, J13, J17a, J2, J3, J4, J5, J6, J7, J8, J9
+d36-c5-s122-kart-odemesi   mutant 270:   2 elle değer kırmızı · J13, j13x
+d36-c5-s122-kart-odemesi   mutant 271:   0 elle değer kırmızı · -
+d36-c5-s122-kart-odemesi   mutant 272:   2 elle değer kırmızı · J13, j13x
+d36-c5-s122-kart-odemesi   mutant 273:   1 elle değer kırmızı · J13
+d36-c5-s122-kart-odemesi   mutant 274:   2 elle değer kırmızı · J13
+d35-c5-s120-elle-borclar   mutant 261:  68 elle değer kırmızı · H1, H10, H11, H12, H13, H14, H15a, H2, H4, H5, H6, H7, H9, h10x, h10y, h11x, h11y, h12x, h12y, h13x, h13y, h14x, h14y, h15a, h1x, h1y, h2x, h4b, h5y, h6a, h7x, h7y, h9b
+d35-c5-s120-elle-borclar   mutant 262:  64 elle değer kırmızı · H1, H10, H11, H12, H13, H14, H15a, H2, H5, H6, H7, H9, h10x, h10y, h11x, h11y, h12x, h12y, h13x, h13y, h14x, h14y, h15a, h1x, h1y, h2x, h5y, h6a, h7x, h7y, h9b
+d35-c5-s120-elle-borclar   mutant 263:  92 elle değer kırmızı · H10, H11, H5, h10x, h10y, h11x, h11y, h12x, h12y, h13x, h13y, h14x, h14y, h15a, h1x, h1y, h2x, h2y, h5y, h6a, h9b
+d35-c5-s120-elle-borclar   mutant 264:   6 elle değer kırmızı · h4a
+d35-c5-s120-elle-borclar   mutant 265:   4 elle değer kırmızı · h10x, h10y, h11x, h11y
+d35-c5-s120-elle-borclar   mutant 266:   4 elle değer kırmızı · h10x, h10y, h11x, h11y
+d35-c5-s120-elle-borclar   mutant 267:   0 elle değer kırmızı · -
+d35-c5-s120-elle-borclar   mutant 268:   0 elle değer kırmızı · -
+d35-c5-s120-elle-borclar   mutant 269:   6 elle değer kırmızı · H10, H11
+d35-c5-s120-elle-borclar   mutant 270:   0 elle değer kırmızı · -
+d35-c5-s120-elle-borclar   mutant 271:   0 elle değer kırmızı · -
+d35-c5-s120-elle-borclar   mutant 272:   0 elle değer kırmızı · -
+d35-c5-s120-elle-borclar   mutant 273:   0 elle değer kırmızı · -
+d35-c5-s120-elle-borclar   mutant 274:   0 elle değer kırmızı · -
+# tests 42
+# pass 42
+# fail 0
+42/42 denetim geçti

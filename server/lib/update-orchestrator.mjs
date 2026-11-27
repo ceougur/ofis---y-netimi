@@ -58,6 +58,15 @@ export function createUpdateOrchestrator({ updater, controller, appsDir, running
   let retryIndex = 0;
   let stopped = false;
   const now = () => new Date().toISOString();
+  // 2.5.0 D2 (DEVIR-PLANI G1.1; docs/devir/D2-ALTYAPI-TASARIM.md §5.3): uygulama bir şirketi BAKIM KİPİNE (yıl sonu devri) alınca "update:hold" ister; tutma
+  // varken güncelleme KURULMAZ (kendiliğinden, ertelenmiş ya da "Şimdi Güncelle"). Tutma SÜRELİDİR (uygulama kip sürdükçe yeniler): uygulama ölürse düşer.
+  const holds = new Map(); // anahtar (şirket kimliği) → bitiş (ms)
+  const HOLD_MAX_MS = 2 * 60 * 60_000;
+  const held = () => {
+    const at = Date.now();
+    for (const [key, until] of holds) if (until <= at) holds.delete(key);
+    return holds.size > 0;
+  };
   // Bulunan sürüm çalışan uygulamadan gerçekten yeni mi? (Servis yöneticisi yeniden başlamadan sürüm değişmiş olabilir.)
   const newer = found => Boolean(found?.version) && compareVersions(found.version, controller.appVersion()) > 0;
 
@@ -120,7 +129,7 @@ export function createUpdateOrchestrator({ updater, controller, appsDir, running
     if (auto && !stopped) withdrawPreparedIfGone(result);
     if (auto && !stopped) {
       if (result.status === "available" && newer(result)) {
-        if (updater.config().enabled && (quietTime() || !controller.busy?.())) install(result);
+        if (updater.config().enabled && !held() && (quietTime() || !controller.busy?.())) install(result);
         else {
           defer(result);
           if (updater.config().enabled) prepareLater(result);
@@ -156,7 +165,7 @@ export function createUpdateOrchestrator({ updater, controller, appsDir, running
     deferTimer = setTimeout(() => {
       // Bu arada yönetici "kendiliğinden kur"u kapattıysa ertelenen sürüm kurulmaz (yalnız "hazır" görünür).
       if (stopped || job || !updater.config().enabled) return;
-      if (status.lastFound && newer(status.lastFound) && (quietTime() || !controller.busy?.())) install(status.lastFound);
+      if (status.lastFound && newer(status.lastFound) && !held() && (quietTime() || !controller.busy?.())) install(status.lastFound);
       else runCheck({ auto: true }).catch(() => {});
     }, deferRecheckMs);
     deferTimer.unref?.();
@@ -236,6 +245,14 @@ export function createUpdateOrchestrator({ updater, controller, appsDir, running
     } catch (error) {
       log.error("Veritabanı güncelleme öncesi hâline döndürülemedi", error);
     }
+    // 2.5.0 BS-7: 001 dışındaki şirketler — deneme sırasında yeni sürümün göç ettirdiği her şirket kendi güncelleme öncesi yedeğine döner (yedeği yoksa
+    // şirket yeni şemada kalır ve uygulamanın şema kapısı onu yalnız görüntülenir açar).
+    try {
+      const restored = controller.restoreCompanies?.(info.companies, `basarisiz-guncelleme-${info.version}`) || [];
+      if (restored.length) log.info(`Güncelleme öncesi yedeğe döndürülen öbür şirketler: ${restored.join(", ")}`);
+    } catch (error) {
+      log.error("Öbür şirketler güncelleme öncesi hâline döndürülemedi", error);
+    }
     updater.rollback({ version: info.version, previous: info.previous, reason });
     updater.discardPrepared?.({ protectedDirs: [previousDir, runningDir] });
     controller.setAppDir(previousDir);
@@ -276,6 +293,12 @@ export function createUpdateOrchestrator({ updater, controller, appsDir, running
         if (stopped || controller.stopping()) return;
         // Eski sürüm hâlâ açılıyorsa (ör. veritabanı göçü) yarıda kesmemek için hazır olmasını bekle.
         await controller.waitReady?.(30_000);
+        // 2.5.0 D2: indirme sürerken bir şirket bakım kipine (devir) girdiyse eski sürüm durdurulmaz — kurulum burada bırakılır (periyodik denetim yeniden bulur).
+        if (held()) {
+          status.lastResult = { outcome: "held", version, reason: "Bir şirkette yıl sonu devri sürüyor; güncelleme devir bitince kurulacak.", at: now() };
+          log.info(`${version} sürümü kurulmadı: bir şirkette bakım (yıl sonu devri) sürüyor; devir bitince yeniden denenecek.`);
+          return;
+        }
         status.state = "switching";
         controller.setPhase("updating", `${version} sürümüne geçiliyor`);
         await controller.stop();
@@ -286,10 +309,17 @@ export function createUpdateOrchestrator({ updater, controller, appsDir, running
         } catch (error) {
           throw new UpdateError(`Güncelleme öncesi veritabanı yedeği alınamadı: ${error.message}`, "BACKUP_FAILED");
         }
-        updater.activate({ version, previous: from, backup: backup?.name, schemaBefore });
+        // 2.5.0 BS-7: öbür şirketlerin şeması + güncelleme öncesi yedeği (alınamayan şirket güncellemeyi durdurmaz; kapı korur).
+        let companies = [];
+        try {
+          companies = controller.backupCompanies?.(`guncelleme-oncesi-${from}`) || [];
+        } catch (error) {
+          log.warn?.(`Öbür şirketlerin güncelleme öncesi yedeği alınamadı: ${error.message}`);
+        }
+        updater.activate({ version, previous: from, backup: backup?.name, schemaBefore, companies });
         activated = true;
         controller.setAppDir(dir);
-        await trial({ version, previous: from, previousDir: fromDir, backup: backup?.name, schemaBefore });
+        await trial({ version, previous: from, previousDir: fromDir, backup: backup?.name, schemaBefore, companies });
       } catch (error) {
         const reason = error instanceof UpdateError ? error.message : `Beklenmeyen hata: ${error.message}`;
         status.lastResult = { outcome: "failed", version, reason, at: now() };
@@ -326,7 +356,7 @@ export function createUpdateOrchestrator({ updater, controller, appsDir, running
     if (current?.pending && current.version === controller.appVersion()) {
       log.info(`${current.version} sürümü önceki açılışta etkinleştirilmiş ama onaylanmamış; deneme açılışı yapılıyor.`);
       controller.setPhase("updating", `${current.version} sürümü doğrulanıyor`);
-      await trial({ version: current.version, previous: current.previous, backup: current.backup, schemaBefore: current.schemaBefore });
+      await trial({ version: current.version, previous: current.previous, backup: current.backup, schemaBefore: current.schemaBefore, companies: current.companies });
     } else {
       checkedAtStartup = await installPreparedAtStartup();
       if (!controller.isRunning() && !stopped) await controller.start();
@@ -403,8 +433,18 @@ export function createUpdateOrchestrator({ updater, controller, appsDir, running
       } else if (!updater.config().enabled) clearTimeout(deferTimer);
       return publicStatus();
     }
+    if (action === "hold") {
+      // 2.5.0 D2: { key, on, ttlMs } — switching: güncelleme şu an eski sürümü durdurma / yeni sürümü açma adımında (uygulama bakım kipini açmaz).
+      const key = String(payload.key || "").slice(0, 120);
+      if (!key) throw new UpdateError("Tutma anahtarı gerekli.", "BAD_REQUEST");
+      if (payload.on) holds.set(key, Date.now() + Math.max(60_000, Math.min(HOLD_MAX_MS, Number(payload.ttlMs) || 30 * 60_000)));
+      else holds.delete(key);
+      held();
+      return { held: [...holds.keys()], switching: status.state === "switching" };
+    }
     if (action === "apply") {
       if (job) throw new UpdateError("Bir güncelleme zaten sürüyor.", "BUSY");
+      if (held()) throw new UpdateError("Bir şirkette yıl sonu devri sürüyor; güncelleme devir bitince kurulabilir.", "MAINTENANCE");
       if (payload.retryFailed) {
         // Yönetici daha önce kurulamayan sürümü yeniden denemek istedi.
         for (const version of Object.keys(updater.state().failed)) updater.clearFailure(version);

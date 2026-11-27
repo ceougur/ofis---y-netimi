@@ -1,0 +1,15 @@
+✓ iki taslak toplu kesildi
+✓ toplu kesilen belge cariye işlendi (360)
+✓ Seçilenleri İptal Et (2) düğmesi
+✓ iki belge toplu iptal edildi
+✓ iptalle cari borcu geri alındı
+✓ mutabakat kapısı tutarlı
+
+■ 14. Fatura Ayarları: logo yüklenir (JPEG'e çevrilir), kaşe / imza seçeneği; PDF'te logo
+✓ kaşe / imza kutuları varsayılan açık
+✓ PNG logo tarayıcıda JPEG'e çevrildi
+✓ logo ayarlara kaydedildi
+✓ kaşe / imza ayarı kaydedildi
+✓ satış PDF'inde logo görseli gömülü
+
+73 / 73 kontrol geçti.

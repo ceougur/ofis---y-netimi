@@ -1,0 +1,31 @@
+#!/bin/bash
+# TEK ADAY DÜZELTME TURU — HIZ (ders 15, 47, 52, 53 (a)). Taban = t3duz-taban (ayrı kopya), yeni = ajanın worktree'si.
+# Çağrı: timeout -k 5 7000 bash hiz.sh hazirla           (veri: taban koduyla; ortak kilit)
+#        timeout -k 5 7000 bash hiz.sh <kilitsiz|kilitli> [tekrar=5]   (ÖZEL kilit, tek seferlik bekler; blok: taban → yeni → taban → yeni, her biri taze kopyada)
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad; N=$S/ana-t3duz; V=/dev/shm/ana-t3duz
+TAB=$V/taban; YENI=$V/yeni
+export HUKUK_LICENSE_URL=http://127.0.0.1:9 TZ=Europe/Istanbul
+KIP=${1:-kilitsiz}; T=${2:-5}
+if [ "$KIP" = hazirla ]; then
+  exec 9>"$S/olcum.lock"; flock -s -w 3600 9 || { echo "KİLİT ALINAMADI"; exit 3; }
+  mkdir -p $V && rm -rf $V/hazir && cp -a $S/ana-kabul/temiz-100k $V/hazir || exit 1
+  timeout -k 5 3000 node --max-old-space-size=8192 --disable-warning=ExperimentalWarning $S/c7a-t2b/olcum/tohum.mjs $TAB $V/hazir 26 > $N/hiz/tohum.log 2>&1; echo "tohum çıkış $? · $(tail -1 $N/hiz/tohum.log | cut -c1-200)"
+  timeout -k 5 1800 node --disable-warning=ExperimentalWarning $S/c5a3c-k7/olc-hazir.mjs $TAB $V/hazir > $N/hiz/hazir.log 2>&1; echo "şüpheli hazır çıkış $? · $(tail -1 $N/hiz/hazir.log | cut -c1-200)"
+  exit 0
+fi
+[ -d $V/hazir/data ] || { echo "veri yok — önce: hiz.sh hazirla"; exit 2; }
+exec 9>"$S/olcum.lock"; flock -x -w 1800 9 || { echo "KİLİT ALINAMADI — ÖLÇÜLEMEDİ"; exit 3; }
+OUT=$N/hiz/hiz-$KIP.txt
+echo "HIZ t3duz · $KIP · tekrar $T · kilit $(date -u +%H:%M:%S) · başta $(cat /proc/loadavg) · nproc $(nproc) · yeni t3duz-uc 46217d81 (ürün = 7aa16bdf)" > $OUT
+for k in taban:$TAB yeni:$YENI taban:$TAB yeni:$YENI; do
+  kn=${k%%:*}; R=${k#*:}; K=$V/kopya
+  rm -rf $K && cp -a $V/hazir $K || exit 1
+  [ "$KIP" = kilitli ] && { python3 -I $S/c5a2-olcum/kilit.py $K/data/destekofis.sqlite >> $OUT || exit 1; }
+  sync; for w in $(seq 1 60); do awk '{exit !($1<1.5)}' /proc/loadavg && break; sleep 10; done
+  sync; l0=$(cut -d' ' -f1 /proc/loadavg)
+  echo "=== $kn · başta $(cat /proc/loadavg) $(awk -v l=$l0 'BEGIN{print (l>2)?"· GEÇERSİZ (yük > 2)":""}')" >> $OUT
+  timeout -k 5 2400 node --max-old-space-size=8192 --disable-warning=ExperimentalWarning $N/hiz/olc-t3duz.mjs "$R" $K $T >> $OUT 2>&1
+  echo "çıkış $? · sonda $(cat /proc/loadavg) $(awk '{print ($1>2)?"· GEÇERSİZ (sonda yük > 2)":""}' /proc/loadavg)" >> $OUT
+done
+rm -rf $V/kopya
+echo "bitti $(date -u +%H:%M:%S) · $(grep -c 'GEÇERSİZ' $OUT) geçersiz · çıkışlar: $(grep -o '^çıkış [0-9]*' $OUT | tr '\n' ' ')" | tee -a $OUT

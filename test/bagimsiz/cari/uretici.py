@@ -30,6 +30,9 @@ BURASI = os.path.dirname(os.path.abspath(__file__))
 _spec = importlib.util.spec_from_file_location("kahin_cari_model", os.path.join(BURASI, "model.py"))
 M = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(M)
+# 2.5.0 (06.11.2026, KARARLAR.md §13): üretimdeki kısıtlar (bağlı tahsilatın üst sınırı = faturanın o anki açığı vb.) 2.4.9 modeliyle hesaplanır — rastgele senaryolar bayt bayt
+# aynı kalır; 2.5.0 kâhini onları kendi kuralıyla (tek yükümlülük kuyruğu) değerlendirir (açığı aşan bağlı tahsilatın fazlası bağsız alacaktır — C13.4 (3)).
+URETIM_KURALI = "2.4.9"
 
 
 def tl(k):
@@ -186,7 +189,7 @@ def uret(tohum, islem):
     kontrol = 0
 
     def durum():
-        m = M.Model(dict(sen, adimlar=list(adimlar)))
+        m = M.Model(dict(sen, adimlar=list(adimlar)), kural=URETIM_KURALI)
         for a in adimlar:
             if a["islem"] != "kontrol":
                 getattr(m, a["islem"])(a)
@@ -336,7 +339,7 @@ def uret_s1(tohum, islem):
     kontrol = 0
 
     def durum():
-        m = M.Model(dict(sen, adimlar=list(adimlar)))
+        m = M.Model(dict(sen, adimlar=list(adimlar)), kural=URETIM_KURALI)
         m.kos()
         return m
 

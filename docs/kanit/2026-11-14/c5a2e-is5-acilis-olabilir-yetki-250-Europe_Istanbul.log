@@ -1,0 +1,13 @@
+▶ Ç5-A tur 2e DÜŞÜK-4 — kilitli dönemdeki adayın kararı yalnız yöneticide
+  ✔ rol × uç × kilitli / açık: Avukat ve Muhasebe kilitli adaya (kilit günü dahil) tek karar ve geri alma 403, açık adaya 200; personel her uçta 403; okuma uçları değişmez (75.536982ms)
+  ✔ toplu: seçimde kilitli kayıt varsa İŞLEM BÜTÜN reddedilir (açık kayıt da yazılmaz), ileti yöneticiye kalan kayıtları sayar; yalnız açık kayıtlar 200; yönetici kilitliyi toplu karara alır (37.773264ms)
+  ✔ kilit SONRADAN ilerleyip kararı kapsarsa geri alma yöneticide; kilit kaldırılınca bugünkü yetki geri gelir (199.043533ms)
+✔ Ç5-A tur 2e DÜŞÜK-4 — kilitli dönemdeki adayın kararı yalnız yöneticide (1440.900854ms)
+ℹ tests 3
+ℹ suites 1
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1749.034521

@@ -1,0 +1,21 @@
+WK 17 — WhatsApp kâhini güncellemesi 17 (2.5.0): S34, S35, S36, S37 (= B), S38 + S33, S41 — kanıt dosyaları
+Kâhin: test/bagimsiz/whatsapp-248/kahin/ (README §22). Kod commit'i bb920588 (yorum commit'i 12c3a55d, taban 7d6c6369 → 0b6f8136 hızlı ileri).
+Bütün koşular temiz ağaçta bb920588'den (wk17-kahin-ilk-kos-degismez-kirmizi hariç: 12c3a55d + çalışma ağacı, kodlama sırasında).
+Program koduna karşı KOŞULMADI (kodu görmeyen kâhin; sürücü ve sahte Meta açılmadı).
+
+Dosya                                              | Ne                                                                                                  | Sonuç
+wk17-senaryolar.{log,json}                         | TZ=UTC python3 -I kahin/senaryolar.py (elle beklenen = model; senaryolar.json yazar)                 | 367/367, çıkış 0
+wk17-senaryolar-tz-istanbul.{log,json}             | aynı, TZ=Europe/Istanbul                                                                            | 367/367, çıkış 0; senaryolar.json iki koşuda aynı sha256 9da42a83…
+wk17-kahin.{log,json}                              | TZ=UTC python3 -I kahin/kahin_test.py (A–I + F mutasyon)                                             | 397/397, F 249/249, çıkış 0
+wk17-kahin-tz-istanbul.{log,json}                  | aynı, TZ=Europe/Istanbul                                                                            | 397/397, çıkış 0
+wk17-kahin-ilk-kos-degismez-kirmizi.{log,json}     | kodlama sırasındaki ilk koşu (12c3a55d + ağaç)                                                      | 395/397 KIRMIZI: C değişmezi "'Bu Ay' = Teslim + Okundu iş" S35-01'de (talep anında kapanan Meta Bekletti işinin 1. iletisine geç teslim — README §22 Y17-9); değişmez J10 istisnasının kardeşiyle genişletildi (README §22.10). O koşuda M21 / M64 bu sahte kırmızıyla "yakalanmış" görünüyordu; düzeltmeden sonra eski senaryolarında (SINIR-02, OLCEK-05) değerle yakalanıyor
+wk17-eski-kahinle-yeni-senaryolar.txt              | yeni 14 + değişen 4 senaryonun elle beklenenine ESKİ kâhin (taban 7d6c6369 kopyası, sha256 426498d0…) | 13 KIRMIZI (S34 ×2 "S16 elemenin anı … kodlanmadı", S35 ×2 "S30-a … kodlanmadı", S37 ×2 "S31-a … kodlanmadı", S38 ×2 ve S33-02 değerle, değişen 4 değerle), 5 AYNI (S36 ×2, S33-01, S41 ×2 — README §22.11)
+wk17-eski-kahinle-yeni-senaryolar-tz-istanbul.txt  | aynı, TZ=Europe/Istanbul                                                                            | aynı sonuç
+wk17-eski-kahinle-yeni-senaryolar-notr.txt         | eski kâhinin YALNIZ üç hata satırı etkisiz nötr kopyası (kural eklenmedi)                           | 11 KIRMIZI, 7 AYNI (S37 ×2 nötrde AYNI: karar yokken düşülecek yol S37'nin B'si — dişi M243 / M244)
+wk17-eski-353-tam-sonuc-fark.txt                   | eski 353 senaryonun TAM kaydı (girdi, elle, beklenen, başlık, açıklama, kaynak) eski ↔ yeni senaryolar.json | 349 bayt bayt aynı, 4 değişti (S16-02, S30-01/02/03), sıra korunuyor; üst alanda yalnız kararlar'a 7 karar eklendi
+wk17-degisen-4-yaprak-fark.txt                     | değişen 4'ün beklenen yaprak farkı                                                                  | her değişen yaprak secenek → modelin ilk okuması (14 yaprak), başka fark yok
+wk17-mutant-matrisi.txt                            | yeni 14 + değişen 4 senaryo × 35 mutant (15 yeni + ilgili 20 eski)                                   | 15 yeni mutantın hepsi DEĞERLE yakalanıyor; istisnayla 0
+wk17-araclar/                                      | eski_tam_sonuc_fark.py, yaprak_fark.py, eski_kahinle.py (--notr), mutant_matrisi.py, kanit-uret.sh, kanit-kos-hepsi.sh | koşuları üreten betikler (not defteri yolları sabit)
+
+Yeniden üretme (depo kökünden): node tools/kanit.mjs kos wk17-kahin -- python3 -I test/bagimsiz/whatsapp-248/kahin/kahin_test.py (iki TZ ile);
+eski kâhin kopyası: git archive 7d6c6369 test/bagimsiz/whatsapp-248/kahin | tar -x (ayrı klasöre), sonra wk17-araclar/eski_kahinle.py <yeni kahin klasörü> <eski kahin.py> [--notr <yol>].

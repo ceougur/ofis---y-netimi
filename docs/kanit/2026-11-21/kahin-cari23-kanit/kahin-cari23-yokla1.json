@@ -1,0 +1,88 @@
+{
+  "ad": "kahin-cari23-yokla1",
+  "komut": "node test/bagimsiz/cari/kos.mjs /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin-cari23/d52.json --mutasyonsuz --cikti /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin-cari23/yokla1",
+  "commit": "3ac77c468b8aa1a8d0c889236c4ebb770434b446",
+  "dal": "worktree-agent-a86d75eced6cfa436",
+  "kirli": 2,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-21T00:50:49.731Z",
+  "sure_sn": 2.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 173,
+    "gecen": 162,
+    "basarisiz": 11,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 11 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:fatura:FP2:liste:taksitte: program false · kâhin true (§35 Y23-3 S229 / S230 A: kart faturanın tamamını aldıysa 'Taksitte' (gösterilen 0))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:fatura:FP2:taksitte: program false · kâhin true (§35 Y23-3 S229 / S230 A: kart faturanın tamamını aldıysa 'Taksitte' (gösterilen 0))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:fatura:FP3:liste:taksitte: program false · kâhin true (§35 Y23-3 S229 / S230 A: kart faturanın tamamını aldıysa 'Taksitte' (gösterilen 0))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:fatura:FP3:taksitte: program false · kâhin true (§35 Y23-3 S229 / S230 A: kart faturanın tamamını aldıysa 'Taksitte' (gösterilen 0))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:fatura:FP4a:kartta: program \"alan yok\" · kâhin 0 (§35 Y23-2 KAPSAM (b): gösterilen + kartların aldığı = kendi açık)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:fatura:FP4b:liste:taksitte: program false · kâhin true (§35 Y23-3 S229 / S230 A: kart faturanın tamamını aldıysa 'Taksitte' (gösterilen 0))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:fatura:FP4b:taksitte: program false · kâhin true (§35 Y23-3 S229 / S230 A: kart faturanın tamamını aldıysa 'Taksitte' (gösterilen 0))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU KULLANICI] k1:fatura:FP5:kartta: program \"alan yok\" · kâhin 0 (§35 Y23-4: kartın almadığı fatura — kartta 0)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:fatura:FP6:liste:taksitte: program false · kâhin true (§35 Y23-3 S229 / S230 A: kart faturanın tamamını aldıysa 'Taksitte' (gösterilen 0))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU BAŞ MİMAR] k1:fatura:FP6:taksitte: program false · kâhin true (§35 Y23-3 S229 / S230 A: kart faturanın tamamını aldıysa 'Taksitte' (gösterilen 0))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[BULGU PLAN] k1:fatura:FP7:kartta: program \"alan yok\" · kâhin 0 (§35 Y23-4: kartın almadığı fatura — kartta 0)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin-cari23/kanit/2026-11-21/kahin-cari23-yokla1.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a86d75eced6cfa436",
+  "ham_cikti_sha256": "1142f6ad9fded94ef6f8563bb18f28832343cc6c1b53360091d5e08c297587f7",
+  "ham_cikti_bayt": 3659
+}

@@ -1,0 +1,56 @@
+#!/bin/bash
+# Ç5-B SON TUR — SON UÇ (2c553ffc) yeniden koşuları. Kullanım: kos-son.sh <karar|eski|komsu [eşzamanlılık]|mutabakat <tohum>>
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+W=/home/user/ofis---y-netimi/.claude/worktrees/agent-ac2cc1e4fd632460d
+E=$S/c5bson-eski2b1
+T=$S/c5bson-taban3
+export HUKUK_LICENSE_URL=http://127.0.0.1:9 KANIT_DIR=$S/c5bson-kanit
+L="flock -s -n $S/olcum.lock"
+N="node --disable-warning=ExperimentalWarning"
+run() { # ad, TZ, süre (dk), komut…  (bulunulan klasörde koşar)
+  local ad=$1 tz=$2 sure=$3; shift 3
+  echo "--- $ad · yük $(cut -d' ' -f1-3 /proc/loadavg) · $(date -u +%H:%M) · $(pwd | sed "s#$S/##")"
+  TZ=$tz $L node "$W/tools/kanit.mjs" kos "$ad" --sure "$sure" -- "$@" > $S/c5bson-cikti/$ad.out 2>&1
+  echo "== $ad cikis=$? · $(grep -E '^# (tests|pass|fail|cancelled|skipped)' $S/c5bson-cikti/$ad.out | tr '\n' ' ') $(tail -1 $S/c5bson-cikti/$ad.out | cut -c1-220)"
+}
+PART=$1
+cd "$W" || exit 1
+echo "uç $(git rev-parse --short HEAD) · ağaç: $(git status -s | grep -v node_modules | wc -l) değişiklik · $(date -u +%H:%M)"
+if [ "$PART" = karar ]; then
+  # Bölüm 1 (a) + Bölüm 2: karar örnekleri gerçek programda (son uç) — taban çıktısıyla karşılaştırma
+  ROOT=$W $L $N $S/c5bson-betik/karar.mjs > $S/c5bson-cikti/karar-uc.json 2> $S/c5bson-cikti/karar-uc.err; echo "karar cikis=$?"
+  cmp $S/c5bson-cikti/karar-taban.json $S/c5bson-cikti/karar-uc.json && echo "karar: taban = uç (AYNI)"
+  python3 -I -c "import json,sys; d=json.load(open(sys.argv[1])); print('senaryo sayısı', len(d))" $S/c5bson-cikti/karar-uc.json
+  ROOT=$W $L $N $S/c5bson-betik/s126.mjs > $S/c5bson-cikti/s126-uc.txt 2> $S/c5bson-cikti/s126-uc.err; echo "s126 cikis=$?"
+  cmp $S/c5bson-cikti/s126-taban.txt $S/c5bson-cikti/s126-uc.txt && echo "s126: taban = uç (AYNI)"
+  wc -l $S/c5bson-cikti/s126-uc.txt
+fi
+if [ "$PART" = eski ]; then
+  FILES="test/tyk-tur2b2-250.test.mjs test/tyk-250.test.mjs test/tyk-onbellek-250.test.mjs test/tyk-tur2b1-250.test.mjs test/tyk-kilit-taksitli-250.test.mjs test/tyk-fark-v249-250.test.mjs test/bulgu-223.test.mjs test/cari-vade-245.test.mjs test/iade-geri-odeme-246.test.mjs test/plans.test.mjs test/ux18-cek-fatura-244.test.mjs test/whatsapp-onizleme-olcek-248.test.mjs"
+  # (1) TUR 2b-1 UCU (ayrı kopya) ← tur 2b-2'nin testleri (c5b-son-taban'daki hâlleri; bu turun test düzeltmeleri eski koda GİRMEZ — ders 51)
+  for f in $FILES test/tyk-fark-oku.mjs; do git show "c5b-son-taban:$f" > "$E/$f" || exit 1; done
+  cd "$E" || exit 1
+  run c5bson-eski2b1-yenitest-UTC UTC 60 $N --test --test-concurrency=1 $FILES
+  # (2) TUR 2b-1 UCU ← bu turun yeni test dosyası (S126 / S128 korumaları + sınırlar + hız)
+  cp "$W/test/tyk-son-250.test.mjs" "$E/test/tyk-son-250.test.mjs" || exit 1
+  run c5bson-eski2b1-tykson-UTC UTC 30 $N --test --test-concurrency=1 test/tyk-son-250.test.mjs
+  # (3) SON TUR TABANI (c5b-son-taban; ayrı kopya) ← bu turun yeni test dosyası: yalnız "hız" testi kırmızı beklenir
+  cd "$W" || exit 1
+  if [ ! -d "$T" ]; then mkdir "$T" && git archive c5b-son-taban ':!docs/kanit' | tar -x -C "$T" && ln -s /home/user/ofis---y-netimi/node_modules "$T/node_modules" || exit 1; fi
+  cp "$W/test/tyk-son-250.test.mjs" "$T/test/tyk-son-250.test.mjs" || exit 1
+  cd "$T" || exit 1
+  run c5bson-taban-tykson-UTC UTC 30 $N --test --test-concurrency=1 test/tyk-son-250.test.mjs
+fi
+if [ "$PART" = komsu ]; then
+  C=${2:-2}
+  KOMSU=$(sed 's#^\./#test/#' $S/c5bson-cikti/komsu-liste.txt | tr '\n' ' ')
+  echo "komşu dosya sayısı $(echo $KOMSU | wc -w) · eşzamanlılık $C"
+  run c5bson-sontur-komsu-UTC UTC 110 $N --test --test-concurrency=$C --test-timeout=1500000 $KOMSU
+  run c5bson-sontur-komsu-Europe-Istanbul Europe/Istanbul 110 $N --test --test-concurrency=$C --test-timeout=1500000 $KOMSU
+fi
+if [ "$PART" = mutabakat ]; then
+  SEED=$2
+  run c5bson-mutabakat-tohum$SEED UTC 117 $N test/mutabakat/kos.mjs --tohum $SEED --tohumlar 1
+  grep -E "✓|✗|Tohum|uyuşmaz|FARK" $S/c5bson-cikti/c5bson-mutabakat-tohum$SEED.out | cut -c1-200
+fi
+echo "SON ($PART ${2:-}) BİTTİ $(date -u +%H:%M)"

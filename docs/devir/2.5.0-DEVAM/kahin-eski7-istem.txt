@@ -1,0 +1,36 @@
+Sen DestekOfis projesinde ESKİ KÂHİNLER BAKIMI 7 ajanısın (2.5.0 Ç5 — cari kâhini `test/bagimsiz/cari/`). PROGRAMIN KODUNU GÖRMEZSİN (ders 5, 40). KENDİ dalında commit edersin; PUSH YAPMAZSIN. Yanıtın Türkçe. Eforun xhigh. Bu KÜÇÜK bir bakım: yalnız SENARYO düzeltmesi + bir adım türü; kâhinin para / görünüm kuralları DEĞİŞMEZ.
+
+## Neden
+Bakım 6'nın iki senaryo ailesi programın adım kabul kurallarına takılıyor (programın hesabına değil): S99 senaryoları fatura tarih sırası, S101 senaryoları kartın açılış yolu. Ayrıntı ve karar: `/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin-eski7-kararlar.md` (G1, G2 — tamamını oku; tek girdi kaynağın).
+
+## Hazırlık
+1. Worktree'de `git merge --ff-only claude/epic-thompson-w0lc2l` (çalışma dalı ucu; bakım 5 + 6 içinde); olmazsa ve dalında kendi commit'in yoksa `git reset --hard claude/epic-thompson-w0lc2l`.
+2. ÖNCE oku: `CLAUDE.md` (dersler 1–52; özellikle 5, 6, 31, 40, 43); `docs/BAGIMSIZ-DOGRULAMA-PRENSIBI.md`; girdi dosyası (yukarıda); `test/bagimsiz/cari/KARARLAR.md` §18 (bakım 6: Y6-3, Y6-4, C18.x, senaryo listesi) + kart / "mevcut borç kartı" / EK-2B 32 geçen başlıklar; `test/bagimsiz/cari/model.py` içinde kart açma (`kart_ac`), stoktan satış ve fatura adımlarının işlenişi; senaryolar d27–d33 ve d4 (S50 örneği: kart nasıl açılıyor).
+   Önceki kararlar YALNIZ kâhinin kendi KARARLAR.md'sinden okunur.
+
+## Yasaklar (bağımsızlık)
+- `server/`, `client/`, `bulut/`, `packaging/`, `tools/` (kanit.mjs yalnız çalıştırılır), `docs/erp/C5-ACILIS-TASARIM.md`, `docs/erp/C5B-TYK-TASARIM.md`, `docs/devir/**`, `docs/2.5.0-IS-LISTESI*.md` (HER sürümü — eski commit'teki hâli dahil), `test/bagimsiz/cari/YAPIM-ASAMASI.json` (programın bugünkü değerlerini taşır) ve `test/` altında `test/bagimsiz/cari` + `test/bagimsiz/defter` dışındaki her şey OKUNMAZ. `kos.mjs` yalnız olay / alan EŞLEMESİ için okunabilir; bu bakımda DEĞİŞTİRME (yeni adımın eşlemesini ana oturum ekler).
+- `docs/kanit/` altında başka ajanların dosyaları (kahineski4 / 5 / 6-arac araçları HARİÇ — uyarlayıp `docs/kanit/2026-11-10/kahineski7-arac/` altına kopyala) ve git farkı / geçmiş içeriği açılmaz. Program KOŞULMAZ. CLAUDE.md'nin "Açık iş" bölümünde programın durumu hakkında gördüğün hiçbir şey kural / beklenti kaynağı DEĞİLDİR.
+
+## İş
+1. Önce yorumu KARARLAR.md'ye ("2.5.0 Ç5 bakımı 7", §19) yaz ve AYRI commit et (ders 40): G1 ve G2'nin kâhindeki karşılığı.
+2. G1: bütün elle senaryolarda (yalnız d27–d29 değil — taramayla) fatura / iade adımları senaryo içinde tarih sırasına uyuyor mu denetle; uymayanları adımların yerini değiştirerek düzelt. KOŞUL: kâhinin o senaryolar için ürettiği BÜTÜN değerler değişiklikten önce / sonra bayt bayt aynı (karşılaştırma dökümü); elle beklenen değerlere DOKUNULMAZ. Aynı değer çıkmıyorsa (adım sırası kâhinin sonucunu değiştiriyorsa) DUR ve raporla — o zaman senaryo değil kural meselesidir. Rastgele üretici (`uretici.py`) fatura tarihlerini sıralı üretiyor mu denetle; üretmiyorsa raporla (değiştirme).
+3. G2: (a) YENİ ADIM TÜRÜ — "satışla birlikte açılan kart" (stoktan veresiye satış + aynı işlemde taksitlendirme): adını ve alanlarını sen belirle (mevcut `stok_satis_hesap` ve `kart_ac` adımlarının alan adlarıyla uyumlu), KARARLAR.md'de anlamını yaz; modelde bu adım = stok satışı + o satış için açılan kart (S101 / Y6-4 kuralı aynen bu kartta). (b) ELLE "mevcut borç kartı" adımı: kart tutarı carinin taksitlendirilebilecek borcunu aşıyorsa ya da taksitlendirilecek borç yoksa adım REDDEDİLİR (beklenen durum "ret"; kayıt oluşmaz) — "taksitlendirilebilecek borç"un tanımı KARARLAR.md'de / kural kitabında (EK-2B 32 çevresi) yazıyorsa oradan; yazmıyorsa iki okumayı yaz ve o sınırda SUS (KULLANICIYA SORULMALI; uç durumsa üçüncü seçenek "Uç durum böyle kalsın (BİLİNEN SINIR)"). (c) d30–d32'yi yeni adıma taşı: S101'in örneği ve Q1–Q8 durumları satışla birlikte açılan kartla; elle yolun reddi için en az iki senaryo satırı (borç tamamen avansla kapanmış; kısmen kapanmış + kart açık kısımdan büyük) + kabul edilen sınır (kart = açık borç).
+   Elle değerler kâhin koşulmadan yazılır; koşulduktan sonra değişen elle değer olursa AÇIKÇA raporla. Bakım 6'nın d30–d32 elle değerlerinden hangileri aynen taşındı, hangileri değişti (neden) — tek tek.
+4. Mutantlar: G2 (b) reddinin kalkması; yeni adımda S101'in B seçeneği; sınır kayması — değerle / durumla yakalanmalı. Bakım 6'nın 241–250 mutantları yeni senaryolarla hâlâ yakalanıyor mu.
+5. G3: bakım 6'ya göre değişen / yeni / kalkan denetim sayıları senaryo senaryo (bakım 6'nın `karsilastir.py` düzeni); d27–d29 için BEKLENMEYEN 0 ve değişen 0 olmalı; `--kural 2.4.9 / 2.4.6 / 2.4.5 / --legacy` eşdeğerliği bayt bayt korunur.
+
+## Yöntem
+- Eski kâhin kopyası değişiklikten ÖNCE `/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahineski7-<kısa>/` (`git archive HEAD test/bagimsiz/defter test/bagimsiz/cari`).
+- Kâhinin kendi testleri iki TZ (UTC, Europe/Istanbul): `KANIT_DIR=<kendi not defteri klasörün> node tools/kanit.mjs kos kahineski7-<ad> -- python3 -I -B <dosya>`; mutasyon ve geniş tarama `flock -s -n /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olcum.lock` ile (kilit doluysa bekleme döngüsü yok — ders 50); uzun koşu baştan 2 saat sınırla; kanıt `docs/kanit/2026-11-10/kahineski7-*`.
+- Kendi arka plan işin sürerken turunu rapor vermeden BİTİRME; sonucu bekle, sonra raporla. Bekleme için boş komut döngüsü kurma.
+- `pkill` / joker `rm` YOK. Commit'e yalnız kendi yolların (ders 44).
+- Commit iletisi sonunda tam olarak şu iki satır:
+  ```
+  Co-Authored-By: Claude <noreply@anthropic.com>
+  Claude-Session: https://claude.ai/code/session_01EhegDvmPQ9hx2ibfitm6og
+  ```
+  (model adı YOK).
+
+## Rapor
+Yorumlar; G1'de sırası değişen senaryolar + bayt bayt aynılık kanıtı; yeni adım türünün adı, alanları ve anlamı (ana oturum koşucu eşlemesini bundan yazacak); G2 (b) kuralı ve varsa susulan sınır; taşınan / değişen elle değerler; mutantlar; test sayıları (iki TZ); G3; KULLANICIYA SORULMALI; DENENMEYEN; ana oturumun yeniden koşacağı komutlar; OKUNAN DOSYALARIN TAM LİSTESİ (satır aralıklarıyla).

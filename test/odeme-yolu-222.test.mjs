@@ -3,9 +3,11 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { loginAdmin, startTestServer } from "./helpers.mjs";
+import { isoDay } from "../server/lib/plans.mjs";
 
-const TODAY = new Date().toISOString().slice(0, 10);
-const LATER = new Date(Date.now() + 30 * 86_400_000).toISOString().slice(0, 10);
+// Program "bugün"ü yerel günle hesaplar (period.mjs today, plans.mjs isoDay); UTC günü yerel günden ayrışınca (İstanbul 00:00–03:00) yanlış gün olur (ders 13, 22).
+const TODAY = isoDay(new Date());
+const LATER = isoDay(new Date(Date.now() + 30 * 86_400_000));
 
 test("tanımsız ödeme yolu her uçta 400; boş yol varsayılan, geçerli yol kabul", async () => {
   const server = await startTestServer();

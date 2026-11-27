@@ -1,0 +1,50 @@
+başladı 06:30:59 yük 1.44 2.62 2.68 7/157 22987 · ağaç e4b0a57f
+eski listeyle kahin-cari çıkış 1
+ÖZET [2.5.0]: 80 senaryo, 13010 denetim, 34 fark (BULGU 29), 7 bilinen sınır (BILINEN.json; başarısız sayılmaz), 495 yapım aşaması (YAPIM-ASAMASI.json; paketlere göre: eşleme 7, Ç5-A 228, Ç5-B tur 2 260; 488 denetim + 7 okuma hatası; geçti de başarısız da sayılmaz — yayın adayında liste BOŞ olmalı), 0 o
+12481/12515 denetim geçti (7 bilinen sınır dahil) (495 yapım aşaması ayrı sayıldı — geçti sayılmadı)
+liste üretimi çıkış 0
+
+YAPIM-ASAMASI.json YAZILDI (../kahin8p-kanit/liste.json): 529 kayıt (7 okuma hatası) — paketlere göre: Ç5-A 228, Ç5-B tur 2 263, eşleme 7, AYRIŞTIRILMADI 31. Bu bir denetim sonucu DEĞİLDİR; liste varsayılan koşuyla denetlenir.
+liste farkı: önceki 495 → yeni 529 · kapanan 0 · yeni 34 · değeri değişen 0
+  YENİ    ('d34-c5-s110-kendi-borcu', 'k1:cari:E5:gecikmis') program 150000 beklenen 120000 | Ç5-B tur 2 | BULGU KULLANICI · 2.5.0 kararıyla değişen
+  YENİ    ('d34-c5-s110-kendi-borcu', 'k1:cari:E6:gecikmis') program 50000 beklenen 20000 | Ç5-B tur 2 | BULGU KULLANICI · 2.5.0 kararıyla değişen
+  YENİ    ('d34-c5-s110-kendi-borcu', 'k1:cari:E9:gecikmis') program 70000 beklenen 50000 | Ç5-B tur 2 | BULGU KULLANICI · 2.5.0 kararıyla değişen
+  YENİ    ('d34-c5-s110-kendi-borcu', 'k1:fatura:E7F:acik') program 60000 beklenen 10000 | AYRIŞTIRILMADI | BULGU BAŞ MİMAR · SINIF DIŞI
+  YENİ    ('d34-c5-s110-kendi-borcu', 'k1:fatura:E8F:acik') program 60000 beklenen 40000 | AYRIŞTIRILMADI | BULGU BAŞ MİMAR · SINIF DIŞI
+  YENİ    ('d34-c5-s110-kendi-borcu', 'k1:hareket:e7b:kalan') program 40000 beklenen 90000 | AYRIŞTIRILMADI | BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen
+  YENİ    ('d34-c5-s110-kendi-borcu', 'k1:hareket:e8b:kalan') program 70000 beklenen 90000 | AYRIŞTIRILMADI | BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen
+  YENİ    ('d34-c5-s110-kendi-borcu', 'k1:kart:KE6:kalan') program 60000 beklenen 50000 | AYRIŞTIRILMADI | BULGU KULLANICI · 2.5.0 kararıyla değişen
+  YENİ    ('d34-c5-s110-kendi-borcu', 'k1:kart:KE6:odenen') program 0 beklenen 10000 | AYRIŞTIRILMADI | BULGU KULLANICI · 2.5.0 kararıyla değişen
+  YENİ    ('d34-c5-s110-kendi-borcu', 'k1:kart:KE6:taksit1:odenen') program 0 beklenen 10000 | AYRIŞTIRILMADI | BULGU KULLANICI · 2.5.0 kararıyla değişen
+  YENİ    ('d34-c5-s110-kendi-borcu', 'k1:kart:KE9:kalan') program 60000 beklenen 20000 | AYRIŞTIRILMADI | BULGU KULLANICI · 2.5.0 kararıyla değişen
+  YENİ    ('d34-c5-s110-kendi-borcu', 'k1:kart:KE9:odenen') program 0 beklenen 40000 | AYRIŞTIRILMADI | BULGU KULLANICI · 2.5.0 kararıyla değişen
+  YENİ    ('d34-c5-s110-kendi-borcu', 'k1:kart:KE9:taksit1:odenen') program 0 beklenen 30000 | AYRIŞTIRILMADI | BULGU KULLANICI · 2.5.0 kararıyla değişen
+  YENİ    ('d34-c5-s110-kendi-borcu', 'k1:kart:KE9:taksit2:odenen') program 0 beklenen 10000 | AYRIŞTIRILMADI | BULGU KULLANICI · 2.5.0 kararıyla değişen
+  YENİ    ('d34-c5-s110-kendi-borcu', 'k1:projeksiyon:hareket:e14ab') program {"amount": 60000, "date": "2026-03-10", "direction": "in"} beklenen "yok" | AYRIŞTIRILMADI | BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen
+  YENİ    ('d34-c5-s110-kendi-borcu', 'k1:projeksiyon:hareket:e1b') program {"amount": 60000, "date": "2026-03-10", "direction": "in"} beklenen "yok" | AYRIŞTIRILMADI | BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen
+  YENİ    ('d34-c5-s110-kendi-borcu', 'k1:projeksiyon:hareket:e4b') program {"amount": 1, "date": "2026-03-10", "direction": "in"} beklenen "yok" | AYRIŞTIRILMADI | BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen
+  YENİ    ('d34-c5-s110-kendi-borcu', 'k1:projeksiyon:hareket:e7b') program {"amount": 10000, "date": "2026-03-10", "direction": "in"} beklenen "yok" | AYRIŞTIRILMADI | BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen
+  YENİ    ('d34-c5-s110-kendi-borcu', 'k1:projeksiyon:hareket:e8b') program {"amount": 40000, "date": "2026-03-10", "direction": "in"} beklenen "yok" | AYRIŞTIRILMADI | BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen
+  YENİ    ('d34-c5-s110-kendi-borcu', 'k1:takvim:fatura:E14F') program "yok" beklenen {"amount": 60000, "direction": "in"} | AYRIŞTIRILMADI | İNCELE YAYGIN · 2.5.0 kararıyla değişen
+  YENİ    ('d34-c5-s110-kendi-borcu', 'k1:takvim:fatura:E1F') program "yok" beklenen {"amount": 60000, "direction": "in"} | AYRIŞTIRILMADI | İNCELE YAYGIN · 2.5.0 kararıyla değişen
+  YENİ    ('d34-c5-s110-kendi-borcu', 'k1:takvim:fatura:E4F') program "yok" beklenen {"amount": 1, "direction": "in"} | AYRIŞTIRILMADI | İNCELE YAYGIN · 2.5.0 kararıyla değişen
+  YENİ    ('d34-c5-s110-kendi-borcu', 'k1:takvim:fatura:E7F') program "yok" beklenen {"amount": 10000, "direction": "in"} | AYRIŞTIRILMADI | İNCELE YAYGIN · 2.5.0 kararıyla değişen
+  YENİ    ('d34-c5-s110-kendi-borcu', 'k1:takvim:fatura:E8F') program "yok" beklenen {"amount": 40000, "direction": "in"} | AYRIŞTIRILMADI | İNCELE YAYGIN · 2.5.0 kararıyla değişen
+  YENİ    ('d34-c5-s110-kendi-borcu', 'k1:takvim:hareket:e14ab') program {"amount": 60000, "cari": "E14a", "days": -36, "direction": "in", "dueDate": "2026-03-10", "label": "Tahsil Edilecek Borç", "person": "Aynı Kartçı", "state": "overdue"} beklenen "yok" | AYRIŞTIRILMADI | BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen
+  YENİ    ('d34-c5-s110-kendi-borcu', 'k1:takvim:hareket:e1b') program {"amount": 60000, "cari": "E1", "days": -36, "direction": "in", "dueDate": "2026-03-10", "label": "Tahsil Edilecek Borç", "person": "Ebru Örnek", "state": "overdue"} beklenen "yok" | AYRIŞTIRILMADI | BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen
+  YENİ    ('d34-c5-s110-kendi-borcu', 'k1:takvim:hareket:e4b') program {"amount": 1, "cari": "E4", "days": -36, "direction": "in", "dueDate": "2026-03-10", "label": "Tahsil Edilecek Borç", "person": "Erkan Kuruş", "state": "overdue"} beklenen "yok" | AYRIŞTIRILMADI | BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen
+  YENİ    ('d34-c5-s110-kendi-borcu', 'k1:takvim:hareket:e7b') program {"amount": 10000, "cari": "E7", "days": -36, "direction": "in", "dueDate": "2026-03-10", "label": "Tahsil Edilecek Borç", "person": "Engin Yeni Borç", "state": "overdue"} beklenen "yok" | AYRIŞTIRILMADI | BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen
+  YENİ    ('d34-c5-s110-kendi-borcu', 'k1:takvim:hareket:e8b') program {"amount": 40000, "cari": "E8", "days": -36, "direction": "in", "dueDate": "2026-03-10", "label": "Tahsil Edilecek Borç", "person": "Esra İade", "state": "overdue"} beklenen "yok" | AYRIŞTIRILMADI | BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen
+  YENİ    ('d34-c5-s110-kendi-borcu', 'k1:vadeTakip:hareket:e14ab') program {"amount": 60000, "date": "2026-03-10", "direction": "in"} beklenen "yok" | AYRIŞTIRILMADI | BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen
+  YENİ    ('d34-c5-s110-kendi-borcu', 'k1:vadeTakip:hareket:e1b') program {"amount": 60000, "date": "2026-03-10", "direction": "in"} beklenen "yok" | AYRIŞTIRILMADI | BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen
+  YENİ    ('d34-c5-s110-kendi-borcu', 'k1:vadeTakip:hareket:e4b') program {"amount": 1, "date": "2026-03-10", "direction": "in"} beklenen "yok" | AYRIŞTIRILMADI | BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen
+  YENİ    ('d34-c5-s110-kendi-borcu', 'k1:vadeTakip:hareket:e7b') program {"amount": 10000, "date": "2026-03-10", "direction": "in"} beklenen "yok" | AYRIŞTIRILMADI | BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen
+  YENİ    ('d34-c5-s110-kendi-borcu', 'k1:vadeTakip:hareket:e8b') program {"amount": 40000, "date": "2026-03-10", "direction": "in"} beklenen "yok" | AYRIŞTIRILMADI | BULGU BAŞ MİMAR · 2.5.0 kararıyla değişen
+yeni listeyle kahin-cari UTC çıkış 0
+ÖZET [2.5.0]: 80 senaryo, 13010 denetim, 0 fark (BULGU 0), 7 bilinen sınır (BILINEN.json; başarısız sayılmaz), 529 yapım aşaması (YAPIM-ASAMASI.json; paketlere göre: AYRIŞTIRILMADI 31, eşleme 7, Ç5-A 228, Ç5-B tur 2 263; 522 denetim + 7 okuma hatası; geçti de başarısız da sayılmaz — yayın adayında liste 
+12481/12481 denetim geçti (7 bilinen sınır dahil) (529 yapım aşaması ayrı sayıldı — geçti sayılmadı)
+yeni listeyle kahin-cari Europe/Istanbul çıkış 0
+ÖZET [2.5.0]: 80 senaryo, 13010 denetim, 0 fark (BULGU 0), 7 bilinen sınır (BILINEN.json; başarısız sayılmaz), 529 yapım aşaması (YAPIM-ASAMASI.json; paketlere göre: AYRIŞTIRILMADI 31, eşleme 7, Ç5-A 228, Ç5-B tur 2 263; 522 denetim + 7 okuma hatası; geçti de başarısız da sayılmaz — yayın adayında liste 
+12481/12481 denetim geçti (7 bilinen sınır dahil) (529 yapım aşaması ayrı sayıldı — geçti sayılmadı)
+kahin-defter çıkış 0 [kanit] kahin8p-kahin-defter: GEÇTİ · çıkış 0 · 176/176 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit e4b
+bitti 06:44:06 yük 4.40 3.23 2.97 4/186 30136 · disk 7.2G

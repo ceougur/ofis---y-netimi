@@ -1,0 +1,35 @@
+Sen DestekOfis projesinde ESKİ KÂHİNLER BAKIMI 10 ajanısın (2.5.0 Ç5 — cari kâhini `test/bagimsiz/cari/`). PROGRAMIN KODUNU GÖRMEZSİN (ders 5, 40). KENDİ dalında commit edersin; PUSH YAPMAZSIN. Yanıtın Türkçe. Eforun high. Bu KÜÇÜK bir bakım: bakım 9'un dört susma sınırının (SK-20 … SK-23) kullanıcı yanıtları — biri kural (S122 = A), üçü BİLİNEN SINIR.
+
+## Girdi
+Tek girdi kaynağın: `/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin-eski10-kararlar.md` (tamamını oku).
+
+## Hazırlık
+1. Worktree'de `git merge --ff-only claude/epic-thompson-w0lc2l` (çalışma dalı ucu; bakım 9 içinde); olmazsa ve dalında kendi commit'in yoksa `git reset --hard claude/epic-thompson-w0lc2l`.
+2. ÖNCE oku: `CLAUDE.md` (dersler 1–53; özellikle 5, 6, 31, 40, 43); `docs/BAGIMSIZ-DOGRULAMA-PRENSIBI.md`; girdi dosyası; `test/bagimsiz/cari/KARARLAR.md` içinde bakım 8 ve bakım 9 bölümleri (§20, §21 — özellikle Y9-1 … Y9-9, SK-20 … SK-23, C13.4 (7) / (11) ve K6.5: kart, "mevcut borç kartı", satışla birlikte açılan kart, S50, S101, S2 vade sırası) + EK-2B 32 geçen başlıklar; `test/bagimsiz/cari/model.py` içinde kart açma ve kartın borcu içine alma kuralları; bu kuralları kullanan elle senaryolar.
+   Önceki kararlar YALNIZ kâhinin kendi KARARLAR.md'sinden okunur.
+
+## Yasaklar (bağımsızlık)
+- `server/`, `client/`, `bulut/`, `packaging/`, `tools/` (kanit.mjs yalnız çalıştırılır), `docs/erp/C5-ACILIS-TASARIM.md`, `docs/erp/C5B-TYK-TASARIM.md`, `docs/devir/**`, `docs/2.5.0-IS-LISTESI*.md` (HER sürümü — eski commit'teki hâli dahil), `test/bagimsiz/cari/YAPIM-ASAMASI.json` (programın bugünkü değerlerini taşır) ve `test/` altında `test/bagimsiz/cari` + `test/bagimsiz/defter` dışındaki her şey OKUNMAZ. `kos.mjs` yalnız olay / alan EŞLEMESİ için okunabilir; DEĞİŞTİRME.
+- `docs/kanit/` altında başka ajanların dosyaları (kahineski4 / 5 / 6 / 7 / 8 / 9-arac araçları HARİÇ — uyarlayıp `docs/kanit/2026-11-11/kahineski10-arac/` altına kopyala) ve git farkı / geçmiş içeriği açılmaz. Program KOŞULMAZ. CLAUDE.md'nin "Açık iş" bölümünde programın durumu hakkında gördüğün hiçbir şey kural / beklenti kaynağı DEĞİLDİR.
+
+## İş
+1. Önce yorumu KARARLAR.md'ye ("2.5.0 Ç5 bakımı 10", yeni bölüm) yaz ve AYRI commit et (ders 40): S122'nin kâhindeki karşılığı; bakım 9'un SK-21 susmasının hangi durumları bu kararla DEĞER kazanıyor, hangileri hâlâ susuyor (girdi dosyasındaki NOT (2), (3)); SK-20 / SK-22 / SK-23'ün yeni adı (BİLİNEN SINIR — susma aynen).
+2. Kuralı modele işle: birden çok elle borcu içine alan karta gelen ödeme elle borçların 'Kalan'ını kartın içine alma sırasıyla, eskiden yeniye düşürür. Tek kalem içeren kartta bakım 9 kuralı aynen. SK-20 / SK-22 / SK-23'te susma DEĞİŞMEZ; yalnız neden metni "BİLİNEN SINIR (S123 / S124 / S125 = C)" olur. Karar metninden tek okumayla çıkmayan alt durumlarda SUS — sustuğun sınırları ve iki okumayı sayılarla yaz.
+3. Elle senaryolar (kâhin koşulmadan, karar metninden): kararın örneği AYNEN (F 600 + X 500 + Y 700, kart 900; karta 300 ödeme ⇒ X Kalan 200, Y Kalan 700); ödeme ilk elle borcun kart içindeki kısmını tam bitiriyor / aşıp ikinciye geçiyor / kartı tamamen kapatıyor; iki ayrı ödeme üst üste; üç elle borç içeren kart; kısmen ödenmiş elle borcu içeren kart; bakım 9'un d35 senaryosundaki H10 / H11 susmalarının yeni değerleri (o senaryonun beklentisi bu karar gereği değişir — değişen her beklentiyi tek tek yaz); tek kalem içeren kart (değişmedi); SK-20 / SK-22 / SK-23 örnekleri (susma aynen). Koşulduktan sonra değişen elle değer olursa AÇIKÇA raporla; elle değeri yazmadan ÖNCE kâhin çıktısına bakma (bakarsan raporda açıkça söyle).
+4. Mutantlar: S122'nin B seçeneği (en yeniden); ödemeyi kalemlere orantılı dağıtan okuma; yalnız ilk ödemede doğru, ikincide baştan başlayan sıra; bakiye / kart kalanı / gecikmiş değerini değiştiren okuma — değerle yakalanmalı. Bakım 6 / 7 / 8 / 9 mutantları hâlâ yakalanıyor mu.
+5. G3: bakım 9'a göre değişen / yeni / kalkan denetim sayıları senaryo senaryo (bakım 9'un `karsilastir.py` düzeni); S122 alanı dışındaki senaryolarda BEKLENMEYEN 0 olmalı — değişen her eski beklenti tek tek, hangi karar gereği; `--kural 2.4.9 / 2.4.6 / 2.4.5 / --legacy` eşdeğerliği bayt bayt korunur.
+
+## Yöntem
+- Eski kâhin kopyası değişiklikten ÖNCE `/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahineski10-<kısa>/` (`git archive HEAD test/bagimsiz/defter test/bagimsiz/cari`).
+- Kâhinin kendi testleri iki TZ (UTC, Europe/Istanbul): `KANIT_DIR=<kendi not defteri klasörün> node tools/kanit.mjs kos kahineski10-<ad> -- python3 -I -B <dosya>`; mutasyon ve geniş tarama `flock -s -n /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olcum.lock` ile (kilit doluysa bekleme döngüsü yok — ders 50); uzun koşu baştan 2 saat sınırla; kanıt `docs/kanit/2026-11-11/kahineski10-*`.
+- Kendi arka plan işin sürerken turunu rapor vermeden BİTİRME; sonucu bekle, sonra raporla. Bekleme için boş komut döngüsü kurma.
+- `pkill` / joker `rm` YOK. Commit'e yalnız kendi yolların (ders 44).
+- Commit iletisi sonunda tam olarak şu iki satır:
+  ```
+  Co-Authored-By: Claude <noreply@anthropic.com>
+  Claude-Session: https://claude.ai/code/session_01EhegDvmPQ9hx2ibfitm6og
+  ```
+  (model adı YOK).
+
+## Rapor
+Yorum (kâhinin eski okuması + yeni kural); sustuğun sınırlar (iki okuma, sayılarla); yeni / değişen elle senaryolar ve değerleri; mutantlar; test sayıları (iki TZ); G3 dökümü; KULLANICIYA SORULMALI; DENENMEYEN; ana oturumun yeniden koşacağı komutlar; OKUNAN DOSYALARIN TAM LİSTESİ (satır aralıklarıyla).

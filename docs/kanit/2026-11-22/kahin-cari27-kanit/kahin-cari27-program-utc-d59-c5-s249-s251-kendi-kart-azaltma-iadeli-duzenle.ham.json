@@ -1,0 +1,1797 @@
+{
+ "k0:cari:U1:deleteBlock": "Bu carinin 1 cari hareketi, 1 fatura / makbuz (taslak ve iptal dahil) ve 1 taksit kartı var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k0:cari:U2:deleteBlock": "Bu carinin 1 cari hareketi, 2 fatura / makbuz (taslak ve iptal dahil) ve 1 taksit kartı var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k0:cari:U3:deleteBlock": "Bu carinin 1 cari hareketi, 1 fatura / makbuz (taslak ve iptal dahil) ve 1 taksit kartı var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k0:cari:U4:deleteBlock": "Bu carinin 1 fatura / makbuz (taslak ve iptal dahil) ve 1 taksit kartı var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k0:cari:U5:deleteBlock": "Bu carinin 2 fatura / makbuz (taslak ve iptal dahil) ve 1 taksit kartı var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k0:cari:U6:deleteBlock": "Bu carinin 2 fatura / makbuz (taslak ve iptal dahil) var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k0:cari:U7:deleteBlock": "Bu carinin 2 fatura / makbuz (taslak ve iptal dahil) ve 1 taksit kartı var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k0:fatura:FU1": {
+  "open": 300,
+  "status": "issued",
+  "payState": "installment"
+ },
+ "k0:fatura:FU2": {
+  "open": 300,
+  "status": "issued",
+  "payState": "installment"
+ },
+ "k0:fatura:FU3": {
+  "open": 600,
+  "status": "issued",
+  "payState": "installment"
+ },
+ "k0:fatura:FU4": {
+  "open": 900,
+  "status": "issued",
+  "payState": "overdue"
+ },
+ "k0:fatura:FU5": {
+  "open": 0,
+  "ownOpen": 600,
+  "inPlan": 600,
+  "status": "issued",
+  "payState": "installment",
+  "ownPayState": "overdue"
+ },
+ "k0:fatura:FU6": {
+  "open": 300,
+  "status": "issued",
+  "payState": "overdue"
+ },
+ "k0:fatura:FU7": {
+  "open": 600,
+  "status": "issued",
+  "payState": "installment"
+ },
+ "k0:fatura:GU2": {
+  "open": 200,
+  "status": "issued",
+  "payState": "overdue"
+ },
+ "k0:fatura:IU5": {
+  "open": 0,
+  "status": "issued",
+  "payState": "return"
+ },
+ "k0:fatura:IU6": {
+  "open": 0,
+  "status": "issued",
+  "payState": "return"
+ },
+ "k0:fatura:IU7": {
+  "open": 0,
+  "status": "issued",
+  "payState": "return"
+ },
+ "k0:faturaListesi": {
+  "status": 200,
+  "anahtarlar": [
+   "invoices",
+   "totals",
+   "tabCounts",
+   "canManage",
+   "total",
+   "offset",
+   "limit",
+   "hasMore",
+   "restoreNotice"
+  ],
+  "ilk": {
+   "id": "invoice-400ce0fe-539a-4495-8967-fed01a45e7c5",
+   "kind": "sale_return",
+   "kindLabel": "Satıştan İade Faturası",
+   "scenario": "sale_return",
+   "scenarioLabel": "Satıştan İade",
+   "status": "issued",
+   "statusLabel": "Kaydedildi",
+   "number": "IAD2026000000003",
+   "displayNo": "IAD2026000000003",
+   "internalNumber": true,
+   "ettn": "d43078bd-1319-496e-865a-1e2e9af1dc32",
+   "issueDate": "2026-09-10",
+   "issueTime": "09:00",
+   "accountId": "account-9573f179-68a9-4e4e-9d9a-dfc95a622f9e",
+   "accountName": "Utku İade İptali Sonra Düzenle",
+   "accountRef": "7",
+   "accountPhone": "",
+   "profile": "KAGIT",
+   "profileLabel": "Kâğıt Fatura",
+   "typeCode": "IADE",
+   "currency": "TRY",
+   "rate": 1,
+   "netTotal": 300,
+   "vatTotal": 0,
+   "withheldTotal": 0,
+   "stoppageTotal": 0,
+   "payableTotal": 300,
+   "tryNet": 300,
+   "tryVat": 0,
+   "tryPayable": 300,
+   "dueDate": "2026-09-10",
+   "planId": "",
+   "originalId": "invoice-154a79a9-8543-4b8c-a58a-38d8e3e48817",
+   "originalNumber": "FIS2026000000007",
+   "originalDate": "2026-09-01",
+   "note": "",
+   "eStatus": "none",
+   "eStatusLabel": "Gönderilmedi",
+   "eUnsent": false,
+   "eTestLive": false,
+   "eTest": false,
+   "actorName": "Ofis yöneticisi",
+   "createdAt": "2026-10-20T09:00:00.763Z",
+   "payState": "return",
+   "payStateLabel": "İade",
+   "paid": 300,
+   "open": 0,
+   "closers": [
+    {
+     "id": "aentry-8173c922-bba0-4896-a165-d116dfceba4c",
+     "date": "2026-09-01",
+     "label": "Fatura",
+     "note": "Satış Faturası FIS2026000000007",
+     "method": "",
+     "amount": 300,
+     "mode": "linked",
+     "modeLabel": "Bağlı",
+     "methodLabel": ""
+    }
+   ],
+   "posCash": false,
+   "eBlocked": false
+  }
+ },
+ "k0:kart:KU5": {
+  "status": "active",
+  "closedAt": null,
+  "total": 600,
+  "remaining": 600,
+  "items": [
+   [
+    "2026-11-05",
+    null,
+    300,
+    0
+   ],
+   [
+    "2026-12-05",
+    null,
+    300,
+    0
+   ]
+  ]
+ },
+ "k0:kart:fatura:FU3": {
+  "status": "closed",
+  "total": 900,
+  "remaining": 600,
+  "items": [
+   [
+    "2026-10-05",
+    "2026-10-05",
+    300,
+    300
+   ],
+   [
+    "2026-10-20",
+    "2026-11-05",
+    300,
+    0
+   ],
+   [
+    "2026-10-20",
+    "2026-12-05",
+    300,
+    0
+   ]
+  ]
+ },
+ "k0:kart:fatura:FU4": {
+  "status": "closed",
+  "total": 900,
+  "remaining": 900,
+  "items": [
+   [
+    "2026-10-05",
+    "2026-10-05",
+    300,
+    0
+   ],
+   [
+    "2026-10-20",
+    "2026-11-05",
+    300,
+    0
+   ],
+   [
+    "2026-10-20",
+    "2026-12-05",
+    300,
+    0
+   ]
+  ]
+ },
+ "k0:takvim": [
+  {
+   "id": "plan|plan-abc18e1b-e5bc-4e4d-bdd0-ae241301e4b2|item-211c68c2-c80f-4c7a-8085-0931385aafcd",
+   "source": "plan",
+   "planId": "plan-abc18e1b-e5bc-4e4d-bdd0-ae241301e4b2",
+   "itemId": "item-211c68c2-c80f-4c7a-8085-0931385aafcd",
+   "person": "Uğur Kapalı Ödemeli Azaltma",
+   "caseNo": "",
+   "caseKey": "",
+   "caseSource": "",
+   "caseTitle": "",
+   "tab": "",
+   "label": "2. taksit",
+   "kind": "date",
+   "dueDate": "2026-10-20",
+   "dueText": "20.10.2026",
+   "amount": 300,
+   "partial": false,
+   "days": 0,
+   "state": "today",
+   "phone": "",
+   "accountId": "account-cf66d78a-fd3e-44d4-b730-919c0bf6173a",
+   "accountRef": "3",
+   "refNo": "3"
+  },
+  {
+   "id": "plan|plan-abc18e1b-e5bc-4e4d-bdd0-ae241301e4b2|item-dd06502c-216c-4eaf-aa6f-aae9107bca71",
+   "source": "plan",
+   "planId": "plan-abc18e1b-e5bc-4e4d-bdd0-ae241301e4b2",
+   "itemId": "item-dd06502c-216c-4eaf-aa6f-aae9107bca71",
+   "person": "Uğur Kapalı Ödemeli Azaltma",
+   "caseNo": "",
+   "caseKey": "",
+   "caseSource": "",
+   "caseTitle": "",
+   "tab": "",
+   "label": "3. taksit",
+   "kind": "date",
+   "dueDate": "2026-10-20",
+   "dueText": "20.10.2026",
+   "amount": 300,
+   "partial": false,
+   "days": 0,
+   "state": "today",
+   "phone": "",
+   "accountId": "account-cf66d78a-fd3e-44d4-b730-919c0bf6173a",
+   "accountRef": "3",
+   "refNo": "3"
+  },
+  {
+   "id": "plan|plan-6045e3e3-0b79-44b2-a01c-592e95ac4bed|item-390daffc-e413-41a4-9f0c-edbc425beb95",
+   "source": "plan",
+   "planId": "plan-6045e3e3-0b79-44b2-a01c-592e95ac4bed",
+   "itemId": "item-390daffc-e413-41a4-9f0c-edbc425beb95",
+   "person": "Ulaş Kapalı Kart Azaltma",
+   "caseNo": "",
+   "caseKey": "",
+   "caseSource": "",
+   "caseTitle": "",
+   "tab": "",
+   "label": "1. taksit",
+   "kind": "date",
+   "dueDate": "2026-10-05",
+   "dueText": "05.10.2026",
+   "amount": 300,
+   "partial": false,
+   "days": -15,
+   "state": "overdue",
+   "phone": "",
+   "accountId": "account-e6b733f1-4bae-4196-9a04-233d22694b7c",
+   "accountRef": "4",
+   "refNo": "4"
+  },
+  {
+   "id": "plan|plan-6045e3e3-0b79-44b2-a01c-592e95ac4bed|item-c239ed8c-3b02-4bf0-96f7-43d9a424ccb3",
+   "source": "plan",
+   "planId": "plan-6045e3e3-0b79-44b2-a01c-592e95ac4bed",
+   "itemId": "item-c239ed8c-3b02-4bf0-96f7-43d9a424ccb3",
+   "person": "Ulaş Kapalı Kart Azaltma",
+   "caseNo": "",
+   "caseKey": "",
+   "caseSource": "",
+   "caseTitle": "",
+   "tab": "",
+   "label": "2. taksit",
+   "kind": "date",
+   "dueDate": "2026-10-20",
+   "dueText": "20.10.2026",
+   "amount": 300,
+   "partial": false,
+   "days": 0,
+   "state": "today",
+   "phone": "",
+   "accountId": "account-e6b733f1-4bae-4196-9a04-233d22694b7c",
+   "accountRef": "4",
+   "refNo": "4"
+  },
+  {
+   "id": "plan|plan-6045e3e3-0b79-44b2-a01c-592e95ac4bed|item-bcaf7b9a-220e-451c-aa3e-18fa638ee32a",
+   "source": "plan",
+   "planId": "plan-6045e3e3-0b79-44b2-a01c-592e95ac4bed",
+   "itemId": "item-bcaf7b9a-220e-451c-aa3e-18fa638ee32a",
+   "person": "Ulaş Kapalı Kart Azaltma",
+   "caseNo": "",
+   "caseKey": "",
+   "caseSource": "",
+   "caseTitle": "",
+   "tab": "",
+   "label": "3. taksit",
+   "kind": "date",
+   "dueDate": "2026-10-20",
+   "dueText": "20.10.2026",
+   "amount": 300,
+   "partial": false,
+   "days": 0,
+   "state": "today",
+   "phone": "",
+   "accountId": "account-e6b733f1-4bae-4196-9a04-233d22694b7c",
+   "accountRef": "4",
+   "refNo": "4"
+  },
+  {
+   "id": "invoice|invoice-a1b5c348-7755-4510-bfae-d69aa3c04455",
+   "source": "invoice",
+   "invoiceId": "invoice-a1b5c348-7755-4510-bfae-d69aa3c04455",
+   "direction": "in",
+   "person": "Ülkü İadeli Kartsız",
+   "caseNo": "",
+   "caseKey": "",
+   "tab": "",
+   "label": "Tahsil Edilecek Fatura FIS2026000000006",
+   "kind": "date",
+   "dueDate": "2026-09-01",
+   "dueText": "01.09.2026",
+   "amount": 300,
+   "partial": true,
+   "days": -49,
+   "state": "overdue"
+  },
+  {
+   "id": "invoice|invoice-ed19ff8c-33a0-425b-9c61-dfdf6e6e2f17",
+   "source": "invoice",
+   "invoiceId": "invoice-ed19ff8c-33a0-425b-9c61-dfdf6e6e2f17",
+   "direction": "in",
+   "person": "Ufuk Avans Sonraki Faturaya",
+   "caseNo": "",
+   "caseKey": "",
+   "tab": "",
+   "label": "Tahsil Edilecek Fatura FIS2026000000008",
+   "kind": "date",
+   "dueDate": "2026-09-10",
+   "dueText": "10.09.2026",
+   "amount": 200,
+   "partial": false,
+   "days": -40,
+   "state": "overdue"
+  }
+ ],
+ "k0:takvimV3": {
+  "items": [
+   {
+    "id": "plan|plan-abc18e1b-e5bc-4e4d-bdd0-ae241301e4b2|item-211c68c2-c80f-4c7a-8085-0931385aafcd",
+    "source": "plan",
+    "planId": "plan-abc18e1b-e5bc-4e4d-bdd0-ae241301e4b2",
+    "itemId": "item-211c68c2-c80f-4c7a-8085-0931385aafcd",
+    "person": "Uğur Kapalı Ödemeli Azaltma",
+    "caseNo": "",
+    "caseKey": "",
+    "caseSource": "",
+    "caseTitle": "",
+    "tab": "",
+    "label": "2. taksit",
+    "kind": "date",
+    "dueDate": "2026-10-20",
+    "dueText": "20.10.2026",
+    "amount": 300,
+    "partial": false,
+    "days": 0,
+    "state": "today",
+    "phone": "",
+    "accountId": "account-cf66d78a-fd3e-44d4-b730-919c0bf6173a",
+    "accountRef": "3",
+    "refNo": "3"
+   },
+   {
+    "id": "plan|plan-abc18e1b-e5bc-4e4d-bdd0-ae241301e4b2|item-dd06502c-216c-4eaf-aa6f-aae9107bca71",
+    "source": "plan",
+    "planId": "plan-abc18e1b-e5bc-4e4d-bdd0-ae241301e4b2",
+    "itemId": "item-dd06502c-216c-4eaf-aa6f-aae9107bca71",
+    "person": "Uğur Kapalı Ödemeli Azaltma",
+    "caseNo": "",
+    "caseKey": "",
+    "caseSource": "",
+    "caseTitle": "",
+    "tab": "",
+    "label": "3. taksit",
+    "kind": "date",
+    "dueDate": "2026-10-20",
+    "dueText": "20.10.2026",
+    "amount": 300,
+    "partial": false,
+    "days": 0,
+    "state": "today",
+    "phone": "",
+    "accountId": "account-cf66d78a-fd3e-44d4-b730-919c0bf6173a",
+    "accountRef": "3",
+    "refNo": "3"
+   },
+   {
+    "id": "plan|plan-6045e3e3-0b79-44b2-a01c-592e95ac4bed|item-390daffc-e413-41a4-9f0c-edbc425beb95",
+    "source": "plan",
+    "planId": "plan-6045e3e3-0b79-44b2-a01c-592e95ac4bed",
+    "itemId": "item-390daffc-e413-41a4-9f0c-edbc425beb95",
+    "person": "Ulaş Kapalı Kart Azaltma",
+    "caseNo": "",
+    "caseKey": "",
+    "caseSource": "",
+    "caseTitle": "",
+    "tab": "",
+    "label": "1. taksit",
+    "kind": "date",
+    "dueDate": "2026-10-05",
+    "dueText": "05.10.2026",
+    "amount": 300,
+    "partial": false,
+    "days": -15,
+    "state": "overdue",
+    "phone": "",
+    "accountId": "account-e6b733f1-4bae-4196-9a04-233d22694b7c",
+    "accountRef": "4",
+    "refNo": "4"
+   },
+   {
+    "id": "plan|plan-6045e3e3-0b79-44b2-a01c-592e95ac4bed|item-c239ed8c-3b02-4bf0-96f7-43d9a424ccb3",
+    "source": "plan",
+    "planId": "plan-6045e3e3-0b79-44b2-a01c-592e95ac4bed",
+    "itemId": "item-c239ed8c-3b02-4bf0-96f7-43d9a424ccb3",
+    "person": "Ulaş Kapalı Kart Azaltma",
+    "caseNo": "",
+    "caseKey": "",
+    "caseSource": "",
+    "caseTitle": "",
+    "tab": "",
+    "label": "2. taksit",
+    "kind": "date",
+    "dueDate": "2026-10-20",
+    "dueText": "20.10.2026",
+    "amount": 300,
+    "partial": false,
+    "days": 0,
+    "state": "today",
+    "phone": "",
+    "accountId": "account-e6b733f1-4bae-4196-9a04-233d22694b7c",
+    "accountRef": "4",
+    "refNo": "4"
+   },
+   {
+    "id": "plan|plan-6045e3e3-0b79-44b2-a01c-592e95ac4bed|item-bcaf7b9a-220e-451c-aa3e-18fa638ee32a",
+    "source": "plan",
+    "planId": "plan-6045e3e3-0b79-44b2-a01c-592e95ac4bed",
+    "itemId": "item-bcaf7b9a-220e-451c-aa3e-18fa638ee32a",
+    "person": "Ulaş Kapalı Kart Azaltma",
+    "caseNo": "",
+    "caseKey": "",
+    "caseSource": "",
+    "caseTitle": "",
+    "tab": "",
+    "label": "3. taksit",
+    "kind": "date",
+    "dueDate": "2026-10-20",
+    "dueText": "20.10.2026",
+    "amount": 300,
+    "partial": false,
+    "days": 0,
+    "state": "today",
+    "phone": "",
+    "accountId": "account-e6b733f1-4bae-4196-9a04-233d22694b7c",
+    "accountRef": "4",
+    "refNo": "4"
+   },
+   {
+    "id": "invoice|invoice-a1b5c348-7755-4510-bfae-d69aa3c04455",
+    "source": "invoice",
+    "invoiceId": "invoice-a1b5c348-7755-4510-bfae-d69aa3c04455",
+    "direction": "in",
+    "person": "Ülkü İadeli Kartsız",
+    "caseNo": "",
+    "caseKey": "",
+    "tab": "",
+    "label": "Tahsil Edilecek Fatura FIS2026000000006",
+    "kind": "date",
+    "dueDate": "2026-09-01",
+    "dueText": "01.09.2026",
+    "amount": 300,
+    "partial": true,
+    "days": -49,
+    "state": "overdue"
+   },
+   {
+    "id": "invoice|invoice-ed19ff8c-33a0-425b-9c61-dfdf6e6e2f17",
+    "source": "invoice",
+    "invoiceId": "invoice-ed19ff8c-33a0-425b-9c61-dfdf6e6e2f17",
+    "direction": "in",
+    "person": "Ufuk Avans Sonraki Faturaya",
+    "caseNo": "",
+    "caseKey": "",
+    "tab": "",
+    "label": "Tahsil Edilecek Fatura FIS2026000000008",
+    "kind": "date",
+    "dueDate": "2026-09-10",
+    "dueText": "10.09.2026",
+    "amount": 200,
+    "partial": false,
+    "days": -40,
+    "state": "overdue"
+   }
+  ],
+  "deadlines": []
+ },
+ "k0:vadeTakip": [
+  {
+   "date": "2026-09-01",
+   "direction": "in",
+   "amount": 300,
+   "source": "invoice",
+   "label": "Satış faturası FIS2026000000006 (kalan)",
+   "party": "Ülkü İadeli Kartsız",
+   "phone": "",
+   "detail": "Fatura tarihi 01.09.2026",
+   "ref": {
+    "type": "invoice",
+    "id": "invoice-a1b5c348-7755-4510-bfae-d69aa3c04455"
+   },
+   "days": -49,
+   "state": "overdue"
+  },
+  {
+   "date": "2026-09-10",
+   "direction": "in",
+   "amount": 200,
+   "source": "invoice",
+   "label": "Satış faturası FIS2026000000008",
+   "party": "Ufuk Avans Sonraki Faturaya",
+   "phone": "",
+   "detail": "Fatura tarihi 10.09.2026",
+   "ref": {
+    "type": "invoice",
+    "id": "invoice-ed19ff8c-33a0-425b-9c61-dfdf6e6e2f17"
+   },
+   "days": -40,
+   "state": "overdue"
+  },
+  {
+   "date": "2026-10-05",
+   "direction": "in",
+   "amount": 300,
+   "source": "plan",
+   "label": "1. taksit",
+   "party": "Ulaş Kapalı Kart Azaltma",
+   "ref": {
+    "type": "plan",
+    "id": "plan-6045e3e3-0b79-44b2-a01c-592e95ac4bed"
+   },
+   "seq": 1,
+   "fullAmount": 300,
+   "partial": false,
+   "phone": "",
+   "refNo": "4",
+   "accountId": "account-e6b733f1-4bae-4196-9a04-233d22694b7c",
+   "accountName": "Ulaş Kapalı Kart Azaltma",
+   "detail": "Kart 4",
+   "days": -15,
+   "state": "overdue"
+  },
+  {
+   "date": "2026-10-20",
+   "direction": "in",
+   "amount": 300,
+   "source": "plan",
+   "label": "2. taksit",
+   "party": "Uğur Kapalı Ödemeli Azaltma",
+   "ref": {
+    "type": "plan",
+    "id": "plan-abc18e1b-e5bc-4e4d-bdd0-ae241301e4b2"
+   },
+   "seq": 2,
+   "fullAmount": 300,
+   "partial": false,
+   "phone": "",
+   "refNo": "3",
+   "accountId": "account-cf66d78a-fd3e-44d4-b730-919c0bf6173a",
+   "accountName": "Uğur Kapalı Ödemeli Azaltma",
+   "detail": "Kart 3",
+   "days": 0,
+   "state": "today"
+  },
+  {
+   "date": "2026-10-20",
+   "direction": "in",
+   "amount": 300,
+   "source": "plan",
+   "label": "3. taksit",
+   "party": "Uğur Kapalı Ödemeli Azaltma",
+   "ref": {
+    "type": "plan",
+    "id": "plan-abc18e1b-e5bc-4e4d-bdd0-ae241301e4b2"
+   },
+   "seq": 3,
+   "fullAmount": 300,
+   "partial": false,
+   "phone": "",
+   "refNo": "3",
+   "accountId": "account-cf66d78a-fd3e-44d4-b730-919c0bf6173a",
+   "accountName": "Uğur Kapalı Ödemeli Azaltma",
+   "detail": "Kart 3",
+   "days": 0,
+   "state": "today"
+  },
+  {
+   "date": "2026-10-20",
+   "direction": "in",
+   "amount": 300,
+   "source": "plan",
+   "label": "2. taksit",
+   "party": "Ulaş Kapalı Kart Azaltma",
+   "ref": {
+    "type": "plan",
+    "id": "plan-6045e3e3-0b79-44b2-a01c-592e95ac4bed"
+   },
+   "seq": 2,
+   "fullAmount": 300,
+   "partial": false,
+   "phone": "",
+   "refNo": "4",
+   "accountId": "account-e6b733f1-4bae-4196-9a04-233d22694b7c",
+   "accountName": "Ulaş Kapalı Kart Azaltma",
+   "detail": "Kart 4",
+   "days": 0,
+   "state": "today"
+  },
+  {
+   "date": "2026-10-20",
+   "direction": "in",
+   "amount": 300,
+   "source": "plan",
+   "label": "3. taksit",
+   "party": "Ulaş Kapalı Kart Azaltma",
+   "ref": {
+    "type": "plan",
+    "id": "plan-6045e3e3-0b79-44b2-a01c-592e95ac4bed"
+   },
+   "seq": 3,
+   "fullAmount": 300,
+   "partial": false,
+   "phone": "",
+   "refNo": "4",
+   "accountId": "account-e6b733f1-4bae-4196-9a04-233d22694b7c",
+   "accountName": "Ulaş Kapalı Kart Azaltma",
+   "detail": "Kart 4",
+   "days": 0,
+   "state": "today"
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 300,
+   "source": "plan",
+   "label": "2. taksit",
+   "party": "Utku İade İptali Sonra Düzenle",
+   "ref": {
+    "type": "plan",
+    "id": "plan-63a8401c-2959-4675-a9fd-d93d686d01a1"
+   },
+   "seq": 2,
+   "fullAmount": 300,
+   "partial": false,
+   "phone": "",
+   "refNo": "6",
+   "accountId": "account-9573f179-68a9-4e4e-9d9a-dfc95a622f9e",
+   "accountName": "Utku İade İptali Sonra Düzenle",
+   "detail": "Kart 6",
+   "days": 16,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 300,
+   "source": "plan",
+   "label": "2. taksit",
+   "party": "Ümran İadeli Mevcut Borç",
+   "ref": {
+    "type": "plan",
+    "id": "plan-01a3a9a2-4d78-495f-b86d-73b3f8a6b0b3"
+   },
+   "seq": 2,
+   "fullAmount": 300,
+   "partial": false,
+   "phone": "",
+   "refNo": "5",
+   "accountId": "account-6077e6d1-4f70-475b-8b13-35baeac26c70",
+   "accountName": "Ümran İadeli Mevcut Borç",
+   "detail": "Kart 5",
+   "days": 16,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-12-05",
+   "direction": "in",
+   "amount": 300,
+   "source": "plan",
+   "label": "3. taksit",
+   "party": "Ufuk Avans Sonraki Faturaya",
+   "ref": {
+    "type": "plan",
+    "id": "plan-d152a477-49b9-42b2-abf2-7d05511136e3"
+   },
+   "seq": 3,
+   "fullAmount": 300,
+   "partial": false,
+   "phone": "",
+   "refNo": "2",
+   "accountId": "account-433d4380-f09c-4153-93ca-807441040794",
+   "accountName": "Ufuk Avans Sonraki Faturaya",
+   "detail": "Kart 2",
+   "days": 46,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-12-05",
+   "direction": "in",
+   "amount": 300,
+   "source": "plan",
+   "label": "3. taksit",
+   "party": "Umut Tam Ödemeli Azaltma",
+   "ref": {
+    "type": "plan",
+    "id": "plan-595de14b-24ca-443f-b086-c604c361c8dd"
+   },
+   "seq": 3,
+   "fullAmount": 300,
+   "partial": false,
+   "phone": "",
+   "refNo": "1",
+   "accountId": "account-15b634e8-ffea-49b1-9fbd-ef70b9deaa60",
+   "accountName": "Umut Tam Ödemeli Azaltma",
+   "detail": "Kart 1",
+   "days": 46,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-12-05",
+   "direction": "in",
+   "amount": 300,
+   "source": "plan",
+   "label": "3. taksit",
+   "party": "Utku İade İptali Sonra Düzenle",
+   "ref": {
+    "type": "plan",
+    "id": "plan-63a8401c-2959-4675-a9fd-d93d686d01a1"
+   },
+   "seq": 3,
+   "fullAmount": 300,
+   "partial": false,
+   "phone": "",
+   "refNo": "6",
+   "accountId": "account-9573f179-68a9-4e4e-9d9a-dfc95a622f9e",
+   "accountName": "Utku İade İptali Sonra Düzenle",
+   "detail": "Kart 6",
+   "days": 46,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-12-05",
+   "direction": "in",
+   "amount": 300,
+   "source": "plan",
+   "label": "3. taksit",
+   "party": "Ümran İadeli Mevcut Borç",
+   "ref": {
+    "type": "plan",
+    "id": "plan-01a3a9a2-4d78-495f-b86d-73b3f8a6b0b3"
+   },
+   "seq": 3,
+   "fullAmount": 300,
+   "partial": false,
+   "phone": "",
+   "refNo": "5",
+   "accountId": "account-6077e6d1-4f70-475b-8b13-35baeac26c70",
+   "accountName": "Ümran İadeli Mevcut Borç",
+   "detail": "Kart 5",
+   "days": 46,
+   "state": "upcoming"
+  }
+ ],
+ "k0:projeksiyon": [
+  {
+   "date": "2026-10-20",
+   "direction": "in",
+   "amount": 300,
+   "source": "plan",
+   "label": "2. taksit",
+   "party": "Uğur Kapalı Ödemeli Azaltma",
+   "ref": {
+    "type": "plan",
+    "id": "plan-abc18e1b-e5bc-4e4d-bdd0-ae241301e4b2"
+   },
+   "seq": 2,
+   "fullAmount": 300,
+   "partial": false,
+   "phone": "",
+   "refNo": "3",
+   "accountId": "account-cf66d78a-fd3e-44d4-b730-919c0bf6173a",
+   "accountName": "Uğur Kapalı Ödemeli Azaltma",
+   "balance": 2600
+  },
+  {
+   "date": "2026-10-20",
+   "direction": "in",
+   "amount": 300,
+   "source": "plan",
+   "label": "2. taksit",
+   "party": "Ulaş Kapalı Kart Azaltma",
+   "ref": {
+    "type": "plan",
+    "id": "plan-6045e3e3-0b79-44b2-a01c-592e95ac4bed"
+   },
+   "seq": 2,
+   "fullAmount": 300,
+   "partial": false,
+   "phone": "",
+   "refNo": "4",
+   "accountId": "account-e6b733f1-4bae-4196-9a04-233d22694b7c",
+   "accountName": "Ulaş Kapalı Kart Azaltma",
+   "balance": 2900
+  },
+  {
+   "date": "2026-10-20",
+   "direction": "in",
+   "amount": 300,
+   "source": "plan",
+   "label": "3. taksit",
+   "party": "Uğur Kapalı Ödemeli Azaltma",
+   "ref": {
+    "type": "plan",
+    "id": "plan-abc18e1b-e5bc-4e4d-bdd0-ae241301e4b2"
+   },
+   "seq": 3,
+   "fullAmount": 300,
+   "partial": false,
+   "phone": "",
+   "refNo": "3",
+   "accountId": "account-cf66d78a-fd3e-44d4-b730-919c0bf6173a",
+   "accountName": "Uğur Kapalı Ödemeli Azaltma",
+   "balance": 3200
+  },
+  {
+   "date": "2026-10-20",
+   "direction": "in",
+   "amount": 300,
+   "source": "plan",
+   "label": "3. taksit",
+   "party": "Ulaş Kapalı Kart Azaltma",
+   "ref": {
+    "type": "plan",
+    "id": "plan-6045e3e3-0b79-44b2-a01c-592e95ac4bed"
+   },
+   "seq": 3,
+   "fullAmount": 300,
+   "partial": false,
+   "phone": "",
+   "refNo": "4",
+   "accountId": "account-e6b733f1-4bae-4196-9a04-233d22694b7c",
+   "accountName": "Ulaş Kapalı Kart Azaltma",
+   "balance": 3500
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 300,
+   "source": "plan",
+   "label": "2. taksit",
+   "party": "Ümran İadeli Mevcut Borç",
+   "ref": {
+    "type": "plan",
+    "id": "plan-01a3a9a2-4d78-495f-b86d-73b3f8a6b0b3"
+   },
+   "seq": 2,
+   "fullAmount": 300,
+   "partial": false,
+   "phone": "",
+   "refNo": "5",
+   "accountId": "account-6077e6d1-4f70-475b-8b13-35baeac26c70",
+   "accountName": "Ümran İadeli Mevcut Borç",
+   "balance": 3800
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 300,
+   "source": "plan",
+   "label": "2. taksit",
+   "party": "Utku İade İptali Sonra Düzenle",
+   "ref": {
+    "type": "plan",
+    "id": "plan-63a8401c-2959-4675-a9fd-d93d686d01a1"
+   },
+   "seq": 2,
+   "fullAmount": 300,
+   "partial": false,
+   "phone": "",
+   "refNo": "6",
+   "accountId": "account-9573f179-68a9-4e4e-9d9a-dfc95a622f9e",
+   "accountName": "Utku İade İptali Sonra Düzenle",
+   "balance": 4100
+  },
+  {
+   "date": "2026-09-01",
+   "direction": "in",
+   "amount": 300,
+   "source": "invoice",
+   "label": "Satış faturası FIS2026000000006 (kalan)",
+   "party": "Ülkü İadeli Kartsız",
+   "phone": "",
+   "detail": "Fatura tarihi 01.09.2026",
+   "ref": {
+    "type": "invoice",
+    "id": "invoice-a1b5c348-7755-4510-bfae-d69aa3c04455"
+   }
+  },
+  {
+   "date": "2026-09-10",
+   "direction": "in",
+   "amount": 200,
+   "source": "invoice",
+   "label": "Satış faturası FIS2026000000008",
+   "party": "Ufuk Avans Sonraki Faturaya",
+   "phone": "",
+   "detail": "Fatura tarihi 10.09.2026",
+   "ref": {
+    "type": "invoice",
+    "id": "invoice-ed19ff8c-33a0-425b-9c61-dfdf6e6e2f17"
+   }
+  },
+  {
+   "date": "2026-10-05",
+   "direction": "in",
+   "amount": 300,
+   "source": "plan",
+   "label": "1. taksit",
+   "party": "Ulaş Kapalı Kart Azaltma",
+   "ref": {
+    "type": "plan",
+    "id": "plan-6045e3e3-0b79-44b2-a01c-592e95ac4bed"
+   },
+   "seq": 1,
+   "fullAmount": 300,
+   "partial": false,
+   "phone": "",
+   "refNo": "4",
+   "accountId": "account-e6b733f1-4bae-4196-9a04-233d22694b7c",
+   "accountName": "Ulaş Kapalı Kart Azaltma"
+  }
+ ],
+ "duzenle:du1": {
+  "http": 200
+ },
+ "duzenle:du2": {
+  "http": 200
+ },
+ "duzenle:du3": {
+  "http": 200
+ },
+ "duzenle:du4": {
+  "http": 200
+ },
+ "duzenle:du5": {
+  "http": 409,
+  "yanit": {
+   "ok": false,
+   "error": "Bu faturanın 1 iade faturası var; düzenlenmez. Önce iadeleri iptal edin.",
+   "code": "invoice-locked"
+  }
+ },
+ "duzenle:du6": {
+  "http": 409,
+  "yanit": {
+   "ok": false,
+   "error": "Bu faturanın 1 iade faturası var; düzenlenmez. Önce iadeleri iptal edin.",
+   "code": "invoice-locked"
+  }
+ },
+ "duzenle:du7": {
+  "http": 200
+ },
+ "k1:cari:U1:deleteBlock": "Bu carinin 1 cari hareketi, 1 fatura / makbuz (taslak ve iptal dahil) ve 1 taksit kartı var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k1:cari:U2:deleteBlock": "Bu carinin 1 cari hareketi, 2 fatura / makbuz (taslak ve iptal dahil) ve 1 taksit kartı var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k1:cari:U3:deleteBlock": "Bu carinin 1 cari hareketi, 1 fatura / makbuz (taslak ve iptal dahil) ve 1 taksit kartı var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k1:cari:U4:deleteBlock": "Bu carinin 1 fatura / makbuz (taslak ve iptal dahil) ve 1 taksit kartı var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k1:cari:U5:deleteBlock": "Bu carinin 2 fatura / makbuz (taslak ve iptal dahil) ve 1 taksit kartı var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k1:cari:U6:deleteBlock": "Bu carinin 2 fatura / makbuz (taslak ve iptal dahil) var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k1:cari:U7:deleteBlock": "Bu carinin 2 fatura / makbuz (taslak ve iptal dahil) ve 1 taksit kartı var. Hareketi olan cari silinmez; kullanmayacaksanız Pasife Al ile pasife alın (hareketleri ve bakiyesi korunur, cari listede Pasif altında durur).",
+ "k1:fatura:FU1": {
+  "open": 0,
+  "status": "issued",
+  "payState": "paid"
+ },
+ "k1:fatura:FU2": {
+  "open": 0,
+  "status": "issued",
+  "payState": "paid"
+ },
+ "k1:fatura:FU3": {
+  "open": 300,
+  "status": "issued",
+  "payState": "installment"
+ },
+ "k1:fatura:FU4": {
+  "open": 300,
+  "status": "issued",
+  "payState": "overdue"
+ },
+ "k1:fatura:FU5": {
+  "open": 0,
+  "ownOpen": 600,
+  "inPlan": 600,
+  "status": "issued",
+  "payState": "installment",
+  "ownPayState": "overdue"
+ },
+ "k1:fatura:FU6": {
+  "open": 300,
+  "status": "issued",
+  "payState": "overdue"
+ },
+ "k1:fatura:FU7": {
+  "open": 600,
+  "status": "issued",
+  "payState": "overdue"
+ },
+ "k1:fatura:GU2": {
+  "open": 0,
+  "status": "issued",
+  "payState": "paid"
+ },
+ "k1:fatura:IU5": {
+  "open": 0,
+  "status": "issued",
+  "payState": "return"
+ },
+ "k1:fatura:IU6": {
+  "open": 0,
+  "status": "issued",
+  "payState": "return"
+ },
+ "k1:fatura:IU7": {
+  "open": 0,
+  "status": "cancelled",
+  "payState": "cancelled"
+ },
+ "k1:faturaListesi": {
+  "status": 200,
+  "anahtarlar": [
+   "invoices",
+   "totals",
+   "tabCounts",
+   "canManage",
+   "total",
+   "offset",
+   "limit",
+   "hasMore",
+   "restoreNotice"
+  ],
+  "ilk": {
+   "id": "invoice-400ce0fe-539a-4495-8967-fed01a45e7c5",
+   "kind": "sale_return",
+   "kindLabel": "Satıştan İade Faturası",
+   "scenario": "sale_return",
+   "scenarioLabel": "Satıştan İade",
+   "status": "cancelled",
+   "statusLabel": "İptal Edildi",
+   "number": "IAD2026000000003",
+   "displayNo": "IAD2026000000003",
+   "internalNumber": true,
+   "ettn": "d43078bd-1319-496e-865a-1e2e9af1dc32",
+   "issueDate": "2026-09-10",
+   "issueTime": "09:00",
+   "accountId": "account-9573f179-68a9-4e4e-9d9a-dfc95a622f9e",
+   "accountName": "Utku İade İptali Sonra Düzenle",
+   "accountRef": "7",
+   "accountPhone": "",
+   "profile": "KAGIT",
+   "profileLabel": "Kâğıt Fatura",
+   "typeCode": "IADE",
+   "currency": "TRY",
+   "rate": 1,
+   "netTotal": 300,
+   "vatTotal": 0,
+   "withheldTotal": 0,
+   "stoppageTotal": 0,
+   "payableTotal": 300,
+   "tryNet": 300,
+   "tryVat": 0,
+   "tryPayable": 300,
+   "dueDate": "2026-09-10",
+   "planId": "",
+   "originalId": "invoice-154a79a9-8543-4b8c-a58a-38d8e3e48817",
+   "originalNumber": "FIS2026000000007",
+   "originalDate": "2026-09-01",
+   "note": "",
+   "eStatus": "none",
+   "eStatusLabel": "Gönderilmedi",
+   "eUnsent": false,
+   "eTestLive": false,
+   "eTest": false,
+   "actorName": "Ofis yöneticisi",
+   "createdAt": "2026-10-20T09:00:00.763Z",
+   "payState": "cancelled",
+   "payStateLabel": "İptal",
+   "paid": 0,
+   "open": 0,
+   "closers": [],
+   "posCash": false,
+   "eBlocked": false
+  }
+ },
+ "k1:kart:KU5": {
+  "status": "active",
+  "closedAt": null,
+  "total": 600,
+  "remaining": 600,
+  "items": [
+   [
+    "2026-11-05",
+    null,
+    300,
+    0
+   ],
+   [
+    "2026-12-05",
+    null,
+    300,
+    0
+   ]
+  ]
+ },
+ "k1:kart:fatura:FU3": {
+  "status": "active",
+  "total": 600,
+  "remaining": 300,
+  "items": [
+   [
+    "2026-10-05",
+    null,
+    200,
+    200
+   ],
+   [
+    "2026-11-05",
+    null,
+    200,
+    100
+   ],
+   [
+    "2026-12-05",
+    null,
+    200,
+    0
+   ]
+  ]
+ },
+ "k1:kart:fatura:FU4": {
+  "status": "active",
+  "total": 300,
+  "remaining": 300,
+  "items": [
+   [
+    "2026-10-05",
+    null,
+    100,
+    0
+   ],
+   [
+    "2026-11-05",
+    null,
+    100,
+    0
+   ],
+   [
+    "2026-12-05",
+    null,
+    100,
+    0
+   ]
+  ]
+ },
+ "k1:kart:fatura:FU1": {
+  "status": "active",
+  "total": 600,
+  "remaining": 0,
+  "items": [
+   [
+    "2026-10-05",
+    null,
+    200,
+    200
+   ],
+   [
+    "2026-11-05",
+    null,
+    200,
+    200
+   ],
+   [
+    "2026-12-05",
+    null,
+    200,
+    200
+   ]
+  ]
+ },
+ "k1:kart:fatura:FU2": {
+  "status": "active",
+  "total": 300,
+  "remaining": 0,
+  "items": [
+   [
+    "2026-10-05",
+    null,
+    100,
+    100
+   ],
+   [
+    "2026-11-05",
+    null,
+    100,
+    100
+   ],
+   [
+    "2026-12-05",
+    null,
+    100,
+    100
+   ]
+  ]
+ },
+ "k1:kart:fatura:FU7": {
+  "status": "active",
+  "total": 600,
+  "remaining": 600,
+  "items": [
+   [
+    "2026-10-05",
+    null,
+    200,
+    0
+   ],
+   [
+    "2026-11-05",
+    null,
+    200,
+    0
+   ],
+   [
+    "2026-12-05",
+    null,
+    200,
+    0
+   ]
+  ]
+ },
+ "k1:takvim": [
+  {
+   "id": "plan|plan-acf84e0d-bff0-4df5-8e75-6fe6ca2d5c63|item-cc570b98-e5b4-4887-be7e-32c54e390f2a",
+   "source": "plan",
+   "planId": "plan-acf84e0d-bff0-4df5-8e75-6fe6ca2d5c63",
+   "itemId": "item-cc570b98-e5b4-4887-be7e-32c54e390f2a",
+   "person": "Ulaş Kapalı Kart Azaltma",
+   "caseNo": "",
+   "caseKey": "",
+   "caseSource": "",
+   "caseTitle": "",
+   "tab": "",
+   "label": "1. taksit",
+   "kind": "date",
+   "dueDate": "2026-10-05",
+   "dueText": "05.10.2026",
+   "amount": 100,
+   "partial": false,
+   "days": -15,
+   "state": "overdue",
+   "phone": "",
+   "accountId": "account-e6b733f1-4bae-4196-9a04-233d22694b7c",
+   "accountRef": "4",
+   "refNo": "10"
+  },
+  {
+   "id": "plan|plan-bc160cd1-8946-4a48-bd28-f11940905ed9|item-923e10c9-d0e6-4360-9b28-e682d480db0f",
+   "source": "plan",
+   "planId": "plan-bc160cd1-8946-4a48-bd28-f11940905ed9",
+   "itemId": "item-923e10c9-d0e6-4360-9b28-e682d480db0f",
+   "person": "Utku İade İptali Sonra Düzenle",
+   "caseNo": "",
+   "caseKey": "",
+   "caseSource": "",
+   "caseTitle": "",
+   "tab": "",
+   "label": "1. taksit",
+   "kind": "date",
+   "dueDate": "2026-10-05",
+   "dueText": "05.10.2026",
+   "amount": 200,
+   "partial": false,
+   "days": -15,
+   "state": "overdue",
+   "phone": "",
+   "accountId": "account-9573f179-68a9-4e4e-9d9a-dfc95a622f9e",
+   "accountRef": "7",
+   "refNo": "11"
+  },
+  {
+   "id": "invoice|invoice-a1b5c348-7755-4510-bfae-d69aa3c04455",
+   "source": "invoice",
+   "invoiceId": "invoice-a1b5c348-7755-4510-bfae-d69aa3c04455",
+   "direction": "in",
+   "person": "Ülkü İadeli Kartsız",
+   "caseNo": "",
+   "caseKey": "",
+   "tab": "",
+   "label": "Tahsil Edilecek Fatura FIS2026000000006",
+   "kind": "date",
+   "dueDate": "2026-09-01",
+   "dueText": "01.09.2026",
+   "amount": 300,
+   "partial": true,
+   "days": -49,
+   "state": "overdue"
+  }
+ ],
+ "k1:takvimV3": {
+  "items": [
+   {
+    "id": "plan|plan-acf84e0d-bff0-4df5-8e75-6fe6ca2d5c63|item-cc570b98-e5b4-4887-be7e-32c54e390f2a",
+    "source": "plan",
+    "planId": "plan-acf84e0d-bff0-4df5-8e75-6fe6ca2d5c63",
+    "itemId": "item-cc570b98-e5b4-4887-be7e-32c54e390f2a",
+    "person": "Ulaş Kapalı Kart Azaltma",
+    "caseNo": "",
+    "caseKey": "",
+    "caseSource": "",
+    "caseTitle": "",
+    "tab": "",
+    "label": "1. taksit",
+    "kind": "date",
+    "dueDate": "2026-10-05",
+    "dueText": "05.10.2026",
+    "amount": 100,
+    "partial": false,
+    "days": -15,
+    "state": "overdue",
+    "phone": "",
+    "accountId": "account-e6b733f1-4bae-4196-9a04-233d22694b7c",
+    "accountRef": "4",
+    "refNo": "10"
+   },
+   {
+    "id": "plan|plan-bc160cd1-8946-4a48-bd28-f11940905ed9|item-923e10c9-d0e6-4360-9b28-e682d480db0f",
+    "source": "plan",
+    "planId": "plan-bc160cd1-8946-4a48-bd28-f11940905ed9",
+    "itemId": "item-923e10c9-d0e6-4360-9b28-e682d480db0f",
+    "person": "Utku İade İptali Sonra Düzenle",
+    "caseNo": "",
+    "caseKey": "",
+    "caseSource": "",
+    "caseTitle": "",
+    "tab": "",
+    "label": "1. taksit",
+    "kind": "date",
+    "dueDate": "2026-10-05",
+    "dueText": "05.10.2026",
+    "amount": 200,
+    "partial": false,
+    "days": -15,
+    "state": "overdue",
+    "phone": "",
+    "accountId": "account-9573f179-68a9-4e4e-9d9a-dfc95a622f9e",
+    "accountRef": "7",
+    "refNo": "11"
+   },
+   {
+    "id": "invoice|invoice-a1b5c348-7755-4510-bfae-d69aa3c04455",
+    "source": "invoice",
+    "invoiceId": "invoice-a1b5c348-7755-4510-bfae-d69aa3c04455",
+    "direction": "in",
+    "person": "Ülkü İadeli Kartsız",
+    "caseNo": "",
+    "caseKey": "",
+    "tab": "",
+    "label": "Tahsil Edilecek Fatura FIS2026000000006",
+    "kind": "date",
+    "dueDate": "2026-09-01",
+    "dueText": "01.09.2026",
+    "amount": 300,
+    "partial": true,
+    "days": -49,
+    "state": "overdue"
+   }
+  ],
+  "deadlines": []
+ },
+ "k1:vadeTakip": [
+  {
+   "date": "2026-09-01",
+   "direction": "in",
+   "amount": 300,
+   "source": "invoice",
+   "label": "Satış faturası FIS2026000000006 (kalan)",
+   "party": "Ülkü İadeli Kartsız",
+   "phone": "",
+   "detail": "Fatura tarihi 01.09.2026",
+   "ref": {
+    "type": "invoice",
+    "id": "invoice-a1b5c348-7755-4510-bfae-d69aa3c04455"
+   },
+   "days": -49,
+   "state": "overdue"
+  },
+  {
+   "date": "2026-10-05",
+   "direction": "in",
+   "amount": 100,
+   "source": "plan",
+   "label": "1. taksit",
+   "party": "Ulaş Kapalı Kart Azaltma",
+   "ref": {
+    "type": "plan",
+    "id": "plan-acf84e0d-bff0-4df5-8e75-6fe6ca2d5c63"
+   },
+   "seq": 1,
+   "fullAmount": 100,
+   "partial": false,
+   "phone": "",
+   "refNo": "10",
+   "accountId": "account-e6b733f1-4bae-4196-9a04-233d22694b7c",
+   "accountName": "Ulaş Kapalı Kart Azaltma",
+   "detail": "Kart 10",
+   "days": -15,
+   "state": "overdue"
+  },
+  {
+   "date": "2026-10-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "1. taksit",
+   "party": "Utku İade İptali Sonra Düzenle",
+   "ref": {
+    "type": "plan",
+    "id": "plan-bc160cd1-8946-4a48-bd28-f11940905ed9"
+   },
+   "seq": 1,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "11",
+   "accountId": "account-9573f179-68a9-4e4e-9d9a-dfc95a622f9e",
+   "accountName": "Utku İade İptali Sonra Düzenle",
+   "detail": "Kart 11",
+   "days": -15,
+   "state": "overdue"
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 100,
+   "source": "plan",
+   "label": "2. taksit (kalan)",
+   "party": "Uğur Kapalı Ödemeli Azaltma",
+   "ref": {
+    "type": "plan",
+    "id": "plan-1cfe5fa9-5ac0-4852-89ff-6d5698adde87"
+   },
+   "seq": 2,
+   "fullAmount": 200,
+   "partial": true,
+   "phone": "",
+   "refNo": "9",
+   "accountId": "account-cf66d78a-fd3e-44d4-b730-919c0bf6173a",
+   "accountName": "Uğur Kapalı Ödemeli Azaltma",
+   "detail": "Kart 9",
+   "days": 16,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 100,
+   "source": "plan",
+   "label": "2. taksit",
+   "party": "Ulaş Kapalı Kart Azaltma",
+   "ref": {
+    "type": "plan",
+    "id": "plan-acf84e0d-bff0-4df5-8e75-6fe6ca2d5c63"
+   },
+   "seq": 2,
+   "fullAmount": 100,
+   "partial": false,
+   "phone": "",
+   "refNo": "10",
+   "accountId": "account-e6b733f1-4bae-4196-9a04-233d22694b7c",
+   "accountName": "Ulaş Kapalı Kart Azaltma",
+   "detail": "Kart 10",
+   "days": 16,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "2. taksit",
+   "party": "Utku İade İptali Sonra Düzenle",
+   "ref": {
+    "type": "plan",
+    "id": "plan-bc160cd1-8946-4a48-bd28-f11940905ed9"
+   },
+   "seq": 2,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "11",
+   "accountId": "account-9573f179-68a9-4e4e-9d9a-dfc95a622f9e",
+   "accountName": "Utku İade İptali Sonra Düzenle",
+   "detail": "Kart 11",
+   "days": 16,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 300,
+   "source": "plan",
+   "label": "2. taksit",
+   "party": "Ümran İadeli Mevcut Borç",
+   "ref": {
+    "type": "plan",
+    "id": "plan-01a3a9a2-4d78-495f-b86d-73b3f8a6b0b3"
+   },
+   "seq": 2,
+   "fullAmount": 300,
+   "partial": false,
+   "phone": "",
+   "refNo": "5",
+   "accountId": "account-6077e6d1-4f70-475b-8b13-35baeac26c70",
+   "accountName": "Ümran İadeli Mevcut Borç",
+   "detail": "Kart 5",
+   "days": 16,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-12-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "3. taksit",
+   "party": "Uğur Kapalı Ödemeli Azaltma",
+   "ref": {
+    "type": "plan",
+    "id": "plan-1cfe5fa9-5ac0-4852-89ff-6d5698adde87"
+   },
+   "seq": 3,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "9",
+   "accountId": "account-cf66d78a-fd3e-44d4-b730-919c0bf6173a",
+   "accountName": "Uğur Kapalı Ödemeli Azaltma",
+   "detail": "Kart 9",
+   "days": 46,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-12-05",
+   "direction": "in",
+   "amount": 100,
+   "source": "plan",
+   "label": "3. taksit",
+   "party": "Ulaş Kapalı Kart Azaltma",
+   "ref": {
+    "type": "plan",
+    "id": "plan-acf84e0d-bff0-4df5-8e75-6fe6ca2d5c63"
+   },
+   "seq": 3,
+   "fullAmount": 100,
+   "partial": false,
+   "phone": "",
+   "refNo": "10",
+   "accountId": "account-e6b733f1-4bae-4196-9a04-233d22694b7c",
+   "accountName": "Ulaş Kapalı Kart Azaltma",
+   "detail": "Kart 10",
+   "days": 46,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-12-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "3. taksit",
+   "party": "Utku İade İptali Sonra Düzenle",
+   "ref": {
+    "type": "plan",
+    "id": "plan-bc160cd1-8946-4a48-bd28-f11940905ed9"
+   },
+   "seq": 3,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "11",
+   "accountId": "account-9573f179-68a9-4e4e-9d9a-dfc95a622f9e",
+   "accountName": "Utku İade İptali Sonra Düzenle",
+   "detail": "Kart 11",
+   "days": 46,
+   "state": "upcoming"
+  },
+  {
+   "date": "2026-12-05",
+   "direction": "in",
+   "amount": 300,
+   "source": "plan",
+   "label": "3. taksit",
+   "party": "Ümran İadeli Mevcut Borç",
+   "ref": {
+    "type": "plan",
+    "id": "plan-01a3a9a2-4d78-495f-b86d-73b3f8a6b0b3"
+   },
+   "seq": 3,
+   "fullAmount": 300,
+   "partial": false,
+   "phone": "",
+   "refNo": "5",
+   "accountId": "account-6077e6d1-4f70-475b-8b13-35baeac26c70",
+   "accountName": "Ümran İadeli Mevcut Borç",
+   "detail": "Kart 5",
+   "days": 46,
+   "state": "upcoming"
+  }
+ ],
+ "k1:projeksiyon": [
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 300,
+   "source": "plan",
+   "label": "2. taksit",
+   "party": "Ümran İadeli Mevcut Borç",
+   "ref": {
+    "type": "plan",
+    "id": "plan-01a3a9a2-4d78-495f-b86d-73b3f8a6b0b3"
+   },
+   "seq": 2,
+   "fullAmount": 300,
+   "partial": false,
+   "phone": "",
+   "refNo": "5",
+   "accountId": "account-6077e6d1-4f70-475b-8b13-35baeac26c70",
+   "accountName": "Ümran İadeli Mevcut Borç",
+   "balance": 2400
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 100,
+   "source": "plan",
+   "label": "2. taksit",
+   "party": "Ulaş Kapalı Kart Azaltma",
+   "ref": {
+    "type": "plan",
+    "id": "plan-acf84e0d-bff0-4df5-8e75-6fe6ca2d5c63"
+   },
+   "seq": 2,
+   "fullAmount": 100,
+   "partial": false,
+   "phone": "",
+   "refNo": "10",
+   "accountId": "account-e6b733f1-4bae-4196-9a04-233d22694b7c",
+   "accountName": "Ulaş Kapalı Kart Azaltma",
+   "balance": 2500
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "2. taksit",
+   "party": "Utku İade İptali Sonra Düzenle",
+   "ref": {
+    "type": "plan",
+    "id": "plan-bc160cd1-8946-4a48-bd28-f11940905ed9"
+   },
+   "seq": 2,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "11",
+   "accountId": "account-9573f179-68a9-4e4e-9d9a-dfc95a622f9e",
+   "accountName": "Utku İade İptali Sonra Düzenle",
+   "balance": 2700
+  },
+  {
+   "date": "2026-11-05",
+   "direction": "in",
+   "amount": 100,
+   "source": "plan",
+   "label": "2. taksit (kalan)",
+   "party": "Uğur Kapalı Ödemeli Azaltma",
+   "ref": {
+    "type": "plan",
+    "id": "plan-1cfe5fa9-5ac0-4852-89ff-6d5698adde87"
+   },
+   "seq": 2,
+   "fullAmount": 200,
+   "partial": true,
+   "phone": "",
+   "refNo": "9",
+   "accountId": "account-cf66d78a-fd3e-44d4-b730-919c0bf6173a",
+   "accountName": "Uğur Kapalı Ödemeli Azaltma",
+   "balance": 2800
+  },
+  {
+   "date": "2026-09-01",
+   "direction": "in",
+   "amount": 300,
+   "source": "invoice",
+   "label": "Satış faturası FIS2026000000006 (kalan)",
+   "party": "Ülkü İadeli Kartsız",
+   "phone": "",
+   "detail": "Fatura tarihi 01.09.2026",
+   "ref": {
+    "type": "invoice",
+    "id": "invoice-a1b5c348-7755-4510-bfae-d69aa3c04455"
+   }
+  },
+  {
+   "date": "2026-10-05",
+   "direction": "in",
+   "amount": 100,
+   "source": "plan",
+   "label": "1. taksit",
+   "party": "Ulaş Kapalı Kart Azaltma",
+   "ref": {
+    "type": "plan",
+    "id": "plan-acf84e0d-bff0-4df5-8e75-6fe6ca2d5c63"
+   },
+   "seq": 1,
+   "fullAmount": 100,
+   "partial": false,
+   "phone": "",
+   "refNo": "10",
+   "accountId": "account-e6b733f1-4bae-4196-9a04-233d22694b7c",
+   "accountName": "Ulaş Kapalı Kart Azaltma"
+  },
+  {
+   "date": "2026-10-05",
+   "direction": "in",
+   "amount": 200,
+   "source": "plan",
+   "label": "1. taksit",
+   "party": "Utku İade İptali Sonra Düzenle",
+   "ref": {
+    "type": "plan",
+    "id": "plan-bc160cd1-8946-4a48-bd28-f11940905ed9"
+   },
+   "seq": 1,
+   "fullAmount": 200,
+   "partial": false,
+   "phone": "",
+   "refNo": "11",
+   "accountId": "account-9573f179-68a9-4e4e-9d9a-dfc95a622f9e",
+   "accountName": "Utku İade İptali Sonra Düzenle"
+  }
+ ]
+}

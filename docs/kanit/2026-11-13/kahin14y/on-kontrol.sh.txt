@@ -1,0 +1,27 @@
+#!/bin/bash
+# Ana oturum: ÖN KONTROL — Ç5-B düzeltme turu kodu + cari kâhini bakımı 14 birlikte: yapım aşaması listesi yeniden üretilir (kâhin ağacımda; gönderilmez), eski listeyle fark dökülür.
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+W=$S/kahin8y-ag; K=$S/kahin14y/on; L=test/bagimsiz/cari/YAPIM-ASAMASI.json
+G="git -c user.name=ana -c user.email=ana@yerel"
+export HUKUK_LICENSE_URL=http://127.0.0.1:9
+mkdir -p $K; cd $W || exit 1
+[ -z "$(git status -s | grep -v node_modules)" ] || { echo "kâhin ağacı temiz değil"; exit 1; }
+git checkout -q -B c5b-kahin14-on worktree-agent-a511c161b54069067 || exit 1
+$G merge -q --no-ff --no-verify -m "ÖN KONTROL: + cari kâhini bakımı 14 (gönderilmez)" worktree-agent-a0479b65317780ba2 > $K/merge.out 2>&1 || { echo "birleşim çakıştı"; git status -s | grep -E '^(UU|AA)' | head; exit 1; }
+echo "başladı $(date -u +%T) yük $(cut -d' ' -f1-3 /proc/loadavg) · ağaç $(git rev-parse --short HEAD)"
+cp $L $K/liste-oncesi.json
+TZ=UTC timeout 3000 node test/bagimsiz/cari/kos.mjs --yapim-asamasi-yaz > $K/liste-uret.out 2>&1; echo "liste üretimi çıkış $?"; tail -3 $K/liste-uret.out | cut -c1-260
+cp $L $K/liste-yeni.json
+python3 -I - $K/liste-oncesi.json $K/liste-yeni.json <<'PY'
+import json,sys
+from collections import Counter
+o={(e["senaryo"],e["anahtar"]):e for e in json.load(open(sys.argv[1]))["kayitlar"]}
+n={(e["senaryo"],e["anahtar"]):e for e in json.load(open(sys.argv[2]))["kayitlar"]}
+kap=[k for k in o if k not in n]; yeni=[k for k in n if k not in o]; deg=[k for k in n if k in o and (o[k].get("program"),o[k].get("beklenen"))!=(n[k].get("program"),n[k].get("beklenen"))]
+print(f"liste farkı: önceki {len(o)} → yeni {len(n)} · kapanan {len(kap)} · yeni {len(yeni)} · değeri değişen {len(deg)}")
+print("kalan eski kayıtların senaryoları:", dict(Counter(k[0][:34] for k in n if k in o)))
+print("yeni kayıtların senaryoları:", dict(Counter(k[0][:34] for k in yeni)))
+for k in yeni[:30]: print("  YENİ", k[0][:30], "|", k[1][:70], "| beklenen", str(n[k].get('beklenen'))[:40], "| program", str(n[k].get('program'))[:40])
+for k in [k for k in n if k in o][:8]: print("  KALAN", k[0][:30], "|", k[1][:70], "| beklenen", str(n[k].get('beklenen'))[:40], "| program", str(n[k].get('program'))[:40])
+PY
+git checkout -q -- $L; echo "bitti $(date -u +%T) yük $(cut -d' ' -f1-3 /proc/loadavg)"

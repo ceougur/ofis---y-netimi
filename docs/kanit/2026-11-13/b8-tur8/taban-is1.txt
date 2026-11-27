@@ -1,0 +1,306 @@
+TAP version 13
+# (node:2418) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Birleşik tur 8 — İş 1: kartın göstergeleri yer tablosunun HER yerinde kart penceresiyle aynı (S129 = A, S142 = A)
+    # Subtest: KARAR ÖRNEĞİ (S129) + ORTA-A — kayda bağlı kart 900 (3 × 300), karta BAĞLANMADAN 500 tahsilat: her yerde Tahsil Edilen 500 · Kalan 400, satırlar 300 / 200 / 0
+    not ok 1 - KARAR ÖRNEĞİ (S129) + ORTA-A — kayda bağlı kart 900 (3 × 300), karta BAĞLANMADAN 500 tahsilat: her yerde Tahsil Edilen 500 · Kalan 400, satırlar 300 / 200 / 0
+      ---
+      duration_ms: 183.608587
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8-taban/test/tyk-birlesik8-ekranlar-250.test.mjs:140:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        yer tablosunun her yeri kart penceresiyle aynı
+        + actual - expected
+        
+        + [
+        +   '5-6 kayıt detayı (gösterge): {"paid":0,"remaining":900,"state":"overdue","next":1,"nextDue":"2026-10-10","overdueCount":1} ≠ pencere {"paid":500,"remaining":400,"state":"active","next":2,"nextDue":"2026-11-10","overdueCount":0}',
+        +   '5-6 kayıt detayı (satırlar): [[0,300,"overdue"],[0,300,"open"],[0,300,"open"]] ≠ pencere [[300,0,"paid"],[200,100,"open"],[0,300,"open"]]',
+        +   '8 cari kartı taksit kartı satırı: {"paid":500,"remaining":400,"state":"overdue","next":1,"nextDue":"2026-10-10","overdueCount":1} ≠ pencere {"paid":500,"remaining":400,"state":"active","next":2,"nextDue":"2026-11-10","overdueCount":0}',
+        +   '12 Cari Listesi sıradaki: "2026-10-10" ≠ pencere "2026-11-10"',
+        +   '12 Cari Listesi N geciken: undefined ≠ pencere 0'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: '5-6 kayıt detayı (gösterge): {"paid":0,"remaining":900,"state":"overdue","next":1,"nextDue":"2026-10-10","overdueCount":1} ≠ pencere {"paid":500,"remaining":400,"state":"active","next":2,"nextDue":"2026-11-10","overdueCount":0}'
+        1: '5-6 kayıt detayı (satırlar): [[0,300,"overdue"],[0,300,"open"],[0,300,"open"]] ≠ pencere [[300,0,"paid"],[200,100,"open"],[0,300,"open"]]'
+        2: '8 cari kartı taksit kartı satırı: {"paid":500,"remaining":400,"state":"overdue","next":1,"nextDue":"2026-10-10","overdueCount":1} ≠ pencere {"paid":500,"remaining":400,"state":"active","next":2,"nextDue":"2026-11-10","overdueCount":0}'
+        3: '12 Cari Listesi sıradaki: "2026-10-10" ≠ pencere "2026-11-10"'
+        4: '12 Cari Listesi N geciken: undefined ≠ pencere 0'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8-taban/test/tyk-birlesik8-ekranlar-250.test.mjs:148:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: komşu 1 — BAĞSIZ tahsilat gecikmiş taksiti kapatır: kart 900 (ilk vade 40 gün önce), bağsız 300 ⇒ her yerde Tahsil Edilen 300, durum Gecikti · 1 taksit, sıradaki 2. taksit (S142: cari kartı satırı da)
+    not ok 2 - komşu 1 — BAĞSIZ tahsilat gecikmiş taksiti kapatır: kart 900 (ilk vade 40 gün önce), bağsız 300 ⇒ her yerde Tahsil Edilen 300, durum Gecikti · 1 taksit, sıradaki 2. taksit (S142: cari kartı satırı da)
+      ---
+      duration_ms: 102.41488
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8-taban/test/tyk-birlesik8-ekranlar-250.test.mjs:154:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        yer tablosunun her yeri kart penceresiyle aynı (S142: cari kartı satırının durum etiketi ve sıradaki taksit dahil)
+        + actual - expected
+        
+        + [
+        +   '5-6 kayıt detayı (gösterge): {"paid":0,"remaining":900,"state":"overdue","next":1,"nextDue":"2026-09-10","overdueCount":2} ≠ pencere {"paid":300,"remaining":600,"state":"overdue","next":2,"nextDue":"2026-10-10","overdueCount":1}',
+        +   '5-6 kayıt detayı (satırlar): [[0,300,"overdue"],[0,300,"overdue"],[0,300,"open"]] ≠ pencere [[300,0,"paid"],[0,300,"overdue"],[0,300,"open"]]',
+        +   '8 cari kartı taksit kartı satırı: {"paid":300,"remaining":600,"state":"overdue","next":1,"nextDue":"2026-09-10","overdueCount":2} ≠ pencere {"paid":300,"remaining":600,"state":"overdue","next":2,"nextDue":"2026-10-10","overdueCount":1}',
+        +   '12 Cari Listesi sıradaki: "2026-09-10" ≠ pencere "2026-10-10"',
+        +   '12 Cari Listesi N geciken: undefined ≠ pencere 1'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: '5-6 kayıt detayı (gösterge): {"paid":0,"remaining":900,"state":"overdue","next":1,"nextDue":"2026-09-10","overdueCount":2} ≠ pencere {"paid":300,"remaining":600,"state":"overdue","next":2,"nextDue":"2026-10-10","overdueCount":1}'
+        1: '5-6 kayıt detayı (satırlar): [[0,300,"overdue"],[0,300,"overdue"],[0,300,"open"]] ≠ pencere [[300,0,"paid"],[0,300,"overdue"],[0,300,"open"]]'
+        2: '8 cari kartı taksit kartı satırı: {"paid":300,"remaining":600,"state":"overdue","next":1,"nextDue":"2026-09-10","overdueCount":2} ≠ pencere {"paid":300,"remaining":600,"state":"overdue","next":2,"nextDue":"2026-10-10","overdueCount":1}'
+        3: '12 Cari Listesi sıradaki: "2026-09-10" ≠ pencere "2026-10-10"'
+        4: '12 Cari Listesi N geciken: undefined ≠ pencere 1'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8-taban/test/tyk-birlesik8-ekranlar-250.test.mjs:163:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: komşu 2 — FAZLA ödeyen: kart 600 (2 × 300), bağsız 800 ⇒ her yerde Kalan 0 · Tamamlandı, sıradaki yok; cari 200 alacaklı
+    not ok 3 - komşu 2 — FAZLA ödeyen: kart 600 (2 × 300), bağsız 800 ⇒ her yerde Kalan 0 · Tamamlandı, sıradaki yok; cari 200 alacaklı
+      ---
+      duration_ms: 104.406333
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8-taban/test/tyk-birlesik8-ekranlar-250.test.mjs:168:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   '5-6 kayıt detayı (gösterge): {"paid":0,"remaining":600,"state":"overdue","next":1,"nextDue":"2026-10-10","overdueCount":1} ≠ pencere {"paid":600,"remaining":0,"state":"done","next":null,"nextDue":null,"overdueCount":0}',
+        +   '5-6 kayıt detayı (satırlar): [[0,300,"overdue"],[0,300,"open"]] ≠ pencere [[300,0,"paid"],[300,0,"paid"]]',
+        +   '8 cari kartı taksit kartı satırı: {"paid":600,"remaining":0,"state":"overdue","next":1,"nextDue":"2026-10-10","overdueCount":1} ≠ pencere {"paid":600,"remaining":0,"state":"done","next":null,"nextDue":null,"overdueCount":0}',
+        +   '12 Cari Listesi sıradaki: "2026-10-10" ≠ pencere null',
+        +   '12 Cari Listesi N geciken: undefined ≠ pencere 0'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: '5-6 kayıt detayı (gösterge): {"paid":0,"remaining":600,"state":"overdue","next":1,"nextDue":"2026-10-10","overdueCount":1} ≠ pencere {"paid":600,"remaining":0,"state":"done","next":null,"nextDue":null,"overdueCount":0}'
+        1: '5-6 kayıt detayı (satırlar): [[0,300,"overdue"],[0,300,"open"]] ≠ pencere [[300,0,"paid"],[300,0,"paid"]]'
+        2: '8 cari kartı taksit kartı satırı: {"paid":600,"remaining":0,"state":"overdue","next":1,"nextDue":"2026-10-10","overdueCount":1} ≠ pencere {"paid":600,"remaining":0,"state":"done","next":null,"nextDue":null,"overdueCount":0}'
+        3: '12 Cari Listesi sıradaki: "2026-10-10" ≠ pencere null'
+        4: '12 Cari Listesi N geciken: undefined ≠ pencere 0'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8-taban/test/tyk-birlesik8-ekranlar-250.test.mjs:175:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: komşu 3 — İADE FATURASI almış taksitli fatura: 2 × 500 → iade faturası 1 adet ⇒ kart 500'e küçülür, her yerde Tahsil Edilen 0 · Kalan 500 (S151: iade faturasında bugünkü davranış aynen)
+    not ok 4 - komşu 3 — İADE FATURASI almış taksitli fatura: 2 × 500 → iade faturası 1 adet ⇒ kart 500'e küçülür, her yerde Tahsil Edilen 0 · Kalan 500 (S151: iade faturasında bugünkü davranış aynen)
+      ---
+      duration_ms: 158.199607
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8-taban/test/tyk-birlesik8-ekranlar-250.test.mjs:178:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   '12 Cari Listesi N geciken: undefined ≠ pencere 1'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: '12 Cari Listesi N geciken: undefined ≠ pencere 1'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8-taban/test/tyk-birlesik8-ekranlar-250.test.mjs:187:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: komşu 4 — KAPATILMIŞ kart (S144 = C: gösterim bugünkü gibi): kart 900, karta 300, Kartı Kapat ⇒ her yerde Tahsil Edilen 300 · Kalan 600 (kartın kendi hesabı), durum Kapalı
+    not ok 5 - komşu 4 — KAPATILMIŞ kart (S144 = C: gösterim bugünkü gibi): kart 900, karta 300, Kartı Kapat ⇒ her yerde Tahsil Edilen 300 · Kalan 600 (kartın kendi hesabı), durum Kapalı
+      ---
+      duration_ms: 151.046285
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8-taban/test/tyk-birlesik8-ekranlar-250.test.mjs:190:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   '5-6 kayıt detayı (satırlar): [[300,0,"paid"],[0,300,"closed"],[0,300,"closed"]] ≠ pencere [[300,0,"paid"],[0,0,"paid"],[0,0,"paid"]]'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: '5-6 kayıt detayı (satırlar): [[300,0,"paid"],[0,300,"closed"],[0,300,"closed"]] ≠ pencere [[300,0,"paid"],[0,0,"paid"],[0,0,"paid"]]'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8-taban/test/tyk-birlesik8-ekranlar-250.test.mjs:199:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: mobil uçlar yer tablosundaki uçlara gider (17: aynı sayılar) — cari listesi, cari kartı, taksit özeti
+    ok 6 - mobil uçlar yer tablosundaki uçlara gider (17: aynı sayılar) — cari listesi, cari kartı, taksit özeti
+      ---
+      duration_ms: 1.287388
+      type: 'test'
+      ...
+    1..6
+not ok 1 - Birleşik tur 8 — İş 1: kartın göstergeleri yer tablosunun HER yerinde kart penceresiyle aynı (S129 = A, S142 = A)
+  ---
+  duration_ms: 1158.199407
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8-taban/test/tyk-birlesik8-ekranlar-250.test.mjs:35:1'
+  failureType: 'subtestsFailed'
+  error: '5 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Birleşik tur 8 — İş 1: kart göstergelerinin yer tablosu kaynakla aynı (yeni bir gösterim yeri eklenince kırmızı)
+    # Subtest: routes/plans.mjs: kartın kendi biçimini (shape) okuyan yerler — detail (yazım içi), detailView (pencere, PDF; kuyruk), forCase (kayıt detayı; kuyruk), forAccount (cari kartı; queueSummaryOf)
+    not ok 1 - routes/plans.mjs: kartın kendi biçimini (shape) okuyan yerler — detail (yazım içi), detailView (pencere, PDF; kuyruk), forCase (kayıt detayı; kuyruk), forAccount (cari kartı; queueSummaryOf)
+      ---
+      duration_ms: 2.651672
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8-taban/test/tyk-birlesik8-ekranlar-250.test.mjs:225:3'
+      failureType: 'testCodeFailure'
+      error: 'kayıt detayı (forCase) kuyruk görünümünü verir — S129 = A'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8-taban/test/tyk-birlesik8-ekranlar-250.test.mjs:232:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:466:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:435:3)
+        node:internal/per_context/primordials:466:9
+        Array.map (<anonymous>)
+      ...
+    # Subtest: routes/plans.mjs ve öbür yollar: kartın kendi hesabını (allocate) kuran her yer kuyruk görünümüne bağlı ya da iç çağıran olarak listede
+    not ok 2 - routes/plans.mjs ve öbür yollar: kartın kendi hesabını (allocate) kuran her yer kuyruk görünümüne bağlı ya da iç çağıran olarak listede
+      ---
+      duration_ms: 3.921944
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8-taban/test/tyk-birlesik8-ekranlar-250.test.mjs:235:3'
+      failureType: 'testCodeFailure'
+      error: 'summariesByAccount (Cari Listesi): kuyruk görünümü (view)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8-taban/test/tyk-birlesik8-ekranlar-250.test.mjs:255:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: routes/accounts.mjs: cari kartının taksit özeti queueSummaryOf (durum + sıradaki + Tahsil Edilen / Kalan), Cari Listesi kuyruğu summariesByAccount'a verir
+    not ok 3 - routes/accounts.mjs: cari kartının taksit özeti queueSummaryOf (durum + sıradaki + Tahsil Edilen / Kalan), Cari Listesi kuyruğu summariesByAccount'a verir
+      ---
+      duration_ms: 0.874308
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8-taban/test/tyk-birlesik8-ekranlar-250.test.mjs:257:3'
+      failureType: 'testCodeFailure'
+      error: 'cari kartı (8, 8b): queueSummaryOf'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8-taban/test/tyk-birlesik8-ekranlar-250.test.mjs:259:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: istemci: kart sayılarını gösteren dosyalar listede — yeni bir dosya kart toplamlarını okursa yer tablosuna eklenmeli
+    not ok 4 - istemci: kart sayılarını gösteren dosyalar listede — yeni bir dosya kart toplamlarını okursa yer tablosuna eklenmeli
+      ---
+      duration_ms: 11.384728
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8-taban/test/tyk-birlesik8-ekranlar-250.test.mjs:263:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kayıt detayının iki düğmesi kendi kalanından
+        
+        0 !== 2
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 2
+      actual: 0
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8-taban/test/tyk-birlesik8-ekranlar-250.test.mjs:277:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..4
+not ok 2 - Birleşik tur 8 — İş 1: kart göstergelerinin yer tablosu kaynakla aynı (yeni bir gösterim yeri eklenince kırmızı)
+  ---
+  duration_ms: 19.138781
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8-taban/test/tyk-birlesik8-ekranlar-250.test.mjs:211:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 10
+# suites 2
+# pass 1
+# fail 9
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1561.580313

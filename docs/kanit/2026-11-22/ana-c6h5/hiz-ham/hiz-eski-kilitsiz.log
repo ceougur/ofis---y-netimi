@@ -1,0 +1,8 @@
+=== tur 1 · eski · kilitsiz · başta yük 1.24 1.21 1.14 · GEÇERLİ · 23:23:24
+kod /dev/shm/ana-c6h4-eski · kip kilitsiz · yük (başta) 1.22 1.20 1.14 · TZ UTC
+  donma: bekleyen koşu yok (kapsam —)
+  kilitsiz Bilanço 2026-12-31: ilk 4998.1 · en iyi 4478 · ortanca 4661.6 · en kötü 5144.4 ms · olay döngüsü en çok 68.6 ms (n=5) · özet 88bdb83d9510fcc0 · {"kesinDegil":["tamamlanmamis-acilis","smm-tahmini","kapanmamis-yil","bilgi-amacli"],"bilgi":null,"dnk":4314580905}
+  kilitsiz GT yıl 2026: ilk 3193.8 · en iyi 3073.4 · ortanca 3116.9 · en kötü 3401.4 ms · olay döngüsü en çok 11.3 ms (n=5) · özet a9b13a9c44e05567 · {"kesinDegil":["smm-tahmini","bilgi-amacli"],"bilgi":null,"dnk":4314580905}
+  kilitsiz GT ilk yarı 2026: ilk 2996.8 · en iyi 2816.2 · ortanca 3102.4 · en kötü 3113.5 ms · olay döngüsü en çok 13.1 ms (n=5) · özet 273e254a7a473b64 · {"kesinDegil":["smm-tahmini","bilgi-amacli"],"bilgi":null,"dnk":2349410319}
+  bellek (rss) 660 MB · yük (sonda) 1.45 1.27 1.17
+çıkış 0 · sonda yük 1.45 1.27 1.17 · 23:24:52

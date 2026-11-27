@@ -1,0 +1,32 @@
+{
+  "ad": "c5a3d-yeni-test-ist",
+  "komut": "node --test test/supheli-etiket-pay-250.test.mjs",
+  "commit": "1ef58e5e197786dd8bdb8b5b51b8e258b2474316",
+  "dal": "worktree-agent-a58859d049073732b",
+  "kirli": 4,
+  "izlenmeyen": 6,
+  "platform": "linux 6.18.44-fc-v470 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-14T10:20:14.535Z",
+  "sure_sn": 1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3,
+    "gecen": 3,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-14/c5a3d-yeni-test-ist.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a58859d049073732b",
+  "ham_cikti_sha256": "7d4fdb34a0c846c65c35f225404d604da6ff1018534807afca85ff0a33dbf23e",
+  "ham_cikti_bayt": 1741
+}

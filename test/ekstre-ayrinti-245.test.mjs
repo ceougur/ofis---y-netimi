@@ -98,6 +98,8 @@ describe("6d K — kâhin senaryosu: Genel Toplam = kâhinin cari bakiyesi, kale
   const ids = {};
   const yapilan = [];
   const reddedilen = [];
+  const atlanan = []; // kos.mjs'teki gibi: uç adı henüz olmayan / ön koşulu programda olmayan olay gönderilmez, kâhine de (--yapilan) verilmez
+  const beklenenRetler = []; // senaryoda `beklenen: "ret"` olup programın reddettiği olaylar (ders 34: nedeniyle yazılır; "ret yok" denetimini gizlemez)
   const satirKimlikleri = {};
   before(async () => {
     server = await startTestServer({ now: senaryo.simdi, env: LICENSE, startLicenseTimers: false, legacyCasePayments: false, legacyTableTransfer: false }); // K1.2 (aday 1)
@@ -109,6 +111,12 @@ describe("6d K — kâhin senaryosu: Genel Toplam = kâhinin cari bakiyesi, kale
       const r = method === "GET" ? await api.get(url) : await api[method.toLowerCase()](url, body);
       const data = unwrap(r);
       if (r.status !== 200) {
+        // kos.mjs (2.5.0 Ç5): senaryoda `beklenen: "ret"` olan olay (S12 / B11) reddedilirse gönderilmiş sayılır (kâhin onu kendi `retler`'ine yazar, bakiyeye katmaz)
+        if (o.beklenen === "ret") {
+          yapilan.push(o.id);
+          beklenenRetler.push(`${o.id}: ${r.status} ${String(data?.error || "").slice(0, 200)}`);
+          return null;
+        }
         reddedilen.push(`${o.id}: ${r.status} ${String(data?.error || "").slice(0, 200)}`);
         return null;
       }
@@ -117,13 +125,20 @@ describe("6d K — kâhin senaryosu: Genel Toplam = kâhinin cari bakiyesi, kale
       if (id) ids[o.id] = id;
       return data;
     };
-    // Olay → API çevirisi test/bagimsiz/defter/kos.mjs'tekiyle AYNI (kâhine dokunulmaz; yalnız para/cari etkili olaylar).
+    // Olay → API çevirisi test/bagimsiz/defter/kos.mjs'tekiyle AYNI (kâhine dokunulmaz; yalnız para/cari etkili olaylar). kos.mjs içe aktarılamaz (yüklenince
+    // kendi sunucusunu açıp senaryoyu koşar), bu yüzden eşleme burada aynılanır. 2.5.0 eski kâhinler bakımı 1–3 (Ç5 D1 / D2 / D3 / D5 / D9 / D10) ile eşitlendi:
+    // cari açılışı cari açılırken (openingBalance / openingSide), borc_yaz / alacak_yaz, cek_carisiz, beklenen ret; uç adı kos.mjs UCLAR'da henüz null olan
+    // türler (acilis_evrak, excel_taksit_karti, kasa_duzelt, cari seçimli karsiliksiz) orada olduğu gibi ATLANAN (kos.mjs UCLAR dolunca burası da güncellenir).
     for (const o of senaryo.olaylar) {
       const t = o.tarih;
       switch (o.tur) {
         case "cari": {
           const kisi = o.kisi ? { partyKind: "person", firstName: o.kisi[0], familyName: o.kisi[1] } : {};
-          await gonder(o, "POST", "/api/workspace/accounts", { name: o.ad, type: o.tip, registeredOn: "2026-01-01", ...kisi, ...(o.vkn ? { taxNo: o.vkn } : {}), ...(o.tckn ? { taxNo: o.tckn } : {}) });
+          // 2.5.0 Ç5 (D1 / D2): carinin ilk `cari_acilis` olayı cari açılırken Açılış Bakiyesi olarak gönderilir (registeredOn = açılış tarihi)
+          const ac = senaryo.olaylar.find(x => x.tur === "cari_acilis" && x.cari === o.id);
+          const acilis = ac ? { registeredOn: ac.tarih, openingBalance: tl(ac.tutar), openingSide: ac.yon === "alacak" ? "credit" : "auto" } : { registeredOn: "2026-01-01" };
+          const d = await gonder(o, "POST", "/api/workspace/accounts", { name: o.ad, type: o.tip, ...acilis, ...kisi, ...(o.vkn ? { taxNo: o.vkn } : {}), ...(o.tckn ? { taxNo: o.tckn } : {}) });
+          if (d && ac) ids[`acilisGonderildi:${ac.id}`] = true;
           break;
         }
         case "urun":
@@ -144,7 +159,18 @@ describe("6d K — kâhin senaryosu: Genel Toplam = kâhinin cari bakiyesi, kale
           await gonder(o, "POST", "/api/workspace/bank/pos", { name: "Ziraat POS", bankAccountId: ids[o.banka], providerKind: "bank", tax: "bsmv_incl", valorRule: "same_day", valorDays: 0, installmentPayout: "monthly", refundCommission: "none", provisionDays: 0, validFrom: t, rates: [{ installments: 1, rate: String(o.oran).replace(".", ",") }] }, d => d?.id || d?.pos?.id);
           break;
         case "cari_acilis":
-          await gonder(o, "POST", `/api/workspace/accounts/${ids[o.cari]}/entries`, { kind: o.yon === "borc" ? "debt" : "credit", amount: tl(o.tutar), note: o.not || "Açılış bakiyesi", date: t });
+          // cari açılırken gönderildi (yukarıda); aynı cariye ikinci açılışın uç adı yok → ATLANAN
+          if (ids[`acilisGonderildi:${o.id}`]) yapilan.push(o.id);
+          else atlanan.push(`${o.id}: açılış cari açılırken gönderilir — cari açılamadı ya da aynı cariye ikinci açılış`);
+          break;
+        case "borc_yaz":
+        case "alacak_yaz":
+          // 2.5.0 D2: açılış İŞARETSİZ Borç / Alacak Yaz, açıklama aynen
+          await gonder(o, "POST", `/api/workspace/accounts/${ids[o.cari]}/entries`, { kind: o.tur === "borc_yaz" ? "debt" : "credit", amount: tl(o.tutar), note: o.aciklama, date: t });
+          break;
+        case "cek_carisiz":
+          // 2.5.0 D5 (S49): formdan carisiz evrak — `cek` eşlemesi, cari (accountId / drawer) olmadan
+          await gonder(o, "POST", "/api/workspace/cheques", { direction: o.yon === "alinan" ? "in" : "out", instrument: o.evrak === "senet" ? "note" : "cheque", serialNo: o.no, bank: "Akbank", amount: tl(o.tutar), issueDate: t, dueDate: o.vade, ...(o.yon === "verilen" ? { bankAccountId: ids.B } : {}) });
           break;
         case "fatura": {
           const kind = { satis: "sale", alis: "purchase", satis_iade: "sale_return", alis_iade: "purchase_return" }[o.fatura];
@@ -180,6 +206,15 @@ describe("6d K — kâhin senaryosu: Genel Toplam = kâhinin cari bakiyesi, kale
           await gonder(o, "POST", `/api/workspace/cheques/${ids[o.cek]}/actions`, { action: "bank-deposit", bankAccountId: ids.B, date: t }, () => null);
           break;
         case "karsiliksiz":
+          // evrakı gönderilmemişse (ör. açılış evrakı ATLANAN) atlanır; cari seçimli karşılıksızın (S48 / S66) uç adı kos.mjs UCLAR.karsiliksiz_cari'de henüz yok → ATLANAN
+          if (!ids[o.cek]) {
+            atlanan.push(`${o.id}: evrakı programa gönderilmedi (atlanan / reddedilen)`);
+            break;
+          }
+          if (o.cari) {
+            atlanan.push(`${o.id}: uç adı henüz verilmedi (kos.mjs UCLAR.karsiliksiz_cari)`);
+            break;
+          }
           await gonder(o, "POST", `/api/workspace/cheques/${ids[o.cek]}/actions`, { action: "bounce", date: t }, () => null);
           break;
         case "supheli":
@@ -203,7 +238,7 @@ describe("6d K — kâhin senaryosu: Genel Toplam = kâhinin cari bakiyesi, kale
           await gonder(o, "POST", "/api/workspace/cash/transfer", { direction: "to-bank", amount: tl(o.tutar), date: t, bankAccountId: ids.B, description: o.id }, () => null);
           break;
         case "kasa_gider":
-          await gonder(o, "POST", "/api/workspace/cash", { kind: "out", amount: tl(o.tutar), method: "cash", description: o.id, date: t }, () => null);
+          await gonder(o, "POST", "/api/workspace/cash", { kind: "out", amount: tl(o.tutar), method: "cash", description: o.id, date: t });
           break;
         case "taksit_tahsil":
           await gonder(o, "POST", `/api/workspace/plans/${ids[`${o.fatura}:plan`]}/entries`, { kind: "in", amount: tl(o.tutar), method: o.yol === "nakit" ? "cash" : "bank", date: t }, () => null);
@@ -216,6 +251,13 @@ describe("6d K — kâhin senaryosu: Genel Toplam = kâhinin cari bakiyesi, kale
           break;
         case "kdv_mahsup_geri_al":
           if (ids[o.mahsup]) await gonder(o, "POST", `/api/workspace/tax/vat-offset/${encodeURIComponent(ids[o.mahsup])}/reverse`, {}, () => null);
+          else atlanan.push(`${o.id}: geri alınacak kayıt programda yok`);
+          break;
+        case "acilis_evrak":
+        case "excel_taksit_karti":
+        case "kasa_duzelt":
+          // kos.mjs UCLAR'da uç adı henüz null (Ç5-A kod ajanınca verilecek) → orada olduğu gibi ATLANAN
+          atlanan.push(`${o.id}: uç adı henüz verilmedi (kos.mjs UCLAR.${o.tur})`);
           break;
         case "kontrol":
           break;
@@ -243,6 +285,7 @@ describe("6d K — kâhin senaryosu: Genel Toplam = kâhinin cari bakiyesi, kale
 
   test("K1 ret yok; her carinin Ayrıntılı Ekstre Genel Toplam bakiyesi = kâhin; kalem toplamı = defter", async () => {
     assert.deepEqual(reddedilen, [], "program senaryo olayını reddetti (ders 3)");
+    console.log(`# 6d K çeviri: yapılan ${yapilan.length}; beklenen ret ${JSON.stringify(beklenenRetler)}; atlanan ${JSON.stringify(atlanan)}`);
     const beklenen = await kahin();
     const names = await accountsByName();
     let invoices = 0;

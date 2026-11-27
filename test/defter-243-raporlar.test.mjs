@@ -151,13 +151,21 @@ describe("2.4.3 MM5–MM9 — rapor düzeltmeleri", () => {
   it("MM5: Nakit Akışı gecikmiş girişlerde faturasız cari alacağı (bugünden önceki parçalar) görünür; taksit ve fatura kalemi değişmez", async () => {
     const flow = await must("nakit akışı", api.get("/api/workspace/overview/nakit-akisi?from=2026-10-20&to=2026-12-31&overdue=0"));
     const unbilled = flow.overdue.filter(row => row.source === "unbilled");
-    const byParty = Object.fromEntries(unbilled.map(row => [`${row.party}|${row.date}`, Math.round(row.amount * 100)]));
-    assert.deepEqual(byParty, { "Eski Müşteri|2026-01-02": 500000, "Çekli Müşteri|2026-08-16": 200000, "Faturalı Müşteri|2026-10-15": 30000 });
+    const byParty = rows => Object.fromEntries(rows.map(row => [`${row.party}|${row.date}`, Math.round(row.amount * 100)]));
+    // 2.5.0 Ç5-B (bilerek güncellendi; kullanıcı kararı S1 — vadesiz borcun vadesi belge günü): vadesiz Borç Yaz artık kayıt gününde CARİ KALEMİDİR ("Tahsil Edilecek
+    // Borç") — tutar ve gün aynı, kaynak adı değişti; şüpheli alacağa alınmış karşılıksız borç (M13) cari kalemi değildir.
+    // 2.5.0 birleşik tur 7 (bilerek güncellendi; KULLANICI KARARI S130 = A: Şüpheli Alacağa alınan tutar 'Tahsil Edilecek' kalemlerinden — NAKİT TAHMİNİ dahil — düşer,
+    // bakiye değişmez): Çekli Müşteri'nin bütün bakiyesi (2.000) açık şüpheli → nakit tahmininde beklenen giriş DEĞİL; önceden faturasız cari alacağında kalıyordu.
+    assert.deepEqual(byParty(unbilled), {});
+    assert.deepEqual(byParty(flow.overdue.filter(row => row.source === "account" && row.direction === "in")), { "Eski Müşteri|2026-01-02": 500000, "Faturalı Müşteri|2026-10-15": 30000 }, "vadesiz borçlar kayıt gününde cari kalemi (aynı tutar, aynı gün)");
+    // Borç yönü simetrik (S1 + S68): tedarikçinin vadesiz alacağı kayıt gününde "Ödenecek Borç" (çıkış) kalemi.
+    assert.deepEqual(byParty(flow.overdue.filter(row => row.source === "account" && row.direction === "out")), { "Tedarikçi A.Ş.|2026-09-20": 200000 }, "tedarikçinin vadesiz alacağı kayıt gününde çıkış kalemi");
     assert.ok(flow.overdue.some(row => row.source === "invoice" && Math.round(row.amount * 100) === 120000), "vadeli fatura gecikmiş girişte (değişmedi)");
     const xlsx = await api.raw("GET", "/api/workspace/overview/nakit-akisi.xlsx?from=2026-10-20&to=2026-12-31");
     assert.equal(xlsx.status, 200);
     const text = JSON.stringify(xlsxSheets(xlsx.buffer));
-    assert.match(text, /Faturasız Cari Alacağı/, "Excel'de kaynak adı");
+    // Birleşik tur 7 (S130 = A): bu kurguda tek faturasız alacak şüpheliydi → Excel de ekran gibi o satırı taşımaz.
+    assert.doesNotMatch(text, /Faturasız Cari Alacağı/, "Excel ekranla aynı: şüpheli tutar faturasız cari alacağı olarak yazılmaz");
   });
 
   it("MM6: Banka Nakit Akış Raporu Çek Hesabı bağlı verilen çeki vadesinde çıkış sayar (hesapsız çek girmez); her dönem seçeneği", async () => {

@@ -1,0 +1,17 @@
+TAP version 13
+# {"n":30,"failed":0,"failures":[]}
+# Subtest: fis-defteri-yasam-250 N11+N5 × 30 (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/db-acilis-a4c3/eski)
+ok 1 - fis-defteri-yasam-250 N11+N5 × 30 (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/db-acilis-a4c3/eski)
+  ---
+  duration_ms: 89144.20186
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 89225.947376

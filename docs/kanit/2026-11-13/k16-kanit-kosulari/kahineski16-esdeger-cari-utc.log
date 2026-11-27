@@ -1,0 +1,44 @@
+ÜRETİCİ: 20/20 aynı dizi (tur s1 + ux18, tohum 1–10 × 120 işlem)
+ADIMLAR: eski kopyadaki 97 elle senaryonun 0'inin adımları değişti: yok · yeni elle senaryo: d44-c5-s155-s158
+EŞDEĞERLİK (2.4.9 / 2.4.6 / 2.4.5 / --legacy; eski kopyanın 97 elle + yeni kopyanın yeni 1 elle + 20 rastgele senaryo × 4 kip): 472/472 bayt bayt aynı
+G3 (kural 2.5.0; 118 senaryo — eski kopyanın 97 elle senaryosu + yeni elle + 20 rastgele): eski 49425 denetim · yeni 49774 denetim · değişen / kalkan / yeni toplam 390 · BEKLENMEYEN 0 · yalnız etiketi değişen 0
+  GENEL          kalkan       2
+      örn. d44-c5-s155-s158 k1:kasa: 270000 → "(denetim yok)"
+      örn. d44-c5-s155-s158 k1:kasaRapor:giris: 270000 → "(denetim yok)"
+  GENEL          yeni        46
+      örn. d41-c5-s136-s139-s145-s148 k1:kasa: "(denetim yok)" → 125000
+      örn. d41-c5-s136-s139-s145-s148 k1:kasaRapor:giris: "(denetim yok)" → 155000
+      örn. rastgele-s1-3 k3:projeksiyon:cari: "(denetim yok)" → 4
+      örn. rastgele-s1-3 k3:takvim:cariKalemSayisi: "(denetim yok)" → 4
+  S155           degisen     23
+      örn. d44-c5-s155-s158 adim:x1t:durum: "ret" → "ok"
+      örn. d44-c5-s155-s158 adim:x9t:durum: "ok" → "ret"
+      örn. d44-c5-s155-s158 k1:cari:X1:bakiye: 150000 → 120000
+      örn. d44-c5-s155-s158 k1:cari:X1:gecikmis: 60000 → 30000
+  S155           kalkan       7
+      örn. d44-c5-s155-s158 adim:x12t:durum: "ok" → "(denetim yok)"
+      örn. d44-c5-s155-s158 k1:cari:X12:bakiye: -10000 → "(denetim yok)"
+      örn. d44-c5-s155-s158 k1:cari:X12:gecikmis: 0 → "(denetim yok)"
+      örn. d44-c5-s155-s158 k1:hareket:x12a:kalan: 0 → "(denetim yok)"
+  S155           yeni       297
+      örn. d41-c5-s136-s139-s145-s148 adim:s7e:durum: "(denetim yok)" → "ret"
+      örn. d41-c5-s136-s139-s145-s148 adim:s8t:durum: "(denetim yok)" → "ok"
+      örn. d41-c5-s136-s139-s145-s148 adim:s9t:durum: "(denetim yok)" → "ok"
+      örn. d41-c5-s136-s139-s145-s148 k1:cari:S7:bakiye: "(denetim yok)" → 100000
+  S158           yeni        15
+      örn. d42-c5-s140-s151-satis-karti-iade k1:kart:KT7:odenen: "(denetim yok)" → 0
+      örn. d42-c5-s140-s151-satis-karti-iade k1:kart:KT7:taksit1:odenen: "(denetim yok)" → 0
+      örn. d42-c5-s140-s151-satis-karti-iade k1:kart:KT7:taksit2:odenen: "(denetim yok)" → 0
+      örn. d42-c5-s140-s151-satis-karti-iade k1:kart:KT7:taksit3:odenen: "(denetim yok)" → 0
+G3 senaryo senaryo (sınıf/tür: adet; listede olmayan senaryoda fark 0):
+  d41-c5-s136-s139-s145-s148               GENEL/yeni 2 · S155/yeni 33
+  d42-c5-s140-s151-satis-karti-iade        S158/yeni 4
+  d44-c5-s155-s158                         GENEL/kalkan 2 · S155/degisen 23 · S155/kalkan 7 · S155/yeni 57 · S158/yeni 11
+  rastgele-s1-10                           S155/yeni 6
+  rastgele-s1-3                            GENEL/yeni 6 · S155/yeni 66
+  rastgele-s1-8                            GENEL/yeni 20 · S155/yeni 61
+  rastgele-s1-9                            GENEL/yeni 18 · S155/yeni 74
+# tests 590
+# pass 590
+# fail 0
+590/590 denetim geçti

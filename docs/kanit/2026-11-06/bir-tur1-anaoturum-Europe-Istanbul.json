@@ -1,0 +1,32 @@
+{
+  "ad": "bir-tur1-anaoturum-Europe-Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/birlesik-tur1-yaris-250.test.mjs test/bs4-birlesik-rapor-250.test.mjs test/defter-turu-c4.test.mjs",
+  "commit": "8a7d2463aa20da79cceaa3059de7bfc31b05f795",
+  "dal": "claude/epic-thompson-w0lc2l",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T00:25:18.877Z",
+  "sure_sn": 19.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 26,
+    "gecen": 26,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-06/bir-tur1-anaoturum-Europe-Istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "10bfdc7522bb72daed7ac8d5a817fb51e7c495a595d847df6dc810dde2f61212",
+  "ham_cikti_bayt": 11948
+}

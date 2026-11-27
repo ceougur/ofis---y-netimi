@@ -1,0 +1,21 @@
+#!/bin/bash
+# Ana oturum: MOBİL YAZMA KÂHİNİ BAKIMI (S129) yeniden koşusu — kâhin ağacımda: çalışma dalı ucu + birleşik tur 7 + mobil kâhin dalı (gönderilecek hâl).
+# Öz test iki TZ + elle senaryo denetimi + kâhin ↔ program adımı (ci.yml'deki satırla aynı). Hata durdurmaz; her adımın çıkışı yazılır.
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+W=$S/kahin8y-ag; K=$S/mk-y-kanit
+export KANIT_DIR=$K HUKUK_LICENSE_URL=http://127.0.0.1:9 PLAYWRIGHT_BROWSERS_PATH=$S/pw-1194
+mkdir -p $K || exit 1
+cd $W || exit 1
+[ -z "$(git status -s | grep -v node_modules)" ] || { echo "kâhin ağacı temiz değil"; git status -s | head -5; exit 1; }
+git checkout -q -B sinama-b7mk claude/epic-thompson-w0lc2l || exit 1
+git merge -q --no-ff -m "sınama: birleşik tur 7 + mobil yazma kâhini bakımı" worktree-agent-a6c349be9d3823fef worktree-agent-a853e4598e7776030 > $K/merge.out 2>&1 || { echo "birleşim düştü"; tail -5 $K/merge.out; exit 1; }
+git checkout 5dc16fee -- test/bagimsiz/cari/YAPIM-ASAMASI.json && git commit -q -m "sınama: liste adaydaki hâliyle" || echo "liste zaten aynı"
+echo "ağaç $(git rev-parse --short HEAD) · aday 5dc16fee ile ürün farkı (mobil kâhin + kanıt dışında BOŞ olmalı): [$(git diff 5dc16fee --name-only -- . ':!docs' ':!CLAUDE.md' ':!test/bagimsiz/mobil-yazma' | tr '\n' ' ')]"
+[ -e node_modules ] || ln -s /home/user/ofis---y-netimi/node_modules node_modules
+echo "başladı $(date -u +%T) yük $(cat /proc/loadavg)"
+python3 -I -B test/bagimsiz/mobil-yazma/senaryolar.py --denetle > $K/denetle.out 2>&1; echo "denetle çıkış $? :: $(tail -1 $K/denetle.out | cut -c1-200)"
+for tz in UTC Europe/Istanbul; do
+  TZ=$tz node tools/kanit.mjs kos mk-y-oz-${tz//\//-} -- python3 -I -B test/bagimsiz/mobil-yazma/kahin_test.py > $K/oz-${tz//\//-}.out 2>&1; echo "öz test $tz çıkış $? :: $(tail -1 $K/oz-${tz//\//-}.out | cut -c1-170)"
+done
+node tools/kanit.mjs kos mk-y-kahin-mobil-yazma -- npm run test:kahin-mobil-yazma -- --haric E02-es-havale-pos-mobil,E02-es-havale-pos-masaustu > $K/mobil-yazma.out 2>&1; echo "kâhin ↔ program çıkış $? :: $(tail -1 $K/mobil-yazma.out | cut -c1-200)"
+echo "bitti $(date -u +%T) yük $(cat /proc/loadavg)"

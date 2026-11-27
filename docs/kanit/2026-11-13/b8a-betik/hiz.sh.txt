@@ -1,0 +1,20 @@
+#!/bin/bash
+# Ana oturum: BİRLEŞİK TUR 8 + 8b — HIZ KABUL (ders 15, 47, 52, 53 (a)): taban (ana ağaç = çalışma dalı ucu) ↔ aday (sınama ağacı sinama-b8a), her biri temiz-100k'nın TAZE kopyasında,
+# sırayla İKİ tur (taban, aday, taban, aday); ÖZEL ölçüm kilidi (beklemez). Çağrı: timeout 7000 bash hiz.sh [çıktı adı]
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+OUT=$S/b8a-kanit/${1:-hiz-b8a}.txt; TAB=/home/user/ofis---y-netimi; ADAY=$S/d2t3-ya-ag
+exec 9>"$S/olcum.lock"
+flock -x -n 9 || { echo "KİLİT DOLU — ÖLÇÜLEMEDİ"; exit 3; }
+export HUKUK_LICENSE_URL=http://127.0.0.1:9
+echo "HIZ KABUL birleşik tur 8 + 8b (ana oturum) · nproc $(nproc) · başta $(cat /proc/loadavg) · $(date -u +%H:%M:%S) · taban $(git -C $TAB rev-parse --short HEAD) · aday $(git -C $ADAY rev-parse --short HEAD)" > $OUT
+for k in taban:$TAB aday:$ADAY taban:$TAB aday:$ADAY; do
+  ad=${k%%:*}; R=${k#*:}
+  [ -d $S/b8a-olcum/kopya ] && rm -rf /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8a-olcum/kopya
+  cp -a $S/ana-kabul/temiz-100k $S/b8a-olcum/kopya || exit 1
+  sync; l0=$(cut -d' ' -f1 /proc/loadavg)
+  echo "=== $ad · başta $(cat /proc/loadavg) $(awk -v l=$l0 'BEGIN{print (l>2)?"· GEÇERSİZ (yük > 2)":""}')" >> $OUT
+  timeout -k 5 1500 node --disable-warning=ExperimentalWarning $S/b8a-olcum/olc-b8a.mjs "$R" $S/b8a-olcum/kopya 7 >> $OUT 2>&1; echo "çıkış $? · sonda $(cat /proc/loadavg)" >> $OUT
+done
+rm -rf /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8a-olcum/kopya
+echo "bitti $(date -u +%H:%M:%S)" >> $OUT
+grep -E "^(===|  |çıkış|HIZ|bitti)" $OUT | cut -c1-200

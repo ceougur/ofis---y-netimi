@@ -1,0 +1,32 @@
+{
+  "ad": "d2t3-e2e-senaryo-213",
+  "komut": "npm run test:senaryo-213",
+  "commit": "8e9c510489b8491058a9530fdcfcb1314d023e8f",
+  "dal": "worktree-agent-aed304ef071f4244c",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v338 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-10T17:53:10.446Z",
+  "sure_sn": 52,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 64,
+    "gecen": 64,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-kanit/2026-11-10/d2t3-e2e-senaryo-213.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aed304ef071f4244c",
+  "ham_cikti_sha256": "4538a8a76511255d8dac1f8c228400e03eb8317798f4d23a6b0d9a5f171d7ffc",
+  "ham_cikti_bayt": 5262
+}

@@ -1,0 +1,19 @@
+== s88-s52-odeme-sozu
+  [A] hat3: eski {'tarih': '2026-03-20', 'otomatik': {'C2': 800}, 'supheli_etiketli': [], 'elle': {}, 'odeme_sozu_var': {'C3': 500}, 'kahin_susuyor': [{'cari': 'C1', 'neden': 'S52_SOZ_GUNU'}]} → elle {'tarih': '2026-03-20', 'otomatik': {'C2': 800}, 'supheli_etiketli': [], 'elle': {}, 'odeme_sozu_var': {'C1': 600, 'C3': 500}}
+  [A] hat5: eski {'tarih': '2026-03-26', 'otomatik': {'C1': 600, 'C2': 800}, 'supheli_etiketli': [], 'elle': {}, 'kahin_susuyor': [{'cari': 'C3', 'neden': 'S52_YENI_GECIKME'}]} → elle {'tarih': '2026-03-26', 'otomatik': {'C1': 600, 'C2': 800}, 'supheli_etiketli': [], 'elle': {}, 'odeme_sozu_var': {'C3': 800}}
+  [A] hat6: eski {'tarih': '2026-03-28', 'otomatik': {'C2': 800}, 'supheli_etiketli': [], 'elle': {}, 'odeme_sozu_var': {'C1': 600}, 'kahin_susuyor': [{'cari': 'C3', 'neden': 'S52_YENI_GECIKME'}]} → elle {'tarih': '2026-03-28', 'otomatik': {'C2': 800}, 'supheli_etiketli': [], 'elle': {}, 'odeme_sozu_var': {'C1': 600, 'C3': 800}}
+  [A] farklı anahtar: 3
+== s101-s72-soz-gunu
+  [A] h20: eski {'tarih': '2026-03-20', 'otomatik': {'C1': 1000}, 'supheli_etiketli': [], 'elle': {}, 'odeme_sozu_var': {'C3': 500}, 'kahin_susuyor': [{'cari': 'C2', 'neden': 'S52_SOZ_GUNU'}]} → elle {'tarih': '2026-03-20', 'otomatik': {'C1': 1000}, 'supheli_etiketli': [], 'elle': {}, 'odeme_sozu_var': {'C2': 800, 'C3': 500}}
+  [A] h21: eski {'tarih': '2026-03-21', 'otomatik': {'C1': 1000, 'C2': 800}, 'supheli_etiketli': [], 'elle': {}, 'kahin_susuyor': [{'cari': 'C3', 'neden': 'S52_SOZ_GUNU'}]} → elle {'tarih': '2026-03-21', 'otomatik': {'C1': 1000, 'C2': 800}, 'supheli_etiketli': [], 'elle': {}, 'odeme_sozu_var': {'C3': 500}}
+  [A] h31: eski {'tarih': '2026-03-31', 'otomatik': {'C2': 800, 'C3': 500}, 'supheli_etiketli': [], 'elle': {}, 'kahin_susuyor': [{'cari': 'C1', 'neden': 'S52_SOZ_GUNU'}]} → elle {'tarih': '2026-03-31', 'otomatik': {'C2': 800, 'C3': 500}, 'supheli_etiketli': [], 'elle': {}, 'odeme_sozu_var': {'C1': 1000}}
+  [A] farklı anahtar: 3
+== s102-s73-soz-butun-borc
+  [A] h12: eski {'tarih': '2026-03-12', 'otomatik': {'C3': 100}, 'supheli_etiketli': [], 'elle': {}, 'odeme_sozu_var': {'C1': 1000}, 'kahin_susuyor': [{'cari': 'C2', 'neden': 'S52_YENI_GECIKME'}]} → elle {'tarih': '2026-03-12', 'otomatik': {'C3': 100}, 'supheli_etiketli': [], 'elle': {}, 'odeme_sozu_var': {'C1': 1000, 'C2': 800}}
+  [A] h16: eski {'tarih': '2026-03-16', 'otomatik': {'C3': 100}, 'supheli_etiketli': [], 'elle': {}, 'kahin_susuyor': [{'cari': 'C1', 'neden': 'S52_YENI_GECIKME'}, {'cari': 'C2', 'neden': 'S52_YENI_GECIKME'}]} → elle {'tarih': '2026-03-16', 'otomatik': {'C3': 100}, 'supheli_etiketli': [], 'elle': {}, 'odeme_sozu_var': {'C1': 1400, 'C2': 800}}
+  [A] h20: eski {'tarih': '2026-03-20', 'otomatik': {'C3': 100}, 'supheli_etiketli': [], 'elle': {}, 'kahin_susuyor': [{'cari': 'C1', 'neden': 'S52_YENI_GECIKME'}, {'cari': 'C2', 'neden': 'S52_SOZ_GUNU'}]} → elle {'tarih': '2026-03-20', 'otomatik': {'C3': 100}, 'supheli_etiketli': [], 'elle': {}, 'odeme_sozu_var': {'C1': 400, 'C2': 800}}
+  [A] h21: eski {'tarih': '2026-03-21', 'otomatik': {'C2': 800, 'C3': 100}, 'supheli_etiketli': [], 'elle': {}, 'kahin_susuyor': [{'cari': 'C1', 'neden': 'S52_YENI_GECIKME'}]} → elle {'tarih': '2026-03-21', 'otomatik': {'C2': 800, 'C3': 100}, 'supheli_etiketli': [], 'elle': {}, 'odeme_sozu_var': {'C1': 400}}
+  [A] h31: eski {'tarih': '2026-03-31', 'otomatik': {'C2': 800, 'C3': 100}, 'supheli_etiketli': [], 'elle': {}, 'kahin_susuyor': [{'cari': 'C1', 'neden': 'S52_SOZ_GUNU'}]} → elle {'tarih': '2026-03-31', 'otomatik': {'C2': 800, 'C3': 100}, 'supheli_etiketli': [], 'elle': {}, 'odeme_sozu_var': {'C1': 400}}
+  [A] farklı anahtar: 5
+== s103-s79-olagan-bag-cari
+  [A] SENARYO HATASI: senaryo hatası: olağan bağlı kayıtta AYNI düzeltmede bağ + cari — S57 harfiyen red mi, S54 gibi kabul mü; kâhin susar (README bakım 8 U7 (a), KULLANICIYA SORULMALI 8)

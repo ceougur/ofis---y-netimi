@@ -1,0 +1,32 @@
+{
+  "ad": "t3duz-mut-t3-m12-UTC-2",
+  "komut": "node test/supheli-kuyruk-defter-250-mutasyon.mjs --kopya /dev/shm/t3duz-d3/yeni --yalniz 12,16,17,18",
+  "commit": "8a24d1e1a49028b0008b47126ade43aaa1bceed5",
+  "dal": "worktree-agent-a1e6310bec4c916cb",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-20T07:28:03.282Z",
+  "sure_sn": 42.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 4,
+    "gecen": 4,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/t3duz-d3/k/2026-11-20/t3duz-mut-t3-m12-UTC-2.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a1e6310bec4c916cb",
+  "ham_cikti_sha256": "5ddfeabbb2c2194f8dc4a49af006eecd9974cb52d6af3918192a15acdfde2f0d",
+  "ham_cikti_bayt": 813
+}

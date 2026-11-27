@@ -1,0 +1,56 @@
+
+> destekofis@2.4.9 test:senaryo-donem-kilidi-ilerleme-250
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-donem-kilidi-ilerleme-250.mjs
+
+1) Dondurma sürerken: kilit hemen kondu, kart ilerlemeyi yazar ve yoklar
+  ✓ kilit dondurma bitmeden göründü (5066 ms)
+  ✓ sunucuda kilit 31.12.2026
+  ✓ kart: "31.12.2026 ve öncesi kilitli. Kilitli dönemin defteri donduruluyor (60 satır yazıldı)… Bu sırada çalışmaya devam edebilirsiniz."
+  ✓ sürerken uyarı rengi yok
+  ✓ dondurma sürerken Kilitle pasif ({"disabled":true,"title":"Kilitle, kilitli dönemin defteri dondurulurken kullanılamaz; dondurma bitince açılır.","note":"Kilitle, kilitli dönemin defteri dondurulurken kullanılamaz; dondurma bitince açılır."})
+  ✓ pasif düğmenin nedeni görünür: "Kilitle, kilitli dönemin defteri dondurulurken kullanılamaz; dondurma bitince açılır."
+  ✓ dondurma sürerken form gönderimi kilit isteği göndermedi (0 PUT), nedeni bildirildi (true)
+  ✓ kart dondurma sürerken yokluyor (3 istek / 3,5 sn)
+  ✓ yoklama seyrek (3 istek / 3,5 sn; ≤ 4)
+  ✓ dondurma sürerken açık döneme yazım 200
+  ✓ dondurma sürerken kilitli döneme yazım 409 (409)
+2) Bitince: kart temiz, bildirim, yoklama durur
+  ✓ kart: "31.12.2026 ve öncesi kilitli."
+  ✓ bildirim: Kilitli dönemin defteri donduruldu.
+  ✓ bitince Kilitle açık, neden satırı yok ({"disabled":false,"title":"","note":""})
+  ✓ sunucu: kapsam 2026-12-31, bekleyen yok, süren iş yok
+  ✓ bitince yoklama durdu (sonraki 4 sn'de 0 istek)
+3) Dondurma düşerse: sarı uyarı, yoklama durur, kilit yerinde; yeniden Kilitle tamamlar
+  ✓ kart: "31.12.2026 ve öncesi kilitli. Kilitli dönemin defteri dondurulamadı (Disk dolu: database or disk is full (test)). Kilit yerinde; kilidi yeniden kaydedin ya da programı yeniden açın, dondurma yeniden denenir."
+  ✓ uyarı rengi (sarı)
+  ✓ hata görününce yoklama durdu (0 istek / 3,5 sn)
+  ✓ kilit yerinde
+  ✓ yeniden Kilitle → tamamlandı, uyarı kalktı
+  ✓ sunucuda kapsam = kilit
+4) Kancasız (kısa) dondurma: kaydetme bildirimi, kart temiz, yoklama durur
+  ✓ kaydetme bildirimi: ["30.06.2026 ve öncesi kilitlendi.×"]
+  ✓ kısa dondurmadan sonra yoklama yok (0 istek / 3,5 sn)
+  ✓ sunucuda kapsam 30.06.2026
+5) Dondurma sürerken Kilidi Kaldır: 'donduruldu' bildirimi ÇIKMAZ (Ç3 tur 3 DÜŞÜK-1, dar kontrol p2)
+  ✓ ön koşul: kart dondurmayı sürerken yokladı (2 istek)
+  ✓ ön koşul: dondurma sürüyor (Kilitle pasif)
+  ✓ kaldırma bildirimi: ["Dönem kilidi kaldırıldı.×"]
+  ✓ kilit kaldırılınca "donduruldu" bildirimi çıkmadı: ["Dönem kilidi kaldırıldı.×"]
+  ✓ sunucu: kilit yok, kapsam yok, bekleyen yok ({"lockedUntil":"","frozenThrough":"","pending":null})
+6) Kilit geri çekilince temizlik sürerken: kart ilerlemeyi yazar, Kilitle pasif + nedeni (Ç3 tur 3 ORTA-1)
+  ✓ kart: "Kilitli dönem yok; tüm geçmiş tarihlere hareket girilebilir. Önceki dönemin defter temizliği sürüyor (5 satır silindi)…"
+  ✓ temizlik sürerken Kilitle pasif, nedeni görünür ({"disabled":true,"title":"Kilitle, önceki dönemin defter temizliği sürerken kullanılamaz; temizlik bitince açılır.","note":"Kilitle, önceki dönemin defter temizliği sürerken kullanılamaz; temizlik bitince açılır."})
+  ✓ kart temizlik sürerken yokluyor (3 istek / 3,5 sn)
+  ✓ temizlik bitince Kilitle açık ({"disabled":false,"title":"","note":""})
+  ✓ temizlikten sonra yeniden Kilitle: kapsam 30.06.2026
+7) Mutabakat Testi çalışamazsa satır sessizce boşalmaz, neden görünür (Ç3 küçük işler (c))
+  ✓ mutabakat satırı: "Mutabakat Testi çalıştırılamadı: Test: mutabakat hatası."
+  ✓ hata rengi
+  ✓ sunucu düzelince satır normal: "Mutabakat: 62 denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tutarlı."
+  ✓ sayfa hatası yok (—)
+
+senaryo-donem-kilidi-ilerleme-250: 39 geçti, 0 kaldı
+
+# tests 39
+# pass 39
+# fail 0

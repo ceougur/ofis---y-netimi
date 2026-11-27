@@ -1,0 +1,96 @@
+(Use `node --trace-warnings ...` to show where the warning was created)
+(Use `node --trace-warnings ...` to show where the warning was created)
+(Use `node --trace-warnings ...` to show where the warning was created)
+{
+ "root": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ac0e51d0f24e4542e",
+ "name": "surum-2.0.26-zincir",
+ "today": "2026-10-08",
+ "acilis": {
+  "pending": true,
+  "gunluk": [
+   {
+    "action": "baseline",
+    "summary": "İleri tarihli hareket (Çek/Senet Hareketleri)"
+   }
+  ],
+  "sunucu": [
+   "warn: Mutabakat: güncelleme öncesinden kalan 1 sapma var (İleri tarihli hareket (Çek/Senet Hareketleri)). Yeni işlemler bu sapmayı büyütemez."
+  ]
+ },
+ "dondu": {
+  "coverage": "2026-10-05",
+  "lock": "2026-10-05",
+  "pending": null,
+  "runs": 1
+ },
+ "ilkArka": {
+  "findings": [
+   "ledger:rule-diff (44)"
+  ],
+  "ruleDiffInChecks": true,
+  "gunluk": [
+   {
+    "action": "baseline",
+    "summary": "İleri tarihli hareket (Çek/Senet Hareketleri)"
+   }
+  ],
+  "zil": [
+   [
+    "ledger:rule-diff"
+   ]
+  ],
+  "sunucu": [
+   "error: Mutabakat taraması: kapının görmediği 1 yeni sapma (Kural Değişikliği Farkı (Kilitli Dönem: 05.10.2026 ve Öncesi))."
+  ]
+ },
+ "satirIci": {
+  "findings": [],
+  "ruleDiff": [
+   {
+    "ok": false,
+    "count": 44,
+    "difference": 127800
+   }
+  ],
+  "gunluk": [],
+  "zil": [],
+  "sunucu": []
+ },
+ "ikinciArka": {
+  "findings": [],
+  "skipped": null,
+  "gunluk": [],
+  "zil": [],
+  "sunucu": []
+ },
+ "yenidenAcilis": {
+  "pending": false,
+  "sonGunluk": [
+   {
+    "action": "baseline",
+    "summary": "Kural Değişikliği Farkı (Kilitli Dönem: 05.10.2026 ve Öncesi); İleri tarihli hareket (Çek/Senet Hareketleri)"
+   },
+   {
+    "action": "baseline",
+    "summary": "İleri tarihli hareket (Çek/Senet Hareketleri)"
+   }
+  ],
+  "sunucu": [
+   "warn: Mutabakat: güncelleme öncesinden kalan 2 sapma var (Kural Değişikliği Farkı (Kilitli Dönem: 05.10.2026 ve Öncesi); İleri tarihli hareket (Çek/Senet Hareketleri)). Yeni işlemler bu sapmayı büyüte"
+  ]
+ },
+ "yenidenIlkArka": {
+  "findings": [],
+  "gunluk": [],
+  "zil": [],
+  "sunucu": []
+ },
+ "ilkYazim": {
+  "status": 200,
+  "gate": {
+   "path": "full",
+   "reason": "taban sapması (all)",
+   "ms": 23
+  }
+ }
+}

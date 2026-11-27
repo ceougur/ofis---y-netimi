@@ -1,0 +1,72 @@
+AYRIŞTIRMA d2 (/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-kabul/temiz-100k) · kilitsiz · tekrar 7 · yollar amizan · kilit 15:52:57 · yük 1.31 1.27 1.16
+=== ana · başta 1.31 1.27 1.16 1/118 10024 
+kod /dev/shm/t3hiz/k-ana · yük (başta) 1.28 1.26 1.16 · TZ Europe/Istanbul
+  Alt Hesap Mizanı (rapor): durum 200 · en iyi 251.8 ms · ortanca 268.8 ms · olay döngüsü en çok 447.7 ms (n=7)
+yük (sonda) 1.28 1.26 1.16
+çıkış 0 · sonda 1.28 1.26 1.16 1/115 10113
+=== a1 · başta 1.28 1.26 1.16 1/115 10118 
+kod /dev/shm/t3hiz/k-a1 · yük (başta) 1.33 1.28 1.16 · TZ Europe/Istanbul
+  Alt Hesap Mizanı (rapor): durum 200 · en iyi 259.2 ms · ortanca 274.9 ms · olay döngüsü en çok 478.2 ms (n=7)
+yük (sonda) 1.30 1.27 1.16
+çıkış 0 · sonda 1.30 1.27 1.16 1/116 10153
+=== a2 · başta 1.30 1.27 1.16 1/116 10158 
+kod /dev/shm/t3hiz/k-a2 · yük (başta) 1.86 1.40 1.21 · TZ Europe/Istanbul
+  Alt Hesap Mizanı (rapor): durum 200 · en iyi 286.1 ms · ortanca 288.3 ms · olay döngüsü en çok 498.1 ms (n=7)
+yük (sonda) 1.79 1.39 1.21
+çıkış 0 · sonda 1.79 1.39 1.21 1/119 10311
+=== a3 · başta 1.79 1.39 1.21 1/119 10316 
+kod /dev/shm/t3hiz/k-a3 · yük (başta) 1.52 1.36 1.20 · TZ Europe/Istanbul
+  Alt Hesap Mizanı (rapor): durum 200 · en iyi 294.2 ms · ortanca 307.5 ms · olay döngüsü en çok 527.7 ms (n=7)
+yük (sonda) 1.52 1.36 1.20
+çıkış 0 · sonda 1.52 1.36 1.20 1/115 10348
+=== s1 · başta 1.52 1.36 1.20 1/115 10353 
+kod /dev/shm/t3hiz/k-s1 · yük (başta) 1.26 1.31 1.19 · TZ Europe/Istanbul
+  Alt Hesap Mizanı (rapor): durum 200 · en iyi 259.4 ms · ortanca 292.5 ms · olay döngüsü en çok 510.4 ms (n=7)
+yük (sonda) 1.26 1.31 1.19
+çıkış 0 · sonda 1.26 1.31 1.19 1/116 10395
+=== s2 · başta 1.26 1.31 1.19 1/116 10400 
+kod /dev/shm/t3hiz/k-s2 · yük (başta) 1.39 1.33 1.20 · TZ Europe/Istanbul
+  Alt Hesap Mizanı (rapor): durum 200 · en iyi 303.7 ms · ortanca 323.3 ms · olay döngüsü en çok 593 ms (n=7)
+yük (sonda) 1.36 1.32 1.19
+çıkış 0 · sonda 1.36 1.32 1.19 1/118 10426
+=== uc2 · başta 1.36 1.32 1.19 1/118 10431 
+kod /dev/shm/t3hiz/k-uc2 · yük (başta) 1.42 1.34 1.20 · TZ Europe/Istanbul
+  Alt Hesap Mizanı (rapor): durum 200 · en iyi 284.7 ms · ortanca 286.3 ms · olay döngüsü en çok 549.5 ms (n=7)
+yük (sonda) 1.39 1.34 1.20
+çıkış 0 · sonda 1.39 1.34 1.20 1/116 10463
+=== ana · başta 1.39 1.34 1.20 1/116 10468 
+kod /dev/shm/t3hiz/k-ana · yük (başta) 1.48 1.36 1.21 · TZ Europe/Istanbul
+  Alt Hesap Mizanı (rapor): durum 200 · en iyi 252.5 ms · ortanca 262.2 ms · olay döngüsü en çok 488.1 ms (n=7)
+yük (sonda) 1.44 1.36 1.21
+çıkış 0 · sonda 1.44 1.36 1.21 1/119 10512
+=== a1 · başta 1.44 1.36 1.21 1/119 10517 
+kod /dev/shm/t3hiz/k-a1 · yük (başta) 1.36 1.35 1.21 · TZ Europe/Istanbul
+  Alt Hesap Mizanı (rapor): durum 200 · en iyi 245.3 ms · ortanca 252.1 ms · olay döngüsü en çok 462.2 ms (n=7)
+yük (sonda) 1.36 1.35 1.21
+çıkış 0 · sonda 1.36 1.35 1.21 1/115 10538
+=== a2 · başta 1.36 1.35 1.21 1/115 10548 
+kod /dev/shm/t3hiz/k-a2 · yük (başta) 1.30 1.33 1.21 · TZ Europe/Istanbul
+  Alt Hesap Mizanı (rapor): durum 200 · en iyi 285.5 ms · ortanca 289.9 ms · olay döngüsü en çok 485 ms (n=7)
+yük (sonda) 1.30 1.33 1.21
+çıkış 0 · sonda 1.30 1.33 1.21 1/117 10568
+=== a3 · başta 1.30 1.33 1.21 1/117 10573 
+kod /dev/shm/t3hiz/k-a3 · yük (başta) 1.19 1.31 1.20 · TZ Europe/Istanbul
+  Alt Hesap Mizanı (rapor): durum 200 · en iyi 284.9 ms · ortanca 290 ms · olay döngüsü en çok 545.3 ms (n=7)
+yük (sonda) 1.19 1.31 1.20
+çıkış 0 · sonda 1.19 1.31 1.20 1/117 10588
+=== s1 · başta 1.19 1.31 1.20 1/117 10593 
+kod /dev/shm/t3hiz/k-s1 · yük (başta) 1.43 1.36 1.22 · TZ Europe/Istanbul
+  Alt Hesap Mizanı (rapor): durum 200 · en iyi 249.1 ms · ortanca 252.5 ms · olay döngüsü en çok 490.5 ms (n=7)
+yük (sonda) 1.43 1.36 1.22
+çıkış 0 · sonda 1.43 1.36 1.22 1/115 10611
+=== s2 · başta 1.43 1.36 1.22 1/115 10616 
+kod /dev/shm/t3hiz/k-s2 · yük (başta) 1.87 1.46 1.26 · TZ Europe/Istanbul
+  Alt Hesap Mizanı (rapor): durum 200 · en iyi 285.5 ms · ortanca 289.8 ms · olay döngüsü en çok 510.9 ms (n=7)
+yük (sonda) 1.88 1.47 1.26
+çıkış 0 · sonda 1.88 1.47 1.26 1/112 10650
+=== uc2 · başta 1.88 1.47 1.26 1/112 10655 
+kod /dev/shm/t3hiz/k-uc2 · yük (başta) 1.85 1.49 1.27 · TZ Europe/Istanbul
+  Alt Hesap Mizanı (rapor): durum 200 · en iyi 284.3 ms · ortanca 299.5 ms · olay döngüsü en çok 523.5 ms (n=7)
+yük (sonda) 1.78 1.48 1.27
+çıkış 0 · sonda 1.78 1.48 1.27 1/115 10696
+bitti 15:59:17

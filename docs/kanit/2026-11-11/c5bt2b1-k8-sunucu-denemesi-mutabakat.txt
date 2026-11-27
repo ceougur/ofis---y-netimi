@@ -1,0 +1,417 @@
+TAP version 13
+# Subtest: kuruş aritmetiği
+    # Subtest: roundMoney yarım kuruşu sıfırdan uzağa yuvarlar; kayan nokta artığı taşımaz; −0 üretmez
+    ok 1 - roundMoney yarım kuruşu sıfırdan uzağa yuvarlar; kayan nokta artığı taşımaz; −0 üretmez
+      ---
+      duration_ms: 1.590333
+      type: 'test'
+      ...
+    # Subtest: satır tutarı (miktar × birim fiyat) programda ve bağımsız tam sayı hesabında aynı
+    ok 2 - satır tutarı (miktar × birim fiyat) programda ve bağımsız tam sayı hesabında aynı
+      ---
+      duration_ms: 18.598167
+      type: 'test'
+      ...
+    1..2
+ok 1 - kuruş aritmetiği
+  ---
+  duration_ms: 21.418642
+  type: 'suite'
+  ...
+# Subtest: dört çekirdek mutabakatı (model tabanlı)
+    # Subtest: tohum 1: 120 günlük sıralı çizelgede 300 rastgele işlem (hatalı tarih, dönem kilidi, eksiye düşürme dahil) ve 40 eşzamanlı istek; her işlemden sonra tutarlı
+    not ok 1 - tohum 1: 120 günlük sıralı çizelgede 300 rastgele işlem (hatalı tarih, dönem kilidi, eksiye düşürme dahil) ve 40 eşzamanlı istek; her işlemden sonra tutarlı
+      ---
+      duration_ms: 21822.681464
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a1f2f9f23b4876417/test/mutabakat-cekirdek.test.mjs:35:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        [
+         {
+          "at": "işlem 152 (taksit-tahsil, 2026-09-12)",
+          "problems": [
+           "taksit-tahsil: yanlış ret 409 {\"ok\":false,\"error\":\"Bu kart ödendi (kalan 0,00 TL); yeni tahsilat yazılmaz. Fazla alınan parayı sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \\\"Fazlasını Avans Yaz\\\" ile kaydedin.\",\"code\":\"plan-paid\",\"planId\":\"plan-9ef40b7e-5a6c-4d5b-9186-93d8fc68876a\",\"remaining\":0,\"amount\":5006,\"excess\":5006}"
+          ]
+         }
+        ]
+        + actual - expected
+        
+        + [
+        +   {
+        +     at: 'işlem 152 (taksit-tahsil, 2026-09-12)',
+        +     problems: [
+        +       'taksit-tahsil: yanlış ret 409 {"ok":false,"error":"Bu kart ödendi (kalan 0,00 TL); yeni tahsilat yazılmaz. Fazla alınan parayı sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \\"Fazlasını Avans Yaz\\" ile kaydedin.","code":"plan-paid","planId":"plan-9ef40b7e-5a6c-4d5b-9186-93d8fc68876a","remaining":0,"amount":5006,"excess":5006}'
+        +     ]
+        +   }
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0:
+          at: 'işlem 152 (taksit-tahsil, 2026-09-12)'
+          problems:
+            0: 'taksit-tahsil: yanlış ret 409 {"ok":false,"error":"Bu kart ödendi (kalan 0,00 TL); yeni tahsilat yazılmaz. Fazla alınan parayı sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \\"Fazlasını Avans Yaz\\" ile kaydedin.","code":"plan-paid","planId":"plan-9ef40b7e-5a6c-4d5b-9186-93d8fc68876a","remaining":0,"amount":5006,"excess":5006}'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a1f2f9f23b4876417/test/mutabakat-cekirdek.test.mjs:40:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tohum 2: 120 günlük sıralı çizelgede 300 rastgele işlem (hatalı tarih, dönem kilidi, eksiye düşürme dahil) ve 40 eşzamanlı istek; her işlemden sonra tutarlı
+    not ok 2 - tohum 2: 120 günlük sıralı çizelgede 300 rastgele işlem (hatalı tarih, dönem kilidi, eksiye düşürme dahil) ve 40 eşzamanlı istek; her işlemden sonra tutarlı
+      ---
+      duration_ms: 21663.305161
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a1f2f9f23b4876417/test/mutabakat-cekirdek.test.mjs:35:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        [
+         {
+          "at": "işlem 268 (taksit-tahsil, 2026-10-29)",
+          "problems": [
+           "taksit-tahsil: beklenmeyen ret 409 {\"ok\":false,\"error\":\"Bu kart ödendi (kalan 0,00 TL); yeni tahsilat yazılmaz. Fazla alınan parayı sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \\\"Fazlasını Avans Yaz\\\" ile kaydedin.\",\"code\":\"plan-paid\",\"planId\":\"plan-dbe31f56-f6c8-4f51-b19e-c9a723cb0036\",\"remaining\":0,\"amount\":242.68,\"excess\":242.68}"
+          ]
+         }
+        ]
+        + actual - expected
+        
+        + [
+        +   {
+        +     at: 'işlem 268 (taksit-tahsil, 2026-10-29)',
+        +     problems: [
+        +       'taksit-tahsil: beklenmeyen ret 409 {"ok":false,"error":"Bu kart ödendi (kalan 0,00 TL); yeni tahsilat yazılmaz. Fazla alınan parayı sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \\"Fazlasını Avans Yaz\\" ile kaydedin.","code":"plan-paid","planId":"plan-dbe31f56-f6c8-4f51-b19e-c9a723cb0036","remaining":0,"amount":242.68,"excess":242.68}'
+        +     ]
+        +   }
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0:
+          at: 'işlem 268 (taksit-tahsil, 2026-10-29)'
+          problems:
+            0: 'taksit-tahsil: beklenmeyen ret 409 {"ok":false,"error":"Bu kart ödendi (kalan 0,00 TL); yeni tahsilat yazılmaz. Fazla alınan parayı sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \\"Fazlasını Avans Yaz\\" ile kaydedin.","code":"plan-paid","planId":"plan-dbe31f56-f6c8-4f51-b19e-c9a723cb0036","remaining":0,"amount":242.68,"excess":242.68}'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a1f2f9f23b4876417/test/mutabakat-cekirdek.test.mjs:40:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tohum 3: POS ekseni açık, 200 rastgele işlem (POS tahsilatı, iadesi, silme; çek/senet tahsile ver); her işlemden ve raporlardan sonra tutarlı
+    not ok 3 - tohum 3: POS ekseni açık, 200 rastgele işlem (POS tahsilatı, iadesi, silme; çek/senet tahsile ver); her işlemden ve raporlardan sonra tutarlı
+      ---
+      duration_ms: 12672.912046
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a1f2f9f23b4876417/test/mutabakat-cekirdek.test.mjs:57:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        [
+         {
+          "at": "işlem 174 (taksit-tahsil, 2026-10-26)",
+          "problems": [
+           "taksit-tahsil: beklenmeyen ret 409 {\"ok\":false,\"error\":\"Tutar kartın kalanını aşıyor: kalan 2.115,56 TL, girilen 8.030,67 TL, fazlası 5.915,11 TL; yeni tahsilat yazılmaz. Kalan kadar yazın; fazlasını sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \\\"Fazlasını Avans Yaz\\\" ile kaydedin.\",\"code\":\"plan-overpay\",\"planId\":\"plan-afa7c337-132c-40fe-8436-a89c02d675fe\",\"remaining\":2115.56,\"amount\":803"
+          ]
+         },
+         {
+          "at": "işlem 178 (taksit-tahsil, 2026-10-28)",
+          "problems": [
+           "taksit-tahsil: beklenmeyen ret 409 {\"ok\":false,\"error\":\"Tutar kartın kalanını aşıyor: kalan 2.115,56 TL, girilen 3.171,79 TL, fazlası 1.056,23 TL; yeni tahsilat yazılmaz. Kalan kadar yazın; fazlasını sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \\\"Fazlasını Avans Yaz\\\" ile kaydedin.\",\"code\":\"plan-overpay\",\"planId\":\"plan-afa7c337-132c-40fe-8436-a89c02d675fe\",\"remaining\":2115.56,\"amount\":317"
+          ]
+         }
+        ]
+        + actual - expected
+        
+        + [
+        +   {
+        +     at: 'işlem 174 (taksit-tahsil, 2026-10-26)',
+        +     problems: [
+        +       'taksit-tahsil: beklenmeyen ret 409 {"ok":false,"error":"Tutar kartın kalanını aşıyor: kalan 2.115,56 TL, girilen 8.030,67 TL, fazlası 5.915,11 TL; yeni tahsilat yazılmaz. Kalan kadar yazın; fazlasını sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \\"Fazlasını Avans Yaz\\" ile kaydedin.","code":"plan-overpay","planId":"plan-afa7c337-132c-40fe-8436-a89c02d675fe","remaining":2115.56,"amount":803'
+        +     ]
+        +   },
+        +   {
+        +     at: 'işlem 178 (taksit-tahsil, 2026-10-28)',
+        +     problems: [
+        +       'taksit-tahsil: beklenmeyen ret 409 {"ok":false,"error":"Tutar kartın kalanını aşıyor: kalan 2.115,56 TL, girilen 3.171,79 TL, fazlası 1.056,23 TL; yeni tahsilat yazılmaz. Kalan kadar yazın; fazlasını sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \\"Fazlasını Avans Yaz\\" ile kaydedin.","code":"plan-overpay","planId":"plan-afa7c337-132c-40fe-8436-a89c02d675fe","remaining":2115.56,"amount":317'
+        +     ]
+        +   }
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0:
+          at: 'işlem 174 (taksit-tahsil, 2026-10-26)'
+          problems:
+            0: 'taksit-tahsil: beklenmeyen ret 409 {"ok":false,"error":"Tutar kartın kalanını aşıyor: kalan 2.115,56 TL, girilen 8.030,67 TL, fazlası 5.915,11 TL; yeni tahsilat yazılmaz. Kalan kadar yazın; fazlasını sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \\"Fazlasını Avans Yaz\\" ile kaydedin.","code":"plan-overpay","planId":"plan-afa7c337-132c-40fe-8436-a89c02d675fe","remaining":2115.56,"amount":803'
+        1:
+          at: 'işlem 178 (taksit-tahsil, 2026-10-28)'
+          problems:
+            0: 'taksit-tahsil: beklenmeyen ret 409 {"ok":false,"error":"Tutar kartın kalanını aşıyor: kalan 2.115,56 TL, girilen 3.171,79 TL, fazlası 1.056,23 TL; yeni tahsilat yazılmaz. Kalan kadar yazın; fazlasını sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \\"Fazlasını Avans Yaz\\" ile kaydedin.","code":"plan-overpay","planId":"plan-afa7c337-132c-40fe-8436-a89c02d675fe","remaining":2115.56,"amount":317'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a1f2f9f23b4876417/test/mutabakat-cekirdek.test.mjs:62:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 2 - dört çekirdek mutabakatı (model tabanlı)
+  ---
+  duration_ms: 56160.020918
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a1f2f9f23b4876417/test/mutabakat-cekirdek.test.mjs:33:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: mutabakat motoru yıl dönümü (2.4.8 MZ; sahte saat 22.01.2027, çizelge 15.12.2026 → 22.01.2027)
+    # Subtest: tohum 39: geçen yıl tarihli, geçen yılın serisinde daha geç belgesi olmayan kronoloji denemesi ret beklemez; her işlem ve iki yılın numara sırası tutarlı
+    not ok 1 - tohum 39: geçen yıl tarihli, geçen yılın serisinde daha geç belgesi olmayan kronoloji denemesi ret beklemez; her işlem ve iki yılın numara sırası tutarlı
+      ---
+      duration_ms: 24233.880904
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a1f2f9f23b4876417/test/mutabakat-yil-donumu.test.mjs:48:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        [
+         {
+          "at": "işlem 269 (taksit-tahsil, 2027-01-01)",
+          "problems": [
+           "taksit-tahsil: yanlış ret 409 {\"ok\":false,\"error\":\"Bu kart ödendi (kalan 0,00 TL); yeni tahsilat yazılmaz. Fazla alınan parayı sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \\\"Fazlasını Avans Yaz\\\" ile kaydedin.\",\"code\":\"plan-paid\",\"planId\":\"plan-d5264759-d774-458f-a003-14619a06a8a6\",\"remaining\":0,\"amount\":5552.91,\"excess\":5552.91}"
+          ]
+         },
+         {
+          "at": "işlem 302 (taksit-tahsil, 2027-01-03)",
+          "problems": [
+           "taksit-tahsil: yanlış ret 409 {\"ok\":false,\"error\":\"Bu kart ödendi (kalan 0,00 TL); yeni tahsilat yazılmaz. Fazla alınan parayı sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \\\"Fazlasını Avans Yaz\\\" ile kaydedin.\",\"code\":\"plan-paid\",\"planId\":\"plan-2164b95b-9f9d-4987-815b-d9456efe9701\",\"remaining\":0,\"amount\":8639,\"excess\":8639}"
+          ]
+         },
+         {
+          "at": "işlem 346 (taksit-tahsil, 2027-01-05)",
+          "problems": [
+           "taksit-tahsil: beklenmeyen ret 409 {\"ok\":false,\"error\":\"Bu kart ödendi (kalan 0,00 TL); yeni tahsilat yazılmaz. Fazla alınan parayı sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \\\"Fazlasını Avans Yaz\\\" ile kaydedin.\",\"code\":\"plan-paid\",\"planId\":\"plan-da40ad12-c14a-40b2-9b83-c1b9c79c4287\",\"remaining\":0,\"amount\":768.98,\"excess\":768.98}"
+          ]
+         },
+         {
+          "at": "işlem 361 (taksit-tahsil, 2027-01-06)",
+          "problems": [
+           "taksit-tahsil: beklenmeyen ret 409 {\"ok\":false,\"error\":\"Bu kart ödendi (kalan 0,00 TL); yeni tahsilat yazılmaz. Fazla alınan parayı sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \\\"Fazlasını Avans Yaz\\\" ile kaydedin.\",\"code\":\"plan-paid\",\"planId\":\"plan-bba8b599-6a0d-4df6-a521-fb1cc8cf574e\",\"remaining\":0,\"amount\":1988,\"excess\":1988}"
+          ]
+         },
+         {
+          "at": "işlem 375 (taksit-tahsil, 2027-01-07)",
+          "problems": [
+           "taksit-tahsil: yanlış ret 409 {\"ok\":false,\"error\":\"Bu kart ödendi (kalan 0,00 TL); yeni tahsilat yazılmaz. Fazla alınan parayı sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \\\"Fazlasını Avans Yaz\\\" ile kaydedin.\",\"code\":\"plan-paid\",\"planId\":\"plan-62f7072e-4b36-4a09-b5f4-46822a0ead15\",\"remaining\":0,\"amount\":8293.53,\"excess\":8293.53}"
+          ]
+         },
+         {
+          "at": "işlem 496 (taksit-tahsil, 2027-01-15)",
+          "problems": [
+           "taksit-tahsil: yanlış ret 409 {\"ok\":false,\"error\":\"Bu kart ödendi (kalan 0,00 TL); yeni tahsilat yazılmaz. Fazla alınan parayı sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \\\"Fazlasını Avans Yaz\\\" ile kaydedin.\",\"code\":\"plan-paid\",\"planId\":\"plan-e64ee5aa-e733-4b5e-83ec-805845de99d4\",\"remaining\":0,\"amount\":7553.66,\"excess\":7553.66}"
+          ]
+         },
+         {
+          "at": "işlem 524 (taksit-tahsil, 2027-01-17)",
+          "problems": [
+           "taksit-tahsil: yanlış ret 409 {\"ok\":false,\"error\":\"Bu kart ödendi (kalan 0,00 TL); yeni tahsilat yazılmaz. Fazla alınan parayı sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \\\"Fazlasını Avans Yaz\\\" ile kaydedin.\",\"code\":\"plan-paid\",\"planId\":\"plan-a087e3d6-7e66-40a6-afd5-52b522a82cb0\",\"remaining\":0,\"amount\":5092.72,\"excess\":5092.72}"
+          ]
+         }
+        ]
+        + actual - expected
+        
+        + [
+        +   {
+        +     at: 'işlem 269 (taksit-tahsil, 2027-01-01)',
+        +     problems: [
+        +       'taksit-tahsil: yanlış ret 409 {"ok":false,"error":"Bu kart ödendi (kalan 0,00 TL); yeni tahsilat yazılmaz. Fazla alınan parayı sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \\"Fazlasını Avans Yaz\\" ile kaydedin.","code":"plan-paid","planId":"plan-d5264759-d774-458f-a003-14619a06a8a6","remaining":0,"amount":5552.91,"excess":5552.91}'
+        +     ]
+        +   },
+        +   {
+        +     at: 'işlem 302 (taksit-tahsil, 2027-01-03)',
+        +     problems: [
+        +       'taksit-tahsil: yanlış ret 409 {"ok":false,"error":"Bu kart ödendi (kalan 0,00 TL); yeni tahsilat yazılmaz. Fazla alınan parayı sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \\"Fazlasını Avans Yaz\\" ile kaydedin.","code":"plan-paid","planId":"plan-2164b95b-9f9d-4987-815b-d9456efe9701","remaining":0,"amount":8639,"excess":8639}'
+        +     ]
+        +   },
+        +   {
+        +     at: 'işlem 346 (taksit-tahsil, 2027-01-05)',
+        +     problems: [
+        +       'taksit-tahsil: beklenmeyen ret 409 {"ok":false,"error":"Bu kart ödendi (kalan 0,00 TL); yeni tahsilat yazılmaz. Fazla alınan parayı sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \\"Fazlasını Avans Yaz\\" ile kaydedin.","code":"plan-paid","planId":"plan-da40ad12-c14a-40b2-9b83-c1b9c79c4287","remaining":0,"amount":768.98,"excess":768.98}'
+        +     ]
+        +   },
+        +   {
+        +     at: 'işlem 361 (taksit-tahsil, 2027-01-06)',
+        +     problems: [
+        +       'taksit-tahsil: beklenmeyen ret 409 {"ok":false,"error":"Bu kart ödendi (kalan 0,00 TL); yeni tahsilat yazılmaz. Fazla alınan parayı sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \\"Fazlasını Avans Yaz\\" ile kaydedin.","code":"plan-paid","planId":"plan-bba8b599-6a0d-4df6-a521-fb1cc8cf574e","remaining":0,"amount":1988,"excess":1988}'
+        +     ]
+        +   },
+        +   {
+        +     at: 'işlem 375 (taksit-tahsil, 2027-01-07)',
+        +     problems: [
+        +       'taksit-tahsil: yanlış ret 409 {"ok":false,"error":"Bu kart ödendi (kalan 0,00 TL); yeni tahsilat yazılmaz. Fazla alınan parayı sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \\"Fazlasını Avans Yaz\\" ile kaydedin.","code":"plan-paid","planId":"plan-62f7072e-4b36-4a09-b5f4-46822a0ead15","remaining":0,"amount":8293.53,"excess":8293.53}'
+        +     ]
+        +   },
+        +   {
+        +     at: 'işlem 496 (taksit-tahsil, 2027-01-15)',
+        +     problems: [
+        +       'taksit-tahsil: yanlış ret 409 {"ok":false,"error":"Bu kart ödendi (kalan 0,00 TL); yeni tahsilat yazılmaz. Fazla alınan parayı sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \\"Fazlasını Avans Yaz\\" ile kaydedin.","code":"plan-paid","planId":"plan-e64ee5aa-e733-4b5e-83ec-805845de99d4","remaining":0,"amount":7553.66,"excess":7553.66}'
+        +     ]
+        +   },
+        +   {
+        +     at: 'işlem 524 (taksit-tahsil, 2027-01-17)',
+        +     problems: [
+        +       'taksit-tahsil: yanlış ret 409 {"ok":false,"error":"Bu kart ödendi (kalan 0,00 TL); yeni tahsilat yazılmaz. Fazla alınan parayı sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \\"Fazlasını Avans Yaz\\" ile kaydedin.","code":"plan-paid","planId":"plan-a087e3d6-7e66-40a6-afd5-52b522a82cb0","remaining":0,"amount":5092.72,"excess":5092.72}'
+        +     ]
+        +   }
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0:
+          at: 'işlem 269 (taksit-tahsil, 2027-01-01)'
+          problems:
+            0: 'taksit-tahsil: yanlış ret 409 {"ok":false,"error":"Bu kart ödendi (kalan 0,00 TL); yeni tahsilat yazılmaz. Fazla alınan parayı sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \\"Fazlasını Avans Yaz\\" ile kaydedin.","code":"plan-paid","planId":"plan-d5264759-d774-458f-a003-14619a06a8a6","remaining":0,"amount":5552.91,"excess":5552.91}'
+        1:
+          at: 'işlem 302 (taksit-tahsil, 2027-01-03)'
+          problems:
+            0: 'taksit-tahsil: yanlış ret 409 {"ok":false,"error":"Bu kart ödendi (kalan 0,00 TL); yeni tahsilat yazılmaz. Fazla alınan parayı sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \\"Fazlasını Avans Yaz\\" ile kaydedin.","code":"plan-paid","planId":"plan-2164b95b-9f9d-4987-815b-d9456efe9701","remaining":0,"amount":8639,"excess":8639}'
+        2:
+          at: 'işlem 346 (taksit-tahsil, 2027-01-05)'
+          problems:
+            0: 'taksit-tahsil: beklenmeyen ret 409 {"ok":false,"error":"Bu kart ödendi (kalan 0,00 TL); yeni tahsilat yazılmaz. Fazla alınan parayı sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \\"Fazlasını Avans Yaz\\" ile kaydedin.","code":"plan-paid","planId":"plan-da40ad12-c14a-40b2-9b83-c1b9c79c4287","remaining":0,"amount":768.98,"excess":768.98}'
+        3:
+          at: 'işlem 361 (taksit-tahsil, 2027-01-06)'
+          problems:
+            0: 'taksit-tahsil: beklenmeyen ret 409 {"ok":false,"error":"Bu kart ödendi (kalan 0,00 TL); yeni tahsilat yazılmaz. Fazla alınan parayı sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \\"Fazlasını Avans Yaz\\" ile kaydedin.","code":"plan-paid","planId":"plan-bba8b599-6a0d-4df6-a521-fb1cc8cf574e","remaining":0,"amount":1988,"excess":1988}'
+        4:
+          at: 'işlem 375 (taksit-tahsil, 2027-01-07)'
+          problems:
+            0: 'taksit-tahsil: yanlış ret 409 {"ok":false,"error":"Bu kart ödendi (kalan 0,00 TL); yeni tahsilat yazılmaz. Fazla alınan parayı sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \\"Fazlasını Avans Yaz\\" ile kaydedin.","code":"plan-paid","planId":"plan-62f7072e-4b36-4a09-b5f4-46822a0ead15","remaining":0,"amount":8293.53,"excess":8293.53}'
+        5:
+          at: 'işlem 496 (taksit-tahsil, 2027-01-15)'
+          problems:
+            0: 'taksit-tahsil: yanlış ret 409 {"ok":false,"error":"Bu kart ödendi (kalan 0,00 TL); yeni tahsilat yazılmaz. Fazla alınan parayı sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \\"Fazlasını Avans Yaz\\" ile kaydedin.","code":"plan-paid","planId":"plan-e64ee5aa-e733-4b5e-83ec-805845de99d4","remaining":0,"amount":7553.66,"excess":7553.66}'
+        6:
+          at: 'işlem 524 (taksit-tahsil, 2027-01-17)'
+          problems:
+            0: 'taksit-tahsil: yanlış ret 409 {"ok":false,"error":"Bu kart ödendi (kalan 0,00 TL); yeni tahsilat yazılmaz. Fazla alınan parayı sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \\"Fazlasını Avans Yaz\\" ile kaydedin.","code":"plan-paid","planId":"plan-a087e3d6-7e66-40a6-afd5-52b522a82cb0","remaining":0,"amount":5092.72,"excess":5092.72}'
+      operator: 'deepStrictEqual'
+      stack: |-
+        yilDonumuKosusu (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a1f2f9f23b4876417/test/mutabakat-yil-donumu.test.mjs:31:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a1f2f9f23b4876417/test/mutabakat-yil-donumu.test.mjs:49:20)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: tohum 29: geçen yılın serisinde daha geç belge varken geçen yıl tarihli belge yine 400 chronology ile reddedilir; her işlem tutarlı
+    not ok 2 - tohum 29: geçen yılın serisinde daha geç belge varken geçen yıl tarihli belge yine 400 chronology ile reddedilir; her işlem tutarlı
+      ---
+      duration_ms: 22736.60402
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a1f2f9f23b4876417/test/mutabakat-yil-donumu.test.mjs:52:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        [
+         {
+          "at": "işlem 125 (taksit-tahsil, 2026-12-22)",
+          "problems": [
+           "taksit-tahsil: yanlış ret 409 {\"ok\":false,\"error\":\"Bu kart ödendi (kalan 0,00 TL); yeni tahsilat yazılmaz. Fazla alınan parayı sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \\\"Fazlasını Avans Yaz\\\" ile kaydedin.\",\"code\":\"plan-paid\",\"planId\":\"plan-a62bd245-92c6-4fcd-b3cd-d1657f7f51ff\",\"remaining\":0,\"amount\":8166.91,\"excess\":8166.91}"
+          ]
+         },
+         {
+          "at": "işlem 351 (taksit-tahsil, 2027-01-06)",
+          "problems": [
+           "taksit-tahsil: yanlış ret 409 {\"ok\":false,\"error\":\"Bu kart ödendi (kalan 0,00 TL); yeni tahsilat yazılmaz. Fazla alınan parayı sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \\\"Fazlasını Avans Yaz\\\" ile kaydedin.\",\"code\":\"plan-paid\",\"planId\":\"plan-7217ac2f-423d-44aa-82d1-97064f7b5333\",\"remaining\":0,\"amount\":8227.13,\"excess\":8227.13}"
+          ]
+         },
+         {
+          "at": "işlem 576 (taksit-tahsil, 2027-01-20)",
+          "problems": [
+           "taksit-tahsil: beklenmeyen ret 409 {\"ok\":false,\"error\":\"Bu kart ödendi (kalan 0,00 TL); yeni tahsilat yazılmaz. Fazla alınan parayı sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \\\"Fazlasını Avans Yaz\\\" ile kaydedin.\",\"code\":\"plan-paid\",\"planId\":\"plan-7217ac2f-423d-44aa-82d1-97064f7b5333\",\"remaining\":0,\"amount\":1104,\"excess\":1104}"
+          ]
+         }
+        ]
+        + actual - expected
+        
+        + [
+        +   {
+        +     at: 'işlem 125 (taksit-tahsil, 2026-12-22)',
+        +     problems: [
+        +       'taksit-tahsil: yanlış ret 409 {"ok":false,"error":"Bu kart ödendi (kalan 0,00 TL); yeni tahsilat yazılmaz. Fazla alınan parayı sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \\"Fazlasını Avans Yaz\\" ile kaydedin.","code":"plan-paid","planId":"plan-a62bd245-92c6-4fcd-b3cd-d1657f7f51ff","remaining":0,"amount":8166.91,"excess":8166.91}'
+        +     ]
+        +   },
+        +   {
+        +     at: 'işlem 351 (taksit-tahsil, 2027-01-06)',
+        +     problems: [
+        +       'taksit-tahsil: yanlış ret 409 {"ok":false,"error":"Bu kart ödendi (kalan 0,00 TL); yeni tahsilat yazılmaz. Fazla alınan parayı sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \\"Fazlasını Avans Yaz\\" ile kaydedin.","code":"plan-paid","planId":"plan-7217ac2f-423d-44aa-82d1-97064f7b5333","remaining":0,"amount":8227.13,"excess":8227.13}'
+        +     ]
+        +   },
+        +   {
+        +     at: 'işlem 576 (taksit-tahsil, 2027-01-20)',
+        +     problems: [
+        +       'taksit-tahsil: beklenmeyen ret 409 {"ok":false,"error":"Bu kart ödendi (kalan 0,00 TL); yeni tahsilat yazılmaz. Fazla alınan parayı sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \\"Fazlasını Avans Yaz\\" ile kaydedin.","code":"plan-paid","planId":"plan-7217ac2f-423d-44aa-82d1-97064f7b5333","remaining":0,"amount":1104,"excess":1104}'
+        +     ]
+        +   }
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0:
+          at: 'işlem 125 (taksit-tahsil, 2026-12-22)'
+          problems:
+            0: 'taksit-tahsil: yanlış ret 409 {"ok":false,"error":"Bu kart ödendi (kalan 0,00 TL); yeni tahsilat yazılmaz. Fazla alınan parayı sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \\"Fazlasını Avans Yaz\\" ile kaydedin.","code":"plan-paid","planId":"plan-a62bd245-92c6-4fcd-b3cd-d1657f7f51ff","remaining":0,"amount":8166.91,"excess":8166.91}'
+        1:
+          at: 'işlem 351 (taksit-tahsil, 2027-01-06)'
+          problems:
+            0: 'taksit-tahsil: yanlış ret 409 {"ok":false,"error":"Bu kart ödendi (kalan 0,00 TL); yeni tahsilat yazılmaz. Fazla alınan parayı sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \\"Fazlasını Avans Yaz\\" ile kaydedin.","code":"plan-paid","planId":"plan-7217ac2f-423d-44aa-82d1-97064f7b5333","remaining":0,"amount":8227.13,"excess":8227.13}'
+        2:
+          at: 'işlem 576 (taksit-tahsil, 2027-01-20)'
+          problems:
+            0: 'taksit-tahsil: beklenmeyen ret 409 {"ok":false,"error":"Bu kart ödendi (kalan 0,00 TL); yeni tahsilat yazılmaz. Fazla alınan parayı sonraki karta ya da cari tahsilatına (avans) yazın. Gerçekten bu karta avans yazılacaksa \\"Fazlasını Avans Yaz\\" ile kaydedin.","code":"plan-paid","planId":"plan-7217ac2f-423d-44aa-82d1-97064f7b5333","remaining":0,"amount":1104,"excess":1104}'
+      operator: 'deepStrictEqual'
+      stack: |-
+        yilDonumuKosusu (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a1f2f9f23b4876417/test/mutabakat-yil-donumu.test.mjs:31:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a1f2f9f23b4876417/test/mutabakat-yil-donumu.test.mjs:53:20)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 3 - mutabakat motoru yıl dönümü (2.4.8 MZ; sahte saat 22.01.2027, çizelge 15.12.2026 → 22.01.2027)
+  ---
+  duration_ms: 46972.093847
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-a1f2f9f23b4876417/test/mutabakat-yil-donumu.test.mjs:47:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..3
+# tests 7
+# suites 3
+# pass 2
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 103944.714761
+çıkış 1

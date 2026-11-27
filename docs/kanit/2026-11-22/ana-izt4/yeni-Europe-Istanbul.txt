@@ -1,0 +1,140 @@
+TAP version 13
+# Subtest: İzleyen tur 4 — S255 = A: kartın içine aldığı faturaya BAĞLI tahsilat önce gösterilen açığı kapatır, fazlası tek kuyrukta
+    # Subtest: B1 — F'ye bağlı 300: kart 0 / 600, bakiye 600, gecikmiş 200
+    ok 1 - B1 — F'ye bağlı 300: kart 0 / 600, bakiye 600, gecikmiş 200
+      ---
+      duration_ms: 683.228914
+      type: 'test'
+      ...
+    # Subtest: B1 — F'ye bağlı 600: kart 300 / 300, bakiye 300, gecikmiş 0
+    ok 2 - B1 — F'ye bağlı 600: kart 300 / 300, bakiye 300, gecikmiş 0
+      ---
+      duration_ms: 634.435032
+      type: 'test'
+      ...
+    # Subtest: B1 — F'ye bağlı 900: kart 600 / 0, bakiye 0, gecikmiş 0
+    ok 3 - B1 — F'ye bağlı 900: kart 600 / 0, bakiye 0, gecikmiş 0
+      ---
+      duration_ms: 598.208118
+      type: 'test'
+      ...
+    # Subtest: B1 — F'ye bağlı 1200: kart 600 / 0, bakiye -300, gecikmiş 0
+    ok 4 - B1 — F'ye bağlı 1200: kart 600 / 0, bakiye -300, gecikmiş 0
+      ---
+      duration_ms: 512.54476
+      type: 'test'
+      ...
+    # Subtest: B1 — bağsız 900: kart 600 / 0, bakiye 0, gecikmiş 0
+    ok 5 - B1 — bağsız 900: kart 600 / 0, bakiye 0, gecikmiş 0
+      ---
+      duration_ms: 603.833771
+      type: 'test'
+      ...
+    # Subtest: B2 — faturanın tamamı kartta (F 600, kart 600): bağlı 600 → tamamı kuyruğa: kart 600 / 600 / 0, fatura Ödendi, bakiye 0
+    ok 6 - B2 — faturanın tamamı kartta (F 600, kart 600): bağlı 600 → tamamı kuyruğa: kart 600 / 600 / 0, fatura Ödendi, bakiye 0
+      ---
+      duration_ms: 639.383876
+      type: 'test'
+      ...
+    # Subtest: B3 — iki kart aynı faturada (K1 300, K2 300): bağlı 600 → 300 gösterilen açık + 300 vadesi en önce gelen taksitlerden
+    ok 7 - B3 — iki kart aynı faturada (K1 300, K2 300): bağlı 600 → 300 gösterilen açık + 300 vadesi en önce gelen taksitlerden
+      ---
+      duration_ms: 526.061664
+      type: 'test'
+      ...
+    1..7
+ok 1 - İzleyen tur 4 — S255 = A: kartın içine aldığı faturaya BAĞLI tahsilat önce gösterilen açığı kapatır, fazlası tek kuyrukta
+  ---
+  duration_ms: 4199.642309
+  type: 'suite'
+  ...
+# Subtest: İzleyen tur 4 — S255 = A: iade / iade iptali / Düzenle / silme / Silinenler / kilit / raporlar / çek / önceden yazılmış bağ
+    # Subtest: B4a — iade 300 (kart dışındaki kısım) → bağlı 600: gösterilen açık 0 → tamamı kuyruğa: kart 600 / 600 / 0, bakiye 0
+    ok 1 - B4a — iade 300 (kart dışındaki kısım) → bağlı 600: gösterilen açık 0 → tamamı kuyruğa: kart 600 / 600 / 0, bakiye 0
+      ---
+      duration_ms: 543.382353
+      type: 'test'
+      ...
+    # Subtest: B4b / B4c — bağlı 600 → iade 300: kart ve bakiye BAĞSIZ 600 → iade 300 ile AYNI; iade iptali → aynı taksitlere geri: Tahsil 300 · Kalan 300, bakiye 300
+    ok 2 - B4b / B4c — bağlı 600 → iade 300: kart ve bakiye BAĞSIZ 600 → iade 300 ile AYNI; iade iptali → aynı taksitlere geri: Tahsil 300 · Kalan 300, bakiye 300
+      ---
+      duration_ms: 1338.995535
+      type: 'test'
+      ...
+    # Subtest: B4d — Düzenle 900 → 600 (kart dışındaki 300 düşer) → bağlı 600: kart 600 / 600 / 0, bakiye 0
+    ok 3 - B4d — Düzenle 900 → 600 (kart dışındaki 300 düşer) → bağlı 600: kart 600 / 600 / 0, bakiye 0
+      ---
+      duration_ms: 610.561109
+      type: 'test'
+      ...
+    # Subtest: B5 — bağlı 600'ün silinmesi → kart 0 / 600, bakiye 900; Silinenler'den geri yükleme → Tahsil 300 · Kalan 300, bakiye 300
+    ok 4 - B5 — bağlı 600'ün silinmesi → kart 0 / 600, bakiye 900; Silinenler'den geri yükleme → Tahsil 300 · Kalan 300, bakiye 300
+      ---
+      duration_ms: 572.037727
+      type: 'test'
+      ...
+    # Subtest: B6 — kilitli dönem (30.09'a kadar; fatura kilitli dönemde, bağlı ödeme sonra): B1 600 ile aynı; Mutabakat Testi temiz
+    ok 5 - B6 — kilitli dönem (30.09'a kadar; fatura kilitli dönemde, bağlı ödeme sonra): B1 600 ile aynı; Mutabakat Testi temiz
+      ---
+      duration_ms: 753.976529
+      type: 'test'
+      ...
+    # Subtest: B7 — Vade Takip / zil / Alacak Yaşlandırma / Nakit Akışı: carinin açık kalemleri kartın kalan taksitleri (100 + 200), fatura satırı yok, gecikmiş yok
+    ok 6 - B7 — Vade Takip / zil / Alacak Yaşlandırma / Nakit Akışı: carinin açık kalemleri kartın kalan taksitleri (100 + 200), fatura satırı yok, gecikmiş yok
+      ---
+      duration_ms: 551.168532
+      type: 'test'
+      ...
+    # Subtest: B8 — çek 'Kapatılacak Fatura' ile (alınan evrak 600, F'ye bağlı): B1 600 ile aynı
+    ok 7 - B8 — çek 'Kapatılacak Fatura' ile (alınan evrak 600, F'ye bağlı): B1 600 ile aynı
+      ---
+      duration_ms: 445.834747
+      type: 'test'
+      ...
+    # Subtest: B9 — bağlı ödeme karttan ÖNCE (F 900 → bağlı 600 → kart 300 açık kalanı alır): DEĞİŞMEZ (bekçi) — kart 0 / 300, bakiye 300
+    ok 8 - B9 — bağlı ödeme karttan ÖNCE (F 900 → bağlı 600 → kart 300 açık kalanı alır): DEĞİŞMEZ (bekçi) — kart 0 / 300, bakiye 300
+      ---
+      duration_ms: 457.269055
+      type: 'test'
+      ...
+    1..8
+ok 2 - İzleyen tur 4 — S255 = A: iade / iade iptali / Düzenle / silme / Silinenler / kilit / raporlar / çek / önceden yazılmış bağ
+  ---
+  duration_ms: 5274.244559
+  type: 'suite'
+  ...
+# Subtest: İzleyen tur 4 — S255 = A: kart tahsilatıyla ödenmiş kart + bağlı ödeme + iade
+    # Subtest: B11 — kart tahsilatı 600 → bağlı 600 → iade 300: kart 600 / 600 / 0, bakiye −600
+    ok 1 - B11 — kart tahsilatı 600 → bağlı 600 → iade 300: kart 600 / 600 / 0, bakiye −600
+      ---
+      duration_ms: 658.686549
+      type: 'test'
+      ...
+    1..1
+ok 3 - İzleyen tur 4 — S255 = A: kart tahsilatıyla ödenmiş kart + bağlı ödeme + iade
+  ---
+  duration_ms: 658.942031
+  type: 'suite'
+  ...
+# Subtest: İzleyen tur 4 — S255 = A: yedek → geri yükleme
+    # Subtest: B10 — B1 600'ün sayıları yedek → (bozucu silme) → geri yüklemeden sonra aynı
+    ok 1 - B10 — B1 600'ün sayıları yedek → (bozucu silme) → geri yüklemeden sonra aynı
+      ---
+      duration_ms: 864.809718
+      type: 'test'
+      ...
+    1..1
+ok 4 - İzleyen tur 4 — S255 = A: yedek → geri yükleme
+  ---
+  duration_ms: 865.015272
+  type: 'suite'
+  ...
+1..4
+# tests 17
+# suites 4
+# pass 17
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11533.432157

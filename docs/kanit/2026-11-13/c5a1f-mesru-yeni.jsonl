@@ -1,0 +1,22 @@
+{"step":"carisiz evrak bugün tahsil (T1F-7)","status":200,"msg":"","findings":[],"fails":[],"log":0,"zil":[],"derive":{"n":0,"sample":[]}}
+{"step":"carisiz evrak bugün karşılıksız, cari seçilmeden (T1F-8)","status":200,"msg":"","findings":[],"fails":[],"log":0,"zil":[],"derive":{"n":0,"sample":[]}}
+{"step":"carisiz evrak bugün karşılıksız + cari seçimi (T1F-3 → A)","status":200,"msg":"","findings":[],"fails":[],"log":0,"zil":[],"derive":{"n":0,"sample":[]}}
+{"step":"carili evrak bugün karşılıksız (T1F-9)","status":200,"msg":"","findings":[],"fails":[],"log":0,"zil":[],"derive":{"n":0,"sample":[]}}
+{"step":"carili evrak bugün ciro (T1F-1 → S)","status":200,"msg":"","findings":[],"fails":[],"log":0,"zil":[],"derive":{"n":0,"sample":[]}}
+{"step":"kilitte tahsile verilen evrak bugün tahsil (T1F-4; kayıt kapanır)","status":200,"msg":"","findings":[],"fails":[],"log":0,"zil":[],"derive":{"n":0,"sample":[]}}
+{"step":"kilitli karşılıksızı geri al (T1F-2) — beklenen 409","status":409,"msg":"Bu çek/senet işlemi 05.10.2026 tarihli; 10.10.2026 ve öncesi kapatılmış (kilitli) dönemdir. Değişiklik için yönetici dön","findings":[],"fails":[],"log":0,"zil":[],"derive":{"n":0,"sample":[]}}
+{"step":"kilitli evrakın carisini değiştir (T1F-7 düzenle) — beklenen 409","status":409,"msg":"Tahsil, ciro ya da ödeme yapılmış evrakın tutarı, carisi ve tarihi değiştirilemez. Önce son işlemi geri alın.","findings":[],"fails":[],"log":0,"zil":[],"derive":{"n":0,"sample":[]}}
+{"step":"kilitli taksit kartının Kayıt Tarihi boş — beklenen 400/409","status":200,"msg":"","findings":[],"fails":[],"log":0,"zil":[],"derive":{"n":0,"sample":[]}}
+{"step":"Kayıt Tarihi (boş istekten sonra)","registeredOn":"2026-10-01"}
+{"step":"hareketli banka hesabının alt hesabı (glSub) — SINIF 3","status":200,"msg":"","findings":[],"fails":[],"log":0,"zil":[],"derive":{"n":0,"sample":[]}}
+{"step":"alt hesap (istekten sonra)","glSub":"102.01"}
+{"step":"kilitli taksit kartını kapat (bugün)","status":200,"msg":"","findings":[],"fails":[],"log":0,"zil":[],"derive":{"n":0,"sample":[]}}
+{"step":"kilitli taksit kartını sil — beklenen 409","status":409,"msg":"Bu kartın Kayıt Tarihi 01.10.2026 tarihli; 10.10.2026 ve öncesi kapatılmış (kilitli) dönemdir. Değişiklik için yönetici ","findings":[],"fails":[],"log":0,"zil":[],"derive":{"n":0,"sample":[]}}
+{"step":"kilitli tahsilatın fatura bağı (düzenle) — beklenen 409","status":409,"msg":"Bu cari hareketi 09.10.2026 tarihli; 10.10.2026 ve öncesi kapatılmış (kilitli) dönemdir. Değişiklik için yönetici dönem ","findings":[],"fails":[],"log":0,"zil":[],"derive":{"n":0,"sample":[]}}
+{"step":"kilidi kaldır","status":200,"msg":"","findings":[],"fails":[],"log":0,"zil":[],"derive":{"n":2,"sample":["-2026-10-01|120||account-79a60cfd-8c1b-4578-b684-5bfd3a95568d|100000|0","-2026-10-01|519|||0|100000"]}}
+{"step":"fatura 15.10 (A)","status":200,"msg":"","findings":[],"fails":[],"log":0,"zil":[],"derive":{"n":0,"sample":[]}}
+{"step":"tahsilat 09.10 → 15.10 faturasına bağlı","status":200,"msg":"","findings":[],"fails":[],"log":0,"zil":[],"derive":{"n":0,"sample":[]}}
+{"step":"yeniden kilitle 10.10","status":200,"msg":"","findings":[],"fails":[],"log":0,"zil":[],"derive":{"n":0,"sample":[]}}
+{"step":"bağ","linked":1}
+{"step":"15.10 faturasını bugün iptal et","status":200,"msg":"","findings":[],"fails":[],"log":0,"zil":[],"derive":{"n":2,"sample":["-2026-10-09|120||account-07d1f144-ca7c-4a9a-a439-4a7bfa982f49|0|10000","+2026-10-09|128||account-07d1f144-ca7c-4a9a-a439-4a7bfa982f49|0|10000"]}}
+{"step":"bağ (iptalden sonra)","linked":0}

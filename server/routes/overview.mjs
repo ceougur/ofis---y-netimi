@@ -95,6 +95,8 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
       stock()?.fingerprint?.() || "",
       cheques()?.fingerprint?.() || "",
       invoices()?.fingerprint?.() || "",
+      // 2.5.0 Ç5-B: gecikmiş TEK YÜKÜMLÜLÜK KUYRUĞU'ndan — mahsup, iade geri ödemesi bağı, Kapatılacak Fatura bağı ve şüpheli kayıtları da değiştirir.
+      accounts()?.dueFingerprint?.() || "",
       // v2.1.0: işlem başlıkları (Banka Fişi dahil; tek kaynağın 9. kaynağı banka fişi satırlarıdır).
       hasEvents() ? tableState("fin_events") : "",
       // Aşama 14 (K10): banka hesap kartları (hesap açma/silme, Pasife Al, tür) Banka kutusunu değiştirir.
@@ -162,7 +164,8 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     const stockTotals = stock()?.list ? stock().list(admin, {}).totals : { count: 0, low: 0, out: 0, negative: 0, services: 0, value: 0 };
     const stockBlock = { critical: stockTotals.low, out: stockTotals.out, negative: stockTotals.negative || 0, products: stockTotals.count - (stockTotals.services || 0), services: stockTotals.services || 0, value: stockTotals.value };
     // Cari: Cari listesinin tüm cariler (aktif + pasif) toplamı.
-    const accountTotals = accounts()?.list ? accounts().list(admin, { status: "all" }).totals : { debtor: 0, creditor: 0, overdue: 0, overdueCount: 0, count: 0 };
+    // 2.5.0 Ç5-B (B1): Anlık Durum'un alacak gecikmişi Tek Yükümlülük Kuyruğu'ndan (cari kartı / listesi ile aynı sayı).
+    const accountTotals = accounts()?.list ? accounts().list(admin, { status: "all", withOverdue: true }).totals : { debtor: 0, creditor: 0, overdue: 0, overdueCount: 0, count: 0 };
     const chequeSummary = cheques()?.summary ? cheques().summary(day) : null;
     const chequeIn = chequeSummary?.in || { open: { count: 0, amount: 0 }, overdue: { count: 0, amount: 0 }, today: { count: 0, amount: 0 }, soon: { count: 0, amount: 0 } };
     const chequeOut = chequeSummary?.out || { open: { count: 0, amount: 0 }, overdue: { count: 0, amount: 0 }, today: { count: 0, amount: 0 }, soon: { count: 0, amount: 0 } };
@@ -258,7 +261,8 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     const list = ledgers.accounts.filter(account => (!type || account.type === type) && hit(account));
     const result = trialBalance(list, ledgers.lines, { ...range, includeIdle });
     let rows = result.rows;
-    // v2.0.24: "Geciken Taksiti Olan" (ekran bu seçeneği sunuyordu; sunucu yok sayıp bütün carileri listeliyordu).
+    // v2.0.24: "Geciken Taksiti Olan" (ekran bu seçeneği sunuyordu; sunucu yok sayıp bütün carileri listeliyordu). 2.5.0 Ç5-B: anlam (taksit) ve ad Rapor Merkezi'yle birlikte
+    // değişir (report-center.mjs SIDE_FILTER + hof-report-center.js; C5-ACILIS §0 "report-center satırı sonra") — kimliksiz iç çağıran TYK okumaz (accounts list()).
     if (side === "overdue") {
       const late = new Set((accounts()?.list ? accounts().list({ id: "", role: "admin" }, { status: "all", balance: "overdue", limit: 1e9 }).accounts : []).map(account => account.id));
       rows = rows.filter(row => late.has(row.id));
@@ -356,11 +360,14 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     const withTable = legacyTable && params.get("table") !== "0";
     const group = GROUPS.has(text(params.get("group"))) ? text(params.get("group")) : "";
     const flows = [];
-    if (plans()?.openItems) flows.push(...plans().openItems(day));
+    // Birleşik tur 7 (S130 = A; S136 = A, S139 = A): Şüpheli Alacağa alınan tutar 'Tahsil Edilecek' kalemlerinden — NAKİT TAHMİNİ dahil — Vade Takip'le AYNI kalemlerden,
+    // AYNI sırayla (tek yükümlülük kuyruğu; taksit ve fatura kalemi withoutDoubtful, carinin vade kalemi openDueItems) düşer; faturasız cari alacağı (dengeleme) carinin
+    // bakiyesinden açık şüpheli tutar düşülerek hesaplanır (unbilledFlows) — şüpheli para nakit tahmininde beklenen tahsilat gibi görünmez. Bakiye değişmez.
+    if (plans()?.openItems) flows.push(...plans().openItems(day, { withoutDoubtful: true }));
     // v2.2.0 (plan §3.14): bankada tahsildeki evrak vade + hesabın iş günü takvimiyle (expected).
     if (cheques()?.flows) flows.push(...cheques().flows({ expected: true }));
     // Vadeli (açık hesap) faturaların ödenmemiş kısmı vadesinde beklenen giriş (satış) ya da çıkıştır (alış).
-    for (const item of invoices()?.openItems ? invoices().openItems(day, { net: true }) : []) flows.push(invoiceFlow(item));
+    for (const item of invoices()?.openItems ? invoices().openItems(day, { net: true, withoutDoubtful: true }) : []) flows.push(invoiceFlow(item));
     // 2.4.6 madde 11 (2.4.5 K6.3'teki BİLİNEN SINIR kapandı): carinin vadeli / sözlü borç kayıtları — zil, Tahsilat Takvimi ve Vade Takip'teki "account|<entryId>"
     // kalemlerinin AYNISI (ortak yardımcı routes/accounts.mjs openDueItems; tarih Beklenen Ödeme Tarihi ya da Vade Tarihi, tutar FIFO Kalan − Mevcut Borç kartının
     // kapsadığı, yön carinin borcu → giriş / carinin alacağı → çıkış). Vadeli fatura gibi: kaleme bağlanmamış alacak kalemi küçültmez. Pencere iki ucu kapalı
@@ -402,13 +409,13 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
   function unbilledFlows(day, accountDue = []) {
     if (!accounts()?.list) return [];
     const items = [];
-    for (const item of plans()?.openItems ? plans().openItems(day) : []) if (item.accountId) items.push({ accountId: item.accountId, date: item.date, amount: item.amount });
+    for (const item of plans()?.openItems ? plans().openItems(day, { withoutDoubtful: true }) : []) if (item.accountId) items.push({ accountId: item.accountId, date: item.date, amount: item.amount });
     const owed = new Map();
     const owe = (accountId, amount) => owed.set(accountId, roundMoney((owed.get(accountId) || 0) + amount));
     // 2.4.6 madde 11 düzeltmesi (2.4.3 MM5'ten kalan çift sayım; ana oturum kararı, KARAR REVİZYONU ORTA): açık vadeli ALIŞ faturası projeksiyonda kendi vadesinde
     // çıkıştır (invoiceFlow); bakiyeyi de küçülttüğü için faturasız alacağın hesabında bakiyeye geri eklenir — müşteri carisinde açık alış faturası varken ödeme iki
     // kez düşülüyordu (bakiye 700 → projeksiyon net 400). İade belgesi projeksiyonda ayrı kalem değildir (openItems returns olmadan; bakiye zaten net) → eklenmez.
-    for (const item of invoices()?.openItems ? invoices().openItems(day, { net: true }) : []) {
+    for (const item of invoices()?.openItems ? invoices().openItems(day, { net: true, withoutDoubtful: true }) : []) {
       if (item.side === "sale") items.push({ accountId: item.accountId, date: item.dueDate, amount: item.open });
       else if (item.side === "purchase" && item.accountId) owe(item.accountId, item.open);
     }
@@ -418,7 +425,10 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
       if (item.direction === "in") items.push({ accountId: item.accountId, date: item.dueDate, amount: item.amount });
       else owe(item.accountId, item.amount);
     }
-    const live = accounts().list({ id: "", role: "admin" }, { status: "all" }).accounts.map(account => ({ id: account.id, name: account.name, balance: owed.has(account.id) ? roundMoney(account.balance + owed.get(account.id)) : account.balance }));
+    // Birleşik tur 7 (S130 = A): açık şüpheli tutar carinin bakiyesinden düşülür — kalemlerden düşen şüpheli para dengeleme satırıyla geri gelmez.
+    const doubtfulOpen = doubtfulApi()?.openByAccount ? doubtfulApi().openByAccount().byAccount : new Map();
+    const held = id => roundMoney((doubtfulOpen.get(id)?.openMinor || 0) / 100);
+    const live = accounts().list({ id: "", role: "admin" }, { status: "all" }).accounts.map(account => ({ id: account.id, name: account.name, balance: roundMoney(account.balance + (owed.get(account.id) || 0) - held(account.id)) }));
     return reconcileReceivables(store, { accounts: live, items, day, skip })
       .unbilled.map(item => ({ date: item.date, direction: "in", amount: item.amount, source: "unbilled", label: "Faturasız Cari Alacağı", party: item.name, ref: { type: "account", id: item.accountId } }));
   }
@@ -557,6 +567,8 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     id: item.id,
     entryId: item.entryId,
     ref: { type: "account", id: item.accountId, entryId: item.entryId },
+    // Birleşik tur 7 (S52, S67, S69 = A): durum ve gün sayısı takvim kalemininki (calendarState) — Vade Takip tarihten yeniden türetmez (lib/finance-report.mjs dueList).
+    calendar: { state: item.state, days: item.days },
   });
   async function tableItems() {
     try {
@@ -630,10 +642,11 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
     const digits = needle.replace(/\D/g, "");
     const items = [];
     if (sources.has("plan") && plans()?.openItems) {
-      for (const item of plans().openItems(day)) items.push({ ...item, detail: [item.accountName && item.accountName !== item.party ? `Cari: ${item.accountName}` : "", item.refNo ? `Kart ${item.refNo}` : ""].filter(Boolean).join(" · ") });
+      // 2.5.0 Ç5-B (M13, S3): şüpheli kuyruğundaki kısım vade kalemi değildir — aşağıdaki "Şüpheli Alacak (vade takibinin dışında)" satırında.
+      for (const item of plans().openItems(day, { withoutDoubtful: true })) items.push({ ...item, detail: [item.accountName && item.accountName !== item.party ? `Cari: ${item.accountName}` : "", item.refNo ? `Kart ${item.refNo}` : ""].filter(Boolean).join(" · ") });
     }
     if ((sources.has("cheque") || sources.has("note")) && cheques()?.flows) for (const flow of cheques().flows({ expected: true })) if (sources.has(flow.source)) items.push(flow);
-    if (sources.has("invoice") && invoices()?.openItems) for (const item of invoices().openItems(day, { net: true })) items.push(invoiceFlow(item));
+    if (sources.has("invoice") && invoices()?.openItems) for (const item of invoices().openItems(day, { net: true, withoutDoubtful: true })) items.push(invoiceFlow(item));
     if (sources.has("cash")) items.push(...aheadFlows(day, { bank: canSeeBank(user) }));
     // 2.3.0 İz 3.3: planlı banka işlemleri kendi tarihinde (planlı transfer yönsüz ve tutarsız kalem: adında tutar ve iki hesap).
     if (sources.has("bank")) items.push(...bankPlanFlows());
@@ -656,7 +669,22 @@ export function registerOverviewRoutes(router, { store, auth, audit, events, dat
       if (foldText(`${item.party || ""} ${item.label || ""} ${item.detail || ""} ${item.accountName || ""}`).includes(needle)) return true;
       return digits.length >= 3 && String(item.phone || "").replace(/\D/g, "").includes(digits);
     };
-    const result = dueList({ today: day, from, to, late, items: items.filter(matches) });
+    // Birleşik tur 8 (S150 = A — KULLANICI KARARI 13.11 06:12 AYNEN: "Vade Takip'in 'Gecikmiş' hazır aralığı durumu Gecikmiş olan HER kalemi gösterir (sözü bugün ya da ileride
+    // olan gecikmiş borç dahil; 'Gecikmiş Tahsilat' göstergesi her aralıkta aynı sayı)"): hazır 'Gecikmiş' aralığında (elle tarih verilmediyse) üst sınır kalemin TARİHİ değil
+    // DURUMUDUR — bugünden önceki her kalem (bugünkü gibi) + durumu Gecikmiş olan kalem (sözlü borç söz gününde durur — birleşik tur 7, S52 / S67 / S69). Elle girilen aralık ve
+    // öbür hazır aralıklar değişmez; başlıktaki aralık metni bugünkü gibi (… – dün).
+    // Birleşik tur 8b (S150 = A: "'Gecikmiş Tahsilat' göstergesi her aralıkta aynı sayı"; baş mimar yorumu — gösterge ile satırlar ayrışmaz, ders 11): ileriye bakan hazır
+    // aralıklarda ('Bugün', '7 Gün', '30 Gün', '90 Gün'; elle tarih verilmediyse ve 'Gecikmişleri de göster' açıkken) aralığın kendi satırlarına durumu Gecikmiş olan her kalem de
+    // eklenir — tarihi aralıktan önce olanlar bugün zaten listede; eklenen yalnız günü (söz günü) aralığın bitişinden SONRA olan gecikmiş borçtur. Kalem öbür gecikmişler gibi
+    // yalnız 'Gecikmiş' kümesine (ve satır toplamına) girer; Bugün / Yaklaşan kümeleri, 'Tüm Açık', elle aralık ve late=0 değişmez; başlıktaki aralık metni bugünkü gibi.
+    const presetOnly = !text(params.get("from")) && !text(params.get("to"));
+    const lateOnly = preset === "late" && presetOnly;
+    const nearWithLate = ["today", "next7", "next30", "next90"].includes(preset) && presetOnly && late;
+    const result = lateOnly
+      ? { ...dueList({ today: day, from, to: "", late, items: items.filter(matches), keep: row => row.date < day || row.state === "overdue" }), to }
+      : nearWithLate
+        ? { ...dueList({ today: day, from, to: "", late, items: items.filter(matches), keep: row => row.date <= to || row.state === "overdue" }), to }
+        : dueList({ today: day, from, to, late, items: items.filter(matches) });
     if (needle) dormant = dormant.filter(item => foldText(`${item.party} ${item.detail}`).includes(needle));
     // 2.3.0 İz 1.6 (plan §3.11b/5 "hatırlatmalar şüpheli tutarı ayrı gösterir"): vade kalemlerinin DIŞINDA, açık şüpheli alacak toplamı
     // (bütün cariler; tarih süzgecine girmez — şüpheli alacağın vadesi yoktur). Yalnız tahsil yönü; Ödenecek süzgecinde 0.

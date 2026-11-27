@@ -1,0 +1,19 @@
+#!/bin/bash
+# Ç5-B SON TUR — KÖK NEDEN profili (kabul ölçümü DEĞİL): olc-kart.mjs CPU profiliyle, son uç ve çalışma dalı (bu sırayla — sıra etkisini de görmek için ters sıra).
+# Kullanım: flock -x -n <olcum.lock> bash profil2.sh
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+W=/home/user/ofis---y-netimi/.claude/worktrees/agent-ac2cc1e4fd632460d
+export HUKUK_LICENSE_URL=http://127.0.0.1:9
+mkdir -p $S/c5bson-olcum
+OUT=$S/c5bson-kanit/c5bson-profil2.txt
+echo "PROFİL 2 · başta $(cat /proc/loadavg) · $(date -u +%H:%M:%S)" > $OUT
+for row in "sontur:$W" "calisma:$S/c5bson-calisma"; do
+  name=${row%%:*}; root=${row#*:}
+  rm -rf $S/c5bson-olcum/kopya $S/c5bson-olcum/prof-$name && cp -a $S/ana-kabul/temiz-100k $S/c5bson-olcum/kopya && mkdir $S/c5bson-olcum/prof-$name || exit 1
+  sync
+  echo "=== $name · başta $(cat /proc/loadavg)" >> $OUT
+  (cd $S/ana-kabul/betik && timeout 1200 node --disable-warning=ExperimentalWarning --cpu-prof --cpu-prof-dir=$S/c5bson-olcum/prof-$name olc-kart.mjs "$root" $S/c5bson-olcum/kopya 4) >> $OUT 2>&1
+  echo "çıkış $? · sonda $(cat /proc/loadavg)" >> $OUT
+done
+rm -rf $S/c5bson-olcum/kopya
+echo "bitti $(date -u +%H:%M:%S)" >> $OUT

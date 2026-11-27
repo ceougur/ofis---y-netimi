@@ -1,0 +1,32 @@
+{
+  "ad": "c3-tamam-e2e-gg244-numara-tarih-onay",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/gg244-numara-tarih-onay.mjs",
+  "commit": "9d507460347ac764298d99875a2803c1239475b7",
+  "dal": "worktree-agent-ad96cd3b37191bfb1",
+  "kirli": 1,
+  "izlenmeyen": 63,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T01:58:51.640Z",
+  "sure_sn": 53.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 40,
+    "gecen": 40,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-06/c3-tamam-e2e-gg244-numara-tarih-onay.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ad96cd3b37191bfb1",
+  "ham_cikti_sha256": "9f67f748a165e4a92866ba086cb4f72d8ce8046a1281279fd9924c18f6d2280b",
+  "ham_cikti_bayt": 5309
+}

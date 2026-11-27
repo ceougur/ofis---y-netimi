@@ -1,0 +1,32 @@
+{
+  "ad": "c4-mutasyon-m2",
+  "komut": "node --disable-warning=ExperimentalWarning --test /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c4-mutasyon-m2/test/defter-turu-c4.test.mjs",
+  "commit": "0fc8add42d85e8e89a816374ef0844fd01a29a3a",
+  "dal": "worktree-agent-a1a42f4d745a759a0",
+  "kirli": 6,
+  "izlenmeyen": 9,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T20:04:50.285Z",
+  "sure_sn": 6.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 7,
+    "gecen": 7,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/c4-mutasyon-m2.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a1a42f4d745a759a0",
+  "ham_cikti_sha256": "d363714415ad1c642de1db583787d716eb76396529c3662620faf5f59bebd4e5",
+  "ham_cikti_bayt": 2464
+}

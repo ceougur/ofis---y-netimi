@@ -34,10 +34,14 @@
   // 2.4.9 UI tur B (ORTA-3, UI/UX gezintisi 04.11): Bildirim Yolu kaydedilemediyse neden Türkçe satırda (sunucu Meta'nın iletisini ayırır — lib/whatsapp/connection.mjs
   // hookView); Meta'nın ham iletisi (İngilizce) varsa ayrı, küçük satırda. Önce hata yalnız dar hücrede, İngilizce ileti ve iç içe parantezle görünüyordu.
   const HOOK_FAILED_TAIL = "Kaydedilene dek teslim ve okundu bilgisi bu bilgisayara gelmez; program saatte bir kendiliğinden yeniden dener.";
+  // 2.5.0 BS-1 (2.4.9 birleşik son dar kontrol DÜŞÜK-3, gerileme): Meta YALNIZ hata kodu döndürüp ileti göndermezse (Meta iletisi satırı yok) kod neden satırında
+  // "(Meta hata kodu N)" olarak kalır — 2.4.9 UI tur B'den önce hücrede görünüyordu; destek kodu görür. Meta iletisi varsa kod onun satırında (aşağıda), neden satırı yalnız Türkçe.
   const hookFailure = hook => {
-    const raw = String(hook.cause ?? hook.error ?? "").trim();
-    const cause = raw && !/[.!?]$/.test(raw) ? `${raw}.` : raw;
     const meta = String(hook.metaMessage || "").trim();
+    const codeOnly = !meta && hook.metaCode != null && hook.metaCode !== "" ? `(Meta hata kodu ${hook.metaCode})` : "";
+    const text = String(hook.cause ?? hook.error ?? "").trim();
+    const raw = codeOnly ? [text.replace(/\.$/, ""), codeOnly].filter(Boolean).join(" ") : text;
+    const cause = raw && !/[.!?]$/.test(raw) ? `${raw}.` : raw;
     const code = hook.metaCode != null && !meta.includes(`#${hook.metaCode}`) ? ` (hata kodu ${hook.metaCode})` : "";
     const why = `<p class="adm-wa-why" data-wa-hook-why>${esc(`Bildirim Yolu kaydedilemedi${cause ? ` — ${cause}` : "."} ${HOOK_FAILED_TAIL}`)}</p>`;
     return meta ? `${why}<p class="adm-wa-why adm-wa-meta" data-wa-hook-meta>${esc(`Meta iletisi: ${meta}${code}`)}</p>` : why;
@@ -74,9 +78,19 @@
 
   function stateOf(data) {
     if (!data.configured) return { tone: "off", label: "Bağlı Değil" };
+    // 2.5.0 W-1(a): belirtecin süresi doldu (Meta 190 ya da bitiş anı geçti) — yeni gönderim başlatılamaz; Yeniden Bağla.
+    if (data.tokenExpiry?.state === "expired") return { tone: "error", label: "Süresi Doldu" };
     if (!data.lastTest) return { tone: "warn", label: "Sınanmadı" };
     return data.lastTest.ok ? { tone: "ok", label: "Bağlı" } : { tone: "error", label: "Sınama Başarısız" };
   }
+  // 2.5.0 W-1(a): Bağlantı Süresi satırı (Yol 2: Meta'nın verdiği süre ya da bağlanma + 60 gün; Yol 1: süresiz sayılır).
+  const tokenText = token => {
+    if (!token) return "";
+    if (token.state === "expired") return token.expiredBy === "meta" ? `Süresi Doldu · Meta erişim belirtecini kabul etmiyor${token.expiredAt ? ` (${when(token.expiredAt)})` : ""}` : `Süresi Doldu · ${when(token.expiresAt)}`;
+    if (!token.expiresAt) return "Süresiz sayılır · Meta belirteci reddederse bağlantı Süresi Doldu olur";
+    return `${when(token.expiresAt)} tarihine kadar · ${token.daysLeft > 1 ? `${token.daysLeft} gün kaldı` : "1 günden az kaldı"}`;
+  };
+  const tokenNotice = token => (token && token.state !== "ok" && token.message ? `<p class="adm-wa-token${token.state === "expired" ? " is-expired" : ""}" data-wa-token-why>${esc(token.message)}</p>` : "");
 
   function render() {
     const data = view;
@@ -101,15 +115,23 @@
     const lastTest = test ? `${when(test.at)} · ${test.ok ? "başarılı" : `başarısız — ${test.message}`}` : "Henüz sınanmadı";
     const self = data.lastSelfTest;
     const lastSelf = self ? `${when(self.at)} · …${self.to4 || ""} · ${self.ok ? `Meta kabul etti (${self.wamid})` : `gönderilemedi — ${self.message}`}` : "";
+    const token = data.tokenExpiry || null;
+    const expired = token?.state === "expired";
+    // 2.5.0 W-1(a): süresi dolan bağlantıda deneme de gönderilmez (Bağlantıyı Sına açık kalır); Yeniden Bağla her zaman görünür (pasifse nedeni yazılı).
+    const selfBlock = metaBlock || (expired ? "Bağlantının süresi doldu; deneme iletisi gönderilemez. Yeniden Bağla ile bağlantıyı yenileyin." : "");
+    const reconnectBlock = data.mode === "embedded" ? embeddedBlock : editBlock;
+    const reconnect = token && token.state !== "ok" ? `<button type="button" class="hof-button" data-wa-action="reconnect" ${reconnectBlock ? "disabled" : ""}>Yeniden Bağla</button>` : "";
     box.innerHTML = `
       <div class="adm-wa-head"><span class="adm-license-badge" data-wa-state>${esc(state.label)}</span><h2>WhatsApp Business API Bağlantısı</h2>
-        <p>${test?.ok ? "Bağlantı çalışıyor. Ücreti Meta, işletmenizin Meta hesabından çeker (yalnız teslim edilen ileti ücretlidir)." : test ? "Son sınama başarısız; nedeni aşağıda. Bilgileri düzeltip yeniden sınayın." : "Bilgiler kaydedildi; Bağlantıyı Sına ile Meta'da denetleyin."}</p></div>
+        <p>${expired ? "Bağlantının süresi doldu; nedeni aşağıda. Yeniden Bağla ile bağlantıyı yenileyin." : test?.ok ? "Bağlantı çalışıyor. Ücreti Meta, işletmenizin Meta hesabından çeker (yalnız teslim edilen ileti ücretlidir)." : test ? "Son sınama başarısız; nedeni aşağıda. Bilgileri düzeltip yeniden sınayın." : "Bilgiler kaydedildi; Bağlantıyı Sına ile Meta'da denetleyin."}</p></div>
+      ${tokenNotice(token)}
       <dl class="adm-license-facts" data-wa-facts>
         ${fact("Bağlantı Yolu", data.mode === "embedded" ? "WhatsApp'ı Bağla" : "Elle Bağla (kendi Meta uygulamanız)", "mode")}
         ${fact("Telefon Numarası Kimliği", data.phoneNumberId, "phoneNumberId")}
         ${fact("WhatsApp Business Hesap Kimliği", data.wabaId, "wabaId")}
         ${fact("Uygulama Kimliği", data.appId, "appId")}
         ${fact("Erişim Belirteci", data.tokenUsable ? "Kayıtlı (şifreli; ekranda gösterilmez)" : "Kayıtlı ama bu bilgisayarda açılamıyor — yeniden girin", "token")}
+        ${fact("Bağlantı Süresi", tokenText(token), "tokenExpiry")}
         ${fact("Numara", phone?.display, "display")}
         ${fact("Görünen Ad", phone?.verifiedName, "verifiedName")}
         ${fact("Kalite", phone?.qualityLabel, "quality")}
@@ -123,12 +145,13 @@
         ${data.embedded?.steps?.length ? fact("Meta Adımları", data.embedded.steps.map(step => `${STEP_LABEL[step.name] || step.name}: ${step.ok ? "tamam" : `tamamlanamadı — ${step.message}`}`).join(" · "), "steps") : ""}
       </dl>
       <div class="adm-inline adm-wa-actions">
-        <button type="button" class="hof-button" data-wa-action="test" ${metaBlock ? "disabled" : ""}>Bağlantıyı Sına</button>
-        <button type="button" class="hof-button hof-button-ghost" data-wa-action="self-test" ${metaBlock ? "disabled" : ""}>Kendime Deneme Gönder</button>
-        ${data.mode === "embedded" ? `<button type="button" class="hof-button hof-button-ghost" data-wa-action="embedded" ${embeddedBlock ? "disabled" : ""}>WhatsApp'ı Yeniden Bağla</button>` : `<button type="button" class="hof-button hof-button-ghost" data-wa-action="connect" ${editBlock ? "disabled" : ""}>Bilgileri Değiştir</button>`}
+        ${reconnect}
+        <button type="button" class="hof-button${reconnect ? " hof-button-ghost" : ""}" data-wa-action="test" ${metaBlock ? "disabled" : ""}>Bağlantıyı Sına</button>
+        <button type="button" class="hof-button hof-button-ghost" data-wa-action="self-test" ${selfBlock ? "disabled" : ""}>Kendime Deneme Gönder</button>
+        ${data.mode === "embedded" ? (reconnect ? "" : `<button type="button" class="hof-button hof-button-ghost" data-wa-action="embedded" ${embeddedBlock ? "disabled" : ""}>WhatsApp'ı Yeniden Bağla</button>`) : `<button type="button" class="hof-button hof-button-ghost" data-wa-action="connect" ${editBlock ? "disabled" : ""}>Bilgileri Değiştir</button><button type="button" class="hof-button hof-button-ghost" data-wa-action="webhook">Webhook Bilgileri</button>`}
         <button type="button" class="hof-button hof-button-danger" data-wa-action="remove" ${editBlock ? "disabled" : ""}>Bağlantıyı Kaldır</button>
       </div>
-      ${metaBlock ? `<p class="adm-wa-why" data-wa-why>${esc(metaBlock)}</p>` : ""}${data.mode === "embedded" ? embeddedWhy : ""}
+      ${metaBlock ? `<p class="adm-wa-why" data-wa-why>${esc(metaBlock)}</p>` : selfBlock ? `<p class="adm-wa-why" data-wa-why-self>${esc(selfBlock)}</p>` : ""}${data.mode === "embedded" ? embeddedWhy : ""}
       ${data.hook?.state === "conflict" ? `<p class="adm-wa-why" data-wa-hook-why>${esc(HOOK_CONFLICT)}</p>` : ""}${data.hook?.state === "failed" ? hookFailure(data.hook) : ""}`;
   }
 
@@ -142,7 +165,72 @@
     // 2.4.8 W5: Bilgilendirme Şablonları kartı (hof-whatsapp-sablon.js) bağlantıyla birlikte yenilenir.
     await HOF.whatsappTemplates?.load();
     await loadSending();
+    renderKvkk();
   }
+
+  // ---------- 2.5.0 W-3: Gönderim Kayıtları ve KVKK (KULLANICI KARARI S-W3 + S35 / S42; sunucu lib/whatsapp/saklama.mjs, routes/whatsapp.mjs kvkk-erase) ----------
+  // Bağlantı kaldırılmış olsa da (eski kayıtlar durur) ve cari kartında telefon kalmamış olsa da (kartın WhatsApp düğmesi görünmez) silme talebi buradan yapılır. Yalnız yönetici.
+  const KVKK_CONFIRM = name => `${name} için WhatsApp gönderim kayıtlarındaki ileti içeriği, ekstre PDF'i ve telefon numarası silinecek; bekleyen gönderimi gönderilmeyecek. Tarih ve gönderim sonucu kalır (bu döneme ikinci ileti gitmez). Cari kartı değişmez. İşlem geri alınamaz.`;
+  function renderKvkk() {
+    let box = $("#adm-wa-kvkk");
+    if (!box) {
+      const anchor = $("#adm-wa-sending") || $("#adm-wa-status");
+      if (!anchor) return;
+      box = document.createElement("section");
+      box.id = "adm-wa-kvkk";
+      box.className = "adm-card adm-wa-kvkk";
+      anchor.insertAdjacentElement("afterend", box);
+    }
+    box.innerHTML = `
+      <div class="adm-wa-head"><h2>Gönderim Kayıtları ve KVKK</h2>
+        <p>WhatsApp gönderim kayıtlarındaki ileti içeriği, ekstre PDF'i ve telefon numarası bir yıl sonra kendiliğinden silinir; tarih ve gönderim sonucu kalır. Bir cari kayıtlarının silinmesini isterse cariyi bulup silin (cari kartında da WhatsApp → Gönderim Kayıtlarını Sil (KVKK)).</p></div>
+      <div class="adm-inline"><input type="search" class="hof-input" data-wa-kvkk-q data-nodirty aria-label="Cari Ara" placeholder="Cari adı ya da numarası"><button type="button" class="hof-button hof-button-ghost" data-wa-kvkk-find>Cari Ara</button></div>
+      <div class="adm-wa-kvkk-list" data-wa-kvkk-list></div>`;
+  }
+  async function findKvkk() {
+    const q = String($("[data-wa-kvkk-q]")?.value || "").trim();
+    const list = $("[data-wa-kvkk-list]");
+    if (!list) return;
+    if (!q) {
+      list.innerHTML = '<p class="adm-muted">Aramak için cari adını ya da numarasını yazın.</p>';
+      return;
+    }
+    try {
+      // 2.5.0 WhatsApp tur 2 (W-3 dk ORTA-4, BAŞ MİMAR KARARI A): Silinenler'deki ama WhatsApp kaydı olan cariler de (ayrı dar uç; kart açılmaz, yalnız silme talebi).
+      const [rows, deleted] = await Promise.all([HOF.api(`/api/workspace/accounts/search?q=${encodeURIComponent(q)}`), HOF.api(`/api/workspace/whatsapp/kvkk-deleted?q=${encodeURIComponent(q)}`)]);
+      const all = [...rows.slice(0, 10), ...(deleted || []).filter(row => !rows.some(item => item.id === row.id))];
+      list.innerHTML = all.length
+        ? all.map(row => `<div class="adm-inline" data-wa-kvkk-row="${esc(row.id)}"${row.deleted ? " data-wa-kvkk-deleted" : ""}><span>${esc(row.name)}${row.refNo ? ` · ${esc(row.refNo)}` : ""}${row.deleted ? ' <small class="adm-muted">(Silinenler\'de)</small>' : ""}</span><button type="button" class="hof-button hof-button-small hof-button-danger-ghost" data-wa-kvkk-erase="${esc(row.id)}" data-wa-kvkk-name="${esc(row.name)}">Gönderim Kayıtlarını Sil (KVKK)</button></div>`).join("")
+        : '<p class="adm-muted">Eşleşen cari yok.</p>';
+    } catch (error) {
+      HOF.toastError(error);
+    }
+  }
+  async function eraseKvkk(button) {
+    const name = button.dataset.waKvkkName || "";
+    const sure = await HOF.confirm({ title: "Gönderim Kayıtları Silinsin mi?", message: KVKK_CONFIRM(name), confirmLabel: "Sil", danger: true });
+    if (!sure) return;
+    button.disabled = true;
+    try {
+      const answer = await HOF.api("/api/workspace/whatsapp/kvkk-erase", { method: "POST", body: { accountId: button.dataset.waKvkkErase, confirm: true } });
+      HOF.toast(`Gönderim kayıtları silindi: ${Number(answer?.jobs || 0) + Number(answer?.manual || 0)} kayıt${answer?.skipped ? `, ${answer.skipped} bekleyen gönderim atlandı` : ""}.`, { type: "success" });
+    } catch (error) {
+      HOF.toastError(error);
+    } finally {
+      button.disabled = false;
+    }
+  }
+  document.addEventListener("click", event => {
+    if (event.target.closest?.("[data-wa-kvkk-find]")) return void findKvkk();
+    const erase = event.target.closest?.("[data-wa-kvkk-erase]");
+    if (erase && !erase.disabled) eraseKvkk(erase);
+  });
+  document.addEventListener("keydown", event => {
+    if (event.key === "Enter" && event.target.closest?.("[data-wa-kvkk-q]")) {
+      event.preventDefault();
+      findKvkk();
+    }
+  });
 
   // ---------- 2.4.8 W4: Gönderim Onayı ve Bu Ay Gönderilen İleti Sayısı ----------
   // Bir kez onay (plan §1, §7a 28): işaretlenmeden toplu/tekli otomatik gönderim BAŞLAMAZ (sunucu da reddeder). "Bu Ay": teslim edilen ileti (Teslim Edildi +
@@ -212,17 +300,24 @@
     render();
   }
 
-  function connectForm() {
+  // 2.5.0 W-1(a) dar kontrol (metin): belirteç oluşturulurken süre "Never" seçilmeli — Meta 60 günlük seçenek de sunar; o belirtecin bitişi programa gelmez, önceden
+  // uyarı verilemez (yalnız Meta reddedince "Süresi Doldu").
+  const TOKEN_HELP = "Meta İşletme Ayarları'nda (Business Settings) System Users → Generate token; süre (Token expiration) olarak Never seçin — 60 günlük belirtecin bitişini program önceden bilemez. İzinler: business_management, whatsapp_business_management, whatsapp_business_messaging.";
+  // renew (2.5.0 W-1(a) Yeniden Bağla, Elle Bağla yolu): süresi dolan / dolmak üzere olan belirtecin yerine yenisi ZORUNLU.
+  function connectForm({ renew = false } = {}) {
     const data = view || {};
+    const keep = data.hasToken && !renew;
     HOF.formModal({
-      title: "Elle Bağla",
+      title: renew ? "Yeniden Bağla" : "Elle Bağla",
       eyebrow: "WHATSAPP BUSINESS API",
-      intro: "Meta İşletme Ayarları'nda oluşturduğunuz uygulamanın bilgilerini girin. Numara WhatsApp uygulamasında kayıtlı olmamalıdır (ör. sabit hat); yeni hesapta Meta 24 saatte en çok 250 farklı kişiye gönderime izin verir. Belirteç şifreli saklanır ve bir daha ekranda gösterilmez.",
+      intro: renew
+        ? "Meta İşletme Ayarları'nda (Business Settings) System Users → Generate token ile yeni kalıcı belirteç oluşturup aşağıya yapıştırın; süre (Token expiration) olarak Never seçin. Kimlikler kayıtlı değerlerle dolu gelir. Belirteç şifreli saklanır ve bir daha ekranda gösterilmez."
+        : "Meta İşletme Ayarları'nda oluşturduğunuz uygulamanın bilgilerini girin. Numara WhatsApp uygulamasında kayıtlı olmamalıdır (ör. sabit hat); yeni hesapta Meta 24 saatte en çok 250 farklı kişiye gönderime izin verir. Belirteç şifreli saklanır ve bir daha ekranda gösterilmez.",
       fields: [
-        { name: "phoneNumberId", label: "Telefon Numarası Kimliği (Phone Number ID)", required: true, value: data.phoneNumberId || "", inputmode: "numeric", autofocus: true },
+        { name: "phoneNumberId", label: "Telefon Numarası Kimliği (Phone Number ID)", required: true, value: data.phoneNumberId || "", inputmode: "numeric", autofocus: !renew },
         { name: "wabaId", label: "WhatsApp Business Hesap Kimliği (WABA ID)", required: true, value: data.wabaId || "", inputmode: "numeric" },
         { name: "appId", label: "Uygulama Kimliği (App ID)", value: data.appId || "", inputmode: "numeric", help: "İsteğe bağlı; Ekstre şablonunu Meta'da açmak için gerekir (Meta uygulama panelinin üst kısmındaki App ID)." },
-        { name: "token", label: "Kalıcı Erişim Belirteci (System User)", type: "password", required: !data.hasToken, autocomplete: "new-password", help: data.hasToken ? "Kayıtlı belirteç korunur; değiştirmek için yenisini yapıştırın." : "Meta İşletme Ayarları'nda (Business Settings) System Users → Generate token; izinler: business_management, whatsapp_business_management, whatsapp_business_messaging." },
+        { name: "token", label: "Kalıcı Erişim Belirteci (System User)", type: "password", required: !keep, autofocus: renew, autocomplete: "new-password", help: keep ? "Kayıtlı belirteç korunur; değiştirmek için yenisini yapıştırın." : TOKEN_HELP },
       ],
       submitLabel: "Kaydet ve Sına",
       onSubmit: async values => {
@@ -350,14 +445,69 @@
     });
   }
 
-  async function removeConnection() {
-    const sure = await HOF.confirm({ title: "Bağlantı kaldırılsın mı?", message: "Kayıtlı belirteç ve kimlikler bu şirketten silinir; WhatsApp ile otomatik gönderim yapılamaz. Meta'daki uygulamanız ve numaranız değişmez.", confirmLabel: "Bağlantıyı Kaldır", danger: true });
-    if (!sure) return;
+  // 2.5.0 WE: Elle Bağla'nın uygulama düzeyi webhook bilgileri (Meta uygulama paneli → WhatsApp → Configure Webhooks: Callback URL + Verify token; sunucu
+  // lib/whatsapp/app-webhook.mjs, kurulum başına). Değerler yalnız bu pencerede görünür, kartta / sayfada tutulmaz; doğrulama belirteci gizlidir.
+  async function webhookInfo() {
+    let info;
     try {
-      view = await HOF.api(API, { method: "DELETE" });
-      HOF.toast("WhatsApp bağlantısı kaldırıldı.", { type: "success" });
+      info = await HOF.api("/api/workspace/whatsapp/app-webhook");
     } catch (error) {
       HOF.toastError(error);
+      return;
+    }
+    const row = (key, label, value) => `<div data-wa-webhook="${key}"><dt>${esc(label)}</dt><dd><code data-wa-webhook-value="${key}">${esc(value)}</code></dd></div>`;
+    // BAŞ MİMAR KARARI (WE + BS-7 dar kontrolü sonrası): belirteç boşsa (001 şema kapısında, çift yok — ready false) boş "Verify Token" satırı ve boş değer kopyalayan
+    // "Belirteci Kopyala" gösterilmez; neden metni kalır.
+    const hasVerify = Boolean(info.verifyToken);
+    const body = `
+      <p class="adm-muted">Meta uygulamanızın WhatsApp ayarlarında Configure Webhooks'a bu iki değeri girip Verify and save'e basın; sonra Webhook fields'ta yalnız messages alanına abone olun. Doğrulama belirteci gizlidir: kimseyle paylaşmayın, e-postayla ya da mesajla göndermeyin.</p>
+      ${info.ready ? "" : `<p class="adm-wa-why" data-wa-webhook-why>${esc(info.reason)}</p>`}
+      <dl class="adm-license-facts" data-wa-webhook-facts>
+        ${info.ready ? row("callback", "Callback URL (Bildirim Adresi)", info.callbackUrl) : ""}
+        ${hasVerify ? row("verify", "Verify Token (Doğrulama Belirteci)", info.verifyToken) : ""}
+      </dl>
+      <div class="adm-inline">
+        ${info.ready ? '<button type="button" class="hof-button" data-wa-webhook-copy="callback">Adresi Kopyala</button>' : ""}
+        ${hasVerify ? '<button type="button" class="hof-button hof-button-ghost" data-wa-webhook-copy="verify">Belirteci Kopyala</button>' : ""}
+      </div>`;
+    const modal = HOF.modal({ title: "Webhook Bilgileri", eyebrow: "WHATSAPP · ELLE BAĞLA", body, size: "wide" });
+    const dialog = modal?.dialog;
+    for (const [key, value, label] of [["callback", info.callbackUrl, "Bildirim adresi"], ["verify", info.verifyToken, "Doğrulama belirteci"]]) {
+      dialog?.querySelector(`[data-wa-webhook-copy="${key}"]`)?.addEventListener("click", async () => {
+        if (await HOF.copyText(value)) HOF.toast(`${label} panoya kopyalandı.`, { type: "success" });
+        else HOF.toast("Kopyalanamadı; değeri seçip kendiniz kopyalayın.", { type: "error" });
+      });
+    }
+  }
+
+  // 2.5.0 W-2: Meta'daki abonelik de silinir; yerel kaldırma her durumda yapılır. Meta tarafı düşerse uyarı + veri silme sayfası (bağlantı düğmesi).
+  let removeBusy = false;
+  async function removeConnection(button) {
+    if (removeBusy) return;
+    // Dar kontrol (metin): Elle Bağla'da abonelik müşterinin kendi Meta uygulamasınındır (DestekOfis'in değil).
+    const whose = view?.mode === "embedded" ? "DestekOfis'in Meta'daki bildirim aboneliği" : "Meta uygulamanızın bu WhatsApp hesabındaki bildirim aboneliği";
+    const sure = await HOF.confirm({ title: "Bağlantı kaldırılsın mı?", message: `Kayıtlı belirteç ve kimlikler bu şirketten silinir, ${whose} de kaldırılır; bekleyen otomatik gönderimler durdurulur ve WhatsApp ile otomatik gönderim yapılamaz. Meta'daki numaranız ve WhatsApp hesabınız değişmez.`, confirmLabel: "Bağlantıyı Kaldır", danger: true });
+    if (!sure) return;
+    removeBusy = true;
+    if (button) {
+      button.disabled = true;
+      button.classList.add("is-busy");
+    }
+    try {
+      view = await HOF.api(API, { method: "DELETE" });
+      const removal = view?.removal || null;
+      const stopped = removal?.stopped ? ` ${removal.stopped} bekleyen gönderim durduruldu.` : "";
+      if (removal?.meta?.state === "failed") {
+        const link = removal.meta.link;
+        HOF.toast(`${removal.meta.message}${stopped}`, { type: "warn", timeout: 20000, ...(link ? { action: { label: "Veri Silme Adımları", onClick: () => window.open(link, "_blank", "noopener") } } : {}) });
+      } else if (removal?.meta?.state === "skipped" && removal.meta.message) {
+        const link = removal.meta.link;
+        HOF.toast(`${removal.meta.message}${stopped}`, { type: "info", timeout: 20000, ...(link ? { action: { label: "Veri Silme Adımları", onClick: () => window.open(link, "_blank", "noopener") } } : {}) });
+      } else HOF.toast(`${removal?.meta?.message || "WhatsApp bağlantısı kaldırıldı."}${stopped}`, { type: "success" });
+    } catch (error) {
+      HOF.toastError(error);
+    } finally {
+      removeBusy = false;
     }
     await load();
   }
@@ -368,12 +518,17 @@
     const action = button.dataset.waAction;
     if (action === "connect") connectForm();
     else if (action === "embedded") embeddedConnect(button);
-    else if (action === "test") {
+    // 2.5.0 W-1(a): Yeniden Bağla — bağlantının yoluna göre (WhatsApp'ı Bağla ya da yeni belirteçle Elle Bağla).
+    else if (action === "reconnect") {
+      if (view?.mode === "embedded") embeddedConnect(button);
+      else connectForm({ renew: true });
+    } else if (action === "test") {
       button.disabled = true;
       button.classList.add("is-busy");
       testNow();
     } else if (action === "self-test") selfTestForm();
-    else if (action === "remove") removeConnection();
+    else if (action === "webhook") webhookInfo();
+    else if (action === "remove") removeConnection(button);
   });
 
   HOF.whatsappSettings = { load };

@@ -1,0 +1,11 @@
+canliTuretmeAnaIsParcacigi: 2211 ms, olay döngüsü en çok 2206 ms
+kilitVeDondurma: 7365 ms, olay döngüsü en çok 14 ms · 274616 donmuş satır
+donmusYilOkuma: 445 ms, olay döngüsü en çok 441 ms
+donmusMizanIlk: 557 ms, olay döngüsü en çok 552 ms
+donmusMizanOnbellek: 1 ms, olay döngüsü en çok 0 ms
+kilitGeriCek: 455 ms, olay döngüsü en çok 44 ms
+para satırı 226734 · yük 3.13 3.43 3.19 → 3.33 3.46 3.21
+
+# tests 1
+# pass 1
+# fail 0

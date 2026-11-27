@@ -1,0 +1,28 @@
+▶ createClock — çalışıyor mu
+  ✔ gerçek saat: her çağrıda Date'i okur (taklit edilebilir), bugün yerel gün (1.035769ms)
+  ✔ sabit sahte saat: set, advance (gün), freeze/resume; ISO damgası (0.522419ms)
+  ✔ akan sahte saat: verilen andan gerçek zamanla ilerler; yalnız tarih verilirse yerel öğlen (71.478931ms)
+  ✔ nasıl bozarım: bozuk zaman TypeError; sahte saat dışarıdan dondurulamaz (Date döndürür, kopyası) (0.656331ms)
+✔ createClock — çalışıyor mu (74.462503ms)
+▶ Sunucu sahte saatle (startTestServer({ now }))
+  ✔ sunucunun saati paylaşılır: server.clock = app.config.now = context.now (0.412018ms)
+  ✔ çalışıyor mu: tarihsiz Kasa hareketi, kayıt tahsilatı, cari hareketi, taksit kartı/tahsilatı, stok, çek ve fatura sahte günü alır (220.239258ms)
+  ✔ nasıl bozarım: sahte günden bir gün sonrası ileri tarih (400); saat ilerleyince o gün girilir, kapı engellemez (37.67607ms)
+  ✔ nasıl bozarım: saat 30 gün ileri — oturum düşmez (oturum süresi gerçek saatle), işlem yine sahte günle (13.532531ms)
+  ✔ çocuk şirket (002) aynı saati kullanır (158.33758ms)
+✔ Sunucu sahte saatle (startTestServer({ now })) (762.357038ms)
+▶ Gerçek saat (now verilmezse) davranış değişmez
+  ✔ bugün = gerçek yerel gün; app.config.now gerçek saat (275.198362ms)
+✔ Gerçek saat (now verilmezse) davranış değişmez (275.389723ms)
+▶ Statik tarama: iş modüllerinde saat tek kaynaktan
+  ✔ tarayıcı kendini sınar: sızıntıyı yakalar, işaretli satırı ve yorumu geçer (0.64297ms)
+  ✔ iş modüllerinde `new Date()` / `Date.now()` yok (yalnız context.now) (23.116424ms)
+✔ Statik tarama: iş modüllerinde saat tek kaynaktan (23.867571ms)
+ℹ tests 12
+ℹ suites 4
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1430.956878

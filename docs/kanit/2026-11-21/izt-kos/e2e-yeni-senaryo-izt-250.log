@@ -1,0 +1,33 @@
+
+■ A) BULGU-2 — kartı açık taksitli fatura: Düzenle 'Taksitli' açılır; değiştirmeden Kaydet kartı ve taksitleri aynen bırakır
+    [soru] "Değişiklikler Kaydedilsin mi?" → Değişiklikleri Kaydet (beklenen soru)
+  ✓ Düzenle formu kalan ödemeyi 'Taksitli' açtı (tabanda 'open'): 'installments'
+  ✓ onay sorusu geldi
+  ✓ faturanın kartı AYNI (veri tabanı; tabanda silinip yeniden kurulurdu)
+  ✓ kart (kimlik, kart no 5, durum) ve taksit satırları aynen (veri tabanı)
+  ✓ bakiye 900
+
+■ B) S234 = A + S238 = A — kapalı kart + iade → Kalan ₺300,00; iade İptal Et → Kalan ₺600,00 ve 10.11 taksiti geri; Kartı Kapat sorusu ₺600,00
+  ✓ iade sonrası kart penceresi Kalan ₺300,00: ₺300,00
+  ✓ iade iptali sonrası Kalan ₺600,00: ₺600,00
+  ✓ üç taksit satırı, her biri ₺300,00 (tabanda iki satır, son ₺600,00): 1.08.10.2026₺300,00₺300,00₺0,00Ödendi✎× | 2.08.10.2026Bugün₺300,00₺300,00Bugün✎× | 3.08.10.2026Bugün₺300,00₺300,00Bugün✎×
+  ✓ taksitler iade öncesiyle aynı (veri tabanı — kimlik, vade, tutar)
+  ✓ Kartı Kapat sorusu 'Kalan ₺600,00':  × ONAY Kartı Kapat Kalan ₺600,00 açıkken “Ekran İzt Kartı” kartı kapatılsın mı? Ödeme planı biter; kalan borç carinin borcunda kalır, yarından itibaren gecikmiş sayılır. Vazgeçmek için cari kartında 
+    [soru] "Kartı Kapat" → Kartı Kapat (beklenen soru)
+  ✓ kart kapandı (veri tabanı)
+  ✓ carinin borcu 600 (Borçta Kalsın)
+
+■ C) BULGU-1 — iki kartlı caride ilk faturaya iade: ikinci kartın taksitleri açık, gecikmiş 0
+  ✓ ikinci kart Kalan ₺300,00: ₺300,00
+  ✓ ikinci kartın taksitleri 'Ödendi' değil (tabanda ödendi): is-open,is-open,is-open
+  ✓ bakiye 900, gecikmiş 0 (tabanda 300): 900 / 0
+
+■ D) S234-c — Düzenle ile 900 → 300: Mevcut Borç kartı 300'e küçülür
+    [soru] "Değişiklikler Kaydedilsin mi?" → Değişiklikleri Kaydet (beklenen soru)
+  ✓ bakiye 300 (Düzenle kaydedildi)
+  ✓ kart tutarı 300 (veri tabanı; tabanda 900): 300
+  ✓ kart penceresi Kalan ₺300,00 (tabanda ₺900,00): ₺300,00
+  ✓ Mutabakat Testi temiz
+  ✓ sayfa hatası yok
+
+✓ senaryo-izt-250: 20 geçti, 0 kaldı

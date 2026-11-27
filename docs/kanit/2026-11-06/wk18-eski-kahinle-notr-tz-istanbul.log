@@ -1,0 +1,26 @@
+AYNI S42-01-gonderiliyor-talep-kabul-gonderildi-izi-ayni-donem-daha-once
+AYNI S42-02-gonderiliyor-talep-yanit-yok-belirsiz-iz-ayni-donem-elenir
+KIRMIZI (değer, 15 yaprak) S42-03-gonderiliyor-talep-yeniden-gonderim-gerektiren-yanit-atlandi-kesin-olumsuz-basarisiz
+    * [{}…] kontroller.K1.isler: elle {"T1/G": "Atlandı", "T2/M": "Atlandı", "T3/R": "Başarısız", "T4/N": "Bekliyor"} ≠ model {"T1/G": "Teslim Edildi", "T2/M": "Meta Bekletti (24 Saat Sonra Yeniden)", "T3/R": "Başarısız", "T4/N": "Bekliyor"}
+    * [{}…] kontroller.K2.isler: elle {"T1/G": "Atlandı", "T2/M": "Atlandı", "T3/R": "Başarısız", "T4/N": "Teslim Edildi", "T5/S": "Atlandı"} ≠ model {"T1/G": "Teslim Edildi", "T2/M": "Meta Bekletti (24 Saat Sonra Yeniden)", "T3/R": "Başarısız"
+    * [{}…] kontroller.K2.icerik: elle {"T1/G": {"telefon": null, "degiskenler": null, "pdf": null, "dosya_adi": null, "icerik_silindi": true}, "T2/M": {"telefon": null, "degiskenler": null, "pdf": n ≠ model {"T1/G": {"telefon": "+905511002030"
+    * [{}…] isler.T1/G.atlanma_nedeni: elle "silme_talebi" ≠ model null
+AYNI S42-04-gonderiliyor-talep-gece-yarisi-yerel-gun-iz-gonderim-aninda
+AYNI S43-01-yol-2-imzali-taninmayan-bildirim-isaret-koymaz-ayni-donem-daha-once
+AYNI S43-02-yol-1-imzasiz-taninmayan-bildirim-kabul-isaret-koymaz
+AYNI S43-03-yol-2-is-kimligiyle-taninan-bildirim-isaret-koyar-sure-dolar
+# kip notr: KIRMIZI 1, AYNI 6
+ok 1 - S42-01-gonderiliyor-talep-kabul-gonderildi-izi-ayni-donem-daha-once — beklenen ayni, gözlenen ayni
+ok 2 - S42-02-gonderiliyor-talep-yanit-yok-belirsiz-iz-ayni-donem-elenir — beklenen ayni, gözlenen ayni
+ok 3 - S42-03-gonderiliyor-talep-yeniden-gonderim-gerektiren-yanit-atlandi-kesin-olumsuz-basarisiz — beklenen deger, gözlenen deger
+ok 4 - S42-04-gonderiliyor-talep-gece-yarisi-yerel-gun-iz-gonderim-aninda — beklenen ayni, gözlenen ayni
+ok 5 - S43-01-yol-2-imzali-taninmayan-bildirim-isaret-koymaz-ayni-donem-daha-once — beklenen ayni, gözlenen ayni
+ok 6 - S43-02-yol-1-imzasiz-taninmayan-bildirim-kabul-isaret-koymaz — beklenen ayni, gözlenen ayni
+ok 7 - S43-03-yol-2-is-kimligiyle-taninan-bildirim-isaret-koyar-sure-dolar — beklenen ayni, gözlenen ayni
+1..7
+# tests 7
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

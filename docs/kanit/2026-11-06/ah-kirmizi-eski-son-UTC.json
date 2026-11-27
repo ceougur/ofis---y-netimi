@@ -1,0 +1,58 @@
+{
+  "ad": "ah-kirmizi-eski-son-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ah-taban/test/acilis-onarimi-hiz-250.test.mjs /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ah-taban/test/db-tx-kayip-250.test.mjs",
+  "commit": "d5e3a64645fdd132a52ae2065ea701cf9ab1554b",
+  "dal": "worktree-agent-ab0062d42feec8f21",
+  "kirli": 4,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T06:47:13.689Z",
+  "sure_sn": 3.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 6,
+    "gecen": 1,
+    "basarisiz": 5,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 5 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.0 AH — açılış onarımı: öğe başına ağır okuma yok, çıktı eski kodla birebir › öğe başına ağır okuma yok: ikinci onarım koşusunda carinin tam defteri yalnız onarım kararı çıkan adayda okunur, deyim sayısı küçük",
+      "konum": "test/acilis-onarimi-hiz-250.test.mjs:40:3",
+      "hata": "carinin tam defteri (accounts.detail) 74 kez okundu; en çok onarım kararı sayısı (3) kadar olmalı — aday başına ağır okuma (ders 47) · veri tabanı deyimi 2299; bütçe 4 × 83 aday + 200 = 532 · (sayım: {\"statements\":2299,\"detail\":74}) (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 AH — açılış onarımı: öğe başına ağır okuma yok, çıktı eski kodla birebir › eşdeğerlik: döküm taban kodun (eski) gerçek dökümüyle bölüm bölüm aynı; eleme değişmezi (toplu durum = cari başına durum) her adayda",
+      "konum": "test/acilis-onarimi-hiz-250.test.mjs:82:3",
+      "hata": "eleme denetimi yeni kod ister (repairScreen yok)"
+    },
+    {
+      "ad": "2.5.0 AH — açılış onarımı: öğe başına ağır okuma yok, çıktı eski kodla birebir › parça parça eleme: carileri 7'şerli parçalarla okuyan eleme, tek parçalık elemeyle ve cari başına yolla her adayda aynı (parça sınırında cari düşmez)",
+      "konum": "test/acilis-onarimi-hiz-250.test.mjs:100:3",
+      "hata": "invoices.repairScreen is not a function"
+    },
+    {
+      "ad": "store.run / store.tx — derinlik > 0 iken bağlantıda işlem yoksa yazım yok, açık hata (2.5.0 BS-6) › (k1) iç işlemde SQLite işlemi kendiliğinden geri alır, çağıran yakalayıp sürer → sonraki yazımlar ERR_TX_LOST, yarım yazım yok; Linux'ta gerçek G/Ç hatası",
+      "konum": "test/db-tx-kayip-250.test.mjs:103:3",
+      "hata": "k1 benzetim: derinlik > 0, işlem yokken store.run (para) YAZDI (hata yok) — ERR_TX_LOST beklenirdi · k1 benzetim: derinlik > 0, işlem yokken store.run (düz) YAZDI (hata yok) — ERR_TX_LOST beklenirdi · k1 benzetim: derinlik > 0, işlem yokken store.setSetting YAZDI (hata yok) — ERR_TX_LOST beklenirdi (beklenen , gelen )"
+    },
+    {
+      "ad": "store.run / store.tx — derinlik > 0 iken bağlantıda işlem yoksa yazım yok, açık hata (2.5.0 BS-6) › (k2) işlem kayboldu ama sonra yazım yok → en dış COMMIT asıl nedeni söyler (\"cannot commit - no transaction is active\" değil); iç düzeyde RELEASE de",
+      "konum": "test/db-tx-kayip-250.test.mjs:154:3",
+      "hata": "k2 COMMIT: \"cannot commit - no transaction is active\" (ERR_TX_LOST + ilk hata beklenirdi) · k2 COMMIT: asıl neden örtüldü: cannot commit - no transaction is active · k2 RELEASE: \"no such savepoint: sp_1\" (ERR_TX_LOST beklenirdi) (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ah-kanit/2026-11-06/ah-kirmizi-eski-son-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ab0062d42feec8f21",
+  "ham_cikti_sha256": "4813aaf2ffb56713ed49befe2834aafe7d044264f586268ae8ae8e68d72c4f2a",
+  "ham_cikti_bayt": 15123
+}

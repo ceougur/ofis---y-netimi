@@ -1,0 +1,38 @@
+{
+  "ad": "d2-hacim-once-2",
+  "komut": "node --disable-warning=ExperimentalWarning test/devir-d2-hacim-250.mjs --hareket 100000 --taban /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2-hacim-taban --json /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2-calisma/hacim-once-2.json",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T11:50:10.448Z",
+  "sure_sn": 23.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 11,
+    "gecen": 10,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "arşiv örneği açıldı; özet akışla, kuruluş ≤ 50 ms olay döngüsü (3069 ms / 2879 ms)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../d2-calisma/kanit/2026-11-06/d2-hacim-once-2.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2-olcum-once",
+  "ham_cikti_sha256": "a7d9de1f609fa208b5f8e7f072b8d8f9afb359d2d2218c1dfc49ae7d62b19d52",
+  "ham_cikti_bayt": 2308
+}

@@ -1,0 +1,143 @@
+{
+  "ad": "kahineski3-kirmizi-eski-cari-utc",
+  "komut": "python3 -I /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahineski3-kirmizi-eski-d6a7b0d5/cari/oz-test.py",
+  "commit": "2da89282b0b4213e9ca35e62456c1024a00f72dd",
+  "dal": "worktree-agent-aee95d00d296d627a",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T13:30:43.570Z",
+  "sure_sn": 4.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 533,
+    "gecen": 511,
+    "basarisiz": 22,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 22 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "d10-c5-s67-soz-takvim.json k1:takvim:hareket:c1 elle {\"amount\": 40000, \"dueDate\": \"2026-06-15\", \"direction\": \"in\", \"label\": \"Tahsil Edilecek Borç (Ödeme Sözü)\", \"state\": \"overdue\", \"days\": -10, \"cari\": \"C\", \"person\": \"Cem Bugün\"} · kâhin {\"catal\": [{\"amount\": 40000, \"dueDate\": \"2026-06-15\", \"directi",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "d10-c5-s67-soz-takvim.json k1:takvim:hareket:d1 elle {\"amount\": 30000, \"dueDate\": \"2026-06-14\", \"direction\": \"in\", \"label\": \"Tahsil Edilecek Borç (Ödeme Sözü)\", \"state\": \"overdue\", \"days\": -10, \"cari\": \"D\", \"person\": \"Derya Dün\"} · kâhin {\"catal\": [{\"amount\": 30000, \"dueDate\": \"2026-06-14\", \"directi",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "d12-c5-s69-soz-gunu-ve-gecmis.json k1:takvim:hareket:a1 elle {\"amount\": 100000, \"dueDate\": \"2026-06-15\", \"direction\": \"in\", \"label\": \"Tahsil Edilecek Borç (Ödeme Sözü)\", \"state\": \"overdue\", \"days\": -10, \"cari\": \"A\", \"person\": \"Ayla Örnek\"} · kâhin {\"catal\": [{\"amount\": 100000, \"dueDate\": \"2026-06-15",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "d12-c5-s69-soz-gunu-ve-gecmis.json k1:takvim:hareket:b1 elle {\"amount\": 60000, \"dueDate\": \"2026-06-14\", \"direction\": \"in\", \"label\": \"Tahsil Edilecek Borç (Ödeme Sözü)\", \"state\": \"overdue\", \"days\": -10, \"cari\": \"B\", \"person\": \"Burak Dün\"} · kâhin {\"catal\": [{\"amount\": 60000, \"dueDate\": \"2026-06-14\", ",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "d12-c5-s69-soz-gunu-ve-gecmis.json k1:takvim:hareket:c1 elle {\"amount\": 40000, \"dueDate\": \"2026-06-08\", \"direction\": \"in\", \"label\": \"Tahsil Edilecek Borç (Ödeme Sözü)\", \"state\": \"overdue\", \"days\": -14, \"cari\": \"C\", \"person\": \"Ceren Geçenhafta\"} · kâhin {\"catal\": [{\"amount\": 40000, \"dueDate\": \"2026-0",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "d12-c5-s69-soz-gunu-ve-gecmis.json k1:takvim:hareket:d1 elle {\"amount\": 35000, \"dueDate\": \"2026-06-15\", \"direction\": \"in\", \"label\": \"Tahsil Edilecek Borç (Ödeme Sözü)\", \"state\": \"overdue\", \"days\": -1, \"cari\": \"D\", \"person\": \"Deniz Vadedün\"} · kâhin {\"catal\": [{\"amount\": 35000, \"dueDate\": \"2026-06-15",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "d12-c5-s69-soz-gunu-ve-gecmis.json k1:takvim:hareket:e1 elle {\"amount\": 20000, \"dueDate\": \"2026-06-15\", \"direction\": \"in\", \"label\": \"Tahsil Edilecek Borç (Ödeme Sözü)\", \"state\": \"overdue\", \"days\": -10, \"cari\": \"E\", \"person\": \"Emre Vadesiz\"} · kâhin {\"catal\": [{\"amount\": 20000, \"dueDate\": \"2026-06-15",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "d12-c5-s69-soz-gunu-ve-gecmis.json k1:takvim:hareket:e2 elle {\"amount\": 18000, \"dueDate\": \"2026-06-10\", \"direction\": \"in\", \"label\": \"Tahsil Edilecek Borç (Ödeme Sözü)\", \"state\": \"overdue\", \"days\": -14, \"cari\": \"E2\", \"person\": \"Ebru Vadesiz\"} · kâhin {\"catal\": [{\"amount\": 18000, \"dueDate\": \"2026-06-1",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "d12-c5-s69-soz-gunu-ve-gecmis.json k1:takvim:hareket:h1 elle {\"amount\": 50000, \"dueDate\": \"2026-06-10\", \"direction\": \"in\", \"label\": \"Tahsil Edilecek Borç (Ödeme Sözü)\", \"state\": \"overdue\", \"days\": -26, \"cari\": \"H\", \"person\": \"Hakan Kısmi\"} · kâhin {\"catal\": [{\"amount\": 50000, \"dueDate\": \"2026-06-10\"",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "d12-c5-s69-soz-gunu-ve-gecmis.json k1:takvim:hareket:t1 elle {\"amount\": 70000, \"dueDate\": \"2026-06-15\", \"direction\": \"out\", \"label\": \"Ödenecek Borç (Ödeme Sözü)\", \"state\": \"overdue\", \"days\": -21, \"cari\": \"T\", \"person\": \"Tuna Ödenecek\"} · kâhin {\"catal\": [{\"amount\": 70000, \"dueDate\": \"2026-06-15\", \"d",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "d12-c5-s69-soz-gunu-ve-gecmis.json k1:takvim:hareket:t2 elle {\"amount\": 30000, \"dueDate\": \"2026-06-12\", \"direction\": \"out\", \"label\": \"Ödenecek Borç (Ödeme Sözü)\", \"state\": \"overdue\", \"days\": -14, \"cari\": \"T2\", \"person\": \"Tülin Ödenecek\"} · kâhin {\"catal\": [{\"amount\": 30000, \"dueDate\": \"2026-06-12\", ",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "d12-c5-s69-soz-gunu-ve-gecmis.json k1:takvim:hareket:acilis:K elle {\"amount\": 90000, \"dueDate\": \"2026-06-12\", \"direction\": \"in\", \"label\": \"Tahsil Edilecek Borç (Ödeme Sözü)\", \"state\": \"overdue\", \"days\": -31, \"cari\": \"K\", \"person\": \"Kaan Açılış\"} · kâhin {\"catal\": [{\"amount\": 90000, \"dueDate\": \"2026-",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "d13-c5-s69-soz-ertesi-gun.json k1:takvim:hareket:a1 elle {\"amount\": 100000, \"dueDate\": \"2026-06-15\", \"direction\": \"in\", \"label\": \"Tahsil Edilecek Borç (Ödeme Sözü)\", \"state\": \"overdue\", \"days\": -11, \"cari\": \"A\", \"person\": \"Ayla Örnek\"} · kâhin {\"catal\": [{\"amount\": 100000, \"dueDate\": \"2026-06-15\", \"",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "d13-c5-s69-soz-ertesi-gun.json k1:takvim:hareket:b1 elle {\"amount\": 60000, \"dueDate\": \"2026-06-14\", \"direction\": \"in\", \"label\": \"Tahsil Edilecek Borç (Ödeme Sözü)\", \"state\": \"overdue\", \"days\": -11, \"cari\": \"B\", \"person\": \"Burak Dün\"} · kâhin {\"catal\": [{\"amount\": 60000, \"dueDate\": \"2026-06-14\", \"dir",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "d13-c5-s69-soz-ertesi-gun.json k1:takvim:hareket:c1 elle {\"amount\": 40000, \"dueDate\": \"2026-06-08\", \"direction\": \"in\", \"label\": \"Tahsil Edilecek Borç (Ödeme Sözü)\", \"state\": \"overdue\", \"days\": -15, \"cari\": \"C\", \"person\": \"Ceren Geçenhafta\"} · kâhin {\"catal\": [{\"amount\": 40000, \"dueDate\": \"2026-06-08",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "d13-c5-s69-soz-ertesi-gun.json k1:takvim:hareket:d1 elle {\"amount\": 35000, \"dueDate\": \"2026-06-15\", \"direction\": \"in\", \"label\": \"Tahsil Edilecek Borç (Ödeme Sözü)\", \"state\": \"overdue\", \"days\": -2, \"cari\": \"D\", \"person\": \"Deniz Vadedün\"} · kâhin {\"catal\": [{\"amount\": 35000, \"dueDate\": \"2026-06-15\", \"",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "d13-c5-s69-soz-ertesi-gun.json k1:takvim:hareket:e1 elle {\"amount\": 20000, \"dueDate\": \"2026-06-15\", \"direction\": \"in\", \"label\": \"Tahsil Edilecek Borç (Ödeme Sözü)\", \"state\": \"overdue\", \"days\": -11, \"cari\": \"E\", \"person\": \"Emre Vadesiz\"} · kâhin {\"catal\": [{\"amount\": 20000, \"dueDate\": \"2026-06-15\", \"",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "d13-c5-s69-soz-ertesi-gun.json k1:takvim:hareket:e2 elle {\"amount\": 18000, \"dueDate\": \"2026-06-10\", \"direction\": \"in\", \"label\": \"Tahsil Edilecek Borç (Ödeme Sözü)\", \"state\": \"overdue\", \"days\": -15, \"cari\": \"E2\", \"person\": \"Ebru Vadesiz\"} · kâhin {\"catal\": [{\"amount\": 18000, \"dueDate\": \"2026-06-10\", ",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "d13-c5-s69-soz-ertesi-gun.json k1:takvim:hareket:h1 elle {\"amount\": 50000, \"dueDate\": \"2026-06-10\", \"direction\": \"in\", \"label\": \"Tahsil Edilecek Borç (Ödeme Sözü)\", \"state\": \"overdue\", \"days\": -27, \"cari\": \"H\", \"person\": \"Hakan Kısmi\"} · kâhin {\"catal\": [{\"amount\": 50000, \"dueDate\": \"2026-06-10\", \"d",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "d13-c5-s69-soz-ertesi-gun.json k1:takvim:hareket:t1 elle {\"amount\": 70000, \"dueDate\": \"2026-06-15\", \"direction\": \"out\", \"label\": \"Ödenecek Borç (Ödeme Sözü)\", \"state\": \"overdue\", \"days\": -22, \"cari\": \"T\", \"person\": \"Tuna Ödenecek\"} · kâhin {\"catal\": [{\"amount\": 70000, \"dueDate\": \"2026-06-15\", \"direc",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "d13-c5-s69-soz-ertesi-gun.json k1:takvim:hareket:t2 elle {\"amount\": 30000, \"dueDate\": \"2026-06-12\", \"direction\": \"out\", \"label\": \"Ödenecek Borç (Ödeme Sözü)\", \"state\": \"overdue\", \"days\": -15, \"cari\": \"T2\", \"person\": \"Tülin Ödenecek\"} · kâhin {\"catal\": [{\"amount\": 30000, \"dueDate\": \"2026-06-12\", \"dir",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "d13-c5-s69-soz-ertesi-gun.json k1:takvim:hareket:acilis:K elle {\"amount\": 90000, \"dueDate\": \"2026-06-12\", \"direction\": \"in\", \"label\": \"Tahsil Edilecek Borç (Ödeme Sözü)\", \"state\": \"overdue\", \"days\": -32, \"cari\": \"K\", \"person\": \"Kaan Açılış\"} · kâhin {\"catal\": [{\"amount\": 90000, \"dueDate\": \"2026-06-1",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahineski3-kanit/2026-11-06/kahineski3-kirmizi-eski-cari-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aee95d00d296d627a",
+  "ham_cikti_sha256": "79b43e12f830a2ab48a0309d51cdd9c7e5a579b6a227c7d2e140557836579576",
+  "ham_cikti_bayt": 17545
+}

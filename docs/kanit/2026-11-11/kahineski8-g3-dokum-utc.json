@@ -1,0 +1,1228 @@
+{
+ "ozet": {
+  "S110-alan/yeni": 127,
+  "S110-sus/kalkan": 16
+ },
+ "senaryo": {
+  "d34-c5-s110-kendi-borcu": {
+   "S110-alan/yeni": 127,
+   "S110-sus/kalkan": 16
+  }
+ },
+ "etiket_degisen": 0,
+ "dokum": [
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:cari:E12:acikEsitBakiye",
+   "eski": true,
+   "yeni": "(denetim yok)",
+   "sinif": "S110-sus",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:cari:E12:acikToplam",
+   "eski": 150000,
+   "yeni": "(denetim yok)",
+   "sinif": "S110-sus",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:cari:E12:gecikmis",
+   "eski": 120000,
+   "yeni": "(denetim yok)",
+   "sinif": "S110-sus",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:cari:E13:acikEsitBakiye",
+   "eski": true,
+   "yeni": "(denetim yok)",
+   "sinif": "S110-sus",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:cari:E13:acikToplam",
+   "eski": 150000,
+   "yeni": "(denetim yok)",
+   "sinif": "S110-sus",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:cari:E13:gecikmis",
+   "eski": 125000,
+   "yeni": "(denetim yok)",
+   "sinif": "S110-sus",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:cari:E14a:acikEsitBakiye",
+   "eski": "(denetim yok)",
+   "yeni": true,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:cari:E14a:acikToplam",
+   "eski": "(denetim yok)",
+   "yeni": 150000,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:cari:E14a:gecikmis",
+   "eski": "(denetim yok)",
+   "yeni": 90000,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:cari:E1:acikEsitBakiye",
+   "eski": "(denetim yok)",
+   "yeni": true,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:cari:E1:acikToplam",
+   "eski": "(denetim yok)",
+   "yeni": 150000,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:cari:E1:gecikmis",
+   "eski": "(denetim yok)",
+   "yeni": 90000,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:cari:E4:acikEsitBakiye",
+   "eski": "(denetim yok)",
+   "yeni": true,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:cari:E4:acikToplam",
+   "eski": "(denetim yok)",
+   "yeni": 90001,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:cari:E4:gecikmis",
+   "eski": "(denetim yok)",
+   "yeni": 30001,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:cari:E5:acikEsitBakiye",
+   "eski": "(denetim yok)",
+   "yeni": false,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:cari:E5:acikToplam",
+   "eski": "(denetim yok)",
+   "yeni": 90000,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:cari:E5:gecikmis",
+   "eski": "(denetim yok)",
+   "yeni": 120000,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:cari:E7:acikEsitBakiye",
+   "eski": "(denetim yok)",
+   "yeni": true,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:cari:E7:acikToplam",
+   "eski": "(denetim yok)",
+   "yeni": 120000,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:cari:E7:gecikmis",
+   "eski": "(denetim yok)",
+   "yeni": 60000,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:cari:E8:acikEsitBakiye",
+   "eski": "(denetim yok)",
+   "yeni": true,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:cari:E8:acikToplam",
+   "eski": "(denetim yok)",
+   "yeni": 130000,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:cari:E8:gecikmis",
+   "eski": "(denetim yok)",
+   "yeni": 70000,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:cari:E9:acikEsitBakiye",
+   "eski": "(denetim yok)",
+   "yeni": false,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:cari:E9:acikToplam",
+   "eski": "(denetim yok)",
+   "yeni": 50000,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:cari:E9:gecikmis",
+   "eski": "(denetim yok)",
+   "yeni": 50000,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:fatura:E10F:acik",
+   "eski": "(denetim yok)",
+   "yeni": 60000,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:fatura:E12F:acik",
+   "eski": 60000,
+   "yeni": "(denetim yok)",
+   "sinif": "S110-sus",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:fatura:E13F:acik",
+   "eski": 60000,
+   "yeni": "(denetim yok)",
+   "sinif": "S110-sus",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:fatura:E14F:acik",
+   "eski": "(denetim yok)",
+   "yeni": 60000,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:fatura:E1F:acik",
+   "eski": "(denetim yok)",
+   "yeni": 60000,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:fatura:E4F:acik",
+   "eski": "(denetim yok)",
+   "yeni": 1,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:fatura:E7F:acik",
+   "eski": "(denetim yok)",
+   "yeni": 10000,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:fatura:E8F:acik",
+   "eski": "(denetim yok)",
+   "yeni": 40000,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:hareket:e10b:beklenen",
+   "eski": "(denetim yok)",
+   "yeni": "",
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:hareket:e10b:vade",
+   "eski": "(denetim yok)",
+   "yeni": "2026-03-10",
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:hareket:e14ab:beklenen",
+   "eski": "(denetim yok)",
+   "yeni": "",
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:hareket:e14ab:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 90000,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:hareket:e14ab:vade",
+   "eski": "(denetim yok)",
+   "yeni": "2026-03-10",
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:hareket:e1b:beklenen",
+   "eski": "(denetim yok)",
+   "yeni": "",
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:hareket:e1b:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 90000,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:hareket:e1b:vade",
+   "eski": "(denetim yok)",
+   "yeni": "2026-03-10",
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:hareket:e2b:beklenen",
+   "eski": "(denetim yok)",
+   "yeni": "",
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:hareket:e2b:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 90000,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:hareket:e2b:vade",
+   "eski": "(denetim yok)",
+   "yeni": "2026-03-02",
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:hareket:e4b:beklenen",
+   "eski": "(denetim yok)",
+   "yeni": "",
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:hareket:e4b:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 90000,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:hareket:e4b:vade",
+   "eski": "(denetim yok)",
+   "yeni": "2026-03-10",
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:hareket:e5b:beklenen",
+   "eski": "(denetim yok)",
+   "yeni": "",
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:hareket:e5b:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 90000,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:hareket:e5b:vade",
+   "eski": "(denetim yok)",
+   "yeni": "2026-03-02",
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:hareket:e7b:beklenen",
+   "eski": "(denetim yok)",
+   "yeni": "",
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:hareket:e7b:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 90000,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:hareket:e7b:vade",
+   "eski": "(denetim yok)",
+   "yeni": "2026-03-10",
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:hareket:e7c:beklenen",
+   "eski": "(denetim yok)",
+   "yeni": "",
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:hareket:e7c:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 20000,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:hareket:e7c:vade",
+   "eski": "(denetim yok)",
+   "yeni": "2026-03-25",
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:hareket:e8b:beklenen",
+   "eski": "(denetim yok)",
+   "yeni": "",
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:hareket:e8b:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 90000,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:hareket:e8b:vade",
+   "eski": "(denetim yok)",
+   "yeni": "2026-03-10",
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:hareket:e9b:beklenen",
+   "eski": "(denetim yok)",
+   "yeni": "",
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:hareket:e9b:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 50000,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:hareket:e9b:vade",
+   "eski": "(denetim yok)",
+   "yeni": "2026-03-20",
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE10:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 90000,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE10:odenen",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE10:taksit1:odenen",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE10:taksit2:odenen",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE10:taksit3:odenen",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE12:kalan",
+   "eski": 60000,
+   "yeni": "(denetim yok)",
+   "sinif": "S110-sus",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE12:odenen",
+   "eski": 0,
+   "yeni": "(denetim yok)",
+   "sinif": "S110-sus",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE12:taksit1:odenen",
+   "eski": 0,
+   "yeni": "(denetim yok)",
+   "sinif": "S110-sus",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE12:taksit2:odenen",
+   "eski": 0,
+   "yeni": "(denetim yok)",
+   "sinif": "S110-sus",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE13:kalan",
+   "eski": 50000,
+   "yeni": "(denetim yok)",
+   "sinif": "S110-sus",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE13:odenen",
+   "eski": 0,
+   "yeni": "(denetim yok)",
+   "sinif": "S110-sus",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE13:taksit1:odenen",
+   "eski": 0,
+   "yeni": "(denetim yok)",
+   "sinif": "S110-sus",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE13:taksit2:odenen",
+   "eski": 0,
+   "yeni": "(denetim yok)",
+   "sinif": "S110-sus",
+   "tur": "kalkan"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE14:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 90000,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE14:odenen",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE14:taksit1:odenen",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE14:taksit2:odenen",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE14:taksit3:odenen",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE1:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 90000,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE1:odenen",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE1:taksit1:odenen",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE1:taksit2:odenen",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE1:taksit3:odenen",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE4:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 90000,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE4:odenen",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE4:taksit1:odenen",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE4:taksit2:odenen",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE4:taksit3:odenen",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE5:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 60000,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE5:odenen",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE5:taksit1:odenen",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE5:taksit2:odenen",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE7:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 90000,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE7:odenen",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE7:taksit1:odenen",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE7:taksit2:odenen",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE7:taksit3:odenen",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE8:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 90000,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE8:odenen",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE8:taksit1:odenen",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE8:taksit2:odenen",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE8:taksit3:odenen",
+   "eski": "(denetim yok)",
+   "yeni": 0,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE9:kalan",
+   "eski": "(denetim yok)",
+   "yeni": 20000,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE9:odenen",
+   "eski": "(denetim yok)",
+   "yeni": 40000,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE9:taksit1:odenen",
+   "eski": "(denetim yok)",
+   "yeni": 30000,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:kart:KE9:taksit2:odenen",
+   "eski": "(denetim yok)",
+   "yeni": 10000,
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:projeksiyon:hareket:e14ab",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:projeksiyon:hareket:e1b",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:projeksiyon:hareket:e2b",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:projeksiyon:hareket:e4b",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:projeksiyon:hareket:e5b",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 90000,
+    "date": "2026-03-02",
+    "direction": "in"
+   },
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:projeksiyon:hareket:e7b",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:projeksiyon:hareket:e7c",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 20000,
+    "date": "2026-03-25",
+    "direction": "in"
+   },
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:projeksiyon:hareket:e8b",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:projeksiyon:hareket:e9b",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 50000,
+    "date": "2026-03-20",
+    "direction": "in"
+   },
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:takvim:fatura:E14F",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 60000,
+    "direction": "in"
+   },
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:takvim:fatura:E1F",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 60000,
+    "direction": "in"
+   },
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:takvim:fatura:E2F",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 60000,
+    "direction": "in"
+   },
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:takvim:fatura:E4F",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 1,
+    "direction": "in"
+   },
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:takvim:fatura:E7F",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 10000,
+    "direction": "in"
+   },
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:takvim:fatura:E8F",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 40000,
+    "direction": "in"
+   },
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:takvim:hareket:e14ab",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:takvim:hareket:e1b",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:takvim:hareket:e2b",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:takvim:hareket:e4b",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:takvim:hareket:e5b",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 90000,
+    "dueDate": "2026-03-02",
+    "direction": "in",
+    "label": "Tahsil Edilecek Borç",
+    "state": "overdue",
+    "days": -44,
+    "cari": "E5",
+    "person": "Elif Satış"
+   },
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:takvim:hareket:e7b",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:takvim:hareket:e7c",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 20000,
+    "dueDate": "2026-03-25",
+    "direction": "in",
+    "label": "Tahsil Edilecek Borç",
+    "state": "overdue",
+    "days": -21,
+    "cari": "E7",
+    "person": "Engin Yeni Borç"
+   },
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:takvim:hareket:e8b",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:takvim:hareket:e9b",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 50000,
+    "dueDate": "2026-03-20",
+    "direction": "in",
+    "label": "Tahsil Edilecek Borç",
+    "state": "overdue",
+    "days": -26,
+    "cari": "E9",
+    "person": "Eylem Avanslı"
+   },
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:vadeTakip:hareket:e14ab",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:vadeTakip:hareket:e1b",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:vadeTakip:hareket:e2b",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:vadeTakip:hareket:e4b",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:vadeTakip:hareket:e5b",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 90000,
+    "date": "2026-03-02",
+    "direction": "in"
+   },
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:vadeTakip:hareket:e7b",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:vadeTakip:hareket:e7c",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 20000,
+    "date": "2026-03-25",
+    "direction": "in"
+   },
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:vadeTakip:hareket:e8b",
+   "eski": "(denetim yok)",
+   "yeni": "yok",
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  },
+  {
+   "senaryo": "d34-c5-s110-kendi-borcu",
+   "anahtar": "k1:vadeTakip:hareket:e9b",
+   "eski": "(denetim yok)",
+   "yeni": {
+    "amount": 50000,
+    "date": "2026-03-20",
+    "direction": "in"
+   },
+   "sinif": "S110-alan",
+   "tur": "yeni"
+  }
+ ]
+}

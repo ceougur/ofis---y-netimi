@@ -1,0 +1,16 @@
+ok 1 - ledger (tüm zaman): ısınma 200
+# ledger (tüm zaman): medyan 41.1 ms, en çok 63.6 ms, olay döngüsü en çok 59.8 ms
+ok 2 - ledger (bu yıl): ısınma 200
+# ledger (bu yıl): medyan 39.8 ms, en çok 62.5 ms, olay döngüsü en çok 61.2 ms
+ok 3 - hesap-mizani (tüm): ısınma 200
+# hesap-mizani (tüm): medyan 40.1 ms, en çok 67.9 ms, olay döngüsü en çok 64 ms
+ok 4 - yevmiye (tüm): ısınma 200
+# yevmiye (tüm): medyan 45.5 ms, en çok 70.3 ms, olay döngüsü en çok 68.6 ms
+ok 5 - yevmiye 2216 madde (fiş 0)
+1..5
+# tests 5
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

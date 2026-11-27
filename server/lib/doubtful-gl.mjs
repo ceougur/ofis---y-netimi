@@ -17,18 +17,27 @@
 //               (karşılık kadar), kalanı 659; kalanı aşan kısım A 120 / B 659 (kayıt dışı kayıp; yazımda engellenir, eski veri için).
 //   çıkar     : kapanış günü kalan B 120 / A 128; karşılık varsa B 129 / A 644 (konusu kalmadı); kayıt kapanır.
 //   SEÇİM (ürün sahibi 15.10.2026; plan §3.11b/2): alacak satırı `skip` taşıyorsa ŞÜPHELİDEN DÜŞMEZ, A 120 kalır — "Normal Cari Hesaba İşle"
-//               işaretli tahsilat (doubtful_skip), fatura peşini (source 'invoice') ve "Kapatılacak Fatura" bağlı tahsilat (invoice_id dolu):
-//               doubtfulSkipOf. Taksit tahsilatı / kapatılan kartın kalanı `openedOn` (kartın açılış tarihi) taşır: kart kayıttan SONRA açıldıysa
+//               işaretli tahsilat (doubtful_skip) ve fatura peşini (source 'invoice'): doubtfulSkipOf. 2.5.0 Ç5-A tur 3c (S14, S25, S39, S168 = B):
+//               kuyruğun BAĞI olan satır (Kapatılacak Fatura, faturaya bağlı evrak) faturanın kuyrukta şüpheli sayılan kısmı kadar 128'den, kalanı 120
+//               (allocateDoubtful `linked`; önceden bağlı tahsilat her zaman 120, bağlı evrak her zaman en eski kayıttan 128). Taksit tahsilatı / kapatılan kartın kalanı `openedOn` (kartın açılış tarihi) taşır: kart kayıttan SONRA açıldıysa
 //               (openedOn > kayıt tarihi) o kayıttan düşmez; önce ya da aynı gün açıldıysa düşer.
 import { roundMoney } from "./money.mjs";
 
 /**
- * Karar 15.10.2026 (plan §3.11b/2): tahsilat satırı şüpheliden düşmeyip 120'de kalır mı? Kullanıcı işareti (doubtful_skip = 1, "Normal Cari
- * Hesaba İşle"), fatura peşini (source 'invoice') ya da Kapatılacak Fatura bağı (invoice_id). Yalnız tahsilat ('in') satırında anlamlı.
- * SQL ikizi: lib/bank/doubtful.mjs doubtfulCredits (e.doubtful_skip = 0 AND e.source <> 'invoice' AND e.invoice_id = '').
+ * Karar 15.10.2026 (plan §3.11b/2): tahsilat satırı "Normal Cariye İşlendi" mi? Kullanıcı işareti (doubtful_skip = 1, "Normal Cari Hesaba İşle"),
+ * fatura peşini (source 'invoice') ya da Kapatılacak Fatura bağı (invoice_id). Yalnız tahsilat ('in') satırında anlamlı.
+ * 2.5.0 Ç5-A tur 3c (S25 (c), S39, S168 = B; C5-ACILIS-TASARIM §19): DEFTERİN 120 / 128 ayrımı artık bunu DEĞİL doubtfulKeepOf'u okur — Kapatılacak Fatura bağlı satır ayırıcıya
+ * girer, faturanın kuyrukta şüpheli sayılan kısmı önce 128'den düşer (allocateDoubtful `linked`). Bu işlev yalnız cari kartının "Normal Cariye İşlendi" etiketinin (routes/accounts.mjs
+ * detail — bu turun dosya sınırı dışında; etiketin ayırıcıdan okunması BAŞ MİMAR KARARI bekliyor) bugünkü tanımı olarak kalır.
  */
 export const doubtfulSkipOf = ({ kind, source = "", invoiceId = "", doubtfulSkip = 0 } = {}) =>
   kind === "in" && (doubtfulSkip === true || Number(doubtfulSkip) === 1 || source === "invoice" || Boolean(invoiceId));
+/**
+ * 2.5.0 Ç5-A tur 3c (§19.1): tahsilat satırı şüpheliden HİÇ düşmeyip tamamı 120'de kalır mı (defterin ayırıcısı)? "Normal Cari Hesaba İşle" işareti ya da fatura peşini (15.10.2026
+ * kararı, değişmez). Kapatılacak Fatura bağı burada YOK: bağlı satırın payı ayırıcının `linked` kuralıyla. SQL ikizi: lib/bank/doubtful.mjs doubtfulCredits (e.doubtful_skip = 0 AND e.source <> 'invoice').
+ */
+export const doubtfulKeepOf = ({ kind, source = "", doubtfulSkip = 0 } = {}) =>
+  kind === "in" && (doubtfulSkip === true || Number(doubtfulSkip) === 1 || source === "invoice");
 
 export const DOUBTFUL_GL = Object.freeze({ doubtful: "128", provision: "129", groundless: "644", expense: "654", loss: "659" });
 export const DOUBTFUL_CHART = Object.freeze({
@@ -54,49 +63,85 @@ export const doubtfulStatusLabel = (record, state) => DOUBTFUL_STATUS_LABELS[dou
 // ayrı sınıftadır (15.10.2026, Uzun Doğrulama #199: aynı sınıfta anahtara — rastgele UUID; kapı 'account:<id>', yevmiye '<id>#<satır>' — göre
 // sıralanınca sıra rastgele ve iki yükleyicide farklıydı; tahsilat önce gelince değersiz satırı kalanı aşıp kayıt dışına düşüyordu).
 const ORDER = { take: 0, provision: 1, writeoff: 2, credit: 3, release: 4 };
-const by = (a, b) => (a.date === b.date ? (a.order === b.order ? (a.tie < b.tie ? -1 : a.tie > b.tie ? 1 : 0) : a.order - b.order) : a.date < b.date ? -1 : 1);
+// 2.5.0 tek aday düzeltme turu B1 (ders 31; dar kontrol t3c7a): aynı gün AYNI sınıftaki alacak satırları YAZIM SIRASIYLA — satırın yazım anı (at: created_at; faturada kesilme anı)
+// → kaynak tablonun rowid'i (seq) → anahtar (yalnız ikisi de eşitse; belirlenimci son anahtar). Önceden anahtara (rastgele UUID) göre sıralanıyordu: Ç5-A tur 3'ten beri bağlı satırın
+// payı (`linked` — kesitin aynı gün kuralı `done`) o ana kadar işlenen alacaklara bağlı olduğundan 120 / 128 dağılımı, kuyruk, gecikmiş ve sonraki işlemin kabul / reddi kimliğe
+// bağlıydı. İKİ yükleyici AYNI bilgiyi taşır: SQL yükleyicisi (lib/bank/doubtful.mjs doubtfulCredits) satırın at / seq kolonlarını okur; yevmiye yükleyicisi (applyDoubtfulToJournal)
+// aynı SQL'den kurulan writeOrder(ref) ile (yalnız eşitlik çıkınca, tembel). Sıra kuyruğunkiyle (lib/obligation-queue.mjs: gün → sınıf → at → giriş sırası) aynı ölçü.
+const LAST = "\uffff";
+const by = (a, b) => {
+  if (a.date !== b.date) return a.date < b.date ? -1 : 1;
+  if (a.order !== b.order) return a.order - b.order;
+  if (a.write && b.write) {
+    const x = a.write();
+    const y = b.write();
+    if (x.at !== y.at) return x.at < y.at ? -1 : 1;
+    if (x.seq !== y.seq) return x.seq < y.seq ? -1 : 1;
+  }
+  return a.tie < b.tie ? -1 : a.tie > b.tie ? 1 : 0;
+};
 const fresh = record => ({ taken: record.amountMinor, collected: 0, writtenOff: 0, released: 0, remaining: record.amountMinor, provision: 0, provisionAdded: 0, provisionReleased: 0, provisionUsed: 0, lost: 0, closedOn: "", lastCreditDate: "", collectedSameDay: 0, collectedOnCloseDay: 0 });
 
 /**
  * Ayırma kuralı.
  * @param {{ records: Array<{ id, party, date, amountMinor, status, closedDate }>, provisions: Array<{ id, recordId, date, amountMinor }>,
- *           credits: Array<{ key, party, date, minor, target?, skip?, openedOn? }> }} input  credits: kontrol hesabını alacaklandıran satırlar
+ *           credits: Array<{ key, ref?, party, date, minor, target?, skip?, openedOn? }>, linked? }} input  credits: kontrol hesabını alacaklandıran satırlar
  *           (kuruş, artı); target: Değersiz Alacak satırının kaydı ('' = hedefsiz); skip: 120'de kalır (doubtfulSkipOf); openedOn: taksit
  *           kartının açılış tarihi (kayıttan sonra açılan karttan düşmez)
  * @returns {{ allocations: Map<string, { records: Array<{ recordId, minor }>, provisionUsed: number, lossMinor: number, outsideMinor?: number }>,
  *             extras: Array<{ kind: 'release644' | 'release' | 'release644close', recordId, party, date, minor, key? }>,
  *             state: Map<string, object> }}
  */
-export function allocateDoubtful({ records = [], provisions = [], credits = [] } = {}) {
+// 2.5.0 Ç5-A tur 3c (S14, S25 (a)(b)(c), S39, S168 = B; C5-ACILIS-TASARIM §19.1): `linked(credit, view)` verilirse hedefsiz alacak satırı için çağrılır (lib/bank/doubtful.mjs linkedShares —
+// kuyruğun BAĞI olan satır): null → bağsız, bugünkü kural (en eski açık kayıttan); dizi [{ recordId, minor }] → faturanın kuyrukta (satırdan önceki anda) şüpheli sayılan kısmı — 128 =
+// min(tutar, Σ pay) o kayıtlardan (sırayla, kalan kadar), KALAN 120 (S25 (b) fazlası dahil; pay yoksa tamamı 120). view: { open: [{ id, date, remainingMinor }] (alınmış, kapanmamış, kalanı
+// > 0; tarih sırası), done: Set (bu carinin şimdiye kadar işlenen alacaklarının ref'i) } — kuyruğun kesiti ayırıcının o anki durumuyla tutarlı kurulur.
+export function allocateDoubtful({ records = [], provisions = [], credits = [], linked = null, writeOrder = null } = {}) {
   const state = new Map();
   const allocations = new Map();
   const extras = [];
   const byParty = new Map();
   for (const record of records) {
     if (record.status === "cancelled") continue;
-    if (!byParty.has(record.party)) byParty.set(record.party, { records: [], provisions: [], credits: [] });
+    if (!byParty.has(record.party)) byParty.set(record.party, { records: [], provisions: [], credits: [], refs: new Set() });
     byParty.get(record.party).records.push(record);
     state.set(record.id, fresh(record));
   }
   const recordById = new Map(records.map(record => [record.id, record]));
+  // B1: alacak satırının yazım sırası { at, seq } — satırın kendi alanlarından (SQL yükleyicisi) ya da writeOrder(ref)'ten (yevmiye yükleyicisi); bilinmeyen sona. Yalnız aynı gün
+  // aynı sınıfta iki alacak karşılaşınca okunur (çağrı başına bir kez).
+  const writeOf = credit => {
+    let known = null;
+    return () => {
+      if (known) return known;
+      const own = credit.at !== undefined || credit.seq !== undefined ? credit : writeOrder ? writeOrder(credit.ref ?? credit.key) || {} : {};
+      known = { at: own.at ? String(own.at) : LAST, seq: Number.isFinite(Number(own.seq)) && own.seq !== "" && own.seq !== null ? Number(own.seq) : Infinity };
+      return known;
+    };
+  };
   for (const item of provisions) {
     const record = recordById.get(item.recordId);
     if (!record || !byParty.has(record.party)) continue;
     byParty.get(record.party).provisions.push({ ...item, party: record.party });
   }
-  // skip'li satır (Normal Cari Hesaba İşle, fatura peşini, Kapatılacak Fatura) ayırmaya hiç girmez: A 120 kalır.
-  for (const credit of credits) if (byParty.has(credit.party) && credit.minor > 0 && !credit.skip) byParty.get(credit.party).credits.push(credit);
+  // skip'li satır (Normal Cari Hesaba İşle, fatura peşini) ayırmaya hiç girmez: A 120 kalır. refs: carinin ayırıcıya giren alacaklarının ref'i (kesitin aynı gün kuralı — linked).
+  for (const credit of credits) {
+    if (!byParty.has(credit.party) || !(credit.minor > 0) || credit.skip) continue;
+    byParty.get(credit.party).credits.push(credit);
+    byParty.get(credit.party).refs.add(credit.ref ?? credit.key);
+  }
   for (const [party, group] of byParty) {
     const events = [
       // Aynı tarihte AÇILIŞ sırası (rowid = seq): kimlik rastgele UUID olduğundan ona göre sıralamak sırayı rastgele yapıyordu
       // (kâhin sürüm 4 tohum 4, 15.10.2026: aynı gün iki kayıt, tahsilat yanlış kayıttan düştü). seq yoksa kimlik.
       ...group.records.map(record => ({ kind: "take", date: record.date, order: ORDER.take, tie: record.seq ?? record.id, record })),
       ...group.provisions.map(item => ({ kind: "provision", date: item.date, order: ORDER.provision, tie: item.id, item })),
-      ...group.credits.map(credit => ({ kind: "credit", date: credit.date, order: credit.target ? ORDER.writeoff : ORDER.credit, tie: credit.key, credit })),
+      ...group.credits.map(credit => ({ kind: "credit", date: credit.date, order: credit.target ? ORDER.writeoff : ORDER.credit, tie: credit.key, credit, write: writeOf(credit) })),
       ...group.records.filter(record => record.status === "released" && record.closedDate).map(record => ({ kind: "release", date: record.closedDate, order: ORDER.release, tie: record.id, record })),
     ].sort(by);
     // Açık (alınmış, kapanmamış) kayıtlar en eskiden yeniye; aynı tarihte açılış (rowid) sırası.
     const open = [];
+    const done = new Set();
     for (const event of events) {
       if (event.kind === "take") {
         open.push(event.record);
@@ -162,13 +207,11 @@ export function allocateDoubtful({ records = [], provisions = [], credits = [] }
         // kayıptır (A 120 / B 659; 120 eksiye düşer) — yazımda kapı reddeder (doubtfulProblems; yargıç 2.3.0 #3).
         hit.outsideMinor = credit.minor - hit.records.reduce((sum, item) => sum + item.minor, 0);
       } else {
-        for (const record of open) {
-          if (left <= 0) break;
+        const collect = (record, cap) => {
           const s = state.get(record.id);
-          if (!s || s.remaining <= 0) continue;
-          // Taksit kartı şüpheli kaydından SONRA açıldıysa o kayıttan düşmez (yeni satışın parası); önce ya da aynı gün açılan kart düşer.
-          if (credit.openedOn && credit.openedOn > record.date) continue;
-          const minor = Math.min(left, s.remaining);
+          if (!s || s.remaining <= 0) return;
+          const minor = Math.min(left, s.remaining, cap);
+          if (!(minor > 0)) return;
           s.remaining -= minor;
           s.collected += minor;
           left -= minor;
@@ -181,8 +224,28 @@ export function allocateDoubtful({ records = [], provisions = [], credits = [] }
             s.provisionReleased += release;
             extras.push({ kind: "release644", recordId: record.id, party, date: credit.date, minor: release, key: credit.key });
           }
+        };
+        // Ç5-A tur 3c: kuyruğun bağı olan satır — faturanın o anki şüpheli payı kadar, payı tutan kayıtlardan; kalan 120 (yukarıdaki not).
+        const shares = linked && !credit.openedOn
+          ? linked(credit, { open: open.filter(record => (state.get(record.id)?.remaining ?? 0) > 0).map(record => ({ id: record.id, date: record.date, remainingMinor: state.get(record.id).remaining })), done, known: group.refs })
+          : null;
+        if (shares) {
+          const live = new Map(open.map(record => [record.id, record]));
+          for (const share of shares) {
+            if (left <= 0) break;
+            const record = live.get(share.recordId);
+            if (record) collect(record, Math.max(0, Math.round(Number(share.minor) || 0)));
+          }
+        } else {
+          for (const record of open) {
+            if (left <= 0) break;
+            // Taksit kartı şüpheli kaydından SONRA açıldıysa o kayıttan düşmez (yeni satışın parası); önce ya da aynı gün açılan kart düşer.
+            if (credit.openedOn && credit.openedOn > record.date) continue;
+            collect(record, Infinity);
+          }
         }
       }
+      done.add(credit.ref ?? credit.key);
       if (hit.records.length || credit.target) allocations.set(credit.key, hit);
       // Kalanı sıfırlanan kayıt açık listesinden düşer (sonraki alacaklar sonraki kayda).
       for (let k = open.length - 1; k >= 0; k -= 1) if ((state.get(open[k].id)?.remaining ?? 0) <= 0) open.splice(k, 1);
@@ -232,11 +295,13 @@ export function applyDoubtfulToJournal(entries, doubtful) {
     entry.lines.forEach((line, index) => {
       if (!line.party || line.credit <= 0 || controlOf.get(line.party) !== line.account) return;
       const key = `${entry.id}#${index}`;
-      credits.push({ key, party: line.party, date: entry.date, minor: line.credit, target: entry.doubtful?.record || "", skip: entry.doubtful?.skip === true, openedOn: entry.doubtful?.openedOn || "" });
+      credits.push({ key, ref: entry.id, party: line.party, date: entry.date, minor: line.credit, target: entry.doubtful?.record || "", skip: entry.doubtful?.skip === true, openedOn: entry.doubtful?.openedOn || "" });
       lineRefs.set(key, { entry, line });
     });
   }
-  const { allocations, extras, state } = allocateDoubtful({ records, provisions: doubtful?.provisions || [], credits });
+  // Ç5-A tur 3c: şüpheli ↔ kuyruk kuralının geri çağrısı yükleyiciden (lib/bank/doubtful.mjs doubtfulRows → linked; ikinci yükleyici doubtfulState aynısını verir).
+  // B1: aynı gün aynı sınıftaki alacakların yazım sırası yükleyiciden (lib/bank/doubtful.mjs doubtfulRows → writeOrder; SQL yükleyicisinin kolonlarıyla aynı kaynak).
+  const { allocations, extras, state } = allocateDoubtful({ records, provisions: doubtful?.provisions || [], credits, linked: typeof doubtful?.linked === "function" ? doubtful.linked : null, writeOrder: typeof doubtful?.writeOrder === "function" ? doubtful.writeOrder : null });
   for (const [key, hit] of allocations) {
     const ref = lineRefs.get(key);
     if (!ref) continue;

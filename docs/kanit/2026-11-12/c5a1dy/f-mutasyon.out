@@ -1,0 +1,5 @@
+[mutant 1] süzgeçli yolda taksit satırlarının kartları kapsama girmez (yalnız out.plans) · YAKALANDI · fail 3 · error: 'taksit satırı entry-5df19eb0-3eb6-40e1-b0de-6d7644fbd5a3: süzgeçli türetme boş' ‖ error: '1 subtest failed'
+[mutant 2] karar yalnız kart okununca sorulur (taksit satırı tek başına okununca sorulmaz) · YAKALANDI · fail 3 · error: 'taksit satırı entry-5df19eb0-3eb6-40e1-b0de-6d7644fbd5a3: süzgeçli türetme boş' ‖ error: '1 subtest failed'
+[mutant 3] kart süzgeci ters (ids DIŞINDAKİ kartlar) · YAKALANDI · fail 3 · error: |- ‖ error: '1 subtest failed'
+[mutant 4] açılış satırları süzgeçte başka kartınkiler (openings kapsamı boş) · YAKALANDI · fail 1 · error: |- ‖ error: '1 subtest failed'
+[mutasyon özet] 4/4 yakalandı

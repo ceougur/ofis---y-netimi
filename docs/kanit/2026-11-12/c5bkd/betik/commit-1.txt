@@ -1,0 +1,21 @@
+2.5.0 Ç5-B kapanış düzeltmesi (1/6): satışla açılan kart kendi satışını her koşulda tanır (ORTA-1, S110 = A)
+
+Kapanış dar kontrolü ORTA-1 (GERİLEME): stoktan veresiye satışla açılan kartın "kendi satışı"
+bugünkü tutar eşitliğine ya da kayıt anı eşitliğine bakılarak tanınıyordu; kart tutarı sonradan
+düzenlenince ve gerçek (akan) saatte ikisi de tutmuyor, kart elle kola (S120) düşüp carinin elle
+borcunu içine alıyordu (gecikmiş 700 → 1.200; elle Borç 500 takvimden kayboluyordu; bakiye aynı).
+
+- Kartın kaynağı KALICI bilgiden: kartın açılış izi (plan.created). Yeni kartlarda izde satışın
+  stok hareketi kimliği (saleMoveId); eski veride (2.4.9'a kadar) hemen önceki 'stock.out' izinden
+  çıkarılır (aynı kullanıcı, aynı cari, kartın AÇILIŞ tutarı). routes/plans.mjs saleSources →
+  lib/accounts.mjs coverSale → lib/obligation-queue.mjs ownSaleOf.
+- S133 = C: kaynağı bilinmeyen (elle açılan / izi olmayan) kartta eski tanıma AYNEN.
+- Testler adımlı saatle (her kayıt anı farklı; ön koşul veri tabanından doğrulanır): Tutarı Düzenle
+  (azalt / artır), faturasız stok iadesi (küçülten / küçültmeyen), vadesiz elle borç, iki satış
+  kartı, yeniden açılış; eski veri çıkarımının koşulları; saf kuyruk dalları (K5, K6, K24, K25).
+- v2.4.9 fark fikstürü yeniden üretildi (46 eski sınıfın v2.4.9 sayıları birebir aynı) + V1–V4:
+  tutarı düzenlenmiş / iadeyle küçülmüş / iade almış satış kartı, Kartı Kapat (15 fark, karar no ile).
+- Mutasyon koşucusuna --yalniz süzgeci; K5, K6, K24, K25 + KD1-a … KD1-i (13 / 13 öldü).
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01EhegDvmPQ9hx2ibfitm6og

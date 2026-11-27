@@ -1,0 +1,68 @@
+{
+ "kod": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a076afd863444806e",
+ "yuk": [
+  "0.98 1.05 1.10",
+  "0.99 1.05 1.10",
+  "0.99 1.05 1.10",
+  "1.06 1.06 1.10",
+  "1.06 1.06 1.10",
+  "1.34 1.12 1.12"
+ ],
+ "kalabalikCariSatir": 129,
+ "sonuc": {
+  "karttan tahsilat yazımı": {
+   "n": 5,
+   "ortanca": 932.3,
+   "enIyi": 920.9,
+   "olayDongusuEnCok": 954.2
+  },
+  "Cari Listesi (yazımdan sonra ilk)": {
+   "n": 5,
+   "ortanca": 633.1,
+   "enIyi": 608.8,
+   "olayDongusuEnCok": 632.3
+  },
+  "Cari Listesi (ılık)": {
+   "n": 5,
+   "ortanca": 557.1,
+   "enIyi": 553.8,
+   "olayDongusuEnCok": 0
+  },
+  "cari kartı (kalabalık)": {
+   "n": 5,
+   "ortanca": 178.4,
+   "enIyi": 174.7,
+   "olayDongusuEnCok": 0
+  },
+  "Taksitler listesi": {
+   "n": 5,
+   "ortanca": 635.2,
+   "enIyi": 557.9,
+   "olayDongusuEnCok": 9.7
+  },
+  "Vade Takip": {
+   "n": 5,
+   "ortanca": 1229.8,
+   "enIyi": 1156.2,
+   "olayDongusuEnCok": 1334.8
+  },
+  "zil / takvim": {
+   "n": 5,
+   "ortanca": 1646.4,
+   "enIyi": 1585.2,
+   "olayDongusuEnCok": 1511
+  },
+  "fatura kaydı": {
+   "n": 5,
+   "ortanca": 171.2,
+   "enIyi": 170.6,
+   "olayDongusuEnCok": 198.4
+  },
+  "Cari Listesi (fatura yazımından sonra ilk)": {
+   "n": 5,
+   "ortanca": 1475.5,
+   "enIyi": 1407,
+   "olayDongusuEnCok": 0
+  }
+ }
+}

@@ -1,0 +1,11 @@
+eski kod: ccf0b0ca (/tmp/c4-eski-surum-FQMphO/eski-ccf0b0ca)
+(node:19813) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✓ ön koşul: eski sürümde Defter Türü yok
+✓ 001 (gerçek kişi, TCKN) Seçilmedi: unset
+✓ 002 (tüzel kişi, VKN) Seçilmedi: unset
+✓ eski firma bilgisi yerinde
+✓ açılışta ayar satırı yazılmadı (sessiz çıkarım yok)
+✓ 002 Tümünü Sıfırla'dan sonra Bilanço Esası korunur
+✓ 001 ayrı ayarını taşır
+7 geçti, 0 kaldı

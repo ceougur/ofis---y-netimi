@@ -1,0 +1,36 @@
+#!/usr/bin/env python3
+"""Kâhin bakımı 6 — eski modelle (7d6c6369 kâhin kopyası + yeni test dosyaları) kırmızı testlerin NEDEN dökümü (ders 7, 38).
+
+python3 -I neden_dokumu.py <kahin6-eski-model-kirmizi.log>
+Her FAIL / ERROR bloğu için: test adı, beklenen neden (bakımın kararı), görülen ileti (son istisna satırı) ve eşleşme.
+"""
+import re
+import sys
+
+BEKLENEN = {
+    "test_s78_s39_kart_iade_supheli": ("S39", "Kredi Kartına İade"),
+    "test_S39_kart_iade_s25_ile_ayni": ("S39", "Kredi Kartına İade"),
+    "test_s79_s40_geri_yuklenen_kasa_tutar_disi_alan": ("S40", "tutar dışı alanı düzeltildi"),
+    "test_S40_kapsam_disi_kahin_susar": ("S40", "tutar dışı alanı düzeltildi"),
+    "test_senaryo_ve_beklenen_dosyalari_guncel": ("dosya güncelliği", ""),
+}
+
+metin = open(sys.argv[1], encoding="utf-8").read()
+bloklar = re.split(r"^={50,}\n", metin, flags=re.M)
+sayi, tamam = 0, True
+for b in bloklar:
+    m = re.match(r"(FAIL|ERROR): (\S+) \(", b)
+    if not m:
+        continue
+    sayi += 1
+    ad = m.group(2)
+    satirlar = [s for s in b.splitlines() if re.match(r"^(AssertionError|[A-Za-z_.]+Error)\b", s)]
+    son = satirlar[-1] if satirlar else "(ileti yok)"
+    karar, anahtar = BEKLENEN.get(ad, ("BEKLENMEYEN", "\0"))
+    eslesti = karar != "BEKLENMEYEN" and (anahtar in b)
+    tamam &= eslesti
+    print(f"{m.group(1)} {ad}\n  karar: {karar}\n  görülen: {son[:300]}\n  beklenen nedenle mi: {'EVET' if eslesti else 'HAYIR'}\n")
+print(f"kırmızı test: {sayi} (beklenen {len(BEKLENEN)}); hepsi beklenen nedenle: {'EVET' if tamam and sayi == len(BEKLENEN) else 'HAYIR'}")
+m = re.search(r"^# tests (\d+)\n# pass (\d+)\n# fail (\d+)", metin, flags=re.M)
+print(f"özet: tests {m.group(1)}, pass {m.group(2)}, fail {m.group(3)}" if m else "özet: okunamadı")
+sys.exit(0 if tamam and sayi == len(BEKLENEN) else 1)

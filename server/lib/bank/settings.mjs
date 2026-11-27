@@ -16,7 +16,7 @@ export const SETTINGS_KEY = "bank.settings";
 
 const EXPENSE_GL = ROLE_GL.expense;
 const INCOME_GL = ROLE_GL.income;
-/** Masraf ve komisyon eşlemesi: faturalı masrafın gider kalemi olabilen hesaplar (770 Genel Giderler, 653 Komisyon Giderleri). */
+/** Masraf ve komisyon eşlemesi: faturalı masrafın gider kalemi olabilen hesaplar (770 Genel Yönetim Giderleri, 653 Komisyon Giderleri). */
 export const FEE_GL = Object.freeze(["770", "653"]);
 
 // Masraf türleri (§8.11 Temel → Masraf): hesabı masraf türü belirler (vergi kipinden bağımsız; Ek A.1/24).
@@ -154,7 +154,8 @@ export const SPEC = Object.freeze([
       ["pos", "Kredi Kartı Tahsilatları (POS)", fixed("108", "108"), ""],
       ["loan", "Banka Kredileri", fixed("300", "300"), ""],
       ["card", "Kredi Kartları", fixed("309", "309"), ""],
-      ["opening", "Açılış ve Devir Bakiyeleri", fixed("500", "500"), ""],
+      // 2.5.0 Ç5-A (B3): açılış ve Devir Kapanışı defterde 519'a yazılır (saklı satır kodu 500 değişmez; lib/bank/voucher.mjs effectiveGl).
+      ["opening", "Eşleştirilecek Açılış Bakiyeleri", fixed("519", "519"), ""],
     ],
   },
   {

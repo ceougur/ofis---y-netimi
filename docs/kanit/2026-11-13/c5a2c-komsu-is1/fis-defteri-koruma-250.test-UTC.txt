@@ -1,0 +1,204 @@
+TAP version 13
+# (node:5461) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Ç2 tur 1 — ORTA-1: alt defter hesabına fiş yazılmaz (boş kurulum; modül kullanılmış olsun olmasın)
+    # Subtest: boş kurulumda alt defterin 20 hesabının her birine (hesap ya da alt hesabıyla) yazan fiş 400 voucher-subledger-account; hiçbir fiş yazılmaz, numara tüketilmez
+    ok 1 - boş kurulumda alt defterin 20 hesabının her birine (hesap ya da alt hesabıyla) yazan fiş 400 voucher-subledger-account; hiçbir fiş yazılmaz, numara tüketilmez
+      ---
+      duration_ms: 16.408397
+      type: 'test'
+      ...
+    # Subtest: alt defter dışındaki hesaplar (153 dahil: N-01 dönem sonu stok değerlemesi) fişle yazılır
+    ok 2 - alt defter dışındaki hesaplar (153 dahil: N-01 dönem sonu stok değerlemesi) fişle yazılır
+      ---
+      duration_ms: 211.459791
+      type: 'test'
+      ...
+# (node:5461) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: dar kontrol p1b / p1c: boş kurulumda 121 fişi reddedilir → ilk senet girişi 200 → dönem kilidi 200 → Mutabakat Testi tutarlı (kalıcı fark yok)
+    ok 3 - dar kontrol p1b / p1c: boş kurulumda 121 fişi reddedilir → ilk senet girişi 200 → dönem kilidi 200 → Mutabakat Testi tutarlı (kalıcı fark yok)
+      ---
+      duration_ms: 277.493406
+      type: 'test'
+      ...
+    1..3
+ok 1 - Ç2 tur 1 — ORTA-1: alt defter hesabına fiş yazılmaz (boş kurulum; modül kullanılmış olsun olmasın)
+  ---
+  duration_ms: 892.725284
+  type: 'suite'
+  ...
+# Subtest: Ç2 tur 1 — DÜŞÜK-3: MA bugün tarihli fiş, MB kilit yalnız ileri, MC istek kimliğinde sınıf, MG yevmiyede alt hesap
+    # Subtest: MA: bugün tarihli fiş yazılır (yalnız yarın ve sonrası 400)
+    ok 1 - MA: bugün tarihli fiş yazılır (yalnız yarın ve sonrası 400)
+      ---
+      duration_ms: 9.713001
+      type: 'test'
+      ...
+    # Subtest: MB: yinelenen kapanış kilidi geri çekmez — kilit sonradan ileri alındıysa aynı kapanışın yinelenmesi kilidi ve izi değiştirmez
+    ok 2 - MB: yinelenen kapanış kilidi geri çekmez — kilit sonradan ileri alındıysa aynı kapanışın yinelenmesi kilidi ve izi değiştirmez
+      ---
+      duration_ms: 220.104314
+      type: 'test'
+      ...
+    # Subtest: MC: aynı istek kimliği, yalnız sınıfı farklı (closing ↔ period-end) → 409 request-id-reused (yeni fiş yok)
+    ok 3 - MC: aynı istek kimliği, yalnız sınıfı farklı (closing ↔ period-end) → 409 request-id-reused (yeni fiş yok)
+      ---
+      duration_ms: 9.272607
+      type: 'test'
+      ...
+    # Subtest: MG: fiş satırının alt hesabı yevmiyede (Ana Defter maddesi ve Yevmiye Defteri raporu) aynen görünür
+    ok 4 - MG: fiş satırının alt hesabı yevmiyede (Ana Defter maddesi ve Yevmiye Defteri raporu) aynen görünür
+      ---
+      duration_ms: 16.664576
+      type: 'test'
+      ...
+    1..4
+ok 2 - Ç2 tur 1 — DÜŞÜK-3: MA bugün tarihli fiş, MB kilit yalnız ileri, MC istek kimliğinde sınıf, MG yevmiyede alt hesap
+  ---
+  duration_ms: 554.661935
+  type: 'suite'
+  ...
+# Subtest: Ç2 tur 1 — madde 5: fişin metin alanları nesne / dizi almaz ([object Object] kalıcı saklanmaz)
+    # Subtest: ters kayıt ucu: açıklama nesne ya da dizi → 400 voucher-text, ters kayıt yazılmaz; metin açıklama saklanır
+    ok 1 - ters kayıt ucu: açıklama nesne ya da dizi → 400 voucher-text, ters kayıt yazılmaz; metin açıklama saklanır
+      ---
+      duration_ms: 53.829593
+      type: 'test'
+      ...
+    # Subtest: iç API: açıklama, kaynak ya da satır notu nesne → 400 voucher-text
+    ok 2 - iç API: açıklama, kaynak ya da satır notu nesne → 400 voucher-text
+      ---
+      duration_ms: 0.914638
+      type: 'test'
+      ...
+    1..2
+ok 3 - Ç2 tur 1 — madde 5: fişin metin alanları nesne / dizi almaz ([object Object] kalıcı saklanmaz)
+  ---
+  duration_ms: 353.316396
+  type: 'suite'
+  ...
+# Subtest: Ç2 tur 1 — DÜŞÜK-2: "kapanmış fiş" tetikleyicisi doğrusal; 12 atlatma denemesi yine engelli
+    # Subtest: dar kontrolün 12 atlatma denemesi (programın dosyasında, ayrı bağlantı) engelli; fiş verisi değişmez; dış bağlantının yarım fişi yalnız eksik sırasıyla tamamlanır
+    ok 1 - dar kontrolün 12 atlatma denemesi (programın dosyasında, ayrı bağlantı) engelli; fiş verisi değişmez; dış bağlantının yarım fişi yalnız eksik sırasıyla tamamlanır
+      ---
+      duration_ms: 352.11196
+      type: 'test'
+      ...
+    # Subtest: 24.000 satırlık fişin satırları (yalnız tetikleyiciler, bellek içi) 2 sn'den kısa sürede yazılır — eski kural (her satırda COUNT(*)) O(n²): 16.000 satır ≈ 4 sn ölçüldü
+    ok 2 - 24.000 satırlık fişin satırları (yalnız tetikleyiciler, bellek içi) 2 sn'den kısa sürede yazılır — eski kural (her satırda COUNT(*)) O(n²): 16.000 satır ≈ 4 sn ölçüldü
+      ---
+      duration_ms: 56.260029
+      type: 'test'
+      ...
+    1..2
+ok 4 - Ç2 tur 1 — DÜŞÜK-2: "kapanmış fiş" tetikleyicisi doğrusal; 12 atlatma denemesi yine engelli
+  ---
+  duration_ms: 408.565887
+  type: 'suite'
+  ...
+# Subtest: Ç2 tur 1 — DÜŞÜK-1 (ORTA): eski sürüm sıfırlamasının onarımı yalnız AYNI şirketin sıfırlama izini sayar
+    # Subtest: iki şirket (dar kontrol p5): 001'in izsiz fişi, 002 sıfırlanınca 001'in dosyasına düşen 'company.reset' (entity 002) yüzünden KALDIRILMAZ
+    ok 1 - iki şirket (dar kontrol p5): 001'in izsiz fişi, 002 sıfırlanınca 001'in dosyasına düşen 'company.reset' (entity 002) yüzünden KALDIRILMAZ
+      ---
+      duration_ms: 758.994647
+      type: 'test'
+      ...
+    # Subtest: geri yükleme: 002 sıfırlandıktan sonra alınan 001 yedeği (izsiz fiş + entity 002 sıfırlama izi) geri yüklenince 001'in fişi kalır; yedekten sonraki fiş gider
+    ok 2 - geri yükleme: 002 sıfırlandıktan sonra alınan 001 yedeği (izsiz fiş + entity 002 sıfırlama izi) geri yüklenince 001'in fişi kalır; yedekten sonraki fiş gider
+      ---
+      duration_ms: 940.618167
+      type: 'test'
+      ...
+    1..2
+ok 5 - Ç2 tur 1 — DÜŞÜK-1 (ORTA): eski sürüm sıfırlamasının onarımı yalnız AYNI şirketin sıfırlama izini sayar
+  ---
+  duration_ms: 1716.456577
+  type: 'suite'
+  ...
+# Subtest: Ç2 tur 2 — B1: eski sürüm sıfırlamasının onarımı YAZIM SIRASIYLA (duvar saatinden bağımsız); çift kuralı iki yönlü; kuşkulu fiş görünür kayıtta
+    # Subtest: saat geri (dar kontrol k5-saat-ters): asıl fiş 10:00, saat geri alınıp ters kaydı 08:00, eski sürüm 09:00'da sıfırlar → asıl fiş ve ters kaydı BİRLİKTE kaldırılır; asıl fiş etkin kalmaz
+    ok 1 - saat geri (dar kontrol k5-saat-ters): asıl fiş 10:00, saat geri alınıp ters kaydı 08:00, eski sürüm 09:00'da sıfırlar → asıl fiş ve ters kaydı BİRLİKTE kaldırılır; asıl fiş etkin kalmaz
+      ---
+      duration_ms: 363.726571
+      type: 'test'
+      ...
+    # Subtest: ikinci şirket (dar kontrol k5-002-v249), saat geri: 002'nin fişleri (biri ters kayıtlı) 10:00'da, eski sürüm 002'yi 09:00'da (saat geri) sıfırlar → 002'de 3 fiş kaldırılır; 001'in izli fişi kalır
+    ok 2 - ikinci şirket (dar kontrol k5-002-v249), saat geri: 002'nin fişleri (biri ters kayıtlı) 10:00'da, eski sürüm 002'yi 09:00'da (saat geri) sıfırlar → 002'de 3 fiş kaldırılır; 001'in izli fişi kalır
+      ---
+      duration_ms: 762.89318
+      type: 'test'
+      ...
+    # Subtest: ikinci şirket (dar kontrol k5-002-v249), saat ileri: 002'nin fişleri (biri ters kayıtlı) 10:00'da, eski sürüm 002'yi 11:00'de sıfırlar → 002'de 3 fiş kaldırılır; 001'in izli fişi kalır
+    ok 3 - ikinci şirket (dar kontrol k5-002-v249), saat ileri: 002'nin fişleri (biri ters kayıtlı) 10:00'da, eski sürüm 002'yi 11:00'de sıfırlar → 002'de 3 fiş kaldırılır; 001'in izli fişi kalır
+      ---
+      duration_ms: 763.811183
+      type: 'test'
+      ...
+    # Subtest: yazım sırası: eski sürüm sıfırlamasından SONRA yazılan fiş (saat geri: duvar saati sıfırlamadan önce) izini başka nedenle yitirirse KALIR; Mutabakat Günlüğü'nde görünür kayıt, açılışta yinelenmez
+    ok 4 - yazım sırası: eski sürüm sıfırlamasından SONRA yazılan fiş (saat geri: duvar saati sıfırlamadan önce) izini başka nedenle yitirirse KALIR; Mutabakat Günlüğü'nde görünür kayıt, açılışta yinelenmez
+      ---
+      duration_ms: 472.966236
+      type: 'test'
+      ...
+    # Subtest: yazım sırası: işlem geçmişini SİLMEYEN sıfırlama izi (izi duran fişten sonra eklenmiş; duvar saati fişten sonra) izsiz fişi kaldırmaz; görünür kayıt
+    ok 5 - yazım sırası: işlem geçmişini SİLMEYEN sıfırlama izi (izi duran fişten sonra eklenmiş; duvar saati fişten sonra) izsiz fişi kaldırmaz; görünür kayıt
+      ---
+      duration_ms: 383.637041
+      type: 'test'
+      ...
+    # Subtest: çift kuralı İKİ YÖNLÜ — asıl fiş kalıyorsa ters kaydı da kalır (yazım sırası bozuk dosya: ters kayıt izli fişten ÖNCE, asıl fiş SONRA görünüyor) → ikisi de kalır, asıl fiş tek başına etkin olmaz
+    ok 6 - çift kuralı İKİ YÖNLÜ — asıl fiş kalıyorsa ters kaydı da kalır (yazım sırası bozuk dosya: ters kayıt izli fişten ÖNCE, asıl fiş SONRA görünüyor) → ikisi de kalır, asıl fiş tek başına etkin olmaz
+      ---
+      duration_ms: 448.265478
+      type: 'test'
+      ...
+    # Subtest: çift kuralı (baş mimar kararı 5) — ters kaydı kalıyorsa asıl fiş de kalır: sıfırlamadan önce yazılmış asıl fişin izli ters kaydı sıfırlamadan sonra yazılmış (ör. onarım o açılışta çalışmadı) → asıl fiş kaldırılmaz
+    ok 7 - çift kuralı (baş mimar kararı 5) — ters kaydı kalıyorsa asıl fiş de kalır: sıfırlamadan önce yazılmış asıl fişin izli ters kaydı sıfırlamadan sonra yazılmış (ör. onarım o açılışta çalışmadı) → asıl fiş kaldırılmaz
+      ---
+      duration_ms: 369.880424
+      type: 'test'
+      ...
+    # Subtest: geri yükleme + saat geri: eski sürüm sıfırlaması (duvar saati fişlerden önce) → açılışta 3 fiş kaldırılır; sıfırlama öncesi yedek geri yüklenince fişler izleriyle döner, onarım yok
+    ok 8 - geri yükleme + saat geri: eski sürüm sıfırlaması (duvar saati fişlerden önce) → açılışta 3 fiş kaldırılır; sıfırlama öncesi yedek geri yüklenince fişler izleriyle döner, onarım yok
+      ---
+      duration_ms: 620.39186
+      type: 'test'
+      ...
+    1..8
+ok 6 - Ç2 tur 2 — B1: eski sürüm sıfırlamasının onarımı YAZIM SIRASIYLA (duvar saatinden bağımsız); çift kuralı iki yönlü; kuşkulu fiş görünür kayıtta
+  ---
+  duration_ms: 4214.406324
+  type: 'suite'
+  ...
+# Subtest: Ç2 tur 1 — madde 6: postAll lockThrough PUT period-lock'un ön adımından (POS) geçer
+    # Subtest: Elle Onay kipi: valörü gelmiş bekleyen kalem varken 409 bank-pending-before-lock (fiş ve kilit yok); force → kilit konur, kalem kilit + 1'e Gecikmeli Aktarım (PUT 'Yine de Kilitle' ile aynı)
+    ok 1 - Elle Onay kipi: valörü gelmiş bekleyen kalem varken 409 bank-pending-before-lock (fiş ve kilit yok); force → kilit konur, kalem kilit + 1'e Gecikmeli Aktarım (PUT 'Yine de Kilitle' ile aynı)
+      ---
+      duration_ms: 413.490667
+      type: 'test'
+      ...
+# (node:5461) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: Otomatik kip: vadesi gelmiş kalem kilitten ÖNCE kendi valör gününe (12.10) aktarılır (PUT period-lock ile aynı), sonra fiş + kilit
+    ok 2 - Otomatik kip: vadesi gelmiş kalem kilitten ÖNCE kendi valör gününe (12.10) aktarılır (PUT period-lock ile aynı), sonra fiş + kilit
+      ---
+      duration_ms: 672.426662
+      type: 'test'
+      ...
+    1..2
+ok 7 - Ç2 tur 1 — madde 6: postAll lockThrough PUT period-lock'un ön adımından (POS) geçer
+  ---
+  duration_ms: 1086.219111
+  type: 'suite'
+  ...
+1..7
+# tests 23
+# suites 7
+# pass 23
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 9587.749701
+cikis=0

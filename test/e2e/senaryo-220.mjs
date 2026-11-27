@@ -15,6 +15,7 @@ import { chromium } from "playwright";
 import { createApp } from "../../server/app.mjs";
 import { buildXlsx } from "../../server/lib/xlsx-write.mjs";
 import { escClose } from "./esc-kapat.mjs";
+import { isoDay } from "../../server/lib/plans.mjs";
 
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), "artifacts", "senaryo-220");
 fs.rmSync(OUT, { recursive: true, force: true });
@@ -26,7 +27,8 @@ const xlsx = (file, name, columns, rows) => {
   writeFileSync(target, buildXlsx([{ name, columns, rows }], { title: name }));
   return target;
 };
-const iso = days => new Date(Date.now() + days * 86400000).toISOString().slice(0, 10);
+// Program "bugün"ü yerel günle hesaplar (period.mjs today, plans.mjs isoDay); UTC günü yerel günden ayrışınca (İstanbul 00:00–03:00) yanlış gün olur (ders 13, 22).
+const iso = days => isoDay(new Date(Date.now() + days * 86400000));
 const tr = value => value.split("-").reverse().join(".");
 
 
@@ -71,7 +73,8 @@ const shot = async name => {
   await page.screenshot({ path: path.join(OUT, `${String(shotNo).padStart(2, "0")}-${name}.png`) });
 };
 const modal = ".hof-modal-backdrop.is-visible";
-const top = `${modal}:last-of-type`;
+// Ders 39: en üstteki pencere konuma bağlanmaz — pencereden sonra gövdeye eklenen bir div (bildirim kabı) `:last-of-type`ı boşa düşürür (zorla: pencere-yaris-zorla.mjs, HOF_ZORLA=div).
+const top = `${modal}:nth-last-child(1 of ${modal})`;
 const call = (url, body) => page.evaluate(async ([url, body]) => (await (await fetch(url, { method: body ? "POST" : "GET", headers: { "content-type": "application/json" }, body: body ? JSON.stringify(body) : undefined })).json()).data, [url, body]);
 const closeAll = async () => {
   for (let i = 0; i < 6 && (await page.$(modal)); i += 1) {

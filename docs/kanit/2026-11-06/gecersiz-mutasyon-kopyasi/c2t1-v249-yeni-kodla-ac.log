@@ -1,0 +1,26 @@
+ok 1 - şema 47 (47 bekleniyor); uygulanan göçler [46,47]
+ok 2 - göç 46'nın kurduğu 'kapanmış fiş' tetikleyicisi yeni metin (COUNT(*) yok)
+ok 3 - açılış onarımı yok (null)
+not ok 4 - kilit : iz (güncel tanım) = iz (2.4.9 tanımı)
+ok 5 - Mutabakat Testi tutarlı ()
+ok 6 - alt defter hesabı (121) fişi reddedildi: 400 voucher-subledger-account
+file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t1-mut-2d81e8fd/server/lib/ledger-vouchers.mjs:47
+const bad = (status, message, code, extra = {}) => new HttpError(status, message, { code, ...extra });
+                                                   ^
+
+HttpError: İleri tarihli fiş yazılamaz (06.11.2026).
+    at bad (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t1-mut-2d81e8fd/server/lib/ledger-vouchers.mjs:47:52)
+    at write (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t1-mut-2d81e8fd/server/lib/ledger-vouchers.mjs:307:37)
+    at file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t1-mut-2d81e8fd/server/lib/ledger-vouchers.mjs:348:37
+    at Array.map (<anonymous>)
+    at file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t1-mut-2d81e8fd/server/lib/ledger-vouchers.mjs:348:25
+    at Object.tx (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t1-mut-2d81e8fd/server/lib/db.mjs:442:24)
+    at postAll (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t1-mut-2d81e8fd/server/lib/ledger-vouchers.mjs:347:18)
+    at Object.post (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t1-mut-2d81e8fd/server/lib/ledger-vouchers.mjs:414:44)
+    at file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t1-betik/v249-yeni-ac.mjs:42:17
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5) {
+  status: 400,
+  extra: { code: 'date-future', field: 'date' }
+}
+
+Node.js v22.23.4

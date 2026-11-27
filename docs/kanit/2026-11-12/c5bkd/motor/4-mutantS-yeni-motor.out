@@ -1,0 +1,12 @@
+✗ işlem 46 cari-sil:
+  Cari Müşteri 1 T7 (1): açık kalemlerin toplamı 3766,07 ≠ bakiye (model) 0,00 — kalemler toplamı = cari bakiyesi
+
+Tohum 7: 46 işlem, 46 doğrulama, 6 beklenen ret (eksiye düşürme / aşım), eşzamanlı 0 istek · 3.4 sn
+  Beklenen retler: cash-negative 2, date-future 2, return-exceeds 1, due-before-start 1
+  İşlem türleri: alim 11, kasa 2, fatura-satis 3, satis 4, taksit-tahsil 2, cari 4, kart-sil 1, fatura-hatasi 4, kayit-duzelt 2, cek-ode 2, hareket-duzelt 1, pos-tahsil 1, fatura-taslak 2, kayit-tahsil 1, kart 2, iade 1, cek-tahsil 1, kilit-ihlali 2, tarih-hatasi 1, banka-fis 5, hareket-sil 1, taksit-sil 1, fatura-iade 1, fatura-alis 1, cari-sil 1
+  Model: {"kasa":{"cash":"4852,12","bank":"111968,13","card":"-264,80"},"cariler":12,"urunler":10,"kartlar":6,"kasaHareketi":2,"bankaSatiri":7,"bankaTersKayit":0,"bankalarArasiTransfer":0,"cariHareketi":4,"stokHareketi":18,"taksitHareketi":1,"hesabaBagliModulHavalesi":4,"kurumsalKartaBagli":1,"kurumsalKartBakiyesi":"-264,80","supheliKayit":0,"supheliAcik":"0,00"}
+  Fatura: {"kesilen":6,"iptal":0,"taslak":0,"turler":{"sale":3,"smm":1,"sale_return":1,"purchase":1},"cek":2} · seriler {} · tekil ETTN -
+  Mutabakat kapısı süresi: ortanca 9 ms, en çok 27 ms
+  ✗ UYUŞMAZLIK (1):
+    işlem 46 (cari-sil, 2026-07-26)
+      Cari Müşteri 1 T7 (1): açık kalemlerin toplamı 3766,07 ≠ bakiye (model) 0,00 — kalemler toplamı = cari bakiyesi

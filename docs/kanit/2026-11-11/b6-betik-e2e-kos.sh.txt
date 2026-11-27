@@ -1,0 +1,12 @@
+#!/bin/bash
+# Birleşik tur 6 — dokunulan ekranların e2e'leri (G2 komşu; taramayla: data-mv / data-pos-filter / data-param / data-inbox / data-rc-main + odak / form izolasyonu + gezinti).
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+W=/home/user/ofis---y-netimi/.claude/worktrees/agent-a115f88e3014ea777
+export PLAYWRIGHT_BROWSERS_PATH=$S/pw-1194 HUKUK_LICENSE_URL=http://127.0.0.1:9 KANIT_DIR=$S/birlesik6-kanit
+cd "$W" || exit 1
+N="node --disable-warning=ExperimentalWarning"
+for kip in odak fill yazarken tutar; do node tools/kanit.mjs kos "b6-e2e-banka-210-arama-yaris-$kip" -- $N test/e2e/banka-210-arama-yaris.mjs --kip $kip --deneme 5; done
+for f in banka-210-daha-fazla-yaris senaryo-216 senaryo-220 senaryo-222 senaryo-223 senaryo-224 senaryo-banka-210-temel senaryo-banka-210 senaryo-banka-210b senaryo-banka-rapor-243 senaryo-ekstre-ayrinti-245 senaryo-ekstre-ayrinti-247 senaryo-kasa-acilis-uyari-250 senaryo-pos-220 senaryo-supheli-230 senaryo-tahsile-ver-220 uiux-ui11-244 senaryo-banka-220 gg243-odak-dugme gg243-odak-kalem-sil form-izolasyon-b4-yaris senaryo-211; do
+  node tools/kanit.mjs kos "b6-e2e-$f" -- $N "test/e2e/$f.mjs"
+done
+echo BITTI

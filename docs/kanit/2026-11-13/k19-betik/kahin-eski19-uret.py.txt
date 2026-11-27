@@ -1,0 +1,73 @@
+import re
+S='/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad'
+R='/home/user/ofis---y-netimi/'
+ls=open(R+'docs/2.5.0-IS-LISTESI.md',encoding='utf-8').read().split('\n')
+def soru(n):
+    x=[l for l in ls if l.startswith(f'  S{n} (')]; assert len(x)==1,n
+    m=re.search(r'dayanak yok\)+: ',x[0]); assert m,n; return x[0][m.end():]
+q170=soru(170); q162=soru(162); q157=soru(157)
+k=f"""# Cari kâhini bakımı 19 — karar girdisi (ana oturum yazdı; TEK girdi kaynağın)
+
+Bu dosya, bakım 17 / 18'den sonra çıkan DÜZELTME ve BİLİNEN SINIR kararlarını taşır. Soru metinlerinde geçen 'program bugün' / 'koşuldu' sözleri ve oradaki sayılar kural kaynağı DEĞİLDİR — kural yalnız KARAR ve KAPSAM satırlarıdır. Bu bakım ÇOK KÜÇÜKTÜR: yeni kural YOK; yalnız (1) ana oturumun bakım 17 girdisindeki BELİRSİZ bir örneğin düzeltilmesi, (2) üç bilinen sınır alanında eksik kalan SUSMA.
+
+## 1. DÜZELTME — S162 = B'nin kapsamı ve 'karşılaştırma' örneği (ANA OTURUMUN HATASI; BAŞ MİMAR KARARI 13.11.2026 21:21 UTC — KARARLAR.md'ye 'BAŞ MİMAR KARARI' diye yaz)
+S162'nin kullanıcıya gösterilen sorusu (AYNEN; bakım 17'de sana verilmişti):
+{q162}
+S162 KARAR (kullanıcı 13.11.2026 16:11 UTC, AYNEN: "önerilerin uygun"): S162 = B — taksit kartı carinin borcunun tamamını taşıyorken faturasız stok iadesinde kart sondan küçülmeye DEVAM eder (bugünkü davranış; faturalı iadeyle aynı); BİLİNEN SINIR, kod değişmez.
+DÜZELTME: soru metnindeki KARŞILAŞTIRMA cümlesi ('cariye sonradan 500 borç daha yazılmışsa') YAZIM SIRASINI söylemiyordu — hata ana oturumun. O gün gösterilen karşılaştırma örneğinde 500'lük borç İADEDEN ÖNCE yazılmıştı ('sonradan' = karttan sonra). Bakım 17'de bu örneği 'iade ÖNCE, borç SONRA' sırasıyla kurdun (d45'in karşılaştırma carisi) ve değer bekledin.
+KAPSAM (baş mimar; dayanak S162 = B'nin karar metni — 'kart carinin borcunun tamamını taşıyorken … iadede'): ölçüt iadenin YAZILDIĞI andaki durumdur. (a) Faturasız iade yazıldığı ANDA kart carinin açık borcunun tamamını taşıyorsa alan S162 = B'nin BİLİNEN SINIRI'dır — iadeden SONRA cariye borç yazılması bunu DEĞİŞTİRMEZ: kart toplamı, taksit 'Ödenen'leri ve gecikmiş SUS (bakım 17'de S162 alanında sustuğun anahtarların aynısı; bakiye, 'Tahsil Edilen', 'Kalan' bakım 17'deki gibi yazılır — bakiyede SUSMA). (b) Karşılaştırma örneği DEĞERLE kalır ama doğru sırayla: Borç 900 → Mevcut Borç kartı 900 (3 × 300) → cariye 500 borç daha (İADEDEN ÖNCE yazılır) → faturasız stok iadesi 300 ⇒ kart 900 kalır, iade İLK taksitten düşer ('1. taksit İade 300 · Kalan 0'), 'Tahsil Edilen 0 · Kalan 600 · İade 300', gecikmiş 300. (c) Aynı karşılaştırmada 500'lük borcun TARİHİ iadenin tarihinden sonra, ama YAZIMI iadeden önce ise de (b) geçerlidir — ölçüt yazım sırasıdır, tarih değil.
+YAPILACAK: d45'in karşılaştırma carisini (b)'ye göre düzelt (adım sırası: borç iadeden önce); 'iade önce, borç sonra' sırasını AYRI bir cari olarak tut ve (a)'ya göre SUS; (c) için bir komşu cari ekle (değerle). Senaryo adımlarının listedeki sırası = yazım sırası.
+
+## 2. BİLİNEN SINIR — S170 = B (satış kartı + faturasız iade + caride başka borç: kartın görünen toplamı)
+Soru (AYNEN):
+{q170}
+KARAR (13.11.2026 21:29 UTC — kullanıcı uzaktayken verdiği yetkiyle, 5 dakikalık bekleme sonunda ÖNERİ uygulandı; kullanıcı döndüğünde değiştirebilir — KARARLAR.md'ye böyle yaz): S170 = B — böyle kalsın, BİLİNEN SINIR; kâhin bu kartlarda 'toplam'da ve iadenin tamamen kapattığı / sondan kalkabilecek taksitlerin alanlarında SUSAR.
+KAPSAM (ana oturum): SATIŞLA açılan kartı olan caride FATURASIZ stok iadesi varsa — caride başka borç olsun olmasın — kartın 'toplam' anahtarı SUS; iadenin kapattığı taksitlerin 'Ödenen' anahtarı, o taksitin kartta kalıp kalmayacağı belirsiz olduğu için SUS (taksit yoksa program o anahtarı veremez). S140 = A'nın söylediği değerler AYNEN yazılır: taksit KALANLARI (örnekte [0, 200]), kartın 'Kalan'ı, 'Tahsil Edilen' (S151 = B: iade sayılmaz), gecikmiş, elle borcun kendi vadesi, bakiye. Yani susma YALNIZ 'toplam' ve 'kapanan taksitin Ödenen'i ile sınırlı; bakım 15–18'de bu senaryolarda yazdığın öbür değerler DEĞİŞMEZ.
+
+## 3. BİLİNEN SINIR — S157 = C carilerinde 'toplam' (eksik susma)
+S157'nin sorusu (AYNEN; bakım 16'da sana verilmişti):
+{q157}
+KARAR (kullanıcı 13.11.2026 08:35 UTC): S157 = C — üçü de BİLİNEN SINIR.
+KAPSAM (ana oturum): bakım 16'da bu üç caride kartın 'Ödenen' / 'Kalan' ve ilgili alanlarında susuyorsun; aynı kartların 'toplam' anahtarı da AYNI nedenle SUS (madde 2 ile aynı gerekçe — kartın görünen toplamı bu alanda tanımsız). Bakiye yazılır.
+
+## 4. SUSAN CARİNİN TOPLAM / ÖZET ANAHTARLARI
+KURAL (yöntem; baş mimar): bir caride kalem düzeyinde SUS'tuğun alanlardan TÜRETİLEN her toplam / özet anahtarı da SUS olur (ör. carinin takvim kalemlerinin pencere içi toplamı: kalemlerde susup toplamı 0 yazma). S166 = B carisinde (satış kartı carinin tek borcu + faturasız iade; bakım 18) takvim toplamı bu yüzden SUS. Bütün senaryolarını bu gözle tara: 'kalemlerde SUS + toplamda değer' kalan her anahtarı listele ve sustur; bakiye bu kuralın DIŞINDA (bakiye her zaman yazılır).
+
+## 5. BİLGİ — kural DEĞİŞMEDİ, bir şey yapma
+- S169 = C (13.11.2026 20:56 UTC; aynı yetkiyle): bakım 18 raporundaki gözlemin (aynı caride iki taksit kartı + kartlardan birine 'Fazlasını Avans Yaz' — fazlanın iki kartın 'Tahsil Edilen'inde de görünmesi) BİLİNEN SINIR olarak kalır; S129 = A ve S154 = B AYNEN — beklentilerin DEĞİŞMEZ.
+- S171 = B (13.11.2026 21:38 UTC; aynı yetkiyle): Vade Takip'te ELLE girilen tarih aralığı bugünkü gibi kalır (hazır aralıklar S150 = A aynen). Kâhinde elle aralık için beklentin YOKSA bir şey yapma; varsa ve S150 = A'yı elle aralığa da uyguluyorsan o beklentiyi SUS'a çevir ve raporda yaz.
+
+## 6. MOBİL YAZMA KÂHİNİ (test/bagimsiz/mobil-yazma)
+Mobil yazma kâhini kart göstergelerini cari kâhininin çıktısından AYNEN alıyor (bakım 2). Bu bakımda cari kâhininde sustuğun / düzelttiğin alanlar oraya da yansır: mobil yazma kâhininin kabul dosyasını KENDİ üreticisiyle yeniden üret, bakım 2'nin fark aracıyla (`docs/kanit/2026-11-13/kahinmobil2/arac/`) farkını dök — yukarıdaki maddelerin alanları DIŞINDA BEKLENMEYEN 0 olmalı; mobil öz testi iki saat diliminde koş. Mobil yazma kâhininin KURALI değişmez; sürücüsüne (`program-surucu.mjs`) DOKUNMA.
+"""
+open(S+'/kahin-eski19-kararlar.md','w',encoding='utf-8').write(k)
+open(R+'docs/devir/2.5.0-DEVAM/kahin-eski19-kararlar.md','w',encoding='utf-8').write(k)
+t=open(R+'docs/devir/2.5.0-DEVAM/kahin-eski18-istem.txt',encoding='utf-8').read()
+i0=t.index('## İş'); i1=t.index('## Yöntem')
+bas=t[:i0]; yon=t[i1:]
+def rep(s,a,b,n=1):
+    assert s.count(a)==n,(a[:60],s.count(a)); return s.replace(a,b)
+bas=rep(bas,"ESKİ KÂHİNLER BAKIMI 18 ajanısın (2.5.0 Ç5 — cari kâhini `test/bagimsiz/cari/`)","ESKİ KÂHİNLER BAKIMI 19 ajanısın (2.5.0 Ç5 — cari kâhini `test/bagimsiz/cari/` + mobil yazma kâhininin kabul dosyası `test/bagimsiz/mobil-yazma/`)")
+j0=bas.index('Bu ÇOK KÜÇÜK bir düzeltme bakımıdır'); j1=bas.index('## Girdi')
+bas=bas[:j0]+"Bu ÇOK KÜÇÜK bir düzeltme bakımıdır: YENİ KURAL YOK — (1) ana oturumun bakım 17 girdisindeki belirsiz bir örneğin (S162'nin karşılaştırması — yazım sırası) düzeltilmesi, (2) üç bilinen sınır alanında (S170 = B, S157 = C, S166 = B) eksik kalan susma, (3) mobil yazma kâhininin kabul dosyasının yeniden üretilmesi.\n\n"+bas[j1:]
+bas=bas.replace('kahin-eski18-kararlar.md','kahin-eski19-kararlar.md')
+bas=rep(bas,"`git reset --hard kahin18-taban` (yerel taban dalı = bakım 17'nin dalının ucu — üstüne çalışacaksın; ağaç ana daldan açıldığı için birleşim DEĞİL sıfırlama). Sonra `git log --oneline -4 -- test/bagimsiz/cari` ile bakım 17'nin üç commit'inin dalında olduğunu doğrula.","`git reset --hard kahin19-taban` (yerel taban dalı = mobil yazma kâhini bakımı 2'nin dalının ucu — cari kâhini bakımı 17 ve 18'i de içerir; üstüne çalışacaksın; ağaç ana daldan açıldığı için birleşim DEĞİL sıfırlama). Sonra `git log --oneline -6 -- test/bagimsiz` ile bakım 17, 18 ve mobil bakım 2 commit'lerinin dalında olduğunu doğrula.")
+bas=rep(bas,"`test/bagimsiz/cari/KARARLAR.md` içinde bakım 17 bölümü (§28 — TAMAMI) ile S118, S144 (c), S151 / S158, S154, S162 kurallarını anlatan bölümler.","`test/bagimsiz/cari/KARARLAR.md` içinde bakım 17 ve 18 bölümleri (§28, §29 — TAMAMI) ile S140, S151 / S158, S157, S162, S166 kurallarını anlatan bölümler; `test/bagimsiz/mobil-yazma/README.md` içinde bakım 2 bölümü (kabul dosyasının üretimi).")
+bas=rep(bas,"`test/` altında `test/bagimsiz/cari` + `test/bagimsiz/defter` dışındaki her şey OKUNMAZ.","`test/` altında `test/bagimsiz/cari` + `test/bagimsiz/defter` + `test/bagimsiz/mobil-yazma` (sürücüsü `program-surucu.mjs` HARİÇ — yalnız eşleme satırları aranabilir, koşulmaz, değişmez) dışındaki her şey OKUNMAZ.")
+bas=bas.replace('kahineski4 … 17-arac','kahineski4 … 18-arac ve kahinmobil2/arac').replace('kahineski18-arac','kahineski19-arac')
+is_="""## İş
+1. Önce yorumu KARARLAR.md'ye ("2.5.0 Ç5 bakımı 19", yeni bölüm) yaz ve AYRI commit et (ders 40): girdi dosyasının 1–4. maddeleri — hangi anahtarlar SUS'a döner, hangi örnek düzelir, hangi değerler AYNEN kalır; 'BAŞ MİMAR KARARI' ve 'yetkiyle uygulanan karar' etiketleri girdideki gibi.
+2. Modele / senaryolara işle: (1) S162 — ölçüt iadenin yazıldığı andaki durum (adım sırası); d45'in karşılaştırma carisi doğru sırayla DEĞERLE, 'iade önce, borç sonra' carisi SUS, tarih ↔ yazım sırası komşusu DEĞERLE. (2) S170 = B — satış kartı + faturasız iade: 'toplam' ve iadenin kapattığı taksitin 'Ödenen'i SUS; öbür değerler aynen. (3) S157 = C carilerinde 'toplam' SUS. (4) kalemlerde susan carinin türetilmiş toplam / özet anahtarları SUS (bütün senaryolar taranır; liste raporda).
+3. Mutantlar: (1)(b) için 'iade her zaman sondan küçültür' ve 'iade her zaman ilk taksitten' mutantları karşılaştırma carisinde DEĞERLE yakalanmalı; bakım 6 … 18 mutantları hâlâ yakalanıyor mu (susturulan anahtarlar yüzünden yaşayan mutant çıkarsa adıyla yaz — beklenen bir bedelse gerekçesiyle).
+4. G3: bakım 18'e göre değişen / yeni / kalkan denetim sayıları senaryo senaryo (bakım 17'nin `karsilastir.py` düzeni); girdinin 1–4. maddelerinin alanları DIŞINDA BEKLENMEYEN 0 olmalı. Kalkan (SUS'a dönen) her anahtar adıyla ve maddesiyle listelenir.
+5. Mobil yazma kâhini: kabul dosyasını kendi üreticisiyle yeniden üret, bakım 2'nin fark aracıyla dök (girdinin maddeleri dışında BEKLENMEYEN 0), mobil öz test iki saat diliminde. Kuralı ve sürücüsü DEĞİŞMEZ. Mobil öz testteki 'cari kâhini klasörü HEAD ile aynı' denetimi için cari kâhini değişikliklerini mobil koşusundan ÖNCE commit et.
+6. TOPLU SORULAR: kararların söylemediği HER alt durumu raporun 'KULLANICIYA SORULMALI' bölümünde TEK listede ver (durum, en küçük örnek, iki okuma, her okumada bakiye; çok uç durumsa üçüncü seçenek 'Uç durum böyle kalsın (BİLİNEN SINIR)'); o alanlarda SUS. Önceki bakımlarda sorduklarını YİNELEME.
+
+"""
+yon=yon.replace('kahineski18','kahineski19').replace('(bakım 17 hâli)','(bakım 18 + mobil bakım 2 hâli)').replace('`git archive HEAD test/bagimsiz/defter test/bagimsiz/cari`','`git archive HEAD test/bagimsiz/defter test/bagimsiz/cari test/bagimsiz/mobil-yazma`')
+yon=rep(yon,"Yorum (bakım 17'deki okuma + yeni kural); hâlâ sustuğun sınırlar (iki okuma, sayılarla);","Yorum (dört madde); SUS'a dönen anahtarların TAM listesi (senaryo + anahtar + madde); hâlâ sustuğun öbür sınırlar;")
+p=bas+is_+yon
+assert 'kahin18-taban' not in p and 'BAKIMI 18' not in p
+open(S+'/kahin-eski19-istem.txt','w',encoding='utf-8').write(p)
+open(R+'docs/devir/2.5.0-DEVAM/kahin-eski19-istem.txt','w',encoding='utf-8').write(p)
+print('yazıldı',len(k),len(p))

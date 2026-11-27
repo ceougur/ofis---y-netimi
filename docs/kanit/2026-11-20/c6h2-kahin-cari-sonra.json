@@ -1,0 +1,32 @@
+{
+  "ad": "c6h2-kahin-cari-sonra",
+  "komut": "npm run test:kahin-cari",
+  "commit": "f65e6d4286f05abb182cc3fc4e6788843eb83177",
+  "dal": "worktree-agent-a7236347e0f8b6e8c",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-20T10:51:17.300Z",
+  "sure_sn": 368.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 17253,
+    "gecen": 17253,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h2-ana/2026-11-20/c6h2-kahin-cari-sonra.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a7236347e0f8b6e8c",
+  "ham_cikti_sha256": "375e8c4086a168d0ecb6a68d80e95401843483cce4e8740fd60113ad7f931425",
+  "ham_cikti_bayt": 69341
+}

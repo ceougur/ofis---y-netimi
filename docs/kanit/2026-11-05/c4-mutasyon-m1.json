@@ -1,0 +1,38 @@
+{
+  "ad": "c4-mutasyon-m1",
+  "komut": "node --disable-warning=ExperimentalWarning --test /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c4-mutasyon-m1/test/defter-turu-c4.test.mjs",
+  "commit": "0fc8add42d85e8e89a816374ef0844fd01a29a3a",
+  "dal": "worktree-agent-a1a42f4d745a759a0",
+  "kirli": 6,
+  "izlenmeyen": 15,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T20:05:30.283Z",
+  "sure_sn": 5.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 7,
+    "gecen": 6,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.0 Ç4 Defter Türü › Şirket Verisini Sıfırla: Tüm Hareketleri Sil ve Tümünü Sıfırla ayarı KORUR; dönem kilidi (ledger.) kalkar",
+      "konum": "test/defter-turu-c4.test.mjs:120:3",
+      "hata": "all: Defter Türü korunmalı · + actual - expected · + 'unset' (beklenen operating, gelen unset)"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-05/c4-mutasyon-m1.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a1a42f4d745a759a0",
+  "ham_cikti_sha256": "88900c48f371ac51eb0b5d6a57c5a5877459b49ed11f310861467995a9216638",
+  "ham_cikti_bayt": 3556
+}

@@ -1,0 +1,5 @@
+taban 1 çıkış 1 | SONUÇ: 39 geçti, 1 kaldı |   ✗ zilde: [] 
+yeni 1 çıkış 0 | SONUÇ: 40 geçti, 0 kaldı | 
+taban 2 çıkış 0 | SONUÇ: 40 geçti, 0 kaldı | 
+yeni 2 çıkış 1 | SONUÇ: 39 geçti, 1 kaldı |   ✗ zilde: [] 
+BITTI

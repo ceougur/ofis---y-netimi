@@ -1,0 +1,18 @@
+tarayıcı argümanı: (yok)
+tarayıcı sürümü: 153.0.8010.12
+focusin:INPUT:"":bağlı=true:kökteki=""
+input:INPUT:"BNK-1":bağlı=true:kökteki="BNK-1"
+--innerHTML--
+change:INPUT:"BNK-1":bağlı=true:kökteki="BNK-1"
+blur:INPUT:"BNK-1":bağlı=true:kökteki="BNK-1"
+focusout:INPUT:"BNK-1":bağlı=true:kökteki="BNK-1"
+--bitti--
+odak: BODY
+tarayıcı argümanı: --enable-blink-features=OmitBlurEventOnElementRemoval
+tarayıcı sürümü: 153.0.8010.12
+focusin:INPUT:"":bağlı=true:kökteki=""
+input:INPUT:"BNK-1":bağlı=true:kökteki="BNK-1"
+--innerHTML--
+change:INPUT:"BNK-1":bağlı=true:kökteki="BNK-1"
+--bitti--
+odak: BODY

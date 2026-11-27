@@ -1,0 +1,46 @@
+rastgele-1 [Europe/Istanbul] SINIFLANMADI 0→5 · P 0→0 · U 57→40 · AYNI 229→241
+rastgele-1 [UTC] SINIFLANMADI 0→5 · P 0→0 · U 57→40 · AYNI 229→241
+rastgele-2 [Europe/Istanbul] SINIFLANMADI 1→17 · P 0→0 · U 67→45 · AYNI 209→215
+rastgele-2 [UTC] SINIFLANMADI 1→17 · P 0→0 · U 67→45 · AYNI 209→215
+rastgele-3 [Europe/Istanbul] SINIFLANMADI 0→5 · P 0→0 · U 48→31 · AYNI 229→241
+rastgele-3 [UTC] SINIFLANMADI 0→5 · P 0→0 · U 48→31 · AYNI 229→241
+s11-kasa-carisiz-kg3 [Europe/Istanbul] SINIFLANMADI 0→3 · P 0→0 · U 18→12 · AYNI 12→15
+s11-kasa-carisiz-kg3 [UTC] SINIFLANMADI 0→3 · P 0→0 · U 18→12 · AYNI 12→15
+s17-cari-duzeltme-kg16 [Europe/Istanbul] SINIFLANMADI 0→0 · P 5→0 · U 2→0 · AYNI 15→22
+s17-cari-duzeltme-kg16 [UTC] SINIFLANMADI 0→0 · P 5→0 · U 2→0 · AYNI 15→22
+s19-taksit-kg5 [Europe/Istanbul] SINIFLANMADI 0→2 · P 0→0 · U 8→2 · AYNI 10→14
+s19-taksit-kg5 [UTC] SINIFLANMADI 0→2 · P 0→0 · U 8→2 · AYNI 10→14
+s30-kilit-kural-farki-kg15 [Europe/Istanbul] SINIFLANMADI 0→14 · P 0→0 · U 4→4 · AYNI 45→35
+s30-kilit-kural-farki-kg15 [UTC] SINIFLANMADI 0→14 · P 0→0 · U 4→4 · AYNI 45→35
+s37-kart-borcuna-aktar [Europe/Istanbul] SINIFLANMADI 0→3 · P 0→0 · U 12→6 · AYNI 8→11
+s37-kart-borcuna-aktar [UTC] SINIFLANMADI 0→3 · P 0→0 · U 12→6 · AYNI 8→11
+s49-m7-kural-farki-671-681 [Europe/Istanbul] SINIFLANMADI 0→10 · P 0→0 · U 0→0 · AYNI 19→12
+s49-m7-kural-farki-671-681 [UTC] SINIFLANMADI 0→10 · P 0→0 · U 0→0 · AYNI 19→12
+s83-s47-b6-acilis-olabilir-bekleyis [Europe/Istanbul] SINIFLANMADI 12→0 · P 0→0 · U 7→0 · AYNI 49→68
+s83-s47-b6-acilis-olabilir-bekleyis [UTC] SINIFLANMADI 12→0 · P 0→0 · U 7→0 · AYNI 49→68
+s84-s48-carisiz-acilis-evraki-karsiliksiz [Europe/Istanbul] SINIFLANMADI 23→21 · P 0→0 · U 14→10 · AYNI 5→11
+s84-s48-carisiz-acilis-evraki-karsiliksiz [UTC] SINIFLANMADI 23→21 · P 0→0 · U 14→10 · AYNI 5→11
+s86-s50-tek-kuyruk-kart-taksiti [Europe/Istanbul] SINIFLANMADI 0→2 · P 0→0 · U 10→6 · AYNI 24→26
+s86-s50-tek-kuyruk-kart-taksiti [UTC] SINIFLANMADI 0→2 · P 0→0 · U 10→6 · AYNI 24→26
+s90-s53-kilitli-gecmis-yil [Europe/Istanbul] SINIFLANMADI 0→9 · P 0→0 · U 3→3 · AYNI 30→24
+s90-s53-kilitli-gecmis-yil [UTC] SINIFLANMADI 0→9 · P 0→0 · U 3→3 · AYNI 30→24
+s91-b5-kg5-yukleme-yerel-gunu [Europe/Istanbul] SINIFLANMADI 16→14 · P 0→0 · U 6→0 · AYNI 9→15
+s91-b5-kg5-yukleme-yerel-gunu [UTC] SINIFLANMADI 16→14 · P 0→0 · U 6→0 · AYNI 9→15
+s93-b14-alt-defter-kural-farki [Europe/Istanbul] SINIFLANMADI 6→12 · P 0→0 · U 6→6 · AYNI 17→14
+s93-b14-alt-defter-kural-farki [UTC] SINIFLANMADI 6→12 · P 0→0 · U 6→6 · AYNI 17→14
+  s43-s4-mahsuptan-sonra-ters [Europe/Istanbul] son ana:191 program -2000 · kâhin 0 · bugün 0 → P
+  s43-s4-mahsuptan-sonra-ters [Europe/Istanbul] son ana:360 program -12000 · kâhin -14000 · bugün -14000 → P
+
+# tests 8254
+# pass 7638
+# fail 572
+# cancelled 0
+# skipped 44
+  s104-s80-formdaki-pesin-cari [UTC] OLAY #15 duzenle (api_yok) → SINIFLANMADI: düzenlenecek kayıt programda yok
+  s104-s80-formdaki-pesin-cari [UTC] OLAY #16 duzenle (api_yok) → SINIFLANMADI: düzenlenecek kayıt programda yok
+
+# tests 8456
+# pass 7552
+# fail 860
+# cancelled 0
+# skipped 44

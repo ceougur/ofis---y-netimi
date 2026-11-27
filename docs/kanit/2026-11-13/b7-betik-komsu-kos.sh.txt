@@ -1,0 +1,13 @@
+#!/bin/bash
+# Birleşik tur 7 — komşu testler (değişen ürün dosyalarını / API yollarını anan bütün *.test.mjs; liste komsu-hepsi.txt) iki TZ, kanıt aracıyla.
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+W=/home/user/ofis---y-netimi/.claude/worktrees/agent-a6c349be9d3823fef
+cd $W || exit 1
+export HUKUK_LICENSE_URL=http://127.0.0.1:9 KANIT_DIR=$S/b7-kanit
+LIST=$(cat $S/b7-is/${1:-komsu-hepsi.txt})
+for tz in UTC Europe/Istanbul; do
+  t=${tz//\//-}
+  echo "== $tz başta $(cat /proc/loadavg) $(date -u +%H:%M)"
+  TZ=$tz timeout -k 5 3500 node tools/kanit.mjs kos b7-komsu-$t -- node --test --test-concurrency=2 $LIST > $S/b7-kanit/b7-komsu-$t.out 2>&1
+  echo "$tz çıkış $? $(grep -E '^# (tests|pass|fail|cancelled|skipped|todo)' $S/b7-kanit/b7-komsu-$t.out | tr '\n' ' ') sonda $(cat /proc/loadavg) $(date -u +%H:%M)"
+done

@@ -1,0 +1,32 @@
+{
+  "ad": "c5bt2ay2-kahin-cari-UTC",
+  "komut": "npm run test:kahin-cari",
+  "commit": "160c669ba94cd1387b06e64f777b0c43756f726f",
+  "dal": "sinama-c5bt2a",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-11T01:44:38.722Z",
+  "sure_sn": 218.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 12205,
+    "gecen": 12205,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../c5bt2ay-kanit2/2026-11-11/c5bt2ay2-kahin-cari-UTC.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-ya-ag",
+  "ham_cikti_sha256": "05e0064304ec44a82d7877d0abdb65e2f85de1a1da901a1fcb3ccb878766d279",
+  "ham_cikti_bayt": 55406
+}

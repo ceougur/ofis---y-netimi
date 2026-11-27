@@ -1,0 +1,26 @@
+ÜRETİCİ: 20/20 aynı dizi (tur s1 + ux18, tohum 1–10 × 120 işlem)
+ADIMLAR: eski kopyadaki 104 elle senaryonun 0'inin adımları değişti: yok · izinli: yok · yeni elle senaryo: d51-c5-s210-s211-kart-kapanir
+EŞDEĞERLİK (2.4.9 / 2.4.6 / 2.4.5 / --legacy; eski kopyanın 104 elle + yeni kopyanın yeni 1 elle + 20 rastgele senaryo × 4 kip): 500/500 bayt bayt aynı
+G3 (kural 2.5.0; 125 senaryo — eski kopyanın 104 elle senaryosu + yeni elle + 20 rastgele): eski 50903 denetim · yeni 50932 denetim · değişen / kalkan / yeni toplam 59 · BEKLENMEYEN 0 · yalnız etiketi değişen 0
+  GENEL          yeni         4
+      örn. d50-c5-s206-s25c-b1-iptal-havale k1:projeksiyon:cari: "(denetim yok)" → 1
+      örn. d50-c5-s206-s25c-b1-iptal-havale k1:takvim:cariKalemSayisi: "(denetim yok)" → 1
+      örn. d51-c5-s210-s211-kart-kapanir k1:projeksiyon:cari: "(denetim yok)" → 2
+      örn. d51-c5-s210-s211-kart-kapanir k1:takvim:cariKalemSayisi: "(denetim yok)" → 2
+  S210-S211      kalkan      15
+      örn. d50-c5-s206-s25c-b1-iptal-havale k1:kart:KI2:mevcutBorc: true → "(denetim yok)"
+      örn. d50-c5-s206-s25c-b1-iptal-havale k1:kart:KI2:toplam: 90000 → "(denetim yok)"
+      örn. d50-c5-s206-s25c-b1-iptal-havale k1:kart:KI2:var: true → "(denetim yok)"
+      örn. d50-c5-s206-s25c-b1-iptal-havale k1:kart:KI3:mevcutBorc: true → "(denetim yok)"
+  S210-S211      yeni        40
+      örn. d50-c5-s206-s25c-b1-iptal-havale k1:cari:I2:acikEsitBakiye: "(denetim yok)" → true
+      örn. d50-c5-s206-s25c-b1-iptal-havale k1:cari:I2:acikToplam: "(denetim yok)" → 10000
+      örn. d50-c5-s206-s25c-b1-iptal-havale k1:cari:I2:gecikmis: "(denetim yok)" → 10000
+      örn. d50-c5-s206-s25c-b1-iptal-havale k1:cari:I3:acikEsitBakiye: "(denetim yok)" → true
+G3 senaryo senaryo (sınıf/tür: adet; listede olmayan senaryoda fark 0):
+  d50-c5-s206-s25c-b1-iptal-havale         GENEL/yeni 2 · S210-S211/kalkan 6 · S210-S211/yeni 14
+  d51-c5-s210-s211-kart-kapanir            GENEL/yeni 2 · S210-S211/kalkan 9 · S210-S211/yeni 26
+# tests 625
+# pass 625
+# fail 0
+625/625 denetim geçti

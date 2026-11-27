@@ -1,0 +1,265 @@
+{
+ "D1_S95_kilitsiz": {
+  "netlesmis": {
+   "bakiye": 700,
+   "sigma": true,
+   "gecikmis": 700,
+   "liste": 700,
+   "vadeGecikmis": 700,
+   "vade": [
+    "account:in:700@2026-09-10"
+   ],
+   "zil": [
+    "account:700:overdue"
+   ],
+   "kalan": [
+    "B:1000→700",
+    "Alacak:300→0"
+   ],
+   "kayitKalan": [
+    "account/debt:1000→700",
+    "account/credit:-300→0"
+   ],
+   "fatura": [],
+   "kart": [],
+   "kural": []
+  },
+  "tahsilattanSonra": {
+   "bakiye": -300,
+   "sigma": true,
+   "gecikmis": 0,
+   "liste": 0,
+   "vadeGecikmis": 0,
+   "vade": [],
+   "zil": [],
+   "kalan": [
+    "B:1000→0",
+    "Alacak:300→0"
+   ],
+   "kayitKalan": [
+    "account/debt:1000→0",
+    "account/credit:-300→0"
+   ],
+   "fatura": [],
+   "kart": [],
+   "kural": []
+  },
+  "mutabakat": true
+ },
+ "D1_S95_kilitli": {
+  "netlesmis": {
+   "bakiye": 700,
+   "sigma": true,
+   "gecikmis": 700,
+   "liste": 700,
+   "vadeGecikmis": 700,
+   "vade": [
+    "account:in:700@2026-09-10"
+   ],
+   "zil": [
+    "account:700:overdue"
+   ],
+   "kalan": [
+    "B:1000→700",
+    "Alacak:300→0"
+   ],
+   "kayitKalan": [
+    "account/debt:1000→700",
+    "account/credit:-300→0"
+   ],
+   "fatura": [],
+   "kart": [],
+   "kural": []
+  },
+  "tahsilattanSonra": {
+   "bakiye": -300,
+   "sigma": true,
+   "gecikmis": 0,
+   "liste": 0,
+   "vadeGecikmis": 0,
+   "vade": [],
+   "zil": [],
+   "kalan": [
+    "B:1000→0",
+    "Alacak:300→0"
+   ],
+   "kayitKalan": [
+    "account/debt:1000→0",
+    "account/credit:-300→0"
+   ],
+   "fatura": [],
+   "kart": [],
+   "kural": []
+  },
+  "mutabakat": true
+ },
+ "D2_S99_kilit_kartTahsilati": {
+  "once": {
+   "bakiye": 0,
+   "sigma": true,
+   "gecikmis": 0,
+   "liste": 0,
+   "vadeGecikmis": 0,
+   "vade": [],
+   "zil": [],
+   "kalan": [],
+   "kayitKalan": [],
+   "fatura": [
+    "overdue:600:[]"
+   ],
+   "kart": [
+    "done kuyruk 0,0 kendi , cariPay 600"
+   ],
+   "kural": []
+  },
+  "kartTahsilati": 200,
+  "sonra": {
+   "bakiye": -300,
+   "sigma": true,
+   "gecikmis": 0,
+   "liste": 0,
+   "vadeGecikmis": 0,
+   "vade": [],
+   "zil": [],
+   "kalan": [],
+   "kayitKalan": [],
+   "fatura": [
+    "overdue:300:[Bağlı:300@2026-10-10]"
+   ],
+   "kart": [
+    "done kuyruk 0,0 kendi , cariPay 300"
+   ],
+   "kural": []
+  },
+  "kilitKalkinca": {
+   "bakiye": -300,
+   "sigma": true,
+   "gecikmis": 0,
+   "liste": 0,
+   "vadeGecikmis": 0,
+   "vade": [],
+   "zil": [],
+   "kalan": [],
+   "kayitKalan": [],
+   "fatura": [
+    "overdue:300:[Bağlı:300@2026-10-10]"
+   ],
+   "kart": [
+    "done kuyruk 0,0 kendi , cariPay 300"
+   ],
+   "kural": []
+  },
+  "mutabakat": true
+ },
+ "D3_S95_tedarikci": {
+  "bakiye": -10000,
+  "sigma": true,
+  "gecikmis": 0,
+  "liste": 0,
+  "vadeGecikmis": 0,
+  "vade": [
+   "invoice:out:4000@2026-10-30"
+  ],
+  "zil": [],
+  "kalan": [],
+  "kayitKalan": [],
+  "fatura": [
+   "open:10000:[]",
+   "paid:0:[Otomatik (vadesi en önce gelen):6000@2026-09-22]"
+  ],
+  "kart": [],
+  "kural": [],
+  "mutabakat": true
+ },
+ "D4_S126_kismiOdenmis": {
+  "karta300": {
+   "bakiye": 400,
+   "sigma": true,
+   "gecikmis": 50,
+   "liste": 50,
+   "vadeGecikmis": 50,
+   "vade": [
+    "plan:in:350@2026-11-10",
+    "plan:in:50@2026-10-10"
+   ],
+   "zil": [
+    "plan:50:overdue"
+   ],
+   "kalan": [
+    "X:300→300"
+   ],
+   "kayitKalan": [
+    "account/debt:300→300"
+   ],
+   "fatura": [
+    "overdue:100:[Bağlı:200@2026-09-02,Bağlı:300@2026-10-15]"
+   ],
+   "kart": [
+    "overdue kuyruk 50,350 kendi , cariPay 0"
+   ],
+   "kural": [
+    " tük 700/700 avans  kırp "
+   ]
+  },
+  "kartSil": "200 ",
+  "kartSilinince": {
+   "bakiye": 700,
+   "sigma": true,
+   "gecikmis": 700,
+   "liste": 700,
+   "vadeGecikmis": 700,
+   "vade": [
+    "account:in:300@2026-09-05",
+    "invoice:in:400@2026-08-31"
+   ],
+   "zil": [
+    "account:300:overdue",
+    "invoice:400:overdue"
+   ],
+   "kalan": [
+    "X:300→300"
+   ],
+   "kayitKalan": [
+    "account/debt:300→300"
+   ],
+   "fatura": [
+    "overdue:400:[Bağlı:200@2026-09-02]"
+   ],
+   "kart": [],
+   "kural": []
+  },
+  "mutabakat": true
+ },
+ "D5_S110_karsiYon": {
+  "bakiye": 1100,
+  "sigma": true,
+  "gecikmis": 1100,
+  "liste": 1100,
+  "vadeGecikmis": 1100,
+  "vade": [
+   "account:in:1000@2026-09-05",
+   "account:in:100@2026-08-31"
+  ],
+  "zil": [
+   "account:1000:overdue",
+   "account:100:overdue"
+  ],
+  "kalan": [
+   "Alacak:400→0",
+   "B500:500→100"
+  ],
+  "kayitKalan": [
+   "account/credit:-400→0",
+   "account/debt:500→100",
+   "stock/debt:1000→1000"
+  ],
+  "fatura": [],
+  "kart": [
+   "done kuyruk 0,0 kendi , cariPay 0"
+  ],
+  "kural": [
+   " tük 0/1000 avans  kırp "
+  ],
+  "mutabakat": true
+ }
+}

@@ -1,0 +1,15 @@
+uygulandı M1-ingilizce-katlama
+M1-ingilizce-katlama çıkış 1 # pass 13 # fail 11  kırmızı: (11) (0) (1) (2) (4) (5) (6) (8) (9) (10) (11) 
+uygulandı M2-cek-turkce-yok
+M2-cek-turkce-yok çıkış 1 # pass 23 # fail 1  kırmızı: (10) 
+uygulandı M3-s228-ters
+M3-s228-ters çıkış 1 # pass 23 # fail 1  kırmızı: (6) 
+uygulandı M4-haritaya-ekleme-yok
+M4-haritaya-ekleme-yok çıkış 1 # pass 23 # fail 1  kırmızı: (8) 
+uygulandı M5-bosluk-yok
+M5-bosluk-yok çıkış 1 # pass 21 # fail 3  kırmızı: (0) (6) (8) 
+uygulandı M6-kart-anahtari-eski
+M6-kart-anahtari-eski çıkış 1 # pass 19 # fail 5  kırmızı: (11) (4) (5) (6) (8) 
+uygulandı M7-silinmis-aday
+M7-silinmis-aday çıkış 1 # pass 23 # fail 1  kırmızı: (12) 
+BİTTİ

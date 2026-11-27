@@ -1,0 +1,470 @@
+{
+ "dil": "destekofis-cari/3",
+ "ad": "d13-c5-s69-soz-ertesi-gun",
+ "aciklama": "2.5.0 bakım 3 C15.1 (KULLANICI S69 = A): d12'nin AYNI adımları, ERTESİ GÜN (bugün 16.06) — gün sayısı vadeden sürer, söz geçince geri düşmez. A kararın örneği vade 05.06 söz 15.06 → 16.06'da −11 (S69 B'de −1); B −11; C −15; D −2; E −11; E2 −15; H −27; T −22; T2 −15; K −32; V vade 15.06 söz 17.06 (yarın) → C14.2 'overdue' −1. KESİN K6.3 (C15.2): F söz = vade 15.06 → 'overdue' −1 (iki okuma aynı); F2 söz 10.06 vadeden (15.06) önce → 'overdue' −6 (sözden; vadeden −1 DEĞİL); G söz vadeden önce → −11; G2 söz = vade → −11; E3 vadesiz belge 15.06 = söz → −1. Gecikmiş tutarı (C13.5) sözden bağımsız (F, F2, E3, V artık gecikmiş).",
+ "dayanak": "KARARLAR.md §15 C15.1 / C15.2",
+ "bugun": "2026-06-16",
+ "adimlar": [
+  {
+   "id": "ca",
+   "islem": "cari_ac",
+   "ad": "A",
+   "isim": "Ayla Örnek",
+   "tarih": "2026-04-01"
+  },
+  {
+   "id": "a1",
+   "islem": "borc",
+   "cari": "A",
+   "tutar": "1000",
+   "tarih": "2026-05-01",
+   "vade": "2026-06-05",
+   "beklenen": "2026-06-15"
+  },
+  {
+   "id": "cb",
+   "islem": "cari_ac",
+   "ad": "B",
+   "isim": "Burak Dün",
+   "tarih": "2026-04-01"
+  },
+  {
+   "id": "b1",
+   "islem": "borc",
+   "cari": "B",
+   "tutar": "600",
+   "tarih": "2026-05-01",
+   "vade": "2026-06-05",
+   "beklenen": "2026-06-14"
+  },
+  {
+   "id": "cc",
+   "islem": "cari_ac",
+   "ad": "C",
+   "isim": "Ceren Geçenhafta",
+   "tarih": "2026-04-01"
+  },
+  {
+   "id": "c1",
+   "islem": "borc",
+   "cari": "C",
+   "tutar": "400",
+   "tarih": "2026-05-01",
+   "vade": "2026-06-01",
+   "beklenen": "2026-06-08"
+  },
+  {
+   "id": "cd",
+   "islem": "cari_ac",
+   "ad": "D",
+   "isim": "Deniz Vadedün",
+   "tarih": "2026-04-01"
+  },
+  {
+   "id": "d1",
+   "islem": "borc",
+   "cari": "D",
+   "tutar": "350",
+   "tarih": "2026-05-01",
+   "vade": "2026-06-14",
+   "beklenen": "2026-06-15"
+  },
+  {
+   "id": "ce",
+   "islem": "cari_ac",
+   "ad": "E",
+   "isim": "Emre Vadesiz",
+   "tarih": "2026-04-01"
+  },
+  {
+   "id": "e1",
+   "islem": "borc",
+   "cari": "E",
+   "tutar": "200",
+   "tarih": "2026-06-05",
+   "beklenen": "2026-06-15"
+  },
+  {
+   "id": "ce2",
+   "islem": "cari_ac",
+   "ad": "E2",
+   "isim": "Ebru Vadesiz",
+   "tarih": "2026-04-01"
+  },
+  {
+   "id": "e2",
+   "islem": "borc",
+   "cari": "E2",
+   "tutar": "180",
+   "tarih": "2026-06-01",
+   "beklenen": "2026-06-10"
+  },
+  {
+   "id": "ce3",
+   "islem": "cari_ac",
+   "ad": "E3",
+   "isim": "Elif Bugünkü",
+   "tarih": "2026-04-01"
+  },
+  {
+   "id": "e3",
+   "islem": "borc",
+   "cari": "E3",
+   "tutar": "160",
+   "tarih": "2026-06-15",
+   "beklenen": "2026-06-15"
+  },
+  {
+   "id": "cf",
+   "islem": "cari_ac",
+   "ad": "F",
+   "isim": "Filiz Vadegünü",
+   "tarih": "2026-04-01"
+  },
+  {
+   "id": "f1",
+   "islem": "borc",
+   "cari": "F",
+   "tutar": "500",
+   "tarih": "2026-05-01",
+   "vade": "2026-06-15",
+   "beklenen": "2026-06-15"
+  },
+  {
+   "id": "cf2",
+   "islem": "cari_ac",
+   "ad": "F2",
+   "isim": "Fikret Önce",
+   "tarih": "2026-04-01"
+  },
+  {
+   "id": "f2",
+   "islem": "borc",
+   "cari": "F2",
+   "tutar": "450",
+   "tarih": "2026-05-01",
+   "vade": "2026-06-15",
+   "beklenen": "2026-06-10"
+  },
+  {
+   "id": "cg",
+   "islem": "cari_ac",
+   "ad": "G",
+   "isim": "Gül Önce",
+   "tarih": "2026-04-01"
+  },
+  {
+   "id": "g1",
+   "islem": "borc",
+   "cari": "G",
+   "tutar": "250",
+   "tarih": "2026-05-01",
+   "vade": "2026-06-10",
+   "beklenen": "2026-06-05"
+  },
+  {
+   "id": "cg2",
+   "islem": "cari_ac",
+   "ad": "G2",
+   "isim": "Gökhan Eşit",
+   "tarih": "2026-04-01"
+  },
+  {
+   "id": "g2",
+   "islem": "borc",
+   "cari": "G2",
+   "tutar": "220",
+   "tarih": "2026-05-01",
+   "vade": "2026-06-05",
+   "beklenen": "2026-06-05"
+  },
+  {
+   "id": "ch",
+   "islem": "cari_ac",
+   "ad": "H",
+   "isim": "Hakan Kısmi",
+   "tarih": "2026-04-01"
+  },
+  {
+   "id": "h1",
+   "islem": "borc",
+   "cari": "H",
+   "tutar": "800",
+   "tarih": "2026-05-01",
+   "vade": "2026-05-20",
+   "beklenen": "2026-06-10"
+  },
+  {
+   "id": "th",
+   "islem": "tahsilat",
+   "cari": "H",
+   "tutar": "300",
+   "tarih": "2026-06-01"
+  },
+  {
+   "id": "ct",
+   "islem": "cari_ac",
+   "ad": "T",
+   "isim": "Tuna Ödenecek",
+   "tur": "tedarikci",
+   "tarih": "2026-04-01"
+  },
+  {
+   "id": "t1",
+   "islem": "alacak",
+   "cari": "T",
+   "tutar": "700",
+   "tarih": "2026-05-01",
+   "vade": "2026-05-25",
+   "beklenen": "2026-06-15"
+  },
+  {
+   "id": "ct2",
+   "islem": "cari_ac",
+   "ad": "T2",
+   "isim": "Tülin Ödenecek",
+   "tur": "tedarikci",
+   "tarih": "2026-04-01"
+  },
+  {
+   "id": "t2",
+   "islem": "alacak",
+   "cari": "T2",
+   "tutar": "300",
+   "tarih": "2026-05-01",
+   "vade": "2026-06-01",
+   "beklenen": "2026-06-12"
+  },
+  {
+   "id": "ck",
+   "islem": "cari_ac",
+   "ad": "K",
+   "isim": "Kaan Açılış",
+   "tarih": "2026-04-01",
+   "acilis": "900",
+   "acilisVade": "2026-05-15",
+   "acilisBeklenen": "2026-06-12"
+  },
+  {
+   "id": "cv",
+   "islem": "cari_ac",
+   "ad": "V",
+   "isim": "Volkan Vadebugün",
+   "tarih": "2026-04-01"
+  },
+  {
+   "id": "v1",
+   "islem": "borc",
+   "cari": "V",
+   "tutar": "330",
+   "tarih": "2026-05-01",
+   "vade": "2026-06-15",
+   "beklenen": "2026-06-17"
+  },
+  {
+   "id": "k1",
+   "islem": "kontrol",
+   "gecikmis": true
+  }
+ ],
+ "elleBeklenen": {
+  "k1:takvim:hareket:a1": {
+   "amount": 100000,
+   "dueDate": "2026-06-15",
+   "direction": "in",
+   "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+   "state": "overdue",
+   "days": -11,
+   "cari": "A",
+   "person": "Ayla Örnek"
+  },
+  "k1:takvim:hareket:b1": {
+   "amount": 60000,
+   "dueDate": "2026-06-14",
+   "direction": "in",
+   "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+   "state": "overdue",
+   "days": -11,
+   "cari": "B",
+   "person": "Burak Dün"
+  },
+  "k1:takvim:hareket:c1": {
+   "amount": 40000,
+   "dueDate": "2026-06-08",
+   "direction": "in",
+   "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+   "state": "overdue",
+   "days": -15,
+   "cari": "C",
+   "person": "Ceren Geçenhafta"
+  },
+  "k1:takvim:hareket:d1": {
+   "amount": 35000,
+   "dueDate": "2026-06-15",
+   "direction": "in",
+   "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+   "state": "overdue",
+   "days": -2,
+   "cari": "D",
+   "person": "Deniz Vadedün"
+  },
+  "k1:takvim:hareket:e1": {
+   "amount": 20000,
+   "dueDate": "2026-06-15",
+   "direction": "in",
+   "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+   "state": "overdue",
+   "days": -11,
+   "cari": "E",
+   "person": "Emre Vadesiz"
+  },
+  "k1:takvim:hareket:e2": {
+   "amount": 18000,
+   "dueDate": "2026-06-10",
+   "direction": "in",
+   "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+   "state": "overdue",
+   "days": -15,
+   "cari": "E2",
+   "person": "Ebru Vadesiz"
+  },
+  "k1:takvim:hareket:e3": {
+   "amount": 16000,
+   "dueDate": "2026-06-15",
+   "direction": "in",
+   "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+   "state": "overdue",
+   "days": -1,
+   "cari": "E3",
+   "person": "Elif Bugünkü"
+  },
+  "k1:takvim:hareket:f1": {
+   "amount": 50000,
+   "dueDate": "2026-06-15",
+   "direction": "in",
+   "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+   "state": "overdue",
+   "days": -1,
+   "cari": "F",
+   "person": "Filiz Vadegünü"
+  },
+  "k1:takvim:hareket:f2": {
+   "amount": 45000,
+   "dueDate": "2026-06-10",
+   "direction": "in",
+   "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+   "state": "overdue",
+   "days": -6,
+   "cari": "F2",
+   "person": "Fikret Önce"
+  },
+  "k1:takvim:hareket:g1": {
+   "amount": 25000,
+   "dueDate": "2026-06-05",
+   "direction": "in",
+   "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+   "state": "overdue",
+   "days": -11,
+   "cari": "G",
+   "person": "Gül Önce"
+  },
+  "k1:takvim:hareket:g2": {
+   "amount": 22000,
+   "dueDate": "2026-06-05",
+   "direction": "in",
+   "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+   "state": "overdue",
+   "days": -11,
+   "cari": "G2",
+   "person": "Gökhan Eşit"
+  },
+  "k1:takvim:hareket:h1": {
+   "amount": 50000,
+   "dueDate": "2026-06-10",
+   "direction": "in",
+   "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+   "state": "overdue",
+   "days": -27,
+   "cari": "H",
+   "person": "Hakan Kısmi"
+  },
+  "k1:takvim:hareket:t1": {
+   "amount": 70000,
+   "dueDate": "2026-06-15",
+   "direction": "out",
+   "label": "Ödenecek Borç (Ödeme Sözü)",
+   "state": "overdue",
+   "days": -22,
+   "cari": "T",
+   "person": "Tuna Ödenecek"
+  },
+  "k1:takvim:hareket:t2": {
+   "amount": 30000,
+   "dueDate": "2026-06-12",
+   "direction": "out",
+   "label": "Ödenecek Borç (Ödeme Sözü)",
+   "state": "overdue",
+   "days": -15,
+   "cari": "T2",
+   "person": "Tülin Ödenecek"
+  },
+  "k1:takvim:hareket:acilis:K": {
+   "amount": 90000,
+   "dueDate": "2026-06-12",
+   "direction": "in",
+   "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+   "state": "overdue",
+   "days": -32,
+   "cari": "K",
+   "person": "Kaan Açılış"
+  },
+  "k1:takvim:hareket:v1": {
+   "amount": 33000,
+   "dueDate": "2026-06-17",
+   "direction": "in",
+   "label": "Tahsil Edilecek Borç (Ödeme Sözü)",
+   "state": "overdue",
+   "days": -1,
+   "cari": "V",
+   "person": "Volkan Vadebugün"
+  },
+  "k1:takvim:cariKalemSayisi": 16,
+  "k1:hareket:h1:kalan": 50000,
+  "k1:vadeTakip:hareket:a1": {
+   "amount": 100000,
+   "date": "2026-06-15",
+   "direction": "in"
+  },
+  "k1:vadeTakip:hareket:t1": {
+   "amount": 70000,
+   "date": "2026-06-15",
+   "direction": "out"
+  },
+  "k1:projeksiyon:hareket:a1": {
+   "amount": 100000,
+   "date": "2026-06-15",
+   "direction": "in"
+  },
+  "k1:projeksiyon:hareket:c1": {
+   "amount": 40000,
+   "date": "2026-06-08",
+   "direction": "in"
+  },
+  "k1:cari:A:gecikmis": 100000,
+  "k1:cari:B:gecikmis": 60000,
+  "k1:cari:C:gecikmis": 40000,
+  "k1:cari:D:gecikmis": 35000,
+  "k1:cari:E:gecikmis": 20000,
+  "k1:cari:E2:gecikmis": 18000,
+  "k1:cari:E3:gecikmis": 16000,
+  "k1:cari:F:gecikmis": 50000,
+  "k1:cari:F2:gecikmis": 45000,
+  "k1:cari:G:gecikmis": 25000,
+  "k1:cari:G2:gecikmis": 22000,
+  "k1:cari:H:gecikmis": 50000,
+  "k1:cari:T:gecikmis": 0,
+  "k1:cari:T2:gecikmis": 0,
+  "k1:cari:K:gecikmis": 90000,
+  "k1:cari:V:gecikmis": 33000
+ }
+}

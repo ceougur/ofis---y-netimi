@@ -1,0 +1,9 @@
+  ✗ d27-c5-s99-taksitli-avans.json: 5 ihlal — adım 6 p2f 2026-05-02 < 2026-05-10 (p1a); adım 11 p3f 2026-05-05 < 2026-05-10 (p1a); adım 16 p4f 2026-05-05 < 2026-05-10 (p1a); adım 17 p4g 2026-05-06 < 2026-05-10 (p1a); adım 19 p5f 2026-03-01 < 2026-05-10 (p1a)
+  ✗ d28-c5-s99-taksit-vade-gunu.json: 2 ihlal — adım 6 p2f 2026-05-02 < 2026-05-10 (p1a); adım 11 p3f 2026-05-05 < 2026-05-10 (p1a)
+  ✗ d29-c5-s99-taksit-ertesi-gun.json: 2 ihlal — adım 6 p2f 2026-05-02 < 2026-05-10 (p1a); adım 11 p3f 2026-05-05 < 2026-05-10 (p1a)
+G1 TARAMASI (satış faturası + iade, senaryo içi tarih sırası): 84 senaryo ihlalsiz, 3 ihlalli
+ESKİ KOPYA (beklenen: ihlal > 0): 3 ihlalli senaryo
+# tests 3
+# pass 3
+# fail 0
+3/3 denetim geçti

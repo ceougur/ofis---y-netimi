@@ -1,0 +1,10 @@
+kilit 05:24 yük 1.01 1.25 1.47 2/123 6021
+[kanit] s231-kahin-cari-taban-UTC: GEÇTİ · çıkış 0 · 17648/17648 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit b169e19 +5 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4
+[kanit] s231-kahin-cari-taban-Europe: GEÇTİ · çıkış 0 · 17648/17648 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit b169e19 +5 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4
+[kanit] s231-surucu-taban: BAŞARISIZ (çıkış 1; 50 başarısız, 0 iptal) · çıkış 1 · 7750/7946 geçti, 50 başarısız, 0 iptal, 146 atlanan · commit 4454e66 +1 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4
+[kanit] s231-surucu-yeni: BAŞARISIZ (çıkış 1; 50 başarısız, 0 iptal) · çıkış 1 · 7750/7946 geçti, 50 başarısız, 0 iptal, 146 atlanan · commit 4454e66 +1 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4
+gerileme.py çıkış 0
+# cancelled 0
+# skipped 0
+# todo 0
+BİTTİ 05:56 yük 4.80 4.63 3.85 2/170 22171

@@ -1,0 +1,43 @@
+{
+  "ad": "ah-bs6-kirmizi-eski-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ah-taban/test/db-tx-kayip-250.test.mjs",
+  "commit": "f5b34f31ea68b6b3ce9e78552a2676e63aa98545",
+  "dal": "worktree-agent-ab0062d42feec8f21",
+  "kirli": 2,
+  "izlenmeyen": 10,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T06:17:44.068Z",
+  "sure_sn": 1.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 3,
+    "gecen": 1,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "store.run / store.tx — derinlik > 0 iken bağlantıda işlem yoksa yazım yok, açık hata (2.5.0 BS-6) › (k1) iç işlemde SQLite işlemi kendiliğinden geri alır, çağıran yakalayıp sürer → sonraki yazımlar ERR_TX_LOST, yarım yazım yok; Linux'ta gerçek G/Ç hatası",
+      "konum": "test/db-tx-kayip-250.test.mjs:103:3",
+      "hata": "k1 benzetim: derinlik > 0, işlem yokken store.run (para) YAZDI (hata yok) — ERR_TX_LOST beklenirdi · k1 benzetim: derinlik > 0, işlem yokken store.run (düz) YAZDI (hata yok) — ERR_TX_LOST beklenirdi · k1 benzetim: derinlik > 0, işlem yokken store.setSetting YAZDI (hata yok) — ERR_TX_LOST beklenirdi (beklenen , gelen )"
+    },
+    {
+      "ad": "store.run / store.tx — derinlik > 0 iken bağlantıda işlem yoksa yazım yok, açık hata (2.5.0 BS-6) › (k2) işlem kayboldu ama sonra yazım yok → en dış COMMIT asıl nedeni söyler (\"cannot commit - no transaction is active\" değil); iç düzeyde RELEASE de",
+      "konum": "test/db-tx-kayip-250.test.mjs:154:3",
+      "hata": "k2 COMMIT: \"cannot commit - no transaction is active\" (ERR_TX_LOST + ilk hata beklenirdi) · k2 COMMIT: asıl neden örtüldü: cannot commit - no transaction is active · k2 RELEASE: \"no such savepoint: sp_1\" (ERR_TX_LOST beklenirdi) (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ah-kanit/2026-11-06/ah-bs6-kirmizi-eski-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ab0062d42feec8f21",
+  "ham_cikti_sha256": "86136e40c34f17a4b99f37d3f00740119991db05c5e3463d5a4036dff75c9ebd",
+  "ham_cikti_bayt": 10237
+}

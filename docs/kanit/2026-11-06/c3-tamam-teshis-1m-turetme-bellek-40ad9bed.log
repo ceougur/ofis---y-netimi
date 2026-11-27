@@ -1,0 +1,57 @@
+[6 ms] > all SELECT id, kind, gl, gl_sub AS glSub FROM bank_accounts (at refs (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-ad96cd3b37191bfb1/server/routes/ledger.mjs:27:55)) · yığın 12 MB · RSS 73 MB
+[6 ms] < 3 satır · yığın 12 MB · RSS 73 MB
+[6 ms] > all SELECT id, gl_sub AS glSub FROM pos_terminals (at refs (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-ad96cd3b37191bfb1/server/routes/ledger.mjs:28:55)) · yığın 12 MB · RSS 73 MB
+[7 ms] < 0 satır · yığın 12 MB · RSS 73 MB
+[7 ms] > all PRAGMA table_info(payments) (at refOf (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-ad96cd3b37191bfb1/server/routes/ledger.mjs:23:42)) · yığın 12 MB · RSS 73 MB
+[7 ms] < 13 satır · yığın 12 MB · RSS 73 MB
+[7 ms] > all SELECT id, p.rowid AS seq, amount, date, note, method, p.fin_ref AS ref FROM payments p (at all (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-ad96cd3b37191bfb1/server/routes/ledger.mjs:63:55)) · yığın 12 MB · RSS 73 MB
+[294 ms] < 36890 satır · yığın 36 MB · RSS 109 MB
+[294 ms] > all PRAGMA table_info(cash_entries) (at refOf (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-ad96cd3b37191bfb1/server/routes/ledger.mjs:23:42)) · yığın 36 MB · RSS 109 MB
+[295 ms] < 15 satır · yığın 36 MB · RSS 109 MB
+[296 ms] > all PRAGMA table_info(cash_entries) (at rows (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-ad96cd3b37191bfb1/server/routes/ledger.mjs:69:31)) · yığın 36 MB · RSS 109 MB
+[296 ms] < 15 satır · yığın 36 MB · RSS 109 MB
+[296 ms] > all PRAGMA table_info(cash_entries) (at rows (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-ad96cd3b37191bfb1/server/routes/ledger.mjs:71:27)) · yığın 36 MB · RSS 109 MB
+[296 ms] < 15 satır · yığın 36 MB · RSS 109 MB
+[296 ms] > all SELECT c.id, c.rowid AS seq, c.kind, c.amount, c.date, c.description, c.method, c.transfer (at all (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-ad96cd3b37191bfb1/server/routes/ledger.mjs:63:55)) · yığın 36 MB · RSS 109 MB
+[1464 ms] < 114886 satır · yığın 161 MB · RSS 279 MB
+[1465 ms] > all PRAGMA table_info(account_entries) (at refOf (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-ad96cd3b37191bfb1/server/routes/ledger.mjs:23:42)) · yığın 161 MB · RSS 279 MB
+[1465 ms] < 26 satır · yığın 161 MB · RSS 279 MB
+[1465 ms] > all SELECT e.id, e.rowid AS seq, e.kind, e.amount, e.date, e.note, e.source, e.source_id AS so (at all (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-ad96cd3b37191bfb1/server/routes/ledger.mjs:63:55)) · yığın 161 MB · RSS 279 MB
+[45014 ms] < 1022380 satır · yığın 1475 MB · RSS 1756 MB
+[45014 ms] > all SELECT p.id, p.rowid AS seq, p.total, p.status, p.covers_balance AS coversBalance, COALESC (at all (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-ad96cd3b37191bfb1/server/routes/ledger.mjs:63:55)) · yığın 1475 MB · RSS 1756 MB
+[48869 ms] < 113832 satır · yığın 1563 MB · RSS 1857 MB
+[48869 ms] > all PRAGMA table_info(plan_entries) (at refOf (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-ad96cd3b37191bfb1/server/routes/ledger.mjs:23:42)) · yığın 1563 MB · RSS 1857 MB
+[48869 ms] < 17 satır · yığın 1563 MB · RSS 1857 MB
+[48870 ms] > all SELECT e.id, e.rowid AS seq, e.plan_id AS planId, e.kind, e.amount, e.date, e.note, e.meth (at all (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-ad96cd3b37191bfb1/server/routes/ledger.mjs:63:55)) · yığın 1563 MB · RSS 1857 MB
+[50505 ms] < 79050 satır · yığın 1660 MB · RSS 1942 MB
+[50505 ms] > all SELECT i.id, i.rowid AS seq, i.kind, i.issue_date AS date, i.number, i.gl_json AS glJson,  (at all (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-ad96cd3b37191bfb1/server/routes/ledger.mjs:63:55)) · yığın 1660 MB · RSS 1942 MB
+[68919 ms] < 314092 satır · yığın 2037 MB · RSS 2326 MB
+[68919 ms] > all PRAGMA table_info(stock_moves) (at refOf (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-ad96cd3b37191bfb1/server/routes/ledger.mjs:23:42)) · yığın 2037 MB · RSS 2326 MB
+[68919 ms] < 20 satır · yığın 2037 MB · RSS 2326 MB
+[68919 ms] > all SELECT m.id, m.rowid AS seq, m.kind, m.amount, m.date, m.note, m.pay, m.method, m.reason,  (at all (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-ad96cd3b37191bfb1/server/routes/ledger.mjs:63:55)) · yığın 2037 MB · RSS 2326 MB
+
+<--- Last few GCs --->
+
+[5492:0x27350000]    70514 ms: Mark-Compact (reduce) 2047.6 (2085.4) -> 2047.6 (2084.4) MB, pooled: 0 MB, 537.18 / 0.00 ms  (+ 3.5 ms in 0 steps since start of marking, biggest step 0.0 ms, walltime since start of marking 562 ms) (average mu = 0.618, curr
+
+<--- JS stacktrace --->
+
+FATAL ERROR: Reached heap limit Allocation failed - JavaScript heap out of memory
+----- Native stack trace -----
+
+ 1: 0xe48bbe node::OOMErrorHandler(char const*, v8::OOMDetails const&) [node]
+ 2: 0x1248d00 v8::Utils::ReportOOMFailure(v8::internal::Isolate*, char const*, v8::OOMDetails const&) [node]
+ 3: 0x1248fd7 v8::internal::V8::FatalProcessOutOfMemory(v8::internal::Isolate*, char const*, v8::OOMDetails const&) [node]
+ 4: 0x1477ee5  [node]
+ 5: 0x1491779 v8::internal::Heap::CollectGarbage(v8::internal::AllocationSpace, v8::internal::GarbageCollectionReason, v8::GCCallbackFlags) [node]
+ 6: 0x1465e78 v8::internal::HeapAllocator::AllocateRawWithLightRetrySlowPath(int, v8::internal::AllocationType, v8::internal::AllocationOrigin, v8::internal::AllocationAlignment) [node]
+ 7: 0x1466da5 v8::internal::HeapAllocator::AllocateRawWithRetryOrFailSlowPath(int, v8::internal::AllocationType, v8::internal::AllocationOrigin, v8::internal::AllocationAlignment) [node]
+ 8: 0x143f0ce v8::internal::Factory::AllocateRaw(int, v8::internal::AllocationType, v8::internal::AllocationAlignment) [node]
+ 9: 0x142d45a v8::internal::FactoryBase<v8::internal::Factory>::AllocateRawArray(int, v8::internal::AllocationType, v8::internal::AllocationAlignment) [node]
+10: 0x142d5b6 v8::internal::FactoryBase<v8::internal::Factory>::NewFixedArrayWithFiller(v8::internal::Handle<v8::internal::Map>, int, v8::internal::Handle<v8::internal::HeapObject>, v8::internal::AllocationType) [node]
+11: 0x1754278 v8::internal::Handle<v8::internal::NameDictionary> v8::internal::HashTable<v8::internal::NameDictionary, v8::internal::NameDictionaryShape>::New<v8::internal::Isolate>(v8::internal::Isolate*, int, v8::internal::AllocationType, v8::internal::MinimumCapacity) [node]
+12: 0x1755699 v8::internal::Handle<v8::internal::NameDictionary> v8::internal::BaseNameDictionary<v8::internal::NameDictionary, v8::internal::NameDictionaryShape>::New<v8::internal::Isolate>(v8::internal::Isolate*, int, v8::internal::AllocationType, v8::internal::MinimumCapacity) [node]
+13: 0x1755719 v8::internal::Handle<v8::internal::NameDictionary> v8::internal::NameDictionary::New<v8::internal::Isolate>(v8::internal::Isolate*, int, v8::internal::AllocationType, v8::internal::MinimumCapacity) [node]
+14: 0x1265835 v8::Object::New(v8::Isolate*, v8::Local<v8::Value>, v8::Local<v8::Name>*, v8::Local<v8::Value>*, unsigned long) [node]
+15: 0x1166149 node::sqlite::StatementSync::All(v8::FunctionCallbackInfo<v8::Value> const&) [node]
+16: 0x7fa307e0f5e2 

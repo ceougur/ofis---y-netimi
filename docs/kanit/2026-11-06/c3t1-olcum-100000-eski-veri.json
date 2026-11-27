@@ -1,0 +1,106 @@
+{
+ "root": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t1-eski-10ed14cf",
+ "heapLimitMb": 2096,
+ "load": [
+  3.91,
+  3.89,
+  4.5
+ ],
+ "steps": {
+  "hesapPlaniMizani2025-1": {
+   "ms": 5196,
+   "olayDongusuEnCokMs": 5201,
+   "olcer": {
+    "histogramMs": 5201,
+    "intervalMs": 5196
+   },
+   "tepeRssMb": 375,
+   "heapUsedMb": 212,
+   "hesap": 29,
+   "sha": "b7c8780ffbe37375"
+  },
+  "yevmiye2025-1": {
+   "ms": 4983,
+   "olayDongusuEnCokMs": 5008,
+   "olcer": {
+    "histogramMs": 5008,
+    "intervalMs": 4984
+   },
+   "tepeRssMb": 730,
+   "heapUsedMb": 550,
+   "madde": 39377,
+   "sha": "ae6849932d1692e9"
+  },
+  "hesapPlaniMizani2025-2": {
+   "ms": 5459,
+   "olayDongusuEnCokMs": 5469,
+   "olcer": {
+    "histogramMs": 5469,
+    "intervalMs": 5458
+   },
+   "tepeRssMb": 814,
+   "heapUsedMb": 141,
+   "hesap": 29,
+   "sha": "b7c8780ffbe37375"
+  },
+  "yevmiye2025-2": {
+   "ms": 4783,
+   "olayDongusuEnCokMs": 4786,
+   "olcer": {
+    "histogramMs": 4786,
+    "intervalMs": 4784
+   },
+   "tepeRssMb": 834,
+   "heapUsedMb": 492,
+   "madde": 39377,
+   "sha": "ae6849932d1692e9"
+  },
+  "dondurma": {
+   "ms": 8784,
+   "olayDongusuEnCokMs": 46,
+   "olcer": {
+    "histogramMs": 46,
+    "intervalMs": 36
+   },
+   "coverage": "2025-12-31",
+   "error": "",
+   "satir": 274616
+  },
+  "acilisOnarimi-1": {
+   "ms": 0,
+   "repair": {
+    "action": "none",
+    "pending": false
+   }
+  },
+  "acilisOnarimi-2": {
+   "ms": 0,
+   "repair": {
+    "action": "none",
+    "pending": false
+   }
+  }
+ },
+ "repair": {
+  "action": "freeze",
+  "pending": true
+ },
+ "state": {
+  "coverage": "",
+  "lock": "2025-12-31",
+  "pending": {
+   "no": 4,
+   "from": "",
+   "through": "2025-12-31",
+   "rule": "2.4.9",
+   "reason": "repair"
+  },
+  "runs": 4
+ },
+ "bitti": true,
+ "loadEnd": [
+  4.67,
+  4.08,
+  4.55
+ ]
+}

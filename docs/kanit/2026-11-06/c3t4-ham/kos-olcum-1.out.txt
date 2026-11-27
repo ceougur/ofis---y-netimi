@@ -1,0 +1,6 @@
+istek 15:41:09 yuk 5.28 5.77 7.39 12/166 24323 disk /dev/vda        252G   24G   15G  62% /
+kilit alındı 15:56:04 yuk 5.42 5.35 6.08 2/156 27658
+{"adim":"kilit 31.12.2025 (PUT yanıtı)","ms":5029,"olayDongusuEnCokMs":21,"bosluk50msUstu":0,"status":200,"yanitMs":5028,"active":true,"loadavg":"4.97 5.25 6.04 4/161 27758"}
+{"adim":"dondurmanın bitişi (yazım + doğrulama + tamamlama)","ms":87988,"olayDongusuEnCokMs":172,"bosluk50msUstu":2,"kapsam":"2025-12-31","gorunen":2741312,"kayitli":2741312,"hata":"","loadavg":"4.83 5.08 5.90 2/176 28607"}
+GEÇERSİZ: yük (1 dk ortalaması) en çok 5.42 > 2 (4 çekirdek; ders 52)
+bitis 15:57:46 cikis=0 yuk 4.68 5.05 5.89 3/166 28610

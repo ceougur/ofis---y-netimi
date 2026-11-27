@@ -1,0 +1,22 @@
+#!/bin/bash
+# Ana oturum: Ç5-A TUR 2 — HIZ KABUL (ders 15, 47, 52, 53 (a)): taban (ana ağaç = çalışma dalı ucu) ↔ aday (sınama ağacı sinama-c5a2), her biri temiz-100k'nın TAZE kopyasında,
+# sırayla İKİ tur (taban, aday, taban, aday); ÖZEL ölçüm kilidi (beklemez). Çağrı: timeout 7000 bash hiz.sh <kilitsiz|kilitli> [tekrar=5] [çıktı adı] [yalnız=1 → tek aday bloğu, deneme]
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+KIP=${1:-kilitsiz}; N=${2:-5}; OUT=$S/c5a2-kanit/${3:-hiz-c5a2-$KIP}.txt; TAB=/home/user/ofis---y-netimi; ADAY=$S/d2t3-ya-ag
+SIRA="taban:$TAB aday:$ADAY taban:$TAB aday:$ADAY"; [ "$4" = 1 ] && SIRA="aday:$ADAY"
+exec 9>"$S/olcum.lock"
+if [ "$KILIT_BENDE" = 1 ]; then :; elif [ "$4" = 1 ]; then flock -s -n 9 || { echo "KİLİT DOLU"; exit 3; }; else flock -x -n 9 || { echo "KİLİT DOLU — ÖLÇÜLEMEDİ"; exit 3; }; fi
+export HUKUK_LICENSE_URL=http://127.0.0.1:9
+echo "HIZ KABUL Ç5-A tur 2 (ana oturum) · $KIP · tekrar $N · nproc $(nproc) · başta $(cat /proc/loadavg) · $(date -u +%H:%M:%S) · taban $(git -C $TAB rev-parse --short HEAD) · aday $(git -C $ADAY rev-parse --short HEAD)" > $OUT
+for k in $SIRA; do
+  ad=${k%%:*}; R=${k#*:}
+  [ -d $S/c5a2-olcum/kopya ] && rm -rf /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2-olcum/kopya
+  cp -a $S/ana-kabul/temiz-100k $S/c5a2-olcum/kopya || exit 1
+  if [ "$KIP" = kilitli ]; then python3 -I $S/c5a2-olcum/kilit.py $S/c5a2-olcum/kopya/data/destekofis.sqlite >> $OUT || exit 1; fi
+  sync; l0=$(cut -d' ' -f1 /proc/loadavg)
+  echo "=== $ad · başta $(cat /proc/loadavg) $(awk -v l=$l0 'BEGIN{print (l>2)?"· GEÇERSİZ (yük > 2)":""}')" >> $OUT
+  TZ=Europe/Istanbul timeout -k 5 2400 node --disable-warning=ExperimentalWarning $S/c5a2-olcum/olc-c5a2.mjs "$R" $S/c5a2-olcum/kopya $N >> $OUT 2>&1; echo "çıkış $? · sonda $(cat /proc/loadavg)" >> $OUT
+done
+rm -rf /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a2-olcum/kopya
+echo "bitti $(date -u +%H:%M:%S)" >> $OUT
+grep -E "^(===|  |çıkış|HIZ|bitti|gövde|donma|fatura)" $OUT | cut -c1-220

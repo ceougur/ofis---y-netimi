@@ -1,0 +1,28 @@
+{
+ "depo": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a115f88e3014ea777",
+ "cokSatir": "RED cash-before-opening",
+ "cokSatirIz": null,
+ "insertSelect": "RED cash-before-opening",
+ "s26": "KABUL",
+ "upsertOnce": {
+  "pRowid": 2
+ },
+ "upsertYalniz": "RED cash-before-opening",
+ "upsertYalnizIz": null,
+ "upsertS26": "RED cash-before-opening",
+ "upsertIz": null,
+ "silYeniden": "RED cash-before-opening",
+ "silYenidenRowid": {
+  "silinen": 5,
+  "yeni": null
+ },
+ "savepointS26": "KABUL",
+ "savepointYeni": "RED cash-before-opening",
+ "savepointIz": null,
+ "hamEklemeDuzeltme": "RED cash-before-opening",
+ "hamIz": null,
+ "acilisOncesiSatirlar": [
+  "onceki-P",
+  "sonuncu-L"
+ ]
+}

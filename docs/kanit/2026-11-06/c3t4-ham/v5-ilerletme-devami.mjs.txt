@@ -1,0 +1,96 @@
+// Ç3 tur 4 — KAPSAM DIŞI KUŞKU (rapor için; KARAR VERİLMEZ): ilerletme izinin devam koşusu yarıda kesilince.
+// Sıra: eski sürüm kilidi 30.06 → açılış onarımının 2.4.9 koşusu (…, 30.06] (taşınan) → BU PROGRAM kilidi 30.09'a ilerletir (ilerletme izi 30.09) → kesinti → ESKİ SÜRÜM kilidi 31.12'ye
+// ilerletir → açılış: 2.4.9 koşusu tamamlanır → continueAfter: (30.06, 30.09] güncel kural (iz), (30.09, 31.12] GAP_RULE beklenir → (30.06, 30.09] koşusu yazılırken kesinti → açılış.
+// Beklenen (§4 + S13): (…, 30.06] 2.4.9, (30.06, 30.09] 2.5.0, (30.09, 31.12] 2.4.9.
+// Kullanım: node v5-ilerletme-devami.mjs <kod kökü>
+import path from "node:path";
+import { DatabaseSync } from "node:sqlite";
+import { pathToFileURL } from "node:url";
+
+const ROOT = path.resolve(process.argv[2] || ".");
+const imp = rel => import(pathToFileURL(path.join(ROOT, rel)).href);
+const NOW = "2027-01-10T10:00:00+03:00";
+const ENV = { HUKUK_LICENSE_URL: "http://127.0.0.1:9" };
+const MID = "2026-06-30";
+const SEP = "2026-09-30";
+const LOCK = "2026-12-31";
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+const { loginAdmin, removeTestDir, startTestServer } = await imp("test/helpers.mjs");
+const raw = (dataDir, fn) => {
+  const db = new DatabaseSync(path.join(dataDir, "destekofis.sqlite"));
+  try {
+    return fn(db);
+  } finally {
+    db.close();
+  }
+};
+const setLockRaw = (dataDir, day) => raw(dataDir, db => db.prepare("INSERT INTO settings (key, value, updated_at, updated_by) VALUES ('ledger.lockedUntil', ?, ?, NULL) ON CONFLICT(key) DO UPDATE SET value = excluded.value").run(day, new Date().toISOString()));
+const runsOf = store => store.all("SELECT no, kind, state, from_date AS f, through AS t, rule_version AS r, reason FROM ledger_snapshot_runs ORDER BY no").map(row => `${row.no}:${row.kind}:${row.state}:${row.f}→${row.t}:${row.r}:${row.reason}`);
+const rulesIn = (store, from, to) => store.get("SELECT GROUP_CONCAT(DISTINCT rule_version) AS v FROM ledger_snapshots WHERE date > ? AND date <= ?", from, to).v;
+const out = { kok: ROOT };
+const first = await startTestServer({ now: { time: NOW, fixed: true }, env: ENV });
+const dirs = { dataDir: first.dataDir, backupDir: first.backupDir };
+const servers = [];
+const holdAt = (n, release) => ({ fn: async phase => {
+  if (phase === "batch" && ++holdAt.count >= n) await release;
+} });
+try {
+  const admin = await loginAdmin(first);
+  for (let i = 1; i <= 40; i += 1) {
+    const r = await admin.post("/api/workspace/cash", { kind: "in", amount: String(10 + i), date: `2026-${String(1 + (i % 12)).padStart(2, "0")}-1${i % 9}`, description: `Giriş ${i}` });
+    if (r.status !== 200) throw new Error(`kasa ${r.status}`);
+  }
+  await first.app.close();
+  setLockRaw(dirs.dataDir, MID);
+  // 1) Onarım koşusu (2.4.9) yazım adımında tutulur; bu program kilidi 30.09'a ilerletir; kesinti.
+  let open1 = null;
+  const rel1 = new Promise(resolve => (open1 = resolve));
+  holdAt.count = 0;
+  const s1 = await startTestServer({ now: { time: NOW, fixed: true }, env: ENV, ...dirs, __testFreezeHook: holdAt(2, rel1), freezeBatchLines: 5 });
+  servers.push(s1);
+  for (let i = 0; i < 500 && s1.app.ledger.snapshots.status().phase !== "yazım"; i += 1) await sleep(10);
+  out.a1 = s1.app.ledger.snapshots.state().pending;
+  const put = await (await loginAdmin(s1)).put("/api/admin/period-lock", { lockedUntil: SEP });
+  out.ilerlet = put.status;
+  out.iz = s1.app.store.get("SELECT payload_json AS p FROM audit_events WHERE type = 'ledger.snapshot.extended'")?.p || null;
+  const c1 = s1.app.close();
+  open1();
+  await c1;
+  // 2) Eski sürüm kilidi 31.12'ye ilerletir.
+  setLockRaw(dirs.dataDir, LOCK);
+  // 3) Açılış: 2.4.9 koşusu tamamlanır, (30.06, 30.09] güncel kurallı devam koşusu yazılırken kesinti.
+  let open2 = null;
+  const rel2 = new Promise(resolve => (open2 = resolve));
+  let phase2 = 0;
+  const hook2 = { fn: async (phase, info) => {
+    if (phase !== "batch") return;
+    const pend = s2.app.ledger.snapshots.state().pending;
+    if (pend && pend.through === SEP && ++phase2 >= 2) await rel2;
+  } };
+  const s2 = await startTestServer({ now: { time: NOW, fixed: true }, env: ENV, ...dirs, __testFreezeHook: hook2, freezeBatchLines: 5 });
+  servers.push(s2);
+  for (let i = 0; i < 1000 && phase2 < 2; i += 1) await sleep(10);
+  out.onkosul_devam_kosusu_tutuldu = phase2 >= 2;
+  out.b_kosular = runsOf(s2.app.store);
+  const c2 = s2.app.close();
+  open2();
+  await c2;
+  // 4) Açılış: sonuç.
+  const s3 = await startTestServer({ now: { time: NOW, fixed: true }, env: ENV, ...dirs });
+  servers.push(s3);
+  for (let i = 0; i < 20; i += 1) {
+    await s3.app.ledger.snapshots.runPending();
+    if (!s3.app.ledger.snapshots.state().pending) break;
+  }
+  out.son_kosular = runsOf(s3.app.store);
+  out.kurallar = { "…-30.06": rulesIn(s3.app.store, "", MID), "30.06-30.09": rulesIn(s3.app.store, MID, SEP), "30.09-31.12": rulesIn(s3.app.store, SEP, LOCK) };
+  out.beklenen = { "…-30.06": "2.4.9", "30.06-30.09": "2.5.0", "30.09-31.12": "2.4.9" };
+  out.SONUC = JSON.stringify(out.kurallar) === JSON.stringify(out.beklenen) ? "BEKLENEN" : "FARKLI";
+} catch (error) {
+  out.hata = String(error?.stack || error);
+} finally {
+  for (const s of servers) await s.app.close().catch(() => {});
+  removeTestDir(first.root);
+}
+console.log(JSON.stringify(out, null, 1));
+process.exit(0);

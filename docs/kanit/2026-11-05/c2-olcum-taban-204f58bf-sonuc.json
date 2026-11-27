@@ -1,0 +1,37 @@
+{
+ "kod": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-eski-204f58bf",
+ "veri": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-is/veri-motor",
+ "now": "2026-11-05T06:03:21.871Z",
+ "tur": 15,
+ "fis": 0,
+ "satir": 40,
+ "node": "v22.23.4",
+ "uclar": {
+  "ledger (tüm zaman)": {
+   "medyanMs": 41.1,
+   "enCokMs": 63.6,
+   "olayDongusuEnCokMs": 59.8,
+   "olayDongusuMedyanMs": 38.5
+  },
+  "ledger (bu yıl)": {
+   "medyanMs": 39.8,
+   "enCokMs": 62.5,
+   "olayDongusuEnCokMs": 61.2,
+   "olayDongusuMedyanMs": 38.3
+  },
+  "hesap-mizani (tüm)": {
+   "medyanMs": 40.1,
+   "enCokMs": 67.9,
+   "olayDongusuEnCokMs": 64,
+   "olayDongusuMedyanMs": 38.6
+  },
+  "yevmiye (tüm)": {
+   "medyanMs": 45.5,
+   "enCokMs": 70.3,
+   "olayDongusuEnCokMs": 68.6,
+   "olayDongusuMedyanMs": 44.1
+  }
+ },
+ "madde": 2216,
+ "fisMaddesi": 0
+}

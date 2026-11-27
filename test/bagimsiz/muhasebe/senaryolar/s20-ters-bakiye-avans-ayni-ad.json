@@ -1,0 +1,131 @@
+{
+ "aciklama": "Avans tahsilatı satış değildir (340), Diğer cariye ödeme borçlu 336 → 136; aynı adlı iki cari ayrı.",
+ "ad": "s20-ters-bakiye-avans-ayni-ad",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "bil/aktif/I.C": 36000,
+   "bil/aktif_toplam": 136000,
+   "bil/detay/I.C/120|C2": 36000,
+   "bil/detay/III.D/120|C1": 100000,
+   "bil/pasif/III.D": 100000,
+   "bil/pasif/V.F": 30000,
+   "bil05/aktif/I.A": 80000,
+   "bil05/aktif/I.D": 20000,
+   "bil05/pasif/III.D": 100000
+  }
+ },
+ "kapsam": [
+  "T-12",
+  "T-09",
+  "§7.3",
+  "G-2"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "cari": "C1",
+   "tarih": "2026-06-01",
+   "tur": "tahsilat",
+   "tutar": 100000,
+   "yol": "nakit"
+  },
+  {
+   "cari": "D1",
+   "tarih": "2026-06-02",
+   "tur": "odeme",
+   "tutar": 20000,
+   "yol": "nakit"
+  },
+  {
+   "ad": "bil05",
+   "rapor": "bilanco",
+   "tarih": "2026-06-05",
+   "tur": "rapor"
+  },
+  {
+   "K": 6000,
+   "M": 30000,
+   "cari": "C2",
+   "id": "F1",
+   "tarih": "2026-06-10",
+   "tur": "satis_faturasi"
+  },
+  {
+   "ad": "bil",
+   "rapor": "bilanco",
+   "tarih": "2026-06-30",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

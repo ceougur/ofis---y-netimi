@@ -1,0 +1,68 @@
+{
+  "ad": "c4-kirmizi-birim-eski",
+  "komut": "node --disable-warning=ExperimentalWarning --test /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c4-eski-0fc8add4/test/defter-turu-c4.test.mjs",
+  "commit": "0fc8add42d85e8e89a816374ef0844fd01a29a3a",
+  "dal": "worktree-agent-a1a42f4d745a759a0",
+  "kirli": 6,
+  "izlenmeyen": 5,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T20:03:37.895Z",
+  "sure_sn": 7.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 7,
+    "gecen": 0,
+    "basarisiz": 7,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 7 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.0 Ç4 Defter Türü › varsayılan Seçilmedi; seçenekler yazım düzeninde; Kişi Türü / VKN uzunluğundan tür uydurulmaz; kaydedilir ve yeniden okunur",
+      "konum": "test/defter-turu-c4.test.mjs:49:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + undefined"
+    },
+    {
+      "ad": "2.5.0 Ç4 Defter Türü › geçersiz değer 400 ve hiçbir ayar yazılmaz (aynı gövdedeki firma bilgisi de)",
+      "konum": "test/defter-turu-c4.test.mjs:83:3",
+      "hata": "\"Bilanço Esası\": 200 {\"ok\":true,\"data\":{\"seller\":{\"name\":\"Olmamalı\",\"partyKind\":\"company\",\"firstName\":\"\",\"familyName\":\"\",\"taxNo\":\"\",\"taxOffice\":\"\",\"mersisNo\":\"\",\"tradeRegistry\":\"\",\"address\":\"\",\"district\":\"\",\"city\":\"\",\"postalCode\":\"\",\"country\":\"Türkiye\",\"phone\":\"\",\"email\":\"\",\"website\":\"\",\"banks\":[],\"logo\":\"\",\"stamp\":\"\"},\"efatura\":false,\"earsiv\":false,\"esmm\":false,\"series\":{\"paper\":\"FIS\",\"earsiv\":\"EAR\",\"efatura\":\"EFT\",\"smm\":\"SMM\",\"esmm\":\"ESM\",\"internal\":\"IAD\"},\"start\":{},\"defaults\":{\"vatRate\":20,\"pricesIncludeVat\":false,\"stoppageRate\":20,\"efaturaProfile\":\"TEMELFATURA\",\"dueDays\":0,\"footer\":\"\",\"saleScenario\":\"\",\"purchaseScenario\":\"\",\"signatureArea\":true,\"itemTracking\":false},\"eView\":{\"enabled\":true,\"logo\":true,\"banks\":true,\"footer\":true,\"stamp\":true,\"stampEfatura\":false},\"eOptions\":{\"balanceNote\":false,\"paymentMeans\":true,\"draftUpload\":false},\"eOptionsSet\":{},\"integrator\":{\"id\":\"edm\",\"env\":\"test\",\"baseUrl\":\"\",\"username\":\"\",\"senderAlias\":\"\",\"mailboxAlias\":\"\",\"autoSend\":false,\"earchiveEmail\":true,\"autoCheckUser\":false,\"lastTest\":null,\"hasPassword\":false,\"url\":\"https://test.edmbilisim.com.tr/EFaturaEDM21ea/EFaturaEDM.svc\",\"label\":\"EDM Bilişim\",\"liveAllowed\":false,\"network\":null},\"reportHeader\":{\"signName\":\"\",\"mode\":\"sign\"},\"edocEnabled\":false,\"esmmAvailable\":false,\"nextNumbers\":{\"paper\":{\"series\":\"FIS\",\"year\":2026,\"seq\":1,\"number\":\"FIS2026000000001\"},\"smm\":{\"series\":\"SMM\",\"year\":2026,\"seq\":1,\"number\":\"SMM2026000000001\"},\"internal\":{\"series\":\"IAD\",\"year\":2026,\"seq\":1,\"number\":\"IAD2026000000001\"}},\"testNumbers\":null,\"testSeries\":{\"efatura\":\"TEF\",\"earsiv\":\"TEA\",\"esmm\":\"TES\"},\"bankAccounts\":{\"active\":false,\"accounts\":[],\"suggestions\":[]},\"problems\":{\"KAGIT\":[],\"EARSIVFATURA\":[\"Firma bilgisi (satıcı): e-Arşiv için VKN ya da TCKN zorunludur.\",\"Firma bilgisi (satıcı): il zorunludur (adres).\",\"Firma bilgisi (satıcı): vergi dairesi zorunludur.\"],\"TEMELFATURA\":[\"Firma bilgisi (satıcı): e-Fatura için VKN ya da TCKN zorunludur.\",\"Firma bilgisi (satıcı): il zorunludur (adres).\",\"Firma bilgisi (satıcı): vergi dairesi zorunludur.\"]}}} · 200 !== 400 (beklenen 400, gelen 200)"
+    },
+    {
+      "ad": "2.5.0 Ç4 Defter Türü › yetki: yönetici ve muhasebe değiştirir; avukat ve personel 403 (ayar değişmez)",
+      "konum": "test/defter-turu-c4.test.mjs:102:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + undefined"
+    },
+    {
+      "ad": "2.5.0 Ç4 Defter Türü › Şirket Verisini Sıfırla: Tüm Hareketleri Sil ve Tümünü Sıfırla ayarı KORUR; dönem kilidi (ledger.) kalkar",
+      "konum": "test/defter-turu-c4.test.mjs:120:3",
+      "hata": "movements: Defter Türü korunmalı · + actual - expected · + undefined"
+    },
+    {
+      "ad": "2.5.0 Ç4 Defter Türü › iki şirket ayrı ayar; yedek → değiştir → geri yükle: 002 hemen, 001 yeniden açılışta geri gelir; öbür şirket etkilenmez",
+      "konum": "test/defter-turu-c4.test.mjs:140:3",
+      "hata": "yeni şirket Seçilmedi başlar · + actual - expected · + undefined"
+    },
+    {
+      "ad": "2.5.0 Ç4 Defter Türü › BS-7 kapılı (yeni şemalı) şirkette Defter Türü yazımı 409 SCHEMA_AHEAD; okuma çalışır, dosya değişmez",
+      "konum": "test/defter-turu-c4.test.mjs:187:3",
+      "hata": "kapılı şirkette okuma çalışır · + actual - expected · + undefined"
+    },
+    {
+      "ad": "2.5.0 Ç4 Defter Türü › okuyucu bookTypeOf: store, ham değer, bozuk / bilinmeyen değer → unset; okunamayan store → unset",
+      "konum": "test/defter-turu-c4.test.mjs:226:3",
+      "hata": "Cannot find module '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c4-eski-0fc8add4/server/lib/book-type.mjs' imported from /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c4-eski-0fc8add4/test/defter-turu-c4.test.mjs"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-05/c4-kirmizi-birim-eski.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a1a42f4d745a759a0",
+  "ham_cikti_sha256": "52c908792128a1e198a8423fe21b0a44fa02e0244d269cd317bb94a132e434ec",
+  "ham_cikti_bayt": 11184
+}

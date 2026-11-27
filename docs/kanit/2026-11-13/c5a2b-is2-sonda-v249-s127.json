@@ -1,0 +1,184 @@
+{
+ "fikstur": "surum-2.4.9-s127",
+ "today": "2026-11-10",
+ "lock": "2025-12-31",
+ "dondurma": {
+  "coverage": "2025-12-31",
+  "lock": "2025-12-31",
+  "pending": null,
+  "runs": 1
+ },
+ "once": {
+  "mutabakatOk": false,
+  "failures": [
+   "ledger:rule-diff"
+  ],
+  "kuralFarki": {
+   "ok": false,
+   "name": "Kural Değişikliği Farkı (Kilitli Dönem: 31.12.2025 ve Öncesi)",
+   "count": 9,
+   "difference": 22300,
+   "hint": "Kilitli dönemin donmuş defteri güncel türetmeden farklı: neden defter kuralının program sürümüyle değişmesi ya da kilitli dönemin kaynak verisinin kapının görmediği bir yolla değişmesi olabilir. Kilitli dönemin raporları donmuş defterden okunur, değişmez. Kural farkı Kural Farkı Düzeltme Fişi ile ilk açık güne alınır."
+  }
+ },
+ "adaylar": {
+  "candidate": 0,
+  "confirmed": 0,
+  "rejected": 0
+ },
+ "onizleme1": {
+  "status": 200,
+  "disabled": false,
+  "reason": "",
+  "date": "2026-01-01",
+  "lines": [
+   "B 500 11900",
+   "A 519 22300",
+   "B 681 10400"
+  ],
+  "excluded": [],
+  "sourceCount": 9,
+  "ornekKaynak": [
+   {
+    "id": "cash:cash-9e550434-f3fd-419e-9748-ec301e1c45a1",
+    "date": "2025-01-02",
+    "source": "Kasa açılışı",
+    "text": "Açılış Bakiyesi",
+    "inFrozen": true,
+    "inLive": true,
+    "excluded": false,
+    "deltas": [
+     {
+      "year": 2025,
+      "account": "500",
+      "sub": "",
+      "party": "",
+      "minor": 1000000,
+      "name": "Sermaye"
+     },
+     {
+      "year": 2025,
+      "account": "519",
+      "sub": "",
+      "party": "",
+      "minor": -1000000,
+      "name": "Eşleştirilecek Açılış Bakiyeleri"
+     }
+    ]
+   },
+   {
+    "id": "account:aentry-be6d064d-23e9-493b-916e-8d2799600b86",
+    "date": "2025-01-02",
+    "source": "Cari (borç yaz)",
+    "text": "Açılış bakiyesi",
+    "inFrozen": true,
+    "inLive": true,
+    "excluded": false,
+    "deltas": [
+     {
+      "year": 2025,
+      "account": "500",
+      "sub": "",
+      "party": "",
+      "minor": 300000,
+      "name": "Sermaye"
+     },
+     {
+      "year": 2025,
+      "account": "519",
+      "sub": "",
+      "party": "",
+      "minor": -300000,
+      "name": "Eşleştirilecek Açılış Bakiyeleri"
+     }
+    ]
+   },
+   {
+    "id": "plan:plan-5d9aa035-cdc7-4e2e-ac69-9d87cb157858",
+    "date": "2025-11-10",
+    "source": "Taksit kartı açılışı (Excel / tablo)",
+    "text": "Açılış alacağı (yüklenen taksit kartı)",
+    "inFrozen": true,
+    "inLive": true,
+    "excluded": false,
+    "deltas": [
+     {
+      "year": 2025,
+      "account": "120",
+      "sub": "",
+      "party": "account-43f8747e-a8ec-49ba-acc2-5bb1fd04348b",
+      "minor": -50000,
+      "name": "Alıcılar (Müşteri Carileri)"
+     },
+     {
+      "year": 2025,
+      "account": "602",
+      "sub": "",
+      "party": "",
+      "minor": 200000,
+      "name": "Diğer Gelirler (Hizmet, Taksitli Satış, Kayıt Tahsilatları)"
+     },
+     {
+      "year": 2025,
+      "account": "519",
+      "sub": "",
+      "party": "",
+      "minor": -150000,
+      "name": "Eşleştirilecek Açılış Bakiyeleri"
+     }
+    ]
+   }
+  ]
+ },
+ "yanlisImza": "409 rule-diff-changed",
+ "kaydet": {
+  "status": 200,
+  "no": "Fiş 2026-000001",
+  "date": "2026-01-01"
+ },
+ "ayniIstek": {
+  "status": 200,
+  "replayed": true
+ },
+ "sonra": {
+  "mutabakatOk": true,
+  "failures": [],
+  "kuralFarki": {
+   "ok": true,
+   "name": "Kural Değişikliği Farkı (Kilitli Dönem: 31.12.2025 ve Öncesi) — Düzeltildi (Fiş 2026-000001)",
+   "count": 9,
+   "difference": 22300,
+   "corrected": {
+    "vouchers": [
+     "Fiş 2026-000001"
+    ]
+   },
+   "correction": {
+    "vouchers": [
+     "Fiş 2026-000001"
+    ],
+    "remainderMinor": 0,
+    "excludedMinor": 0,
+    "over": false
+   }
+  },
+  "gunlukArtisi": 0
+ },
+ "degismez15": [],
+ "onizlemeSonra": {
+  "disabled": true,
+  "reason": "Fişle düzeltilebilen fark kalmadı."
+ },
+ "ters": 200,
+ "tersSonra": {
+  "mutabakatOk": false,
+  "kuralFarki": {
+   "ok": false,
+   "name": "Kural Değişikliği Farkı (Kilitli Dönem: 31.12.2025 ve Öncesi)",
+   "count": 9,
+   "difference": 22300,
+   "hint": "Kilitli dönemin donmuş defteri güncel türetmeden farklı: neden defter kuralının program sürümüyle değişmesi ya da kilitli dönemin kaynak verisinin kapının görmediği bir yolla değişmesi olabilir. Kilitli dönemin raporları donmuş defterden okunur, değişmez. Kural farkı Kural Farkı Düzeltme Fişi ile ilk açık güne alınır."
+  },
+  "gunlukArtisi": 0
+ }
+}

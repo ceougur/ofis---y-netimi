@@ -1,0 +1,93 @@
+#!/usr/bin/env node
+// Birleşik tur 6 — karşı mutantlar (ayrı kopyada; ders 23). Her mutant tek tek, dosya her seferinde geri yazılır. YAKALANDI = çıkış ≠ 0 VE "not ok" + ilk kırmızının
+// nedeni yazılır (ders 38). Kullanım: node mutasyon-b6.mjs --kopya <kopya> [--yalniz M1,N2]
+import { spawnSync } from "node:child_process";
+import { readFileSync, writeFileSync } from "node:fs";
+import path from "node:path";
+
+const argv = process.argv.slice(2);
+const opt = n => (argv.includes(n) ? argv[argv.indexOf(n) + 1] : null);
+const COPY = path.resolve(opt("--kopya"));
+const ONLY = opt("--yalniz") ? new Set(opt("--yalniz").split(",")) : null;
+const ARTIS = ["test/kasa-acilis-uyari-artis-250.test.mjs"];
+const IZ = ["test/kasa-acilis-b6-250.test.mjs"];
+const MUT = ["test/kasa-acilis-mutant-b6-250.test.mjs"];
+const WAL = ["test/devir-arsiv-wal-250.test.mjs"];
+const KAPI = ["test/yapim-asamasi-kapisi.test.mjs"];
+const INT = "server/lib/integrity.mjs";
+const CO = "server/lib/cash-opening.mjs";
+const DB = "server/lib/db.mjs";
+const M = [
+  ["M1", "A1: uyarının artışı hiç bildirilmez (noticeGrowth sonucu atılır)", ARTIS, [[INT, "    const grown = noticeGrowth(result, restoredAt);", "    const grown = (noticeGrowth(result, restoredAt), []);"]]],
+  ["M2", "A1: Silinenler geri yüklemesi açıklama saymaz (explained = 0)", ARTIS, [[INT, "    const explained = Math.max(0, restoredAt - noticeMark.restored);", "    const explained = 0;"]]],
+  ["M3", "A1: iş parçacığı taraması sürerken kesinleşen geri yükleme denetimi yok", ARTIS, [[INT, "    if (restoredAt !== cashRestoreMark(store)) return [];\n", ""]]],
+  ["M4", "A1: azalmada işaret güncellenmez (yalnız artışta)", ARTIS, [[INT, "    noticeMark = { counts, restored: restoredAt };\n    return out;", "    if (out.length) noticeMark = { counts, restored: restoredAt };\n    return out;"]]],
+  ["M5", "A1: açılışta uyarının sayısı ölçülmez (ilk tarama sessizce işaret koyar)", ARTIS, [[INT, "    noticeMark = { counts: noticeCounts(result), restored: cashRestoreMark(store) };", "    noticeMark = null;"]]],
+  ["M6", "A1: restoringCash artışı ölçmez (en dış çağrı tanınmaz)", ARTIS, [[CO, "  const outer = handle.state.restoring === 0;", "  const outer = false;"]]],
+  ["N1", "A2: işlem başı işareti (rowid > en büyük) kullanılmaz", IZ, [[DB, " || (mark !== undefined && Number(row.__rowid) > mark)", ""]]],
+  ["N2", "A2: işaret karşılaştırması >= (işlem başındaki en büyük satır da 'doğmuş')", IZ, [[DB, "Number(row.__rowid) > mark)", "Number(row.__rowid) >= mark)"]]],
+  ["N3", "A2: işaret 0 (her önceki hâl 'doğmuş')", IZ, [[DB, "      const mark = money?.marks.get(table);", "      const mark = 0;"]]],
+  ["A1", "B: çok satırlı INSERT'te yalnız son rowid 'eklendi'", MUT, [[DB, "        setIn(scope.inserted, table).add(last - changes + 1 + k);", "        if (k === changes - 1) setIn(scope.inserted, table).add(last);"]]],
+  ["A16", "B: önceki hâl eşlemesi born yerine inserted okur", MUT, [[CO, "Boolean(scope.born?.get(table)?.has(Number(rowid)))", "Boolean(scope.inserted?.get(table)?.has(Number(rowid)))"]]],
+  ["A6", "B: Defter Mutabakatı eski satır + uyarı → yöneticiye bildirin", MUT, [["server/routes/report-center.mjs", "extra.filter(check => !check.ok && !notice(check)).every(legacyOnly)", "extra.filter(check => !check.ok).every(legacyOnly)"]]],
+  ["A4", "B: özetsiz arşivde yan dosya denetimi atlanır (recovered önce)", WAL, [["server/lib/devir/archive-open.mjs", "  if (side) return { state: \"changed\", side, sha256, size: stats.size };\n  if (!entry?.sha256) return { state: \"recovered\", sha256, size: stats.size };", "  if (!entry?.sha256) return { state: \"recovered\", sha256, size: stats.size };\n  if (side) return { state: \"changed\", side, sha256, size: stats.size };"]]],
+  ["C1", "B: kapı 'eşleme' paketli kayıtları saymaz", KAPI, [["tools/kanit.mjs", "  const n = ham.kayitlar.length;", '  const n = ham.kayitlar.filter(k => k?.paket !== "eşleme").length;']]],
+  ["G1", "G: yeni bir denetim eski veriyi tutmuyor (cari ailesinde her açılışta sapma)", ["test/koruma-taban-ailesi-250.test.mjs"], [[INT, "    const failures = checks.filter(item => !item.ok);\n    const total = performance.now() - started;", "    if (!touched) checks.push({ code: \"party:accounts\", name: \"Mutant: eski veriyi tutmayan yeni denetim\", ok: false, count: 1, sample: [] });\n    const failures = checks.filter(item => !item.ok);\n    const total = performance.now() - started;"]]],
+  ["G2", "G: taban sapmasının ailesi yanlış hesaplanır (ileri tarihli eski satır → all) — fikstürde ileri tarihli satır yoksa YAŞAR (bilgi)", ["test/koruma-taban-ailesi-250.test.mjs"], [["server/lib/integrity-scope.mjs", "  if (code.startsWith(\"dates:future:\") || code === \"money:method\"", "  if (code === \"money:method\""]]],
+  ["C3", "B: kapının varsayılan yolu çalışma dizinine bağlı", KAPI, [["tools/kanit.mjs", "export function yapimAsamasiGate(yol = YAPIM_ASAMASI_YOLU", 'export function yapimAsamasiGate(yol = path.join(process.cwd(), "test", "bagimsiz", "cari", "YAPIM-ASAMASI.json")']]],
+];
+// Kopyada .git yok: v2.4.9 etiketi (test/guvenilirlik/surumler.mjs) bu ajanın KENDİ worktree'sinin git dizininden okunur (yalnız okuma: rev-parse, archive).
+const OWN_GIT = path.join("/home/user/ofis---y-netimi/.claude/worktrees/agent-a115f88e3014ea777", ".git");
+const run = tests => {
+  const r = spawnSync(process.execPath, ["--disable-warning=ExperimentalWarning", "--test", "--test-concurrency=1", ...tests], { cwd: COPY, encoding: "utf8", maxBuffer: 256 * 1024 * 1024, timeout: 20 * 60_000, killSignal: "SIGKILL", env: { ...process.env, HUKUK_LICENSE_URL: "http://127.0.0.1:9", GIT_DIR: OWN_GIT } });
+  const out = `${r.stdout}\n${r.stderr}`;
+  const count = key => Number((out.match(new RegExp(`^# ${key} (\\d+)$`, "m")) || [])[1] ?? NaN);
+  return { status: r.status, out, pass: count("pass"), fail: count("fail"), skipped: count("skipped") };
+};
+const firstRed = out => {
+  const name = (out.match(/^\s*not ok \d+ - (.*)$/m) || [])[1] || "";
+  const diff = (out.match(/^\s+[+-] {2,}\S.*$/gm) || []).slice(0, 4).map(line => line.trim()).join(" | ");
+  return `${name.slice(0, 110)}${diff ? ` :: ${diff.slice(0, 260)}` : ""}`;
+};
+const bases = new Map();
+let caught = 0;
+let total = 0;
+for (const [id, name, tests, edits] of M) {
+  if (ONLY && !ONLY.has(id)) continue;
+  const key = JSON.stringify(tests);
+  if (!bases.has(key)) {
+    const b = run(tests);
+    console.log(`taban ${key}: ${b.pass} geçti / ${b.fail} kaldı / ${b.skipped} atlandı (çıkış ${b.status})`);
+    bases.set(key, b.status === 0 && b.skipped === 0 ? b : null);
+    if (!bases.get(key)) console.log(`  TABAN YEŞİL DEĞİL ya da ATLANAN VAR — bu kümenin mutantları anlamsız\n${b.out.slice(-1500)}`);
+  }
+  if (!bases.get(key)) {
+    console.log(`${id} ${name}: ATLANDI (taban)`);
+    continue;
+  }
+  const originals = new Map();
+  try {
+    let ready = true;
+    for (const [file, from, to] of edits) {
+      const full = path.join(COPY, file);
+      if (!originals.has(full)) originals.set(full, readFileSync(full, "utf8"));
+      const text = readFileSync(full, "utf8");
+      const n = text.split(from).length - 1;
+      if (n !== 1) {
+        console.log(`${id} ${name}: KURULAMADI (${file} içinde metin ${n} kez)`);
+        ready = false;
+        break;
+      }
+      writeFileSync(full, text.replace(from, () => to));
+    }
+    if (!ready) continue;
+    total += 1;
+    const r = run(tests);
+    const hit = r.status !== 0 && /not ok/.test(r.out);
+    if (hit) caught += 1;
+    console.log(`${id} ${name}: ${hit ? "YAKALANDI" : "YAŞADI"} (çıkış ${r.status}, ${r.pass} geçti / ${r.fail} kaldı${hit ? `; ilk kırmızı: ${firstRed(r.out)}` : ""})`);
+  } finally {
+    for (const [full, text] of originals) writeFileSync(full, text);
+  }
+}
+console.log(`SONUÇ: ${caught}/${total} mutasyon yakalandı`);

@@ -1,0 +1,24 @@
+  ✗ d50-c5-s206-s25c-b1-iptal-havale.json k1:fatura:FI1b:acik: elle 20000 · kâhin "ANAHTAR YOK"
+  ✗ d50-c5-s206-s25c-b1-iptal-havale.json k1:cari:I1:gecikmis: elle 20000 · kâhin "ANAHTAR YOK"
+  ✗ d50-c5-s206-s25c-b1-iptal-havale.json k1:cari:I1:acikToplam: elle 20000 · kâhin "ANAHTAR YOK"
+  ✗ d50-c5-s206-s25c-b1-iptal-havale.json k1:cari:I1:acikEsitBakiye: elle true · kâhin "ANAHTAR YOK"
+  ✗ d50-c5-s206-s25c-b1-iptal-havale.json k1:kart:KI1:var: elle YOK (tanımsız) · kâhin true
+  ✗ d50-c5-s206-s25c-b1-iptal-havale.json k1:kart:KI1:toplam: elle YOK (tanımsız) · kâhin 90000
+  ✗ d50-c5-s206-s25c-b1-iptal-havale.json k1:kart:KI1:mevcutBorc: elle YOK (tanımsız) · kâhin true
+  ✗ d50-c5-s206-s25c-b1-iptal-havale.json belirsiz kaydı yok: kart KI1 + S206 = A
+  ✗ d50-c5-s206-s25c-b1-iptal-havale.json belirsiz kaydı yok: cari I2 tanımsız + SK-41 (a)
+  ✗ d50-c5-s206-s25c-b1-iptal-havale.json belirsiz kaydı yok: cari I3 tanımsız + SK-41 (b)
+d50-c5-s206-s25c-b1-iptal-havale.json: 57 elle denetim, 10 kırmızı
+  ✗ d49-c5-s15-s25-iptal-ve-fazla.json k1:kart:KA1:var: elle YOK (tanımsız) · kâhin true
+  ✗ d49-c5-s15-s25-iptal-ve-fazla.json k1:kart:KA1:toplam: elle YOK (tanımsız) · kâhin 90000
+  ✗ d49-c5-s15-s25-iptal-ve-fazla.json k1:kart:KA1:mevcutBorc: elle YOK (tanımsız) · kâhin true
+  ✗ d49-c5-s15-s25-iptal-ve-fazla.json k2:kart:KA1:var: elle YOK (tanımsız) · kâhin true
+  ✗ d49-c5-s15-s25-iptal-ve-fazla.json k2:kart:KA1:toplam: elle YOK (tanımsız) · kâhin 90000
+  ✗ d49-c5-s15-s25-iptal-ve-fazla.json k2:kart:KA1:mevcutBorc: elle YOK (tanımsız) · kâhin true
+  ✗ d49-c5-s15-s25-iptal-ve-fazla.json belirsiz kaydı yok: kart KA1 + S206 = A
+d49-c5-s15-s25-iptal-ve-fazla.json: 27 elle denetim, 7 kırmızı
+ESKİ KÂHİN KIRMIZISI: 17/84 elle denetim kırmızı, 67 aynı (beklenen: kırmızı > 0; her kırmızının eski değeri yukarıda)
+# tests 17
+# pass 17
+# fail 0
+17/17 denetim geçti

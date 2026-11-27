@@ -1,0 +1,6 @@
+p = '/dev/shm/t3hiz/k-exp/server/lib/bank/money-lines.mjs'
+s = open(p).read()
+s = s.replace("    const base = store.all(", "    let t0 = performance.now();\n    const base = store.all(", 1)
+s = s.replace("    const covered = store.all(", "    globalThis.__tb = (globalThis.__tb || 0) + performance.now() - t0; t0 = performance.now();\n    const covered = store.all(", 1)
+s = s.replace("    const groups = new Map(base.map(", "    globalThis.__tc = (globalThis.__tc || 0) + performance.now() - t0;\n    const groups = new Map(base.map(", 1)
+open(p, 'w').write(s)

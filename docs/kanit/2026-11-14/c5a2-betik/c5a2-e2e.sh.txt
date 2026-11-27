@@ -1,0 +1,15 @@
+#!/bin/bash
+# Ana oturum: Ç5-A TUR 2 ADAYI — sınama ağacında ci.yml'nin BÜTÜN ekran senaryoları (ders 37). Hata durdurmaz; her adımın çıkışı yazılır.
+# Çağrı: flock -s -n olcum.lock timeout 7000 bash c5a2-e2e.sh
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+W=$S/d2t3-ya-ag; K=$S/c5a2-kanit
+export KANIT_DIR=$K HUKUK_LICENSE_URL=http://127.0.0.1:9 PLAYWRIGHT_BROWSERS_PATH=$S/pw-1194
+mkdir -p $K || exit 1
+cd $W || exit 1
+echo "e2e başladı $(date -u +%T) yük $(cat /proc/loadavg) · ağaç $(git rev-parse --short HEAD) · temiz mi: $(git status -s | grep -v node_modules | wc -l)"
+grep -oE "kanit\.mjs kos e2e-[A-Za-z0-9_-]+ npm run [A-Za-z0-9:_-]+" .github/workflows/ci.yml | awk '{print $3, $6}' > $K/e2e-liste.txt; echo "ekran senaryosu sayısı $(wc -l < $K/e2e-liste.txt)"
+while read ad betik; do
+  timeout 1800 node tools/kanit.mjs kos c5a2-$ad -- npm run $betik > "$K/$ad.out" 2>&1 < /dev/null; c=$?
+  echo "$c $ad $(tail -1 "$K/$ad.out" | grep -oP '\d+/\d+ geçti, \d+ başarısız')"
+done < $K/e2e-liste.txt
+echo "bitti $(date -u +%T) yük $(cat /proc/loadavg) · disk $(df -h / | awk 'NR==2{print $4}')"

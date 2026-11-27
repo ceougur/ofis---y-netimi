@@ -1,0 +1,38 @@
+{
+  "ad": "c7bfix-komsu-europeistanbul-01",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/hakem-k4-yineleme-sirasi.test.mjs test/hiz-243-hesap-defter.test.mjs test/iade-210-fazla-tahsilat.test.mjs test/iade-210-onarim.test.mjs test/iade-210.test.mjs test/iade-224.test.mjs test/iade-geri-odeme-246.test.mjs test/iade-kapama-k1.test.mjs test/iade-kesinti-tarama-249.test.mjs test/ice-aktarma-istek-kimligi-248.test.mjs test/ice-alma-sayi-hucre-api.test.mjs test/inceleme-226-2.test.mjs test/inceleme-226.test.mjs test/is-akisi.test.mjs test/kapali-kart-ekstre-tarihi-250.test.mjs test/kapama-rastgele-223.test.mjs test/kapi-para-245.test.mjs test/kapi-uyari-245.test.mjs test/kasa-acilis-iz-250.test.mjs test/kasa-acilis-kimlik-b7-250.test.mjs test/kasa-acilis-once-250.test.mjs test/kasa-acilis-silinenler-ozet-b8-250.test.mjs test/kasa-acilis-uyari-artis-250.test.mjs test/kayit-tahsilat-244.test.mjs test/kilit-izi-alanlar-250.test.mjs test/kural-farki-kapi-disi-250.test.mjs test/mobil-yazma-247.test.mjs test/mutabakat-213.test.mjs test/nakit-akis-kasa-mm6.test.mjs test/obligation-input-250.test.mjs test/odeme-yolu-222.test.mjs test/plan-case-link.test.mjs test/plan-transfer.test.mjs test/plans.test.mjs test/projeksiyon-vade-246.test.mjs test/rapor-220.test.mjs test/rapor-tablodaki-kisiler-f1.test.mjs test/raporlar-209.test.mjs test/raporlar-210-banka.test.mjs test/raporlar-224.test.mjs test/raporlar-230-banka.test.mjs test/s127-tek-kez-250.test.mjs test/silinenler-donem-kilidi-244.test.mjs test/supheli-230-karar.test.mjs test/supheli-230-kontrol2.test.mjs test/supheli-kuyruk-defter-250.test.mjs test/tabela-adi-245.test.mjs test/tablo-borc-r31e.test.mjs test/tablodan-aktar-244.test.mjs test/tyk-250.test.mjs test/tyk-api-250.test.mjs test/tyk-birlesik8-ekranlar-250.test.mjs test/tyk-birlesik8-iade-250.test.mjs test/tyk-fark-v249-250.test.mjs test/tyk-goc-249-250.test.mjs test/tyk-kapanis-250.test.mjs test/tyk-kapanis-dis-250.test.mjs test/tyk-kapanis-sigma-250.test.mjs test/tyk-kilit-taksitli-250.test.mjs test/tyk-onbellek-250.test.mjs test/tyk-son-250.test.mjs test/tyk-tur2a-250.test.mjs test/tyk-tur2b1-250.test.mjs test/tyk-tur2b2-250.test.mjs test/ui-tur-a-249.test.mjs test/ux18-cek-fatura-244.test.mjs test/vade-takip-soz-b7-250.test.mjs test/whatsapp-dk5-yine-de-gonder-248.test.mjs test/whatsapp-dk8-g-ek-248.test.mjs test/whatsapp-dk8-g-son-248.test.mjs test/whatsapp-elle-alici-249.test.mjs test/whatsapp-onizleme-olcek-248.test.mjs test/whatsapp-t2-6-248.test.mjs test/whatsapp-t6-e2-248.test.mjs test/whatsapp-tur3-250.test.mjs test/whatsapp-w2-cekirdek-248.test.mjs test/whatsapp-w3-saklama-250.test.mjs",
+  "commit": "93943258aca9da570fc12408f3abcfcd73d81f34",
+  "dal": "worktree-agent-aa660861cba7cd284",
+  "kirli": 0,
+  "izlenmeyen": 16,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-21T00:31:22.595Z",
+  "sure_sn": 453.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1131,
+    "gecen": 1130,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Birleşik tur 8 — İş 1: kart göstergelerinin yer tablosu kaynakla aynı (yeni bir gösterim yeri eklenince kırmızı) › routes/plans.mjs: kartın kendi biçimini (shape) okuyan yerler — detail (yazım içi), detailView (pencere, PDF; kuyruk), forCase (kayıt detayı; kuyruk), forAccount (cari kartı; queueSummaryOf)",
+      "konum": "test/tyk-birlesik8-ekranlar-250.test.mjs:237:3",
+      "hata": "yeni bir 'shape(' çağıranı yer tablosuna (tasarım §15.1) ve bu teste eklenmeli · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7bfix-a66/kanit/2026-11-21/c7bfix-komsu-europeistanbul-01.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa660861cba7cd284",
+  "ham_cikti_sha256": "aa0e68ee3f8402bb9e8f10cebbcbabe68d9f7fe05773d69a8a633f730803b553",
+  "ham_cikti_bayt": 473283
+}

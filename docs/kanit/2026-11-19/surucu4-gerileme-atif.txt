@@ -1,0 +1,60 @@
+rastgele-1 [UTC] kurallar: KG-2 belgesiz 600.90 / 610.90 (taksit Yeni Borç 602 → 600), KG-24 ihracat 601, KG-8 / F-08 iade KDV'si + B-6 / KG-7 indirim dönemi · eski kodda SINIFLANMADI 33 / sınıfsız adım 33 / red farkı 0 → yeni kodda 0 / 0 / 0
+rastgele-2 [UTC] kurallar: KG-2 belgesiz 600.90 / 610.90 (taksit Yeni Borç 602 → 600), KG-24 ihracat 601, KG-8 / F-08 iade KDV'si + B-6 / KG-7 indirim dönemi · eski kodda SINIFLANMADI 30 / sınıfsız adım 31 / red farkı 0 → yeni kodda 0 / 0 / 0
+rastgele-3 [UTC] kurallar: KG-2 belgesiz 600.90 / 610.90 (taksit Yeni Borç 602 → 600), KG-24 ihracat 601, KG-8 / F-08 iade KDV'si + B-6 / KG-7 indirim dönemi · eski kodda SINIFLANMADI 24 / sınıfsız adım 29 / red farkı 0 → yeni kodda 0 / 0 / 0
+s02-ihracat-tevkifat [UTC] kurallar: KG-24 ihracat 601 · eski kodda SINIFLANMADI 6 / sınıfsız adım 1 / red farkı 0 → yeni kodda 0 / 0 / 0
+s05-iadeler [UTC] kurallar: KG-8 / F-08 iade KDV'si + B-6 / KG-7 indirim dönemi · eski kodda SINIFLANMADI 0 / sınıfsız adım 3 / red farkı 0 → yeni kodda 0 / 0 / 0
+s103-s79-olagan-bag-cari [UTC] kurallar: KG-2 belgesiz 600.90 / 610.90 (taksit Yeni Borç 602 → 600) · eski kodda SINIFLANMADI 4 / sınıfsız adım 1 / red farkı 0 → yeni kodda 0 / 0 / 0
+s107-s84-formdaki-pesin-bagi [UTC] kurallar: KG-2 belgesiz 600.90 / 610.90 (taksit Yeni Borç 602 → 600) · eski kodda SINIFLANMADI 8 / sınıfsız adım 1 / red farkı 0 → yeni kodda 0 / 0 / 0
+s108-s85-normal-cari-tutar-tarih [UTC] kurallar: KG-2 belgesiz 600.90 / 610.90 (taksit Yeni Borç 602 → 600) · eski kodda SINIFLANMADI 16 / sınıfsız adım 1 / red farkı 0 → yeni kodda 0 / 0 / 0
+s11-kasa-carisiz-kg3 [UTC] kurallar: KG-3 kayıt tahsilatı 336.90 (+ geçiş günü) · eski kodda SINIFLANMADI 6 / sınıfsız adım 1 / red farkı 0 → yeni kodda 0 / 0 / 0
+s111-s174-s180-kural-farki-kendi-yilinda [UTC] kurallar: KG-3 eski alt hesap 602.90 (geçiş günü öncesi) · eski kodda SINIFLANMADI 0 / sınıfsız adım 0 / red farkı 0 → yeni kodda 0 / 0 / 0
+s114-a2-kural-gecis-gunu [UTC] kurallar: KG-3 kayıt tahsilatı 336.90 (+ geçiş günü), KG-8 / F-08 iade KDV'si + B-6 / KG-7 indirim dönemi · eski kodda SINIFLANMADI 20 / sınıfsız adım 3 / red farkı 0 → yeni kodda 0 / 0 / 0
+s115-a3-kg7-kdv-indirim-donemi [UTC] kurallar: KG-8 / F-08 iade KDV'si + B-6 / KG-7 indirim dönemi · durum: olay 5 alis_faturasi durum yapildi → red (vat-period-range); olay 6 alis_faturasi durum yapildi → red (vat-period-range) · eski kodda SINIFLANMADI 15 / sınıfsız adım 4 / red farkı 2 → yeni kodda 0 / 0 / 0
+s19-taksit-kg5 [UTC] kurallar: KG-2 belgesiz 600.90 / 610.90 (taksit Yeni Borç 602 → 600) · eski kodda SINIFLANMADI 4 / sınıfsız adım 1 / red farkı 0 → yeni kodda 0 / 0 / 0
+s27-devir-yoldaki-supheli-evrak-taksit [UTC] kurallar: KG-2 belgesiz 600.90 / 610.90 (taksit Yeni Borç 602 → 600) · eski kodda SINIFLANMADI 2 / sınıfsız adım 1 / red farkı 0 → yeni kodda 0 / 0 / 0
+s28-devri-yenile-kg7 [UTC] kurallar: KG-8 / F-08 iade KDV'si + B-6 / KG-7 indirim dönemi · durum: olay 7 kdv_mahsup durum red → yapildi (vat-offset-blocked) · eski kodda SINIFLANMADI 4 / sınıfsız adım 1 / red farkı 1 → yeni kodda 0 / 0 / 0
+s34-ocakta-aralik-iadesi [UTC] kurallar: KG-8 / F-08 iade KDV'si + B-6 / KG-7 indirim dönemi · eski kodda SINIFLANMADI 0 / sınıfsız adım 2 / red farkı 0 → yeni kodda 0 / 0 / 0
+s40-s1-vadesiz-gecikmis [UTC] kurallar: KG-2 belgesiz 600.90 / 610.90 (taksit Yeni Borç 602 → 600) · eski kodda SINIFLANMADI 2 / sınıfsız adım 1 / red farkı 0 → yeni kodda 0 / 0 / 0
+s43-s4-mahsuptan-sonra-ters [UTC] kurallar: KG-8 / F-08 iade KDV'si + B-6 / KG-7 indirim dönemi · eski kodda SINIFLANMADI 0 / sınıfsız adım 0 / red farkı 0 → yeni kodda 0 / 0 / 0
+s52-k3-supheli-caride-alacak-satirlari [UTC] kurallar: KG-2 belgesiz 600.90 / 610.90 (taksit Yeni Borç 602 → 600) · eski kodda SINIFLANMADI 4 / sınıfsız adım 1 / red farkı 0 → yeni kodda 0 / 0 / 0
+s53-kasa-acilis-duzelt-fatura-sil-geri-yukle [UTC] kurallar: 649.90 carisiz Kasa girişi (BAŞ MİMAR KARARI 19.11) · eski kodda SINIFLANMADI 0 / sınıfsız adım 0 / red farkı 0 → yeni kodda 0 / 0 / 0
+s60-r6-kart-kapat-borcta-kalir [UTC] kurallar: KG-2 belgesiz 600.90 / 610.90 (taksit Yeni Borç 602 → 600) · eski kodda SINIFLANMADI 6 / sınıfsız adım 2 / red farkı 0 → yeni kodda 0 / 0 / 0
+s61-r20-karsiliksiz-fatura-vadesi [UTC] kurallar: KG-2 belgesiz 600.90 / 610.90 (taksit Yeni Borç 602 → 600) · eski kodda SINIFLANMADI 4 / sınıfsız adım 1 / red farkı 0 → yeni kodda 0 / 0 / 0
+s64-s12-kasa-acilistan-once [UTC] kurallar: 649.90 carisiz Kasa girişi (BAŞ MİMAR KARARI 19.11) · eski kodda SINIFLANMADI 0 / sınıfsız adım 0 / red farkı 0 → yeni kodda 0 / 0 / 0
+s65-m1f-vade-gunu [UTC] kurallar: KG-2 belgesiz 600.90 / 610.90 (taksit Yeni Borç 602 → 600) · eski kodda SINIFLANMADI 2 / sınıfsız adım 1 / red farkı 0 → yeni kodda 0 / 0 / 0
+s81-s44-geri-yuklenen-kasa-taksit-normal-cari [UTC] kurallar: KG-2 belgesiz 600.90 / 610.90 (taksit Yeni Borç 602 → 600) · eski kodda SINIFLANMADI 6 / sınıfsız adım 1 / red farkı 0 → yeni kodda 0 / 0 / 0
+s86-s50-tek-kuyruk-kart-taksiti [UTC] kurallar: KG-2 belgesiz 600.90 / 610.90 (taksit Yeni Borç 602 → 600) · eski kodda SINIFLANMADI 4 / sınıfsız adım 3 / red farkı 0 → yeni kodda 0 / 0 / 0
+s94-s54-ayni-duzeltmede-bag-cari [UTC] kurallar: KG-2 belgesiz 600.90 / 610.90 (taksit Yeni Borç 602 → 600) · eski kodda SINIFLANMADI 4 / sınıfsız adım 1 / red farkı 0 → yeni kodda 0 / 0 / 0
+s95-s55-bag-hedefi-sonra [UTC] kurallar: KG-2 belgesiz 600.90 / 610.90 (taksit Yeni Borç 602 → 600) · eski kodda SINIFLANMADI 4 / sınıfsız adım 1 / red farkı 0 → yeni kodda 0 / 0 / 0
+s97-s57-olagan-bagli-kayit-cari [UTC] kurallar: KG-2 belgesiz 600.90 / 610.90 (taksit Yeni Borç 602 → 600) · eski kodda SINIFLANMADI 6 / sınıfsız adım 1 / red farkı 0 → yeni kodda 0 / 0 / 0
+rastgele-1 [Europe-Istanbul] kurallar: KG-2 belgesiz 600.90 / 610.90 (taksit Yeni Borç 602 → 600), KG-24 ihracat 601, KG-8 / F-08 iade KDV'si + B-6 / KG-7 indirim dönemi · eski kodda SINIFLANMADI 33 / sınıfsız adım 33 / red farkı 0 → yeni kodda 0 / 0 / 0
+rastgele-2 [Europe-Istanbul] kurallar: KG-2 belgesiz 600.90 / 610.90 (taksit Yeni Borç 602 → 600), KG-24 ihracat 601, KG-8 / F-08 iade KDV'si + B-6 / KG-7 indirim dönemi · eski kodda SINIFLANMADI 30 / sınıfsız adım 31 / red farkı 0 → yeni kodda 0 / 0 / 0
+rastgele-3 [Europe-Istanbul] kurallar: KG-2 belgesiz 600.90 / 610.90 (taksit Yeni Borç 602 → 600), KG-24 ihracat 601, KG-8 / F-08 iade KDV'si + B-6 / KG-7 indirim dönemi · eski kodda SINIFLANMADI 24 / sınıfsız adım 29 / red farkı 0 → yeni kodda 0 / 0 / 0
+s02-ihracat-tevkifat [Europe-Istanbul] kurallar: KG-24 ihracat 601 · eski kodda SINIFLANMADI 6 / sınıfsız adım 1 / red farkı 0 → yeni kodda 0 / 0 / 0
+s05-iadeler [Europe-Istanbul] kurallar: KG-8 / F-08 iade KDV'si + B-6 / KG-7 indirim dönemi · eski kodda SINIFLANMADI 0 / sınıfsız adım 3 / red farkı 0 → yeni kodda 0 / 0 / 0
+s103-s79-olagan-bag-cari [Europe-Istanbul] kurallar: KG-2 belgesiz 600.90 / 610.90 (taksit Yeni Borç 602 → 600) · eski kodda SINIFLANMADI 4 / sınıfsız adım 1 / red farkı 0 → yeni kodda 0 / 0 / 0
+s107-s84-formdaki-pesin-bagi [Europe-Istanbul] kurallar: KG-2 belgesiz 600.90 / 610.90 (taksit Yeni Borç 602 → 600) · eski kodda SINIFLANMADI 8 / sınıfsız adım 1 / red farkı 0 → yeni kodda 0 / 0 / 0
+s108-s85-normal-cari-tutar-tarih [Europe-Istanbul] kurallar: KG-2 belgesiz 600.90 / 610.90 (taksit Yeni Borç 602 → 600) · eski kodda SINIFLANMADI 16 / sınıfsız adım 1 / red farkı 0 → yeni kodda 0 / 0 / 0
+s11-kasa-carisiz-kg3 [Europe-Istanbul] kurallar: KG-3 kayıt tahsilatı 336.90 (+ geçiş günü) · eski kodda SINIFLANMADI 6 / sınıfsız adım 1 / red farkı 0 → yeni kodda 0 / 0 / 0
+s111-s174-s180-kural-farki-kendi-yilinda [Europe-Istanbul] kurallar: KG-3 eski alt hesap 602.90 (geçiş günü öncesi) · eski kodda SINIFLANMADI 0 / sınıfsız adım 0 / red farkı 0 → yeni kodda 0 / 0 / 0
+s114-a2-kural-gecis-gunu [Europe-Istanbul] kurallar: KG-3 kayıt tahsilatı 336.90 (+ geçiş günü), KG-8 / F-08 iade KDV'si + B-6 / KG-7 indirim dönemi · eski kodda SINIFLANMADI 20 / sınıfsız adım 3 / red farkı 0 → yeni kodda 0 / 0 / 0
+s115-a3-kg7-kdv-indirim-donemi [Europe-Istanbul] kurallar: KG-8 / F-08 iade KDV'si + B-6 / KG-7 indirim dönemi · durum: olay 5 alis_faturasi durum yapildi → red (vat-period-range); olay 6 alis_faturasi durum yapildi → red (vat-period-range) · eski kodda SINIFLANMADI 15 / sınıfsız adım 4 / red farkı 2 → yeni kodda 0 / 0 / 0
+s19-taksit-kg5 [Europe-Istanbul] kurallar: KG-2 belgesiz 600.90 / 610.90 (taksit Yeni Borç 602 → 600) · eski kodda SINIFLANMADI 4 / sınıfsız adım 1 / red farkı 0 → yeni kodda 0 / 0 / 0
+s27-devir-yoldaki-supheli-evrak-taksit [Europe-Istanbul] kurallar: KG-2 belgesiz 600.90 / 610.90 (taksit Yeni Borç 602 → 600) · eski kodda SINIFLANMADI 2 / sınıfsız adım 1 / red farkı 0 → yeni kodda 0 / 0 / 0
+s28-devri-yenile-kg7 [Europe-Istanbul] kurallar: KG-8 / F-08 iade KDV'si + B-6 / KG-7 indirim dönemi · durum: olay 7 kdv_mahsup durum red → yapildi (vat-offset-blocked) · eski kodda SINIFLANMADI 4 / sınıfsız adım 1 / red farkı 1 → yeni kodda 0 / 0 / 0
+s34-ocakta-aralik-iadesi [Europe-Istanbul] kurallar: KG-8 / F-08 iade KDV'si + B-6 / KG-7 indirim dönemi · eski kodda SINIFLANMADI 0 / sınıfsız adım 2 / red farkı 0 → yeni kodda 0 / 0 / 0
+s40-s1-vadesiz-gecikmis [Europe-Istanbul] kurallar: KG-2 belgesiz 600.90 / 610.90 (taksit Yeni Borç 602 → 600) · eski kodda SINIFLANMADI 2 / sınıfsız adım 1 / red farkı 0 → yeni kodda 0 / 0 / 0
+s43-s4-mahsuptan-sonra-ters [Europe-Istanbul] kurallar: KG-8 / F-08 iade KDV'si + B-6 / KG-7 indirim dönemi · eski kodda SINIFLANMADI 0 / sınıfsız adım 0 / red farkı 0 → yeni kodda 0 / 0 / 0
+s52-k3-supheli-caride-alacak-satirlari [Europe-Istanbul] kurallar: KG-2 belgesiz 600.90 / 610.90 (taksit Yeni Borç 602 → 600) · eski kodda SINIFLANMADI 4 / sınıfsız adım 1 / red farkı 0 → yeni kodda 0 / 0 / 0
+s53-kasa-acilis-duzelt-fatura-sil-geri-yukle [Europe-Istanbul] kurallar: 649.90 carisiz Kasa girişi (BAŞ MİMAR KARARI 19.11) · eski kodda SINIFLANMADI 0 / sınıfsız adım 0 / red farkı 0 → yeni kodda 0 / 0 / 0
+s60-r6-kart-kapat-borcta-kalir [Europe-Istanbul] kurallar: KG-2 belgesiz 600.90 / 610.90 (taksit Yeni Borç 602 → 600) · eski kodda SINIFLANMADI 6 / sınıfsız adım 2 / red farkı 0 → yeni kodda 0 / 0 / 0
+s61-r20-karsiliksiz-fatura-vadesi [Europe-Istanbul] kurallar: KG-2 belgesiz 600.90 / 610.90 (taksit Yeni Borç 602 → 600) · eski kodda SINIFLANMADI 4 / sınıfsız adım 1 / red farkı 0 → yeni kodda 0 / 0 / 0
+s64-s12-kasa-acilistan-once [Europe-Istanbul] kurallar: 649.90 carisiz Kasa girişi (BAŞ MİMAR KARARI 19.11) · eski kodda SINIFLANMADI 0 / sınıfsız adım 0 / red farkı 0 → yeni kodda 0 / 0 / 0
+s65-m1f-vade-gunu [Europe-Istanbul] kurallar: KG-2 belgesiz 600.90 / 610.90 (taksit Yeni Borç 602 → 600) · eski kodda SINIFLANMADI 2 / sınıfsız adım 1 / red farkı 0 → yeni kodda 0 / 0 / 0
+s81-s44-geri-yuklenen-kasa-taksit-normal-cari [Europe-Istanbul] kurallar: KG-2 belgesiz 600.90 / 610.90 (taksit Yeni Borç 602 → 600) · eski kodda SINIFLANMADI 6 / sınıfsız adım 1 / red farkı 0 → yeni kodda 0 / 0 / 0
+s86-s50-tek-kuyruk-kart-taksiti [Europe-Istanbul] kurallar: KG-2 belgesiz 600.90 / 610.90 (taksit Yeni Borç 602 → 600) · eski kodda SINIFLANMADI 4 / sınıfsız adım 3 / red farkı 0 → yeni kodda 0 / 0 / 0
+s94-s54-ayni-duzeltmede-bag-cari [Europe-Istanbul] kurallar: KG-2 belgesiz 600.90 / 610.90 (taksit Yeni Borç 602 → 600) · eski kodda SINIFLANMADI 4 / sınıfsız adım 1 / red farkı 0 → yeni kodda 0 / 0 / 0
+s95-s55-bag-hedefi-sonra [Europe-Istanbul] kurallar: KG-2 belgesiz 600.90 / 610.90 (taksit Yeni Borç 602 → 600) · eski kodda SINIFLANMADI 4 / sınıfsız adım 1 / red farkı 0 → yeni kodda 0 / 0 / 0
+s97-s57-olagan-bagli-kayit-cari [Europe-Istanbul] kurallar: KG-2 belgesiz 600.90 / 610.90 (taksit Yeni Borç 602 → 600) · eski kodda SINIFLANMADI 6 / sınıfsız adım 1 / red farkı 0 → yeni kodda 0 / 0 / 0
+
+AÇIKLANMAYAN içeren koşu: 0

@@ -1,0 +1,129 @@
+{
+ "kod": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a9a8e7bc8f35a45ce",
+ "cpu": 4,
+ "yuk": [
+  4.65,
+  5.91,
+  7.13
+ ],
+ "adimlar": [
+  {
+   "adim": "kilit 31.12.2025",
+   "ms": 5050,
+   "olayDongusuEnCokMs": 24,
+   "status": 200,
+   "active": true,
+   "code": "",
+   "ileti": "",
+   "temizlik": {
+    "running": false,
+    "removed": 0
+   },
+   "yuk": 4.72
+  },
+  {
+   "adim": "dondurmanın bitişi",
+   "ms": 105967,
+   "olayDongusuEnCokMs": 319,
+   "kapsam": "2025-12-31",
+   "donmusSatir": 2741312,
+   "gorunen": 2741312,
+   "kayitli": 2741312,
+   "yuk": 5.2
+  },
+  {
+   "adim": "tablo doğrulaması maliyeti (parça sorgusu)",
+   "ms": 544,
+   "olayDongusuEnCokMs": 0,
+   "dogrulamaParcaEnUzunMs": 8,
+   "dogrulamaToplamMs": 543,
+   "parca": 138,
+   "satir": 2741312,
+   "yuk": 5.2
+  },
+  {
+   "adim": "Kilidi Aç",
+   "ms": 5005,
+   "olayDongusuEnCokMs": 38,
+   "status": 200,
+   "active": true,
+   "code": "",
+   "ileti": "",
+   "temizlik": {
+    "running": true,
+    "removed": 765500
+   },
+   "yuk": 5.26
+  },
+  {
+   "adim": "Yeniden Kilitle (hemen)",
+   "ms": 5009,
+   "olayDongusuEnCokMs": 64,
+   "status": 409,
+   "active": true,
+   "code": "ledger-cleanup-running",
+   "ileti": "Önceki dönemin defter temizliği sürüyor; temizlik bitince yeniden kilitleyin. İlerleme bu kartta görünür.",
+   "temizlik": {
+    "running": true,
+    "removed": 1471000
+   },
+   "yuk": 5.14
+  },
+  {
+   "adim": "ilerleme görünümü (temizlik sürerken)",
+   "ms": 23,
+   "olayDongusuEnCokMs": 10,
+   "status": 200,
+   "active": true,
+   "code": "",
+   "ileti": "",
+   "temizlik": {
+    "running": true,
+    "removed": 1500000
+   },
+   "yuk": 5.14
+  },
+  {
+   "adim": "temizliğin bitişi",
+   "ms": 7808,
+   "olayDongusuEnCokMs": 21,
+   "kapsam": "",
+   "donmusSatir": 0,
+   "temizlik": {
+    "running": false,
+    "removed": 0
+   },
+   "yuk": 5.13
+  },
+  {
+   "adim": "Yeniden Kilitle (temizlikten sonra)",
+   "ms": 5011,
+   "olayDongusuEnCokMs": 51,
+   "status": 200,
+   "active": true,
+   "code": "",
+   "ileti": "",
+   "temizlik": {
+    "running": false,
+    "removed": 0
+   },
+   "yuk": 5.04
+  },
+  {
+   "adim": "dondurmanın bitişi",
+   "ms": 93837,
+   "olayDongusuEnCokMs": 289,
+   "kapsam": "2025-12-31",
+   "donmusSatir": 2741312,
+   "gorunen": 2741312,
+   "kayitli": 2741312,
+   "yuk": 4.95
+  }
+ ],
+ "SONUC": "TUTARLI",
+ "yukSonra": [
+  4.95,
+  5.45,
+  6.62
+ ]
+}

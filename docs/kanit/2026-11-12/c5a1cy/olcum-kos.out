@@ -1,0 +1,26 @@
+kilit alındı 11:42:56 yük 1.33 1.03 1.00 3/115 20261
+== z1-taban kilitsiz başta 1.33 1.03 1.00 2/115 20262
+çıkış 0
+== z1-tur1b kilitsiz başta 1.27 1.10 1.03 1/112 20444
+çıkış 0
+== z1-tur1c kilitsiz başta 1.10 1.12 1.05 1/110 20503
+çıkış 0
+== z2-taban kilitsiz başta 1.22 1.19 1.09 1/109 20564
+çıkış 0
+== z2-tur1b kilitsiz başta 1.14 1.16 1.09 1/114 21355
+çıkış 0
+== z2-tur1c kilitsiz başta 1.32 1.18 1.11 1/111 21426
+çıkış 0
+== z1-taban kilitli başta 1.42 1.24 1.13 1/115 21569
+çıkış 0
+== z1-tur1b kilitli başta 1.52 1.33 1.18 2/110 21877
+çıkış 0
+== z1-tur1c kilitli başta 1.23 1.27 1.19 1/108 22678
+çıkış 0
+== z2-taban kilitli başta 1.41 1.39 1.25 1/111 23393
+çıkış 0
+== z2-tur1b kilitli başta 1.05 1.30 1.25 1/115 24668
+çıkış 0
+== z2-tur1c kilitli başta 1.24 1.25 1.24 1/112 25486
+çıkış 0
+sonda 12:26:40 1.30 1.21 1.21 1/115 26080 · disk 5.4G

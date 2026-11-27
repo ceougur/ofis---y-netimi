@@ -1,0 +1,9 @@
+(a) v2.0.26 Tüm Hareketleri Sil: HTTP 200
+(a) v2.4.9 açılışı: {"satir":1,"uzunluklar":[20000],"gecerli":[false],"mutabakatTestiHTTP":500}
+(a) yeni kod açılış 1: {"satir":1,"uzunluklar":[20000],"gecerli":[false],"mutabakatTestiHTTP":500}
+(a) yeni kod açılış 2: {"satir":1,"uzunluklar":[20000],"gecerli":[false],"mutabakatTestiHTTP":500}
+(b) v2.4.9 açılışı (11:00): {"satir":1,"uzunluklar":[20000],"gecerli":[false],"mutabakatTestiHTTP":500}
+(b) yeni-gec: açılış 1 satır 2 geçerli false/true HTTP 500 · açılış 2 satır 2 geçerli false/true HTTP 500 · açılış 3 satır 2 geçerli false/true HTTP 500
+(b) yeni-ayni-an: açılış 1 satır 2 geçerli false/true HTTP 500 · açılış 2 satır 3 geçerli false/true/true HTTP 500 · açılış 3 satır 4 geçerli false/true/true/true HTTP 500
+(b) yeni-erken: açılış 1 satır 2 geçerli false/true HTTP 500 · açılış 2 satır 3 geçerli false/true/true HTTP 500 · açılış 3 satır 4 geçerli false/true/true/true HTTP 500
+(b) eski-bc495a1c-ayni-an: açılış 1 satır 1 geçerli false HTTP 500 · açılış 2 satır 1 geçerli false HTTP 500 · açılış 3 satır 1 geçerli false HTTP 500

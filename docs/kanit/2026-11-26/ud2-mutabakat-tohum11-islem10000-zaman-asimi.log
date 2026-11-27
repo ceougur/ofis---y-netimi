@@ -1,0 +1,6 @@
+# ud2: npm run test:mutabakat -- --islem 10000 --tohum 11 --tohumlar 1 · commit 3175b26c · flock -s + timeout 6900 (görev metni: timeout 7000 sn) · 03:14–05:09 UTC, 4 koşu paralel (yük 5–6 / 4 çekirdek)
+# SONUÇ: ZAMAN AŞIMI (çıkış 124) — kanit kos hüküm dosyası yazılamadı; motor ilk uyuşmazlıkta '✗ işlem …' yazıp durur, bu günlükte ✗ satırı YOK; kaç işleme ulaşıldığı OKUNAMADI (ders 4) → BELİRSİZ
+
+> destekofis@2.5.0 test:mutabakat
+> node --disable-warning=ExperimentalWarning test/mutabakat/kos.mjs --islem 10000 --tohum 11 --tohumlar 1
+

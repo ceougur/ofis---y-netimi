@@ -1,0 +1,32 @@
+{
+  "ad": "c2-esdegerlik-v249",
+  "komut": "node test/defter-esdegerlik-250.mjs karsilastir /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-is/dok-v249-eski.json /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2-is/dok-v249-yeni.json --ad-farki 770",
+  "commit": "fb3eb17475207dda918ea86237a822cc67588e55",
+  "dal": "worktree-agent-addb60b4cac4f5935",
+  "kirli": 0,
+  "izlenmeyen": 7,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T20:20:16.485Z",
+  "sure_sn": 0.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 14,
+    "gecen": 14,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/c2-esdegerlik-v249.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-addb60b4cac4f5935",
+  "ham_cikti_sha256": "80c4f49515a3732ee556d3dc5c8972054ce195ecd3a6b4bcd20a0df7fdfeed1c",
+  "ham_cikti_bayt": 1717
+}

@@ -1,0 +1,53 @@
+{
+  "ad": "c7b2d-kahin-defter-ist",
+  "komut": "npm run -s test:kahin-defter",
+  "commit": "a44e4e5fa7c963e6724445f38cee19c93b0344fb",
+  "dal": "worktree-agent-a187e057786d3b7e4",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v653 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-19T09:19:25.489Z",
+  "sure_sn": 4.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "kahin-defter",
+    "toplam": 187,
+    "gecen": 183,
+    "basarisiz": 4,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 4 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "mizan K_EYLUL 191: program 3.035,00 · kâhin 2.816,00",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "mizan K_EYLUL 391: program -2.274,00 · kâhin -2.055,00",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "mizan K_SON 191: program 800,00 · kâhin -400,00",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "mizan K_SON 391: program -400,00 · kâhin 800,00",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7b2d-ana/kanit/2026-11-19/c7b2d-kahin-defter-ist.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a187e057786d3b7e4",
+  "ham_cikti_sha256": "047842ad23f50a8c53cb1803de7ed70eb3de794660e86afc38e5f060ab248365",
+  "ham_cikti_bayt": 2957
+}

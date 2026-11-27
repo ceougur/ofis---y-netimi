@@ -1,0 +1,43 @@
+{
+  "ad": "b210-e2e-eski-senaryo-banka-210-yeni-test",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-banka-210.YENI-TEST.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v338 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-10T08:15:32.021Z",
+  "sure_sn": 370.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 423,
+    "gecen": 421,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "arka plan yenilemesi pencereyi yeniden çizince odak arama kutusunda kalır (odak: BODY)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "beklenmeyen hata: Error: page.waitForFunction: Timeout 10000ms exceeded. · ekran: {\"filters\":{\"account\":\"bacc-b7fdc3ec-be1a-44cf-ad9c-afecf187a9ef\",\"type\":\"\",\"dir\":\"\",\"status\":\"\",\"from\":\"\",\"to\":\"\",\"min\":\"\",\"max\":\"\",\"q\":\"\"},\"rows\":[\"BNK-2026-000014:interest_in\",\"BNK-2026-000012:invoice_cash\",\"BNK-202",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../b210b-kanit/2026-11-10/b210-e2e-eski-senaryo-banka-210-yeni-test.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b210b-eski",
+  "ham_cikti_sha256": "98e5c83281f4b0ab232e9b4b74922f0e5a70d581e2401300792a19f805f6cf9b",
+  "ham_cikti_bayt": 49132
+}

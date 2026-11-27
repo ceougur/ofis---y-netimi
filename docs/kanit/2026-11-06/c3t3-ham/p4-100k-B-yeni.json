@@ -1,0 +1,68 @@
+{
+ "kod": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a9a8e7bc8f35a45ce",
+ "mod": "B",
+ "cpu": 4,
+ "yuk": [
+  8.7,
+  8.72,
+  7.36
+ ],
+ "adimlar": [
+  {
+   "adim": "kilit 31.12.2025",
+   "ms": 5009,
+   "olayDongusuEnCokMs": 136,
+   "status": 200,
+   "active": true,
+   "frozenThrough": "",
+   "hata": ""
+  },
+  {
+   "adim": "dondurmanın bitişi",
+   "ms": 10719,
+   "olayDongusuEnCokMs": 81,
+   "view": "2025-12-31"
+  },
+  {
+   "adim": "Kilidi Aç",
+   "ms": 3139,
+   "olayDongusuEnCokMs": 45,
+   "status": 200,
+   "active": false,
+   "frozenThrough": "",
+   "hata": ""
+  },
+  {
+   "adim": "Yeniden Kilitle (hemen)",
+   "ms": 5006,
+   "olayDongusuEnCokMs": 49,
+   "status": 200,
+   "active": true,
+   "frozenThrough": "",
+   "hata": ""
+  },
+  {
+   "adim": "dondurmanın bitişi",
+   "ms": 9352,
+   "olayDongusuEnCokMs": 94,
+   "view": "2025-12-31"
+  }
+ ],
+ "donmusSatir": {
+  "kapsam": "2025-12-31",
+  "gorunenDonmusSatir": 274616,
+  "kosununKayitliSatiri": 274616
+ },
+ "sonuc": {
+  "kapsam": "2025-12-31",
+  "gorunenDonmusSatir": 274616,
+  "kosununKayitliSatiri": 274616,
+  "canliTuretmeSatiri": 274616
+ },
+ "SONUC": "TUTARLI",
+ "yukSonra": [
+  11.16,
+  9.79,
+  8.02
+ ]
+}

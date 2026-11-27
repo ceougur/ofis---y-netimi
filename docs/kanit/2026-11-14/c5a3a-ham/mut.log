@@ -1,0 +1,5 @@
+başta 2.56 2.52 3.06 4/153 19149 00:49:57
+obligation-input mutasyon çıkış 1 · SONUÇ: 13 geçti, 1 kaldı (14 mutasyonun 13'i yakalandı)
+tyk-mutasyon (taşınan 7) çıkış 0 · [kanit] c5a3a-tyk-mutasyon-tasinan: GEÇTİ · çıkış 0 · 7/7 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 23d657d +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · Node v22.23.4
+sonda 2.29 2.45 2.99 2/157 20051 00:51:18
+flock çıkış 0

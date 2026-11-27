@@ -1,0 +1,136 @@
+TAP version 13
+# (node:13355) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 BS-3 ailesi — cari hareketi düzeltmesi: gövde yoldayken hareket silinirse 404 + ileti; hiçbir tablo yazılmaz
+    # Subtest: (a) Borç Yaz ve nakit tahsilat: gövde yoldayken silinirse 404 "Hareket bulunamadı. Başka biri silmiş olabilir." (önceden 200, satır yok)
+    not ok 1 - (a) Borç Yaz ve nakit tahsilat: gövde yoldayken silinirse 404 "Hareket bulunamadı. Başka biri silmiş olabilir." (önceden 200, satır yok)
+      ---
+      duration_ms: 406.736391
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/cari-yaris-ae1b/eski-8e27f96a/test/cari-duzeltme-yaris-250.test.mjs:110:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Borç Yaz: yazım reddedilmeli (404) — yanıt 200 {"ok":true,"data":{"id":"account-e52d6177-1beb-4f8f-8e1c-fcf6ee935d05","refNo":"1","type":"customer","name":"Yarış Borç Müşterisi","phone":"","email":"","addres | ileti “undefined” (beklenen “Hareket bulunamadı. Başka biri silmiş olabilir.”) | hiçbir tablo yazılmamalı — değişen: audit_events 5:fba478d2affff769 → 6:ba5b9eecea075db7 | silinmiş hareket için "account.entry.updated" geçmiş satırı: 1
+        + actual - expected
+        
+        + [
+        +   'yazım reddedilmeli (404) — yanıt 200 {"ok":true,"data":{"id":"account-e52d6177-1beb-4f8f-8e1c-fcf6ee935d05","refNo":"1","type":"customer","name":"Yarış Borç Müşterisi","phone":"","email":"","addres',
+        +   'ileti “undefined” (beklenen “Hareket bulunamadı. Başka biri silmiş olabilir.”)',
+        +   'hiçbir tablo yazılmamalı — değişen: audit_events 5:fba478d2affff769 → 6:ba5b9eecea075db7',
+        +   'silinmiş hareket için "account.entry.updated" geçmiş satırı: 1'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'yazım reddedilmeli (404) — yanıt 200 {"ok":true,"data":{"id":"account-e52d6177-1beb-4f8f-8e1c-fcf6ee935d05","refNo":"1","type":"customer","name":"Yarış Borç Müşterisi","phone":"","email":"","addres'
+        1: 'ileti “undefined” (beklenen “Hareket bulunamadı. Başka biri silmiş olabilir.”)'
+        2: 'hiçbir tablo yazılmamalı — değişen: audit_events 5:fba478d2affff769 → 6:ba5b9eecea075db7'
+        3: 'silinmiş hareket için "account.entry.updated" geçmiş satırı: 1'
+      operator: 'deepStrictEqual'
+      stack: |-
+        assertRefused (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/cari-yaris-ae1b/eski-8e27f96a/test/cari-duzeltme-yaris-250.test.mjs:90:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/cari-yaris-ae1b/eski-8e27f96a/test/cari-duzeltme-yaris-250.test.mjs:118:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: (b) silinmemiş harekette düzeltme AYNEN yazar: 200, tutar / açıklama / vade, bakiye ve ekstre doğru; silinmiş harekete doğrudan düzeltme 404
+    ok 2 - (b) silinmemiş harekette düzeltme AYNEN yazar: 200, tutar / açıklama / vade, bakiye ve ekstre doğru; silinmiş harekete doğrudan düzeltme 404
+      ---
+      duration_ms: 131.021701
+      type: 'test'
+      ...
+    # Subtest: (c) iki kullanıcı: kart yüklendikten sonra muhasebe kullanıcısı siler, yöneticinin düzeltmesi 404 alır; yeniden yüklenen kartta hareket yok
+    not ok 3 - (c) iki kullanıcı: kart yüklendikten sonra muhasebe kullanıcısı siler, yöneticinin düzeltmesi 404 alır; yeniden yüklenen kartta hareket yok
+      ---
+      duration_ms: 477.124848
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/cari-yaris-ae1b/eski-8e27f96a/test/cari-duzeltme-yaris-250.test.mjs:153:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        iki kullanıcı: yazım reddedilmeli (404) — yanıt 200 {"ok":true,"data":{"id":"account-b76ec413-16a2-4cab-9c7e-73aa9ae4beca","refNo":"3","type":"customer","name":"Yarış İki Kullanıcı","phone":"","email":"","address | ileti “undefined” (beklenen “Hareket bulunamadı. Başka biri silmiş olabilir.”) | hiçbir tablo yazılmamalı — değişen: audit_events 18:9feba6ae2d51db00 → 19:71f9e20960e14141 | silinmiş hareket için "account.entry.updated" geçmiş satırı: 1
+        + actual - expected
+        
+        + [
+        +   'yazım reddedilmeli (404) — yanıt 200 {"ok":true,"data":{"id":"account-b76ec413-16a2-4cab-9c7e-73aa9ae4beca","refNo":"3","type":"customer","name":"Yarış İki Kullanıcı","phone":"","email":"","address',
+        +   'ileti “undefined” (beklenen “Hareket bulunamadı. Başka biri silmiş olabilir.”)',
+        +   'hiçbir tablo yazılmamalı — değişen: audit_events 18:9feba6ae2d51db00 → 19:71f9e20960e14141',
+        +   'silinmiş hareket için "account.entry.updated" geçmiş satırı: 1'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'yazım reddedilmeli (404) — yanıt 200 {"ok":true,"data":{"id":"account-b76ec413-16a2-4cab-9c7e-73aa9ae4beca","refNo":"3","type":"customer","name":"Yarış İki Kullanıcı","phone":"","email":"","address'
+        1: 'ileti “undefined” (beklenen “Hareket bulunamadı. Başka biri silmiş olabilir.”)'
+        2: 'hiçbir tablo yazılmamalı — değişen: audit_events 18:9feba6ae2d51db00 → 19:71f9e20960e14141'
+        3: 'silinmiş hareket için "account.entry.updated" geçmiş satırı: 1'
+      operator: 'deepStrictEqual'
+      stack: |-
+        assertRefused (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/cari-yaris-ae1b/eski-8e27f96a/test/cari-duzeltme-yaris-250.test.mjs:90:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/cari-yaris-ae1b/eski-8e27f96a/test/cari-duzeltme-yaris-250.test.mjs:165:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: (d) bağlı hareketler: Kapatılacak Fatura'ya bağlı tahsilat ve vadeli Borç Yaz — gövde yoldayken silinirse 404, fatura ve vade izi değişmez
+    not ok 4 - (d) bağlı hareketler: Kapatılacak Fatura'ya bağlı tahsilat ve vadeli Borç Yaz — gövde yoldayken silinirse 404, fatura ve vade izi değişmez
+      ---
+      duration_ms: 408.255702
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/cari-yaris-ae1b/eski-8e27f96a/test/cari-duzeltme-yaris-250.test.mjs:172:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        faturaya bağlı tahsilat: yazım reddedilmeli (404) — yanıt 200 {"ok":true,"data":{"id":"account-511c8f5b-d3d2-44d8-a7a1-5074a7ef0a82","refNo":"4","type":"customer","name":"Yarış Fatura Müşterisi","phone":"","email":"","addr | ileti “undefined” (beklenen “Hareket bulunamadı. Başka biri silmiş olabilir.”) | hiçbir tablo yazılmamalı — değişen: audit_events 23:8f7d4ffa997289c8 → 24:5e4ae081a31f69ac | silinmiş hareket için "account.entry.updated" geçmiş satırı: 1
+        + actual - expected
+        
+        + [
+        +   'yazım reddedilmeli (404) — yanıt 200 {"ok":true,"data":{"id":"account-511c8f5b-d3d2-44d8-a7a1-5074a7ef0a82","refNo":"4","type":"customer","name":"Yarış Fatura Müşterisi","phone":"","email":"","addr',
+        +   'ileti “undefined” (beklenen “Hareket bulunamadı. Başka biri silmiş olabilir.”)',
+        +   'hiçbir tablo yazılmamalı — değişen: audit_events 23:8f7d4ffa997289c8 → 24:5e4ae081a31f69ac',
+        +   'silinmiş hareket için "account.entry.updated" geçmiş satırı: 1'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'yazım reddedilmeli (404) — yanıt 200 {"ok":true,"data":{"id":"account-511c8f5b-d3d2-44d8-a7a1-5074a7ef0a82","refNo":"4","type":"customer","name":"Yarış Fatura Müşterisi","phone":"","email":"","addr'
+        1: 'ileti “undefined” (beklenen “Hareket bulunamadı. Başka biri silmiş olabilir.”)'
+        2: 'hiçbir tablo yazılmamalı — değişen: audit_events 23:8f7d4ffa997289c8 → 24:5e4ae081a31f69ac'
+        3: 'silinmiş hareket için "account.entry.updated" geçmiş satırı: 1'
+      operator: 'deepStrictEqual'
+      stack: |-
+        assertRefused (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/cari-yaris-ae1b/eski-8e27f96a/test/cari-duzeltme-yaris-250.test.mjs:90:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/cari-yaris-ae1b/eski-8e27f96a/test/cari-duzeltme-yaris-250.test.mjs:178:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..4
+not ok 1 - 2.5.0 BS-3 ailesi — cari hareketi düzeltmesi: gövde yoldayken hareket silinirse 404 + ileti; hiçbir tablo yazılmaz
+  ---
+  duration_ms: 1917.975357
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/cari-yaris-ae1b/eski-8e27f96a/test/cari-duzeltme-yaris-250.test.mjs:47:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 4
+# suites 1
+# pass 1
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2368.559141

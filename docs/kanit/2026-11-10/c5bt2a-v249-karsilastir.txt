@@ -1,0 +1,5 @@
+bugün 2026-11-10 2026-11-10 2026-11-10
+anahtarlar ['balance', 'cacheEqualsFresh', 'doubtfulQueue', 'invoices', 'items', 'listCount', 'listOverdue', 'name', 'netSum', 'oldOverdue', 'overdueDebt', 'overdueDebtCount', 'overdueKinds', 'type', 'vadeLateIn', 'vadeRows', 'zil']
+aynı cari 14 / 14
+mutabakat tur2a {"ok": true, "bad": []}
+mutabakat Ç5-B  {"ok": true, "bad": []}

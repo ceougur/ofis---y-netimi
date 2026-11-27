@@ -1,0 +1,11 @@
+// t3hiz: periodGroups'un iki sorgusunun süresi ayrı (yalnız deney kopyası /dev/shm/t3hiz/k-exp; ölçüm sayaçlı). node parca7.mjs <kod> <veri>
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+const [root, dir] = process.argv.slice(2);
+const imp = p => import(pathToFileURL(path.join(root, p)).href);
+const dbm = await imp("server/lib/db.mjs");
+const ml = await imp("server/lib/bank/money-lines.mjs");
+const store = dbm.createStore(dbm.openDatabase(path.join(dir, "data", "destekofis.sqlite"), { readOnly: true }));
+const money = ml.createMoneyLines(store);
+for (let i = 0; i < 5; i += 1) money.periodGroups({ from: "2026-01-01", to: "2026-12-31" });
+console.log(`5 çağrı: ham ${globalThis.__tb.toFixed(0)} ms · açılışta sayılmış ${globalThis.__tc.toFixed(0)} ms`);

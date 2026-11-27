@@ -1,0 +1,6 @@
+dondurma sürüyor: {"running":true,"phase":"yazım","done":5,"total":0,"run":1,"error":"","coverage":""}
+geçersiz istek: 400 {"ok":false,"error":"Gelecekteki bir dönem kilitlenemez."}
+ilk istek: 200 {"lockedUntil":"2026-12-31","frozenThrough":"","freeze":{"running":false,"phase":"durdu","done":5,"total":0,"run":1,"error":"","coverage":""}}
+3 sn sonra durum: {"running":false,"phase":"durdu","done":5,"total":0,"run":1,"error":"","coverage":""} state: {"coverage":"","lock":"2026-12-31","pending":{"no":1,"from":"","through":"2026-12-31","rule":"2.5.0","reason":"lock"},"runs":1}
+GET lock: {"lockedUntil":"2026-12-31","today":"2027-01-10","frozenThrough":"","freeze":{"running":false,"phase":"durdu","done":5,"total":0,"run":1,"error":"","coverage":""}}
+SONUÇ: HATA — reddedilen istek süren dondurmayı durdurdu; kilit 31.12.2026, donmuş kapsam boş, koşu bekliyor ve sürdüren yok (yeniden başlatmaya ya da sonraki kilit isteğine kadar)

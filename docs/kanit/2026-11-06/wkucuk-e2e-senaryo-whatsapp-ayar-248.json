@@ -1,0 +1,32 @@
+{
+  "ad": "wkucuk-e2e-senaryo-whatsapp-ayar-248",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-whatsapp-ayar-248.mjs",
+  "commit": "92b694c88a2a1407ee0300fb8106ba61cb7c4379",
+  "dal": "worktree-agent-a7c02d003909b3c2a",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T06:30:30.429Z",
+  "sure_sn": 68.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 153,
+    "gecen": 153,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wkucuk-kanit/2026-11-06/wkucuk-e2e-senaryo-whatsapp-ayar-248.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a7c02d003909b3c2a",
+  "ham_cikti_sha256": "bfe768e21f88248944c303b85eea7e9922151f5d925ac4dd63992c730ac8e16f",
+  "ham_cikti_bayt": 13720
+}

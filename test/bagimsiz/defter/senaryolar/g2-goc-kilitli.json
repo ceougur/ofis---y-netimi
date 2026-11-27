@@ -1,0 +1,32 @@
+{
+  "aciklama": "2.5.0 Ç5 D7 + D8 (Ç3, S13 A, B15; KG-15 A, EK-1 M7, B16): 2025 yılı kilitliyken (31.12.2025) göç. Kilitli dönemin maddeleri 2.4.9 kuralıyla DONAR (Kasa / cari açılışı 500, açılış evrakı 602 / 770, 'Açılış bakiyesi' açıklamalı Borç Yaz 500); kilitten sonraki açılış 519. Kilitli dönemde onay bekleyen aday varken Kural Farkı fişi PASİF (B16); kilitli kaynak silinemez. Onaydan sonra fiş 01.01.2026 tarihli: 500 ↔ 519 olduğu gibi, önceki yılın gelir / gider farkı 681 / 671 (M7). Sonrasında 1–5 sınıfı yeni kuralla baştan kurulmuş defterle aynı (EK-1 §4 değişmez 9: 519 = −9.200, 500 = 0). Yalnız model.",
+  "simdi": "2026-02-10T17:00:00+03:00",
+  "bugun": "2026-02-10",
+  "olaylar": [
+    { "id": "M1", "tur": "cari", "ad": "Kilit Alfa Ltd.", "tip": "customer" },
+    { "id": "M2", "tur": "cari", "ad": "Kilit Beta Ltd.", "tip": "customer" },
+    { "id": "M3", "tur": "cari", "ad": "Kilit Gama Ltd.", "tip": "customer" },
+    { "id": "KASA0", "tur": "kasa_acilis", "tarih": "2025-01-01", "tutar": 5000 },
+    { "id": "M1A", "tur": "cari_acilis", "tarih": "2025-01-01", "cari": "M1", "yon": "borc", "tutar": 2000 },
+    { "id": "AE1", "tur": "acilis_evrak", "tarih": "2025-01-01", "yon": "alinan", "evrak": "cek", "tutar": 1000, "no": "KE-1", "vade": "2025-02-01" },
+    { "id": "AE2", "tur": "acilis_evrak", "tarih": "2025-01-01", "yon": "verilen", "evrak": "cek", "tutar": 400, "no": "KE-2", "vade": "2025-02-01" },
+    { "id": "E1", "tur": "borc_yaz", "tarih": "2025-06-01", "cari": "M2", "tutar": 700, "aciklama": "Açılış bakiyesi" },
+    { "id": "M3A", "tur": "cari_acilis", "tarih": "2026-01-05", "cari": "M3", "yon": "borc", "tutar": 900 },
+    { "id": "G", "tur": "goc", "tarih": "2026-02-01", "kilit": "2025-12-31" },
+    { "id": "K1", "tur": "kontrol", "tarih": "2026-02-01" },
+    { "id": "F1", "tur": "kural_farki_fisi" },
+    { "id": "KS1", "tur": "kayit_sil", "kayit": "AE1" },
+    { "id": "O1", "tur": "acilis_onay", "kayit": "E1", "karar": "onay" },
+    { "id": "F2", "tur": "kural_farki_fisi" },
+    { "id": "K2", "tur": "kontrol", "tarih": "2026-02-10" }
+  ],
+  "elleBeklenenTL": {
+    "kontroller": {
+      "K1": { "100": 5000, "120": 3600, "101": 1000, "103": -400, "500": -7700, "602": -1000, "770": 400, "519": -900 },
+      "K2": { "100": 5000, "120": 3600, "101": 1000, "103": -400, "602": -1000, "770": 400, "519": -9200, "681": 1000, "671": -400 }
+    },
+    "retler": ["F1", "KS1"],
+    "acilisOlabilir": [],
+    "cari": { "Kilit Alfa Ltd.": 2000, "Kilit Beta Ltd.": 700, "Kilit Gama Ltd.": 900 }
+  }
+}

@@ -1,0 +1,103 @@
+TAP version 13
+# (node:1896) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Birleşik tur 8 — İş 3: faturasız iade ve Değersiz yazma kartın Tahsil Edilen'ine / satırın Ödenen'ine sayılmaz (S151 = B, S158 = A); yalnız gösterim
+    # Subtest: KARAR ÖRNEĞİ S151 — Borç 500 + satış kartı 1.000 (2 × 500) + faturasız iade 300: Tahsil Edilen 0, Kalan 700, iade ayrı (300), bakiye 1.200; liste ve cari kartı aynı
+    ok 1 - KARAR ÖRNEĞİ S151 — Borç 500 + satış kartı 1.000 (2 × 500) + faturasız iade 300: Tahsil Edilen 0, Kalan 700, iade ayrı (300), bakiye 1.200; liste ve cari kartı aynı
+      ---
+      duration_ms: 104.435669
+      type: 'test'
+      ...
+    # Subtest: KARAR ÖRNEĞİ S158 — Borç 900 → Mevcut Borç kartı 900 → faturasız iade 300: Tahsil Edilen 0, Kalan 600
+    ok 2 - KARAR ÖRNEĞİ S158 — Borç 900 → Mevcut Borç kartı 900 → faturasız iade 300: Tahsil Edilen 0, Kalan 600
+      ---
+      duration_ms: 68.673352
+      type: 'test'
+      ...
+    # Subtest: satış kartı (stoktan taksitli satış 1.000) × faturasız stok iadesi 300: Tahsil Edilen 0, İade / Değersiz ile Kapanan 300, Kalan 700; satırların Ödenen'i 0
+    ok 3 - satış kartı (stoktan taksitli satış 1.000) × faturasız stok iadesi 300: Tahsil Edilen 0, İade / Değersiz ile Kapanan 300, Kalan 700; satırların Ödenen'i 0
+      ---
+      duration_ms: 62.017645
+      type: 'test'
+      ...
+    # Subtest: satış kartı (stoktan taksitli satış 1.000) × Değersiz Alacak Yaz 300: Tahsil Edilen 0, İade / Değersiz ile Kapanan 300, Kalan 700; satırların Ödenen'i 0
+    ok 4 - satış kartı (stoktan taksitli satış 1.000) × Değersiz Alacak Yaz 300: Tahsil Edilen 0, İade / Değersiz ile Kapanan 300, Kalan 700; satırların Ödenen'i 0
+      ---
+      duration_ms: 85.722044
+      type: 'test'
+      ...
+    # Subtest: Mevcut Borç kartı (Borç 900 → kart 900) × faturasız stok iadesi 300: Tahsil Edilen 0, İade / Değersiz ile Kapanan 300, Kalan 600; satırların Ödenen'i 0
+    ok 5 - Mevcut Borç kartı (Borç 900 → kart 900) × faturasız stok iadesi 300: Tahsil Edilen 0, İade / Değersiz ile Kapanan 300, Kalan 600; satırların Ödenen'i 0
+      ---
+      duration_ms: 74.627574
+      type: 'test'
+      ...
+    # Subtest: Mevcut Borç kartı (Borç 900 → kart 900) × Değersiz Alacak Yaz 300: Tahsil Edilen 0, İade / Değersiz ile Kapanan 300, Kalan 600; satırların Ödenen'i 0
+    ok 6 - Mevcut Borç kartı (Borç 900 → kart 900) × Değersiz Alacak Yaz 300: Tahsil Edilen 0, İade / Değersiz ile Kapanan 300, Kalan 600; satırların Ödenen'i 0
+      ---
+      duration_ms: 91.108001
+      type: 'test'
+      ...
+    # Subtest: elle açılan ayrı kart (900) × faturasız stok iadesi 300: Tahsil Edilen 0, İade / Değersiz ile Kapanan 300, Kalan 600; satırların Ödenen'i 0
+    ok 7 - elle açılan ayrı kart (900) × faturasız stok iadesi 300: Tahsil Edilen 0, İade / Değersiz ile Kapanan 300, Kalan 600; satırların Ödenen'i 0
+      ---
+      duration_ms: 74.049314
+      type: 'test'
+      ...
+    # Subtest: elle açılan ayrı kart (900) × Değersiz Alacak Yaz 300: Tahsil Edilen 0, İade / Değersiz ile Kapanan 300, Kalan 600; satırların Ödenen'i 0
+    ok 8 - elle açılan ayrı kart (900) × Değersiz Alacak Yaz 300: Tahsil Edilen 0, İade / Değersiz ile Kapanan 300, Kalan 600; satırların Ödenen'i 0
+      ---
+      duration_ms: 79.610651
+      type: 'test'
+      ...
+    # Subtest: taksitli fatura kartı (2 × 500) × faturasız stok iadesi 300: Tahsil Edilen 0, İade / Değersiz ile Kapanan 300, Kalan 700; satırların Ödenen'i 0
+    ok 9 - taksitli fatura kartı (2 × 500) × faturasız stok iadesi 300: Tahsil Edilen 0, İade / Değersiz ile Kapanan 300, Kalan 700; satırların Ödenen'i 0
+      ---
+      duration_ms: 91.294155
+      type: 'test'
+      ...
+    # Subtest: taksitli fatura kartı (2 × 500) × Değersiz Alacak Yaz 300: Tahsil Edilen 0, İade / Değersiz ile Kapanan 300, Kalan 700; satırların Ödenen'i 0
+    ok 10 - taksitli fatura kartı (2 × 500) × Değersiz Alacak Yaz 300: Tahsil Edilen 0, İade / Değersiz ile Kapanan 300, Kalan 700; satırların Ödenen'i 0
+      ---
+      duration_ms: 86.790628
+      type: 'test'
+      ...
+    # Subtest: komşu — iade + bağsız tahsilat birlikte: satış kartı 1.000, iade 300 (1. taksit), bağsız 400 ⇒ Tahsil Edilen 400 (yalnız para), İade 300, Kalan 300
+    ok 11 - komşu — iade + bağsız tahsilat birlikte: satış kartı 1.000, iade 300 (1. taksit), bağsız 400 ⇒ Tahsil Edilen 400 (yalnız para), İade 300, Kalan 300
+      ---
+      duration_ms: 95.302618
+      type: 'test'
+      ...
+    # Subtest: komşu — KISMİ iade 120: Tahsil Edilen 0, İade 120, Kalan 880; satır 380 açık
+    ok 12 - komşu — KISMİ iade 120: Tahsil Edilen 0, İade 120, Kalan 880; satır 380 açık
+      ---
+      duration_ms: 75.919446
+      type: 'test'
+      ...
+    # Subtest: komşu — iadenin SİLİNMESİ: iade 300 → stok hareketi silinir ⇒ İade 0, Tahsil Edilen 0, Kalan 1.000
+    ok 13 - komşu — iadenin SİLİNMESİ: iade 300 → stok hareketi silinir ⇒ İade 0, Tahsil Edilen 0, Kalan 1.000
+      ---
+      duration_ms: 90.171968
+      type: 'test'
+      ...
+    # Subtest: S154 = B DOKUNULMADI — kart 1.200 / 3, karttan 500 + 800 'Fazlasını Avans Yaz' ⇒ Tahsil Edilen 1.300 · Kalan 0, İade 0
+    ok 14 - S154 = B DOKUNULMADI — kart 1.200 / 3, karttan 500 + 800 'Fazlasını Avans Yaz' ⇒ Tahsil Edilen 1.300 · Kalan 0, İade 0
+      ---
+      duration_ms: 108.033635
+      type: 'test'
+      ...
+    1..14
+ok 1 - Birleşik tur 8 — İş 3: faturasız iade ve Değersiz yazma kartın Tahsil Edilen'ine / satırın Ödenen'ine sayılmaz (S151 = B, S158 = A); yalnız gösterim
+  ---
+  duration_ms: 1616.496527
+  type: 'suite'
+  ...
+1..1
+# tests 14
+# suites 1
+# pass 14
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2046.735425

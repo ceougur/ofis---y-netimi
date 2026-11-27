@@ -1,0 +1,51 @@
+komşu İstanbul 12:09:22
+başla 12:12:57 yük 1.51 1.48 1.37 commit 78fc025c
+çıkış 0 bitti 12:22:50 yük 4.35 5.14 3.57
+kırmızı 12:22:50
+UTC çıkış 1   ✖ 2.5.0 Ç6-HESAP tur 4 — ORTA-2: Kural Farkı Düzeltme Fişi'nden sonra Kesin Değil (Yönetim'in KALAN'ı) › taksit: fiş ters kaydedilince ters kaydın gününden itibaren neden geri gelir; fiş ile ters kayıt arasında bilgi satırı [test/c6h-kural-farki-fis.test.mjs:161:3] — fiş ile ters kayıt arası: neden yok · + actual - expected · + { (beklenen ~, gelen )
+Europe/Istanbul çıkış 1   ✖ 2.5.0 Ç6-HESAP tur 4 — ORTA-2: Kural Farkı Düzeltme Fişi'nden sonra Kesin Değil (Yönetim'in KALAN'ı) › taksit: fiş ters kaydedilince ters kaydın gününden itibaren neden geri gelir; fiş ile ters kayıt arasında bilgi satırı [test/c6h-kural-farki-fis.test.mjs:161:3] — fiş ile ters kayıt arası: neden yok · + actual - expected · + { (beklenen ~, gelen )
+mutasyon 12:23:23
+taban 78fc025c
+başla 12:23:25 yük 6.26 5.56 3.77
+mutant m1-alt-hesap-yok
+m1-alt-hesap-yok UTC çıkış 1 · # pass 8 # fail 7 
+m1-alt-hesap-yok Europe/Istanbul çıkış 1 · # pass 8 # fail 7 
+mutant m2-fis-dusulmez
+m2-fis-dusulmez UTC çıkış 1 · # pass 5 # fail 10 
+m2-fis-dusulmez Europe/Istanbul çıkış 1 · # pass 5 # fail 10 
+mutant m3-yanlis-yil
+m3-yanlis-yil UTC çıkış 1 · # pass 9 # fail 6 
+m3-yanlis-yil Europe/Istanbul çıkış 1 · # pass 9 # fail 6 
+mutant m4-tarih-suzgeci-yok
+m4-tarih-suzgeci-yok UTC çıkış 1 · # pass 14 # fail 1 
+m4-tarih-suzgeci-yok Europe/Istanbul çıkış 1 · # pass 14 # fail 1 
+mutant m5-hizli-yol-carisiz
+m5-hizli-yol-carisiz UTC çıkış 1 · # pass 9 # fail 6 
+m5-hizli-yol-carisiz Europe/Istanbul çıkış 1 · # pass 9 # fail 6 
+mutant m6-guncel-kart
+m6-guncel-kart UTC çıkış 1 · # pass 13 # fail 2 
+m6-guncel-kart Europe/Istanbul çıkış 1 · # pass 13 # fail 2 
+mutant m7-sinir-kayik
+m7-sinir-kayik UTC çıkış 1 · # pass 13 # fail 2 
+m7-sinir-kayik Europe/Istanbul çıkış 1 · # pass 13 # fail 2 
+mutant m8-cozulunce-donmus
+m8-cozulunce-donmus UTC çıkış 1 · # pass 14 # fail 1 
+m8-cozulunce-donmus Europe/Istanbul çıkış 1 · # pass 14 # fail 1 
+bitti 12:29:48 yük 6.08 5.99 4.53
+kâhin 12:29:48
+başla 12:29:48 yük 6.08 5.99 4.53
+once kahin-defter UTC çıkış 0 ·  ÖZET: 187 denetim, 0 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-defter-adXLyp 
+once kahin-cari UTC çıkış 0 · BİLİNEN SINIRLAR (7): b3y-taahhut-alacak-bakiye k1:k4:akis; b3y-taahhut-alacak-bakiye k1:k4:kisiler; b3y-taahhut-alacak-bakiye k1:k4:vade; b3y-taahhut-alacak-bakiye k1:rapor:2026/1012:borc; b3y-taah
+once kahin-defter Europe/Istanbul çıkış 0 ·  ÖZET: 187 denetim, 0 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-defter-FuQ8BB 
+once kahin-cari Europe/Istanbul çıkış 0 · BİLİNEN SINIRLAR (7): b3y-taahhut-alacak-bakiye k1:k4:akis; b3y-taahhut-alacak-bakiye k1:k4:kisiler; b3y-taahhut-alacak-bakiye k1:k4:vade; b3y-taahhut-alacak-bakiye k1:rapor:2026/1012:borc; b3y-taah
+once kahin-maliyet çıkış 0 · program: destekofis-api-ekran sürüm 2.4.9 commit okunamadı 41306/41306 denetim geçti 
+once kahin-tutar çıkış 0 · ÖZET: 3 tohum × 50 satır, 3559 denetim, 0 fark (BULGU 0), 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-tutar-fLLpZM 3559/3559 denetim geçti 
+sonra kahin-defter UTC çıkış 0 ·  ÖZET: 187 denetim, 0 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-defter-8vaV3d 
+sonra kahin-cari UTC çıkış 0 · BİLİNEN SINIRLAR (7): b3y-taahhut-alacak-bakiye k1:k4:akis; b3y-taahhut-alacak-bakiye k1:k4:kisiler; b3y-taahhut-alacak-bakiye k1:k4:vade; b3y-taahhut-alacak-bakiye k1:rapor:2026/1012:borc; b3y-taah
+sonra kahin-defter Europe/Istanbul çıkış 0 ·  ÖZET: 187 denetim, 0 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-defter-HCJpKU 
+sonra kahin-cari Europe/Istanbul çıkış 0 · BİLİNEN SINIRLAR (7): b3y-taahhut-alacak-bakiye k1:k4:akis; b3y-taahhut-alacak-bakiye k1:k4:kisiler; b3y-taahhut-alacak-bakiye k1:k4:vade; b3y-taahhut-alacak-bakiye k1:rapor:2026/1012:borc; b3y-taah
+sonra kahin-maliyet çıkış 0 · program: destekofis-api-ekran sürüm 2.4.9 commit 78fc025caa2bff2f076c47cee147412141039193 41306/41306 denetim geçti 
+sonra kahin-tutar çıkış 0 · ÖZET: 3 tohum × 50 satır, 3559 denetim, 0 fark (BULGU 0), 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-tutar-O0Vhbt 3559/3559 denetim geçti 
+muhasebe test_model çıkış 0 · # fail 0 # skipped 0 
+bitti 13:07:10 yük 2.87 2.50 2.68
+ZİNCİR BİTTİ 13:07:10 yük 2.87 2.50 2.68

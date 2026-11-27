@@ -1,0 +1,32 @@
+{
+  "ad": "c7a-taban-surucu-s109",
+  "komut": "node test/bagimsiz/muhasebe-surucu/kos.mjs --senaryo s109 --program /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-k4/taban-kod --cikti /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-k4/surucu-taban-s109",
+  "commit": "87c7dd12ff987444d90469324627f2c64e61d939",
+  "dal": "worktree-agent-a2a0272debd031466",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v470 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-14T06:22:12.886Z",
+  "sure_sn": 1.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 90,
+    "gecen": 90,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7a-k4/kanit/2026-11-14/c7a-taban-surucu-s109.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a2a0272debd031466",
+  "ham_cikti_sha256": "4bda86a1900e4380945b8160ef2477bf8389eec1619c87dc5a3dc7d98fb316c2",
+  "ham_cikti_bayt": 1479
+}

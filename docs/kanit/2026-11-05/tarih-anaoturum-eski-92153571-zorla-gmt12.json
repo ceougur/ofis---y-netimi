@@ -1,0 +1,123 @@
+{
+  "ad": "tarih-anaoturum-eski-92153571-zorla-gmt12",
+  "komut": "node --disable-warning=ExperimentalWarning --import /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/tarih-ana-kos/saat-on-yukle.mjs --test --test-concurrency=1 test/istek-kimligi-222.test.mjs test/sirketler-217.test.mjs test/whatsapp-t2-6-248.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T23:19:45.983Z",
+  "sure_sn": 4.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 21,
+    "gecen": 4,
+    "basarisiz": 9,
+    "iptal": 8,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 9 başarısız, 8 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "fatura: aynı istek kimliğiyle ikinci gönderim ikinci fatura açmaz › aynı kimlik iki kez → tek fatura, ikinci yanıt ilk faturayı döndürür (replayed); cari ve stok bir kez",
+      "konum": "test/istek-kimligi-222.test.mjs:63:3",
+      "hata": "{\"ok\":false,\"error\":\"İleri tarihli fatura kaydedilemez (06.11.2026). Taslak olarak kaydedin; günü gelince kaydedin.\",\"code\":\"date-future\",\"field\":\"issueDate\"} · 400 !== 200 (beklenen 200, gelen 400)"
+    },
+    {
+      "ad": "fatura: aynı istek kimliğiyle ikinci gönderim ikinci fatura açmaz › aynı anda iki istek (aynı kimlik) → tek fatura",
+      "konum": "test/istek-kimligi-222.test.mjs:77:3",
+      "hata": "Expected values to be strictly equal: · 400 !== 200 (beklenen 200, gelen 400)"
+    },
+    {
+      "ad": "fatura: aynı istek kimliğiyle ikinci gönderim ikinci fatura açmaz › kimliği farklı aynı içerikli iki fatura serbest (gerçekten iki satış); kimliksiz istek eskisi gibi",
+      "konum": "test/istek-kimligi-222.test.mjs:86:3",
+      "hata": "Expected values to be strictly equal: · 400 !== 200 (beklenen 200, gelen 400)"
+    },
+    {
+      "ad": "fatura: aynı istek kimliğiyle ikinci gönderim ikinci fatura açmaz › aynı kimlik farklı içerikle → 409, yeni fatura yok",
+      "konum": "test/istek-kimligi-222.test.mjs:95:3",
+      "hata": "Expected values to be strictly equal: · 400 !== 200 (beklenen 200, gelen 400)"
+    },
+    {
+      "ad": "fatura: aynı istek kimliğiyle ikinci gönderim ikinci fatura açmaz › reddedilen istek saklanmaz: aynı kimlikle düzeltilip yeniden gönderilince kaydedilir",
+      "konum": "test/istek-kimligi-222.test.mjs:105:3",
+      "hata": "{\"ok\":false,\"error\":\"İleri tarihli fatura kaydedilemez (06.11.2026). Taslak olarak kaydedin; günü gelince kaydedin.\",\"code\":\"date-future\",\"field\":\"issueDate\"} · 400 !== 200 (beklenen 200, gelen 400)"
+    },
+    {
+      "ad": "fatura: aynı istek kimliğiyle ikinci gönderim ikinci fatura açmaz › başka kullanıcı aynı kimliği gönderirse ilk kullanıcının faturası dönmez (kendi faturası açılır)",
+      "konum": "test/istek-kimligi-222.test.mjs:115:3",
+      "hata": "yetkisi yoksa 403 (sızma yok) · 400 !== 403 (beklenen 403, gelen 400)"
+    },
+    {
+      "ad": "Çoklu şirket: ayrı veri, ortak lisans/kullanıcı; göç, yetki, sıfırlama, birleşik rapor, silme › göç: mevcut veri 001 kodlu ilk şirkettir, sayılar aynı; /api/auth/me şirketi söyler",
+      "konum": "test/sirketler-217.test.mjs:37:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "Çoklu şirket: ayrı veri, ortak lisans/kullanıcı; göç, yetki, sıfırlama, birleşik rapor, silme › yeni şirket 002: sıfırdan; aynı adlı cari iki şirkette; birinde tahsilat öbürünü değiştirmez",
+      "konum": "test/sirketler-217.test.mjs:49:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "Çoklu şirket: ayrı veri, ortak lisans/kullanıcı; göç, yetki, sıfırlama, birleşik rapor, silme › sayfalar şirkete aittir: 001'de sayfa adı değişir, 002'de görünmez",
+      "konum": "test/sirketler-217.test.mjs:71:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "Çoklu şirket: ayrı veri, ortak lisans/kullanıcı; göç, yetki, sıfırlama, birleşik rapor, silme › yetki: personel yetkisiz şirketi göremez/seçemez (403); yönetici yetki verince seçer; yönetici daraltılamaz",
+      "konum": "test/sirketler-217.test.mjs:79:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "Çoklu şirket: ayrı veri, ortak lisans/kullanıcı; göç, yetki, sıfırlama, birleşik rapor, silme › şirket kodu/adı değişir; kod tekil ve üç hane; 001 silinemez",
+      "konum": "test/sirketler-217.test.mjs:105:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "Çoklu şirket: ayrı veri, ortak lisans/kullanıcı; göç, yetki, sıfırlama, birleşik rapor, silme › birleşik rapor: seçilen şirketler yan yana + toplam; PDF ve Excel iner; yetkisiz şirket rapora girmez",
+      "konum": "test/sirketler-217.test.mjs:118:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "Çoklu şirket: ayrı veri, ortak lisans/kullanıcı; göç, yetki, sıfırlama, birleşik rapor, silme › şirket verisini sıfırla: zorunlu yedek, onay (kod + parola); hareketler silinir, kartlar kalır; lisans ve öbür şirket aynı; kullanıcı girer",
+      "konum": "test/sirketler-217.test.mjs:138:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "Çoklu şirket: ayrı veri, ortak lisans/kullanıcı; göç, yetki, sıfırlama, birleşik rapor, silme › şirket silme: onay + parola, önce yedek, klasör silinen-sirketler altına; seçmiş kullanıcılar 001'e döner",
+      "konum": "test/sirketler-217.test.mjs:166:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "Çoklu şirket: ayrı veri, ortak lisans/kullanıcı; göç, yetki, sıfırlama, birleşik rapor, silme",
+      "konum": "test/sirketler-217.test.mjs:18:1",
+      "hata": "Expected values to be strictly equal: · 400 !== 200 (beklenen 200, gelen 400)"
+    },
+    {
+      "ad": "2.4.8 T2-6 — yeniden denemede ileti metni ile ekteki PDF AYNI anlık görüntüden › 131056 → 1 dk sonra yeniden deneme: arada tahsilat girilse de ileti ve PDF ilk hazırlıktaki bakiyeyi (1.250,00) taşır; PDF bir kez yüklenir",
+      "konum": "test/whatsapp-t2-6-248.test.mjs:23:3",
+      "hata": "{\"ok\":false,\"error\":\"İleri tarihli hareket girilemez (03.11.2026). Gelecekteki ödeme ya da tahsilatı taksit veya çek/senet vadesiyle planlayın.\",\"code\":\"date-future\"} · 400 !== 200 (beklenen 200, gelen 400)"
+    },
+    {
+      "ad": "2.4.8 T2-6 — yeniden denemede ileti metni ile ekteki PDF AYNI anlık görüntüden › Duraklat → 31 gün → Devam Et: Meta'daki kopyanın süresi dolmuş; AYNI PDF baytları yeniden yüklenir, ileti aynı bakiyeyle gider; kesinleşince dondurulmuş PDF silinir",
+      "konum": "test/whatsapp-t2-6-248.test.mjs:47:3",
+      "hata": "{\"ok\":false,\"error\":\"İleri tarihli hareket girilemez (03.11.2026). Gelecekteki ödeme ya da tahsilatı taksit veya çek/senet vadesiyle planlayın.\",\"code\":\"date-future\"} · 400 !== 200 (beklenen 200, gelen 400)"
+    },
+    {
+      "ad": "2.4.8 T2-6 — yeniden denemede ileti metni ile ekteki PDF AYNI anlık görüntüden › ödeme hatırlatması: yeniden denemede değişkenler (vade, gecikmiş toplam, bakiye) ilk hazırlıktakiyle AYNI",
+      "konum": "test/whatsapp-t2-6-248.test.mjs:83:3",
+      "hata": "{\"ok\":false,\"error\":\"İleri tarihli hareket girilemez (20.12.2026). Gelecekteki ödeme ya da tahsilatı taksit veya çek/senet vadesiyle planlayın.\",\"code\":\"date-future\"} · 400 !== 200 (beklenen 200, gelen 400)"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/ofis---y-netimi/docs/kanit/2026-11-05/tarih-anaoturum-eski-92153571-zorla-gmt12.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/tarih-ana-kos/eski-92153571",
+  "ham_cikti_sha256": "036b1c68a82ed3821af467c96ba97e7833841274e64ac393ad4f86e11423e02a",
+  "ham_cikti_bayt": 19856
+}

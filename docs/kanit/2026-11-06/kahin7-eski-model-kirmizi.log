@@ -1,0 +1,218 @@
+...........F................................................................................FFF...F..........................F.................
+======================================================================
+FAIL: test_senaryo_ve_beklenen_dosyalari_guncel (__main__.Dosyalar.test_senaryo_ve_beklenen_dosyalari_guncel)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/model.py", line 2470, in _o_duzenle
+    self._kasa_acilis_oncesi(d, dg.get("tarih", k.tarih), lambda dd: self._duzelt(dd.kaynaklar[k.id], dg))
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/model.py", line 2395, in _kasa_acilis_oncesi
+    raise Red("KASA_ACILIS_ONCE", f"Kasa hareketi {min(once)} < Kasa açılışı {a0}")
+model.Red: KASA_ACILIS_ONCE: Kasa hareketi 2026-01-10 < Kasa açılışı 2026-01-15
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/test_model.py", line 815, in test_senaryo_ve_beklenen_dosyalari_guncel
+    self.assertEqual(UB.main(denetle=True), 0, "python3 test/bagimsiz/muhasebe/uret_beklenen.py ile yeniden yazın")
+                     ~~~~~~~^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/uret_beklenen.py", line 54, in main
+    for yol, icerik in ((os.path.join(SEN, s["ad"] + ".json"), metin(s)), (os.path.join(BEK, s["ad"] + ".json"), metin(beklenen(s)))):
+                                                                                                                       ~~~~~~~~^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/uret_beklenen.py", line 41, in beklenen
+    r = M.kos(s, M.Kurallar.etiketten(et))
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/model.py", line 3457, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/model.py", line 2340, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/model.py", line 2366, in uygula
+    return getattr(self, "_o_" + tur)(o, d)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/model.py", line 2478, in _o_duzenle
+    self._s40_kapsam(k, dg)
+    ~~~~~~~~~~~~~~~~^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/model.py", line 2489, in _s40_kapsam
+    raise AssertionError(f"senaryo hatası: geri yüklenmiş, açılıştan önce tarihli Kasa kaydının karar metninde sayılmayan alanı düzeltildi ({disi}) — S40 "
+                         "yalnız açıklama ve cari; kâhin susar (README bakım 6 X11 (a), KULLANICIYA SORULMALI 1)")
+AssertionError: senaryo hatası: geri yüklenmiş, açılıştan önce tarihli Kasa kaydının karar metninde sayılmayan alanı düzeltildi (['fatura']) — S40 yalnız açıklama ve cari; kâhin susar (README bakım 6 X11 (a), KULLANICIYA SORULMALI 1)
+
+======================================================================
+FAIL: test_s80_s44_geri_yuklenen_kasa_fatura_bagi (__main__.ElleSenaryolar.test_s80_s44_geri_yuklenen_kasa_fatura_bagi)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/model.py", line 2470, in _o_duzenle
+    self._kasa_acilis_oncesi(d, dg.get("tarih", k.tarih), lambda dd: self._duzelt(dd.kaynaklar[k.id], dg))
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/model.py", line 2395, in _kasa_acilis_oncesi
+    raise Red("KASA_ACILIS_ONCE", f"Kasa hareketi {min(once)} < Kasa açılışı {a0}")
+model.Red: KASA_ACILIS_ONCE: Kasa hareketi 2026-01-10 < Kasa açılışı 2026-01-15
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/test_model.py", line 599, in test
+    r = M.kos(x, M.Kurallar.etiketten(et))
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/model.py", line 3457, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/model.py", line 2340, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/model.py", line 2366, in uygula
+    return getattr(self, "_o_" + tur)(o, d)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/model.py", line 2478, in _o_duzenle
+    self._s40_kapsam(k, dg)
+    ~~~~~~~~~~~~~~~~^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/model.py", line 2489, in _s40_kapsam
+    raise AssertionError(f"senaryo hatası: geri yüklenmiş, açılıştan önce tarihli Kasa kaydının karar metninde sayılmayan alanı düzeltildi ({disi}) — S40 "
+                         "yalnız açıklama ve cari; kâhin susar (README bakım 6 X11 (a), KULLANICIYA SORULMALI 1)")
+AssertionError: senaryo hatası: geri yüklenmiş, açılıştan önce tarihli Kasa kaydının karar metninde sayılmayan alanı düzeltildi (['fatura']) — S40 yalnız açıklama ve cari; kâhin susar (README bakım 6 X11 (a), KULLANICIYA SORULMALI 1)
+
+======================================================================
+FAIL: test_s81_s44_geri_yuklenen_kasa_taksit_normal_cari (__main__.ElleSenaryolar.test_s81_s44_geri_yuklenen_kasa_taksit_normal_cari)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/model.py", line 2470, in _o_duzenle
+    self._kasa_acilis_oncesi(d, dg.get("tarih", k.tarih), lambda dd: self._duzelt(dd.kaynaklar[k.id], dg))
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/model.py", line 2395, in _kasa_acilis_oncesi
+    raise Red("KASA_ACILIS_ONCE", f"Kasa hareketi {min(once)} < Kasa açılışı {a0}")
+model.Red: KASA_ACILIS_ONCE: Kasa hareketi 2026-01-10 < Kasa açılışı 2026-01-15
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/test_model.py", line 599, in test
+    r = M.kos(x, M.Kurallar.etiketten(et))
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/model.py", line 3457, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/model.py", line 2340, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/model.py", line 2366, in uygula
+    return getattr(self, "_o_" + tur)(o, d)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/model.py", line 2478, in _o_duzenle
+    self._s40_kapsam(k, dg)
+    ~~~~~~~~~~~~~~~~^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/model.py", line 2489, in _s40_kapsam
+    raise AssertionError(f"senaryo hatası: geri yüklenmiş, açılıştan önce tarihli Kasa kaydının karar metninde sayılmayan alanı düzeltildi ({disi}) — S40 "
+                         "yalnız açıklama ve cari; kâhin susar (README bakım 6 X11 (a), KULLANICIYA SORULMALI 1)")
+AssertionError: senaryo hatası: geri yüklenmiş, açılıştan önce tarihli Kasa kaydının karar metninde sayılmayan alanı düzeltildi (['taksit_karti']) — S40 yalnız açıklama ve cari; kâhin susar (README bakım 6 X11 (a), KULLANICIYA SORULMALI 1)
+
+======================================================================
+FAIL: test_s82_s45_bagli_geri_yuklenen_kayit_cari (__main__.ElleSenaryolar.test_s82_s45_bagli_geri_yuklenen_kayit_cari)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/model.py", line 2470, in _o_duzenle
+    self._kasa_acilis_oncesi(d, dg.get("tarih", k.tarih), lambda dd: self._duzelt(dd.kaynaklar[k.id], dg))
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/model.py", line 2395, in _kasa_acilis_oncesi
+    raise Red("KASA_ACILIS_ONCE", f"Kasa hareketi {min(once)} < Kasa açılışı {a0}")
+model.Red: KASA_ACILIS_ONCE: Kasa hareketi 2026-01-10 < Kasa açılışı 2026-01-15
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/test_model.py", line 599, in test
+    r = M.kos(x, M.Kurallar.etiketten(et))
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/model.py", line 3457, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/model.py", line 2340, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/model.py", line 2366, in uygula
+    return getattr(self, "_o_" + tur)(o, d)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/model.py", line 2478, in _o_duzenle
+    self._s40_kapsam(k, dg)
+    ~~~~~~~~~~~~~~~~^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/model.py", line 2495, in _s40_kapsam
+    raise AssertionError("senaryo hatası: bağlı (Kapatılacak Fatura / taksit kartı) kaydın carisi düzeltildi — bağ ne olur, karar söylemez; kâhin susar "
+                         "(README bakım 6 X11 (b), KULLANICIYA SORULMALI 2)")
+AssertionError: senaryo hatası: bağlı (Kapatılacak Fatura / taksit kartı) kaydın carisi düzeltildi — bağ ne olur, karar söylemez; kâhin susar (README bakım 6 X11 (b), KULLANICIYA SORULMALI 2)
+
+======================================================================
+FAIL: test_EK2_4_1_ayni_gun_yazim_sirasi_sonucu_degistirmez (__main__.OlayMaddeleri.test_EK2_4_1_ayni_gun_yazim_sirasi_sonucu_degistirmez)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/model.py", line 2470, in _o_duzenle
+    self._kasa_acilis_oncesi(d, dg.get("tarih", k.tarih), lambda dd: self._duzelt(dd.kaynaklar[k.id], dg))
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/model.py", line 2395, in _kasa_acilis_oncesi
+    raise Red("KASA_ACILIS_ONCE", f"Kasa hareketi {min(once)} < Kasa açılışı {a0}")
+model.Red: KASA_ACILIS_ONCE: Kasa hareketi 2026-01-10 < Kasa açılışı 2026-01-15
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/test_model.py", line 579, in test_EK2_4_1_ayni_gun_yazim_sirasi_sonucu_degistirmez
+    self.assertEqual(ozet(x), ozet(y), s["ad"])
+                     ~~~~^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/test_model.py", line 559, in ozet
+    m.kos()
+    ~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/model.py", line 2340, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/model.py", line 2366, in uygula
+    return getattr(self, "_o_" + tur)(o, d)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/model.py", line 2478, in _o_duzenle
+    self._s40_kapsam(k, dg)
+    ~~~~~~~~~~~~~~~~^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/model.py", line 2489, in _s40_kapsam
+    raise AssertionError(f"senaryo hatası: geri yüklenmiş, açılıştan önce tarihli Kasa kaydının karar metninde sayılmayan alanı düzeltildi ({disi}) — S40 "
+                         "yalnız açıklama ve cari; kâhin susar (README bakım 6 X11 (a), KULLANICIYA SORULMALI 1)")
+AssertionError: senaryo hatası: geri yüklenmiş, açılıştan önce tarihli Kasa kaydının karar metninde sayılmayan alanı düzeltildi (['fatura']) — S40 yalnız açıklama ve cari; kâhin susar (README bakım 6 X11 (a), KULLANICIYA SORULMALI 1)
+
+======================================================================
+FAIL: test_S40_S44_S45_kapsam_ve_susma (__main__.OlayMaddeleri.test_S40_S44_S45_kapsam_ve_susma)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/model.py", line 2470, in _o_duzenle
+    self._kasa_acilis_oncesi(d, dg.get("tarih", k.tarih), lambda dd: self._duzelt(dd.kaynaklar[k.id], dg))
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/model.py", line 2395, in _kasa_acilis_oncesi
+    raise Red("KASA_ACILIS_ONCE", f"Kasa hareketi {min(once)} < Kasa açılışı {a0}")
+model.Red: KASA_ACILIS_ONCE: Kasa hareketi 2026-01-25 < Kasa açılışı 2026-02-01
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/test_model.py", line 436, in test_S40_S44_S45_kapsam_ve_susma
+    r = M.kos(senaryo(bas + [o("duzenle", kaynak="PY", degisiklik={"fatura": "F1"}),
+                             o("duzenle", kaynak="PY", degisiklik={"normal_cari": True}),     # şüpheli kaydı yok → kabul, sonuç değişmez
+    ...<2 lines>...
+                             E.R("mu", "mutabakat_uyarilari", tarih="2026-02-28"), E.MZ("mz", "2026-01-01", "2026-02-28"),
+                             E.R("ak", "acik_kalemler", cari="C1", tarih="2026-03-01")]))
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/model.py", line 3457, in kos
+    return Model(senaryo, kurallar).kos()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/model.py", line 2340, in kos
+    self.uygula(o, self.canli)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/model.py", line 2366, in uygula
+    return getattr(self, "_o_" + tur)(o, d)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/model.py", line 2478, in _o_duzenle
+    self._s40_kapsam(k, dg)
+    ~~~~~~~~~~~~~~~~^^^^^^^
+  File "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-eski/test/bagimsiz/muhasebe/model.py", line 2489, in _s40_kapsam
+    raise AssertionError(f"senaryo hatası: geri yüklenmiş, açılıştan önce tarihli Kasa kaydının karar metninde sayılmayan alanı düzeltildi ({disi}) — S40 "
+                         "yalnız açıklama ve cari; kâhin susar (README bakım 6 X11 (a), KULLANICIYA SORULMALI 1)")
+AssertionError: senaryo hatası: geri yüklenmiş, açılıştan önce tarihli Kasa kaydının karar metninde sayılmayan alanı düzeltildi (['fatura']) — S40 yalnız açıklama ve cari; kâhin susar (README bakım 6 X11 (a), KULLANICIYA SORULMALI 1)
+
+----------------------------------------------------------------------
+Ran 143 tests in 16.441s
+
+FAILED (failures=6)
+# tests 143
+# pass 137
+# fail 6
+# skipped 0

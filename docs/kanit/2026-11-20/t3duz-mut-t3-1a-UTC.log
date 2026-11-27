@@ -1,0 +1,15 @@
+taban: 32 geçti / 0 kaldı (çıkış 0)
+M1 YAKALANDI — 128 ↔ 120 dağılımı eski sabite: bağlı tahsilat her zaman 120 (iki yükleyicide) (16 geçti / 16 kaldı; değer iletisi var; çökme yok) düşen: 
+M2 YAKALANDI — 128 ↔ 120 dağılımı eski sabite: bağlı evrak en eski kayıttan (kuyruk payı okunmaz — geri çağrı yok) (20 geçti / 12 kaldı; değer iletisi var; çökme yok) düşen: 
+M3 YAKALANDI — ikinci yükleyici (doubtfulState) eski kuralda kalır (21 geçti / 11 kaldı; değer iletisi var; çökme yok) düşen: 
+file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a1e6310bec4c916cb/test/supheli-kuyruk-defter-250-mutasyon.mjs:76
+      if (hits !== 1) throw new Error(`M${no}: "${eski.slice(0, 80)}" ${file} içinde ${hits} kez (tam 1 olmalı) — desen yerini bulamadı, YAKALANDI SAYILMAZ`);
+                            ^
+
+Error: M4: "credits, linked: typeof doubtful?.linked === "function" ? doubtful.linked : null" server/lib/doubtful-gl.mjs içinde 0 kez (tam 1 olmalı) — desen yerini bulamadı, YAKALANDI SAYILMAZ
+    at file:///home/user/ofis---y-netimi/.claude/worktrees/agent-a1e6310bec4c916cb/test/supheli-kuyruk-defter-250-mutasyon.mjs:76:29
+    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+
+Node.js v22.23.4

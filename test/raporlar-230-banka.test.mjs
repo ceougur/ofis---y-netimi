@@ -87,7 +87,10 @@ describe("2.3.0 İz 3.3 — §8.10 kalan banka raporları (bağımsız beklenenl
     party = { ABC: abc, XYZ: xyz };
     // Eski sürüm gibi: hesap tanımlanmadan girilmiş havale → Hesabı Atanmamış (102.00).
     await must("eski havale", api.post(`/api/workspace/accounts/${abc.id}/entries`, { kind: "in", amount: "5.000", method: "bank", date: "2026-09-20" }));
-    ext("2026-09-20", "U102", 500_000, { party: "ABC", src: "cari", link: "Otomatik (En Eski)" });
+// 2.5.0 Ç7a tur 2b — BEKLENTİ BİLEREK DEĞİŞTİ (BAŞ MİMAR KARARI 14.11 10:17 (2) + S179 = A): tek eski havale (20.09) hesapların en geç açılışından (01.10) önce →
+    // açılışta sayılır (defterde 519; kova düşer). Banka raporlarının SATIRLARINDA "Açılışta Sayıldı" işaretiyle KALIR (tutar hücreleri boş); toplamlara, devre, günlük / aylık
+    // toplamlara ve bakiye raporlarına GİRMEZ. Kasa yolundan gelen "Banka ve POS (Tümü)" (cash.report; Kasa raporları değişmez) aynen.
+    ext("2026-09-20", "U102", 500_000, { party: "ABC", src: "cari", link: "Otomatik (En Eski)", counted: true });
     // Hesaplar (01.10.2026): Ziraat 100.000, Garanti 50.000, Ziraat kartı borç 5.000 (son ödeme günü 20), Garanti kredisi 0.
     const ziraat = await openAccount(api, { bankName: "Ziraat Bankası", name: "Ana TL Hesabı", kind: "demand", iban: trIban(10, 1234567), opening: { date: "2026-10-01", amount: "100.000", confirmed: true } });
     adj("2026-10-01", "Z", 10_000_000);
@@ -162,7 +165,10 @@ describe("2.3.0 İz 3.3 — §8.10 kalan banka raporları (bağımsız beklenenl
   after(() => ctx?.server.close());
 
   // ---------- Bağımsız beklenen ----------
-  const of = keys => E.filter(row => keys.includes(row.acc));
+  // Toplamların kümesi açılışta sayılmış satırı DÜŞER (Ç7a tur 2b); satır listeleri (rows) onu da içerir — tutarı boş, "Açılışta Sayıldı".
+  const of = keys => E.filter(row => keys.includes(row.acc) && !row.counted);
+  const rows = (keys, r) => E.filter(row => keys.includes(row.acc) && inRange(row.d, r));
+  const shown = item => (item.counted ? { ...item, signed: 0, extIn: 0, extOut: 0, trIn: 0, trOut: 0 } : item);
   const closing = (keys, r = { to: "" }) => sumBy(of(keys).filter(row => upTo(row.d, r)), row => row.signed);
   const opening = (keys, r) => sumBy(of(keys).filter(row => beforeRange(row.d, r)), row => row.signed);
   const periodOf = (keys, r) => of(keys).filter(row => inRange(row.d, r));
@@ -338,13 +344,10 @@ describe("2.3.0 İz 3.3 — §8.10 kalan banka raporları (bağımsız beklenenl
       }
     }
     // Ay sınırı (Nasıl Bozarım 1): Eylül'ün eski havalesi Hesabı Atanmamış'ta Eylül satırı, Ekim satırının Ay Başı Bakiyesi = Eylül Ay Sonu.
+    // Ç7a tur 2b (BEKLENTİ BİLEREK DEĞİŞTİ): Hesabı Atanmamış'ın tek satırı (Eylül) açılışta sayıldı → aylık toplamlara girmez; ay sınırı Gerçek Banka'da (Ekim) denenir.
     const u = await screen("banka-aylik", { bankAccount: "unassigned" }, "aylık atanmamış");
-    const eylul = u.rows.find(row => row[0] === "Eylül 2026");
-    const ekim = u.rows.find(row => row[0] === "Ekim 2026");
-    assert.ok(eylul && ekim, "Eylül ve Ekim satırları");
-    assert.equal(cellOf(u, eylul, "Ay Sonu Bakiye"), 500_000);
-    assert.equal(cellOf(u, ekim, "Ay Başı Bakiye"), 500_000, "Ekim Ay Başı = Eylül Ay Sonu");
-    assert.equal(Number(ekim[col(u, "Hareket")]), 0, "Ekim'de hareketsiz, yine de satır");
+    assert.equal(u.rows.length, 0, "açılışta sayılmış eski havale aylık tabloda yok");
+    assert.ok(!u.summary.some(([key, value]) => key === "Dönem Sonu" && /5\.000,00/.test(String(value))), "Dönem Sonu açılışta sayılmış tutarı içermez");
   });
 
   it("Banka Bazında Bakiye ve Para Birimi Bazında Bakiye: her dönem — banka (hesapları birlikte) ve TL satırı; Gerçek Banka / Borç / Net; Hesabı Atanmamış özette", async () => {
@@ -460,7 +463,7 @@ describe("2.3.0 İz 3.3 — §8.10 kalan banka raporları (bağımsız beklenenl
           const query = { ...r.q, ...choiceQuery("anyAccount", choice), ...(who ? { account: party[who].id } : {}) };
           const tag = `cari-banka ${choice || "tümü"} ${who || "tüm cariler"} ${r.label}`;
           const data = await screen("cari-banka-hareketleri", query, tag);
-          const expected = periodOf(keys, r).filter(row => row.party && (!who || row.party === who));
+          const expected = rows(keys, r).filter(row => row.party && (!who || row.party === who)).map(shown);
           assert.equal(data.rows.length, expected.length, `${tag}: satır sayısı (${data.rows.map(row => row.join(" | ")).join("\n")})`);
           expected.forEach((item, index) => {
             const row = data.rows[index];
@@ -470,6 +473,7 @@ describe("2.3.0 İz 3.3 — §8.10 kalan banka raporları (bağımsız beklenenl
             assert.equal(row[col(data, "Yol")], "Havale / EFT", `${tag}: yol`);
             assert.equal(row[col(data, "Hesap")], item.acc === "U102" ? `${K10.unassigned} · Havale / EFT (102.00)` : `${label[item.acc]} (${acc[item.acc].glSub})`, `${tag}: hesap`);
             assert.equal(row[col(data, "Kaynak")], { cari: "Cari", fatura: "Fatura", taksit: "Taksit" }[item.src], `${tag}: kaynak`);
+            if (item.counted) assert.match(row[col(data, "Açıklama")], /Açılışta Sayıldı \(Giriş 5\.000,00 TL; toplama girmez\)/, `${tag}: işaret`);
           });
           assert.equal(summaryOf(data, "Giriş"), sumBy(expected, item => item.extIn), `${tag}: özet Giriş`);
           assert.equal(summaryOf(data, "Çıkış"), sumBy(expected, item => item.extOut), `${tag}: özet Çıkış`);
@@ -492,7 +496,7 @@ describe("2.3.0 İz 3.3 — §8.10 kalan banka raporları (bağımsız beklenenl
         const query = { ...r.q, ...choiceQuery("anyAccount", choice) };
         const tag = `fatura-banka ${choice || "tümü"} ${r.label}`;
         const data = await screen("fatura-banka-hareketleri", query, tag);
-        const expected = periodOf(keys, r).filter(row => row.link);
+        const expected = rows(keys, r).filter(row => row.link).map(shown);
         assert.equal(data.rows.length, expected.length, `${tag}: satır sayısı (${data.rows.map(row => row.join(" | ")).join("\n")})`);
         expected.forEach((item, index) => {
           const row = data.rows[index];
@@ -560,7 +564,9 @@ describe("2.3.0 İz 3.3 — §8.10 kalan banka raporları (bağımsız beklenenl
         assert.deepEqual([cellOf(data, row, "Giriş"), cellOf(data, row, "Çıkış"), cellOf(data, row, "Planlanan Transfer"), cellOf(data, row, "Beklenen Gerçek Banka")], [item.in, item.out, item.transfer, balance], `${c.label}: ${item.source} sayıları`);
       });
       assert.equal(summaryOf(data, `Bugünkü ${K10.realBank}`), start, `${c.label}: Bugünkü Gerçek Banka`);
-      assert.equal(summaryOf(data, K10.unassigned), 500_000, `${c.label}: Hesabı Atanmamış ayrı (başlangıca girmez)`);
+      // 2.5.0 Ç7a tur 2 — BEKLENTİ BİLEREK DEĞİŞTİ (K-14, KULLANICI KARARI S179 = A): tek eski havale (20.09) hesapların en geç açılışından (01.10) önce → açılışta sayılır;
+      // Hesabı Atanmamış kovası 0 (önce 5.000) — özette satır yok. Başlangıca girmemesi aynen.
+      assert.ok(!data.summary.some(([key]) => key === K10.unassigned), `${c.label}: Hesabı Atanmamış (açılıştan önceki eski havale açılışta) özette yok`);
       assert.equal(summaryOf(data, "Başlangıç"), openingValue);
       assert.equal(summaryOf(data, "Beklenen Giriş"), sumBy(expected, item => item.in));
       assert.equal(summaryOf(data, "Beklenen Çıkış"), sumBy(expected, item => item.out));
@@ -600,7 +606,8 @@ describe("2.3.0 İz 3.3 — §8.10 kalan banka raporları (bağımsız beklenenl
       const data = await screen("banka-pos-hareketleri", { ...choiceQuery("anyAccount", choice) }, `hesap ${choice}`);
       const body = data.rows.filter(row => row[2] !== "Devir");
       const expected = periodOf(keys, r);
-      assert.equal(body.length, expected.length, `hesap ${choice}: satır sayısı (${body.map(row => row.join(" | ")).join("\n")})`);
+      assert.equal(body.length, rows(keys, r).length, `hesap ${choice}: satır sayısı (${body.map(row => row.join(" | ")).join("\n")})`);
+      if (choice === "unassigned") assert.equal(body.filter(row => /Açılışta Sayıldı/.test(row[3])).length, 1, "işaretli eski havale listede");
       const b = bucket(expected);
       assert.equal(summaryOf(data, "Dönem Giriş"), b.extIn, `hesap ${choice}: Dönem Giriş`);
       assert.equal(summaryOf(data, "Dönem Çıkış"), b.extOut, `hesap ${choice}: Dönem Çıkış`);
@@ -621,14 +628,19 @@ describe("2.3.0 İz 3.3 — §8.10 kalan banka raporları (bağımsız beklenenl
     assert.equal(mixed.rows.filter(row => row[2] !== "Devir").length, 0);
     const kk = await screen("banka-pos-hareketleri", { payMethod: "ccard", anyAccount: acc.K.id }, "kart + Kredi Kartı");
     assert.equal(kk.rows.filter(row => row[2] !== "Devir").length, 2);
-    // Eski üç seçim ve "Tüm Hesaplar": önceki yol (cash.report) — Dönem Giriş = bütün dış banka girişleri (eski havale dahil), Çıkış 15,75.
+    // Eski üç seçim ve "Tüm Hesaplar": önceki yol (cash.report) — Çıkış 15,75.
+    // 2.5.0 tek aday düzeltme turu — BEKLENTİ BİLEREK DEĞİŞTİ (S214 = A, iş listesi C AYNEN: "Tüm Hesaplar seçimi de 'Açılışta Sayıldı' işaretini uygular — rapor = defter = kova"; 14.11
+    // 12:13 kararının bu raporu 'Kasa raporları değişmez'e bağlayan okuması YANLIŞTI): açılışta sayılmış eski havale (20.09, 5.000) satırda işaretli kalır, Dönem Giriş'e ve Dönem Sonu'na
+    // girmez (önceden + 500_000). Banka (Havale / EFT) seçimi de aynı.
     const noncash = await screen("banka-pos-hareketleri", {}, "tümü");
     const allLines = periodOf([...REAL, "U102"], r);
-    assert.equal(summaryOf(noncash, "Dönem Giriş"), sumBy(allLines, row => row.extIn), "Banka ve POS (Tümü): Dönem Giriş");
+    assert.equal(summaryOf(noncash, "Dönem Giriş"), sumBy(allLines, row => row.extIn), "Banka ve POS (Tümü): Dönem Giriş (açılışta sayılmış eski havale hariç)");
     assert.equal(summaryOf(noncash, "Dönem Çıkış"), sumBy(allLines, row => row.extOut), "Banka ve POS (Tümü): Dönem Çıkış");
-    assert.equal(summaryOf(noncash, "Dönem Sonu"), closing([...REAL, "U102"], r), "Banka ve POS (Tümü): Dönem Sonu (kart ve kredi girmez)");
+    assert.equal(summaryOf(noncash, "Dönem Sonu"), closing([...REAL, "U102"], r), "Banka ve POS (Tümü): Dönem Sonu = defter (kart ve kredi girmez; açılışta sayılmış eski havale hariç)");
+    assert.equal(noncash.rows.filter(row => /Açılışta Sayıldı/.test(String(row[3]))).length, rows([...REAL, "U102"], r).filter(row => row.counted).length, "Banka ve POS (Tümü): açılışta sayılmış satır işaretli listede");
     const bank = await screen("banka-pos-hareketleri", { payMethod: "bank" }, "havale");
     assert.equal(summaryOf(bank, "Dönem Giriş"), sumBy(allLines, row => row.extIn));
+    assert.equal(summaryOf(bank, "Dönem Sonu"), closing([...REAL, "U102"], r), "Banka (Havale / EFT): Dönem Sonu = defter");
     expectStatus(await api.get(`${RC}/banka-pos-hareketleri?anyAccount=yok-boyle-hesap`), 404, "bank-account-missing", "tanınmayan hesap");
     expectStatus(await api.get(`${RC}/banka-gunluk?bankAccount=yok-boyle-hesap`), 404, "bank-account-missing", "tanınmayan hesap (günlük)");
   });

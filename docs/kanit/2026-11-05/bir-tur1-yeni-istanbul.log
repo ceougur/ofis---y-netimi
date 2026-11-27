@@ -1,0 +1,215 @@
+TAP version 13
+# Subtest: 2.5.0 BİRLEŞİK TUR 1 YB-1 — eşzamanlı düzeltmede korumalar işlemin içindeki GÜNCEL satırla (dört uç)
+    # Subtest: Kasa Engelle: yöneticinin 100 → 650 düzeltmesi yoldayken muhasebe aynı hareketi 100 → 10 yapar → 409 cash-blocked (güncel satırla), Kasa 590 kalır
+    ok 1 - Kasa Engelle: yöneticinin 100 → 650 düzeltmesi yoldayken muhasebe aynı hareketi 100 → 10 yapar → 409 cash-blocked (güncel satırla), Kasa 590 kalır
+      ---
+      duration_ms: 1695.872711
+      type: 'test'
+      ...
+    # Subtest: Kasa Uyar: aynı yarışta soru GÜNCEL satırla sorulur (409 cash-negative); "Yine de Kaydet" (cashForce) yazar, Kasa −50, Değişiklik Geçmişi'nin önceki tutarı 10
+    ok 2 - Kasa Uyar: aynı yarışta soru GÜNCEL satırla sorulur (409 cash-negative); "Yine de Kaydet" (cashForce) yazar, Kasa −50, Değişiklik Geçmişi'nin önceki tutarı 10
+      ---
+      duration_ms: 1667.644784
+      type: 'test'
+      ...
+    # Subtest: silinmiş hareket (Kasa Uyar): gövde yoldayken silinirse doğrudan 404 + BS-3 iletisi — önce yanıltıcı Kasa sorusu yok; hiçbir tablo yazılmaz
+    ok 3 - silinmiş hareket (Kasa Uyar): gövde yoldayken silinirse doğrudan 404 + BS-3 iletisi — önce yanıltıcı Kasa sorusu yok; hiçbir tablo yazılmaz
+      ---
+      duration_ms: 1518.798651
+      type: 'test'
+      ...
+    # Subtest: taksit K8: tahsilat 600 → 500 düzeltmesi yoldayken muhasebe aynı tahsilatı 600 → 100 yapıp 700 tahsilat ekler → 409 plan-overpay (Fazlasını Avans Yaz sorusu); overpay ile yazılır
+    ok 4 - taksit K8: tahsilat 600 → 500 düzeltmesi yoldayken muhasebe aynı tahsilatı 600 → 100 yapıp 700 tahsilat ekler → 409 plan-overpay (Fazlasını Avans Yaz sorusu); overpay ile yazılır
+      ---
+      duration_ms: 420.467482
+      type: 'test'
+      ...
+    # Subtest: kayıp güncelleme: gövdede yalnız tutar varken arada öbür kullanıcının açıklama düzeltmesi KORUNUR; Değişiklik Geçmişi'nin önceki hâli güncel satır
+    ok 5 - kayıp güncelleme: gövdede yalnız tutar varken arada öbür kullanıcının açıklama düzeltmesi KORUNUR; Değişiklik Geçmişi'nin önceki hâli güncel satır
+      ---
+      duration_ms: 1146.398158
+      type: 'test'
+      ...
+    # Subtest: iyimser kilit (gövdede updatedAt): form açıldıktan sonra öbür kullanıcı düzeltirse 409 <uç>-stale, hiçbir tablo yazılmaz; satır öbür kullanıcının değerinde
+    ok 6 - iyimser kilit (gövdede updatedAt): form açıldıktan sonra öbür kullanıcı düzeltirse 409 <uç>-stale, hiçbir tablo yazılmaz; satır öbür kullanıcının değerinde
+      ---
+      duration_ms: 1531.515092
+      type: 'test'
+      ...
+    # Subtest: iyimser kilit sürüm biçimleri: boş / null / createdAt hiç düzeltilmemiş satırda geçer; düzeltilmiş satırda boş, createdAt ve eski sürüm 409; updatedAt yoksa denetim yok (bugünkü davranış)
+    ok 7 - iyimser kilit sürüm biçimleri: boş / null / createdAt hiç düzeltilmemiş satırda geçer; düzeltilmiş satırda boş, createdAt ve eski sürüm 409; updatedAt yoksa denetim yok (bugünkü davranış)
+      ---
+      duration_ms: 936.660126
+      type: 'test'
+      ...
+    # Subtest: gerileme — yarışsız düzeltme her uçta aynen: Kontrol Yok yazar; Uyar sorar + Yine de Kaydet yazar; Engelle onayla da yazmaz; yinelenen istek ikinci kez yazmaz
+    ok 8 - gerileme — yarışsız düzeltme her uçta aynen: Kontrol Yok yazar; Uyar sorar + Yine de Kaydet yazar; Engelle onayla da yazmaz; yinelenen istek ikinci kez yazmaz
+      ---
+      duration_ms: 1427.347976
+      type: 'test'
+      ...
+    # Subtest: gerileme — eksi stok sorusu (stok) ve kart iadesi sınırı (taksit) yarışsız aynen; silinmiş harekete doğrudan düzeltme 404
+    ok 9 - gerileme — eksi stok sorusu (stok) ve kart iadesi sınırı (taksit) yarışsız aynen; silinmiş harekete doğrudan düzeltme 404
+      ---
+      duration_ms: 155.696399
+      type: 'test'
+      ...
+    1..9
+ok 1 - 2.5.0 BİRLEŞİK TUR 1 YB-1 — eşzamanlı düzeltmede korumalar işlemin içindeki GÜNCEL satırla (dört uç)
+  ---
+  duration_ms: 11059.337065
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 BİRLEŞİK TUR 1 YB-2 — Kasa ↔ Banka transferi: gövde yoldayken silinir ya da öbür tarafı yok olursa 404, hiçbir tablo yazılmaz
+    # Subtest: transfer gövde yoldayken silinir: 404 Kasa iletisi; tablolar silmeden sonraki hâliyle aynı (sahte cash.transfer.updated yok)
+    ok 1 - transfer gövde yoldayken silinir: 404 Kasa iletisi; tablolar silmeden sonraki hâliyle aynı (sahte cash.transfer.updated yok)
+      ---
+      duration_ms: 351.144174
+      type: 'test'
+      ...
+    # Subtest: transferin yalnız öbür tarafı yok (eski / bozuk veri benzetimi, doğrudan silme): 404 "Transferin öbür tarafı bulunamadı"; tablolar değişmez
+    ok 2 - transferin yalnız öbür tarafı yok (eski / bozuk veri benzetimi, doğrudan silme): 404 "Transferin öbür tarafı bulunamadı"; tablolar değişmez
+      ---
+      duration_ms: 329.834807
+      type: 'test'
+      ...
+    1..2
+ok 2 - 2.5.0 BİRLEŞİK TUR 1 YB-2 — Kasa ↔ Banka transferi: gövde yoldayken silinir ya da öbür tarafı yok olursa 404, hiçbir tablo yazılmaz
+  ---
+  duration_ms: 1151.608732
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 BİRLEŞİK TUR 1 YB-2 — transfer düzeltmesi yarışsız aynen (gerileme)
+    # Subtest: transfer düzeltmesi iki tarafı birlikte günceller; iyimser kilit transferde de çalışır
+    ok 1 - transfer düzeltmesi iki tarafı birlikte günceller; iyimser kilit transferde de çalışır
+      ---
+      duration_ms: 37.88111
+      type: 'test'
+      ...
+    1..1
+ok 3 - 2.5.0 BİRLEŞİK TUR 1 YB-2 — transfer düzeltmesi yarışsız aynen (gerileme)
+  ---
+  duration_ms: 512.032442
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 BS-4 — veri dosyası kayıp ya da açılamayan şirket varken Birleşik Rapor üretilmez (409; ekran = PDF = Excel), dosya yaratılmaz
+    # Subtest: veri dosyası silinmiş: 409 company-data-missing, ileti kod + ad + ne yapılacağı; klasörde dosya yaratılmaz; açık tanıtıcı kalmaz
+    ok 1 - veri dosyası silinmiş: 409 company-data-missing, ileti kod + ad + ne yapılacağı; klasörde dosya yaratılmaz; açık tanıtıcı kalmaz
+      ---
+      duration_ms: 15.812021
+      type: 'test'
+      ...
+    # Subtest: veri klasörü tamamen silinmiş: aynı 409; klasör yeniden yaratılmaz
+    ok 2 - veri klasörü tamamen silinmiş: aynı 409; klasör yeniden yaratılmaz
+      ---
+      duration_ms: 8.83466
+      type: 'test'
+      ...
+    # Subtest: kayıp şirket seçilmeden (yalnız 001) rapor eskisi gibi 200 ve yalnız 001'i toplar
+    ok 3 - kayıp şirket seçilmeden (yalnız 001) rapor eskisi gibi 200 ve yalnız 001'i toplar
+      ---
+      duration_ms: 45.753196
+      type: 'test'
+      ...
+    1..3
+ok 4 - 2.5.0 BS-4 — veri dosyası kayıp ya da açılamayan şirket varken Birleşik Rapor üretilmez (409; ekran = PDF = Excel), dosya yaratılmaz
+  ---
+  duration_ms: 791.509755
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 BS-4 — veri dosyası bozuk (açılış hata verir): 409 company-unavailable; yarım açılmış bağlantı kalmaz, dosya sonra silinebilir (ders 48)
+    # Subtest: bozuk dosya: 409, ileti kod + ad + neden; açık tanıtıcı yok; açmayı denedikten sonra dosya silinip yerine yenisi yazılabilir
+    ok 1 - bozuk dosya: 409, ileti kod + ad + neden; açık tanıtıcı yok; açmayı denedikten sonra dosya silinip yerine yenisi yazılabilir
+      ---
+      duration_ms: 16.160217
+      type: 'test'
+      ...
+    1..1
+ok 5 - 2.5.0 BS-4 — veri dosyası bozuk (açılış hata verir): 409 company-unavailable; yarım açılmış bağlantı kalmaz, dosya sonra silinebilir (ders 48)
+  ---
+  duration_ms: 684.599692
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 BS-4 — meşgul şirket (geri yükleme / silme sürüyor) varken Birleşik Rapor 503 + retryAfter döner (ekran = PDF = Excel); meşguliyet kalkınca 200
+    # Subtest: meşgul 002: 503, ileti meşgul iletisi, retryAfter 5 ve Retry-After başlığı; yalnız 001 seçilince 200; meşguliyet kalkınca iki şirketle 200
+    ok 1 - meşgul 002: 503, ileti meşgul iletisi, retryAfter 5 ve Retry-After başlığı; yalnız 001 seçilince 200; meşguliyet kalkınca iki şirketle 200
+      ---
+      duration_ms: 42.40588
+      type: 'test'
+      ...
+    1..1
+ok 6 - 2.5.0 BS-4 — meşgul şirket (geri yükleme / silme sürüyor) varken Birleşik Rapor 503 + retryAfter döner (ekran = PDF = Excel); meşguliyet kalkınca 200
+  ---
+  duration_ms: 687.006199
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 Ç4 Defter Türü
+    # Subtest: varsayılan Seçilmedi; seçenekler yazım düzeninde; Kişi Türü / VKN uzunluğundan tür uydurulmaz; kaydedilir ve yeniden okunur
+    ok 1 - varsayılan Seçilmedi; seçenekler yazım düzeninde; Kişi Türü / VKN uzunluğundan tür uydurulmaz; kaydedilir ve yeniden okunur
+      ---
+      duration_ms: 522.837327
+      type: 'test'
+      ...
+    # Subtest: geçersiz değer 400 ve hiçbir ayar yazılmaz (aynı gövdedeki firma bilgisi de)
+    ok 2 - geçersiz değer 400 ve hiçbir ayar yazılmaz (aynı gövdedeki firma bilgisi de)
+      ---
+      duration_ms: 429.489823
+      type: 'test'
+      ...
+    # Subtest: yetki: yönetici ve muhasebe değiştirir; avukat ve personel 403 (ayar değişmez)
+    ok 3 - yetki: yönetici ve muhasebe değiştirir; avukat ve personel 403 (ayar değişmez)
+      ---
+      duration_ms: 642.683309
+      type: 'test'
+      ...
+    # Subtest: Şirket Verisini Sıfırla: Tüm Hareketleri Sil ve Tümünü Sıfırla ayarı KORUR; dönem kilidi (ledger.) kalkar
+    ok 4 - Şirket Verisini Sıfırla: Tüm Hareketleri Sil ve Tümünü Sıfırla ayarı KORUR; dönem kilidi (ledger.) kalkar
+      ---
+      duration_ms: 668.1115
+      type: 'test'
+      ...
+    # Subtest: iki şirket ayrı ayar; yedek → değiştir → geri yükle: 002 hemen, 001 yeniden açılışta geri gelir; öbür şirket etkilenmez
+    ok 5 - iki şirket ayrı ayar; yedek → değiştir → geri yükle: 002 hemen, 001 yeniden açılışta geri gelir; öbür şirket etkilenmez
+      ---
+      duration_ms: 1006.336096
+      type: 'test'
+      ...
+    # Subtest: BS-7 kapılı (yeni şemalı) şirkette Defter Türü yazımı 409 SCHEMA_AHEAD; okuma çalışır, dosya değişmez
+    ok 6 - BS-7 kapılı (yeni şemalı) şirkette Defter Türü yazımı 409 SCHEMA_AHEAD; okuma çalışır, dosya değişmez
+      ---
+      duration_ms: 628.661724
+      type: 'test'
+      ...
+    # Subtest: Değişiklik Geçmişi: üç ayar türü 'Ayarlar' süzgecinde; Defter Türü satırı eski → yeni ekran adlarını taşır; istemcide Türkçe adları var
+    ok 7 - Değişiklik Geçmişi: üç ayar türü 'Ayarlar' süzgecinde; Defter Türü satırı eski → yeni ekran adlarını taşır; istemcide Türkçe adları var
+      ---
+      duration_ms: 362.303009
+      type: 'test'
+      ...
+    # Subtest: Değişiklik Geçmişi süzgeci: constructor / toString / __proto__ / hasOwnProperty / valueOf değerleri 200 + 0 satır (kendi önekleri); gruplar aynen
+    ok 8 - Değişiklik Geçmişi süzgeci: constructor / toString / __proto__ / hasOwnProperty / valueOf değerleri 200 + 0 satır (kendi önekleri); gruplar aynen
+      ---
+      duration_ms: 363.671707
+      type: 'test'
+      ...
+    # Subtest: okuyucu bookTypeOf: store, ham değer, bozuk / bilinmeyen değer → unset; okunamayan store → unset
+    ok 9 - okuyucu bookTypeOf: store, ham değer, bozuk / bilinmeyen değer → unset; okunamayan store → unset
+      ---
+      duration_ms: 1.0222
+      type: 'test'
+      ...
+    1..9
+ok 7 - 2.5.0 Ç4 Defter Türü
+  ---
+  duration_ms: 4627.380075
+  type: 'suite'
+  ...
+1..7
+# tests 26
+# suites 7
+# pass 26
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 20767.931238

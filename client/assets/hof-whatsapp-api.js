@@ -225,7 +225,15 @@
         b.state === "stopped" && b.pauseReason ? `<p class="hof-wa-api-wait is-warn"><b>Durduruldu:</b> ${esc(b.pauseReason)}</p>` : "",
       ].join("");
       const writable = state.info?.writable !== false;
-      const rows = (b.jobs || []).map(job => `<tr data-wa-job="${esc(job.id)}" data-wa-job-state="${esc(job.state)}"><td>${esc(job.accountName || "—")}</td><td>${esc(tail(job.phone))}</td><td><span class="hof-wa-api-tag is-${TONE[job.state] || "info"}">${esc(job.stateLabel)}</span></td><td class="hof-wa-api-reason">${esc(job.reason || "")}</td><td>${job.state === "uncertain" && writable ? `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-wa-api-anyway="${esc(job.id)}">Yine de Gönder</button>` : ""}</td></tr>`).join("");
+      // 2.5.0 W-3: içeriği silinmiş iş (KVKK / 1 yıl) — neden satırda; silinmiş EKSTRE aynı iş üzerinden yeniden gönderilmez (S31), düğme pasif + neden.
+      const erasedStatement = job => Boolean(job.contentErased) && b.kind === "statement";
+      const anyway = job => {
+        if (job.state !== "uncertain" || !writable) return "";
+        if (erasedStatement(job)) return `<button type="button" class="hof-button hof-button-small hof-button-ghost" disabled title="İçeriği silindi; aynı ekstre yeniden gönderilemez. Gerekirse yeni Ekstre gönderimi başlatın." data-wa-api-anyway-off>Yine de Gönder</button>`;
+        return `<button type="button" class="hof-button hof-button-small hof-button-ghost" data-wa-api-anyway="${esc(job.id)}">Yine de Gönder</button>`;
+      };
+      const reasonOf = job => [job.reason || "", job.contentErased ? job.contentErased.text : ""].filter(Boolean).join(" ");
+      const rows = (b.jobs || []).map(job => `<tr data-wa-job="${esc(job.id)}" data-wa-job-state="${esc(job.state)}"${job.contentErased ? " data-wa-job-erased" : ""}><td>${esc(job.accountName || "—")}</td><td>${esc(tail(job.phone))}</td><td><span class="hof-wa-api-tag is-${TONE[job.state] || "info"}">${esc(job.stateLabel)}</span></td><td class="hof-wa-api-reason">${esc(reasonOf(job))}</td><td>${anyway(job)}</td></tr>`).join("");
       const actions = [
         b.state === "running" ? '<button type="button" class="hof-button hof-button-ghost" data-wa-api-act="pause">Duraklat</button>' : "",
         b.state === "paused" && writable ? '<button type="button" class="hof-button" data-wa-api-act="resume">Devam Et</button>' : "",
@@ -578,5 +586,24 @@
     };
   }
 
-  HOF.whatsappApi = { status, usageBlock, ready, mount, KIND_TITLES };
+  // 2.5.0 W-1(a): WhatsApp bağlantısının süresi doluyor (bitişe 7 gün kala) / doldu — Yeniden Bağla'yı yapabilen yöneticiye kullanıcı başına günde EN ÇOK BİR KEZ
+  // bildirim. Kararı sunucu verir (POST …/connection/expiry-notice; Kritik stok bildirimiyle aynı düzen): ilk açılışta ve gün dönümünde (alerts.refresh) sorulur.
+  async function expiryNotice() {
+    // Salt okunur lisansta gönderim zaten yok ve yazma isteği reddedilir (Yönetim → WhatsApp satırı yine gösterir).
+    if (!HOF.can("system.manage") || HOF.user?.license?.writable === false) return;
+    let answer;
+    try {
+      answer = await HOF.api(`${BASE}/connection/expiry-notice`, { method: "POST", body: {}, background: true });
+    } catch {
+      return; // salt okunur lisans / bağlantı yok: bildirim yok
+    }
+    if (!answer?.show || !answer.message) return;
+    HOF.toast(answer.message, { type: answer.state === "expired" ? "error" : "warn", timeout: 20000, action: { label: "Yeniden Bağla", onClick: () => window.open("/admin.html#whatsapp", "_blank", "noopener") } });
+  }
+  HOF.whenReady(() => {
+    setTimeout(expiryNotice, 2500);
+    HOF.on("live:alerts.refresh", () => expiryNotice());
+  });
+
+  HOF.whatsappApi = { status, usageBlock, ready, mount, KIND_TITLES, expiryNotice };
 })();

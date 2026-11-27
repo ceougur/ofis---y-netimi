@@ -112,7 +112,7 @@ export const motorNow = (base = new Date()) => new Date(base.getFullYear(), base
 // supheli (2.3.0 İz 1, plan §3.11b): Şüpheli Ticari Alacaklar işlemleri (yalnız banka ekseniyle; false: torbada yoklar, motorun rastgele sırası
 // 2.2.0'dakiyle aynı). İşlemler yalnız motorun bu iş için açtığı iki müşteride koşar (accounts/customers havuzunda değildir: öbür işlemlerin
 // rastgele seçimleri değişmez); model 128/129/644/654'ü plandan yazılmış kendi ayırma kuralıyla (doubtfulModel) hesaplar.
-export async function runReconciliation({ client, seed = 1, operations = 500, verifyEvery = 1, reportEvery = 50, burst = 40, span = 120, bank = true, pos = false, tahsileVer = true, k8 = true, supheli = true, log = () => {} }) {
+export async function runReconciliation({ client, seed = 1, operations = 500, verifyEvery = 1, reportEvery = 50, burst = 40, span = 120, bank = true, pos = false, tahsileVer = true, k8 = true, supheli = true, sigmaOf = null, log = () => {} }) {
   const R = rng(seed);
   const api = async (method, url, body) => {
     const response = await (method === "GET" ? client.get(url) : method === "DELETE" ? client.del(url) : method === "PUT" ? client.put(url, body) : client.post(url, body));
@@ -127,7 +127,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
 
   // ---------- Bağımsız model ----------
   // deleted: Silinenler'deki cari hareketleri (Yargıç K2: geri yükleme K7'den ve dönem kilidinden geçer).
-  const M = { kasa: { cash: 0, bank: 0, card: 0 }, cari: new Map(), stok: new Map(), plans: new Map(), cash: [], entries: [], moves: [], planEntries: [], invoices: new Map(), drafts: new Map(), cheques: new Map(), invCash: [], chqCash: [], bankLines: [], deleted: [], payments: [], posLines: [], posSales: [] };
+  const M = { kasa: { cash: 0, bank: 0, card: 0 }, cari: new Map(), stok: new Map(), plans: new Map(), cash: [], entries: [], moves: [], planEntries: [], invoices: new Map(), drafts: new Map(), cheques: new Map(), invCash: [], chqCash: [], bankLines: [], deleted: [], payments: [], posLines: [], posSales: [], pendingS206: [] };
   const report = { seed, operations: 0, byKind: {}, rejectedAsExpected: 0, rejections: {}, mismatches: [], checks: 0, reportChecks: 0, integrityMs: [], timeline: { from: D0, to: T }, locks: [], yilDonumu: { kronolojiOncekiYilRet: 0, kronolojiOncekiYilKabul: 0 } };
   const count = kind => (report.byKind[kind] = (report.byKind[kind] || 0) + 1);
   const accounts = [];
@@ -135,6 +135,9 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
   let planSeq = 0;
   const cariAdd = (id, cents) => M.cari.set(id, (M.cari.get(id) || 0) + cents);
   const planLeft = p => Math.max(0, p.total - Math.max(0, p.paid));
+  // 2.5.0 Ç5-B kapanış düzeltmesi (S129 = A): programın kart yanıtında totals.paid GÖSTERİLEN (tek kuyruk) sayıdır; kartın KENDİ tahsilatı totals.ownPaid — model kart
+  // tahsilatlarını sayar, onunla karşılaştırılır (eski sürüm kodunu süren koşularda alan yoktur: totals.paid zaten kartın kendi hesabıdır).
+  const ownPaidOf = p => p.totals.ownPaid ?? p.totals.paid;
   // v2.0.24: taksitli faturanın kendi kartı faturanın açığını izler (iade, iade iptali, kart tahsilatı/iadesi/silmesi sonrası).
   // Bağımsız hesap (v2.1.0, Canlı Hata 2): hedef = max(0, taksite kalan − kartın net tahsilatı − iadeler + geri ödenen) —
   // geri ödeme önce iadenin faturayı aşıp avansa dönen kısmından düşülür (2.0.24–2.0.26 kodu ve bu model açığı 0'da kırpıp
@@ -147,8 +150,10 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     const refunds = rets.reduce((sum, x) => sum + x.cashRows.filter(row => row.kind === "out").reduce((t, row) => t + row.amount, 0), 0);
     return { target: Math.max(0, inv.rest - Math.max(0, paid) - returns + refunds), refunds };
   };
+  // 2.5.0 S234 = A (docs/erp/C7B-FATURA-TASARIM.md §18.2): karar (4) Borçta Kalsın ile kapatılmış karta da — motorun bütün kapalı kartları güncel kodla (Borçta Kalsın) kapatılır;
+  // kapalı kendi kart da faturanın açığını izler (iade küçültür, iade iptali büyütür).
   function syncOwn(p) {
-    if (!p || !p.invoiceId || p.status !== "active") return;
+    if (!p || !p.invoiceId || (p.status !== "active" && p.status !== "closed")) return;
     const inv = M.invoices.get(p.invoiceId);
     if (!inv || inv.status !== "issued") return;
     const open = ownTarget(inv, p.paid).target;
@@ -158,7 +163,9 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     const signed = Math.min(left, p.total - Math.max(0, p.paid));
     p.total = open > left ? Math.max(p.total, Math.min(inv.rest, p.total + open - signed)) : p.total - (left - open);
   }
-  const uncovered = accountId => Math.max(0, (M.cari.get(accountId) || 0) - [...M.plans.values()].filter(p => p.accountId === accountId && p.covers && p.status === "active").reduce((s, p) => s + planLeft(p), 0));
+  // 2.5.0 Ç7b tur 3b (karar (6) "Borçta Kalsın"; routes/plans.mjs uncoveredDebt): Kartı Kapat'la kapatılmış Mevcut Borç kartı borcu taşımayı sürdürür (kalan borçta) — aynı borç ikinci
+  // kez taksitlendirilmez; motorun bütün kartları güncel kodla kapatılır (eski kurallı '2.4.9' kart yok). İptalle kapanan kartın kalanı 0.
+  const uncovered = accountId => Math.max(0, (M.cari.get(accountId) || 0) - [...M.plans.values()].filter(p => p.accountId === accountId && p.covers && (p.status === "active" || p.status === "closed")).reduce((s, p) => s + planLeft(p), 0));
   // Kasa'ya etkiler (tarihli): nakit eksi korumasının modeli ve işlem zinciri denetimi bunlardan hesaplanır.
   function cashEffects() {
     const out = [];
@@ -306,6 +313,23 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
   }
   const doubtfulOpenOf = party => [...doubtfulModel().records.values()].filter(s => s.party === party).reduce((sum, s) => sum + s.remaining, 0);
   const doubtfulRoom = party => (M.cari.get(party) || 0) - doubtfulOpenOf(party);
+  /**
+   * S263 = C (2.5.0 UD turu 3; kullanıcı kararı — 'ÖNERİYİ UYGULA' kuralıyla öneri uygulandı; BİLİNEN SINIR, 2.4.9'dan beri böyle, veri bozulmuyor): aynı gün önce Şüpheliden Çıkar,
+   * sonra yeni Şüpheliye Al, sonra bağsız tahsilat. Plan K3 aynı gün sırası (al → karşılık → değersiz → alacak satırı → çıkar) tahsilatı, yazım sırasında daha önce çıkarılmış eski
+   * kayda düşürür (çıkarma günün SONUNDA işlenir); yeni kaydın kalanı borç bakiyesini aşar ve kapı (doubtful:balance, 120 = kart − açık şüpheli ≥ 0) tahsilatı reddeder. Motor bu
+   * reddi YALNIZ bu sınıfta beklenen ret sayar: (1) carinin bugün çıkarılmış kaydı VE bugün alınmış kaydı var, (2) modelin K3 sırasıyla tahsilat çıkarılan kayda düşüyor (çıkarılan
+   * tutar azalıyor). Sınıfta program kabul de edebilir (yeni kaydın kalanı borç bakiyesine sığıyorsa — tohum 2 işlem 4790): o zaman yol eskisi gibi (mustOk + model). İlk sürümdeki
+   * "(3) modelde 120 < 0" koşulu kapının kararını her durumda öngörmedi (tohum 2'de model 120 < 0 dedi, program kabul etti) → kaldırıldı; ret kabulü sınıfla sınırlı kalır.
+   * Öbür her ret eskisi gibi uyuşmazlıktır.
+   */
+  const sameDayReleaseReject = (party, amount, day) => {
+    if (!D.events.some(e => e.party === party && e.kind === "take" && e.date === day)) return false;
+    const released = [...D.records.values()].filter(x => x.party === party && x.closedDate === day);
+    if (!released.length) return false;
+    const before = doubtfulModel();
+    const after = doubtfulModel([...D.events, { kind: "credit", party, date: day, cents: amount, seq: Number.MAX_SAFE_INTEGER }]);
+    return released.some(x => (after.records.get(x.id)?.releasedCents ?? 0) < (before.records.get(x.id)?.releasedCents ?? 0));
+  };
   // v2.1.0: iki vadesiz banka hesabı, açılış çizelgenin ilk günü (Bakiye Doğrulandı). Açılış 102.k borç / 500 alacak; banka etkisi modelde.
   const banks = [];
   for (const bankName of bank ? ["Ziraat Bankası", "Garanti BBVA"] : []) {
@@ -370,9 +394,34 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     }
     const list = (await api("GET", "/api/workspace/accounts?status=all&limit=500")).data.accounts;
     for (const a of list) if (M.cari.has(a.id) && centsOf(a.balance) !== M.cari.get(a.id)) problems.push(`Cari ${a.name} (${a.refNo}): program ${a.balance} · model ${tl(M.cari.get(a.id))}`);
+    // 2.5.0 Ç5-B kapanış düzeltmesi (dar kontrol DÜŞÜK-3 + ORTA-2; kullanıcının koşulu "kalemler toplamı = cari bakiyesi HER durumda tutar"): tek yükümlülük kuyruğunun
+    // açık kalemlerinin toplamı (alacak − borç yönü) bu modelin BAĞIMSIZ cari bakiyesine eşit. Model kuyruğu kurmaz; bakiyeyi kendi satırlarından toplar — iki görünümü
+    // birden bozan hata (ör. yakınsamayan ön ödeme ölçümü: kalemler bakiyeden 20 fazla) burada görünür. sigmaOf: koşucunun verdiği okuma (test/mutabakat/sigma.mjs —
+    // programın kuyruğundan cari → kuruş); verilmediyse denetim yapılmaz (HTTP'den okunamaz: karşı yönlü avans kalemleri ekranlarda kalem değildir).
+    if (sigmaOf) {
+      const sigma = await sigmaOf();
+      for (const a of list) {
+        if (!M.cari.has(a.id) || !sigma.has(a.id)) continue;
+        if (sigma.get(a.id) !== M.cari.get(a.id)) problems.push(`Cari ${a.name} (${a.refNo}): açık kalemlerin toplamı ${tl(sigma.get(a.id))} ≠ bakiye (model) ${tl(M.cari.get(a.id))} — kalemler toplamı = cari bakiyesi`);
+      }
+    }
     const stock = (await api("GET", "/api/workspace/stock")).data.items;
     for (const s of stock) if (M.stok.has(s.id) && Math.round(s.qty * 1000) !== M.stok.get(s.id)) problems.push(`Stok ${s.name}: program ${s.qty} · model ${qtyText(M.stok.get(s.id))}`);
     const plans = (await api("GET", "/api/workspace/plans?status=all")).data.plans || [];
+    // S206 = A (applyCancel): bekleyen iptal adayları — programın kapattığı aday kart benimsenir, sonra modelin kırpması.
+    if (M.pendingS206.length) {
+      const byId = new Map(plans.map(p => [p.id, p]));
+      for (const pending of M.pendingS206.splice(0)) {
+        for (const [id, m] of pending.cards) {
+          const got = byId.get(id);
+          if (got && m.status === "active" && got.status === "closed" && centsOf(got.totals.total) === centsOf(ownPaidOf(got)) && centsOf(ownPaidOf(got)) === m.paid) {
+            m.status = "closed";
+            m.total = centsOf(got.totals.total);
+          }
+        }
+        for (const [pl] of trimCovers(pending.accountId, { closed: false })) if (planLeft(pl) === 0) pl.status = "closed";
+      }
+    }
     const seen = new Set();
     for (const p of plans) {
       const m = M.plans.get(p.id);
@@ -380,7 +429,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
       seen.add(p.id);
       // v2.0.24: iade, asıl faturayı kapsayan Mevcut Borç kartını faturadaki payı kadar küçültür; model kapsamı (FIFO) tutmaz.
       // Bu kartta program değeri [model − bu karttaki iadeler, model] aralığında ve ödenenin altında değilse benimsenir.
-      if ((m.slack || m.over) && centsOf(p.totals.paid) === m.paid) {
+      if ((m.slack || m.over) && centsOf(ownPaidOf(p)) === m.paid) {
         const got = centsOf(p.totals.total);
         if (got <= m.total + (m.over || 0) && got >= m.total - (m.slack || 0) && got >= Math.max(0, m.paid)) {
           // Benimsenen fark en son iadeye yazılır (iade iptalinde geri büyüyecek tutar; programın coverCuts'ı gibi): program daha
@@ -396,7 +445,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
           m.total = got;
         }
       }
-      if (centsOf(p.totals.total) !== m.total || centsOf(p.totals.paid) !== m.paid) {
+      if (centsOf(p.totals.total) !== m.total || centsOf(ownPaidOf(p)) !== m.paid) {
         // Teşhis için kartın taksitleri ve tahsilatları da yazılır (hangi satırın saptığı görünsün).
         const d = (await api("GET", `/api/workspace/plans/${p.id}`)).data || {};
         const items = (d.items || d.ledger?.items || []).map(i => `${i.dueDate}:${i.amount}/${i.paid ?? i.paidAmount ?? "-"}`).join(" ");
@@ -404,7 +453,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         const invId = d.invoiceId || m.invoiceId;
         const inv = invId ? (await api("GET", `/api/workspace/invoices/${invId}`)).data : null;
         if (inv) problems.push(`  fatura ${inv.number} ${inv.issueDate}: ödenecek ${inv.payable} açık ${inv.open} ödenen ${inv.paid} · kapatanlar ${(inv.closers || []).map(c => `${c.date}:${c.amount}:${c.mode}:${c.label}`).join(" | ")}`);
-        problems.push(`Taksit kartı ${p.name} (${p.id}, fatura ${d.invoiceId || d.invoice?.number || "-"}, durum ${p.status}): program ${p.totals.total}/${p.totals.paid} · model ${tl(m.total)}/${tl(m.paid)} · taksitler [${items}] · tahsilatlar [${ents}]`);
+        problems.push(`Taksit kartı ${p.name} (${p.id}, fatura ${d.invoiceId || d.invoice?.number || "-"}, durum ${p.status}): program ${p.totals.total}/${ownPaidOf(p)} · model ${tl(m.total)}/${tl(m.paid)} · taksitler [${items}] · tahsilatlar [${ents}]`);
       }
       if ((p.status === "closed") !== (m.status === "closed")) problems.push(`Taksit kartı ${p.name}: durum ${p.status} · model ${m.status}`);
       // Yukarı yönlü pay (over) yalnız iadenin ardından programın ilk gözlemine kadar geçerli; gözlendikten sonra kalkar.
@@ -417,16 +466,30 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
       if (!m?.invoiceId || p.status === "closed") continue;
       const inv = (await api("GET", `/api/workspace/invoices/${m.invoiceId}`)).data;
       if (!inv || inv.status !== "issued") continue;
-      const left = Math.max(0, centsOf(p.totals.total) - Math.max(0, centsOf(p.totals.paid)));
+      const left = Math.max(0, centsOf(p.totals.total) - Math.max(0, centsOf(ownPaidOf(p))));
       // Parası geri verilen iade borcu düşürmez: kartın kalanı = max(0, imzalı açık), imzalı açık = taksite kalan − kart tahsilatı − iadelerin
       // mahsup edilen kısmı (iade − geri ödenen; Canlı Hata 2: geri ödeme önce avansa dönen iadeden düşülür), taksite kalanı aşmadan. K1 (2.1.0;
       // kâhin + hakem IADE-KAPAMA): faturanın açığı AYNI formüldür (geri ödenen iade faturaya mahsup edilmez) → açık = kartın kalanı = hedef.
       // Önceki denetim "açık + geri ödenen = hedef" programın aynı alacağı iki kez kullanan hatasını taşıyordu (ders 5).
       const mi = M.invoices.get(m.invoiceId);
       if (!mi) continue;
-      const { target, refunds } = ownTarget(mi, centsOf(p.totals.paid));
-      const want = Math.min(target, Math.max(0, mi.rest - Math.max(0, centsOf(p.totals.paid))));
-      if (Math.abs(centsOf(inv.open) - want) > 1) problems.push(`Taksitli fatura ${inv.number}: açık ${inv.open} ≠ imzalı açık hedefi ${tl(want)} (geri ödenen ${tl(refunds)}) · kapatanlar ${(inv.closers || []).map(c => `${c.date}:${c.amount}:${c.label}`).join(" | ")}`);
+      const { target, refunds } = ownTarget(mi, centsOf(ownPaidOf(p)));
+      const want = Math.min(target, Math.max(0, mi.rest - Math.max(0, centsOf(ownPaidOf(p)))));
+      // 2.5.0 Ç5-B tur 2b-2 — S99 = A (KULLANICI KARARI 10.11 13:27, AYNEN: "FATURA DURUMU da TEK kuyruktan: bağsız avans vade sırasıyla taksitli faturanın taksitlerini de
+      // kapatır … 'Taksitli faturanın açığı = kartının kalanı' kuralı KUYRUK kalanıyla sürer (2.4.9'daki 'bağsız para taksitli faturanın kartına harcanmaz' kuralı bu kararla
+      // DEĞİŞTİ) … mutabakat modeli bu kararla güncellenir"): faturanın açığı artık kartın KENDİ kalanına (bu modelin hedefi) EŞİT olmak zorunda değil — carinin bağsız parası
+      // (tahsilat, çek, faturasız stok iadesi, kart fazlası) taksitleri vade sırasıyla kapatınca açık hedeften KÜÇÜKTÜR. Model tek yükümlülük kuyruğunu kurmaz; denetim üst sınırdır
+      // (açık hedefi aşamaz — kuyruk kartın kendi kalanından fazlasını açık tutamaz). Kartın kendi kalanı = hedef denetimi (aşağıda) ve S118 = B (kart tahsilatı sınırı kartın
+      // kendi kalanından) AYNEN. Tek kuyruğun sayısı (eşitlik) cari kâhininde (test/bagimsiz/cari — S99 = A, Y6-3) ve test/tyk-tur2b2-250.test.mjs'te.
+      if (centsOf(inv.open) - want > 1) problems.push(`Taksitli fatura ${inv.number}: açık ${inv.open} > imzalı açık hedefi ${tl(want)} (geri ödenen ${tl(refunds)}) · kapatanlar ${(inv.closers || []).map(c => `${c.date}:${c.amount}:${c.label}`).join(" | ")}`);
+      // 2.5.0 Ç5-B kapanış düzeltmesi (dar kontrol DÜŞÜK-3): üst sınır tek başına dişsizdi — fatura durumunda taksiti hep kapalı sayan hata (açık olması gerekenden KÜÇÜK)
+      // yakalanmıyordu (mutant kanıtı docs/kanit/2026-11-12/c5bkd-motor). ALT SINIR: fatura durumunda kapanmış görünen her kuruşun bir KAPATANI vardır — açık + kapatanların
+      // toplamı ödenecekten küçük olamaz. (Dar kontrolün önerdiği "açık ≥ kartın kuyruk kalanı" 500 işlemde tutuyor, 5.000 işlemlik koşuda ise kart fazlası birden çok
+      // kartlı caride iki görünümde farklı dağıldığı için düzeltmeden ÖNCEKİ kodda da uyarı veriyor — ayrı bulgu, teslim raporunda; o yüzden burada kullanılmadı.)
+      {
+        const closedMinor = (inv.closers || []).reduce((sum, c) => sum + centsOf(c.amount), 0);
+        if (centsOf(inv.open) + closedMinor < centsOf(inv.tryPayable) - 1) problems.push(`Taksitli fatura ${inv.number}: açık ${inv.open} + kapatanlar ${tl(closedMinor)} < ödenecek ${inv.tryPayable} (alt sınır: kapanan her kuruşun kapatanı olmalı) · kapatanlar ${(inv.closers || []).map(c => `${c.date}:${c.amount}:${c.label}`).join(" | ")}`);
+      }
       if (Math.abs(want - left) > 1) problems.push(`Taksitli fatura ${inv.number}: açık ${inv.open} (geri ödenen ${tl(refunds)}) ≠ kartın kalanı ${tl(left)} · kapatanlar ${(inv.closers || []).map(c => `${c.date}:${c.amount}:${c.label}`).join(" | ")}`);
     }
     // Fatura: her belge programda ve modelde aynı durumda, aynı TL ödenecekle; programda olup modelde olmayan (yetim) belge yok.
@@ -469,7 +532,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     const ledger = (await api("GET", "/api/workspace/ledger")).data;
     if (!ledger.trial.balanced || ledger.trial.totals.difference !== 0) problems.push(`Mizan dengesiz: borç ${ledger.trial.totals.debit} alacak ${ledger.trial.totals.credit}`);
     const gl = code => centsOf(ledger.trial.accounts.find(a => a.code === code)?.balance || 0);
-    if (gl("100") !== M.kasa.cash || gl("102") !== M.kasa.bank || gl("108") !== M.kasa.card - ccardNet()) problems.push(`Ana defter kasa hesapları ≠ model: 100 ${gl("100") / 100}, 102 ${gl("102") / 100}, 108 ${gl("108") / 100} (model 108 ${tl(M.kasa.card - ccardNet())})`);
+    if (gl("100") !== M.kasa.cash || gl("102") !== M.kasa.bank || gl("108") !== M.kasa.card - ccardNet() - posPendingFee()) problems.push(`Ana defter kasa hesapları ≠ model: 100 ${gl("100") / 100}, 102 ${gl("102") / 100}, 108 ${gl("108") / 100} (model 108 ${tl(M.kasa.card - ccardNet() - posPendingFee())})`);
     if (gl("309") !== ccardNet()) problems.push(`Ana defter 309 (Kurumsal Kredi Kartları) ${gl("309") / 100} · model ${tl(ccardNet())}`);
     // Bankaya Tahsile Ver (plan §3.14): 101.02 (Alt Hesap Mizanı) = modelde tahsildeki evrak; 101.01 = portföy − tahsildeki; 101 toplamı aynı.
     // Doğrulama T4: Alt Hesap Mizanı'nda 101.01 hiç tahsile verilmemiş şirkette de görünür (önceden yalnız tahsil kaydı varken denetleniyordu).
@@ -492,7 +555,10 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     // 2.3.0 İz 1 (plan §3.11b/4): 120 = müşteri bakiyeleri − açık şüpheli (128); 128 = Σ kalan; 129 = −Σ karşılık; 654 = Σ ayrılan; 644 = Σ çözülen.
     const dm = doubtfulOn ? doubtfulModel() : null;
     const dc = doubtfulCustomers.reduce((s, a) => s + (M.cari.get(a.id) || 0), 0) - (dm ? dm.open : 0);
-    if (gl("120") !== byType("customer") + dc || gl("320") !== byType("supplier") || gl("336") !== byType("other")) problems.push(`Ana defter cari hesapları ≠ model: 120 ${gl("120") / 100}/${(byType("customer") + dc) / 100}, 320 ${gl("320") / 100}/${byType("supplier") / 100}, 336 ${gl("336") / 100}/${byType("other") / 100}`);
+    // 2.5.0 Ç7b — BEKLENTİ BİLEREK DEĞİŞTİ (KG-3 = A, kullanıcı 05.11 17:16 (3): kayıt (dosya) tahsilatı gelir değil → 336.90 "Sınıflandırılmamış Tahsilatlar"): Ana Defter'in 336'sı =
+    // "Diğer" carilerin bakiyesi − modeldeki kayıt tahsilatları (336.90'ın alacağı; cari değil). Eski sürüm kodunu süren koşu (bank: false — v2.0.26) eski kuralla (602).
+    const collected = bank ? M.payments.reduce((t, e) => t + e.amount, 0) : 0;
+    if (gl("120") !== byType("customer") + dc || gl("320") !== byType("supplier") || gl("336") !== byType("other") - collected) problems.push(`Ana defter cari hesapları ≠ model: 120 ${gl("120") / 100}/${(byType("customer") + dc) / 100}, 320 ${gl("320") / 100}/${byType("supplier") / 100}, 336 ${gl("336") / 100}/${(byType("other") - collected) / 100}`);
     if (dm) {
       for (const [code, want] of [["128", dm.open], ["129", -dm.provision], ["654", dm.expense], ["644", -dm.groundless]]) if (gl(code) !== want) problems.push(`Ana defter ${code} ${gl(code) / 100} · model ${tl(want)} (şüpheli alacak)`);
       const list2 = (await api("GET", "/api/workspace/doubtful?status=all")).data;
@@ -602,7 +668,13 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     const kartlar = await rc("taksit-kartlari", "", "", "&planStatus=all");
     if (kartlar.total !== M.plans.size) problems.push(`Taksit Kartları (Tüm Kartlar): ${kartlar.total} satır · model ${M.plans.size}${M.plans.size && !kartlar.total ? " (VERİ VARKEN BOŞ)" : ""}`);
     const planTotal = [...M.plans.values()].reduce((s, p) => s + p.total, 0), planPaid = [...M.plans.values()].reduce((s, p) => s + p.paid, 0);
-    if (sum(kartlar, "Toplam") !== planTotal || sum(kartlar, "Ödenen") !== planPaid) problems.push(`Taksit Kartları: toplam/ödenen ${tl(sum(kartlar, "Toplam"))}/${tl(sum(kartlar, "Ödenen"))} · model ${tl(planTotal)}/${tl(planPaid)}`);
+    // 2.5.0 Ç5-B kapanış düzeltmesi (S129 = A): raporun "Ödenen"i artık GÖSTERİLEN sayıdır (tek kuyruk — kart seçilmeden alınan tahsilatın kapattığı pay dahil); model tek
+    // kuyruğu kurmaz. Zincir iki halkayla korunur: (1) Taksitler listesinin kartın KENDİ hesabı (totals.ownPaid) = model (kart tahsilatları); (2) rapor = ekran (raporun
+    // Ödenen'i = listenin gösterilen toplamı). Eski sürüm kodunda ownPaid yoktur: totals.paid kartın kendi hesabıdır, iki halka aynı sayıya iner (eski denetim).
+    const liste = (await api("GET", "/api/workspace/plans?status=all")).data?.plans || [];
+    const ownPaid = liste.reduce((s, p) => s + centsOf(ownPaidOf(p)), 0), shownPaid = liste.reduce((s, p) => s + centsOf(p.totals.paid), 0);
+    if (sum(kartlar, "Toplam") !== planTotal || ownPaid !== planPaid) problems.push(`Taksit Kartları: toplam ${tl(sum(kartlar, "Toplam"))} · kartların kendi tahsilatı ${tl(ownPaid)} · model ${tl(planTotal)}/${tl(planPaid)}`);
+    if (sum(kartlar, "Ödenen") !== shownPaid) problems.push(`Taksit Kartları: raporun ödeneni ${tl(sum(kartlar, "Ödenen"))} · Taksitler listesinin ödeneni ${tl(shownPaid)} (rapor ≠ ekran)`);
     const mizan = await rc("hesap-mizani", D0, T);
     if (!mizan.total) problems.push("Hesap Planı Mizanı: veri varken boş");
     // 2.1.0 (plan testleri): Hesap Planı Mizanı raporu hesap hesap (yalnız "boş değil" değil): 100/102/108 ve cari hesapları modelle; Fark 0.
@@ -613,9 +685,10 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
       return row[6] === "Alacak" ? -value : value;
     };
     const byTypeR = t => accounts.filter(a => a.type === t).reduce((s, a) => s + (M.cari.get(a.id) || 0), 0);
+    // 2.5.0 Ç7b — BEKLENTİ BİLEREK DEĞİŞTİ (KG-3 = A; yukarıdaki Ana Defter denetimiyle aynı): mizanın 336'sı = "Diğer" cariler − kayıt tahsilatları (336.90; cari değil).
     // 2.3.0 İz 1: 120 = müşteri bakiyeleri (şüpheli müşterileri dahil) − açık şüpheli (128).
     const dcR = doubtfulCustomers.reduce((s, a) => s + (M.cari.get(a.id) || 0), 0) - (doubtfulOn ? doubtfulModel().open : 0);
-    for (const [code, want] of [["100", M.kasa.cash], ["102", M.kasa.bank], ["108", M.kasa.card - ccardNet()], ["309", ccardNet()], ["120", byTypeR("customer") + dcR], ["320", byTypeR("supplier")], ["336", byTypeR("other")]]) {
+    for (const [code, want] of [["100", M.kasa.cash], ["102", M.kasa.bank], ["108", M.kasa.card - ccardNet() - posPendingFee()], ["309", ccardNet()], ["120", byTypeR("customer") + dcR], ["320", byTypeR("supplier")], ["336", byTypeR("other") - (bank ? M.payments.reduce((t, e) => t + e.amount, 0) : 0)]]) {
       if (signedRow(code) !== want) problems.push(`Hesap Planı Mizanı raporu ${code}: ${tl(signedRow(code))} · model ${tl(want)}`);
     }
     if (sum(mizan, "Fark") !== 0) problems.push(`Hesap Planı Mizanı raporu: Fark ${tl(sum(mizan, "Fark"))}`);
@@ -654,9 +727,10 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
   // Taksitlendirilmiş borç iadeden (alacaktan) sonra borçtan büyük kalmaz: en yeni karttan başlayarak kırpılır.
   // Dönüş: kart → kesilen tutar (iade faturası bunu saklar; iade iptal edilince kart aynı tutarda geri büyür — programın
   // payment_json.coverCuts kuralı, 2.0.24 G3).
-  function trimCovers(accountId) {
+  // 2.5.0 S234 = A: iade / stok iadesi yolunda Borçta Kalsın ile kapatılmış kart da kırpılır; İPTAL yolu (closed: false) kapalı kartı bugünkü gibi atlar (S226 = C).
+  function trimCovers(accountId, { closed = true } = {}) {
     const cuts = new Map();
-    const covering = [...M.plans.values()].filter(p => p.accountId === accountId && p.covers && !p.invoiceId && p.status === "active");
+    const covering = [...M.plans.values()].filter(p => p.accountId === accountId && p.covers && !p.invoiceId && (p.status === "active" || (closed && p.status === "closed")));
     let excess = covering.reduce((s, p) => s + planLeft(p), 0) - Math.max(0, M.cari.get(accountId));
     for (const p of covering.sort((a, b) => b.order - a.order)) {
       if (excess <= 0) break;
@@ -845,7 +919,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
       // v2.0.24: iade önce asıl faturanın kendi kartını küçültür (kartın kalanı = faturanın açığı); sonra genel kırpma.
       const own = originalId && M.invoices.get(originalId)?.planId ? M.plans.get(M.invoices.get(originalId).planId) : null;
       // İade modele aşağıda (M.invoices.set) yazılır; kendi kartı o zaman eşitlenir.
-      for (const pl of M.plans.values()) if (pl !== own && pl.accountId === accountId && pl.covers && !pl.invoiceId && pl.status === "active") {
+      for (const pl of M.plans.values()) if (pl !== own && pl.accountId === accountId && pl.covers && !pl.invoiceId && (pl.status === "active" || pl.status === "closed")) {
         pl.slack = (pl.slack || 0) + calc.tryPayable;
         pl.slackBy = inv;
       }
@@ -855,6 +929,8 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
       for (const [pl, cut] of inv.coverCuts) pl.over = (pl.over || 0) + cut;
     }
     if (series && day > lastOf(series, day)) lastSeries.set(seriesKey(series, day), day);
+    // 2.5.0 UD (S206): faturadan SONRA açılan Mevcut Borç kartları onu içine almış olabilir (kart yalnız kendisinden önce doğmuş borcu tüketir) — iptalde aday.
+    inv.planSeqAt = planSeq;
     M.invoices.set(inv.id, inv);
     if (kind === "sale_return" && originalId) syncOwn(M.plans.get(M.invoices.get(originalId)?.planId));
     return inv;
@@ -879,7 +955,8 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     if (inv.status === "cancelled") return ["invoice-cancelled"];
     if (!open(inv.date)) return ["period-locked"];
     if (issuedInvoices(x => x.originalId === inv.id).length) return ["invoice-has-returns"];
-    if (inv.planId && M.planEntries.some(e => e.planId === inv.planId)) return ["plan-has-payments"];
+    // 2.5.0 Ç7b tur 3 — S15 = A: kendi kartında tahsilatı olan faturanın İptal Et'i KABUL (kart kapanır, tahsilat avans); yalnız Kartı Kapat'la önceden kapatılmış tahsilatlı kart 409.
+    if (inv.planId && M.plans.get(inv.planId)?.status === "closed" && M.planEntries.some(e => e.planId === inv.planId)) return ["plan-has-payments"];
     for (const id of inv.endorsed) if (M.cheques.get(id).status !== "endorsed") return ["cheque-moved"];
     // Bankaya Tahsile Ver (plan §3.14): faturanın evrakı bankada tahsildeyse iptal 409 cheque-deposited (evrak sırası programınki; ikisi
     // birlikteyse ikisinden biri).
@@ -906,12 +983,31 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
     for (const m of inv.moves) { M.stok.set(m.itemId, M.stok.get(m.itemId) - (m.kind === "in" ? m.qty : -m.qty)); M.moves.splice(M.moves.indexOf(m), 1); }
     for (const id of inv.chequesCreated) M.cheques.delete(id);
     for (const id of inv.endorsed) { const c = M.cheques.get(id); c.status = "portfolio"; c.events -= 1; c.endorseTo = ""; }
-    if (inv.planId) M.plans.delete(inv.planId);
-    // İade iptali: iadenin küçülttüğü Mevcut Borç kartları aynı tutarda geri büyür (kapatılmış ya da silinmiş kart değişmez).
+    // 2.5.0 Ç7b tur 3 — S15 = A: tahsilatlı kendi kart faturadan ayrılır, tutarı 0'a iner (tahsilatları avans) ve kapanır; tahsilatsız kart kalkar (EK-2B 35).
+    if (inv.planId) {
+      const own = M.plans.get(inv.planId);
+      if (own && M.planEntries.some(e => e.planId === inv.planId)) {
+        own.total = 0;
+        own.status = "closed";
+        own.invoiceId = "";
+      } else M.plans.delete(inv.planId);
+    }
+    // 2.5.0 Ç7b tur 3 — S206 = A / S211 = A (+ karar (4)): carinin borcundan büyük kalan Mevcut Borç kartları küçülür (trimCovers); kalanı 0'a inen kapanır.
+    // 2.5.0 UD düzeltmesi (mutabakat tohum 8 işlem 3332, uzun tohum 11 işlem 6089 — "durum closed · model active"): S206 = A'nın İLK yarısı ("faturayı İÇİNE ALMIŞ Mevcut Borç
+    // kartı KAPANIR; kart tutarı = net tahsilat; bakiye değişmez") modelde yoktu. Model kartın hangi borcu tükettiğini (S110 / S120 kapsam seçimi) kurmaz; faturadan SONRA açılan
+    // açık Mevcut Borç kartları ADAY olarak bekletilir, bir sonraki doğrulamada programın kapattığı aday (durum kapalı, tutar = kendi tahsilatı = modelin tahsilatı) benimsenir,
+    // ardından kırpma (ikinci yarı — trimCovers) yapılır (programın sırası: önce kapanış, sonra kırpma). Aday olmayan kartta kapanış yine uyuşmazlıktır.
+    if (inv.kind === "sale" || inv.kind === "smm") {
+      const candidates = [...M.plans.entries()].filter(([, p]) => p.accountId === inv.accountId && p.covers && !p.invoiceId && p.status === "active" && p.order > (inv.planSeqAt ?? Infinity));
+      if (candidates.length) M.pendingS206.push({ accountId: inv.accountId, cards: candidates });
+      else for (const [pl] of trimCovers(inv.accountId, { closed: false })) if (planLeft(pl) === 0) pl.status = "closed";
+    }
+    // İade iptali: iadenin küçülttüğü Mevcut Borç kartları aynı tutarda geri büyür (silinmiş kart değişmez; 2.5.0 S234 = A: Borçta Kalsın ile kapatılmış kart da büyür —
+    // motorun kapalı kartları güncel kodla kapatılır; iptalle kapanmış kartın kalanı 0, kesimi de yok).
     // Not (2.1.0 dilim 4): model bunu önceden yapmıyordu; banka işlemleri rastgele sırayı değiştirince tohum 2'de ortaya çıktı.
     if (inv.kind === "sale_return" && inv.coverCuts) {
       const live = new Set(M.plans.values());
-      for (const [pl, cut] of inv.coverCuts) if (live.has(pl) && pl.status !== "closed") pl.total += cut;
+      for (const [pl, cut] of inv.coverCuts) if (live.has(pl)) pl.total += cut;
     }
     if (inv.kind === "sale_return" && inv.originalId) {
       const orig = M.invoices.get(inv.originalId);
@@ -994,6 +1090,10 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
   const bankNet = (bankId, until = "") => [...M.bankLines, ...boundRows()].filter(x => x.bankId === bankId && (!until || x.date <= until)).reduce((t, x) => t + x.cents, 0);
   /** K2: kurumsal kartlara bağlı satırların toplamı (309; ödeme −, iade +). */
   const ccardNet = (until = "") => cards.reduce((t, c) => t + bankNet(c.id, until), 0);
+  // 2.5.0 Ç7a tur 2b — BEKLENTİ BİLEREK DEĞİŞTİ (KG-6 = A, kullanıcı 05.11 17:16 (5): POS komisyonu satış (çekim) günü, valörde net): Ana Defter'in 108'i = bankaya geçmemiş NET
+  // alacak — bekleyen (gün fişi yazılmamış) satış kalemlerinin komisyonu satış gününde 653'e alındığı için 108'den düşer. Motorun POS'u BSMV Dahil, İade Edilmez (iade kaleminde
+  // komisyon iadesi yok). Kasa / Banka özetinin "card" yolu (kasaOf) DEĞİŞMEZ — o alt defterin kendi bakiyesi (brüt).
+  const posPendingFee = () => M.posSales.reduce((t, sale) => t + sale.items.filter(item => !item.settled).reduce((u, item) => u + item.commission, 0), 0);
   /**
    * Modül havalesine hesap seçimi (%60; kalan eski sürüm gibi hesapsız — bankPickLegacy). K2: corporate (kart yolu kurumsal kartla ödeme ya da
    * kurumsal karta iade: cari ödeme, alış tarafı fatura peşini, stok alımı) ise kart yolu da %60 kurumsal karta bağlanır; satış/tahsilat tarafında
@@ -1436,7 +1536,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         const r = await api("PUT", `/api/workspace/plans/${id}`, { status: "closed" });
         mustOk(r, kind);
         p.status = "closed";
-        cariAdd(p.accountId, -Math.max(0, p.total - p.paid));
+        // 2.5.0 Ç7b tur 3b (karar (6) "Borçta Kalsın", KG-23 = A "Alacak CH'de kalır (madde yok)"): kalan carinin borcunda kalır — cari DEĞİŞMEZ (önceden −(tutar − ödenen)).
         return;
       }
       case "tarih-hatasi": {
@@ -2100,6 +2200,8 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         if (!open(day)) return expectReject(r, "period-locked", kind);
         // Sınır yalnız AÇIK şüpheli kaydı (kalan > 0) varken: açık kayıt yoksa fazlası bugünkü gibi avans olur (plan §3.11b/2 (a) "Sınır").
         if (normal && doubtfulOpenOf(c.id) > 0 && amount > doubtfulRoom(c.id)) return expectReject(r, "doubtful-normal-exceeds", `${kind}/normal-aşım`);
+        // S263 = C (BİLİNEN SINIR; program değişmez): aynı gün Şüpheliden Çıkar + yeni Şüpheliye Al, sonra tahsilat — K3 sırası tahsilatı çıkarılan kayda düşürüyor, kapı 409.
+        if (!normal && r.status === 409 && r.code === "ledger-integrity" && String(r.full).includes("doubtful:balance") && sameDayReleaseReject(c.id, amount, day)) return expectReject(r, "ledger-integrity", `${kind}/S263-aynı-gün-çıkar-al`);
         await doubtfulDiag(kind, c.id, r);
         mustOk(r, kind);
         cariAdd(c.id, -amount);
@@ -2155,6 +2257,7 @@ export async function runReconciliation({ client, seed = 1, operations = 500, ve
         const amount = over ? s.remaining + moneyCents(1, 100) : R.chance(0.5) ? s.remaining : moneyCents(1, Math.max(1, Math.floor(s.remaining / 100)));
         const r = await api("POST", `/api/workspace/accounts/${rec.party}/doubtful/${rec.id}/write-off`, { amount: tl(amount), date: day, note: "Değersiz" });
         if (!open(day)) return expectReject(r, "period-locked", kind);
+        // S264 = A (UD turu 3) yalnız o günün BAĞLI (faturaya bağlı) payını sınıra geri sayar; motorun şüpheli müşterilerinin tahsilatı bağsızdır → sınır gün sonu kalanı (değişmedi).
         if (over) return expectReject(r, "doubtful-writeoff-exceeds", `${kind}/aşım`);
         mustOk(r, kind);
         cariAdd(rec.party, -amount);

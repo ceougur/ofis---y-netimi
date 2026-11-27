@@ -1,0 +1,27 @@
+
+■ A) Fatura kartı → + Tahsilat Ekle: öneri 300, kullanıcı 600 yazar → kart Tahsil Edilen 300 · Kalan 300
+  ✓ fatura kartında 'Taksit Kartında · ₺600,00' (S230): Taksit Kartında: Ekran İzt4 Fatura Tahsilatı Kartı · ₺600,00
+  ✓ form ÖNERİSİ gösterilen açık 300 (S230; sınır değişmez): 300
+  ✓ form metni kuralı söylüyor: Açık tutar ₺300,00. Taksit kartındaki ₺600,00 kartın taksitlerinden tahsil edilir. Cariden para alındı: bakiyeden düşer, Kasa'ya tahsilat olarak girer, makbuzu alınır. Bu faturaya bağlı kapatılır (fazlası carinin vadesi 
+  ✓ veri tabanı: faturaya bağlı tahsilat 600 ([{"kind":"in","amount":600,"invoiceId":"invoice-92821d08-0312-4a06-a57a-18603fb9b8ec"}])
+  ✓ API kart Tahsil Edilen 300 · Kalan 300, satırlar 0 / 100 / 200 (tabanda 0 / 600): {"paid":300,"left":300,"items":[0,100,200]}
+  ✓ fatura kartı 'Taksitte' (gösterilen açık 0): Taksitte
+  ✓ kart penceresi Tahsil Edilen ₺300,00 · Kalan ₺300,00: ₺600,00Toplam Tutar₺300,00Tahsil Edilen · %50₺300,00Kalan₺0,00Geciken · 0 taksit
+  ✓ Taksitler liste satırı: 1Ekran İzt4 Fatura Tahsilatı KartıGrupsuz · kayıt 02.09.2026₺600,00₺300,00₺300,0005.11.20262. taksit · 16 gün kaldıDevam Ediyor
+  ✓ cari kartında kart satırı Toplam ₺600,00 · Ödenen ₺300,00 · Kalan ₺300,00: 1Ekran İzt4 Fatura Tahsilatı Kartı3 taksit · sıradaki 05.11.2026₺600,00₺300,00₺300,00Devam Ediyor
+  ✓ cari kartı Bakiye ₺300,00, Gecikmiş Borç ₺0,00: ₺300,00Bakiye · ₺0,00Gecikmiş Borç
+  ✓ API bakiye 300, gecikmiş 0: 300 / 0
+
+■ B) Cari kartı → + Tahsilat → Kapatılacak Fatura = F, 900 → kart Kalan ₺0,00, bakiye ₺0,00
+  ✓ beklenen soru geldi: Bu carinin açık taksit kartı var. Taksit ödemesiyse taksite yazın: tutar o taksitten düşer, Kasa’ya tek kayıt olarak gir → 'Taksit Dışı Tahsilat'
+  ✓ Kapatılacak Fatura seçeneklerinde F (gösterilen açık 300): Otomatik (Vadesi En Önce Gelen) | Satış Faturası FIS2026000000002 · 01.09.2026 · açık ₺300,00
+  ✓ veri tabanı: Kapatılacak Fatura = F, 900 ([{"kind":"in","amount":900,"invoiceId":"invoice-05b176c7-bea1-4685-b66f-06991e5a7d88"}])
+  ✓ API kart Tahsil Edilen 600 · Kalan 0 (tabanda 0 / 600): {"paid":600,"left":0,"items":[0,0,0]}
+  ✓ cari kartında kart satırı Ödenen ₺600,00 · Kalan ₺0,00: 2Ekran İzt4 Kapatılacak Fatura Kartı3 taksit₺600,00₺600,00₺0,00Tamamlandı
+  ✓ cari kartı Gecikmiş Borç ₺0,00: ₺0,00Gecikmiş Borç
+  ✓ kart penceresi Tahsil Edilen ₺600,00 · Kalan ₺0,00: ₺600,00Toplam Tutar₺600,00Tahsil Edilen · %100₺0,00Kalan₺0,00Geciken · 0 taksit
+  ✓ API bakiye 0, gecikmiş 0: 0 / 0
+  ✓ Mutabakat Testi temiz
+  ✓ sayfa hatası yok
+
+✓ senaryo-izt4-250: 21 geçti, 0 kaldı

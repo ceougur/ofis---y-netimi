@@ -1,0 +1,33 @@
+küçüldü 114
+küçüldü 83
+küçüldü 81
+küçüldü 80
+küçüldü 58
+küçüldü 49
+küçüldü 38
+küçüldü 34
+küçüldü 30
+küçüldü 21
+küçüldü 15
+küçüldü 14
+küçüldü 13
+küçüldü 12
+küçüldü 11
+küçüldü 10
+küçüldü 8
+küçüldü 6
+küçüldü 5
+küçüldü 4
+EN KÜÇÜK 4 adım
+  {"id": "c-e", "islem": "cari_ac", "ad": "E", "isim": "Rastgele Epsilon 4", "tarih": "2026-03-01", "acilis": "1483,45"}
+  {"id": "s086", "islem": "stok_iade", "cari": "E", "tutar": "1914,34", "tarih": "2026-06-25"}
+  {"id": "s088", "islem": "tahsilat", "cari": "E", "tutar": "564,84", "tarih": "2026-06-26", "vade": "2026-07-09"}
+  {"id": "s105", "islem": "odeme", "cari": "E", "tutar": "2385,23", "tarih": "2026-06-30"}
+  {"id": "k1", "islem": "kontrol"}
+  fark k1:hareket:acilis:E:kalan P= 82466 K= 91861 | SINIF DIŞI | C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde aç
+  fark k1:projeksiyon:hareket:acilis:E P= {"amount": 82466, "date": "2026-03-01", "direction": "in"} K= {"amount": 91861, "date": "2026-03-01", "direction": "in"} | 2.5.0 kararıyla değişen | KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa 
+  fark k1:projeksiyon:hareket:s105 P= {"amount": 56484, "date": "2026-06-30", "direction": "in"} K= {"amount": 47089, "date": "2026-06-30", "direction": "in"} | 2.5.0 kararıyla değişen | C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç'
+  fark k1:takvim:hareket:acilis:E P= {"amount": 82466, "cari": "E", "days": -121, "direction": "in", "dueDate": "2026-03-01", "label": "Tahsil Edilecek Borç", "person": "Rastgele Epsilon  K= {"amount": 91861, "cari": "E", "days": -121, "direction": "in", "dueDate": "2026-03-01", "label": "Tahsil Edilecek Borç", "person": "Rastgele Epsilon  | 2.5.0 kararıyla değişen | K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = B
+  fark k1:takvim:hareket:s105 P= {"amount": 56484, "cari": "E", "days": 0, "direction": "in", "dueDate": "2026-06-30", "label": "Tahsil Edilecek Borç", "person": "Rastgele Epsilon 4", K= {"amount": 47089, "cari": "E", "days": 0, "direction": "in", "dueDate": "2026-06-30", "label": "Tahsil Edilecek Borç", "person": "Rastgele Epsilon 4", | 2.5.0 kararıyla değişen | C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç'
+  fark k1:vadeTakip:hareket:acilis:E P= {"amount": 82466, "date": "2026-03-01", "direction": "in"} K= {"amount": 91861, "date": "2026-03-01", "direction": "in"} | 2.5.0 kararıyla değişen | K6.3 Vade Takip (Anlık Durum) aynı kalemleri gösterir
+  fark k1:vadeTakip:hareket:s105 P= {"amount": 56484, "date": "2026-06-30", "direction": "in"} K= {"amount": 47089, "date": "2026-06-30", "direction": "in"} | 2.5.0 kararıyla değişen | C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç'

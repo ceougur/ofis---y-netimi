@@ -1,0 +1,12 @@
+çıkışlar 0 0 0 0 0 0 0 0 · GEÇERSİZ satır 0
+acilissiz  Mutabakat Testi            en iyi taban   5953.0 → aday   5724.0 ms ( -3.8%) · ortanca   6099.6 →   6098.6 · döngü en çok  6597.6 →  6807.4 · durum {'200'}
+acilissiz  arka plan taraması         en iyi taban   6061.9 → aday   6016.5 ms ( -0.7%) · ortanca   6376.9 →   6343.4 · döngü en çok    13.1 →    11.3 · durum {'200'}
+acilissiz  Silinenler geri yükleme    en iyi taban     11.6 → aday     12.8 ms (+10.3%) · ortanca     15.1 →     13.4 · döngü en çok    18.3 →    18.6 · durum {'200'}
+acilissiz  Vade Takip (ılık)          en iyi taban   2099.3 → aday   2062.3 ms ( -1.8%) · ortanca   2215.6 →   2085.0 · döngü en çok     9.9 →     9.4 · durum {'200'}
+acilissiz  Nakit Akışı (ılık)         en iyi taban   3488.2 → aday   3318.4 ms ( -4.9%) · ortanca   3628.4 →   3700.3 · döngü en çok  3898.6 →  4032.8 · durum {'200'}
+acilisli   Mutabakat Testi            en iyi taban   6045.1 → aday   6107.7 ms ( +1.0%) · ortanca   6279.6 →   6230.9 · döngü en çok  7583.3 →  6853.5 · durum {'200'}
+acilisli   arka plan taraması         en iyi taban   6307.6 → aday   6033.7 ms ( -4.3%) · ortanca   6591.0 →   6586.5 · döngü en çok    15.4 →    19.2 · durum {'200'}
+acilisli   Silinenler geri yükleme    en iyi taban    370.8 → aday    320.9 ms (-13.5%) · ortanca    385.1 →    356.8 · döngü en çok   432.3 →   411.8 · durum {'200'}
+acilisli   Vade Takip (ılık)          en iyi taban   2171.7 → aday   2081.2 ms ( -4.2%) · ortanca   2248.8 →   2271.3 · döngü en çok  2474.6 →     8.0 · durum {'200'}
+acilisli   Nakit Akışı (ılık)         en iyi taban   3511.7 → aday   3601.3 ms ( +2.6%) · ortanca   3784.7 →   3757.1 · döngü en çok  4819.3 →  3816.8 · durum {'200'}
+kötüleşen yol sayısı 0

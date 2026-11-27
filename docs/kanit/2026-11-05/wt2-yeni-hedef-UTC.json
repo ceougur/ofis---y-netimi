@@ -1,0 +1,32 @@
+{
+  "ad": "wt2-yeni-hedef-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/whatsapp-wt2-kod0-250.test.mjs test/whatsapp-w2-kaldir-250.test.mjs test/whatsapp-w2-veri-248.test.mjs",
+  "commit": "add0f37c8e9c37f69099f5ced4681e23538f34b4",
+  "dal": "worktree-agent-afa5e1506cc292bd8",
+  "kirli": 0,
+  "izlenmeyen": 24,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T21:54:31.599Z",
+  "sure_sn": 21.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 32,
+    "gecen": 32,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/wt2-yeni-hedef-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-afa5e1506cc292bd8",
+  "ham_cikti_sha256": "a9a31f75a014b28990d820f04eda84d58c9b6f3c5676da9d3dec57a47d31ace9",
+  "ham_cikti_bayt": 16910
+}

@@ -1,0 +1,11 @@
+file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-s5/wt/test/c7b-kabul-250-mutasyon.mjs:13
+if (!COPY) throw new Error("--kopya <programın ayrı kopyası> gerekli (ders 23)");
+                 ^
+
+Error: --kopya <programın ayrı kopyası> gerekli (ders 23)
+    at file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-s5/wt/test/c7b-kabul-250-mutasyon.mjs:13:18
+    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+
+Node.js v22.23.4

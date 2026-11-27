@@ -1,0 +1,21 @@
+ok 1 - şirket sayısı aynı (1 / 1)
+ok 2 - şirket 001: aynı şirket
+ok 3 - şirket 001: madde sayısı aynı ve > 0 (1142 / 1142; satır 2598 / 2598)
+ok 4 - şirket 001: yevmiye maddeleri BİREBİR (kimlik, tarih, kaynak, sıra, hesap, alt hesap, cari, borç, alacak)
+ok 5 - şirket 001: mizan 2025 tutarları ve toplamları aynı (borç 6396686.72, alacak 6396686.72, hesap 28, dengeli true)
+ok 6 - şirket 001: mizan 2025 adları — yalnız izinli fark (770): 770: Genel Giderler ve Alış Faturaları → Genel Yönetim Giderleri
+ok 7 - şirket 001: mizan 2026 tutarları ve toplamları aynı (borç 8979849.98, alacak 8979849.98, hesap 33, dengeli true)
+ok 8 - şirket 001: mizan 2026 adları — yalnız izinli fark (770): 770: Genel Giderler ve Alış Faturaları → Genel Yönetim Giderleri
+ok 9 - şirket 001: mizan tum tutarları ve toplamları aynı (borç 15376536.7, alacak 15376536.7, hesap 33, dengeli true)
+ok 10 - şirket 001: mizan tum adları — yalnız izinli fark (770): 770: Genel Giderler ve Alış Faturaları → Genel Yönetim Giderleri
+ok 11 - şirket 001: Defter Mutabakatı iki kodda tutarlı ve aynı (18 denetim)
+ok 12 - şirket 001: Hesap Planı Mizanı raporu (Tüm Zamanlar) satırları aynı (ad kolonu hariç; 33 satır)
+ok 13 - şirket 001: rapordaki ad farkları yalnız izinli hesaplarda (770: Genel Giderler ve Alış Faturaları → Genel Yönetim Giderleri)
+ok 14 - şirket 001: yeni kodda deftere yazılan her hesap sınıflanabilir (33 hesap: 100 101 102 103 108 120 121 128 129 153 191 193 255 309 320 321 336 391 500 600 602 610 642 644 649 653 654 656 659 689 760 770 780; sınıflanmayan [])
+1..14
+# tests 14
+# pass 14
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

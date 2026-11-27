@@ -1,0 +1,211 @@
+TAP version 13
+# Subtest: YAPIM AŞAMASI kapısı (yapimAsamasiGate)
+    # Subtest: dolu liste → ret; ileti kayıt sayısını ve paket dağılımını söyler
+    ok 1 - dolu liste → ret; ileti kayıt sayısını ve paket dağılımını söyler
+      ---
+      duration_ms: 1.567748
+      type: 'test'
+      ...
+    # Subtest: CRLF satır sonlu dolu liste de ret (ders 27)
+    ok 2 - CRLF satır sonlu dolu liste de ret (ders 27)
+      ---
+      duration_ms: 0.353905
+      type: 'test'
+      ...
+    # Subtest: boş liste → geçer (LF ve CRLF)
+    ok 3 - boş liste → geçer (LF ve CRLF)
+      ---
+      duration_ms: 0.266027
+      type: 'test'
+      ...
+    # Subtest: dosya yok / bozuk JSON / kayitlar dizisi yok → ret (okunamayan boş sayılmaz, ders 4)
+    ok 4 - dosya yok / bozuk JSON / kayitlar dizisi yok → ret (okunamayan boş sayılmaz, ders 4)
+      ---
+      duration_ms: 0.82522
+      type: 'test'
+      ...
+    # Subtest: yalnız 'eşleme' paketli kayıtlar → yine ret (sayılır; paket dağılımında görünür)
+    ok 5 - yalnız 'eşleme' paketli kayıtlar → yine ret (sayılır; paket dağılımında görünür)
+      ---
+      duration_ms: 0.275977
+      type: 'test'
+      ...
+    # Subtest: varsayılan yol çalışma dizininden bağımsız: başka klasörden çağrılınca da depodaki listeyi okur (aynı sonuç)
+    ok 6 - varsayılan yol çalışma dizininden bağımsız: başka klasörden çağrılınca da depodaki listeyi okur (aynı sonuç)
+      ---
+      duration_ms: 47.813351
+      type: 'test'
+      ...
+    # Subtest: kapı cari kâhininin okuduğu dosyayı denetler (aynı yol)
+    ok 7 - kapı cari kâhininin okuduğu dosyayı denetler (aynı yol)
+      ---
+      duration_ms: 1.237797
+      type: 'test'
+      ...
+    1..7
+ok 1 - YAPIM AŞAMASI kapısı (yapimAsamasiGate)
+  ---
+  duration_ms: 53.293569
+  type: 'suite'
+  ...
+# Subtest: YAPIM AŞAMASI kapısı — liste commit'ten de okunur (skip-worktree / assume-unchanged atlatması)
+    # Subtest: çalışma ağacında boş, commit'te dolu → ret: 'FARKLI' + 'commit'te boş değil'; ikisi aynıysa (CRLF ↔ LF dahil) geçer; commit'ten okunamıyor / bozuk → ret
+    not ok 1 - çalışma ağacında boş, commit'te dolu → ret: 'FARKLI' + 'commit'te boş değil'; ikisi aynıysa (CRLF ↔ LF dahil) geçer; commit'ten okunamıyor / bozuk → ret
+      ---
+      duration_ms: 2.520776
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/birlesik6-eski/test/yapim-asamasi-kapisi.test.mjs:90:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+            atlatma: [
+        +     true,
+              false,
+        +     false
+        -     true,
+        -     true
+            ],
+            ayni: [
+              true,
+              []
+            ],
+            bozuk: [
+        +     true,
+              false,
+        -     true
+            ],
+            okunamadi: [
+        +     true,
+              false,
+        -     true
+            ]
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        atlatma:
+          0: false
+          1: true
+          2: true
+        ayni:
+          0: true
+          1:
+        okunamadi:
+          0: false
+          1: true
+        bozuk:
+          0: false
+          1: true
+      actual:
+        atlatma:
+          0: true
+          1: false
+          2: false
+        ayni:
+          0: true
+          1:
+        okunamadi:
+          0: true
+          1: false
+        bozuk:
+          0: true
+          1: false
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/birlesik6-eski/test/yapim-asamasi-kapisi.test.mjs:96:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:466:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:435:3)
+        node:internal/per_context/primordials:466:9
+        Array.map (<anonymous>)
+      ...
+    # Subtest: gerçek git: dolu liste commit'lenir, skip-worktree işaretlenir, çalışma ağacında boşaltılır → git status temiz (ön koşul), kapı ret; işaret yoksa status 'M' gösterir
+    not ok 2 - gerçek git: dolu liste commit'lenir, skip-worktree işaretlenir, çalışma ağacında boşaltılır → git status temiz (ön koşul), kapı ret; işaret yoksa status 'M' gösterir
+      ---
+      duration_ms: 115.32268
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/birlesik6-eski/test/yapim-asamasi-kapisi.test.mjs:101:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        commit'le karşılaştırmayan kapı (eski davranış) bu durumda GEÇERDİ
+        + actual - expected
+        
+          {
+            isaretsizStatus: 'M liste.json',
+        +   kapi: true,
+        +   neden: false,
+        -   kapi: false,
+        -   neden: true,
+            yalnizAgac: true
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        kapi: false
+        neden: true
+        yalnizAgac: true
+        isaretsizStatus: 'M liste.json'
+      actual:
+        kapi: true
+        neden: false
+        yalnizAgac: true
+        isaretsizStatus: 'M liste.json'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/birlesik6-eski/test/yapim-asamasi-kapisi.test.mjs:120:14)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 2 - YAPIM AŞAMASI kapısı — liste commit'ten de okunur (skip-worktree / assume-unchanged atlatması)
+  ---
+  duration_ms: 118.41381
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/birlesik6-eski/test/yapim-asamasi-kapisi.test.mjs:86:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: tools/release.mjs YAPIM AŞAMASI kapısı
+    # Subtest: depodaki liste doluysa (ya da okunamıyorsa) paket aracı anahtarı okumadan reddeder ve listeyi söyler; boşsa liste iletisi yok
+    ok 1 - depodaki liste doluysa (ya da okunamıyorsa) paket aracı anahtarı okumadan reddeder ve listeyi söyler; boşsa liste iletisi yok
+      ---
+      duration_ms: 81.939057
+      type: 'test'
+      ...
+    # Subtest: release.mjs kapıyı atlatma seçeneği vermez (liste yolu dışarıdan verilemez)
+    ok 2 - release.mjs kapıyı atlatma seçeneği vermez (liste yolu dışarıdan verilemez)
+      ---
+      duration_ms: 0.536585
+      type: 'test'
+      ...
+    1..2
+ok 3 - tools/release.mjs YAPIM AŞAMASI kapısı
+  ---
+  duration_ms: 82.688534
+  type: 'suite'
+  ...
+1..3
+# tests 11
+# suites 3
+# pass 9
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 622.458601

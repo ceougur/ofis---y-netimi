@@ -1,0 +1,32 @@
+{
+  "ad": "c5bson-mutasyon2",
+  "komut": "node --disable-warning=ExperimentalWarning test/tyk-mutasyon-250.mjs --klasor /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bson-mut",
+  "commit": "41c75b5226ac32939e2763d77c9cbf6aba935f3e",
+  "dal": "worktree-agent-ac2cc1e4fd632460d",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-12T11:17:38.088Z",
+  "sure_sn": 437.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 122,
+    "gecen": 122,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bson-kanit/2026-11-12/c5bson-mutasyon2.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ac2cc1e4fd632460d",
+  "ham_cikti_sha256": "60bf45902eba9ef5ce6837be6206d28111c0cf527736df7c42be763d26de62e1",
+  "ham_cikti_bayt": 49686
+}

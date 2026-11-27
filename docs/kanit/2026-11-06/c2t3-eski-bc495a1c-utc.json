@@ -1,0 +1,93 @@
+{
+  "ad": "c2t3-eski-bc495a1c-utc",
+  "komut": "env GIT_DIR=/home/user/ofis---y-netimi/.git node --disable-warning=ExperimentalWarning --test --test-concurrency=1 /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-eski-bc495a1c/test/fis-defteri-kayit-250.test.mjs /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-eski-bc495a1c/test/banka-onarim-kayit-250.test.mjs",
+  "commit": "5a2c284425f1b6a1017c82b57ab65ab9480d726a",
+  "dal": "worktree-agent-a7280bb16b4491d5b",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T09:03:24.817Z",
+  "sure_sn": 32.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 15,
+    "gecen": 4,
+    "basarisiz": 6,
+    "iptal": 5,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 6 başarısız, 5 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "Ç2 tur 3 — YAN BULGU 2: banka açılış onarımının kaydı kesilmiş JSON olmaz (2.0.26'ya dönüp Tüm Hareketleri Sil → 600 iptal başlığı) › 600 tahsilat → GERÇEK 2.0.26 'Tüm Hareketleri Sil' → güncel açılış: 600 başlık iptal; kayıt geçerli JSON (ilk 50 + counts); Mutabakat Testi 200; ikinci açılışta kayıt yinelenmez",
+      "konum": "test/banka-onarim-kayit-250.test.mjs:33:3",
+      "hata": "onarım kaydının ayrıntısı geçerli JSON değil (20000 karakter, sonu \",\\\\\"ev-0mw4qzd3v0000-46aa8bd3-655c-4977\\\\\",\\\\\"\"): Unterminated string in JSON at position 20000 (line 1 column 20001)"
+    },
+    {
+      "ad": "Ç2 tur 3 — boundedDetail: sınırlı, her zaman geçerli JSON (lib/log-detail.mjs) › listeler ilk 50 öğe; kökün sayıları ve alanları aynen; çıktı her uzunlukta geçerli JSON",
+      "konum": "test/fis-defteri-kayit-250.test.mjs:46:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "Ç2 tur 3 — boundedDetail: sınırlı, her zaman geçerli JSON (lib/log-detail.mjs) › eşlem nesnesi (çok anahtarlı) liste gibi ilk 50 anahtar; az anahtarlı kayıt nesnesi kısaltılmaz",
+      "konum": "test/fis-defteri-kayit-250.test.mjs:57:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "Ç2 tur 3 — boundedDetail: sınırlı, her zaman geçerli JSON (lib/log-detail.mjs) › sınır içinde metin aşılırsa liste ÖNCE kısaltılır (öğeler bozulmaz), kayıt nesnesinin alanları ve kökün 20 alanı korunur; asla ortadan kesmez",
+      "konum": "test/fis-defteri-kayit-250.test.mjs:64:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "Ç2 tur 3 — boundedDetail: sınırlı, her zaman geçerli JSON (lib/log-detail.mjs) › maxList Infinity: sığan değer JSON.stringify ile BAYT BAYT aynı (integrity.mjs eşdeğerliği; rastgele yapılar, uzun metin, 1.000 öğeli liste); aşan değer geçerli ve sınır içinde",
+      "konum": "test/fis-defteri-kayit-250.test.mjs:81:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "Ç2 tur 3 — boundedDetail: sınırlı, her zaman geçerli JSON (lib/log-detail.mjs) › ders 47: uzun listenin kesilen öğeleri hiç okunmaz (öğe başına stringify döngüsü yok)",
+      "konum": "test/fis-defteri-kayit-250.test.mjs:149:3",
+      "hata": "test did not finish before its parent and was cancelled"
+    },
+    {
+      "ad": "Ç2 tur 3 — boundedDetail: sınırlı, her zaman geçerli JSON (lib/log-detail.mjs)",
+      "konum": "test/fis-defteri-kayit-250.test.mjs:38:1",
+      "hata": "Cannot find module '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-eski-bc495a1c/server/lib/log-detail.mjs' imported from /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-eski-bc495a1c/test/fis-defteri-kayit-250.test.mjs"
+    },
+    {
+      "ad": "Ç2 tur 3 — YAN BULGU 1: onarımın kaydı kesilmiş JSON olmaz (475+ fiş; kaldırılan + kaldırılmayan toplamı) › 600 fiş eski sürüm sıfırlamasından artakalır → hepsi kaldırılır; kayıt geçerli JSON (ilk 50 kimlik, removedCount 600); Mutabakat Testi 200 ve günlüğünde; Mutabakat Günlüğü raporu 200",
+      "konum": "test/fis-defteri-kayit-250.test.mjs:237:3",
+      "hata": "kaldırma kaydı (600): kayıt ayrıntısı geçerli JSON değil (20000 karakter, sonu \"v-68ac0b43-c794-47e2-b05d-f908a5e955d7\\\\\",\"): Unexpected end of JSON input"
+    },
+    {
+      "ad": "Ç2 tur 3 — YAN BULGU 1: onarımın kaydı kesilmiş JSON olmaz (475+ fiş; kaldırılan + kaldırılmayan toplamı) › kaldırılan 300 + kaldırılmayan 300 (izi duran fişten sonra yazılmış): iki kayıt da geçerli JSON — ilk 50 kimlik + removedCount 300 / keptCount 300; kuşku kaydı yinelenmez",
+      "konum": "test/fis-defteri-kayit-250.test.mjs:259:3",
+      "hata": "kaldırma kaydı (300 + 300): kayıt ayrıntısı geçerli JSON değil (20000 karakter, sonu \"00-0000-0000\\\\\",\\\\\"lv-kayit-sonra-183-000000\"): Unterminated string in JSON at position 20000 (line 1 column 20001)"
+    },
+    {
+      "ad": "Ç2 tur 3 — K5 test boşlukları (dar kontrol D1, D2, D3): onarım yazım sırasının uçlarını doğru okur › D2: iki izli fiş ARASINA düşen izsiz fiş — İZLİ İLK fiş sayılır: sıfırlamadan önceki fiş kaldırılır, aradaki izsiz fiş KALIR (after-traced)",
+      "konum": "test/fis-defteri-kayit-250.test.mjs:328:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "Ç2 tur 3 — integrity.mjs: açılışta bulunan sapmanın kaydı ('baseline') sınırlı, sığan kayıtta eskisiyle BAYT BAYT aynı; her açılışta yinelenmez › 20.000'i aşan taban (5 × 6.000 karakterlik bozuk tarih): kayıt geçerli JSON ve sınır içinde, her sapma alanlarıyla; Mutabakat Testi 200; ikinci açılışta yeni satır yok",
+      "konum": "test/fis-defteri-kayit-250.test.mjs:397:3",
+      "hata": "açılış 1: taban kaydı: kayıt ayrıntısı geçerli JSON değil (20000 karakter, sonu \"9999999999999999999999999999999999999999\"): Unterminated string in JSON at position 20000 (line 1 column 20001)"
+    },
+    {
+      "ad": "Ç2 tur 3 — integrity.mjs: açılışta bulunan sapmanın kaydı ('baseline') sınırlı, sığan kayıtta eskisiyle BAYT BAYT aynı; her açılışta yinelenmez › G6 v2.4.9 GERÇEK kodu: v2.4.9'un yazdığı sığan taban kaydı güncel sürümde aynen kalır (yeni satır yok); kesik (20.000'i aşan) kayıttan sonra bir kez geçerli yeni kayıt, sonra yinelenmez",
+      "konum": "test/fis-defteri-kayit-250.test.mjs:441:3",
+      "hata": "uzunluk 6000, güncel açılış 1: taban satırı 1 (beklenen 2) · 1 !== 2 (beklenen 2, gelen 1)"
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-kanit/2026-11-06/c2t3-eski-bc495a1c-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a7280bb16b4491d5b",
+  "ham_cikti_sha256": "4f7942334a7ab65d9029f80e97aca28758dca270f4f548f57a4405dd8d44f5a3",
+  "ham_cikti_bayt": 20478
+}

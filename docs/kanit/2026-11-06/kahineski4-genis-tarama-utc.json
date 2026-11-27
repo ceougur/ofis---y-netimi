@@ -1,0 +1,32 @@
+{
+  "ad": "kahineski4-genis-tarama-utc",
+  "komut": "flock -s -n /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olcum.lock python3 -I -B docs/kanit/2026-11-06/kahineski4-arac/genis-tarama.py --model test/bagimsiz/cari --tohum 30 --islem 120",
+  "commit": "f49f9d97a72e2e8c2825822db001ab04db91ffe7",
+  "dal": "worktree-agent-a312f00ba9e5edd7b",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v338 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-10T13:12:30.450Z",
+  "sure_sn": 23,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1545,
+    "gecen": 1545,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahineski4-a312/kanit/2026-11-10/kahineski4-genis-tarama-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a312f00ba9e5edd7b",
+  "ham_cikti_sha256": "663378c8ae3cd72b06151f53786e0812cee6842aa584ed529e9771d3aed2880d",
+  "ham_cikti_bayt": 358
+}

@@ -1,0 +1,40 @@
+  mutasyon 239 (Ç5 C17 sınırı (S95): yalnız iki gün ve daha önceki netleşme geri alınır (ertesi günkü ödeme dünkü netleşmeyi bozmaz)): YAKALANDI (d20-c5-s95-netlesme-sonrasi-odeme, d21-c5-s95-ertesi-ay, d24-c5-s97-ayni-gun …)
+  mutasyon 240 (Ç5 C17 sınırı (S98): avansın sıradaki vadesi ödeme gününün ertesi (vadesi o gün olan borçla eşitte belge günü önce)): YAKALANDI (d25-c5-s98-avans-sirasi, d33-c5-s102-s105-sinirlar)
+  mutasyon 241 (Ç5 C18 (S99 B): bağsız para taksitli faturanın taksitlerini kapatmaz (2.4.9 kuralı — fatura durumu ve kuyruk)): YAKALANDI (d27-c5-s99-taksitli-avans, d28-c5-s99-taksit-vade-gunu, d29-c5-s99-taksit-ertesi-gun …)
+  mutasyon 242 (Ç5 C18 sınırı (S99): taksitli faturanın taksitleri kuyruğa faturanın gününde vadeli girer (taksit tarihi değil)): YAKALANDI (d27-c5-s99-taksitli-avans, d28-c5-s99-taksit-vade-gunu, d29-c5-s99-taksit-ertesi-gun …)
+  mutasyon 243 (Ç5 C18 (S101 B): kart kendi borcunu taksitleriyle taşır — avansın kapattığı borç karta geçince avans serbest kalır, kartın taksitleri bağsız parayla kapanmaz): YAKALANDI (d30-c5-s101-bitti-kart, d31-c5-s101-taksit-vade-gunu, d32-c5-s101-taksit-ertesi-gun …)
+  mutasyon 244 (Ç5 C18 sınırı (S101): avansla ödenmiş sayılan kısım kartın vadesi EN SON gelen taksitinden): YAKALANDI (d30-c5-s101-bitti-kart, d31-c5-s101-taksit-vade-gunu, d32-c5-s101-taksit-ertesi-gun …)
+  mutasyon 245 (Ç5 C18 (S102 B / SK-9 B): netleşme kalanlar arasında tarih sırasıyla yeniden kurulur (biçim K1)): YAKALANDI (d26-c5-bakim5-susan, rastgele-s1-2)
+  mutasyon 246 (Ç5 C18 (S103 B / SK-10 B): verilen avansın alışla kapanışı sonraki bağsız tahsilatla geri alınır): YAKALANDI (d26-c5-bakim5-susan, d33-c5-s102-s105-sinirlar)
+  mutasyon 247 (Ç5 C18 (S104 B / SK-11 B): bağsız Ödeme önce alacak yönlü kalemleri, sonra alınan avansı kapatır): YAKALANDI (d26-c5-bakim5-susan, d33-c5-s102-s105-sinirlar)
+  mutasyon 248 (Ç5 C18 (S105 B / SK-12 B): gelen alış faturası açık alış iadesi alacağı ile verilen avansı vade sırasıyla kapatır): YAKALANDI (d26-c5-bakim5-susan, d33-c5-s102-s105-sinirlar)
+  mutasyon 249 (Ç5 C18 (SK-13 B): faturanın belge durumu tek taraflı kuyruktan (verilen avans kalem sayılmaz)): YAKALANDI (d25-c5-s98-avans-sirasi, d26-c5-bakim5-susan, d27-c5-s99-taksitli-avans …)
+  mutasyon 250 (Ç5 C18 sınırı (S104): alınan avansın sıradaki vadesi tahsilat gününün ertesi (vadesi o gün olan Alacak'la eşitte belge günü önce)): YAKALANDI (d33-c5-s102-s105-sinirlar)
+  mutasyon 251 (Ç5 C19 (G2 (b) kalkar): elle Mevcut Borç kartı taksitlendirilebilecek borçtan büyükken / borç yokken de kabul edilir (bakım 6 davranışı — S101 / EK-2B 32)): YAKALANDI (d30-c5-s101-bitti-kart)
+  mutasyon 252 (Ç5 C19 (S101 B, satışla açılan kart): kart kendi satışını taksitleriyle taşır — avansın kapattığı satış karta geçince avans serbest, kartın taksitleri bağsız parayla kapanmaz): YAKALANDI (d30-c5-s101-bitti-kart, d31-c5-s101-taksit-vade-gunu, d32-c5-s101-taksit-ertesi-gun …)
+  mutasyon 253 (Ç5 C19 sınırı (G2 (b)): kart = taksitlendirilebilecek borç da reddedilir): YAKALANDI (c11-ks81-sa-mevcut-borc-karti, d19-c5-s92-okuma-ayrisan, d30-c5-s101-bitti-kart …)
+  mutasyon 254 (Ç5 C19 sınırı (G2 (b)): kart taksitlendirilebilecek borcu 1 kuruş aşınca kabul edilir): YAKALANDI (d30-c5-s101-bitti-kart)
+  mutasyon 255 (Ç5 C19 (Y7-2 (1) B): satışla açılan kart kendi satışını değil kuyruktaki açık borcu vade sırasıyla tüketir): YAKALANDI (d30-c5-s101-bitti-kart, d34-c5-s110-kendi-borcu)
+  mutasyon 256 (Ç5 C20 (S110 B): açık borç kart tutarından fazlayken kart (elle ve satışla açılan) vadesi en önce gelen borçları içine alır (S2)): YAKALANDI (d30-c5-s101-bitti-kart, d34-c5-s110-kendi-borcu, d35-c5-s120-elle-borclar …)
+  mutasyon 257 (Ç5 C20 (S110 yalnız satış kolunda): elle Mevcut Borç kartı açık borç fazlayken vade sırasıyla tüketir (bakım 7 davranışı)): YAKALANDI (d34-c5-s110-kendi-borcu, d35-c5-s120-elle-borclar, d8-c5-tanimsiz …)
+  mutasyon 258 (Ç5 C20 sınırı (S110): açık borç kart tutarına EŞİTken de kural uygulanır (fazla ↔ eşit)): YAKALANDI (c11-ks81-sa-mevcut-borc-karti, d30-c5-s101-bitti-kart, d34-c5-s110-kendi-borcu …)
+  mutasyon 259 (Ç5 C20 sınırı (S110): açık borç kart tutarını yalnız 1 kuruştan fazla aşınca kural uygulanır): YAKALANDI (d34-c5-s110-kendi-borcu)
+  mutasyon 260 (Ç5 C20 (S110 yalnız elle kolda): satışla açılan kart açık borç fazlayken vade sırasıyla tüketir): YAKALANDI (d30-c5-s101-bitti-kart, d34-c5-s110-kendi-borcu)
+  mutasyon 261 (Ç5 C21 (S120 B): tutarı karta eşit bir kalem (türü ne olursa) varsa onu, yoksa bütün borçları vade sırasıyla içine alır): YAKALANDI (d34-c5-s110-kendi-borcu, d35-c5-s120-elle-borclar)
+  mutasyon 262 (Ç5 C21 (faturayı da içine alan elle kol): tek eşit elle borç yoksa kart faturalar dahil bütün borçları eskiden yeniye içine alır): YAKALANDI (d34-c5-s110-kendi-borcu, d35-c5-s120-elle-borclar)
+  mutasyon 263 (Ç5 C21 (sıra ters): elle borçları yeniden eskiye içine alır): YAKALANDI (d34-c5-s110-kendi-borcu, d35-c5-s120-elle-borclar, d8-c5-tanimsiz …)
+  mutasyon 264 (Ç5 C21 ('eşit TEK elle borç' istisnası ezilir): karta eşit tek elle borç varken de elle borçları eskiden yeniye içine alır): YAKALANDI (d35-c5-s120-elle-borclar)
+  liste mutasyonu 1 (senaryo adı yok sayılır): YAKALANDI
+  liste mutasyonu 2 (alt dizgi (joker) eşleşmesi): YAKALANDI
+  liste mutasyonu 3 (program değeri karşılaştırılmaz): YAKALANDI
+  liste mutasyonu 4 (kapanan kayıt denetlenmez): YAKALANDI
+  liste mutasyonu 5 (kâhin beklentisi karşılaştırılmaz): YAKALANDI
+  yapım aşaması listesi mutasyonu 1 (senaryo adı yok sayılır): YAKALANDI
+  yapım aşaması listesi mutasyonu 2 (alt dizgi (joker) eşleşmesi): YAKALANDI
+  yapım aşaması listesi mutasyonu 3 (program değeri karşılaştırılmaz): YAKALANDI
+  yapım aşaması listesi mutasyonu 4 (kapanan kayıt denetlenmez): YAKALANDI
+  yapım aşaması listesi mutasyonu 5 (kâhin beklentisi karşılaştırılmaz): YAKALANDI
+
+YAPIM-ASAMASI.json YAZILDI (../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1b-yapim/YAPIM-ASAMASI.json): 357 kayıt (0 okuma hatası) — paketlere göre: Ç5-B tur 2 357. Bu bir denetim sonucu DEĞİLDİR; liste varsayılan koşuyla denetlenir.
+ESKİ LİSTEYLE FARK: yeni 0, kapanan 241, değeri değişen 0 (eski liste 598 kayıt → yeni 357)
+cikis 0

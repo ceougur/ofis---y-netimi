@@ -1,0 +1,15 @@
+
+■ 7. Kasa → Kasadan Bankaya Yatır / Bankadan Kasaya Aktar → "Hesapsız (Açılıştan Önce)": açıklama
+  ✓ to-bank hesap seçiliyken: “Kasadaki nakit bankaya yatırılır; seçilen banka hesabına aynı tutar girer (Banka → Hareketler). Nakit Kasa yetmiyorsa program sorar.”
+  ✓ to-bank Hesapsız: “Kasadaki nakit bankaya yatırılır; banka hesabının açılışından önceki hareket olduğu için banka tarafı hiçbir hesaba girmez, Hesabı Atanmamış Eski Hareketler'de kalır. Nakit Kasa yetmiyorsa program sorar.”
+  ✓ to-bank seçicinin altında not
+  ✓ to-cash hesap seçiliyken: “Bankadan çekilen nakit Kasa'ya girer; seçilen banka hesabından aynı tutar çıkar (Banka → Hareketler).”
+  ✓ to-cash Hesapsız: “Bankadan çekilen nakit Kasa'ya girer; banka hesabının açılışından önceki hareket olduğu için banka tarafı hiçbir hesaptan çıkmaz, Hesabı Atanmamış Eski Hareketler'de kalır.”
+  ✓ to-cash seçicinin altında not
+
+■ 8. Fatura Düzenle → peşin satırında "Hesapsız (Açılıştan Önce)": satırda not
+  ✓ hesap seçiliyken satırda not yok
+  ✓ peşin satırında not: “Banka hesabının açılışından önceki hareket: hiçbir hesaba yazılmaz, Hesabı Atanmamış Eski Hareketler'de kalır.”
+  ✓ sayfa hatası yok
+
+✓ senaryo-banka-210-eski-satir: 29 geçti, 0 kaldı · ekran görüntüleri /dev/shm/izt2-sinama/test/e2e/artifacts/senaryo-banka-210-eski-satir

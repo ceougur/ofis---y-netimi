@@ -1,0 +1,6 @@
+yeni2 kilit 03:42 yük 1.18 1.09 1.14 2/110 18573
+[kanit] s231-yeni2-UTC: GEÇTİ · çıkış 0 · 15/15 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 73e055d +2 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4
+[kanit] s231-yeni2-Europe: GEÇTİ · çıkış 0 · 15/15 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 73e055d +2 izlenmeyen · linux 6.18.44-fc-v726 x64 · Node v22.23.4
+hız başlıyor 03:42
+hız bitti 03:52 · Ölçüt (yeni ÷ c7b ≤ 1,10 en iyi VE ortanca; bütün yanıtlar 200): 2 yol KÖTÜ
+kos2 a bitti 04:13

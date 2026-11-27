@@ -1,0 +1,38 @@
+yük başında: 0.97 1.60 1.87 5/144 30896
+m1-gecis-yok: 1 düzenleme
+m1-gecis-yok c7b-gecis-gunu-250 rc=1 # pass 0 # fail 2  ilk hata:       error: |-         KG-3: geçiş gününde ve öncesinde 602, sonraki gün 336.90         + actual - expected 
+m1-gecis-yok c7b-gecis-gunu-250 rc=1 # pass 0 # fail 2  ilk hata:       error: |-         KG-3: geçiş gününde ve öncesinde 602, sonraki gün 336.90         + actual - expected 
+m1-gecis-yok kural-farki-duzeltme-250 rc=1 # pass 6 # fail 2  ilk hata:       error: |-         tur 2c: alt defter hesabı farkı yok (KG-3 / KG-8 / F-08 geçiş gününde / öncesinde eski yönde)         + actual - expected 
+m1-gecis-yok banka-210-gg-cari rc=0 # pass 3 # fail 0  ilk hata: 
+m2-gun-kaydir: 2 düzenleme
+m2-gun-kaydir c7b-gecis-gunu-250 rc=1 # pass 1 # fail 1  ilk hata:       error: |-         KG-3: geçiş gününde ve öncesinde 602, sonraki gün 336.90         + actual - expected 
+m2-gun-kaydir c7b-gecis-gunu-250 rc=1 # pass 1 # fail 1  ilk hata:       error: |-         KG-3: geçiş gününde ve öncesinde 602, sonraki gün 336.90         + actual - expected 
+m2-gun-kaydir kural-farki-duzeltme-250 rc=1 # pass 6 # fail 2  ilk hata:       error: |-         tur 2c: alt defter hesabı farkı yok (KG-3 / KG-8 / F-08 geçiş gününde / öncesinde eski yönde)         + actual - expected 
+m2-gun-kaydir banka-210-gg-cari rc=0 # pass 3 # fail 0  ilk hata: 
+m3-mahsup-yok: 1 düzenleme
+m3-mahsup-yok c7b-gecis-gunu-250 rc=1 # pass 0 # fail 2  ilk hata:       error: |-         B-6: güncellemeden önce mahsup edilmiş Ekim eski yönde         + actual - expected 
+m3-mahsup-yok c7b-gecis-gunu-250 rc=1 # pass 0 # fail 2  ilk hata:       error: |-         B-6: güncellemeden önce mahsup edilmiş Ekim eski yönde         + actual - expected 
+m3-mahsup-yok kural-farki-duzeltme-250 rc=0 # pass 8 # fail 0  ilk hata: 
+m3-mahsup-yok banka-210-gg-cari rc=0 # pass 3 # fail 0  ilk hata: 
+m4-suzgec-eski: 1 düzenleme
+m4-suzgec-eski c7b-gecis-gunu-250 rc=0 # pass 2 # fail 0  ilk hata: 
+m4-suzgec-eski c7b-gecis-gunu-250 rc=0 # pass 2 # fail 0  ilk hata: 
+m4-suzgec-eski kural-farki-duzeltme-250 rc=0 # pass 8 # fail 0  ilk hata: 
+m4-suzgec-eski banka-210-gg-cari rc=1 # pass 2 # fail 1  ilk hata:       error: |-         süzgeç tam kapıyla aynı karar vermeli: {"temiz":227,"bulgu":1,"taban sapması":69,"invoice_lines":1,"doubtful_receivables yazımı":4,"doubtful_provisions yazımı":2}          
+m5-goc-isaret-yok: 1 düzenleme
+m5-goc-isaret-yok c7b-gecis-gunu-250 rc=1 # pass 0 # fail 2  ilk hata:       error: "Cannot read properties of undefined (reading 'value')"       code: 'ERR_TEST_FAILURE'       name: 'TypeError' 
+m5-goc-isaret-yok c7b-gecis-gunu-250 rc=1 # pass 0 # fail 2  ilk hata:       error: "Cannot read properties of undefined (reading 'value')"       code: 'ERR_TEST_FAILURE'       name: 'TypeError' 
+m5-goc-isaret-yok kural-farki-duzeltme-250 rc=1 # pass 6 # fail 2  ilk hata:       error: |-         göç 51: geçiş günü = güncellemedeki kilit         + actual - expected 
+m5-goc-isaret-yok banka-210-gg-cari rc=0 # pass 3 # fail 0  ilk hata: 
+m6-beklenen-eski: 1 düzenleme
+m6-beklenen-eski c7b-gecis-gunu-250 rc=1 # pass 0 # fail 2  ilk hata:       error: |-         Defter Mutabakatı'nın beklenenleri aynı kuralla         + actual - expected 
+m6-beklenen-eski c7b-gecis-gunu-250 rc=1 # pass 0 # fail 2  ilk hata:       error: |-         Defter Mutabakatı'nın beklenenleri aynı kuralla         + actual - expected 
+m6-beklenen-eski kural-farki-duzeltme-250 rc=1 # pass 7 # fail 1  ilk hata:       error: |-         eski sürümden kalan gerçek satır ayrı ve aynen görünür         + actual - expected 
+m6-beklenen-eski banka-210-gg-cari rc=1 # pass 2 # fail 1  ilk hata:       error: |-         motor: her işlemde tutarlı         + actual - expected 
+temiz: 0 düzenleme
+temiz c7b-gecis-gunu-250 rc=0 # pass 2 # fail 0  ilk hata: 
+temiz c7b-gecis-gunu-250 rc=0 # pass 2 # fail 0  ilk hata: 
+temiz kural-farki-duzeltme-250 rc=0 # pass 8 # fail 0  ilk hata: 
+temiz banka-210-gg-cari rc=0 # pass 3 # fail 0  ilk hata: 
+temiz: 0 düzenleme
+MUTASYON-BITTI

@@ -1,0 +1,22 @@
+TAP version 13
+# (node:1173) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# 002 açıkken tutamaklar: 3 (/tmp/bs7-fd-5eI58Z/data/sirketler/002/destekofis.sqlite, /tmp/bs7-fd-5eI58Z/data/sirketler/002/destekofis.sqlite-wal, /tmp/bs7-fd-5eI58Z/data/sirketler/002/destekofis.sqlite-shm)
+# 1. yedekten sonra: 4
+# 6. yedekten sonra: 4
+# geri yüklemeden sonra: 0 ()
+# Subtest: yeni şemalı 002: açık / yedek / geri yükleme / kapanış tutamakları
+ok 1 - yeni şemalı 002: açık / yedek / geri yükleme / kapanış tutamakları
+  ---
+  duration_ms: 1157.810553
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1572.737597

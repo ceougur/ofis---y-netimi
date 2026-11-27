@@ -1,0 +1,12 @@
+✗ işlem 1 fatura-satis:
+  Taksitli fatura FIS2026000000001: açık 1199.99 + kapatanlar 685,53 < ödenecek 2125.51 (alt sınır: kapanan her kuruşun kapatanı olmalı) · kapatanlar 2026-07-15:685.53:Tahsilat
+
+Tohum 7: 1 işlem, 1 doğrulama, 2 beklenen ret (eksiye düşürme / aşım), eşzamanlı 0 istek · 0.7 sn
+  Beklenen retler: cash-negative 2
+  İşlem türleri: alim 10, kasa 1, fatura-satis 1
+  Model: {"kasa":{"cash":"853,25","bank":"119458,68","card":"0,00"},"cariler":12,"urunler":10,"kartlar":1,"kasaHareketi":1,"bankaSatiri":2,"bankaTersKayit":0,"bankalarArasiTransfer":0,"cariHareketi":0,"stokHareketi":9,"taksitHareketi":0,"hesabaBagliModulHavalesi":0,"kurumsalKartaBagli":0,"kurumsalKartBakiyesi":"0,00","supheliKayit":0,"supheliAcik":"0,00"}
+  Fatura: {"kesilen":1,"iptal":0,"taslak":0,"turler":{"sale":1},"cek":0} · seriler {} · tekil ETTN -
+  Mutabakat kapısı süresi: ortanca 9 ms, en çok 9 ms
+  ✗ UYUŞMAZLIK (1):
+    işlem 1 (fatura-satis, 2026-07-15)
+      Taksitli fatura FIS2026000000001: açık 1199.99 + kapatanlar 685,53 < ödenecek 2125.51 (alt sınır: kapanan her kuruşun kapatanı olmalı) · kapatanlar 2026-07-15:685.53:Tahsilat

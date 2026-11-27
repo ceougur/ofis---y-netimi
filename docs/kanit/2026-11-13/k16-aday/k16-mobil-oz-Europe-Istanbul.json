@@ -1,0 +1,32 @@
+{
+  "ad": "k16-mobil-oz-Europe-Istanbul",
+  "komut": "python3 -I -B test/bagimsiz/mobil-yazma/kahin_test.py",
+  "commit": "df0885f51fb3fe205459d150ec1ca22852c6b6b7",
+  "dal": "sinama-k16",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v445 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-13T10:50:52.037Z",
+  "sure_sn": 318.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 158,
+    "gecen": 158,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../k16-aday-kanit/2026-11-13/k16-mobil-oz-Europe-Istanbul.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin8y-ag",
+  "ham_cikti_sha256": "e8cec96f21244beafe6a267f1e10903e813daca8da89a023e86ca14b68b157ff",
+  "ham_cikti_bayt": 31252
+}

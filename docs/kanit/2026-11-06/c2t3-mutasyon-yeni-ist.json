@@ -1,0 +1,32 @@
+{
+  "ad": "c2t3-mutasyon-yeni-ist",
+  "komut": "node --disable-warning=ExperimentalWarning test/fis-defteri-250-mutasyon.mjs --kopya /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-mut-5a2c2844 --yalniz 36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55",
+  "commit": "5a2c284425f1b6a1017c82b57ab65ab9480d726a",
+  "dal": "worktree-agent-a7280bb16b4491d5b",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T09:28:37.003Z",
+  "sure_sn": 658.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 20,
+    "gecen": 20,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t3-kanit/2026-11-06/c2t3-mutasyon-yeni-ist.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a7280bb16b4491d5b",
+  "ham_cikti_sha256": "de8272731173f39ae812091130c0c615780965c83d84c9cd46fe1e1fe1038534",
+  "ham_cikti_bayt": 3702
+}

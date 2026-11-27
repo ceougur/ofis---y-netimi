@@ -1,0 +1,32 @@
+{
+  "ad": "c3t3-son-yeni-utc",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/donmus-defter-tur3-250.test.mjs test/donmus-defter-kilit-ucu-250.test.mjs",
+  "commit": "2d42d493adc34e81a9bc1eaace959b6dbbf188ef",
+  "dal": "worktree-agent-a9a8e7bc8f35a45ce",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T11:05:26.808Z",
+  "sure_sn": 131.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 20,
+    "gecen": 20,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t3-kanit/2026-11-06/c3t3-son-yeni-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a9a8e7bc8f35a45ce",
+  "ham_cikti_sha256": "aea4e28d9c9205023da2a618cb04899a493e27a645c50fc38d06ec5aa37f567a",
+  "ham_cikti_bayt": 11621
+}

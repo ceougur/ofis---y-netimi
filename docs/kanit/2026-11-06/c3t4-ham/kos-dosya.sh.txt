@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Ç3 tur 4 — bir kod kökünde verilen test dosyalarını iki saat diliminde tools/kanit.mjs kos ile koşar (yük: flock -s olcum.lock; ders 52).
+# Kullanım: kos-dosya.sh <kod kökü> <kanıt adı öneki> <dosya…>   (TZLER="UTC" ile tek saat dilimi)
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+KANIT=/home/user/ofis---y-netimi/.claude/worktrees/agent-a8eba3f64140fc5f1/tools/kanit.mjs
+ROOT=$1; shift
+AD=$1; shift
+cd "$ROOT" || exit 1
+export HUKUK_LICENSE_URL=http://127.0.0.1:9 NODE_NO_WARNINGS=1 KANIT_DIR="$S/c3t4-kanit"
+rc=0
+for tz in ${TZLER:-UTC Europe/Istanbul}; do
+  t=${tz//\//-}
+  TZ=$tz flock -s "$S/olcum.lock" node "$KANIT" kos "c3t4-$AD-$t" -- node --disable-warning=ExperimentalWarning --test --test-concurrency=1 "$@"
+  code=$?
+  echo "$AD $tz cikis=$code"
+  [ "$code" = 0 ] || rc=1
+done
+exit $rc

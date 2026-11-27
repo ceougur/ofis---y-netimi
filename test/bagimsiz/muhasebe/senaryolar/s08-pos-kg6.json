@@ -1,0 +1,236 @@
+{
+ "aciklama": "POS brüt 108, komisyon (KG-6), valör, POS iptal, valörden önce iade.",
+ "ad": "s08-pos-kg6",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [
+  "KG6=B"
+ ],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "bil/aktif/I.A": 126500,
+   "bil/aktif/I.C": 50000,
+   "bil/pasif/V.F": 176500,
+   "bil10/aktif/I.A": 97500,
+   "bil10/pasif/V.F": 97500,
+   "bil12/detay/I.A/102.B1": 97500,
+   "gt/kalemler/A": 190000,
+   "gt/kalemler/B": 10000,
+   "gt/kalemler/DNK": 176500,
+   "gt/kalemler/G": 3500,
+   "gt10/kalemler/DNK": 97500,
+   "gt10/kalemler/G": 2500,
+   "mz/satirlar/102.B1/bakiye": 126500,
+   "mz/satirlar/108.POS1/bakiye": 0,
+   "mz/satirlar/120|C1/bakiye": 0,
+   "mz/satirlar/120|C3/bakiye": 50000,
+   "mz/satirlar/610/bakiye": 10000,
+   "mz/satirlar/653/bakiye": 3500
+  },
+  "KG6=B": {
+   "bil10/aktif/I.A": 100000,
+   "bil10/pasif/V.F": 100000,
+   "bil12/detay/I.A/102.B1": 97500,
+   "gt/kalemler/DNK": 176500,
+   "gt10/kalemler/DNK": 100000,
+   "gt10/kalemler/G": 0,
+   "mz/satirlar/102.B1/bakiye": 126500,
+   "mz/satirlar/653/bakiye": 3500
+  }
+ },
+ "kapsam": [
+  "T-03",
+  "D-01",
+  "D-03",
+  "D-04",
+  "F-07",
+  "KG-6"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "K": 0,
+   "M": 100000,
+   "cari": "C1",
+   "id": "F1",
+   "tarih": "2026-08-10",
+   "tur": "satis_faturasi"
+  },
+  {
+   "cari": "C1",
+   "id": "P1",
+   "komisyon": 2500,
+   "pos": "POS1",
+   "tarih": "2026-08-10",
+   "tur": "tahsilat",
+   "tutar": 100000,
+   "valor": "2026-08-12",
+   "yol": "pos"
+  },
+  {
+   "K": 0,
+   "M": 50000,
+   "cari": "C3",
+   "id": "F2",
+   "tarih": "2026-08-11",
+   "tur": "satis_faturasi"
+  },
+  {
+   "cari": "C3",
+   "id": "P2",
+   "komisyon": 1000,
+   "pos": "POS1",
+   "tarih": "2026-08-11",
+   "tur": "tahsilat",
+   "tutar": 50000,
+   "valor": "2026-08-13",
+   "yol": "pos"
+  },
+  {
+   "kaynak": "P2",
+   "tur": "iptal"
+  },
+  {
+   "ad": "bil10",
+   "rapor": "bilanco",
+   "tarih": "2026-08-10",
+   "tur": "rapor"
+  },
+  {
+   "ad": "gt10",
+   "bas": "2026-08-01",
+   "rapor": "gelir_tablosu",
+   "son": "2026-08-10",
+   "tur": "rapor"
+  },
+  {
+   "ad": "bil12",
+   "rapor": "bilanco",
+   "tarih": "2026-08-12",
+   "tur": "rapor"
+  },
+  {
+   "K": 0,
+   "M": 40000,
+   "cari": "C1",
+   "id": "F3",
+   "tarih": "2026-08-20",
+   "tur": "satis_faturasi"
+  },
+  {
+   "cari": "C1",
+   "id": "P3",
+   "komisyon": 1000,
+   "pos": "POS1",
+   "tarih": "2026-08-20",
+   "tur": "tahsilat",
+   "tutar": 40000,
+   "valor": "2026-08-25",
+   "yol": "pos"
+  },
+  {
+   "K": 0,
+   "M": 10000,
+   "asil_fatura": "F3",
+   "cari": "C1",
+   "id": "I3",
+   "tarih": "2026-08-22",
+   "tur": "satis_iade_faturasi"
+  },
+  {
+   "cari": "C1",
+   "tahsilat": "P3",
+   "tarih": "2026-08-22",
+   "tur": "pos_iade",
+   "tutar": 10000
+  },
+  {
+   "ad": "mz",
+   "bas": "2026-08-01",
+   "rapor": "mizan",
+   "son": "2026-08-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "gt",
+   "bas": "2026-08-01",
+   "rapor": "gelir_tablosu",
+   "son": "2026-08-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "bil",
+   "rapor": "bilanco",
+   "tarih": "2026-08-31",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

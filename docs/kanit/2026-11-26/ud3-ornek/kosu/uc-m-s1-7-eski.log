@@ -1,0 +1,35 @@
+min-s1-7: 23/37 tuttu
+  2.5.0 kararıyla değişen beklenti: 20 denetim · farkların 14/14'i bu sınıfta
+  ✗ [BULGU BAŞ MİMAR] k1:fatura:G3:acik: program 10000 · kâhin 0 (C13.4 TYK açık = tutar − bağlı − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde, S50 taksitler aynı kuyrukta) · S1 elle kayıtla tek kuyruk · KS8 iade geri ödemesi (madde 9; K-b FIFO + KS8.1 artan): geri ödenen iade kapatıcı değil)
+  ✗ [BULGU BAŞ MİMAR] k1:fatura:G3:gosterilen: program 10000 · kâhin 0 (§35 Y23-4: kartın almadığı faturanın gösterilen açığı = kendi açığı)
+  ✗ [BULGU BAŞ MİMAR] k1:fatura:G3:liste:gosterilen: program 10000 · kâhin 0 (§35 Y23-4: kartın almadığı faturanın gösterilen açığı = kendi açığı)
+  ✗ [BULGU BAŞ MİMAR] k1:hareket:acilis:E:kalan: program 0 · kâhin 114394 (C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta))
+  ✗ [BULGU BAŞ MİMAR] k1:hareket:s015:kalan: program 129490 · kâhin 25096 (C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta))
+  ✗ [İNCELE YAYGIN] k1:projeksiyon:cari: program 1 · kâhin 2 (KS10 madde 11: Nakit Akış Projeksiyonu cari vadeli kalemleri KATAR (2.4.5 BİLİNEN SINIR kapandı) — kalem sayısı)
+  ✗ [İNCELE YAYGIN] k1:projeksiyon:hareket:acilis:E: program "yok" · kâhin {"amount":114394,"date":"2026-05-05","direction":"in"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))
+  ✗ [İNCELE YAYGIN] k1:projeksiyon:hareket:s015: program {"amount":129490,"date":"2026-04-28","direction":"in"} · kâhin {"amount":25096,"date":"2026-04-28","direction":"in"} (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))
+  ✗ [BULGU BAŞ MİMAR] k1:takvim:cariKalemSayisi: program 1 · kâhin 2 (K6.3 takvimdeki cari kalemlerinin sayısı)
+  ✗ [İNCELE YAYGIN] k1:takvim:fatura:G3: program {"amount":10000,"direction":"in"} · kâhin "yok" (madde 4 'fatura kalemleri aynen': açık > 0 fatura kalemi (tutar = açık))
+  ✗ [BULGU BAŞ MİMAR] k1:takvim:hareket:acilis:E: program "yok" · kâhin {"amount":114394,"cari":"E","days":-56,"direction":"in","dueDate":"2026-05-05","label":"Tahsil Edilecek Borç","person":"Rastgele Epsilon 7","state":"overdue"} (K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan; ufuk geçmiş + 7 gün)
+  ✗ [BULGU BAŞ MİMAR] k1:takvim:hareket:s015: program {"amount":129490,"cari":"E","days":-63,"direction":"in","dueDate":"2026-04-28","label":"Tahsil Edilecek Borç","person":"Rastgele Epsilon 7","state":"overdue"} · kâhin {"amount":25096,"cari":"E","days":-63,"direction":"in","dueDate":"2026-04-28","label":"Tahsil Edilecek Borç","person":"Rastgele Epsilon 7","state":"overdue"} (K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan; ufuk geçmiş + 7 gün)
+  ✗ [BULGU BAŞ MİMAR] k1:vadeTakip:hareket:acilis:E: program "yok" · kâhin {"amount":114394,"date":"2026-05-05","direction":"in"} (K6.3 Vade Takip (Anlık Durum) aynı kalemleri gösterir)
+  ✗ [BULGU BAŞ MİMAR] k1:vadeTakip:hareket:s015: program {"amount":129490,"date":"2026-04-28","direction":"in"} · kâhin {"amount":25096,"date":"2026-04-28","direction":"in"} (K6.3 Vade Takip (Anlık Durum) aynı kalemleri gösterir)
+  liste mutasyonu 1 (senaryo adı yok sayılır): YAKALANDI
+  liste mutasyonu 2 (alt dizgi (joker) eşleşmesi): YAKALANDI
+  liste mutasyonu 3 (program değeri karşılaştırılmaz): YAKALANDI
+  liste mutasyonu 4 (kapanan kayıt denetlenmez): YAKALANDI
+  liste mutasyonu 5 (kâhin beklentisi karşılaştırılmaz): YAKALANDI
+  yapım aşaması listesi mutasyonu 1 (senaryo adı yok sayılır): YAKALANDI
+  yapım aşaması listesi mutasyonu 2 (alt dizgi (joker) eşleşmesi): YAKALANDI
+  yapım aşaması listesi mutasyonu 3 (program değeri karşılaştırılmaz): YAKALANDI
+  yapım aşaması listesi mutasyonu 4 (kapanan kayıt denetlenmez): YAKALANDI
+  yapım aşaması listesi mutasyonu 5 (kâhin beklentisi karşılaştırılmaz): YAKALANDI
+
+GEÇERSİZ DENETİM (2.4.5 kararıyla; --legacy'de koşar — KARARLAR.md §8 C0): 0 denetim, 0 senaryo
+
+ATLANAN (2.4.5 kararıyla geçersiz — --legacy ile koşar): 0
+
+2.5.0 KARARIYLA DEĞİŞEN BEKLENTİ (KARARLAR.md §13; 2.4.9 kâhinine göre): 20 denetim, 1 senaryo · programla farkların 14'i bu sınıfta, 0'i SINIF DIŞI
+
+ÖZET [2.5.0]: 1 senaryo, 37 denetim, 14 fark (BULGU 10), 0 bilinen sınır (BILINEN.json; başarısız sayılmaz), 0 yapım aşaması (YAPIM-ASAMASI.json; paketlere göre: yok; 0 denetim + 0 okuma hatası; geçti de başarısız da sayılmaz — yayın adayında liste BOŞ olmalı), 0 okuma hatası, 0 yakalanmayan mutasyon, 0 atlanan senaryo. Ham çıktı: /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ud3-m8x4/uc-m-s1-7-eski
+23/37 denetim geçti

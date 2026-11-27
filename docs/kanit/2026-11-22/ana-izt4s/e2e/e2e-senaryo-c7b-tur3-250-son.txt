@@ -1,0 +1,15 @@
+  ✓ bakiye −300 (tahsilat avans; kalan bir kez düşüldü)
+
+■ E) YB-1 — cari kartından tahsilat 500 → Kartı Kapat 'Kalan ₺2.500,00' TEK soruyla kapanır; carinin borcu 2.500 kalır
+  ✓ carinin borcu 2.500 (2500)
+  ✓ kart penceresi Kalan ₺2.500,00 (S129 = A): ₺2.500,00
+  ✓ soru pencerenin kalanıyla:  × ONAY Kartı Kapat Kalan ₺2.500,00 açıkken “Ekran Kart Kapat Kartı” kartı kapatılsın mı? Ödeme planı biter; kalan borç carinin borcunda kalır, yarından itibare
+    [soru] "Kartı Kapat" → Kartı Kapat (beklenen tek soru)
+  ✓ ikinci soru YOK
+  ✓ kart kapandı (veri tabanı)
+  ✓ TEK istek, 200 (gelen: [200])
+  ✓ Borçta Kalsın: carinin borcu 2.500 kalır
+  ✓ Mutabakat Testi temiz
+  ✓ sayfa hatası yok
+
+✓ senaryo-c7b-tur3-250: 39 geçti, 0 kaldı

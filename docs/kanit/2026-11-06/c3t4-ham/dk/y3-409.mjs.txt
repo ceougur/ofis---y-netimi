@@ -1,0 +1,144 @@
+// DAR KONTROL Ç3 tur 3 — ORTA-1 (409 ledger-cleanup-running, 5 sn bütçe): lockNeedsCleanup ile lockChanged aynı kararı mı veriyor; 409 dönerken kilit / koşu / iz yarım yazılıyor mu.
+// Temizlik "purge" kancasıyla TUTULUR (büyük şirket benzetimi; süreye bağlı değil). Her istek: durum kodu, kod, süre (ms), sonra kilit, koşu sayısı, kilit izi sayısı.
+//   C1 kaldır → (temizlik sürerken) aynı güne yeniden kilit
+//   C2 geri gün (03.31) → temizlik sürerken: ileri (31.12), eski güne (30.06), daha geri (31.01; temizlik istemez), sonra ileri (28.02)
+//   C3 temizlik sürerken kapsamla aynı güne kilit (koşu açmaz)
+//   C4 (B3) dondurma yazım adımındayken BAŞKA güne (30.11) kilit + durdurulan koşunun artığı bütçede silinemez → 409; durdurulan koşu temizlikten sonra sürer mi
+// Kullanım: node y3-409.mjs <kod kökü> [senaryo …]
+import { ENV, LOCK, MID, NOW, ROOT, imp, runsOf, seed, sleep, whole } from "./ortak.mjs";
+
+const pick = process.argv.slice(3);
+const { loginAdmin, removeTestDir, startTestServer } = await imp("test/helpers.mjs");
+const { lockAndWait, waitForFreeze } = await imp("test/fixtures/donma-bekle.mjs");
+const results = {};
+
+function hooks() {
+  const st = { purgeHold: false, batchHold: 0, batches: 0, purgeHeld: false, batchHeld: false };
+  let releasePurge = () => {};
+  let releaseBatch = () => {};
+  let purgeGate = new Promise(resolve => (releasePurge = resolve));
+  let batchGate = new Promise(resolve => (releaseBatch = resolve));
+  const hook = {
+    fn: async phase => {
+      if (phase === "purge" && st.purgeHold) {
+        st.purgeHeld = true;
+        await purgeGate;
+      }
+      if (phase === "batch") {
+        st.batches += 1;
+        if (st.batchHold && st.batches === st.batchHold) {
+          st.batchHeld = true;
+          await batchGate;
+        }
+      }
+    },
+  };
+  return {
+    hook, st,
+    openPurge: () => {
+      st.purgeHold = false;
+      releasePurge();
+    },
+    openBatch: () => {
+      st.batchHold = 0;
+      releaseBatch();
+    },
+  };
+}
+const lockSetting = store => store.get("SELECT value FROM settings WHERE key = 'ledger.lockedUntil'")?.value || "";
+const lockTraces = store => store.get("SELECT COUNT(*) AS n FROM audit_events WHERE type IN ('ledger.period.locked', 'ledger.period.unlocked')").n;
+async function timedPut(admin, store, day) {
+  const t0 = performance.now();
+  const response = await admin.put("/api/admin/period-lock", { lockedUntil: day });
+  const ms = Math.round(performance.now() - t0);
+  const data = response.data || {};
+  return { gun: day || "kaldır", durum: response.status, kod: data.code || null, ileti: data.error || null, ms, sonra_kilit: lockSetting(store), kosu_sayisi: runsOf(store).length, kilit_izi: lockTraces(store), temizlik: (data.freeze || data.data?.freeze)?.cleanup || null };
+}
+async function until(cond, label, tries = 2000) {
+  for (let i = 0; i < tries && !cond(); i += 1) await sleep(10);
+  if (!cond()) throw new Error(`ön koşul oluşmadı: ${label}`);
+}
+async function scenario(name, body) {
+  if (pick.length && !pick.includes(name)) return;
+  const h = hooks();
+  const server = await startTestServer({ now: { time: NOW, fixed: true }, env: ENV, __testFreezeHook: h.hook, freezeBatchLines: 5 });
+  const out = { adimlar: [] };
+  try {
+    const admin = await loginAdmin(server);
+    await seed(admin);
+    await body({ server, admin, h, out, put: day => timedPut(admin, server.app.store, day) });
+    h.openPurge();
+    h.openBatch();
+    await waitForFreeze(admin);
+    out.kosular = runsOf(server.app.store).map(r => [r.no, r.kind, r.state, r.fromDate, r.through, r.rule, r.reason, r.lines]);
+    out.butunluk = whole(server, lockSetting(server.app.store));
+  } catch (error) {
+    out.hata = String(error?.stack || error).slice(0, 1500);
+  } finally {
+    h.openPurge();
+    h.openBatch();
+    await server.app.close().catch(() => {});
+    removeTestDir(server.root);
+  }
+  results[name] = out;
+  console.error(`${name}: ${out.hata ? `HATA ${out.hata.split("\n")[0]}` : `${out.adimlar.map(a => `${a.gun}→${a.durum}${a.kod ? `/${a.kod}` : ""} ${a.ms}ms kilit=${a.sonra_kilit || "—"}`).join(" | ")} || tutarlı=${out.butunluk.tutarli} (${out.butunluk.gorunen}/${out.butunluk.kayitli}/${out.butunluk.canli}, kapsam ${out.butunluk.kapsam})`}`);
+}
+
+await scenario("C1", async ({ server, admin, h, out, put }) => {
+  await lockAndWait(admin, LOCK);
+  h.st.purgeHold = true;
+  out.adimlar.push(await put(""));
+  await until(() => h.st.purgeHeld, "temizlik tutuluyor");
+  out.adimlar.push(await put(LOCK));
+  out.gorunum_409_sonrasi = (await admin.get("/api/workspace/ledger/lock")).data.data.freeze;
+  h.openPurge();
+  await waitForFreeze(admin);
+  out.adimlar.push(await put(LOCK));
+});
+
+await scenario("C2", async ({ server, admin, h, out, put }) => {
+  await lockAndWait(admin, MID);
+  h.st.purgeHold = true;
+  out.adimlar.push(await put("2026-03-31"));
+  await until(() => h.st.purgeHeld, "temizlik tutuluyor");
+  out.adimlar.push(await put(LOCK));
+  out.adimlar.push(await put(MID));
+  out.adimlar.push(await put("2026-01-31"));
+  out.adimlar.push(await put("2026-02-28"));
+  h.openPurge();
+  await waitForFreeze(admin);
+  out.adimlar.push(await put(LOCK));
+});
+
+await scenario("C3", async ({ server, admin, h, out, put }) => {
+  await lockAndWait(admin, MID);
+  h.st.purgeHold = true;
+  out.adimlar.push(await put("2026-03-31"));
+  await until(() => h.st.purgeHeld, "temizlik tutuluyor");
+  out.adimlar.push(await put("2026-03-31"));
+  h.openPurge();
+  await waitForFreeze(admin);
+});
+
+await scenario("C4", async ({ server, admin, h, out, put }) => {
+  h.st.batchHold = 3;
+  const first = admin.put("/api/admin/period-lock", { lockedUntil: LOCK });
+  await until(() => h.st.batchHeld, "dondurma yazım adımında tutuluyor");
+  out.onkosul = { bekleyen: server.app.ledger.snapshots.state().pending, yazilan: server.app.store.get("SELECT COUNT(*) AS n FROM ledger_snapshots").n };
+  h.st.purgeHold = true;
+  const moving = put("2026-11-30");
+  // Başka güne istek süren dondurmayı durdurur (cancel → tutulan kanca bırakılınca durur).
+  await sleep(100);
+  h.openBatch();
+  out.adimlar.push(await moving);
+  out.ilk_yanit = (await first).status;
+  out.bekleyen_409_sonrasi = server.app.ledger.snapshots.state().pending;
+  h.openPurge();
+  await waitForFreeze(admin);
+  for (let i = 0; i < 5 && server.app.ledger.snapshots.state().pending; i += 1) await server.app.ledger.snapshots.runPending();
+  out.butunluk_kilit = whole(server, LOCK);
+  out.adimlar.push(await put("2026-11-30"));
+});
+
+console.log(JSON.stringify({ kok: ROOT, results }, null, 1));
+process.exit(0);

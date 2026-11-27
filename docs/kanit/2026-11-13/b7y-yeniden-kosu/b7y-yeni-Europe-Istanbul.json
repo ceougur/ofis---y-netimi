@@ -1,0 +1,32 @@
+{
+  "ad": "b7y-yeni-Europe-Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=2 test/kasa-acilis-kimlik-b7-250.test.mjs test/vade-takip-soz-b7-250.test.mjs",
+  "commit": "d231299e81eaf439d5a08f6b8daab264a8a7a7c5",
+  "dal": "worktree-agent-a6c349be9d3823fef",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v445 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-13T04:46:54.820Z",
+  "sure_sn": 15.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 22,
+    "gecen": 22,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b7y-kanit/2026-11-13/b7y-yeni-Europe-Istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a6c349be9d3823fef",
+  "ham_cikti_sha256": "7dcb6696887cdf77451121d4eed1ddef28ee4a85b52ba5d4c6d0bbe4c2d77881",
+  "ham_cikti_bayt": 12423
+}

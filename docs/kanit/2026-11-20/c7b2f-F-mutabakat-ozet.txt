@@ -1,0 +1,5 @@
+yeni UTC çıkış 0
+yeni Europe/Istanbul çıkış 0
+taban UTC çıkış 0
+taban Europe/Istanbul çıkış 0
+BITTI

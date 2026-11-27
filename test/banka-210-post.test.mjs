@@ -296,7 +296,11 @@ describe("bank.post — bütün para yazıcıları işlem başlığı yazar (ça
     const fresh = await boot();
     try {
       const empty = await integrityOk(fresh.api, "boş şirket");
-      assert.equal(result.checks.length, empty.checks.length, "denetim sayısı ('N denetim tamam') para yazımından sonra aynı");
+      // 2.5.0 Ç5-A (G3: C5-ACILIS-TASARIM §2.8, B2): "Açılış Karşılığı" (opening:519 / opening:500) yalnız açılışı olan veride listelenir (stock:opening gibi; açılışsız şirkette liste
+      // 2.4.9 ile aynı) — bu veride banka açılışı var. Öbür denetimlerin sayısı para yazımından sonra aynı.
+      const own = checks => checks.filter(item => !String(item.code).startsWith("opening:")).length;
+      assert.equal(own(result.checks), own(empty.checks), "denetim sayısı ('N denetim tamam') para yazımından sonra aynı");
+      assert.deepEqual(result.checks.filter(item => String(item.code).startsWith("opening:")).map(item => `${item.code}:${item.ok}`), ["opening:519:true", "opening:500:true"]);
     } finally {
       await fresh.server.close();
     }

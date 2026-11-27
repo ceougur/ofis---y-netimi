@@ -1,0 +1,9 @@
+[1] kanca kaydı: 200
+[1] iş: accepted
+[1] tanınmayan wamid'li imzasız delivered: 200
+[1] defter hook_seen satırı: 1; şirket işareti: ""
+[1] saat: 2026-11-03T06:01:00.000Z
+{"batchId":"wab-aea1bd30-0180-4c26-b4eb-d2584c5c6f6c","accountId":"account-7c6c4703-b68f-4934-aa58-46b9e8930770"}
+[2] saat: 2026-11-03T19:31:00.000Z (1. aşamadan 13,5 sa sonra)
+[2] defter hook_seen satırı: 1; şirket işareti: ""
+[2] SONUÇ: iş=accepted; önizleme=["Daha Önce Gönderildi"]

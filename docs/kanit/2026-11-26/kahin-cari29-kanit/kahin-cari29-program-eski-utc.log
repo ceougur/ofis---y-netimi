@@ -1,0 +1,45 @@
+d61-c5-s266-s265-yalin-olmayan: 106/130 tuttu
+  2.5.0 kararıyla değişen beklenti: 26 denetim · farkların 9/24'i bu sınıfta — SINIF DIŞI 15
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:cari:U2:acikEsitBakiye: program true · kâhin false (KS8.1 değişmezi Σ açık = bakiye (dağıtılmamış para yoksa))
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:cari:U2:acikToplam: program 5000 · kâhin 0 (KS8.1: carinin açık kalemlerinin işaretli toplamı)
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:cari:U4:acikToplam: program -20000 · kâhin 0 (KS8.1: carinin açık kalemlerinin işaretli toplamı)
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:hareket:u2b2:kalan: program 5000 · kâhin 0 (C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta))
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:hareket:u3b2:kalan: program 15000 · kâhin 0 (C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta))
+  ✗ [İNCELE YAYGIN · SINIF DIŞI] k1:hareket:u4a:kalan: program 20000 · kâhin 0 (C13.4 TYK: Kalan = tutar − kuyruk dağıtımı (S2 vade sırası, (1) ödeme gününde açık borca, S50 taksitler aynı kuyrukta))
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:projeksiyon:hareket:u2b2: program {"amount":5000,"date":"2026-04-10","direction":"in"} · kâhin "yok" (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))
+  ✗ [İNCELE YAYGIN] k1:projeksiyon:hareket:u2o: program "yok" · kâhin {"amount":10000,"date":"2026-03-01","direction":"in"} (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil · Nakit Akış Projeksiyonu (KS10 penceresi, gecikenler dahil — K-P1))
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:projeksiyon:hareket:u3b2: program {"amount":15000,"date":"2026-04-10","direction":"in"} · kâhin "yok" (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))
+  ✗ [İNCELE YAYGIN] k1:projeksiyon:hareket:u3o: program "yok" · kâhin {"amount":20000,"date":"2026-03-01","direction":"in"} (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil · Nakit Akış Projeksiyonu (KS10 penceresi, gecikenler dahil — K-P1))
+  ✗ [İNCELE YAYGIN · SINIF DIŞI] k1:projeksiyon:hareket:u4a: program {"amount":20000,"date":"2026-04-30","direction":"out"} · kâhin "yok" (KS10 madde 11: cari vadeli kalem projeksiyonda (tarih = Beklenen varsa o, yoksa Vade; tutar = FIFO Kalan; pencere bugün → +30, gecikenler dahil))
+  ✗ [İNCELE YAYGIN] k1:projeksiyon:hareket:u5o2: program "yok" · kâhin {"amount":10000,"date":"2026-03-10","direction":"in"} (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil · Nakit Akış Projeksiyonu (KS10 penceresi, gecikenler dahil — K-P1))
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:takvim:hareket:u2b2: program {"amount":5000,"cari":"U2","days":-66,"direction":"in","dueDate":"2026-04-10","label":"Tahsil Edilecek Borç","person":"Uğur İkinci","state":"overdue"} · kâhin "yok" (K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan; ufuk geçmiş + 7 gün)
+  ✗ [BULGU KULLANICI] k1:takvim:hareket:u2o: program "yok" · kâhin {"amount":10000,"cari":"U2","days":-106,"direction":"in","dueDate":"2026-03-01","label":"Tahsil Edilecek Borç","person":"Uğur İkinci","state":"overdue"} (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil)
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:takvim:hareket:u3b2: program {"amount":15000,"cari":"U3","days":-66,"direction":"in","dueDate":"2026-04-10","label":"Tahsil Edilecek Borç","person":"Uğur Üçüncü","state":"overdue"} · kâhin "yok" (K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan; ufuk geçmiş + 7 gün)
+  ✗ [BULGU KULLANICI] k1:takvim:hareket:u3o: program "yok" · kâhin {"amount":20000,"cari":"U3","days":-106,"direction":"in","dueDate":"2026-03-01","label":"Tahsil Edilecek Borç","person":"Uğur Üçüncü","state":"overdue"} (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil)
+  ✗ [İNCELE YAYGIN · SINIF DIŞI] k1:takvim:hareket:u4a: program {"amount":20000,"cari":"U4","days":-46,"direction":"out","dueDate":"2026-04-30","label":"Ödenecek Borç","person":"Uğur Dördüncü","state":"overdue"} · kâhin "yok" (K6.3 Kalan > 0 ve Vade / Beklenen Ödeme Tarihi'li elle kayıt kalemdir; tarih = Beklenen varsa o; tutar = Kalan; ufuk geçmiş + 7 gün)
+  ✗ [İNCELE YAYGIN] k1:takvim:hareket:u5o2: program "yok" · kâhin {"amount":10000,"cari":"U5","days":-97,"direction":"in","dueDate":"2026-03-10","label":"Tahsil Edilecek Borç","person":"Uğur Beşinci","state":"overdue"} (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil)
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:vadeTakip:hareket:u2b2: program {"amount":5000,"date":"2026-04-10","direction":"in"} · kâhin "yok" (K6.3 kalem olmayan kayıt Vade Takip'te yok)
+  ✗ [BULGU KULLANICI] k1:vadeTakip:hareket:u2o: program "yok" · kâhin {"amount":10000,"date":"2026-03-01","direction":"in"} (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil · Vade Takip aynı kalem)
+  ✗ [BULGU BAŞ MİMAR · SINIF DIŞI] k1:vadeTakip:hareket:u3b2: program {"amount":15000,"date":"2026-04-10","direction":"in"} · kâhin "yok" (K6.3 kalem olmayan kayıt Vade Takip'te yok)
+  ✗ [BULGU KULLANICI] k1:vadeTakip:hareket:u3o: program "yok" · kâhin {"amount":20000,"date":"2026-03-01","direction":"in"} (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil · Vade Takip aynı kalem)
+  ✗ [İNCELE YAYGIN · SINIF DIŞI] k1:vadeTakip:hareket:u4a: program {"amount":20000,"date":"2026-04-30","direction":"out"} · kâhin "yok" (K6.3 kalem olmayan kayıt Vade Takip'te yok)
+  ✗ [İNCELE YAYGIN] k1:vadeTakip:hareket:u5o2: program "yok" · kâhin {"amount":10000,"date":"2026-03-10","direction":"in"} (C17 S96 A: verilen, karşılığı gelmemiş avans ayrı kalem — 'Tahsil Edilecek Borç', ödeme gününde vadeli, tutar netleşmemiş kalan (Y5-6); kalemi kapatmış Ödeme kalem değil · Vade Takip aynı kalem)
+  liste mutasyonu 1 (senaryo adı yok sayılır): YAKALANDI
+  liste mutasyonu 2 (alt dizgi (joker) eşleşmesi): YAKALANDI
+  liste mutasyonu 3 (program değeri karşılaştırılmaz): YAKALANDI
+  liste mutasyonu 4 (kapanan kayıt denetlenmez): YAKALANDI
+  liste mutasyonu 5 (kâhin beklentisi karşılaştırılmaz): YAKALANDI
+  yapım aşaması listesi mutasyonu 1 (senaryo adı yok sayılır): YAKALANDI
+  yapım aşaması listesi mutasyonu 2 (alt dizgi (joker) eşleşmesi): YAKALANDI
+  yapım aşaması listesi mutasyonu 3 (program değeri karşılaştırılmaz): YAKALANDI
+  yapım aşaması listesi mutasyonu 4 (kapanan kayıt denetlenmez): YAKALANDI
+  yapım aşaması listesi mutasyonu 5 (kâhin beklentisi karşılaştırılmaz): YAKALANDI
+
+GEÇERSİZ DENETİM (2.4.5 kararıyla; --legacy'de koşar — KARARLAR.md §8 C0): 0 denetim, 0 senaryo
+
+ATLANAN (2.4.5 kararıyla geçersiz — --legacy ile koşar): 0
+
+2.5.0 KARARIYLA DEĞİŞEN BEKLENTİ (KARARLAR.md §13; 2.4.9 kâhinine göre): 26 denetim, 1 senaryo · programla farkların 9'i bu sınıfta, 15'i SINIF DIŞI
+
+ÖZET [2.5.0]: 1 senaryo, 130 denetim, 24 fark (BULGU 15), 0 bilinen sınır (BILINEN.json; başarısız sayılmaz), 0 yapım aşaması (YAPIM-ASAMASI.json; paketlere göre: yok; 0 denetim + 0 okuma hatası; geçti de başarısız da sayılmaz — yayın adayında liste BOŞ olmalı), 0 okuma hatası, 0 yakalanmayan mutasyon, 0 atlanan senaryo. Ham çıktı: /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kc29-a51/program-eski-utc
+106/130 denetim geçti

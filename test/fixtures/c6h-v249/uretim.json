@@ -1,0 +1,139 @@
+{
+ "kod": "v2.4.9 (ccf0b0ca)",
+ "node": "v22.23.4",
+ "log": {
+  "bos": {
+   "kurulum": 200,
+   "dönem kilidi 30.06.2026": 200
+  },
+  "satis-fatura": {
+   "kurulum": 200,
+   "ürün P": 200,
+   "cari SF Tam Peşin": 200,
+   "cari SF Eksik Açık": 200,
+   "cari SF İadeli": 200,
+   "cari SF KDV'siz": 200,
+   "satış A (peşin, tam)": 200,
+   "satış B (açık)": 200,
+   "B kısmi tahsilat": 200,
+   "satış C": 200,
+   "satış C ayrıntı": 200,
+   "satış iadesi C": 200,
+   "satış D (KDV'siz)": 200,
+   "dönem kilidi 30.06.2026": 200
+  },
+  "alis-fatura": {
+   "kurulum": 200,
+   "ürün Q": 200,
+   "cari AF Tam Ödenmiş": 200,
+   "cari AF Eksik Açık": 200,
+   "cari AF İadeli": 200,
+   "alış S1": 200,
+   "S1 ödeme": 200,
+   "alış S2 (açık)": 200,
+   "alış S3": 200,
+   "alış S3 ayrıntı": 200,
+   "alış iadesi S3": 200,
+   "dönem kilidi 30.06.2026": 200
+  },
+  "kasa": {
+   "kurulum": 200,
+   "Kasa açılışı": 200,
+   "Kasa girişi 2025": 200,
+   "Kasa çıkışı 2026 (kilitli dönem)": 200,
+   "Kasa çıkışı 2026 (açık dönem)": 200,
+   "dönem kilidi 30.06.2026": 200
+  },
+  "banka": {
+   "kurulum": 200,
+   "banka hesabı": 200,
+   "banka masrafı": 200,
+   "cari BN Havaleli Müşteri": 200,
+   "BN borç": 200,
+   "BN havale tahsilat (kısmi)": 200,
+   "dönem kilidi 30.06.2026": 200
+  },
+  "pos": {
+   "kurulum": 200,
+   "cari POS Müşterisi": 200,
+   "POS borç": 200,
+   "POS tahsilat 1 (kilitli dönem)": 200,
+   "POS tahsilat 2 (açık dönem, kapatır)": 200,
+   "dönem kilidi 30.06.2026": 200
+  },
+  "cek-senet": {
+   "kurulum": 200,
+   "cari ÇS Müşterisi": 200,
+   "ÇS borç": 200,
+   "çek 1 (tahsil edilecek)": 200,
+   "çek 1 tahsil": 200,
+   "çek 2 (portföyde)": 200,
+   "senet (portföyde)": 200,
+   "dönem kilidi 30.06.2026": 200
+  },
+  "taksit": {
+   "kurulum": 200,
+   "cari TK Taksitli Müşteri": 200,
+   "cari kartı (3 taksit)": 200,
+   "kart tahsilatı (kısmi)": 200,
+   "carisiz kart": 200,
+   "carisiz kart tahsilatı (tam)": 200,
+   "dönem kilidi 30.06.2026": 200
+  },
+  "elle-borc-alacak": {
+   "kurulum": 200,
+   "cari EB Müşteri": 200,
+   "cari EB Tedarikçi": 200,
+   "E1 borç": 200,
+   "E1 alacak": 200,
+   "E2 alacak (borcumuz)": 200,
+   "E2 ödeme (kısmi)": 200,
+   "cari EB Avanslı Müşteri": 200,
+   "cari EB Avans Verilen Tedarikçi": 200,
+   "E3 avans tahsilatı (borçsuz)": 200,
+   "E4 avans ödemesi (borçsuz)": 200,
+   "dönem kilidi 30.06.2026": 200
+  },
+  "acilis": {
+   "kurulum": 200,
+   "cari AÇ Açılışlı Müşteri": 200,
+   "cari açılış bakiyesi (açıklamalı elle borç)": 200,
+   "açılış stoku": 200,
+   "Kasa açılışı": 200,
+   "banka açılışı": 200,
+   "dönem kilidi 30.06.2026": 200
+  },
+  "stok": {
+   "kurulum": 200,
+   "ürün R": 200,
+   "cari ST Müşteri": 200,
+   "cari ST Tedarikçi": 200,
+   "peşin alış 20 × 30": 200,
+   "parasız giriş 10 × 36": 200,
+   "açık hesap alış 6 × 33": 200,
+   "fire çıkışı 5": 200,
+   "açık hesap satış 8 × 50": 200,
+   "müşteri iadesi 2": 200,
+   "tedarikçiye iade 3": 200,
+   "peşin satış 4 × 55 (açık dönem)": 200,
+   "dönem kilidi 30.06.2026": 200
+  },
+  "supheli": {
+   "kurulum": 200,
+   "cari ŞA Şüpheli Müşteri": 200,
+   "ŞA borç": 200,
+   "şüpheli alacağa al": 200,
+   "ŞA kısmi tahsilat": 200,
+   "dönem kilidi 30.06.2026": 200
+  },
+  "vergi": {
+   "kurulum": 200,
+   "hizmet": 200,
+   "cari VG Müşteri": 200,
+   "KDV'li hizmet satışı": 200,
+   "Vergi Ödemesi KDV (gecikme zammıyla)": 200,
+   "Vergi Ödemesi Diğer (bakiyeyi aşar)": 200,
+   "dönem kilidi 30.06.2026": 200
+  }
+ }
+}

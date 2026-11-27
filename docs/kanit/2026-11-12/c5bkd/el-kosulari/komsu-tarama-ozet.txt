@@ -1,0 +1,19 @@
+değişen ürün / yardımcı dosyası: 17
+  client/assets/hof-accounts.js: 2 test anıyor
+  client/assets/hof-plans.js: 3 test anıyor
+  server/lib/accounts.mjs: 10 test anıyor
+  server/lib/http.mjs: 5 test anıyor
+  server/lib/integrity-scope.mjs: 3 test anıyor
+  server/lib/integrity.mjs: 16 test anıyor
+  server/lib/obligation-queue.mjs: 7 test anıyor
+  server/lib/plans.mjs: 21 test anıyor
+  server/routes/accounts.mjs: 7 test anıyor
+  server/routes/dues.mjs: 4 test anıyor
+  server/routes/invoices.mjs: 12 test anıyor
+  server/routes/plans.mjs: 6 test anıyor
+  server/routes/report-center.mjs: 7 test anıyor
+  server/routes/stock.mjs: 1 test anıyor
+  test/e2e/zil-oku.mjs: 0 test anıyor
+  test/mutabakat/kos.mjs: 0 test anıyor
+  test/mutabakat/motor.mjs: 8 test anıyor
+komşu test dosyası: 91

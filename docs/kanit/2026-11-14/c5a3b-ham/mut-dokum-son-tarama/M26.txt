@@ -1,0 +1,159 @@
+TAP version 13
+# Subtest: 2.5.0 Ç5-A tur 3a — kuyruğun girdi kurucusu (lib/obligation-input.mjs): yalnız store ile = servis yüzü; davranış taşımadan önceki kodla aynı
+    # Subtest: sınıf verisi iki şirkette, kilitli ↔ kilitsiz: modül (yalnız store) = servis yüzü; servis yüzü = taşımadan önceki kodun hakemi
+    ok 1 - sınıf verisi iki şirkette, kilitli ↔ kilitsiz: modül (yalnız store) = servis yüzü; servis yüzü = taşımadan önceki kodun hakemi
+      ---
+      duration_ms: 1591.842063
+      type: 'test'
+      ...
+    1..1
+ok 1 - 2.5.0 Ç5-A tur 3a — kuyruğun girdi kurucusu (lib/obligation-input.mjs): yalnız store ile = servis yüzü; davranış taşımadan önceki kodla aynı
+  ---
+  duration_ms: 1953.956996
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 Ç5-A tur 3b — carinin satırlarını kuran zincir (lib/account-lines.mjs): modül satırları kendisi kurar = servis yüzü; davranış taşımadan önceki kodla aynı
+    # Subtest: sınıf verisi iki şirkette; iade sonrası ve Silinenler'den geri gelen kart: modül satırları kendisi kurar = servis yüzü; servis yüzü = taşımadan önceki kodun hakemi
+    not ok 1 - sınıf verisi iki şirkette; iade sonrası ve Silinenler'den geri gelen kart: modül satırları kendisi kurar = servis yüzü; servis yüzü = taşımadan önceki kodun hakemi
+      ---
+      duration_ms: 995.035365
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a3b-z4/mut/test/obligation-input-250.test.mjs:415:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        modül ≠ servis (48): ilk 001 OZ 001 Bağlı: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor · ilk 001 OZ 001 Bağlı: satırlar parametreyle = kendisi · ilk 001 OZ 001 Silinen Kart: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor
+        + actual - expected
+        
+        + [
+        +   'ilk 001 OZ 001 Bağlı: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor',
+        +   'ilk 001 OZ 001 Bağlı: satırlar parametreyle = kendisi',
+        +   'ilk 001 OZ 001 Silinen Kart: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor',
+        +   'ilk 001 OZ 001 Silinen Kart: satırlar parametreyle = kendisi',
+        +   'ilk 001 OZ 001 Stok Taksit: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor',
+        +   'ilk 001 OZ 001 Stok Taksit: satırlar parametreyle = kendisi',
+        +   'ilk 001 OZ 001 Çek: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor',
+        +   'ilk 001 OZ 001 Çek: satırlar parametreyle = kendisi',
+        +   'ilk 001 OZ 001 İadeli Kart: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor',
+        +   'ilk 001 OZ 001 İadeli Kart: satırlar parametreyle = kendisi',
+        +   'ilk 001 OZ 001 Şüpheli: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor',
+        +   'ilk 001 OZ 001 Şüpheli: satırlar parametreyle = kendisi',
+        +   'ilk 002 OZ 002 Bağlı: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor',
+        +   'ilk 002 OZ 002 Bağlı: satırlar parametreyle = kendisi',
+        +   'ilk 002 OZ 002 İadeli Kart: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor',
+        +   'ilk 002 OZ 002 İadeli Kart: satırlar parametreyle = kendisi',
+        +   'iade-sil 001 OZ 001 Bağlı: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor',
+        +   'iade-sil 001 OZ 001 Bağlı: satırlar parametreyle = kendisi',
+        +   'iade-sil 001 OZ 001 Silinen Kart: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor',
+        +   'iade-sil 001 OZ 001 Silinen Kart: satırlar parametreyle = kendisi',
+        +   'iade-sil 001 OZ 001 Stok Taksit: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor',
+        +   'iade-sil 001 OZ 001 Stok Taksit: satırlar parametreyle = kendisi',
+        +   'iade-sil 001 OZ 001 Çek: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor',
+        +   'iade-sil 001 OZ 001 Çek: satırlar parametreyle = kendisi',
+        +   'iade-sil 001 OZ 001 İadeli Kart: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor',
+        +   'iade-sil 001 OZ 001 İadeli Kart: satırlar parametreyle = kendisi',
+        +   'iade-sil 001 OZ 001 Şüpheli: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor',
+        +   'iade-sil 001 OZ 001 Şüpheli: satırlar parametreyle = kendisi',
+        +   'iade-sil 002 OZ 002 Bağlı: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor',
+        +   'iade-sil 002 OZ 002 Bağlı: satırlar parametreyle = kendisi',
+        +   'iade-sil 002 OZ 002 İadeli Kart: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor',
+        +   'iade-sil 002 OZ 002 İadeli Kart: satırlar parametreyle = kendisi',
+        +   'geri 001 OZ 001 Bağlı: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor',
+        +   'geri 001 OZ 001 Bağlı: satırlar parametreyle = kendisi',
+        +   'geri 001 OZ 001 Silinen Kart: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor',
+        +   'geri 001 OZ 001 Silinen Kart: satırlar parametreyle = kendisi',
+        +   'geri 001 OZ 001 Stok Taksit: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor',
+        +   'geri 001 OZ 001 Stok Taksit: satırlar parametreyle = kendisi',
+        +   'geri 001 OZ 001 Çek: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor',
+        +   'geri 001 OZ 001 Çek: satırlar parametreyle = kendisi',
+        +   'geri 001 OZ 001 İadeli Kart: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor',
+        +   'geri 001 OZ 001 İadeli Kart: satırlar parametreyle = kendisi',
+        +   'geri 001 OZ 001 Şüpheli: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor',
+        +   'geri 001 OZ 001 Şüpheli: satırlar parametreyle = kendisi',
+        +   'geri 002 OZ 002 Bağlı: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor',
+        +   'geri 002 OZ 002 Bağlı: satırlar parametreyle = kendisi',
+        +   'geri 002 OZ 002 İadeli Kart: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor',
+        +   'geri 002 OZ 002 İadeli Kart: satırlar parametreyle = kendisi'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'ilk 001 OZ 001 Bağlı: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor'
+        1: 'ilk 001 OZ 001 Bağlı: satırlar parametreyle = kendisi'
+        2: 'ilk 001 OZ 001 Silinen Kart: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor'
+        3: 'ilk 001 OZ 001 Silinen Kart: satırlar parametreyle = kendisi'
+        4: 'ilk 001 OZ 001 Stok Taksit: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor'
+        5: 'ilk 001 OZ 001 Stok Taksit: satırlar parametreyle = kendisi'
+        6: 'ilk 001 OZ 001 Çek: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor'
+        7: 'ilk 001 OZ 001 Çek: satırlar parametreyle = kendisi'
+        8: 'ilk 001 OZ 001 İadeli Kart: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor'
+        9: 'ilk 001 OZ 001 İadeli Kart: satırlar parametreyle = kendisi'
+        10: 'ilk 001 OZ 001 Şüpheli: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor'
+        11: 'ilk 001 OZ 001 Şüpheli: satırlar parametreyle = kendisi'
+        12: 'ilk 002 OZ 002 Bağlı: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor'
+        13: 'ilk 002 OZ 002 Bağlı: satırlar parametreyle = kendisi'
+        14: 'ilk 002 OZ 002 İadeli Kart: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor'
+        15: 'ilk 002 OZ 002 İadeli Kart: satırlar parametreyle = kendisi'
+        16: 'iade-sil 001 OZ 001 Bağlı: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor'
+        17: 'iade-sil 001 OZ 001 Bağlı: satırlar parametreyle = kendisi'
+        18: 'iade-sil 001 OZ 001 Silinen Kart: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor'
+        19: 'iade-sil 001 OZ 001 Silinen Kart: satırlar parametreyle = kendisi'
+        20: 'iade-sil 001 OZ 001 Stok Taksit: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor'
+        21: 'iade-sil 001 OZ 001 Stok Taksit: satırlar parametreyle = kendisi'
+        22: 'iade-sil 001 OZ 001 Çek: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor'
+        23: 'iade-sil 001 OZ 001 Çek: satırlar parametreyle = kendisi'
+        24: 'iade-sil 001 OZ 001 İadeli Kart: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor'
+        25: 'iade-sil 001 OZ 001 İadeli Kart: satırlar parametreyle = kendisi'
+        26: 'iade-sil 001 OZ 001 Şüpheli: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor'
+        27: 'iade-sil 001 OZ 001 Şüpheli: satırlar parametreyle = kendisi'
+        28: 'iade-sil 002 OZ 002 Bağlı: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor'
+        29: 'iade-sil 002 OZ 002 Bağlı: satırlar parametreyle = kendisi'
+        30: 'iade-sil 002 OZ 002 İadeli Kart: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor'
+        31: 'iade-sil 002 OZ 002 İadeli Kart: satırlar parametreyle = kendisi'
+        32: 'geri 001 OZ 001 Bağlı: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor'
+        33: 'geri 001 OZ 001 Bağlı: satırlar parametreyle = kendisi'
+        34: 'geri 001 OZ 001 Silinen Kart: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor'
+        35: 'geri 001 OZ 001 Silinen Kart: satırlar parametreyle = kendisi'
+        36: 'geri 001 OZ 001 Stok Taksit: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor'
+        37: 'geri 001 OZ 001 Stok Taksit: satırlar parametreyle = kendisi'
+        38: 'geri 001 OZ 001 Çek: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor'
+        39: 'geri 001 OZ 001 Çek: satırlar parametreyle = kendisi'
+        40: 'geri 001 OZ 001 İadeli Kart: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor'
+        41: 'geri 001 OZ 001 İadeli Kart: satırlar parametreyle = kendisi'
+        42: 'geri 001 OZ 001 Şüpheli: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor'
+        43: 'geri 001 OZ 001 Şüpheli: satırlar parametreyle = kendisi'
+        44: 'geri 002 OZ 002 Bağlı: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor'
+        45: 'geri 002 OZ 002 Bağlı: satırlar parametreyle = kendisi'
+        46: 'geri 002 OZ 002 İadeli Kart: modül (yalnız store, satırları kendisi; tek cari) = servis obligationsFor'
+        47: 'geri 002 OZ 002 İadeli Kart: satırlar parametreyle = kendisi'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a3b-z4/mut/test/obligation-input-250.test.mjs:446:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 2 - 2.5.0 Ç5-A tur 3b — carinin satırlarını kuran zincir (lib/account-lines.mjs): modül satırları kendisi kurar = servis yüzü; davranış taşımadan önceki kodla aynı
+  ---
+  duration_ms: 1266.549444
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a3b-z4/mut/test/obligation-input-250.test.mjs:282:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 2
+# suites 2
+# pass 1
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3508.515711
+

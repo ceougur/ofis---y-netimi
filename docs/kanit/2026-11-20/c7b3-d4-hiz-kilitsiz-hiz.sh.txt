@@ -1,0 +1,22 @@
+#!/bin/bash
+# Ç7b tur 3 devam 3 — kabul E: taban (c7b3-taban kopyası, YALNIZ OKUNUR) ↔ yeni (bu worktree); her blok temiz 100 bin verinin TAZE kopyasında (/dev/shm); taban → yeni → taban → yeni; ÖZEL kilit tek seferlik.
+# Çağrı: timeout -k 5 2400 bash hiz.sh <kilitsiz|kilitli> [tekrar=5]
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad; N=$S/c7b3-d4; V=/dev/shm/c7b3-d4
+KIP=${1:-kilitsiz}; REP=${2:-5}; TAB=$S/c7b3-d2/taban; YENI=/home/user/ofis---y-netimi/.claude/worktrees/agent-abcab14e726c6a077
+export HUKUK_LICENSE_URL=http://127.0.0.1:9 TZ=Europe/Istanbul
+mkdir -p $N/hiz $V
+OUT=$N/hiz/hiz-$KIP.txt
+exec 9>"$S/olcum.lock"; flock -x -w 1800 9 || { echo "KİLİT ALINAMADI (30 dk) — ÖLÇÜLEMEDİ · $(date -u +%H:%M:%S)" > $OUT; exit 3; }
+echo "HIZ c7b3 devam 3 · $KIP · tekrar $REP · kilit $(date -u +%H:%M:%S) · başta $(cat /proc/loadavg) · nproc $(nproc) · yeni $(cd $YENI && git rev-parse --short HEAD) $(cd $YENI && git status --porcelain server | wc -l) kirli" > $OUT
+for k in taban:$TAB yeni:$YENI taban:$TAB yeni:$YENI; do
+  kn=${k%%:*}; R=${k#*:}; K=$V/kopya
+  rm -rf $K && cp -a $S/ana-kabul/temiz-100k $K || exit 1
+  [ "$KIP" = kilitli ] && { python3 -I $S/c5a2-olcum/kilit.py $K/data/destekofis.sqlite >> $OUT || exit 1; }
+  sync; for w in $(seq 1 30); do awk '{exit !($1<1.5)}' /proc/loadavg && break; sleep 10; done
+  l0=$(cut -d' ' -f1 /proc/loadavg)
+  echo "=== $kn · başta $(cat /proc/loadavg) $(awk -v l=$l0 'BEGIN{print (l>2)?"· GEÇERSİZ (yük > 2)":""}')" >> $OUT
+  timeout -k 5 900 node --max-old-space-size=8192 --disable-warning=ExperimentalWarning $N/olc-c7b3.mjs "$R" $K $REP >> $OUT 2>&1
+  echo "çıkış $? · sonda $(cat /proc/loadavg)" >> $OUT
+done
+rm -rf $V/kopya
+echo "bitti $(date -u +%H:%M:%S) · $(grep -c 'GEÇERSİZ' $OUT) geçersiz blok" >> $OUT

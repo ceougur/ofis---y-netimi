@@ -1,0 +1,76 @@
+{
+ "root": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ac0e51d0f24e4542e",
+ "name": "surum-2.0.26-zincir",
+ "today": "2026-10-08",
+ "acilis": {
+  "pending": true,
+  "gunluk": [
+   {
+    "action": "baseline",
+    "summary": "İleri tarihli hareket (Çek/Senet Hareketleri)"
+   }
+  ],
+  "sunucu": [
+   "warn: Mutabakat: güncelleme öncesinden kalan 1 sapma var (İleri tarihli hareket (Çek/Senet Hareketleri)). Yeni işlemler bu sapmayı büyütemez."
+  ]
+ },
+ "dondu": {
+  "coverage": "2026-10-05",
+  "lock": "2026-10-05",
+  "pending": null,
+  "runs": 1
+ },
+ "ilkArka": {
+  "findings": [],
+  "ruleDiffInChecks": true,
+  "gunluk": [],
+  "zil": [],
+  "sunucu": []
+ },
+ "satirIci": {
+  "findings": [],
+  "ruleDiff": [
+   {
+    "ok": false,
+    "count": 44,
+    "difference": 127800
+   }
+  ],
+  "gunluk": [],
+  "zil": [],
+  "sunucu": []
+ },
+ "ikinciArka": {
+  "findings": [],
+  "skipped": "unchanged",
+  "gunluk": [],
+  "zil": [],
+  "sunucu": []
+ },
+ "yenidenAcilis": {
+  "pending": false,
+  "sonGunluk": [
+   {
+    "action": "baseline",
+    "summary": "İleri tarihli hareket (Çek/Senet Hareketleri)"
+   }
+  ],
+  "sunucu": [
+   "warn: Mutabakat: güncelleme öncesinden kalan 1 sapma var (İleri tarihli hareket (Çek/Senet Hareketleri)). Yeni işlemler bu sapmayı büyütemez."
+  ]
+ },
+ "yenidenIlkArka": {
+  "findings": [],
+  "gunluk": [],
+  "zil": [],
+  "sunucu": []
+ },
+ "ilkYazim": {
+  "status": 200,
+  "gate": {
+   "path": "full",
+   "reason": "doğrulama",
+   "ms": 32
+  }
+ }
+}

@@ -1,0 +1,11 @@
+# T16 yarış denemesi: 3 deneme, defter-teslimden sonra olay döngüsü kilidi 900 ms, TZ UTC, klasör /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/t16-12dcad12
+deneme 1: çıkış 1 · KIRMIZI · teslim +1398 → kilit +1401..+2302 → defter sonucu uncertain (yazildi) +2317 (ön koşul OLUŞTU) · actual: 'uncertain', expected: 'delivered', · 'uncertain'ı yazan: updateJob server/lib/whatsapp/queue.mjs:207:11 < applyFailure server/lib/whatsapp/queue.mjs:1768:7 < handleFailure server/lib/whatsapp/queue.mjs:1731:5 < runJob server/lib/whatsapp/queue.mjs:1603:7
+deneme 2: çıkış 1 · KIRMIZI · teslim +1560 → kilit +1563..+2464 → defter sonucu uncertain (yazildi) +2483 (ön koşul OLUŞTU) · actual: 'uncertain', expected: 'delivered', · 'uncertain'ı yazan: updateJob server/lib/whatsapp/queue.mjs:207:11 < applyFailure server/lib/whatsapp/queue.mjs:1768:7 < handleFailure server/lib/whatsapp/queue.mjs:1731:5 < runJob server/lib/whatsapp/queue.mjs:1603:7
+deneme 3: çıkış 1 · KIRMIZI · teslim +1485 → kilit +1492..+2392 → defter sonucu uncertain (yazildi) +2399 (ön koşul OLUŞTU) · actual: 'uncertain', expected: 'delivered', · 'uncertain'ı yazan: updateJob server/lib/whatsapp/queue.mjs:207:11 < applyFailure server/lib/whatsapp/queue.mjs:1768:7 < handleFailure server/lib/whatsapp/queue.mjs:1731:5 < runJob server/lib/whatsapp/queue.mjs:1603:7
+# özet: 0/3 yeşil, 3 kırmızı; ön koşul oluşan deneme 3/3
+# tests 3
+# pass 0
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0

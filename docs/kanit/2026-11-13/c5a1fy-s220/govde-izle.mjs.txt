@@ -1,0 +1,60 @@
+// Ana oturum (13.11.2026): senaryo-220 tanısı — YALNIZ İZLER, hiçbir şeyi değiştirmez (depodaki pencere-yaris-zorla.mjs'in 'olc' kipinin kalıbı).
+// Açılan her sayfada gövdeye (body) eklenen her öğeyi, sayfa yüklenmesinden bu yana geçen ms ile günlüğe yazar: "[govde-izle] <ms> + <öğe> | <metin>".
+// Amaç: Taksitler penceresinden SONRA gövdeye hangi öğenin eklendiğini (ör. bildirim kabı) ve bunun pencereye göre zamanını okumak.
+// GECIKTIR=<ms> verilirse (ön koşulu ZORLAMAK için — ders 20) sağ alt bildirim kuyruğunun kabı (#hof-notices) ilk kez o kadar GEÇ eklenir:
+// document.body.appendChild sarılır, yalnız id'si hof-notices olan öğe için ekleme ertelenir (ürün kodu ve senaryo değişmez).
+import { chromium } from "playwright";
+
+const delay = Number(process.env.GECIKTIR || 0);
+const launch = chromium.launch.bind(chromium);
+chromium.launch = async (...args) => {
+  const browser = await launch(...args);
+  const newContext = browser.newContext.bind(browser);
+  browser.newContext = async (...contextOptions) => {
+    const context = await newContext(...contextOptions);
+    await context.addInitScript(install, { delay });
+    context.on("page", page =>
+      page.on("console", message => {
+        const text = message.text();
+        if (text.startsWith("[govde-izle]")) console.log(text);
+      }),
+    );
+    return context;
+  };
+  return browser;
+};
+console.log(`[govde-izle] kuruldu${delay ? `; #hof-notices ${delay} ms geciktirilir` : ""}`);
+
+function install({ delay }) {
+  const now = performance.now.bind(performance);
+  const name = node => `${node.tagName.toLowerCase()}${node.id ? "#" + node.id : ""}${node.className && typeof node.className === "string" ? "." + node.className.trim().split(/\s+/).join(".") : ""}`;
+  const title = node => (node.querySelector?.(".hof-modal-title")?.textContent || "").trim().slice(0, 40);
+  const watch = () => {
+    new MutationObserver(records => {
+      for (const record of records) {
+        for (const node of record.addedNodes) {
+          if (!(node instanceof Element)) continue;
+          const at = now().toFixed(0);
+          const label = name(node) + (title(node) ? ` "${title(node)}"` : "");
+          console.log(`[govde-izle] ${at} + ${label}`);
+          if (node.id === "hof-notices" || node.id === "hof-toasts") setTimeout(() => console.log(`[govde-izle] ${now().toFixed(0)} metin ${node.id}: ${(node.textContent || "").replace(/\s+/g, " ").trim().slice(0, 220)}`), 400);
+        }
+      }
+    }).observe(document.body, { childList: true });
+    if (delay) {
+      const append = document.body.appendChild.bind(document.body);
+      let held = false;
+      document.body.appendChild = node => {
+        if (node instanceof Element && node.id === "hof-notices" && !held) {
+          held = true;
+          console.log(`[govde-izle] ${now().toFixed(0)} #hof-notices eklenmesi ${delay} ms ertelendi`);
+          setTimeout(() => append(node), delay);
+          return node;
+        }
+        return append(node);
+      };
+    }
+  };
+  if (document.body) watch();
+  else document.addEventListener("DOMContentLoaded", watch);
+}

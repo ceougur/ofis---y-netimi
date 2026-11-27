@@ -53,7 +53,7 @@ describe("K3 — Kasa elle hareketi istek kimliği (plan §7, §3.3/1, §3.10/1)
     assert.equal((await rows("Temizlik Gideri")).length, 1, "Kasa'da tek Temizlik Gideri satırı");
     assert.equal((await cash()).byMethod.cash, 788, "Kasa 1.000 − 212 = 788");
     const accounts = await trial();
-    if (accounts["770"]) assert.equal(accounts["770"].balance, 212, "770 Genel Giderler 212 (bir kez)");
+    if (accounts["770"]) assert.equal(accounts["770"].balance, 212, "770 Genel Yönetim Giderleri 212 (bir kez)");
   });
 
   it("B2: aynı kimlik + farklı içerik (250) → 409 request-id-reused; satır yazılmaz", async () => {

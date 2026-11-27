@@ -1,0 +1,21 @@
+başladı 07:29:40 yük 1.91 2.53 2.55 4/239 21789 · ağaç a5a652a2 · 0 kirli
+utc cari-oz çıkış 0 · [kanit] kahin9y-cari-oz-utc: GEÇTİ · çıkış 0 · 4457/4457 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a5a652a +1 izlenmeyen · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+utc cari-mutasyon çıkış 0 · [kanit] kahin9y-cari-mutasyon-utc: GEÇTİ · çıkış 0 · 231/231 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a5a652a +1 izlenmeyen · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+utc esdeger-cari çıkış 0 · [kanit] kahin9y-esdeger-cari-utc: GEÇTİ · çıkış 0 · 545/545 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a5a652a +1 izlenmeyen · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+utc elle-yeni-cari çıkış 0 · [kanit] kahin9y-elle-yeni-cari-utc: GEÇTİ · çıkış 0 · 587/587 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a5a652a +1 izlenmeyen · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+utc kirmizi-eski-cari çıkış 0 · [kanit] kahin9y-kirmizi-eski-cari-utc: GEÇTİ · çıkış 0 · 253/253 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a5a652a +1 izlenmeyen · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+utc elle-fark çıkış 0 · [kanit] kahin9y-elle-fark-utc: GEÇTİ · çıkış 0 · 88/88 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a5a652a +1 izlenmeyen · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+utc mutant-senaryo çıkış 0 · [kanit] kahin9y-mutant-senaryo-utc: GEÇTİ · çıkış 0 · 18/18 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a5a652a +1 izlenmeyen · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+utc g1-tara çıkış 0 · [kanit] kahin9y-g1-tara-utc: GEÇTİ · çıkış 0 · 89/89 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a5a652a +1 izlenmeyen · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+utc genis-tarama çıkış 0 · [kanit] kahin9y-genis-tarama-utc: GEÇTİ · çıkış 0 · 2201/2201 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a5a652a +1 izlenmeyen · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+ist cari-oz çıkış 0 · [kanit] kahin9y-cari-oz-ist: GEÇTİ · çıkış 0 · 4457/4457 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a5a652a +1 izlenmeyen · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+ist cari-mutasyon çıkış 0 · [kanit] kahin9y-cari-mutasyon-ist: GEÇTİ · çıkış 0 · 231/231 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a5a652a +1 izlenmeyen · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+ist esdeger-cari çıkış 0 · [kanit] kahin9y-esdeger-cari-ist: GEÇTİ · çıkış 0 · 545/545 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a5a652a +1 izlenmeyen · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+ist elle-yeni-cari çıkış 0 · [kanit] kahin9y-elle-yeni-cari-ist: GEÇTİ · çıkış 0 · 587/587 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a5a652a +1 izlenmeyen · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+ist kirmizi-eski-cari çıkış 0 · [kanit] kahin9y-kirmizi-eski-cari-ist: GEÇTİ · çıkış 0 · 253/253 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a5a652a +1 izlenmeyen · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+ist elle-fark çıkış 0 · [kanit] kahin9y-elle-fark-ist: GEÇTİ · çıkış 0 · 88/88 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a5a652a +1 izlenmeyen · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+ist mutant-senaryo çıkış 0 · [kanit] kahin9y-mutant-senaryo-ist: GEÇTİ · çıkış 0 · 18/18 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a5a652a +1 izlenmeyen · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+ist g1-tara çıkış 0 · [kanit] kahin9y-g1-tara-ist: GEÇTİ · çıkış 0 · 89/89 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a5a652a +1 izlenmeyen · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+ist genis-tarama çıkış 0 · [kanit] kahin9y-genis-tarama-ist: GEÇTİ · çıkış 0 · 2201/2201 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a5a652a +1 izlenmeyen · linux 6.18.44-fc-v378 x64 · Node v22.23.4
+G3 dökümü iki TZ aynı
+bitti 07:34:45 yük 4.08 3.51 2.97 4/252 24860

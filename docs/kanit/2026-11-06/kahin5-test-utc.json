@@ -1,0 +1,32 @@
+{
+  "ad": "kahin5-test-utc",
+  "komut": "python3 -I test/bagimsiz/muhasebe/test_model.py",
+  "commit": "acefd13ae92f60354fb2fde808546fa2e5fb4fa7",
+  "dal": "worktree-agent-aa1d453c9cc7bfb3b",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T07:27:34.270Z",
+  "sure_sn": 20.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 138,
+    "gecen": 138,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin5-kanit/2026-11-06/kahin5-test-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa1d453c9cc7bfb3b",
+  "ham_cikti_sha256": "880558e95d738e801b3cb65e223863bbb86be7762bcb82fd420086a83bda5941",
+  "ham_cikti_bayt": 291
+}

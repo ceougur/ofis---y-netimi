@@ -1,0 +1,159 @@
+{
+ "kok": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a8eba3f64140fc5f1",
+ "kip": "aynigun",
+ "beklenen_u3": {
+  "…-30.06": "2.4.9",
+  "30.06-31.12": "2.5.0"
+ },
+ "bilesim_once": [
+  {
+   "no": 1,
+   "kind": "freeze",
+   "state": "done",
+   "fromDate": "",
+   "through": "2026-06-30",
+   "rule": "2.4.9",
+   "reason": "repair",
+   "lines": 46,
+   "stateLines": 46,
+   "iz": true
+  },
+  {
+   "no": 2,
+   "kind": "freeze",
+   "state": "done",
+   "fromDate": "2026-06-30",
+   "through": "2026-12-31",
+   "rule": "2.5.0",
+   "reason": "lock",
+   "lines": 38,
+   "stateLines": 84,
+   "iz": true
+  }
+ ],
+ "kurallar_once": {
+  "…-30.06": "2.4.9",
+  "30.06-31.12": "2.5.0"
+ },
+ "silinen": 84,
+ "onarim": {
+  "action": "freeze",
+  "pending": true,
+  "damaged": true
+ },
+ "ilk_bekleyen": {
+  "no": 4,
+  "from": "",
+  "through": "2026-06-30",
+  "rule": "2.4.9",
+  "reason": "repair"
+ },
+ "plan_izi": "{\"segments\":[{\"through\":\"2026-12-31\",\"rule\":\"2.5.0\"}]}",
+ "onkosul_parca": 2,
+ "onkosul_durum": {
+  "running": false,
+  "phase": "hata",
+  "done": 10,
+  "total": 0,
+  "run": 4,
+  "error": "test: dondurma düştü (disk / bellek benzetimi)",
+  "coverage": "",
+  "cleanup": {
+   "running": false,
+   "removed": 0
+  }
+ },
+ "kart": {
+  "lockedUntil": "2026-12-31",
+  "frozenThrough": "",
+  "pending": {
+   "no": 4,
+   "from": "",
+   "through": "2026-06-30",
+   "rule": "2.4.9"
+  },
+  "error": "test: dondurma düştü (disk / bellek benzetimi)",
+  "active": false
+ },
+ "ayni_gun_yanit": 200,
+ "kosular": [
+  {
+   "no": 1,
+   "kind": "freeze",
+   "state": "done",
+   "fromDate": "",
+   "through": "2026-06-30",
+   "rule": "2.4.9",
+   "reason": "repair",
+   "lines": 46,
+   "stateLines": 46,
+   "iz": true
+  },
+  {
+   "no": 2,
+   "kind": "freeze",
+   "state": "done",
+   "fromDate": "2026-06-30",
+   "through": "2026-12-31",
+   "rule": "2.5.0",
+   "reason": "lock",
+   "lines": 38,
+   "stateLines": 84,
+   "iz": true
+  },
+  {
+   "no": 3,
+   "kind": "thaw",
+   "state": "done",
+   "fromDate": "2026-12-31",
+   "through": "",
+   "rule": "",
+   "reason": "repair",
+   "lines": 0,
+   "stateLines": 0,
+   "iz": false
+  },
+  {
+   "no": 4,
+   "kind": "freeze",
+   "state": "done",
+   "fromDate": "",
+   "through": "2026-06-30",
+   "rule": "2.4.9",
+   "reason": "repair",
+   "lines": 46,
+   "stateLines": 46,
+   "iz": true
+  },
+  {
+   "no": 5,
+   "kind": "freeze",
+   "state": "done",
+   "fromDate": "2026-06-30",
+   "through": "2026-12-31",
+   "rule": "2.5.0",
+   "reason": "repair",
+   "lines": 38,
+   "stateLines": 84,
+   "iz": true
+  }
+ ],
+ "kurallar_sonra": {
+  "…-30.06": "2.4.9",
+  "30.06-31.12": "2.5.0"
+ },
+ "beklenen_S46A": {
+  "…-30.06": "2.4.9",
+  "30.06-31.12": "2.5.0"
+ },
+ "S46A_uyuyor": true,
+ "butunluk": {
+  "kapsam": "2026-12-31",
+  "kilit": "2026-12-31",
+  "gorunen": 84,
+  "kayitli": 84,
+  "canli": 84,
+  "donmus_eq_canli": true,
+  "tutarli": true
+ }
+}

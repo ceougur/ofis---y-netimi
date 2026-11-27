@@ -1,0 +1,79 @@
+{
+ "kartOncesi": {
+  "bakiye": -400,
+  "gecikmisKart": 0,
+  "gecikmisKartAdet": 0,
+  "eskiGeciken": 300,
+  "gecikmisListe": 0,
+  "vade": [],
+  "vadeGecikmis": 0,
+  "zil": [],
+  "kalan": [],
+  "faturalar": [],
+  "kartlar": [
+   {
+    "state": "done",
+    "items": [
+     0,
+     0
+    ],
+    "own": 600,
+    "queue": 0,
+    "accountPaid": 0
+   }
+  ]
+ },
+ "kartTahsilati": 200,
+ "sonra": {
+  "bakiye": -700,
+  "gecikmisKart": 0,
+  "gecikmisKartAdet": 0,
+  "eskiGeciken": 0,
+  "gecikmisListe": 0,
+  "vade": [],
+  "vadeGecikmis": 0,
+  "zil": [],
+  "kalan": [],
+  "faturalar": [],
+  "kartlar": [
+   {
+    "state": "done",
+    "items": [
+     0,
+     0
+    ],
+    "own": 300,
+    "queue": 0,
+    "accountPaid": 0
+   }
+  ]
+ },
+ "borcSonrasi": {
+  "bakiye": -200,
+  "gecikmisKart": 0,
+  "gecikmisKartAdet": 0,
+  "eskiGeciken": 0,
+  "gecikmisListe": 0,
+  "vade": [],
+  "vadeGecikmis": 0,
+  "zil": [],
+  "kalan": [
+   "debt:500→0"
+  ],
+  "faturalar": [],
+  "kartlar": [
+   {
+    "state": "done",
+    "items": [
+     0,
+     0
+    ],
+    "own": 300,
+    "queue": 0,
+    "accountPaid": 0
+   }
+  ]
+ },
+ "kalemler": [],
+ "sigmaKalem": 0
+}

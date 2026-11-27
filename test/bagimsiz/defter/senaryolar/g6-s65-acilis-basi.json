@@ -1,0 +1,35 @@
+{
+  "aciklama": "2.5.0 Ç5 bakımı 2 — D6′ (KULLANICI S65 = A, 06.11 12:16): 'Açılış Olabilir' listesine yalnız açıklaması 'Açılış…' ile BAŞLAYAN eski kayıt girer (B6 Türkçe katlamasıyla: 'Açılış', 'AÇILIŞ', 'açılış farkı', 'Acilis' aday); ortada geçen ('2025 açılış farkı', 'Yeniden açılış', 'Devir açılış farkı') aday DEĞİL → C-01 / C-02 (602 / 770). Kilitsiz göç (S53: eski maddeler yeni kurala). Listede olmayan kaydın onayı ret; adayın reddi 602; onaylanan 519'da. B8 × S65: göç öncesi silinip göçten sonra geri alınan ortada-açılışlı kayıt aday değil (602). Göç senaryosu: yalnız model.",
+  "simdi": "2026-02-10T17:00:00+03:00",
+  "bugun": "2026-02-10",
+  "olaylar": [
+    { "id": "M1", "tur": "cari", "ad": "Başlangıç Alfa Ltd.", "tip": "customer" },
+    { "id": "T1", "tur": "cari", "ad": "Başlangıç Tedarik A.Ş.", "tip": "supplier" },
+    { "id": "E1", "tur": "borc_yaz", "tarih": "2025-03-01", "cari": "M1", "tutar": 100, "aciklama": "Açılış" },
+    { "id": "E2", "tur": "borc_yaz", "tarih": "2025-03-02", "cari": "M1", "tutar": 200, "aciklama": "AÇILIŞ" },
+    { "id": "E3", "tur": "borc_yaz", "tarih": "2025-03-03", "cari": "M1", "tutar": 300, "aciklama": "açılış farkı" },
+    { "id": "E4", "tur": "borc_yaz", "tarih": "2025-03-04", "cari": "M1", "tutar": 400, "aciklama": "2025 açılış farkı" },
+    { "id": "E5", "tur": "alacak_yaz", "tarih": "2025-03-05", "cari": "T1", "tutar": 500, "aciklama": "Acilis" },
+    { "id": "E6", "tur": "alacak_yaz", "tarih": "2025-03-06", "cari": "T1", "tutar": 600, "aciklama": "Devir açılış farkı" },
+    { "id": "E8", "tur": "borc_yaz", "tarih": "2025-03-08", "cari": "M1", "tutar": 800, "aciklama": "Yeniden açılış" },
+    { "id": "E9", "tur": "borc_yaz", "tarih": "2025-03-09", "cari": "M1", "tutar": 50, "aciklama": "Eski açılış devri" },
+    { "id": "S9", "tur": "kayit_sil", "tarih": "2025-03-10", "kayit": "E9" },
+    { "id": "G", "tur": "goc", "tarih": "2026-02-01" },
+    { "id": "K1", "tur": "kontrol", "tarih": "2026-02-01" },
+    { "id": "O1", "tur": "acilis_onay", "kayit": "E4", "karar": "onay", "not": "listede olmayan kayıt onaylanamaz (ortada geçen — S65 A)" },
+    { "id": "O2", "tur": "acilis_onay", "kayit": "E3", "karar": "red", "not": "aday reddedildi → C-01 (B 120 / A 602)" },
+    { "id": "O3", "tur": "acilis_onay", "kayit": "E5", "karar": "onay", "not": "onaylanan M-03 (519'da kalır)" },
+    { "id": "R9", "tur": "kayit_geri_al", "kayit": "E9", "not": "B8 × S65: ortada geçen açılış — geri alınınca aday değil, 602" },
+    { "id": "K2", "tur": "kontrol", "tarih": "2026-02-10" }
+  ],
+  "elleBeklenenTL": {
+    "aciklama": "K1: 120 = 100+200+300+400+800 (E9 silinmiş); 320 = −(500+600); 519 = −(E1 100 + E2 200 + E3 300) + E5 500 = −100 (aday — S47); 602 = −(E4 400 + E8 800); 770 = E6 600. K2: E3 reddedildi → 602 −300 daha, 519 +300; E9 geri alındı → 120 +50, 602 −50.",
+    "kontroller": {
+      "K1": { "120": 1800, "320": -1100, "519": -100, "602": -1200, "770": 600 },
+      "K2": { "120": 1850, "320": -1100, "519": 200, "602": -1550, "770": 600 }
+    },
+    "retler": ["O1"],
+    "acilisOlabilir": ["E1", "E2"],
+    "cari": { "Başlangıç Alfa Ltd.": 1850, "Başlangıç Tedarik A.Ş.": -1100 }
+  }
+}

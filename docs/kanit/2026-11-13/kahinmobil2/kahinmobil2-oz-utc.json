@@ -1,0 +1,32 @@
+{
+  "ad": "kahinmobil2-oz-utc",
+  "komut": "python3 -I -B test/bagimsiz/mobil-yazma/kahin_test.py",
+  "commit": "831e709beabe6687b6c76fc0a5a093cc0c6bc2c8",
+  "dal": "worktree-agent-ae84e826635f4eb38",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v445 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-13T18:47:32.069Z",
+  "sure_sn": 364,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 162,
+    "gecen": 162,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahinmobil2-q7/kanit/2026-11-13/kahinmobil2-oz-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ae84e826635f4eb38",
+  "ham_cikti_sha256": "5dd5c820f511ed6e9b7a0037ada9d9594bd1b17de981851b5874390b2360e9f3",
+  "ham_cikti_bayt": 33435
+}

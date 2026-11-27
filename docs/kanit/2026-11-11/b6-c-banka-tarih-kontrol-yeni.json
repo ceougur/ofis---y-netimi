@@ -1,0 +1,32 @@
+{
+  "ad": "b6-c-banka-tarih-kontrol-yeni",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/suzgec-cubugu-yaris.mjs --kip banka-tarih --deneme 3 --kontrol",
+  "commit": "18d719f569be18770cdebd40e069fe67e847c4d7",
+  "dal": "worktree-agent-a115f88e3014ea777",
+  "kirli": 4,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-11T04:34:58.320Z",
+  "sure_sn": 24.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 3,
+    "gecen": 3,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/birlesik6-kanit/2026-11-11/b6-c-banka-tarih-kontrol-yeni.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a115f88e3014ea777",
+  "ham_cikti_sha256": "eef2c2a3ad29e315903b8b0fbd82b5e8d8b8d80943de7391a3cfaa2c0300972d",
+  "ham_cikti_bayt": 865
+}

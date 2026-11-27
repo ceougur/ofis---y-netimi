@@ -1,0 +1,32 @@
+{
+  "ad": "b6-e2e-senaryo-ekstre-ayrinti-247",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-ekstre-ayrinti-247.mjs",
+  "commit": "5723e098a391cdf1fb7fee0f882ea82d910cc342",
+  "dal": "worktree-agent-a115f88e3014ea777",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-11T05:07:25.814Z",
+  "sure_sn": 14.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 34,
+    "gecen": 34,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/birlesik6-kanit/2026-11-11/b6-e2e-senaryo-ekstre-ayrinti-247.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a115f88e3014ea777",
+  "ham_cikti_sha256": "849acf91dae9e05bb4efdb54e81620d77de850db1bc6b122235f72443fdbe0c5",
+  "ham_cikti_bayt": 2864
+}

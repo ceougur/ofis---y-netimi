@@ -1,0 +1,58 @@
+ok 1 - şirket sayısı aynı (4 / 4)
+ok 2 - şirket 001: aynı şirket
+ok 3 - şirket 001: madde sayısı aynı ve > 0 (430 / 430; satır 950 / 950)
+ok 4 - şirket 001: yevmiye maddeleri BİREBİR (kimlik, tarih, kaynak, sıra, hesap, alt hesap, cari, borç, alacak)
+ok 5 - şirket 001: mizan 2025 tutarları ve toplamları aynı (borç 727429.2, alacak 727429.2, hesap 11, dengeli true)
+ok 6 - şirket 001: mizan 2025 adları — yalnız izinli fark (yok): fark yok
+ok 7 - şirket 001: mizan 2026 tutarları ve toplamları aynı (borç 903163.5, alacak 903163.5, hesap 14, dengeli true)
+ok 8 - şirket 001: mizan 2026 adları — yalnız izinli fark (yok): fark yok
+ok 9 - şirket 001: mizan tum tutarları ve toplamları aynı (borç 1630592.7, alacak 1630592.7, hesap 14, dengeli true)
+ok 10 - şirket 001: mizan tum adları — yalnız izinli fark (yok): fark yok
+ok 11 - şirket 001: Defter Mutabakatı iki kodda tutarlı ve aynı (13 denetim)
+ok 12 - şirket 001: Hesap Planı Mizanı raporu (Tüm Zamanlar) satırları aynı (ad kolonu hariç; 14 satır)
+ok 13 - şirket 001: rapordaki ad farkları yalnız izinli hesaplarda (fark yok)
+ok 14 - şirket 001: yeni kodda deftere yazılan her hesap sınıflanabilir (14 hesap: 100 101 102 108 120 191 320 391 500 600 602 610 649 770; sınıflanmayan [])
+ok 15 - şirket 002: aynı şirket
+ok 16 - şirket 002: madde sayısı aynı ve > 0 (344 / 344; satır 766 / 766)
+ok 17 - şirket 002: yevmiye maddeleri BİREBİR (kimlik, tarih, kaynak, sıra, hesap, alt hesap, cari, borç, alacak)
+ok 18 - şirket 002: mizan 2025 tutarları ve toplamları aynı (borç 303103.95, alacak 303103.95, hesap 11, dengeli true)
+ok 19 - şirket 002: mizan 2025 adları — yalnız izinli fark (yok): fark yok
+ok 20 - şirket 002: mizan 2026 tutarları ve toplamları aynı (borç 1105915.46, alacak 1105915.46, hesap 14, dengeli true)
+ok 21 - şirket 002: mizan 2026 adları — yalnız izinli fark (yok): fark yok
+ok 22 - şirket 002: mizan tum tutarları ve toplamları aynı (borç 1409019.41, alacak 1409019.41, hesap 14, dengeli true)
+ok 23 - şirket 002: mizan tum adları — yalnız izinli fark (yok): fark yok
+ok 24 - şirket 002: Defter Mutabakatı iki kodda tutarlı ve aynı (13 denetim)
+ok 25 - şirket 002: Hesap Planı Mizanı raporu (Tüm Zamanlar) satırları aynı (ad kolonu hariç; 14 satır)
+ok 26 - şirket 002: rapordaki ad farkları yalnız izinli hesaplarda (fark yok)
+ok 27 - şirket 002: yeni kodda deftere yazılan her hesap sınıflanabilir (14 hesap: 100 101 102 108 120 191 320 391 500 600 602 610 649 770; sınıflanmayan [])
+ok 28 - şirket 003: aynı şirket
+ok 29 - şirket 003: madde sayısı aynı ve > 0 (211 / 211; satır 470 / 470)
+ok 30 - şirket 003: yevmiye maddeleri BİREBİR (kimlik, tarih, kaynak, sıra, hesap, alt hesap, cari, borç, alacak)
+ok 31 - şirket 003: mizan 2025 tutarları ve toplamları aynı (borç 357860.89, alacak 357860.89, hesap 11, dengeli true)
+ok 32 - şirket 003: mizan 2025 adları — yalnız izinli fark (yok): fark yok
+ok 33 - şirket 003: mizan 2026 tutarları ve toplamları aynı (borç 858917.28, alacak 858917.28, hesap 11, dengeli true)
+ok 34 - şirket 003: mizan 2026 adları — yalnız izinli fark (yok): fark yok
+ok 35 - şirket 003: mizan tum tutarları ve toplamları aynı (borç 1216778.17, alacak 1216778.17, hesap 11, dengeli true)
+ok 36 - şirket 003: mizan tum adları — yalnız izinli fark (yok): fark yok
+ok 37 - şirket 003: Defter Mutabakatı iki kodda tutarlı ve aynı (13 denetim)
+ok 38 - şirket 003: Hesap Planı Mizanı raporu (Tüm Zamanlar) satırları aynı (ad kolonu hariç; 11 satır)
+ok 39 - şirket 003: rapordaki ad farkları yalnız izinli hesaplarda (fark yok)
+ok 40 - şirket 003: yeni kodda deftere yazılan her hesap sınıflanabilir (11 hesap: 100 102 120 191 320 391 500 600 602 649 770; sınıflanmayan [])
+ok 41 - şirket 004: aynı şirket
+ok 42 - şirket 004: madde sayısı aynı ve > 0 (62 / 62; satır 136 / 136)
+ok 43 - şirket 004: yevmiye maddeleri BİREBİR (kimlik, tarih, kaynak, sıra, hesap, alt hesap, cari, borç, alacak)
+ok 44 - şirket 004: mizan 2026 tutarları ve toplamları aynı (borç 249339.38, alacak 249339.38, hesap 11, dengeli true)
+ok 45 - şirket 004: mizan 2026 adları — yalnız izinli fark (yok): fark yok
+ok 46 - şirket 004: mizan tum tutarları ve toplamları aynı (borç 249339.38, alacak 249339.38, hesap 11, dengeli true)
+ok 47 - şirket 004: mizan tum adları — yalnız izinli fark (yok): fark yok
+ok 48 - şirket 004: Defter Mutabakatı iki kodda tutarlı ve aynı (13 denetim)
+ok 49 - şirket 004: Hesap Planı Mizanı raporu (Tüm Zamanlar) satırları aynı (ad kolonu hariç; 11 satır)
+ok 50 - şirket 004: rapordaki ad farkları yalnız izinli hesaplarda (fark yok)
+ok 51 - şirket 004: yeni kodda deftere yazılan her hesap sınıflanabilir (11 hesap: 100 102 120 191 320 391 500 600 602 649 770; sınıflanmayan [])
+1..51
+# tests 51
+# pass 51
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0

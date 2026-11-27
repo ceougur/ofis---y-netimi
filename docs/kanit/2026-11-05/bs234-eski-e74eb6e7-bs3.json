@@ -1,0 +1,53 @@
+{
+  "ad": "bs234-eski-e74eb6e7-bs3",
+  "komut": "node --disable-warning=ExperimentalWarning --test /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bs234-eski-e74eb6e7/test/bs3-silinmis-kayit-250.test.mjs",
+  "commit": "1abb27240c345eed7605218428edb4f3a0bf739b",
+  "dal": "worktree-agent-a43c8fa8274cd88ab",
+  "kirli": 0,
+  "izlenmeyen": 6,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T21:05:29.259Z",
+  "sure_sn": 2.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 4,
+    "gecen": 0,
+    "basarisiz": 4,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 4 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.0 BS-3 — düzeltme gövdesi yoldayken kayıt silinirse 404 + kayıt bulunamadı iletisi; hiçbir tablo yazılmaz › (d) stok hareketi düzeltmesi: hareket silinmişse 404 \"Stok hareketi bulunamadı. Başka biri silmiş olabilir.\" (önceden 409 ledger-integrity)",
+      "konum": "test/bs3-silinmis-kayit-250.test.mjs:88:3",
+      "hata": "stok hareketi düzeltmesi: yazım reddedilmeli (404) — yanıt 409 {\"ok\":false,\"error\":\"İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Stok hareketi silinmiş cari satırı). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.\",\"code\":\"ledger-integrity | ileti “İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Stok hareketi silinmiş cari satırı). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.” (beklenen “Stok hareketi bulunamadı. Başka biri silmiş olabilir.”) | hiçbir tablo yazılmamalı — değişen: integrity_log 0:e3b0c44298fc1c14 → 1:2eac98b68d86e89d · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 BS-3 — düzeltme gövdesi yoldayken kayıt silinirse 404 + kayıt bulunamadı iletisi; hiçbir tablo yazılmaz › (f) taksit kartı tahsilatı düzeltmesi: tahsilat silinmişse 404 \"Hareket bulunamadı. Başka biri silmiş olabilir.\" (önceden 200)",
+      "konum": "test/bs3-silinmis-kayit-250.test.mjs:108:3",
+      "hata": "tahsilat düzeltmesi: yazım reddedilmeli (404) — yanıt 200 {\"ok\":true,\"data\":{\"id\":\"plan-697d52aa-37a1-4480-a07c-621bbf064bea\",\"accountId\":\"account-c43f3707-1276-495b-a25f-24f37c4e6188\",\"refNo\":\"1\",\"registeredOn\":\"2026-10-08\",\"caseKey\":\"\",\"caseSource\":\"\",\"cas | ileti “undefined” (beklenen “Hareket bulunamadı. Başka biri silmiş olabilir.”) | hiçbir tablo yazılmamalı — değişen: audit_events 9:6b453192317a3a19 → 10:2d9284502e70dcc4 · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 BS-3 — düzeltme gövdesi yoldayken kayıt silinirse 404 + kayıt bulunamadı iletisi; hiçbir tablo yazılmaz › (g) taksit düzeltmesi: taksit silinmişse 404 \"Taksit bulunamadı. Başka biri silmiş olabilir.\" (önceden 200)",
+      "konum": "test/bs3-silinmis-kayit-250.test.mjs:126:3",
+      "hata": "taksit düzeltmesi: yazım reddedilmeli (404) — yanıt 200 {\"ok\":true,\"data\":{\"id\":\"plan-4e825325-ab0e-453d-858d-0129361fc81e\",\"accountId\":\"account-074ce151-ac17-4998-8798-ae31e9400c34\",\"refNo\":\"2\",\"registeredOn\":\"2026-10-08\",\"caseKey\":\"\",\"caseSource\":\"\",\"cas | ileti “undefined” (beklenen “Taksit bulunamadı. Başka biri silmiş olabilir.”) | hiçbir tablo yazılmamalı — değişen: audit_events 13:2ad2622a8b1a4458 → 14:26e465f09d8181d5 · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 BS-3 — düzeltme gövdesi yoldayken kayıt silinirse 404 + kayıt bulunamadı iletisi; hiçbir tablo yazılmaz › yarış yokken aynı üç düzeltme yazar; silinmiş kayda doğrudan düzeltme de aynı 404 iletisini alır (isteğin başındaki denetim)",
+      "konum": "test/bs3-silinmis-kayit-250.test.mjs:144:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-05/bs234-eski-e74eb6e7-bs3.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a43c8fa8274cd88ab",
+  "ham_cikti_sha256": "31eaa9a5d2a5b8e8e4fd2f4e531987beb47f3c5fa40bb834c09cf2a8c3f6a37d",
+  "ham_cikti_bayt": 11143
+}

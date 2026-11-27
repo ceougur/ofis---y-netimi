@@ -1,0 +1,513 @@
+TAP version 13
+# (node:14211) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14211) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14211) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 Ç6-HESAP tur 4 — ORTA-1: kural farkı alt hesap düzeyinde (v2.4.9 kilitli veri)
+    # Subtest: pos: kilitli 2026 ilk yarı Gelir Tablosu ve Bilanço 'Kural Değişikliği Farkı' 602 ↔ 602.90; tablo donmuş (602), kilitsizde neden yok
+    ok 1 - pos: kilitli 2026 ilk yarı Gelir Tablosu ve Bilanço 'Kural Değişikliği Farkı' 602 ↔ 602.90; tablo donmuş (602), kilitsizde neden yok
+      ---
+      duration_ms: 3102.003123
+      type: 'test'
+      ...
+# (node:14211) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14211) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: stok: 600 → 600.90 (400,00) ve 610 → 610.90 (100,00) kilitli kopyada neden; kilitsizde yok
+    ok 2 - stok: 600 → 600.90 (400,00) ve 610 → 610.90 (100,00) kilitli kopyada neden; kilitsizde yok
+      ---
+      duration_ms: 2732.487868
+      type: 'test'
+      ...
+# (node:14211) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14211) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14211) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14211) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14211) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: kasa: dipnot 3 kilitli kopyada donmuş (0), neden 770 ↔ 770.90 −300 / 300; 2025'te 649 ↔ 649.90; Bilanço bütün kilitli yılları alt hesapla yazar
+    ok 3 - kasa: dipnot 3 kilitli kopyada donmuş (0), neden 770 ↔ 770.90 −300 / 300; 2025'te 649 ↔ 649.90; Bilanço bütün kilitli yılları alt hesapla yazar
+      ---
+      duration_ms: 4014.001953
+      type: 'test'
+      ...
+    1..3
+ok 1 - 2.5.0 Ç6-HESAP tur 4 — ORTA-1: kural farkı alt hesap düzeyinde (v2.4.9 kilitli veri)
+  ---
+  duration_ms: 9850.054499
+  type: 'suite'
+  ...
+# (node:14212) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14212) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14212) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14212) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14212) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14212) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14212) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14212) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14212) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14212) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 Ç6-HESAP tur 4 — S236 = A: kilitli dönemin değerlemesi kilit anında dondurulur
+    # Subtest: kart fiyatı / tür / silme / geri alma kilitli 2025'i değiştirmez; açık yıl güncel kartla (dönem başı donmuş); kilit kaldır → güncel kart; yeniden kilit → yeni dondurma
+    ok 1 - kart fiyatı / tür / silme / geri alma kilitli 2025'i değiştirmez; açık yıl güncel kartla (dönem başı donmuş); kilit kaldır → güncel kart; yeniden kilit → yeni dondurma
+      ---
+      duration_ms: 21495.436814
+      type: 'test'
+      ...
+# (node:14212) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14212) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: v2.4.9'dan göçle gelen kilitli veri: göç 54 kartları yazar; ürünler Hizmet'e çevrilince kilitli dönem değişmez (kilitsiz kopyada değişir)
+    ok 2 - v2.4.9'dan göçle gelen kilitli veri: göç 54 kartları yazar; ürünler Hizmet'e çevrilince kilitli dönem değişmez (kilitsiz kopyada değişir)
+      ---
+      duration_ms: 5029.694451
+      type: 'test'
+      ...
+    1..2
+ok 2 - 2.5.0 Ç6-HESAP tur 4 — S236 = A: kilitli dönemin değerlemesi kilit anında dondurulur
+  ---
+  duration_ms: 26526.246144
+  type: 'suite'
+  ...
+# (node:14218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 Ç6-HESAP tur 4 — ORTA-2: Kural Farkı Düzeltme Fişi'nden sonra Kesin Değil (Yönetim'in KALAN'ı)
+    # Subtest: kasa: fişten sonra t ≥ fiş günü neden yok + bilgi satırı (Yönetim kalan 0); fişten önceki t'ler AYNEN; Aktif = Pasif
+    not ok 1 - kasa: fişten sonra t ≥ fiş günü neden yok + bilgi satırı (Yönetim kalan 0); fişten önceki t'ler AYNEN; Aktif = Pasif
+      ---
+      duration_ms: 3132.577584
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h4-ag/mut-m3-yanlis-yil/test/c6h-kural-farki-fis.test.mjs:100:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        kasa bsNow: neden düştü
+        + actual - expected
+        
+        + {
+        +   aciklama: "Kilitli dönemin donmuş defteri ile güncel kural arasındaki farkın Kural Farkı Düzeltme Fişi'yle kapanmamış kısmı aşağıdadır (Yönetim › Sistem › Kural Farkı Düzeltme); tablo donmuş defterdendir.",
+        +   ayrinti: [
+        +     '671: −300,00 TL',
+        +     '681: 300,00 TL',
+        +     '770: −300,00 TL',
+        +     '770 (770.90): 300,00 TL'
+        +   ],
+        +   baslik: 'Kural Değişikliği Farkı',
+        +   kod: 'kural-farki'
+        + }
+        - null
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: ~
+      actual:
+        kod: 'kural-farki'
+        baslik: 'Kural Değişikliği Farkı'
+        aciklama: "Kilitli dönemin donmuş defteri ile güncel kural arasındaki farkın Kural Farkı Düzeltme Fişi'yle kapanmamış kısmı aşağıdadır (Yönetim › Sistem › Kural Farkı Düzeltme); tablo donmuş defterdendir."
+        ayrinti:
+          0: '671: −300,00 TL'
+          1: '681: 300,00 TL'
+          2: '770: −300,00 TL'
+          3: '770 (770.90): 300,00 TL'
+      operator: 'strictEqual'
+      stack: |-
+        file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h4-ag/mut-m3-yanlis-yil/test/c6h-kural-farki-fis.test.mjs:111:18
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async withFixture (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h4-ag/mut-m3-yanlis-yil/test/c6h-kural-farki-fis.test.mjs:52:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h4-ag/mut-m3-yanlis-yil/test/c6h-kural-farki-fis.test.mjs:101:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+# (node:14218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: kasa: hızlı yol ↔ Yönetim planı EŞDEĞER (fişten önce ve sonra)
+    not ok 2 - kasa: hızlı yol ↔ Yönetim planı EŞDEĞER (fişten önce ve sonra)
+      ---
+      duration_ms: 580.840142
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h4-ag/mut-m3-yanlis-yil/test/c6h-kural-farki-fis.test.mjs:128:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        kasa fişten sonra: postedCorrectionsAt(uzak gelecek) = postedRuleDiffCorrections
+        + actual - expected
+        
+          [
+            true,
+            Map(1) {
+        +     2025 => Map(6) {
+        -     2026 => Map(6) {
+                '500|' => 500000,
+                '519|' => -500000,
+                '671|' => -100000,
+                '681|' => 100000,
+                '770|' => -30000,
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: true
+        1:
+        2:
+          0:
+            id: 'lv-8cab9f8d-f6f5-4075-8bc7-a3c5e8d1a77b'
+            year: 2026
+            no: 1
+            date: '2026-07-01'
+      actual:
+        0: true
+        1:
+        2:
+          0:
+            id: 'lv-8cab9f8d-f6f5-4075-8bc7-a3c5e8d1a77b'
+            year: 2026
+            no: 1
+            date: '2026-07-01'
+      operator: 'deepStrictEqual'
+      stack: |-
+        assertSameAsAdmin (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h4-ag/mut-m3-yanlis-yil/test/c6h-kural-farki-fis.test.mjs:77:10)
+        file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h4-ag/mut-m3-yanlis-yil/test/c6h-kural-farki-fis.test.mjs:132:31
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async withFixture (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h4-ag/mut-m3-yanlis-yil/test/c6h-kural-farki-fis.test.mjs:52:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h4-ag/mut-m3-yanlis-yil/test/c6h-kural-farki-fis.test.mjs:129:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+# (node:14218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: satis-fatura: fişten sonra t ≥ fiş günü neden yok + bilgi satırı (Yönetim kalan 0); fişten önceki t'ler AYNEN; Aktif = Pasif
+    ok 3 - satis-fatura: fişten sonra t ≥ fiş günü neden yok + bilgi satırı (Yönetim kalan 0); fişten önceki t'ler AYNEN; Aktif = Pasif
+      ---
+      duration_ms: 2651.569336
+      type: 'test'
+      ...
+# (node:14218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: satis-fatura: hızlı yol ↔ Yönetim planı EŞDEĞER (fişten önce ve sonra)
+    not ok 4 - satis-fatura: hızlı yol ↔ Yönetim planı EŞDEĞER (fişten önce ve sonra)
+      ---
+      duration_ms: 481.060168
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h4-ag/mut-m3-yanlis-yil/test/c6h-kural-farki-fis.test.mjs:128:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        satis-fatura fişten sonra: postedCorrectionsAt(uzak gelecek) = postedRuleDiffCorrections
+        + actual - expected
+        
+          [
+            true,
+            Map(1) {
+        +     2025 => Map(2) {
+        -     2026 => Map(2) {
+                '500|' => 150000,
+                '519|' => -150000
+              }
+            },
+            [
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: true
+        1:
+        2:
+          0:
+            id: 'lv-048be2d9-2cbf-4409-8424-a414808f1c32'
+            year: 2026
+            no: 1
+            date: '2026-07-01'
+      actual:
+        0: true
+        1:
+        2:
+          0:
+            id: 'lv-048be2d9-2cbf-4409-8424-a414808f1c32'
+            year: 2026
+            no: 1
+            date: '2026-07-01'
+      operator: 'deepStrictEqual'
+      stack: |-
+        assertSameAsAdmin (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h4-ag/mut-m3-yanlis-yil/test/c6h-kural-farki-fis.test.mjs:77:10)
+        file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h4-ag/mut-m3-yanlis-yil/test/c6h-kural-farki-fis.test.mjs:132:31
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async withFixture (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h4-ag/mut-m3-yanlis-yil/test/c6h-kural-farki-fis.test.mjs:52:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h4-ag/mut-m3-yanlis-yil/test/c6h-kural-farki-fis.test.mjs:129:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+# (node:14218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: banka: fişten sonra t ≥ fiş günü neden yok + bilgi satırı (Yönetim kalan 0); fişten önceki t'ler AYNEN; Aktif = Pasif
+    ok 5 - banka: fişten sonra t ≥ fiş günü neden yok + bilgi satırı (Yönetim kalan 0); fişten önceki t'ler AYNEN; Aktif = Pasif
+      ---
+      duration_ms: 2759.686941
+      type: 'test'
+      ...
+# (node:14218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: banka: hızlı yol ↔ Yönetim planı EŞDEĞER (fişten önce ve sonra)
+    not ok 6 - banka: hızlı yol ↔ Yönetim planı EŞDEĞER (fişten önce ve sonra)
+      ---
+      duration_ms: 625.378132
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h4-ag/mut-m3-yanlis-yil/test/c6h-kural-farki-fis.test.mjs:128:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        banka fişten sonra: postedCorrectionsAt(uzak gelecek) = postedRuleDiffCorrections
+        + actual - expected
+        
+          [
+            true,
+            Map(1) {
+        +     2025 => Map(2) {
+        -     2026 => Map(2) {
+                '500|' => 2500000,
+                '519|' => -2500000
+              }
+            },
+            [
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: true
+        1:
+        2:
+          0:
+            id: 'lv-672df593-30d5-4583-8f8c-c00bfac74a9e'
+            year: 2026
+            no: 1
+            date: '2026-07-01'
+      actual:
+        0: true
+        1:
+        2:
+          0:
+            id: 'lv-672df593-30d5-4583-8f8c-c00bfac74a9e'
+            year: 2026
+            no: 1
+            date: '2026-07-01'
+      operator: 'deepStrictEqual'
+      stack: |-
+        assertSameAsAdmin (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h4-ag/mut-m3-yanlis-yil/test/c6h-kural-farki-fis.test.mjs:77:10)
+        file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h4-ag/mut-m3-yanlis-yil/test/c6h-kural-farki-fis.test.mjs:132:31
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async withFixture (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h4-ag/mut-m3-yanlis-yil/test/c6h-kural-farki-fis.test.mjs:52:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h4-ag/mut-m3-yanlis-yil/test/c6h-kural-farki-fis.test.mjs:129:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+# (node:14218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: taksit: fişten sonra t ≥ fiş günü neden yok + bilgi satırı (Yönetim kalan 0); fişten önceki t'ler AYNEN; Aktif = Pasif
+    ok 7 - taksit: fişten sonra t ≥ fiş günü neden yok + bilgi satırı (Yönetim kalan 0); fişten önceki t'ler AYNEN; Aktif = Pasif
+      ---
+      duration_ms: 2299.801394
+      type: 'test'
+      ...
+# (node:14218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: taksit: hızlı yol ↔ Yönetim planı EŞDEĞER (fişten önce ve sonra)
+    not ok 8 - taksit: hızlı yol ↔ Yönetim planı EŞDEĞER (fişten önce ve sonra)
+      ---
+      duration_ms: 411.873573
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h4-ag/mut-m3-yanlis-yil/test/c6h-kural-farki-fis.test.mjs:128:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        taksit fişten sonra: postedCorrectionsAt(uzak gelecek) = postedRuleDiffCorrections
+        + actual - expected
+        
+          [
+            true,
+            Map(1) {
+        +     2025 => Map(2) {
+        -     2026 => Map(2) {
+                '671|' => -120000,
+                '681|' => 120000
+              }
+            },
+            [
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: true
+        1:
+        2:
+          0:
+            id: 'lv-a91388b5-274c-4fed-b65b-b712410c8705'
+            year: 2026
+            no: 1
+            date: '2026-07-01'
+      actual:
+        0: true
+        1:
+        2:
+          0:
+            id: 'lv-a91388b5-274c-4fed-b65b-b712410c8705'
+            year: 2026
+            no: 1
+            date: '2026-07-01'
+      operator: 'deepStrictEqual'
+      stack: |-
+        assertSameAsAdmin (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h4-ag/mut-m3-yanlis-yil/test/c6h-kural-farki-fis.test.mjs:77:10)
+        file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h4-ag/mut-m3-yanlis-yil/test/c6h-kural-farki-fis.test.mjs:132:31
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async withFixture (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h4-ag/mut-m3-yanlis-yil/test/c6h-kural-farki-fis.test.mjs:52:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h4-ag/mut-m3-yanlis-yil/test/c6h-kural-farki-fis.test.mjs:129:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+# (node:14218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: kasa: fişten sonra kilit 31.12.2025'e geri çekilir → fişin 770 / 770.90 satırı fazla → neden KALAN ile (Yönetim ön izlemesinin satırları)
+    not ok 9 - kasa: fişten sonra kilit 31.12.2025'e geri çekilir → fişin 770 / 770.90 satırı fazla → neden KALAN ile (Yönetim ön izlemesinin satırları)
+      ---
+      duration_ms: 976.088332
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h4-ag/mut-m3-yanlis-yil/test/c6h-kural-farki-fis.test.mjs:138:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        neden KALAN tutarla (Yönetim'in satırları)
+        + actual - expected
+        
+          [
+        +   '671: −300,00 TL',
+        +   '681: 300,00 TL'
+        -   '770: 300,00 TL',
+        -   '770 (770.90): −300,00 TL'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: '770: 300,00 TL'
+        1: '770 (770.90): −300,00 TL'
+      actual:
+        0: '671: −300,00 TL'
+        1: '681: 300,00 TL'
+      operator: 'deepStrictEqual'
+      stack: |-
+        file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h4-ag/mut-m3-yanlis-yil/test/c6h-kural-farki-fis.test.mjs:149:14
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async withFixture (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h4-ag/mut-m3-yanlis-yil/test/c6h-kural-farki-fis.test.mjs:52:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h4-ag/mut-m3-yanlis-yil/test/c6h-kural-farki-fis.test.mjs:139:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+# (node:14218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: taksit: fiş ters kaydedilince ters kaydın gününden itibaren neden geri gelir; fiş ile ters kayıt arasında bilgi satırı
+    ok 10 - taksit: fiş ters kaydedilince ters kaydın gününden itibaren neden geri gelir; fiş ile ters kayıt arasında bilgi satırı
+      ---
+      duration_ms: 1341.246073
+      type: 'test'
+      ...
+    1..10
+not ok 3 - 2.5.0 Ç6-HESAP tur 4 — ORTA-2: Kural Farkı Düzeltme Fişi'nden sonra Kesin Değil (Yönetim'in KALAN'ı)
+  ---
+  duration_ms: 15262.590454
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c6h4-ag/mut-m3-yanlis-yil/test/c6h-kural-farki-fis.test.mjs:98:1'
+  failureType: 'subtestsFailed'
+  error: '6 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..3
+# tests 15
+# suites 3
+# pass 9
+# fail 6
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 27057.191978

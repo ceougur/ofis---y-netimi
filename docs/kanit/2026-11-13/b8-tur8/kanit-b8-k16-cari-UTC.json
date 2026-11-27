@@ -1,0 +1,83 @@
+{
+  "ad": "b8-k16-cari-UTC",
+  "komut": "npm run test:kahin-cari",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v445 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-13T12:31:09.965Z",
+  "sure_sn": 275.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 16459,
+    "gecen": 16449,
+    "basarisiz": 10,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 10 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:kart:KT1:odenen: program \"tuttu\" · kâhin 0 (YAPIM AŞAMASI KAPANDI — listeden silin (AYRIŞTIRILMADI; liste program 50000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:kart:KT1:taksit1:odenen: program \"tuttu\" · kâhin 0 (YAPIM AŞAMASI KAPANDI — listeden silin (AYRIŞTIRILMADI; liste program 50000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:kart:KT2:odenen: program \"tuttu\" · kâhin 0 (YAPIM AŞAMASI KAPANDI — listeden silin (AYRIŞTIRILMADI; liste program 30000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:kart:KT2:taksit1:odenen: program \"tuttu\" · kâhin 0 (YAPIM AŞAMASI KAPANDI — listeden silin (AYRIŞTIRILMADI; liste program 30000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:kart:KT3:odenen: program \"tuttu\" · kâhin 0 (YAPIM AŞAMASI KAPANDI — listeden silin (AYRIŞTIRILMADI; liste program 50000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:kart:KT3:taksit1:odenen: program \"tuttu\" · kâhin 0 (YAPIM AŞAMASI KAPANDI — listeden silin (AYRIŞTIRILMADI; liste program 50000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:kart:KY2:odenen: program \"tuttu\" · kâhin 0 (YAPIM AŞAMASI KAPANDI — listeden silin (AYRIŞTIRILMADI; liste program 30000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:kart:KY2:taksit1:odenen: program \"tuttu\" · kâhin 0 (YAPIM AŞAMASI KAPANDI — listeden silin (AYRIŞTIRILMADI; liste program 30000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:kart:KY5:odenen: program \"tuttu\" · kâhin 0 (YAPIM AŞAMASI KAPANDI — listeden silin (AYRIŞTIRILMADI; liste program 40000))",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "[YAPIM AŞAMASI KAPANDI YAPIM AŞAMASI] k1:kart:KY5:taksit1:odenen: program \"tuttu\" · kâhin 0 (YAPIM AŞAMASI KAPANDI — listeden silin (AYRIŞTIRILMADI; liste program 40000))",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../b8-kanit/2026-11-13/b8-k16-cari-UTC.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/b8-k16",
+  "ham_cikti_sha256": "8ab5b334a110a2d122514ad14f6f40541a0667258b6412e81ccf108bcaa1ee46",
+  "ham_cikti_bayt": 67636
+}

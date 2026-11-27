@@ -1,0 +1,11 @@
+#!/bin/bash
+# Dar kontrolün kd2 kipleri, tur 1f'nin taban ↔ yeni kodunda: kd2.sh <taban|yeni> <çıktı> <CASE...> — her CASE açık + kapalı (REOPEN); süre sınırlı; yük kilidi çağıranda.
+N=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1f-is
+which=$1; outf=$2; shift 2
+if [ "$which" = yeni ]; then R=/home/user/ofis---y-netimi/.claude/worktrees/agent-af550e32f1aedd444; else R=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5a1f-taban; fi
+cd $N || exit 1
+for c in "$@"; do
+  for ro in 0 1; do
+    timeout -k 5 300 env FIX=${FIX:-surum-2.0.26-zincir} ROOT=$R CASE=$c REOPEN=$ro TZ=${TZ:-Europe/Istanbul} HUKUK_LICENSE_URL=http://127.0.0.1:9 node --disable-warning=ExperimentalWarning kd2.mjs >> $outf 2>&1 || echo "{\"case\":\"$c\",\"reopen\":$ro,\"rc\":\"$?\"}" >> $outf
+  done
+done

@@ -8,12 +8,14 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { pdfText } from "./banka-210-ortak.mjs";
 import { URLS, startWa } from "./whatsapp-248-ortak.mjs";
+import { isoDay } from "../server/lib/plans.mjs";
 
 const MIN = 60_000;
 const DAY = 24 * 60 * MIN;
 const metaError = (code, message = "hata") => ({ error: { message, type: "OAuthException", code, error_data: { messaging_product: "whatsapp", details: message }, fbtrace_id: "Abc" } });
 const uploads = ctx => ctx.fake.requests.filter(item => item.method === "POST" && /\/media$/.test(item.path) && item.media);
-const today = ctx => ctx.clock().toISOString().slice(0, 10);
+// Program "bugün"ü yerel günle hesaplar (period.mjs today, plans.mjs isoDay); UTC günü yerel günden ayrışınca (İstanbul 00:00–03:00) yanlış gün olur (ders 13, 22).
+const today = ctx => isoDay(ctx.clock());
 async function pay(ctx, id, amount) {
   const res = await ctx.api.post(`/api/workspace/accounts/${id}/entries`, { kind: "in", amount: String(amount), date: today(ctx), note: "Tahsilat" });
   assert.equal(res.status, 200, JSON.stringify(res.data));

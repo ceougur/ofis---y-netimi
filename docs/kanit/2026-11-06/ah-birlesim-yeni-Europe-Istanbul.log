@@ -1,0 +1,205 @@
+TAP version 13
+# Subtest: 2.5.0 AH — açılış onarımı: öğe başına ağır okuma yok, çıktı eski kodla birebir
+    # Subtest: öğe başına ağır okuma yok: ikinci onarım koşusunda carinin tam defteri yalnız onarım kararı çıkan adayda okunur, deyim sayısı küçük
+    ok 1 - öğe başına ağır okuma yok: ikinci onarım koşusunda carinin tam defteri yalnız onarım kararı çıkan adayda okunur, deyim sayısı küçük
+      ---
+      duration_ms: 36.687608
+      type: 'test'
+      ...
+    # sayım: {"statements":243,"detail":3} · aday 83 · onarım kararı 3
+    # Subtest: eşdeğerlik: döküm taban kodun (eski) gerçek dökümüyle bölüm bölüm aynı; eleme değişmezi (toplu durum = cari başına durum) her adayda
+    ok 2 - eşdeğerlik: döküm taban kodun (eski) gerçek dökümüyle bölüm bölüm aynı; eleme değişmezi (toplu durum = cari başına durum) her adayda
+      ---
+      duration_ms: 807.840241
+      type: 'test'
+      ...
+    # Subtest: parça parça eleme: carileri 7'şerli parçalarla okuyan eleme, tek parçalık elemeyle ve cari başına yolla her adayda aynı (parça sınırında cari düşmez)
+    ok 3 - parça parça eleme: carileri 7'şerli parçalarla okuyan eleme, tek parçalık elemeyle ve cari başına yolla her adayda aynı (parça sınırında cari düşmez)
+      ---
+      duration_ms: 214.787609
+      type: 'test'
+      ...
+    1..3
+ok 1 - 2.5.0 AH — açılış onarımı: öğe başına ağır okuma yok, çıktı eski kodla birebir
+  ---
+  duration_ms: 2038.268914
+  type: 'suite'
+  ...
+# Subtest: store.tx — COMMIT / RELEASE düşerse derinlik ve işlem tutarlı (2.4.9 DB-TX)
+    # Subtest: (a1) COMMIT ertelenmiş yabancı anahtar ihlaliyle düşer → asıl hata, işlem tam geri alınır, rolledBack çağrılır, sonraki işlem ve yazım başarılı
+    ok 1 - (a1) COMMIT ertelenmiş yabancı anahtar ihlaliyle düşer → asıl hata, işlem tam geri alınır, rolledBack çağrılır, sonraki işlem ve yazım başarılı
+      ---
+      duration_ms: 137.893319
+      type: 'test'
+      ...
+    # Subtest: (a2) COMMIT G/Ç hatasıyla düşer, SQLite işlemi kendiliğinden geri alır → asıl hata, ROLLBACK denenmez; Linux'ta ayrıca gerçek dosya boyutu sınırı
+    ok 2 - (a2) COMMIT G/Ç hatasıyla düşer, SQLite işlemi kendiliğinden geri alır → asıl hata, ROLLBACK denenmez; Linux'ta ayrıca gerçek dosya boyutu sınırı
+      ---
+      duration_ms: 182.179477
+      type: 'test'
+      ...
+    # a2 gerçek (Linux RLIMIT_FSIZE 141136 B): store.tx hatası "disk I/O error" (ERR_SQLITE_ERROR 778); deyimler ["BEGIN IMMEDIATE","COMMIT"]; sonra db.isTransaction=false
+    # Subtest: (a3) işlemin içinde SQLite işlemi kendiliğinden geri alır (INSERT OR ROLLBACK) → asıl hata, ROLLBACK denenmez, rolledBack çağrılır
+    ok 3 - (a3) işlemin içinde SQLite işlemi kendiliğinden geri alır (INSERT OR ROLLBACK) → asıl hata, ROLLBACK denenmez, rolledBack çağrılır
+      ---
+      duration_ms: 71.677329
+      type: 'test'
+      ...
+    # Subtest: (a4) COMMIT'ten sonra after kancası düşer → kancanın kendi hatası, veri kesin yazılı, geri alma denenmez, derinlik 0
+    ok 4 - (a4) COMMIT'ten sonra after kancası düşer → kancanın kendi hatası, veri kesin yazılı, geri alma denenmez, derinlik 0
+      ---
+      duration_ms: 68.058249
+      type: 'test'
+      ...
+    # Subtest: (a5) geri alma düşerse asıl hata ezilmez; açık kalan işlem store.inTransaction'da görünür
+    ok 5 - (a5) geri alma düşerse asıl hata ezilmez; açık kalan işlem store.inTransaction'da görünür
+      ---
+      duration_ms: 47.735853
+      type: 'test'
+      ...
+    # Subtest: (a6) işlemin içinde bağlantı kapanır → asıl hata fırlatılır, geri alma denenmez; store.inTransaction fırlatmaz ve false (geri alma düşüp işlem açık kaldıktan sonra kapanınca da)
+    ok 6 - (a6) işlemin içinde bağlantı kapanır → asıl hata fırlatılır, geri alma denenmez; store.inTransaction fırlatmaz ve false (geri alma düşüp işlem açık kaldıktan sonra kapanınca da)
+      ---
+      duration_ms: 95.873216
+      type: 'test'
+      ...
+    # Subtest: (a7) dışarıdan açılan işlem (iş parçacığı anlık görüntü deseni) store.inTransaction'ı true yapmaz; store.tx içinde true; geri alma düşüp kapanan işlemden sonra da
+    ok 7 - (a7) dışarıdan açılan işlem (iş parçacığı anlık görüntü deseni) store.inTransaction'ı true yapmaz; store.tx içinde true; geri alma düşüp kapanan işlemden sonra da
+      ---
+      duration_ms: 124.054762
+      type: 'test'
+      ...
+    # Subtest: (b1) iç içe: iç RELEASE düşer (savepoint yerinde) → iç yazımlar geri alınır, asıl hata; dış işlem sürer ve COMMIT olur
+    ok 8 - (b1) iç içe: iç RELEASE düşer (savepoint yerinde) → iç yazımlar geri alınır, asıl hata; dış işlem sürer ve COMMIT olur
+      ---
+      duration_ms: 80.039318
+      type: 'test'
+      ...
+    # Subtest: (b2) iç içe: iç seviyede SQLite işlemi kendiliğinden geri alır → asıl hata iki seviyeden geçer, ROLLBACK TO / ROLLBACK denenmez
+    ok 9 - (b2) iç içe: iç seviyede SQLite işlemi kendiliğinden geri alır → asıl hata iki seviyeden geçer, ROLLBACK TO / ROLLBACK denenmez
+      ---
+      duration_ms: 66.996132
+      type: 'test'
+      ...
+    # Subtest: (b3) iç içe: ihlal iç savepoint'te, dış COMMIT ertelenmiş yabancı anahtarla düşer → asıl hata, hiçbir yazım kalmaz
+    ok 10 - (b3) iç içe: ihlal iç savepoint'te, dış COMMIT ertelenmiş yabancı anahtarla düşer → asıl hata, hiçbir yazım kalmaz
+      ---
+      duration_ms: 64.840082
+      type: 'test'
+      ...
+    # Subtest: (c) gerçek program: cari açmanın COMMIT'i düşer → 500 ve asıl hata günlükte; düzelince cari açma ve Kasa girişi 200 (Linux: ayrıca gerçek dosya boyutu sınırı)
+    ok 11 - (c) gerçek program: cari açmanın COMMIT'i düşer → 500 ve asıl hata günlükte; düzelince cari açma ve Kasa girişi 200 (Linux: ayrıca gerçek dosya boyutu sınırı)
+      ---
+      duration_ms: 1995.619475
+      type: 'test'
+      ...
+    # FK: cari 500; günlük ["API hatası POST /api/workspace/accounts: FOREIGN KEY constraint failed"]
+    # FSIZE (2489536 B): cari 500; günlük ["API hatası POST /api/workspace/accounts: disk I/O error"]
+    1..11
+ok 2 - store.tx — COMMIT / RELEASE düşerse derinlik ve işlem tutarlı (2.4.9 DB-TX)
+  ---
+  duration_ms: 2937.318909
+  type: 'suite'
+  ...
+# Subtest: store.run / store.tx — derinlik > 0 iken bağlantıda işlem yoksa yazım yok, açık hata (2.5.0 BS-6)
+    # Subtest: (k1) iç işlemde SQLite işlemi kendiliğinden geri alır, çağıran yakalayıp sürer → sonraki yazımlar ERR_TX_LOST, yarım yazım yok; Linux'ta gerçek G/Ç hatası
+    ok 1 - (k1) iç işlemde SQLite işlemi kendiliğinden geri alır, çağıran yakalayıp sürer → sonraki yazımlar ERR_TX_LOST, yarım yazım yok; Linux'ta gerçek G/Ç hatası
+      ---
+      duration_ms: 178.779836
+      type: 'test'
+      ...
+    # Subtest: (k2) işlem kayboldu ama sonra yazım yok → en dış COMMIT asıl nedeni söyler ("cannot commit - no transaction is active" değil); iç düzeyde RELEASE de
+    ok 2 - (k2) işlem kayboldu ama sonra yazım yok → en dış COMMIT asıl nedeni söyler ("cannot commit - no transaction is active" değil); iç düzeyde RELEASE de
+      ---
+      duration_ms: 82.428717
+      type: 'test'
+      ...
+    # Subtest: (k3) işlem canlıyken seçici yakalama bugünkü gibi: iç işlem geri alınır, dış işlem yazmayı sürdürür ve kesinleşir; işlem dışı yazım etkilenmez
+    ok 3 - (k3) işlem canlıyken seçici yakalama bugünkü gibi: iç işlem geri alınır, dış işlem yazmayı sürdürür ve kesinleşir; işlem dışı yazım etkilenmez
+      ---
+      duration_ms: 80.205499
+      type: 'test'
+      ...
+    1..3
+ok 3 - store.run / store.tx — derinlik > 0 iken bağlantıda işlem yoksa yazım yok, açık hata (2.5.0 BS-6)
+  ---
+  duration_ms: 342.514238
+  type: 'suite'
+  ...
+# Subtest: 2.1.0 Canlı Hata 2 — v2.0.26 verisinde yanlış büyümüş taksit kartlarının açılış onarımı
+    # Subtest: yanlış kartlar (C, B, J) doğru kalana iner; D, E, A dokunulmaz; kilitli dönemdeki kart (KILIT) değişmez
+    ok 1 - yanlış kartlar (C, B, J) doğru kalana iner; D, E, A dokunulmaz; kilitli dönemdeki kart (KILIT) değişmez
+      ---
+      duration_ms: 35.93091
+      type: 'test'
+      ...
+    # Subtest: her değişiklik audit'te: plan.repaired, previous (toplam, kalan, taksitler) ve yeni kalan
+    ok 2 - her değişiklik audit'te: plan.repaired, previous (toplam, kalan, taksitler) ve yeni kalan
+      ---
+      duration_ms: 0.884122
+      type: 'test'
+      ...
+    # Subtest: raporlar onarılan kartla: Alacak Yaşlandırma, ANLIK DURUM Geciken Alacak, Geciken Taksitler, cari kartı
+    ok 3 - raporlar onarılan kartla: Alacak Yaşlandırma, ANLIK DURUM Geciken Alacak, Geciken Taksitler, cari kartı
+      ---
+      duration_ms: 149.815817
+      type: 'test'
+      ...
+    # Subtest: ikinci açılışta hiçbir şey değişmez (idempotent); kilitli kart yine listede
+    ok 4 - ikinci açılışta hiçbir şey değişmez (idempotent); kilitli kart yine listede
+      ---
+      duration_ms: 385.998838
+      type: 'test'
+      ...
+    # Subtest: onarılan kartta yeni işlem doğru: C'nin iadesi iptal edilince kart faturanın açığına (500) döner
+    ok 5 - onarılan kartta yeni işlem doğru: C'nin iadesi iptal edilince kart faturanın açığına (500) döner
+      ---
+      duration_ms: 135.442965
+      type: 'test'
+      ...
+    1..5
+ok 4 - 2.1.0 Canlı Hata 2 — v2.0.26 verisinde yanlış büyümüş taksit kartlarının açılış onarımı
+  ---
+  duration_ms: 1821.233625
+  type: 'suite'
+  ...
+# Subtest: G8 tek geçiş: fatura durumları ve vadeli elle satırların Kalan'ı aynı kapama geçişinden; sonuç cari başına yolla aynı
+    # Subtest: tek geçiş: yazımdan sonra iki harita için carilerin defteri BİR KEZ kurulur; ikinci çağrılar önbellekten
+    ok 1 - tek geçiş: yazımdan sonra iki harita için carilerin defteri BİR KEZ kurulur; ikinci çağrılar önbellekten
+      ---
+      duration_ms: 30.905784
+      type: 'test'
+      ...
+    # Subtest: toplu yol = cari başına yol: her fatura durumu ve her vadeli carinin her satırı (D1 olayları dahil)
+    ok 2 - toplu yol = cari başına yol: her fatura durumu ve her vadeli carinin her satırı (D1 olayları dahil)
+      ---
+      duration_ms: 18.604784
+      type: 'test'
+      ...
+    # Subtest: kapsam: elle satır haritası yalnız vadeli satırı olan carilerin satırlarını taşır (faturasız vadeli cari dahil, vadesiz cari yok)
+    ok 3 - kapsam: elle satır haritası yalnız vadeli satırı olan carilerin satırlarını taşır (faturasız vadeli cari dahil, vadesiz cari yok)
+      ---
+      duration_ms: 10.826344
+      type: 'test'
+      ...
+    # Subtest: bayatlık: yazımdan sonra yeni değer; işlem içinde hesaplanan sonuç önbelleğe yazılmaz (geri alınınca eski değer)
+    ok 4 - bayatlık: yazımdan sonra yeni değer; işlem içinde hesaplanan sonuç önbelleğe yazılmaz (geri alınınca eski değer)
+      ---
+      duration_ms: 51.569542
+      type: 'test'
+      ...
+    1..4
+ok 5 - G8 tek geçiş: fatura durumları ve vadeli elle satırların Kalan'ı aynı kapama geçişinden; sonuç cari başına yolla aynı
+  ---
+  duration_ms: 2087.708436
+  type: 'suite'
+  ...
+1..5
+# tests 26
+# suites 5
+# pass 26
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11802.948973

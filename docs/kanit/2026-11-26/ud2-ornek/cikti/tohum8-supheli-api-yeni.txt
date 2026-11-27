@@ -1,0 +1,9 @@
+# ROOT=yeni · node surucu8.mjs 
+cari: 200
+Borç 33.847,62 (01.09): 200
+Şüpheliye Al 924,56 (20.09): 200
+Şüpheliden Çıkar (26.09): 200
+Şüpheliye Al 33.847,62 (26.09): 200
+Tahsilat 23.236,09 (2026-09-26): 409 {"ok":false,"error":"Bu kayıt carinin borcunu açık şüpheli tutarın altına düşürür (borç 10.611,53 TL, açık şüpheli 11.536,09 TL); kaydı şüpheliye alma tarihinden sonraya girin ya da önce şüpheli kaydını düzeltin.","code":"ledger-integrity","failures":[{"code":"doubtful:balance","name":"Şüpheli Alacak — Carinin Normal Alacağı Eksi Değil (120 = kart − açık şüpheli ≥ 0)","ok":false,"count":1,"sample":["Supheli Musteri: 120 = -924.56 (açık şüpheli 11536.09; geriye tarihli tahsilat/alacak kaydın tari
+  kayıt Eski 2026-09-20 durum Şüpheliden Çıkarıldı kalan 0 tahsil 0
+  kayıt Yeni 2026-09-26 durum Şüpheli Alacakta kalan 33847.62 tahsil 0

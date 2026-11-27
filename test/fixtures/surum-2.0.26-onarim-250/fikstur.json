@@ -1,0 +1,40 @@
+{
+ "name": "surum-2.0.26-onarim-250",
+ "cut": "v2.0.26",
+ "commit": "5346ff8442612aaa429783e59ae478d9d6a5fc07",
+ "today": "2026-11-06",
+ "lockedUntil": "2026-10-07",
+ "seed": 250,
+ "accounts": 40,
+ "stats": {
+  "cari": 40,
+  "satis": 86,
+  "iade": 136,
+  "geriOdemeli": 98,
+  "iptal": 8,
+  "tahsilat": 47,
+  "silGeriYukle": 11,
+  "mevcutBorc": 10,
+  "red": []
+ },
+ "files": [
+  {
+   "path": "veri/destekofis.sqlite",
+   "sha256": "2576fbe8756515db5474eee270c7403ef2e1a6b08b48959cb4b1f2f8cd01d03e",
+   "size": 1916928,
+   "mtimeMs": 1793945108041
+  },
+  {
+   "path": "veri/sirketler.json",
+   "sha256": "ef83d5ea19f3526b0b4a40f4b2f06e53ac547f6bc0e798568b25cb0f77a3b1e8",
+   "size": 196,
+   "mtimeMs": 1793945098424
+  },
+  {
+   "path": "veri/sirketler.yedek.json",
+   "sha256": "ef83d5ea19f3526b0b4a40f4b2f06e53ac547f6bc0e798568b25cb0f77a3b1e8",
+   "size": 196,
+   "mtimeMs": 1793945098424
+  }
+ ]
+}

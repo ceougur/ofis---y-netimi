@@ -1,0 +1,29 @@
+# 1. bölüm: eski modelde ilk susma
+s104-s80-formdaki-pesin-cari: SUSAR — senaryo hatası: formdaki peşin ödemenin (fatura_odemesi) carisi düzeltildi — faturanın düzenlenmesidir (F-14); kâhin susar (README bakım 8 U7 (b), bakım 9 P7 (c
+s105-s81-olagan-normal-cari-siniri: SUSAR — senaryo hatası: S79 düzeltmesi yeni carinin açık şüpheli kaydıyla plan §3.11b/2 (S56) sınırını aşıyor — olağan düzeltmede sınır iki okumalı; kâhin susar (README
+
+# 2. bölüm: susan düzeltmeler atlanarak koşulunca farklı elle değerler
+
+s104-s80-formdaki-pesin-cari: atlanan (susan) düzeltme 8
+   atlandı: ('P1', {'cari': 'C3'}, 'senaryo hatası: formdaki peşin ödemenin (fatura_odemesi) carisi düzelt')
+   atlandı: ('P1', {'cari': 'C3', 'tutar': 250}, 'senaryo hatası: formdaki peşin ödemenin (fatura_odemesi) carisi düzelt')
+   atlandı: ('P1', {'cari': 'C3', 'fatura': 'F3'}, 'senaryo hatası: formdaki peşin ödemenin (fatura_odemesi) carisi düzelt')
+   atlandı: ('P1', {'cari': 'C3', 'fatura': None}, 'senaryo hatası: formdaki peşin ödemenin (fatura_odemesi) carisi düzelt')
+   atlandı: ('P1', {'cari': 'C3', 'tarih': '2026-01-09'}, 'senaryo hatası: formdaki peşin ödemenin (fatura_odemesi) carisi düzelt')
+   atlandı: ('P2', {'cari': 'C3'}, 'senaryo hatası: formdaki peşin ödemenin (fatura_odemesi) bağı / carisi')
+   atlandı: ('P2', {'cari': 'C3', 'aciklama': 'Yanlış cari'}, 'senaryo hatası: formdaki peşin ödemenin (fatura_odemesi) bağı / carisi')
+   atlandı: ('P2', {'cari': 'C3', 'tarih': '2026-01-09'}, 'senaryo hatası: formdaki peşin ödemenin (fatura_odemesi) carisi düzelt')
+   FARK redler: beklenen ['FATURA_DUZENLENMELI', 'FATURA_DUZENLENMELI', 'FATURA_DUZENLENMELI', 'FATURA_DUZENLENMELI', 'FATURA_DUZENLENMELI', 'FATURA_DUZENLENMELI', 'FATURA_DUZENLENMELI', 'KASA_ACILIS_ONCE', 'FATURA_DUZENLENMELI'] · eski model ['KASA_ACILIS_ONCE']
+   1 anahtar farklı / 16
+
+s105-s81-olagan-normal-cari-siniri: atlanan (susan) düzeltme 2
+   atlandı: ('PA', {'cari': 'C2', 'fatura': None, 'normal_cari': True}, 'senaryo hatası: S79 düzeltmesi yeni carinin açık şüpheli kaydıyla plan')
+   atlandı: ('PA', {'cari': 'C2', 'fatura': None, 'normal_cari': True, 'aciklama': 'x'}, 'senaryo hatası: S79 düzeltmesi yeni carinin açık şüpheli kaydıyla plan')
+   FARK redler: beklenen ['SUPHELI_NORMAL_ASIM', 'SUPHELI_NORMAL_ASIM', 'BAG_KALDIRILMALI', 'SUPHELI_NORMAL_ASIM', 'SUPHELI_NORMAL_ASIM'] · eski model ['BAG_KALDIRILMALI']
+   FARK mz2/satirlar/120|C1/bakiye: beklenen 29499 · eski model 29999
+   FARK mz2/satirlar/120|C2/bakiye: beklenen 0 · eski model -800
+   FARK mz2/satirlar/128|C2/bakiye: beklenen 8700 · eski model 9000
+   FARK g1/gecikmis: beklenen 29499 · eski model 29999
+   FARK g2/supheli: beklenen 8700 · eski model 9000
+   FARK ak2: beklenen [] · eski model [{'k': 'tahsilat:PN', 'tur': 'tahsilat', 'kalan': -500, 'vade': '2026-01-12', 'tarih': '2026-01-12'}, {'k': 'tahsilat:PK', 'tur': 'tahsilat', 'kalan': -300, 'vade': '2026-01-12', 'tarih': '2026-01-12'}]
+   7 anahtar farklı / 22

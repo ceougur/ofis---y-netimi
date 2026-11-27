@@ -1,0 +1,43 @@
+{
+  "ad": "wk17-kahin",
+  "komut": "python3 -I test/bagimsiz/whatsapp-248/kahin/kahin_test.py",
+  "commit": "12c3a55d784f8ec886bf4ebe70fd66be4b15ba9e",
+  "dal": "worktree-agent-af5d3ff11385d060f",
+  "kirli": 4,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T08:39:31.969Z",
+  "sure_sn": 25.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 397,
+    "gecen": 395,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "C değişmezler: her senaryo (birleşik sonuç)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "C değişmezler: zaman uçlarının HER biri ayrı (birleştirmeden önce); bildirilmiş ihlal yalnız bildirildiği seçimde",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wk17-calisma/kanit/2026-11-06/wk17-kahin.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-af5d3ff11385d060f",
+  "ham_cikti_sha256": "37fee7bf69ef95296c630bac3a512df9df00621b107bbd8f76f35ec862ed1c24",
+  "ham_cikti_bayt": 106443
+}

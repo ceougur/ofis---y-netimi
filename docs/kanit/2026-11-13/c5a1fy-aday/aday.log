@@ -1,0 +1,58 @@
+başladı 09:17:42 yük 1.12 1.25 1.57 · aday 8391c97b · ajan ucuyla fark (ajanın dokunduğu ürün dosyalarında; ana dalın tur 7 değişiklikleri görünür — bilgi): [ 2 files changed, 64 insertions(+), 20 deletions(-)]
+R1 yeni testler UTC çıkış 0 # tests 40 # pass 40 # fail 0 # cancelled 0 # skipped 0 
+R1 değişen / komşu UTC çıkış 0 # tests 80 # pass 80 # fail 0 # cancelled 0 # skipped 0 
+R1 yeni testler Europe/Istanbul çıkış 0 # tests 40 # pass 40 # fail 0 # cancelled 0 # skipped 0 
+R1 değişen / komşu Europe/Istanbul çıkış 0 # tests 80 # pass 80 # fail 0 # cancelled 0 # skipped 0 
+R2 TABAN kodda yeni testler çıkış 1 # tests 40 # pass 4 # fail 36 # cancelled 0 # skipped 0 
+R2 kırmızı nedenleri (ilk iletiler):
+      1 error: |-
+      1 error: 'yeniden kilitledikten sonra kapı dışı yazım — faturanın muhasebe kırılımı (600 → 602; tutar aynı, yalnız hesap dağılımı): ledger:snapshot bulunmalı: []'
+      1 error: 'transfer bağı: kapı reddetmeli (409; eşdeğerlik ihlali değil)'
+      1 error: 'satır içi — taksit satırının evrak bağı temizlenir: ledger:snapshot bulunmalı: ["money:event"]'
+      1 error: 'satır içi — taksit satırının açılış alanı 0 → 1 (100 → 519): ledger:snapshot bulunmalı: []'
+      1 error: 'satır içi — tahsil kaydının işlem başlığı (101.01 / 101.02 tutarı): ledger:snapshot bulunmalı: ["cheque:collections"]'
+      1 error: 'satır içi — stok hareketinin nedeni (satış → alış iadesi; 600 → 153): ledger:snapshot bulunmalı: []'
+      1 error: 'satır içi — kilitli karşılıksızı olan evrağın durumu (karşılıksız → portföyde): ledger:snapshot bulunmalı: []'
+      1 error: 'satır içi — faturanın tevkifat tutarı: ledger:snapshot bulunmalı: ["balance","invoice:try"]'
+      1 error: 'satır içi — faturanın stopaj tutarı: ledger:snapshot bulunmalı: ["balance","invoice:try"]'
+      1 error: 'satır içi — faturanın muhasebe kırılımı (600 → 602; tutar aynı, yalnız hesap dağılımı): ledger:snapshot bulunmalı: []'
+      1 error: 'satır içi — carili evrağın carisi silinir (cariye işlenmemiş sayılır; çift madde): ledger:snapshot bulunmalı: ["gl:101","cheque:collections"]'
+      1 error: 'satır içi — cari satırının kaynağı (stok → elle; evrak olgusuna girmeyen kaynak): ledger:snapshot bulunmalı: ["stock:account"]'
+      1 error: 'satır içi — cari satırının kaynağı (evrak → elle): ledger:snapshot bulunmalı: []'
+R3 kd2 none reopen=0 çıkış 0
+R3 kd2 none reopen=1 çıkış 0
+R3 kd2 acct-source reopen=0 çıkış 0
+R3 kd2 acct-source reopen=1 çıkış 0
+R3 kd2 cash-transfer reopen=0 çıkış 0
+R3 kd2 cash-transfer reopen=1 çıkış 0
+R3 kd2 cheque-status reopen=0 çıkış 0
+R3 kd2 cheque-status reopen=1 çıkış 0
+R3 kd2 plan-entry-opening reopen=0 çıkış 0
+R3 kd2 plan-entry-opening reopen=1 çıkış 0
+R bölümü bitti 09:22:18 yük 2.28 2.09 1.86
+liste üretimi çıkış 0
+
+YAPIM-ASAMASI.json YAZILDI (test/bagimsiz/cari/YAPIM-ASAMASI.json): 5 kayıt (0 okuma hatası) — paketlere göre: Ç5-B tur 2 5. Bu bir denetim sonucu DEĞİLDİR; liste varsayılan koşuyla denetlenir.
+ESKİ LİSTEYLE FARK: yeni 0, kapanan 0, değeri değişen 0 (eski liste 5 kayıt → yeni 5)
+liste farkı: önceki 5 → yeni 5 · kapanan 0 · yeni 0 · değeri değişen 0 · paketler {'Ç5-B tur 2': 5}
+yeni kayıtlar: []
+değeri değişen: []
+aday commit 8391c97b · temiz mi: 0
+ci.yml'deki kâhin adımı sayısı 10
+0 kahin-defter UTC :: [kanit] c5a1fy-kahin-defter-UTC: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 8391c97 +1 izlenmeyen · linux ÖZET: 187 denetim, 0 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-defter-i2nsid
+0 kahin-defter Europe/Istanbul :: [kanit] c5a1fy-kahin-defter-Europe-Istanbul: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 8391c97 +1 izlenme ÖZET: 187 denetim, 0 fark, 0 atlanan olay, 0 reddedilen olay, 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-defter-T0koye
+0 kahin-cari UTC :: [kanit] c5a1fy-kahin-cari-UTC: GEÇTİ · çıkış 0 · 15646/15646 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 8391c97 +1 izlenmeyen · lin ÖZET [2.5.0]: 86 senaryo, 15651 denetim, 0 fark (BULGU 0), 7 bilinen sınır (BILINEN.json; başarısız sayılmaz), 5 yapım aşaması (YAPIM-ASAMAS
+0 kahin-cari Europe/Istanbul :: [kanit] c5a1fy-kahin-cari-Europe-Istanbul: GEÇTİ · çıkış 0 · 15646/15646 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 8391c97 +1 izlen ÖZET [2.5.0]: 86 senaryo, 15651 denetim, 0 fark (BULGU 0), 7 bilinen sınır (BILINEN.json; başarısız sayılmaz), 5 yapım aşaması (YAPIM-ASAMAS
+0 kahin-tutar UTC :: [kanit] c5a1fy-kahin-tutar-UTC: GEÇTİ · çıkış 0 · 3559/3559 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 8391c97 +1 izlenmeyen · linu ÖZET: 3 tohum × 50 satır, 3559 denetim, 0 fark (BULGU 0), 0 yakalanmayan mutasyon. Ham çıktı: /tmp/kahin-tutar-IZLOBa
+0 kahin-ebelge-model UTC :: [kanit] c5a1fy-kahin-ebelge-model-UTC: GEÇTİ · çıkış 0 · 114/114 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 8391c97 +1 izlenmeyen · 
+0 kahin-ebelge-mutasyon UTC :: [kanit] c5a1fy-kahin-ebelge-mutasyon-UTC: GEÇTİ · çıkış 0 · 55/55 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 8391c97 +1 izlenmeyen � 
+0 kahin-ebelge-senaryo UTC :: [kanit] c5a1fy-kahin-ebelge-senaryo-UTC: GEÇTİ · çıkış 0 · 27/27 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 8391c97 +1 izlenmeyen · 
+0 kahin-muhasebe-model UTC :: [kanit] c5a1fy-kahin-muhasebe-model-UTC: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 8391c97 +1 izlenmeyen  
+0 kahin-muhasebe-mutasyon UTC :: [kanit] c5a1fy-kahin-muhasebe-mutasyon-UTC: GEÇTİ · çıkış 0 · 277/277 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 8391c97 +1 izlenmey 
+0 kahin-maliyet UTC :: [kanit] c5a1fy-kahin-maliyet-UTC: GEÇTİ · çıkış 0 · 41306/41306 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 8391c97 +1 izlenmeyen ·  
+0 kahin-mobil-yazma UTC :: [kanit] c5a1fy-kahin-mobil-yazma-UTC: GEÇTİ · çıkış 0 · 54/54 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 8391c97 +1 izlenmeyen · li 
+.github/workflows/ci.yml ayrıştı
+.github/workflows/release.yml ayrıştı
+kâhin bölümü bitti 10:00:57 yük 1.10 2.29 3.46
+A bölümü bitti 10:00:57 yük 1.10 2.29 3.46 · disk 8.6G
+çıkış 0

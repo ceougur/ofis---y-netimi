@@ -1,0 +1,194 @@
+{
+ "aciklama": "S56: geri yüklenmiş açılış öncesi kaydın S44 düzeltmesi şüpheli caride Normal Cari sınırını aşarsa SUPHELI_NORMAL_ASIM ile red (tamamı); eşitlik kabul.",
+ "ad": "s96-s56-s44-normal-cari-siniri",
+ "bankalar": {
+  "B1": {
+   "ad": "Ziraat Vadesiz"
+  },
+  "B2": {
+   "ad": "İş Bankası Ticari"
+  }
+ },
+ "cariler": {
+  "C1": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C2": {
+   "ad": "Ahmet Yılmaz",
+   "tur": "musteri"
+  },
+  "C3": {
+   "ad": "Kaya Market",
+   "tur": "musteri"
+  },
+  "D1": {
+   "ad": "Ali Veli",
+   "tur": "diger"
+  },
+  "T1": {
+   "ad": "Demir Ltd",
+   "tur": "tedarikci"
+  },
+  "T2": {
+   "ad": "Ofis Kira",
+   "tur": "tedarikci"
+  }
+ },
+ "dallar": [],
+ "defter_turu": "bilanco",
+ "dil": "muhasebe-kahin/1",
+ "elle": {
+  "A": {
+   "mu": [
+    {
+     "acilis": "2026-01-15",
+     "kaynak": "PN",
+     "kod": "KASA_ACILIS_ONCESI_HAREKET",
+     "tarih": "2026-01-10"
+    }
+   ],
+   "mz0/satirlar/100/bakiye": 13000,
+   "mz0/satirlar/120|C3/bakiye": 1000,
+   "mz0/satirlar/128|C3/bakiye": 6000,
+   "mz1/satirlar/100/bakiye": 13000,
+   "mz1/satirlar/120|C3/bakiye": 1000,
+   "mz1/satirlar/128|C3/bakiye": 6000,
+   "mz2/satirlar/100/bakiye": 11000,
+   "mz2/satirlar/120|C3/bakiye": 0,
+   "mz2/satirlar/128|C3/bakiye": 9000,
+   "redler": [
+    "SUPHELI_NORMAL_ASIM",
+    "SUPHELI_NORMAL_ASIM"
+   ]
+  }
+ },
+ "kapsam": [
+  "S56",
+  "S44",
+  "Z9",
+  "S20",
+  "T-13",
+  "K3",
+  "J-01",
+  "§3.11b/2",
+  "U5"
+ ],
+ "kartlar": {
+  "KK1": {
+   "ad": "Şirket Kartı"
+  }
+ },
+ "krediler": {
+  "KR1": {
+   "ad": "Ticari Kredi",
+   "banka": "B1"
+  }
+ },
+ "olaylar": [
+  {
+   "K": 0,
+   "M": 10000,
+   "cari": "C3",
+   "id": "F4",
+   "tarih": "2026-01-02",
+   "tur": "satis_faturasi"
+  },
+  {
+   "cari": "C3",
+   "id": "SA",
+   "tarih": "2026-01-05",
+   "tur": "supheliye_al",
+   "tutar": 9000
+  },
+  {
+   "id": "KA",
+   "tarih": "2026-01-15",
+   "tur": "kasa_acilis",
+   "tutar": 10000
+  },
+  {
+   "cari": "C3",
+   "id": "PN",
+   "tarih": "2026-01-10",
+   "tur": "tahsilat",
+   "tutar": 3000,
+   "yedekten": true,
+   "yol": "nakit"
+  },
+  {
+   "ad": "mz0",
+   "bas": "2026-01-01",
+   "rapor": "mizan",
+   "son": "2026-01-31",
+   "tur": "rapor"
+  },
+  {
+   "degisiklik": {
+    "normal_cari": true
+   },
+   "kaynak": "PN",
+   "tur": "duzenle"
+  },
+  {
+   "degisiklik": {
+    "aciklama": "x",
+    "normal_cari": true
+   },
+   "kaynak": "PN",
+   "tur": "duzenle"
+  },
+  {
+   "ad": "mz1",
+   "bas": "2026-01-01",
+   "rapor": "mizan",
+   "son": "2026-01-31",
+   "tur": "rapor"
+  },
+  {
+   "degisiklik": {
+    "normal_cari": true,
+    "tutar": 1000
+   },
+   "kaynak": "PN",
+   "tur": "duzenle"
+  },
+  {
+   "ad": "mz2",
+   "bas": "2026-01-01",
+   "rapor": "mizan",
+   "son": "2026-01-31",
+   "tur": "rapor"
+  },
+  {
+   "ad": "mu",
+   "rapor": "mutabakat_uyarilari",
+   "tarih": "2026-01-31",
+   "tur": "rapor"
+  }
+ ],
+ "poslar": {
+  "POS1": {
+   "ad": "Ziraat POS",
+   "banka": "B1"
+  }
+ },
+ "urunler": {
+  "U1": {
+   "ad": "Kalem",
+   "alis_fiyati": 1000,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U2": {
+   "ad": "Defter",
+   "alis_fiyati": 2500,
+   "birim": "Adet",
+   "kdv_orani": 20
+  },
+  "U3": {
+   "ad": "Silgi",
+   "birim": "Adet"
+  }
+ }
+}

@@ -1,0 +1,9 @@
+[sonra] program 2000 satır: 43 ms (kapı 21 ms) · olay döngüsü en çok 47 ms
+[sonra] program 4000 satır: 92 ms (kapı 42 ms) · olay döngüsü en çok 93 ms
+[sonra] program 8000 satır: 166 ms (kapı 64 ms) · olay döngüsü en çok 167 ms
+[sonra] program 16000 satır: 314 ms (kapı 158 ms) · olay döngüsü en çok 315 ms
+[sonra] program 100000 satır: 1853 ms (kapı 742 ms) · olay döngüsü en çok 1858 ms
+[sonra] yalnız tetikleyiciler 4000 satır: 14 ms
+[sonra] yalnız tetikleyiciler 16000 satır: 57 ms
+[sonra] yalnız tetikleyiciler 100000 satır: 428 ms
+SONUC {"etiket":"sonra","kok":"/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c2t1-mut-5b75e376","program":[{"satir":2000,"ms":43,"olayDongusuEnCokMs":47,"kapiMs":21},{"satir":4000,"ms":92,"olayDongusuEnCokMs":93,"kapiMs":42},{"satir":8000,"ms":166,"olayDongusuEnCokMs":167,"kapiMs":64},{"satir":16000,"ms":314,"olayDongusuEnCokMs":315,"kapiMs":158},{"satir":100000,"ms":1853,"olayDongusuEnCokMs":1858,"kapiMs":742}],"bellek":[{"satir":4000,"ms":14},{"satir":16000,"ms":57},{"satir":100000,"ms":428}]}

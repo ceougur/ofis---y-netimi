@@ -1,0 +1,25 @@
+✓ Borcun Kaynağı: Carinin Mevcut Borcu
+✓ tutar bakiyeden: 850,00
+✓ Tülay bakiyesi 850 (ikinci kez borç yazılmadı)
+
+■ 9. Aynı adla ikinci cari: yazarken uyarı
+✓ uyarı: 1 cari aynı adla kayıtlı: No 1 · 0537 454 65 76. Aynı kişiyse yeni cari açmayın; mevcut cariyi açın.
+
+■ 10. Raporlar → Ana Defter → Defter Mutabakatı: her hesap tutarlı; Hesap Planı Mizanı dengede
+✓ Defter Mutabakatı: fark yok
+✓ mizan dengede (borç 33900 = alacak 33900)
+
+■ 11. Dönem Kilidi: Yönetim → Sistem'de kilitle; kapalı güne hareket reddedilir; formlarda ileri tarih seçilemez; kilit kaldırılır
+✓ cari hareket formunda tarih seçici bugünden ileriyi göstermez (max = 2026-11-22)
+✓ kartta mutabakat durumu: Mutabakat: 65 denetim tamam — ana defter ile Kasa, Cari, Stok ve Taksit kuruşu kuruşuna tu
+✓ kilit tarihi bugünden ileri seçilemez
+✓ kilitlendi: 21.11.2026 ve öncesi kilitli.
+✓ kapalı güne Kasa hareketi reddedildi: Hareket 21.11.2026 tarihli; 21.11.2026 ve öncesi kapatılmış (kilitli) dönemdir. Değişiklik için yönetici dönem kilidini açmalı.
+✓ kilit kaldırıldı
+✓ Eksi Bakiye Denetimi: yalnız Nakit Kasa, varsayılan Uyar (cash=warn)
+✓ kaydedildi: {"cash":"block","bank":"off","card":"off"}
+
+■ Tarayıcı hataları
+✓ hiçbir ekranda tarayıcı hatası yok
+
+64 / 64 kontrol geçti.

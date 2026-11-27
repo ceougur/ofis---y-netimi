@@ -1,0 +1,9 @@
+# Ç7b tur 2e — kılavuz: docs/kilavuz/pdf-uret.mjs + pdf-denetle.mjs + npm run test:kilavuz-metin
+ekran-banka: 74 denetim geçti, 0 başarısız · metin-denetle (bütün bölümler): 880/880 ad (ekranda 619, program kaynağında 261)
+# tests 954
+# pass 954
+# fail 0
+# tests 39
+# pass 39
+# fail 0
+PDF metninde (pdftotext): lın Aralık'ı). KDV DestekOfis · 32 / 47 Özeti'nde de dönemi ileri alınan alış faturası seçilen dönemde görünür. Kaydedil

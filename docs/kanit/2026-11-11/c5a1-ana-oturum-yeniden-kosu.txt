@@ -1,0 +1,18 @@
+başladı 12:58:52 yük 1.43 2.19 3.30 7/144 25177 · ağaç 653b8a8f · temiz mi: 0 değişiklik
+beş dosya UTC çıkış 0 [kanit] c5a1y-bes-UTC: GEÇTİ · çıkış 0 · 54/54 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 653b8a8 +1 izlenmeyen · linux 6.18.44-fc-
+beş dosya Europe/Istanbul çıkış 0 [kanit] c5a1y-bes-Europe-Istanbul: GEÇTİ · çıkış 0 · 54/54 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 653b8a8 +1 izlenmeyen · linux
+ESKİ KOD acilis-519-250 çıkış 1 [kanit] c5a1y-eski-acilis: BAŞARISIZ (çıkış 1; 1 başarısız, 0 iptal) · çıkış 1 · 0/1 geçti, 1 başarısız, 0 iptal, 0 atlanan · commi
+mutasyon çıkış 0 · # tests 15 # pass 15 # fail 0 
+değişen test dosyaları UTC çıkış 1 [kanit] c5a1y-degisen-UTC: BAŞARISIZ (çıkış 1; 1 başarısız, 0 iptal) · çıkış 1 · 349/350 geçti, 1 başarısız, 0 iptal, 0 atlanan · c
+not ok 22 - Senet 121 / 321 — eşdeğerlik: surum-2.0.26-turler (gerçek 2.0.26 koduyla üretilmiş; verilen ve ödenmiş senet)
+değişen test dosyaları Europe/Istanbul çıkış 1 [kanit] c5a1y-degisen-Europe-Istanbul: BAŞARISIZ (çıkış 1; 1 başarısız, 0 iptal) · çıkış 1 · 349/350 geçti, 1 başarısız, 0 iptal, 0 
+not ok 22 - Senet 121 / 321 — eşdeğerlik: surum-2.0.26-turler (gerçek 2.0.26 koduyla üretilmiş; verilen ve ödenmiş senet)
+altın banka-210-goc-zinciri (test/banka-210-goc-zinciri.test.mjs ) çıkış 1 [kanit] c5a1y-altin-banka-210-goc-zinciri: BAŞARISIZ (çıkış 1; 14 başarısız, 0 iptal) · çıkış 1 · 3/17 geçti, 14 başarısız, 0 iptal,
+altın banka-210-altin (test/banka-210-altin.test.mjs ) çıkış 1 [kanit] c5a1y-altin-banka-210-altin: BAŞARISIZ (çıkış 1; 1 başarısız, 0 iptal) · çıkış 1 · 5/6 geçti, 1 başarısız, 0 iptal, 0 atlana
+altın banka-220-senet-121 (test/banka-220-senet-121.test.mjs ) çıkış 1 [kanit] c5a1y-altin-banka-220-senet-121: BAŞARISIZ (çıkış 1; 1 başarısız, 0 iptal) · çıkış 1 · 14/15 geçti, 1 başarısız, 0 iptal, 0 
+e2e senaryo-defter-243 çıkış 0 [kanit] c5a1y-e2e-senaryo-defter-243: GEÇTİ · çıkış 0 · 33/33 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 653b8a8 +1 izlenmeyen · li · [kanit] c5a1y-e2e-senaryo-defter-243: GEÇTİ · çıkış 0 · 33/33 geçti, 0 
+e2e senaryo-banka-210 çıkış 0 [kanit] c5a1y-e2e-senaryo-banka-210: GEÇTİ · çıkış 0 · 428/428 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 653b8a8 +1 izlenmeyen · l · [kanit] c5a1y-e2e-senaryo-banka-210: GEÇTİ · çıkış 0 · 428/428 geçti, 0
+kahin-defter (depo) çıkış 1 [kanit] c5a1y-kahin-defter: BAŞARISIZ (çıkış 1; 10 başarısız, 0 iptal) · çıkış 1 · 184/186 geçti, 10 başarısız, 0 iptal, 0 atlanan �
+UCLAR yaması UYGULANAMADI: error: No valid patches in input (allow with "--allow-empty")
+kahin-cari çıkış 1 [kanit] c5a1y-kahin-cari: BAŞARISIZ (çıkış 1; 49 başarısız, 0 iptal) · çıkış 1 · 12986/13035 geçti, 49 başarısız, 0 iptal, 0 atlanan
+bitti 13:20:31 yük 3.44 3.31 3.02 3/158 31251 · disk 5.7G

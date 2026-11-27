@@ -1,0 +1,13 @@
+
+> destekofis@2.4.9 test:senaryo-220
+> node --disable-warning=ExperimentalWarning test/e2e/senaryo-220.mjs
+
+
+■ Kurulum: yönetici girer, başlangıç tablosu; 10 müşterinin taksitleri Excel'den (Ödenen kolonuyla) arayüzden
+  ✗ beklenmeyen hata: page.waitForSelector: Timeout 15000ms exceeded.
+Call log:
+[2m  - waiting for locator('.hof-modal-backdrop.is-visible:last-of-type [data-act="import"]') to be visible[22m
+
+    at /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-ya-ag/test/e2e/senaryo-220.mjs:127:14
+
+Senaryo 2.0.20: 0 geçti, 1 kaldı. Ekranlar: test/e2e/artifacts/senaryo-220

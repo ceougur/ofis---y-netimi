@@ -1,0 +1,53 @@
+TAP version 13
+# Subtest: 2.5.0 — openDatabase: bekleme süresi açılış PRAGMA'larından önce
+    # Subtest: açılış süresi kullanıcı yazımlarının süresinden kısa (kilitli dosyada şirket isteği olay döngüsünü 10 sn kilitlemez)
+    ok 1 - açılış süresi kullanıcı yazımlarının süresinden kısa (kilitli dosyada şirket isteği olay döngüsünü 10 sn kilitlemez)
+      ---
+      duration_ms: 4.672835
+      type: 'test'
+      ...
+    # Subtest: (a) başka bağlantı dosyayı özel kilitle tutarken açılış BEKLER, kilit kalkınca açılır ve yazar
+    ok 2 - (a) başka bağlantı dosyayı özel kilitle tutarken açılış BEKLER, kilit kalkınca açılır ve yazar
+      ---
+      duration_ms: 1102.379465
+      type: 'test'
+      ...
+    # Subtest: (b) kilit bekleme süresi boyunca kalkmazsa açılış SQLITE_BUSY ile düşer (süre kadar bekleyerek) ve bağlantı kapanır
+    ok 3 - (b) kilit bekleme süresi boyunca kalkmazsa açılış SQLITE_BUSY ile düşer (süre kadar bekleyerek) ve bağlantı kapanır
+      ---
+      duration_ms: 3555.839874
+      type: 'test'
+      ...
+    # Subtest: (c) salt okunur açılış: kilitli dosyada açılır, ilk okuma kilit kalkana kadar (BUSY_TIMEOUT_MS içinde) bekler ve okur; tutamak kalmaz
+    ok 4 - (c) salt okunur açılış: kilitli dosyada açılır, ilk okuma kilit kalkana kadar (BUSY_TIMEOUT_MS içinde) bekler ve okur; tutamak kalmaz
+      ---
+      duration_ms: 4600.291282
+      type: 'test'
+      ...
+    # Subtest: (d) bozuk dosya (veri tabanı değil) BEKLEMEDEN düşer ve bağlantı kapanır (2.4.8 davranışı aynen)
+    ok 5 - (d) bozuk dosya (veri tabanı değil) BEKLEMEDEN düşer ve bağlantı kapanır (2.4.8 davranışı aynen)
+      ---
+      duration_ms: 2.670209
+      type: 'test'
+      ...
+    # Subtest: (e) yazar işlem ortasında SIGKILL ile öldürülür (kurtarılacak WAL), sonra İKİ SÜREÇ AYNI ANDA açar → ikisi de açılır (CI \#1007 errcode 261)
+    ok 6 - (e) yazar işlem ortasında SIGKILL ile öldürülür (kurtarılacak WAL), sonra İKİ SÜREÇ AYNI ANDA açar → ikisi de açılır (CI \#1007 errcode 261)
+      ---
+      duration_ms: 19510.950911
+      type: 'test'
+      ...
+    1..6
+ok 1 - 2.5.0 — openDatabase: bekleme süresi açılış PRAGMA'larından önce
+  ---
+  duration_ms: 28830.186014
+  type: 'suite'
+  ...
+1..1
+# tests 6
+# suites 1
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 29230.441628

@@ -1,0 +1,119 @@
+[
+ {
+  "yol": "S1 sil+geri yükle (taramasız) + dış artış",
+  "once": 2,
+  "sonra": 3,
+  "sapma": [],
+  "gunluk": [],
+  "alarmBekleniyor": true,
+  "alarmOldu": false,
+  "sonuc": "UYUMSUZ"
+ },
+ {
+  "yol": "S1b sil+geri yükle (taramasız) + dış artış — iş parçacığı taraması",
+  "once": 2,
+  "sonra": 3,
+  "bulgu": [],
+  "gunluk": [],
+  "alarmBekleniyor": true,
+  "alarmOldu": false,
+  "sonuc": "UYUMSUZ"
+ },
+ {
+  "yol": "S2 sil, tarama, geri yükle + dış artış (kontrol)",
+  "once": 2,
+  "sonra": 3,
+  "gunluk": [
+   "Kasa açılışından önce tarihli hareket uyarısı arttı (1 → 3 hareket; kapının görmediği yazım)"
+  ],
+  "alarmBekleniyor": true,
+  "alarmOldu": true,
+  "sonuc": "UYGUN"
+ },
+ {
+  "yol": "S3 açılışı sil + geri yükle (taramasız)",
+  "hata": "açılışı geri: 409 cash-opening-after-first {\"ok\":false,\"error\":\"Açılış tarihi Kasa'nın ilk hareketinden (01.03.2026) sonra; geri yüklenmez. Kasa → Açılış Bakiyesi'nden yeniden girin.\",\"code\":\"cash-opening-after-first\",\"firstMovement\":\"2026-03-01\"}"
+ },
+ {
+  "yol": "S3b açılışı sil, tarama, geri yükle",
+  "hata": "açılışı geri: 409 cash-opening-after-first {\"ok\":false,\"error\":\"Açılış tarihi Kasa'nın ilk hareketinden (01.03.2026) sonra; geri yüklenmez. Kasa → Açılış Bakiyesi'nden yeniden girin.\",\"code\":\"cash-opening-after-first\",\"firstMovement\":\"2026-03-01\"}"
+ },
+ {
+  "yol": "S3c açılışı sil + geri yükle (taramasız) + dış artış",
+  "hata": "açılışı geri: 409 cash-opening-after-first {\"ok\":false,\"error\":\"Açılış tarihi Kasa'nın ilk hareketinden (01.03.2026) sonra; geri yüklenmez. Kasa → Açılış Bakiyesi'nden yeniden girin.\",\"code\":\"cash-opening-after-first\",\"firstMovement\":\"2026-03-01\"}"
+ },
+ {
+  "yol": "S4 açılışı öne al, tarama, eski tarihe geri al",
+  "once": 2,
+  "oneAl": "200 ",
+  "ara": 0,
+  "geriAl": "409 cash-opening-after-first",
+  "sonra": 0,
+  "acilis": "2026-03-10",
+  "gunluk": [],
+  "alarmBekleniyor": false,
+  "alarmOldu": false,
+  "sonuc": "UYGUN"
+ },
+ {
+  "yol": "S5 dış tutar değişikliği (açılış öncesi satır)",
+  "once": 2,
+  "sonra": 2,
+  "sapma": [
+   "bank:event"
+  ],
+  "kasa": [
+   5550,
+   6539
+  ],
+  "gunluk": [
+   "İşlem Başlığı (kopya = satır)"
+  ],
+  "alarmBekleniyor": false,
+  "alarmOldu": false,
+  "sonuc": "UYGUN"
+ },
+ {
+  "yol": "S6 dış ekleme (yeni açılış öncesi satır)",
+  "once": 2,
+  "sonra": 3,
+  "sapma": [
+   "money:event"
+  ],
+  "gunluk": [
+   "İşlem Başlığı Olmayan Para Satırı (v20'den sonra); Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım)"
+  ],
+  "alarmBekleniyor": true,
+  "alarmOldu": true,
+  "sonuc": "UYGUN"
+ },
+ {
+  "yol": "S7 artış, tarama, dış azalma, tarama, dış artış, iki tarama",
+  "ilkArtisSatiri": 1,
+  "azalmaSatiri": 0,
+  "gunluk": [
+   "Kasa açılışından önce tarihli hareket uyarısı arttı (2 → 3 hareket; kapının görmediği yazım)"
+  ],
+  "alarmBekleniyor": true,
+  "alarmOldu": true,
+  "sonuc": "UYGUN"
+ },
+ {
+  "yol": "S8 iki geri yükleme (yalnız meşru)",
+  "once": 2,
+  "sonra": 4,
+  "gunluk": [],
+  "alarmBekleniyor": false,
+  "alarmOldu": false,
+  "sonuc": "UYGUN"
+ },
+ {
+  "yol": "S9 sil + dış artış (net 0; tasarım notundaki BİLİNEN SINIR)",
+  "once": 2,
+  "sonra": 2,
+  "gunluk": [],
+  "alarmBekleniyor": true,
+  "alarmOldu": false,
+  "sonuc": "UYUMSUZ"
+ }
+]

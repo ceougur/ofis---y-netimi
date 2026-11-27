@@ -1,0 +1,80 @@
+TAP version 13
+# \# kilit izli değişmez: {"cari":10000,"kilitli":528,"olcum":81,"taksitli":13800} (kilitli = kilit izinin kalemleri değiştirdiği cari; olcum = ön ödeme ölçümlü cari)
+# Subtest: 2.5.0 UD — dönem kilidi izi olan caride Mevcut Borç kartı: kalemler toplamı = bakiye
+    # Subtest: tohum 3'ün en küçük örneği: Σ kalem = bakiye 211.719,68; F2'nin açığı bakiye kadar; C2'nin taksiti Ödendi (taşıdığı borç bağsız parayla kapanmıştı — S101)
+    ok 1 - tohum 3'ün en küçük örneği: Σ kalem = bakiye 211.719,68; F2'nin açığı bakiye kadar; C2'nin taksiti Ödendi (taşıdığı borç bağsız parayla kapanmıştı — S101)
+      ---
+      duration_ms: 16.614968
+      type: 'test'
+      ...
+    # Subtest: aynı satırlar kilit izi OLMADAN: sonuç kilitliyle aynı (Σ kalem = bakiye, F2 211.719,68, C2 Ödendi)
+    ok 2 - aynı satırlar kilit izi OLMADAN: sonuç kilitliyle aynı (Σ kalem = bakiye, F2 211.719,68, C2 Ödendi)
+      ---
+      duration_ms: 2.204872
+      type: 'test'
+      ...
+    1..2
+ok 1 - 2.5.0 UD — dönem kilidi izi olan caride Mevcut Borç kartı: kalemler toplamı = bakiye
+  ---
+  duration_ms: 19.639657
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 UD — kilit sınırı sınırlı geçişte gerçek kapanışa iner: taksitli faturanın açığı kartın kendi kalanını aşmaz
+    # Subtest: tohum 6'nın en küçük örneği (34 satır): fatura açığı ≤ kartın kendi kalanı 781,40; Σ kalem = bakiye; kilit izi olmadan da aynı tavan
+    ok 1 - tohum 6'nın en küçük örneği (34 satır): fatura açığı ≤ kartın kendi kalanı 781,40; Σ kalem = bakiye; kilit izi olmadan da aynı tavan
+      ---
+      duration_ms: 5.794655
+      type: 'test'
+      ...
+    1..1
+ok 2 - 2.5.0 UD — kilit sınırı sınırlı geçişte gerçek kapanışa iner: taksitli faturanın açığı kartın kendi kalanını aşmaz
+  ---
+  duration_ms: 5.905388
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 UD — değişmez: kilit izli rastgele üretici, 40 tohum × 250 cari (10.000 cari)
+    # Subtest: tohum 7000–7009: 10 × 250 cari — Σ kalem = bakiye
+    ok 1 - tohum 7000–7009: 10 × 250 cari — Σ kalem = bakiye
+      ---
+      duration_ms: 1901.137717
+      type: 'test'
+      ...
+    # Subtest: tohum 7010–7019: 10 × 250 cari — Σ kalem = bakiye
+    ok 2 - tohum 7010–7019: 10 × 250 cari — Σ kalem = bakiye
+      ---
+      duration_ms: 1083.656693
+      type: 'test'
+      ...
+    # Subtest: tohum 7020–7029: 10 × 250 cari — Σ kalem = bakiye
+    ok 3 - tohum 7020–7029: 10 × 250 cari — Σ kalem = bakiye
+      ---
+      duration_ms: 1064.238483
+      type: 'test'
+      ...
+    # Subtest: tohum 7030–7039: 10 × 250 cari — Σ kalem = bakiye
+    ok 4 - tohum 7030–7039: 10 × 250 cari — Σ kalem = bakiye
+      ---
+      duration_ms: 1182.007288
+      type: 'test'
+      ...
+    # Subtest: üretici sınıfı gördü: kilidin kalemleri değiştirdiği ve ön ödeme ölçümü yapılan cariler üretildi
+    ok 5 - üretici sınıfı gördü: kilidin kalemleri değiştirdiği ve ön ödeme ölçümü yapılan cariler üretildi
+      ---
+      duration_ms: 1.974003
+      type: 'test'
+      ...
+    1..5
+ok 3 - 2.5.0 UD — değişmez: kilit izli rastgele üretici, 40 tohum × 250 cari (10.000 cari)
+  ---
+  duration_ms: 5233.499691
+  type: 'suite'
+  ...
+1..3
+# tests 8
+# suites 3
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5395.26676

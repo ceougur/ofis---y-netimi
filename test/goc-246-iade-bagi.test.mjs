@@ -8,6 +8,7 @@
 //   Geri dönüş: aynı veri v2.4.5 ile yeniden açılır (fazla kolonu görmez), bakiye ve mizan aynı, eski kural (B 200).
 // Sahte durağan saat (ders 13); ders 30 lisans adresi.
 import assert from "node:assert/strict";
+import { trialAs250Defter } from "./fixtures/c5a-acilis.mjs";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -102,7 +103,8 @@ describe("2.4.6 madde 9 göç: v2.4.5 verisi güncel kodla (bağ yazılmaz; bağ
       assert.equal(store.get("PRAGMA user_version").user_version, LATEST_VERSION);
       assert.equal(store.get("SELECT COUNT(*) AS n FROM account_entries WHERE refund_of <> ''").n, 0, "eski satırlar bağsız (kendiliğinden bağlanmaz)");
       const migrated = await snapshot(api);
-      assert.deepEqual([migrated.balances, migrated.trial, migrated.cash, migrated.reconciled], [before.balances, before.trial, before.cash, before.reconciled], "bakiye, mizan, Kasa v2.4.5 ile aynı");
+      // 2.5.0 Ç5-A (G3: C5-ACILIS-TASARIM §2.2; KG-1): v2.4.5'in 500'ü (açılış) yeni kuralda 519; öbür hesaplar, bakiye ve Kasa aynı.
+      assert.deepEqual([migrated.balances, migrated.trial, migrated.cash, migrated.reconciled], [before.balances, trialAs250Defter(before.trial), before.cash, before.reconciled], "bakiye, mizan (500 → 519), Kasa v2.4.5 ile aynı");
       assert.deepEqual([migrated.open.B, migrated.debt, migrated.open.B2, migrated.open.A2], [500, 300, 500, before.open.A2], "bağsız eski geri ödeme iadenin geri ödemesi: B 500, B2 500, borç 300 (v2.4.5'te 200 / 200)");
       assert.deepEqual(migrated.dues.filter(row => row[0] === "c1"), [["c1", "account", 300], ["c1", "invoice", 500]], "takvim: B 500 + borç 300");
       const card1 = await ok("kart 1", api.get(`/api/workspace/accounts/${ids.c1}`));

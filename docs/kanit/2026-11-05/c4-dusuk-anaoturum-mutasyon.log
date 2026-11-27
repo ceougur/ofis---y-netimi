@@ -1,0 +1,30 @@
+taban: 8 geçti / 0 kaldı (çıkış 0)
+ok 1 - bir hesabın sınıfı silinir (102 bilanço kalemi yok) · KIRMIZI (3 başarısız) · beklenen neden "102 Bankalar (Havale / EFT): sınıfsız" görüldü
+ok 2 - çift sınıf (100 hem bilanço hem gelir tablosu) · KIRMIZI (1 başarısız) · beklenen neden "100 Kasa (Nakit): çift sınıflı" görüldü
+ok 3 - yanlış kalem (153 Stoklar yerine Ticari Alacaklar) · KIRMIZI (1 başarısız) · beklenen neden "153: beklenen aktif I.E, program aktif I.C" görüldü
+ok 4 - aktif hesap pasif kaleminde (191 → III.I) · KIRMIZI (2 başarısız) · beklenen neden "191 İndirilecek KDV: aktif hesap pasif kaleminde" görüldü
+ok 5 - ters bakiye hedefi yanlış (alacaklı 120 → 159) · KIRMIZI (2 başarısız) · beklenen neden "ters bakiye kalemi hedef hesabın kalemi değil" görüldü
+ok 6 - ters bakiye kuralı düşer (borçlu 360 Kesin Değil'siz) · KIRMIZI (1 başarısız) · beklenen neden "360 ters bakiyesi" görüldü
+ok 7 - eklenen hesap düşer (591 yok) · KIRMIZI (3 başarısız) · beklenen neden "591: planda yok" görüldü
+ok 8 - düzenleyici işareti düşer (580) · KIRMIZI (2 başarısız) · beklenen neden "düzenleyici (−) hesaplar" görüldü
+ok 9 - 7/A yansıtma hedefi yanlış (770 → 631) · KIRMIZI (2 başarısız) · beklenen neden "770 Genel Yönetim Giderleri: yansıtma hesabı tutarsız" görüldü
+ok 10 - 770 adı eski hâline döner · KIRMIZI (1 başarısız) · beklenen neden "Genel Giderler ve Alış Faturaları" görüldü
+ok 11 - yansıtma hesabına mali tablo kalemi verilir (771 → E) · KIRMIZI (3 başarısız) · beklenen neden "771 Genel Yönetim Giderleri Yansıtma Hesabı: çift sınıflı" görüldü
+ok 12 - alt hesap tanımı düşer (770.90) · KIRMIZI (1 başarısız) · beklenen neden "not ok 7 - alt hesap tanımları" görüldü
+ok 13 - önceki dönem geliri yanlış kalemde (671 I → F) · KIRMIZI (1 başarısız) · beklenen neden "671: beklenen gelir I, program gelir F" görüldü
+ok 14 - ters bakiye 'aynı' kuralı Kesin Değil'e döner (bütün '—' hesapları) · KIRMIZI (1 başarısız) · beklenen neden "136 ters bakiyesi kendi kaleminde işaretli" görüldü
+ok 15 - 191'e Kesin Değil eklenir · KIRMIZI (1 başarısız) · beklenen neden "191 ters bakiyesi kendi kaleminde işaretli" görüldü
+ok 16 - 590'a brütleştirme eklenir (→ I.D 136) · KIRMIZI (1 başarısız) · beklenen neden "590 ters bakiyesi kendi kaleminde işaretli" görüldü
+ok 17 - alt hesap tanımı düşer (602.90) · KIRMIZI (1 başarısız) · beklenen neden "602.90 alt hesap tanımı" görüldü
+ok 18 - alt hesap tanımı düşer (610.90) · KIRMIZI (1 başarısız) · beklenen neden "610.90 alt hesap tanımı" görüldü
+ok 19 - eklenen hesabın adı yanlış (690 → Dönem Net Zararı) · KIRMIZI (1 başarısız) · beklenen neden "690: kitap "Dönem Kârı veya Zararı", program "Dönem Net Zararı"" görüldü
+ok 20 - kapanış hesabının adına (−) eklenir (690) · KIRMIZI (1 başarısız) · beklenen neden "690: kitap "Dönem Kârı veya Zararı", program "Dönem Kârı veya Zararı (−)"" görüldü
+ok 21 - kapanış hesabının adına (−) eklenir (692) · KIRMIZI (1 başarısız) · beklenen neden "692: kitap "Dönem Net Kârı veya Zararı", program "Dönem Net Kârı veya Zararı (−)"" görüldü
+1..21
+# tests 21
+# pass 21
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+21/21 mutasyon beklenen nedenle yakalandı

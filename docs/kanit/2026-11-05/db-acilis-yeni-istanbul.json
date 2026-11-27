@@ -1,0 +1,32 @@
+{
+  "ad": "db-acilis-yeni-istanbul",
+  "komut": "node --test --test-concurrency=1 test/db-acilis-kilit-250.test.mjs",
+  "commit": "c47c42191157bdcb9f8162cbad4ad757faf3850c",
+  "dal": "worktree-agent-aa4c32f640b15a6cf",
+  "kirli": 0,
+  "izlenmeyen": 17,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T23:24:29.024Z",
+  "sure_sn": 29.6,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 6,
+    "gecen": 6,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/db-acilis-yeni-istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa4c32f640b15a6cf",
+  "ham_cikti_sha256": "72b3d6e508dfbb4d151f77c69049ac3b5bc07596a3c3e23834df9bda06dfdd4a",
+  "ham_cikti_bayt": 3164
+}

@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Ç3 tur 4 — G2 komşuları (ders 10): test/ taraması (komsu-grep.txt) ∪ tur 3 listesi (docs/kanit/2026-11-06/c3t3-ham/komsu-liste-tam.txt) = komsu-birlesik.txt; TZ=UTC.
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+W=/home/user/ofis---y-netimi/.claude/worktrees/agent-a8eba3f64140fc5f1
+mapfile -t FILES < "$S/c3t4-kanit/${LISTE:-komsu-birlesik.txt}"
+echo "basla $(date -u +%H:%M:%S) dosya ${#FILES[@]} yuk $(cat /proc/loadavg)"
+TZLER=${TZLER:-UTC} bash "$S/c3t4-betik/kos-dosya.sh" "$W" "${AD:-komsu}" "${FILES[@]}"
+code=$?
+echo "bitis $(date -u +%H:%M:%S) cikis=$code yuk $(cat /proc/loadavg)"
+exit $code

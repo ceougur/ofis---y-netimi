@@ -1,0 +1,32 @@
+{
+  "ad": "bt5d2-e2e-senaryo-yedeksiz-sil-249",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-yedeksiz-sil-249.mjs",
+  "commit": "12113c8a66c1af3c4b2f8b9724e790587e5ee6d7",
+  "dal": "bt5d2-birlesim",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T14:17:57.731Z",
+  "sure_sn": 21.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 33,
+    "gecen": 33,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../bt5d2-kanit/2026-11-06/bt5d2-e2e-senaryo-yedeksiz-sil-249.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bt5d2-birlesim-ag",
+  "ham_cikti_sha256": "082fd8b147282bf09e9ffa960878900043e52bcea47587e2785af68aae1a12b3",
+  "ham_cikti_bayt": 4377
+}

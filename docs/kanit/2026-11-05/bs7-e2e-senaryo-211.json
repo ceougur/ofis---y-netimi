@@ -1,0 +1,32 @@
+{
+  "ad": "bs7-e2e-senaryo-211",
+  "komut": "npm run test:senaryo-211",
+  "commit": "019341481d370f717dfe60a0a1ac5814e37937eb",
+  "dal": "worktree-agent-a03e5f6803e8339cb",
+  "kirli": 0,
+  "izlenmeyen": 18,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T17:31:24.292Z",
+  "sure_sn": 105.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 59,
+    "gecen": 59,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-05/bs7-e2e-senaryo-211.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a03e5f6803e8339cb",
+  "ham_cikti_sha256": "aa4d739055eab343556a2a3019ed10de9873a4214880ceea5920cab0693b64d0",
+  "ham_cikti_bayt": 5198
+}

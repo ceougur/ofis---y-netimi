@@ -1,0 +1,91 @@
+{
+ "root": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-ya-ag",
+ "case": "acct-unflag",
+ "today": "2026-10-08",
+ "state": {
+  "lock": "2026-10-05",
+  "coverage": "2026-10-05",
+  "pending": false
+ },
+ "before": {
+  "findings": [],
+  "failures": [
+   "ledger:rule-diff:44",
+   "dates:future:cheque_events:1"
+  ]
+ },
+ "target": {
+  "id": "aentry-01e83e8d-59db-4593-9f32-c65dca9d868c",
+  "amount": 900,
+  "date": "2025-07-04",
+  "note": "Açılış bakiyesi"
+ },
+ "afterInline": {
+  "findings": [
+   "ledger:snapshot",
+   "period-lock"
+  ],
+  "failures": [
+   "ledger:snapshot:1",
+   "ledger:rule-diff:44/127800",
+   "dates:future:cheque_events:1",
+   "period-lock:1"
+  ],
+  "log": 1,
+  "zil": [
+   [
+    "ledger:snapshot",
+    "period-lock"
+   ]
+  ]
+ },
+ "afterWorker": {
+  "findings": [],
+  "log": 1,
+  "zil": [
+   [
+    "ledger:snapshot",
+    "period-lock"
+   ]
+  ]
+ },
+ "ruleDiff": {
+  "ok": false,
+  "count": 44,
+  "difference": 127800,
+  "breakdown": [
+   {
+    "account": "500",
+    "frozenMinor": -12780000,
+    "liveMinor": 0,
+    "differenceMinor": 12780000
+   },
+   {
+    "account": "519",
+    "frozenMinor": 0,
+    "liveMinor": -12690000,
+    "differenceMinor": -12690000
+   },
+   {
+    "account": "602",
+    "frozenMinor": 0,
+    "liveMinor": -90000,
+    "differenceMinor": -90000
+   }
+  ]
+ },
+ "opening": [
+  {
+   "code": "opening:519",
+   "ok": true,
+   "ledger": -126900,
+   "subledger": -126900
+  },
+  {
+   "code": "opening:500",
+   "ok": true,
+   "ledger": 0,
+   "subledger": 0
+  }
+ ]
+}

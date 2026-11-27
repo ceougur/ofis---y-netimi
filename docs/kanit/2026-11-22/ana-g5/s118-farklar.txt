@@ -1,0 +1,135 @@
+== UTC 49
+  2 /raporlar/af1/acik_faturalar[]/kalan
+  2 /raporlar/af3/acik_faturalar[]/kalan
+  2 /raporlar/ak1/acik_faturalar[]/kalan
+  2 /raporlar/g1/acik_faturalar[]/kalan
+  2 /raporlar/g1b/acik_faturalar[]/kalan
+  2 /raporlar/g3/acik_faturalar[]/kalan
+  2 /raporlar/g3b/acik_faturalar[]/kalan
+  1 /raporlar/af1/acik_faturalar[len]
+  1 /raporlar/af1/acik_faturalar[]/fatura
+  1 /raporlar/af1/acik_faturalar[]/tarih
+  1 /raporlar/af1/acik_faturalar[]/vade
+  1 /raporlar/af1/acik_faturalar_ham/satir
+  1 /raporlar/af3/acik_faturalar[len]
+  1 /raporlar/af3/acik_faturalar[]/fatura
+  1 /raporlar/af3/acik_faturalar[]/tarih
+  1 /raporlar/af3/acik_faturalar[]/vade
+  1 /raporlar/af3/acik_faturalar_ham/satir
+  1 /raporlar/ak1/acik_faturalar[len]
+  1 /raporlar/ak1/acik_faturalar[]/fatura
+  1 /raporlar/ak1/acik_faturalar[]/tarih
+  1 /raporlar/ak1/acik_faturalar[]/vade
+  1 /raporlar/ak1/acik_faturalar_ham/satir
+  1 /raporlar/g1/acik_faturalar[len]
+  1 /raporlar/g1/acik_faturalar[]/fatura
+  1 /raporlar/g1/acik_faturalar[]/tarih
+  1 /raporlar/g1/acik_faturalar[]/vade
+  1 /raporlar/g1/acik_faturalar_ham/satir
+  1 /raporlar/g1b/acik_faturalar[len]
+  1 /raporlar/g1b/acik_faturalar[]/fatura
+  1 /raporlar/g1b/acik_faturalar[]/tarih
+  1 /raporlar/g1b/acik_faturalar[]/vade
+  1 /raporlar/g1b/acik_faturalar_ham/satir
+  1 /raporlar/g3/acik_faturalar[len]
+  1 /raporlar/g3/acik_faturalar[]/fatura
+  1 /raporlar/g3/acik_faturalar[]/tarih
+  1 /raporlar/g3/acik_faturalar[]/vade
+  1 /raporlar/g3/acik_faturalar_ham/satir
+  1 /raporlar/g3b/acik_faturalar[len]
+  1 /raporlar/g3b/acik_faturalar[]/fatura
+  1 /raporlar/g3b/acik_faturalar[]/tarih
+  1 /raporlar/g3b/acik_faturalar[]/vade
+  1 /raporlar/g3b/acik_faturalar_ham/satir
+    /raporlar/af1/acik_faturalar[len] 3 → 2
+    /raporlar/af1/acik_faturalar[0]/kalan 50000 → 20000
+    /raporlar/af1/acik_faturalar[1]/fatura "F3" → "F2"
+    /raporlar/af1/acik_faturalar[1]/kalan 20000 → 30000
+    /raporlar/af1/acik_faturalar[1]/tarih "2026-01-12" → "2026-01-05"
+    /raporlar/af1/acik_faturalar[1]/vade "2026-02-15" → "2026-03-31"
+    /raporlar/af1/acik_faturalar_ham/satir 3 → 2
+    /raporlar/af3/acik_faturalar[len] 3 → 2
+    /raporlar/af3/acik_faturalar[0]/kalan 50000 → 20000
+    /raporlar/af3/acik_faturalar[1]/fatura "F3" → "F2"
+    /raporlar/af3/acik_faturalar[1]/kalan 20000 → 30000
+    /raporlar/af3/acik_faturalar[1]/tarih "2026-01-12" → "2026-01-05"
+    /raporlar/af3/acik_faturalar[1]/vade "2026-02-15" → "2026-03-31"
+    /raporlar/af3/acik_faturalar_ham/satir 3 → 2
+    /raporlar/ak1/acik_faturalar[len] 3 → 2
+    /raporlar/ak1/acik_faturalar[0]/kalan 50000 → 20000
+    /raporlar/ak1/acik_faturalar[1]/fatura "F3" → "F2"
+    /raporlar/ak1/acik_faturalar[1]/kalan 20000 → 30000
+    /raporlar/ak1/acik_faturalar[1]/tarih "2026-01-12" → "2026-01-05"
+    /raporlar/ak1/acik_faturalar[1]/vade "2026-02-15" → "2026-03-31"
+    /raporlar/ak1/acik_faturalar_ham/satir 3 → 2
+    /raporlar/g1/acik_faturalar[len] 3 → 2
+    /raporlar/g1/acik_faturalar[0]/kalan 50000 → 20000
+    /raporlar/g1/acik_faturalar[1]/fatura "F3" → "F2"
+    /raporlar/g1/acik_faturalar[1]/kalan 20000 → 30000
+    /raporlar/g1/acik_faturalar[1]/tarih "2026-01-12" → "2026-01-05"
+    /raporlar/g1/acik_faturalar[1]/vade "2026-02-15" → "2026-03-31"
+    /raporlar/g1/acik_faturalar_ham/satir 3 → 2
+    /raporlar/g1b/acik_faturalar[len] 3 → 2
+    /raporlar/g1b/acik_faturalar[0]/kalan 50000 → 20000
+    /raporlar/g1b/acik_faturalar[1]/fatura "F3" → "F2"
+    /raporlar/g1b/acik_faturalar[1]/kalan 20000 → 30000
+    /raporlar/g1b/acik_faturalar[1]/tarih "2026-01-12" → "2026-01-05"
+    /raporlar/g1b/acik_faturalar[1]/vade "2026-02-15" → "2026-03-31"
+    /raporlar/g1b/acik_faturalar_ham/satir 3 → 2
+    /raporlar/g3/acik_faturalar[len] 3 → 2
+    /raporlar/g3/acik_faturalar[0]/kalan 50000 → 20000
+    /raporlar/g3/acik_faturalar[1]/fatura "F3" → "F2"
+    /raporlar/g3/acik_faturalar[1]/kalan 20000 → 30000
+    /raporlar/g3/acik_faturalar[1]/tarih "2026-01-12" → "2026-01-05"
+    /raporlar/g3/acik_faturalar[1]/vade "2026-02-15" → "2026-03-31"
+    /raporlar/g3/acik_faturalar_ham/satir 3 → 2
+    /raporlar/g3b/acik_faturalar[len] 3 → 2
+    /raporlar/g3b/acik_faturalar[0]/kalan 50000 → 20000
+    /raporlar/g3b/acik_faturalar[1]/fatura "F3" → "F2"
+    /raporlar/g3b/acik_faturalar[1]/kalan 20000 → 30000
+    /raporlar/g3b/acik_faturalar[1]/tarih "2026-01-12" → "2026-01-05"
+    /raporlar/g3b/acik_faturalar[1]/vade "2026-02-15" → "2026-03-31"
+    /raporlar/g3b/acik_faturalar_ham/satir 3 → 2
+== Europe-Istanbul 49
+  2 /raporlar/af1/acik_faturalar[]/kalan
+  2 /raporlar/af3/acik_faturalar[]/kalan
+  2 /raporlar/ak1/acik_faturalar[]/kalan
+  2 /raporlar/g1/acik_faturalar[]/kalan
+  2 /raporlar/g1b/acik_faturalar[]/kalan
+  2 /raporlar/g3/acik_faturalar[]/kalan
+  2 /raporlar/g3b/acik_faturalar[]/kalan
+  1 /raporlar/af1/acik_faturalar[len]
+  1 /raporlar/af1/acik_faturalar[]/fatura
+  1 /raporlar/af1/acik_faturalar[]/tarih
+  1 /raporlar/af1/acik_faturalar[]/vade
+  1 /raporlar/af1/acik_faturalar_ham/satir
+  1 /raporlar/af3/acik_faturalar[len]
+  1 /raporlar/af3/acik_faturalar[]/fatura
+  1 /raporlar/af3/acik_faturalar[]/tarih
+  1 /raporlar/af3/acik_faturalar[]/vade
+  1 /raporlar/af3/acik_faturalar_ham/satir
+  1 /raporlar/ak1/acik_faturalar[len]
+  1 /raporlar/ak1/acik_faturalar[]/fatura
+  1 /raporlar/ak1/acik_faturalar[]/tarih
+  1 /raporlar/ak1/acik_faturalar[]/vade
+  1 /raporlar/ak1/acik_faturalar_ham/satir
+  1 /raporlar/g1/acik_faturalar[len]
+  1 /raporlar/g1/acik_faturalar[]/fatura
+  1 /raporlar/g1/acik_faturalar[]/tarih
+  1 /raporlar/g1/acik_faturalar[]/vade
+  1 /raporlar/g1/acik_faturalar_ham/satir
+  1 /raporlar/g1b/acik_faturalar[len]
+  1 /raporlar/g1b/acik_faturalar[]/fatura
+  1 /raporlar/g1b/acik_faturalar[]/tarih
+  1 /raporlar/g1b/acik_faturalar[]/vade
+  1 /raporlar/g1b/acik_faturalar_ham/satir
+  1 /raporlar/g3/acik_faturalar[len]
+  1 /raporlar/g3/acik_faturalar[]/fatura
+  1 /raporlar/g3/acik_faturalar[]/tarih
+  1 /raporlar/g3/acik_faturalar[]/vade
+  1 /raporlar/g3/acik_faturalar_ham/satir
+  1 /raporlar/g3b/acik_faturalar[len]
+  1 /raporlar/g3b/acik_faturalar[]/fatura
+  1 /raporlar/g3b/acik_faturalar[]/tarih
+  1 /raporlar/g3b/acik_faturalar[]/vade
+  1 /raporlar/g3b/acik_faturalar_ham/satir

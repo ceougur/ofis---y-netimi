@@ -1,0 +1,38 @@
+{
+  "ad": "bs7-tur1-sema-mutasyon-orta1",
+  "komut": "node --test --test-name-pattern geri yükleme \\+ kapı /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bs7-tur1-morta/test/sema-kapisi-bs7.test.mjs",
+  "commit": "516dfc9f5ff8f2d190b6e300d353c575a33b8928",
+  "dal": "worktree-agent-ac6f71161a5c927c0",
+  "kirli": 3,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T18:30:35.015Z",
+  "sure_sn": 1.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 0,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "BS-7 şema sürüm kapısı › geri yükleme + kapı: yeni şemalı 002 eski yedeğine döner (kapı kalkar); 001 eski yedeği yeniden açılışta uygulanır; daha yeni yedek reddedilir",
+      "konum": "test/sema-kapisi-bs7.test.mjs:271:3",
+      "hata": "başarısız geri yükleme Yedekler'de görünmeli: null · + actual - expected · + undefined"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-05/bs7-tur1-sema-mutasyon-orta1.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ac6f71161a5c927c0",
+  "ham_cikti_sha256": "b2535de0d2e60dff5f7c339b03605d4082d48f62aee1a522ffeaae8c43ca5309",
+  "ham_cikti_bayt": 2034
+}

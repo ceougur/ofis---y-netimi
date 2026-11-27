@@ -1,0 +1,53 @@
+{
+  "ad": "c5bkd-mutabakat-5000x2",
+  "komut": "node test/mutabakat/kos.mjs",
+  "commit": "e0771de0ad456b5c2b398d32cfff07843b7bb919",
+  "dal": "worktree-agent-a511c161b54069067",
+  "kirli": 3,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-12T20:48:45.486Z",
+  "sure_sn": 234,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "mutabakat",
+    "toplam": 2,
+    "gecen": 0,
+    "basarisiz": 2,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 2 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "işlem 1105 fatura-iade:",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "UYUŞMAZLIK (1):",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "işlem 774 geri-yukle:",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "UYUŞMAZLIK (1):",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bkd-kanit/2026-11-12/c5bkd-mutabakat-5000x2.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a511c161b54069067",
+  "ham_cikti_sha256": "b9290ed6b36224f20dee3224e207cf61a56e6584218be86b5fb3f61b7f2885ce",
+  "ham_cikti_bayt": 5831
+}

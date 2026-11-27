@@ -1,0 +1,15 @@
+  ✓ yeniden açılır cümlesi YOK
+  ✓ Vazgeç: kart kapalı kaldı (veri tabanı)
+
+■ D) Denetim — kartı AÇIK taksitli faturada Düzenle onayında bu cümleler YOK
+    [soru] Kaydedilmemiş Değişiklik → Kaydetmeden Kapat (beklenen: Vazgeç'ten sonra Düzenle formu açık)
+    [soru] "Değişiklikler Kaydedilsin mi?" → Vazgeç (beklenen soru)
+  ✓ açık kartta cümle yok:  × ONAY Değişiklikler Kaydedilsin mi? FIS2026000000004 numaralı satış faturası yeni haliyle kaydedilecek: ₺900,00 (Ekran Açık Kart Müşterisi). Eski stok, cari, Kasa, taksit ve çek/senet kayıtları geri alınır, yenileri yazılır; numara değişmez. Değişiklik işlem geçmişine yazılır.VazgeçDeğişiklikleri 
+
+■ E) GÖZLEM — kartı açık taksitli faturada Düzenle → değiştirmeden Kaydet
+    [soru] "Değişiklikler Kaydedilsin mi?" → Değişiklikleri Kaydet (beklenen soru)
+    GÖZLEM: açılışta seçili 'installments'; kayıttan sonra faturanın kartı 'plan-9e139d53-edc9-4323-8557-df53ba4b5caa', eski kart {"status":"active","total":900,"deletedAt":null}, bakiye 900
+  ✓ Mutabakat Testi temiz
+  ✓ sayfa hatası yok
+
+✓ senaryo-dkfix-250: 21 geçti, 0 kaldı

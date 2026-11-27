@@ -1,0 +1,4 @@
+001'e fiş: Fiş 2027-000001 (iz var)
+açılış 1 (sıfırlama izi yok): onarım={"removed":0,"ids":["lv-072e04e8-f11d-4c15-ae5b-78f2ef5e54fd"]}; 001 fiş=1
+001'in işlem geçmişindeki company.reset kayıtları: [{"e":"sirket-3f067ebf-8565-45bc-97b8-ba7672a7505a","at":"2027-01-10T07:00:00.000Z"}]
+açılış 2 (002 sıfırlandıktan sonra): onarım={"removed":1,"ids":["lv-072e04e8-f11d-4c15-ae5b-78f2ef5e54fd"]}; 001 fiş=0

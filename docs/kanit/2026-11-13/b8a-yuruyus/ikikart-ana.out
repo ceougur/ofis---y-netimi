@@ -1,0 +1,24 @@
+(node:21043) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+büyük karta 300: 200
+küçük karta 300 (seçeneksiz): 409 {"ok":false,"error":"Tutar kartın kalanını aşıyor: kalan 200,00 TL, girilen 300,00 TL, fazlası 100,00 TL; yeni tahsilat yazılmaz. Kalan kadar yazın; fazlasını s
+küçük karta 300 'Fazlasını Avans Yaz': 200
+API: bakiye undefined · kartlar [{"total":1000},{"total":200}]
+
+■ Kart penceresi: buyuk-kart
+  KPI: ["₺1.000,00Toplam Tutar₺400,00Tahsil Edilen · %40₺600,00Kalan₺600,00Geciken · 2 taksit"]
+     1. | 01.04.202675 gün gecikti | ₺500,00 | ₺400,00 | ₺100,00 | Kısmen · Gecikti | ₺✎×
+     2. | 01.05.202645 gün gecikti | ₺500,00 |  | ₺500,00 | Gecikti | ₺✎×
+
+■ Kart penceresi: kucuk-kart
+  KPI: ["₺200,00Toplam Tutar₺300,00Tahsil Edilen · %100₺0,00Kalan · fazla ₺100,00₺0,00Geciken · 0 taksit"]
+     1. | 01.07.2026 | ₺200,00 | ₺200,00 | ₺0,00 | Ödendi | ✎×
+
+■ Cari kartı
+  göstergeler: ["₺1.200,00Borç Toplamı₺600,00Alacak Toplamı · Tahsil ₺600,00₺600,00Bakiye · Borçlu₺600,00Taksitten Kalan (bakiyeye dahil)₺600,00Gecikmiş Borç · 2 kalem"]
+
+■ Taksitler listesi (Tümü)
+     1 | İki Kartlı ÖrnekGrupsuz · kayıt 15.03.2026 | ₺1.000,00 | ₺400,00 | ₺600,00 | 01.04.20261. taksit · 75 gün gecikti | Gecikti2 taksit · ₺600,00
+     2 | İki Kartlı ÖrnekGrupsuz · kayıt 16.03.2026 | ₺200,00 | ₺300,00 | ₺0,00 | — | Tamamlandı
+  liste göstergeleri: ["₺600,00Kalan Alacak · 2 kart₺600,00Geciken · 2 taksit₺0,00Bu Ay Beklenen₺700,00Tahsil Edilen"]
+sayfa hatası: yok

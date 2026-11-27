@@ -1,0 +1,2296 @@
+{
+ "root": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c5bt2a-eski",
+ "today": "2026-11-10",
+ "accounts": {
+  "account-eb5e058d-684a-412d-bc21-67639d820e33": {
+   "name": "Müşteri 1 T11",
+   "type": "customer",
+   "balance": -137709.51,
+   "overdueDebt": 0,
+   "overdueDebtCount": 0,
+   "oldOverdue": 5036.75,
+   "listOverdue": 0,
+   "listCount": 0,
+   "vadeLateIn": 0,
+   "vadeRows": [],
+   "zil": [],
+   "invoices": [
+    {
+     "id": "invoice-08d1e403-a00e-4489-9da7-7265aca23b56",
+     "no": "IAD11-10",
+     "kind": "sale_return",
+     "payable": 281371.35,
+     "open": 65060.69,
+     "state": "return",
+     "planId": ""
+    },
+    {
+     "id": "invoice-19f35e9f-7383-4582-a823-f400218f1457",
+     "no": "FIS2026000000079",
+     "kind": "sale",
+     "payable": 3490.64,
+     "open": 0,
+     "state": "paid",
+     "planId": "plan-0d8ad63e-baed-427f-a844-5b87b9804d19"
+    },
+    {
+     "id": "invoice-fadc3efd-4e99-4bd2-9097-d4763645542d",
+     "no": "FIS2026000000056",
+     "kind": "sale",
+     "payable": 4136.91,
+     "open": 0,
+     "state": "paid",
+     "planId": "plan-8552bf0c-f46c-47b2-9259-ff9c7131107d"
+    },
+    {
+     "id": "invoice-3fe14b44-ea1c-4e54-9697-556093cd5c27",
+     "no": "IAD11-8",
+     "kind": "sale_return",
+     "payable": 4237.18,
+     "open": 0,
+     "state": "return",
+     "planId": ""
+    },
+    {
+     "id": "invoice-e3ea6fa7-d994-4737-a584-7feaa2a79354",
+     "no": "FIS2026000000048",
+     "kind": "sale",
+     "payable": 284718.53,
+     "open": 0,
+     "state": "paid",
+     "planId": "plan-3bca128a-bbaa-4d5b-9aa3-1e1ad1858e06"
+    },
+    {
+     "id": "invoice-0c317ad8-1e61-4d01-a451-4b08521960d9",
+     "no": "FIS2026000000040",
+     "kind": "sale",
+     "payable": 9140.4,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-d40ee6de-c5d1-49e1-9724-5950609e5fb6",
+     "no": "FIS2026000000036",
+     "kind": "sale",
+     "payable": 1685.46,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-133accf5-0cf2-4468-81f1-348bb82734ba",
+     "no": "FIS2026000000030",
+     "kind": "sale",
+     "payable": 2047.59,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-0dc03818-6487-4ba1-8ea0-9620a4b36325",
+     "no": "FIS2026000000023",
+     "kind": "sale",
+     "payable": 430.59,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-bc5c1eca-b627-4186-9dc5-a331bf7ca262",
+     "no": "FIS2026000000021",
+     "kind": "sale",
+     "payable": 194081.9,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-0b3cf364-a3fe-41ec-8ab4-01acfd8859e2",
+     "no": "FIS2026000000006",
+     "kind": "sale",
+     "payable": 4237.18,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-8334df57-15db-4048-8c95-8e1170e735f4",
+     "no": "IAD11-2",
+     "kind": "sale_return",
+     "payable": 543.26,
+     "open": 0,
+     "state": "return",
+     "planId": ""
+    },
+    {
+     "id": "invoice-d38ebfc6-50b4-4eab-b2c6-a03f95031252",
+     "no": "IAD2026000000003",
+     "kind": "sale_return",
+     "payable": 194.16,
+     "open": 0,
+     "state": "return",
+     "planId": ""
+    },
+    {
+     "id": "invoice-e3a205dd-d3e1-4a8e-87b5-be60885f6c33",
+     "no": "IAD2026000000002",
+     "kind": "sale_return",
+     "payable": 1059.53,
+     "open": 0,
+     "state": "return",
+     "planId": ""
+    },
+    {
+     "id": "invoice-019405e1-70c6-4927-b9c7-dc5ddfb366d4",
+     "no": "FIS2026000000005",
+     "kind": "sale",
+     "payable": 1796.96,
+     "open": 0,
+     "state": "paid",
+     "planId": "plan-a5c23187-2a4d-45c8-99e2-bf0abe6f3bf6"
+    }
+   ],
+   "cacheEqualsFresh": true,
+   "netSum": -137709.51,
+   "items": [
+    "payment|payable|account|2026-11-06|1297.69",
+    "note|payable|invoice|2026-11-07|136411.82"
+   ],
+   "doubtfulQueue": 0,
+   "overdueKinds": []
+  },
+  "account-3b03b116-0437-425a-987b-6fff98a3f8bc": {
+   "name": "Aynı Ad Müşteri T11",
+   "type": "customer",
+   "balance": -43637.15,
+   "overdueDebt": 0,
+   "overdueDebtCount": 0,
+   "oldOverdue": 0,
+   "listOverdue": 0,
+   "listCount": 0,
+   "vadeLateIn": 0,
+   "vadeRows": [
+    "account|Ödenecek Borç|9890|2026-09-18"
+   ],
+   "zil": [
+    "account|Ödenecek Borç|9890|overdue"
+   ],
+   "invoices": [
+    {
+     "id": "invoice-03454015-c330-40cf-9db7-f40eb6db2f2c",
+     "no": "FIS2026000000090",
+     "kind": "sale",
+     "payable": 437.69,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-e3f677d6-adae-447e-9797-71adb46e2478",
+     "no": "FIS2026000000076",
+     "kind": "sale",
+     "payable": 4067.56,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-28a240e4-2ccf-4fc4-aebe-525ce00c379f",
+     "no": "FIS2026000000047",
+     "kind": "sale",
+     "payable": 11185.75,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-1a3db190-cf08-45c5-a91b-66459f537765",
+     "no": "IAD2026000000005",
+     "kind": "sale_return",
+     "payable": 441.47,
+     "open": 0,
+     "state": "return",
+     "planId": ""
+    },
+    {
+     "id": "invoice-bd56d8f8-4f28-43e7-a5b4-c23a273dbd14",
+     "no": "FIS2026000000025",
+     "kind": "sale",
+     "payable": 953.8,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-c3a2e63d-5450-43a3-803b-c4b6acd03e77",
+     "no": "FIS2026000000011",
+     "kind": "sale",
+     "payable": 2674.9,
+     "open": 0,
+     "state": "paid",
+     "planId": "plan-c61abb54-60fb-4aba-a0fc-afcba178b99c"
+    }
+   ],
+   "cacheEqualsFresh": false,
+   "cacheDiff": [],
+   "cacheInvDiff": [],
+   "cacheOverdue": [
+    0,
+    0
+   ],
+   "netSum": -43637.15,
+   "items": [
+    "payment|payable|account|2026-09-18|33747.15",
+    "entry|payable|account|2026-09-18|9890"
+   ],
+   "doubtfulQueue": 0,
+   "overdueKinds": []
+  },
+  "account-63b7dfeb-7224-4fbe-b6b2-32a3f7df7900": {
+   "name": "Aynı Ad Müşteri T11",
+   "type": "customer",
+   "balance": -81054.36,
+   "overdueDebt": 0,
+   "overdueDebtCount": 0,
+   "oldOverdue": 0,
+   "listOverdue": 0,
+   "listCount": 0,
+   "vadeLateIn": 0,
+   "vadeRows": [
+    "account|Ödenecek Borç|17954.06|2026-08-20"
+   ],
+   "zil": [
+    "account|Ödenecek Borç|17954.06|overdue"
+   ],
+   "invoices": [
+    {
+     "id": "invoice-f16777ed-44ca-4fcb-ab07-d93fd39fed4f",
+     "no": "FIS2026000000075",
+     "kind": "sale",
+     "payable": 327.82,
+     "open": 103.19,
+     "state": "installment",
+     "planId": "plan-9d884f3d-aeda-4cf2-9eb6-ef87d2f5e8dc"
+    },
+    {
+     "id": "invoice-d3c5b0e4-38bd-4c29-a137-c223a99d7d53",
+     "no": "FIS2026000000065",
+     "kind": "sale",
+     "payable": 11538.99,
+     "open": 11538.99,
+     "state": "installment",
+     "planId": "plan-63626378-e451-4500-b1b4-350465864f80"
+    },
+    {
+     "id": "invoice-5b6f1ad3-461d-4dc5-9b3b-8a016ee57fca",
+     "no": "IAD2026000000011",
+     "kind": "sale_return",
+     "payable": 5582.15,
+     "open": 2678.03,
+     "state": "return",
+     "planId": ""
+    },
+    {
+     "id": "invoice-0a353089-2f6d-4527-8e7d-a16375b34eec",
+     "no": "FIS2026000000053",
+     "kind": "sale",
+     "payable": 5583.16,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-e21d21b4-85f9-4937-b7a4-c423330d0579",
+     "no": "FIS2026000000046",
+     "kind": "sale",
+     "payable": 6573.84,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-c8f600be-b7a5-4ee4-b977-cc2e1d6597ee",
+     "no": "FIS2026000000041",
+     "kind": "sale",
+     "payable": 4.46,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-51eb4246-62d1-42b6-98a7-faea6d14ad2c",
+     "no": "FIS2026000000031",
+     "kind": "sale",
+     "payable": 3401.95,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-808fc194-34be-4d1e-925e-2579b6302be1",
+     "no": "FIS2026000000018",
+     "kind": "sale",
+     "payable": 330082.87,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-d04abbd4-b79a-4d2d-99cf-df1a5e84c754",
+     "no": "FIS2026000000016",
+     "kind": "sale",
+     "payable": 7087.3,
+     "open": 0,
+     "state": "paid",
+     "planId": "plan-c7f9b597-a3d8-473a-abdd-2d52dfde607d"
+    },
+    {
+     "id": "invoice-d9029046-2b67-4074-b9ea-86040aeedd8a",
+     "no": "IAD2026000000004",
+     "kind": "sale_return",
+     "payable": 253.63,
+     "open": 0,
+     "state": "return",
+     "planId": ""
+    },
+    {
+     "id": "invoice-4cb197b4-54d7-4e73-b485-63abbf493cf7",
+     "no": "IAD2026000000001",
+     "kind": "sale_return",
+     "payable": 3136.85,
+     "open": 0,
+     "state": "return",
+     "planId": ""
+    },
+    {
+     "id": "invoice-59f9c173-0f35-4c25-97dc-bf3f35be1400",
+     "no": "FIS2026000000003",
+     "kind": "sale",
+     "payable": 3559.57,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    }
+   ],
+   "cacheEqualsFresh": true,
+   "netSum": -81054.36,
+   "items": [
+    "entry|payable|account|2026-08-20|17954.06",
+    "payment|payable|account|2026-09-10|9862.41",
+    "payment|payable|plan|2026-09-20|12252",
+    "payment|payable|account|2026-10-02|17590.61",
+    "note|payable|invoice|2026-10-02|2678.03",
+    "stock|payable|stock|2026-10-04|16.93",
+    "stock|payable|stock|2026-10-10|506.75",
+    "stock|payable|stock|2026-10-16|506.75",
+    "payment|payable|account|2026-11-03|5622",
+    "payment|payable|plan|2026-11-10|14064.82"
+   ],
+   "doubtfulQueue": 0,
+   "overdueKinds": []
+  },
+  "account-2d2f34f3-195a-4b10-a664-cfff14170766": {
+   "name": "Müşteri 4 T11",
+   "type": "customer",
+   "balance": 286951.45,
+   "overdueDebt": 260133.97,
+   "overdueDebtCount": 14,
+   "oldOverdue": 2087.33,
+   "listOverdue": 260133.97,
+   "listCount": 14,
+   "vadeLateIn": 260133.97,
+   "vadeRows": [
+    "account|Tahsil Edilecek Borç|13186.32|2026-10-31",
+    "account|Tahsil Edilecek Borç|18047.85|2026-09-17",
+    "account|Tahsil Edilecek Borç|2196.46|2026-08-04",
+    "account|Tahsil Edilecek Borç|303.55|2026-09-19",
+    "account|Tahsil Edilecek Borç|3884.41|2026-09-18",
+    "account|Tahsil Edilecek Borç|44007.75|2026-08-06",
+    "account|Tahsil Edilecek Borç|48224.44|2026-10-13",
+    "account|Tahsil Edilecek Borç|591.2|2026-10-16",
+    "invoice|Satış faturası FIS2026000000017 (kalan)|57773.52|2026-08-03",
+    "invoice|Satış faturası FIS2026000000024|2349.08|2026-08-10",
+    "invoice|Satış faturası FIS2026000000035|61099.97|2026-09-03",
+    "invoice|Satış faturası FIS2026000000066|6382.09|2026-10-08",
+    "plan|1. taksit (kalan)|1784.85|2026-10-11",
+    "plan|1. taksit|1994.34|2026-12-02",
+    "plan|1. taksit|302.48|2026-10-18",
+    "plan|1. taksit|364.26|2026-12-01",
+    "plan|2. taksit|1965.16|2026-11-11",
+    "plan|2. taksit|1994.34|2027-01-02",
+    "plan|2. taksit|302.48|2026-11-18",
+    "plan|2. taksit|364.26|2027-01-01",
+    "plan|3. taksit|1965.16|2026-12-11",
+    "plan|3. taksit|1994.34|2027-02-02",
+    "plan|3. taksit|302.48|2026-12-18",
+    "plan|3. taksit|364.26|2027-02-01",
+    "plan|4. taksit|1965.16|2027-01-11",
+    "plan|4. taksit|1994.34|2027-03-02",
+    "plan|4. taksit|302.48|2027-01-18",
+    "plan|4. taksit|364.26|2027-03-01",
+    "plan|5. taksit|1965.16|2027-02-11",
+    "plan|5. taksit|1994.34|2027-04-02",
+    "plan|5. taksit|302.49|2027-02-18",
+    "plan|5. taksit|364.29|2027-04-01",
+    "plan|6. taksit|1965.2|2027-03-11",
+    "plan|6. taksit|1994.34|2027-05-02",
+    "plan|7. taksit|1994.34|2027-06-02"
+   ],
+   "zil": [
+    "account|Tahsil Edilecek Borç|13186.32|overdue",
+    "account|Tahsil Edilecek Borç|18047.85|overdue",
+    "account|Tahsil Edilecek Borç|2196.46|overdue",
+    "account|Tahsil Edilecek Borç|303.55|overdue",
+    "account|Tahsil Edilecek Borç|3884.41|overdue",
+    "account|Tahsil Edilecek Borç|44007.75|overdue",
+    "account|Tahsil Edilecek Borç|48224.44|overdue",
+    "account|Tahsil Edilecek Borç|591.2|overdue",
+    "plan|1. taksit|1784.85|overdue",
+    "plan|1. taksit|302.48|overdue",
+    "plan|2. taksit|1965.16|upcoming"
+   ],
+   "invoices": [
+    {
+     "id": "invoice-ea52646b-d3f7-487d-a3d7-27a03492cb5f",
+     "no": "FIS2026000000085",
+     "kind": "sale",
+     "payable": 2804.92,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-c646447a-0c50-4fca-babc-13a360667f94",
+     "no": "FIS2026000000077",
+     "kind": "sale",
+     "payable": 8449.03,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-4ee9ff0b-2bde-4135-af88-db2ec665a11c",
+     "no": "IAD2026000000012",
+     "kind": "sale_return",
+     "payable": 939.05,
+     "open": 0,
+     "state": "return",
+     "planId": ""
+    },
+    {
+     "id": "invoice-0f39e003-8f37-44ca-a8ef-3c383630f7bf",
+     "no": "FIS2026000000067",
+     "kind": "sale",
+     "payable": 8744.15,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-0ce6e095-cc91-4d7c-9bda-9293f14d9c66",
+     "no": "FIS2026000000066",
+     "kind": "sale",
+     "payable": 6382.09,
+     "open": 6382.09,
+     "state": "overdue",
+     "planId": ""
+    },
+    {
+     "id": "invoice-cba6266d-2b9e-4741-8b25-4eeee36b68f1",
+     "no": "SMM2026000000003",
+     "kind": "smm",
+     "payable": 3044.05,
+     "open": 1512.41,
+     "state": "overdue",
+     "planId": "plan-54e77839-ceae-493c-8441-2777dacd2b79"
+    },
+    {
+     "id": "invoice-196f5645-ec30-4eba-96a8-8bbe9e01541c",
+     "no": "SMM2026000000002",
+     "kind": "smm",
+     "payable": 6138.05,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-2bfe7620-35a4-47f6-bca1-ab6c3d9b2bb5",
+     "no": "FIS2026000000055",
+     "kind": "sale",
+     "payable": 5381.18,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-4c02fa95-77f0-457f-a759-b1e98413c427",
+     "no": "FIS2026000000045",
+     "kind": "sale",
+     "payable": 6742.85,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-8b7ea444-a725-47eb-a193-1ab37c9a6264",
+     "no": "FIS2026000000044",
+     "kind": "sale",
+     "payable": 12798.77,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-8c91bbdc-4353-4ad4-82c2-aa1dd1120ab5",
+     "no": "FIS2026000000039",
+     "kind": "sale",
+     "payable": 786.54,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-505cdbcf-d8b0-42a0-a15f-0895f50673d0",
+     "no": "FIS2026000000035",
+     "kind": "sale",
+     "payable": 61099.97,
+     "open": 61099.97,
+     "state": "overdue",
+     "planId": ""
+    },
+    {
+     "id": "invoice-d7df136a-8ead-47ad-a879-7bd3bcf1f542",
+     "no": "FIS2026000000026",
+     "kind": "sale",
+     "payable": 3109.13,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-eba044ec-8403-4fe6-907a-7885ce460254",
+     "no": "FIS2026000000024",
+     "kind": "sale",
+     "payable": 2349.08,
+     "open": 2349.08,
+     "state": "overdue",
+     "planId": ""
+    },
+    {
+     "id": "invoice-ab851eea-6a86-494c-b5d4-32b66ceb35c0",
+     "no": "FIS2026000000017",
+     "kind": "sale",
+     "payable": 420156.34,
+     "open": 118835.47,
+     "state": "overdue",
+     "planId": ""
+    },
+    {
+     "id": "invoice-007cf403-f91c-49fc-aed0-9f1408547bcc",
+     "no": "FIS2026000000012",
+     "kind": "sale",
+     "payable": 1825.46,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-2b2effb2-642f-4983-8fb3-e4bcf84a3e7a",
+     "no": "FIS2026000000009",
+     "kind": "sale",
+     "payable": 3786.09,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    }
+   ],
+   "cacheEqualsFresh": false,
+   "cacheDiff": [],
+   "cacheInvDiff": [],
+   "cacheOverdue": [
+    260133.97,
+    260133.97
+   ],
+   "netSum": 286951.45,
+   "items": [
+    "invoice|receivable|invoice|2026-08-03|57773.52",
+    "payment|receivable|account|2026-08-04|2196.46",
+    "payment|receivable|account|2026-08-06|44007.75",
+    "invoice|receivable|invoice|2026-08-10|2349.08",
+    "invoice|receivable|invoice|2026-09-03|61099.97",
+    "payment|receivable|account|2026-09-17|18047.85",
+    "stock|receivable|stock|2026-09-18|3884.41",
+    "payment|receivable|account|2026-09-19|303.55",
+    "invoice|receivable|invoice|2026-10-08|6382.09",
+    "installment|receivable|plan|2026-10-11|1784.85",
+    "payment|receivable|account|2026-10-13|48224.44",
+    "stock|receivable|stock|2026-10-16|591.2",
+    "installment|receivable|plan|2026-10-18|302.48",
+    "entry|receivable|account|2026-10-31|13186.32",
+    "installment|receivable|plan|2026-11-11|1965.16",
+    "installment|receivable|plan|2026-11-18|302.48",
+    "installment|receivable|plan|2026-12-01|364.26",
+    "installment|receivable|plan|2026-12-02|1994.34",
+    "installment|receivable|plan|2026-12-11|1965.16",
+    "installment|receivable|plan|2026-12-18|302.48",
+    "installment|receivable|plan|2027-01-01|364.26",
+    "installment|receivable|plan|2027-01-02|1994.34",
+    "installment|receivable|plan|2027-01-11|1965.16",
+    "installment|receivable|plan|2027-01-18|302.48",
+    "installment|receivable|plan|2027-02-01|364.26",
+    "installment|receivable|plan|2027-02-02|1994.34",
+    "installment|receivable|plan|2027-02-11|1965.16",
+    "installment|receivable|plan|2027-02-18|302.49",
+    "installment|receivable|plan|2027-03-01|364.26",
+    "installment|receivable|plan|2027-03-02|1994.34",
+    "installment|receivable|plan|2027-03-11|1965.2",
+    "installment|receivable|plan|2027-04-01|364.29",
+    "installment|receivable|plan|2027-04-02|1994.34",
+    "installment|receivable|plan|2027-05-02|1994.34",
+    "installment|receivable|plan|2027-06-02|1994.34"
+   ],
+   "doubtfulQueue": 0,
+   "overdueKinds": [
+    "invoice|invoice|57773.52",
+    "payment|account|2196.46",
+    "payment|account|44007.75",
+    "invoice|invoice|2349.08",
+    "invoice|invoice|61099.97",
+    "payment|account|18047.85",
+    "stock|stock|3884.41",
+    "payment|account|303.55",
+    "invoice|invoice|6382.09",
+    "installment|plan|1784.85",
+    "payment|account|48224.44",
+    "stock|stock|591.2",
+    "installment|plan|302.48",
+    "entry|account|13186.32"
+   ]
+  },
+  "account-a48da083-7147-47a7-85dd-554447749782": {
+   "name": "Müşteri 5 T11",
+   "type": "customer",
+   "balance": 60400.8,
+   "overdueDebt": 59056.95,
+   "overdueDebtCount": 9,
+   "oldOverdue": 25052.9,
+   "listOverdue": 59056.95,
+   "listCount": 9,
+   "vadeLateIn": 59056.95,
+   "vadeRows": [
+    "account|Tahsil Edilecek Borç|1205.3|2026-08-23",
+    "account|Tahsil Edilecek Borç|19608.88|2026-08-06",
+    "account|Tahsil Edilecek Borç|2685|2026-08-16",
+    "account|Tahsil Edilecek Borç|4.53|2026-09-01",
+    "invoice|Satış faturası FIS2026000000022|7140.54|2026-08-07",
+    "invoice|Satış faturası FIS2026000000050|3359.8|2026-09-09",
+    "plan|1. taksit (kalan)|7831.2|2026-10-03",
+    "plan|1. taksit|223.97|2026-11-11",
+    "plan|1. taksit|3871.5|2026-09-26",
+    "plan|2. taksit|13350.2|2026-11-03",
+    "plan|2. taksit|223.97|2026-12-11",
+    "plan|3. taksit|223.97|2027-01-11",
+    "plan|4. taksit|223.97|2027-02-11",
+    "plan|5. taksit|223.97|2027-03-11",
+    "plan|6. taksit|224|2027-04-11"
+   ],
+   "zil": [
+    "account|Tahsil Edilecek Borç|1205.3|overdue",
+    "account|Tahsil Edilecek Borç|19608.88|overdue",
+    "account|Tahsil Edilecek Borç|2685|overdue",
+    "account|Tahsil Edilecek Borç|4.53|overdue",
+    "plan|1. taksit|223.97|upcoming",
+    "plan|1. taksit|3871.5|overdue",
+    "plan|1. taksit|7831.2|overdue",
+    "plan|2. taksit|13350.2|overdue"
+   ],
+   "invoices": [
+    {
+     "id": "invoice-d4eda47c-af05-477c-89c3-7753777273f6",
+     "no": "IAD2026000000015",
+     "kind": "sale_return",
+     "payable": 3625.06,
+     "open": 0,
+     "state": "return",
+     "planId": ""
+    },
+    {
+     "id": "invoice-8cdc06ad-4f1c-44e4-87c3-fd8c0fb9daf7",
+     "no": "IAD2026000000014",
+     "kind": "sale_return",
+     "payable": 685.98,
+     "open": 0,
+     "state": "return",
+     "planId": ""
+    },
+    {
+     "id": "invoice-8ba934f4-64b7-4923-a1ac-cf971784980c",
+     "no": "IAD2026000000013",
+     "kind": "sale_return",
+     "payable": 4665.41,
+     "open": 0,
+     "state": "return",
+     "planId": ""
+    },
+    {
+     "id": "invoice-abe7ec0b-b484-4195-b6c9-05b079861304",
+     "no": "FIS2026000000074",
+     "kind": "sale",
+     "payable": 8224.2,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-15e72e04-5ff5-41d3-968b-b13a674d0d3b",
+     "no": "FIS2026000000072",
+     "kind": "sale",
+     "payable": 3807.22,
+     "open": 0,
+     "state": "paid",
+     "planId": "plan-d20e28a9-7831-43f2-8161-bae12cf13444"
+    },
+    {
+     "id": "invoice-183dfa17-b4af-41f4-a315-44b69073a391",
+     "no": "FIS2026000000068",
+     "kind": "sale",
+     "payable": 3051.9,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-f922b55e-566a-4dd7-bb91-963f19f9d5de",
+     "no": "FIS2026000000050",
+     "kind": "sale",
+     "payable": 3359.8,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-a5d5cc0c-6089-428c-9355-5a8f2479bb63",
+     "no": "IAD11-7",
+     "kind": "sale_return",
+     "payable": 516.49,
+     "open": 0,
+     "state": "return",
+     "planId": ""
+    },
+    {
+     "id": "invoice-73768333-8cae-44c2-b0d2-9dd8cef50692",
+     "no": "FIS2026000000032",
+     "kind": "sale",
+     "payable": 5829.43,
+     "open": 3871.5,
+     "state": "overdue",
+     "planId": "plan-88c0e067-6eeb-4a8b-bd92-7573dc26a362"
+    },
+    {
+     "id": "invoice-044e3d43-7eb1-4d4c-976d-5a8e7fdd4f7d",
+     "no": "IAD11-5",
+     "kind": "sale_return",
+     "payable": 1464.88,
+     "open": 0,
+     "state": "return",
+     "planId": ""
+    },
+    {
+     "id": "invoice-68786de2-4ea7-4eca-9ad1-6eaaa3001fa0",
+     "no": "IAD11-4",
+     "kind": "sale_return",
+     "payable": 4473.18,
+     "open": 0,
+     "state": "return",
+     "planId": ""
+    },
+    {
+     "id": "invoice-03e7867d-29bf-4a61-bb0c-9fcaaa241870",
+     "no": "FIS2026000000022",
+     "kind": "sale",
+     "payable": 7140.54,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-c4f77735-f273-4ff4-9663-6287f449da35",
+     "no": "IAD11-1",
+     "kind": "sale_return",
+     "payable": 7084.47,
+     "open": 0,
+     "state": "return",
+     "planId": ""
+    },
+    {
+     "id": "invoice-f0ddf4bf-d0d1-44d1-a5b9-a147dc17448e",
+     "no": "FIS2026000000004",
+     "kind": "sale",
+     "payable": 7084.47,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    }
+   ],
+   "cacheEqualsFresh": false,
+   "cacheDiff": [],
+   "cacheInvDiff": [],
+   "cacheOverdue": [
+    59056.95,
+    59056.95
+   ],
+   "netSum": 60400.8,
+   "items": [
+    "payment|receivable|account|2026-08-06|19608.88",
+    "invoice|receivable|invoice|2026-08-07|7140.54",
+    "payment|receivable|account|2026-08-16|2685",
+    "payment|receivable|account|2026-08-23|1205.3",
+    "stock|receivable|stock|2026-09-01|4.53",
+    "invoice|receivable|invoice|2026-09-09|3359.8",
+    "installment|receivable|plan|2026-09-26|3871.5",
+    "installment|receivable|plan|2026-10-03|7831.2",
+    "installment|receivable|plan|2026-11-03|13350.2",
+    "installment|receivable|plan|2026-11-11|223.97",
+    "installment|receivable|plan|2026-12-11|223.97",
+    "installment|receivable|plan|2027-01-11|223.97",
+    "installment|receivable|plan|2027-02-11|223.97",
+    "installment|receivable|plan|2027-03-11|223.97",
+    "installment|receivable|plan|2027-04-11|224"
+   ],
+   "doubtfulQueue": 0,
+   "overdueKinds": [
+    "payment|account|19608.88",
+    "invoice|invoice|7140.54",
+    "payment|account|2685",
+    "payment|account|1205.3",
+    "stock|stock|4.53",
+    "invoice|invoice|3359.8",
+    "installment|plan|3871.5",
+    "installment|plan|7831.2",
+    "installment|plan|13350.2"
+   ]
+  },
+  "account-ba7eaa8d-e83e-46d7-bf66-b615bd9d773f": {
+   "name": "Müşteri 6 T11",
+   "type": "customer",
+   "balance": 64615.69,
+   "overdueDebt": 54244.09,
+   "overdueDebtCount": 3,
+   "oldOverdue": 8672.47,
+   "listOverdue": 54244.09,
+   "listCount": 3,
+   "vadeLateIn": 54244.09,
+   "vadeRows": [
+    "account|Tahsil Edilecek Borç|24648.9|2026-10-14",
+    "account|Tahsil Edilecek Borç|29231.11|2026-10-17",
+    "invoice|Satış faturası FIS2026000000073 (kalan)|636.18|2026-12-15",
+    "plan|1. taksit (kalan)|327.95|2026-12-08",
+    "plan|1. taksit|364.08|2026-11-07",
+    "plan|2. taksit (kalan)|3292.27|2026-11-29",
+    "plan|2. taksit|1552.95|2027-01-08",
+    "plan|2. taksit|364.08|2026-12-07",
+    "plan|3. taksit|1552.95|2027-02-08",
+    "plan|3. taksit|364.08|2027-01-07",
+    "plan|4. taksit|1552.96|2027-03-08",
+    "plan|4. taksit|364.08|2027-02-07",
+    "plan|5. taksit|364.1|2027-03-07"
+   ],
+   "zil": [
+    "account|Tahsil Edilecek Borç|24648.9|overdue",
+    "account|Tahsil Edilecek Borç|29231.11|overdue",
+    "plan|1. taksit|364.08|overdue"
+   ],
+   "invoices": [
+    {
+     "id": "invoice-2896619d-08ff-4dc2-abdb-dabec39483d2",
+     "no": "FIS2026000000082",
+     "kind": "sale",
+     "payable": 10972.94,
+     "open": 4986.81,
+     "state": "installment",
+     "planId": "plan-29a064d6-1e9a-4fef-9087-aa9784897e6f"
+    },
+    {
+     "id": "invoice-92426a02-c796-48fa-b4c7-1fd573eac557",
+     "no": "FIS2026000000080",
+     "kind": "sale",
+     "payable": 4346.73,
+     "open": 1820.42,
+     "state": "overdue",
+     "planId": "plan-1dac7b3c-ea60-420d-a0f9-2f13e5abd28e"
+    },
+    {
+     "id": "invoice-7e8a50c2-d1d8-47ec-9f01-5589313c7b09",
+     "no": "FIS2026000000073",
+     "kind": "sale",
+     "payable": 1486.62,
+     "open": 636.18,
+     "state": "partial",
+     "planId": ""
+    },
+    {
+     "id": "invoice-d40a5264-3e63-4c86-9c3d-3aec37506ab2",
+     "no": "FIS2026000000064",
+     "kind": "sale",
+     "payable": 2243.76,
+     "open": 2243.76,
+     "state": "overdue",
+     "planId": "plan-85fbc8b2-b030-4cb8-af0f-27871ed1ed9e"
+    },
+    {
+     "id": "invoice-4d39d6e0-af5e-4547-bcfa-56bdbd0f82fa",
+     "no": "FIS2026000000060",
+     "kind": "sale",
+     "payable": 1016.88,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-c9924ced-de03-4b38-876c-5bb5010b5a09",
+     "no": "IAD2026000000008",
+     "kind": "sale_return",
+     "payable": 699.35,
+     "open": 0,
+     "state": "return",
+     "planId": ""
+    },
+    {
+     "id": "invoice-1298b340-b283-4ead-91a2-040f95076e8d",
+     "no": "IAD2026000000006",
+     "kind": "sale_return",
+     "payable": 25890.91,
+     "open": 0,
+     "state": "return",
+     "planId": ""
+    },
+    {
+     "id": "invoice-bb8119fb-33ee-4e6d-8c61-e2d68e96a51a",
+     "no": "FIS2026000000027",
+     "kind": "sale",
+     "payable": 29550.01,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-f87ffd18-60f4-43de-b31b-2e2a74eec6c5",
+     "no": "FIS2026000000008",
+     "kind": "sale",
+     "payable": 1365.71,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-19a4e9e3-0793-46f5-bee9-c2944f50f35d",
+     "no": "IAD11-3",
+     "kind": "sale_return",
+     "payable": 699.35,
+     "open": 0,
+     "state": "return",
+     "planId": ""
+    },
+    {
+     "id": "invoice-a0770e70-ba90-46a1-ac56-204cd4fed2d6",
+     "no": "FIS2026000000002",
+     "kind": "sale",
+     "payable": 1748.36,
+     "open": 0,
+     "state": "paid",
+     "planId": "plan-f72d3289-7efe-4339-b01f-72119a93526d"
+    },
+    {
+     "id": "invoice-7ff69ff4-6bae-4233-be7d-4d2adbd4b16b",
+     "no": "FIS2026000000001",
+     "kind": "sale",
+     "payable": 3482.3,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    }
+   ],
+   "cacheEqualsFresh": false,
+   "cacheDiff": [],
+   "cacheInvDiff": [],
+   "cacheOverdue": [
+    54244.09,
+    54244.09
+   ],
+   "netSum": 64615.69,
+   "items": [
+    "entry|receivable|account|2026-10-14|24648.9",
+    "entry|receivable|account|2026-10-17|29231.11",
+    "installment|receivable|plan|2026-11-07|364.08",
+    "installment|receivable|plan|2026-11-29|3292.27",
+    "installment|receivable|plan|2026-12-07|364.08",
+    "installment|receivable|plan|2026-12-08|327.95",
+    "invoice|receivable|invoice|2026-12-15|636.18",
+    "installment|receivable|plan|2027-01-07|364.08",
+    "installment|receivable|plan|2027-01-08|1552.95",
+    "installment|receivable|plan|2027-02-07|364.08",
+    "installment|receivable|plan|2027-02-08|1552.95",
+    "installment|receivable|plan|2027-03-07|364.1",
+    "installment|receivable|plan|2027-03-08|1552.96"
+   ],
+   "doubtfulQueue": 0,
+   "overdueKinds": [
+    "entry|account|24648.9",
+    "entry|account|29231.11",
+    "installment|plan|364.08"
+   ]
+  },
+  "account-7c76f7e5-590d-438a-897f-a77948fa00b5": {
+   "name": "Müşteri 7 T11",
+   "type": "customer",
+   "balance": 86377.05,
+   "overdueDebt": 74479.08,
+   "overdueDebtCount": 3,
+   "oldOverdue": 0,
+   "listOverdue": 74479.08,
+   "listCount": 3,
+   "vadeLateIn": 74479.08,
+   "vadeRows": [
+    "account|Tahsil Edilecek Borç|436.6|2026-11-04",
+    "invoice|Satış faturası FIS2026000000062 (kalan)|70571.61|2026-10-09",
+    "invoice|Satış faturası FIS2026000000069|3470.87|2026-10-14",
+    "plan|1. taksit|6803.67|2026-12-05",
+    "plan|2. taksit|6803.67|2027-01-05"
+   ],
+   "zil": [
+    "account|Tahsil Edilecek Borç|436.6|overdue"
+   ],
+   "invoices": [
+    {
+     "id": "invoice-fddd17f7-dc9c-4293-be5b-fa6514d794e1",
+     "no": "FIS2026000000088",
+     "kind": "sale",
+     "payable": 2570.82,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-8961c3ab-1e81-4659-845d-d1f36f1026f0",
+     "no": "FIS2026000000069",
+     "kind": "sale",
+     "payable": 3470.87,
+     "open": 3470.87,
+     "state": "overdue",
+     "planId": ""
+    },
+    {
+     "id": "invoice-6d2ffa61-affb-4ea6-af02-b6d07cfb6c67",
+     "no": "IAD11-9",
+     "kind": "sale_return",
+     "payable": 65,
+     "open": 0,
+     "state": "return",
+     "planId": ""
+    },
+    {
+     "id": "invoice-3533839c-ad8c-4d93-a1a5-e50fecf4e28d",
+     "no": "FIS2026000000063",
+     "kind": "sale",
+     "payable": 6480.9,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-056d06a9-2cda-4564-93b9-50ea00e62cba",
+     "no": "FIS2026000000062",
+     "kind": "sale",
+     "payable": 153704.42,
+     "open": 14270.07,
+     "state": "overdue",
+     "planId": ""
+    },
+    {
+     "id": "invoice-42eaec53-84cd-405d-a7a2-5f6c5b07c537",
+     "no": "FIS2026000000054",
+     "kind": "sale",
+     "payable": 872.4,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-02a3fe8b-df0b-48a1-bd1d-087f0e78e19c",
+     "no": "FIS2026000000051",
+     "kind": "sale",
+     "payable": 2668.87,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-8d9883c0-4198-48ce-8670-8ce39539f8e5",
+     "no": "FIS2026000000037",
+     "kind": "sale",
+     "payable": 7702.13,
+     "open": 0,
+     "state": "paid",
+     "planId": "plan-bb122689-2413-41f6-ac4d-6238dcb396d5"
+    },
+    {
+     "id": "invoice-c3f998f0-8e50-456e-a741-77f15059a325",
+     "no": "FIS2026000000033",
+     "kind": "sale",
+     "payable": 65,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-2e265c62-e0a9-4021-be5e-8bbaad9ee979",
+     "no": "IAD11-6",
+     "kind": "sale_return",
+     "payable": 330.18,
+     "open": 0,
+     "state": "return",
+     "planId": ""
+    },
+    {
+     "id": "invoice-eb7e39c0-0c80-42fd-b7de-2df13136deff",
+     "no": "FIS2026000000029",
+     "kind": "sale",
+     "payable": 476.17,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-b499e32d-d472-43da-b218-677a6653071c",
+     "no": "FIS2026000000019",
+     "kind": "sale",
+     "payable": 1249.64,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-7a9b2d69-dcd7-4866-b26a-371e663d26a2",
+     "no": "FIS2026000000014",
+     "kind": "sale",
+     "payable": 937.08,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-7be0aa73-6986-42eb-8736-5c25861a4fb2",
+     "no": "FIS2026000000013",
+     "kind": "sale",
+     "payable": 1495.86,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    }
+   ],
+   "cacheEqualsFresh": true,
+   "netSum": 88086.42,
+   "items": [
+    "invoice|receivable|invoice|2026-10-09|70571.61",
+    "invoice|receivable|invoice|2026-10-14|3470.87",
+    "payment|receivable|account|2026-11-04|436.6",
+    "installment|receivable|plan|2026-12-05|6803.67",
+    "installment|receivable|plan|2027-01-05|6803.67"
+   ],
+   "doubtfulQueue": 0,
+   "overdueKinds": [
+    "invoice|invoice|70571.61",
+    "invoice|invoice|3470.87",
+    "payment|account|436.6"
+   ]
+  },
+  "account-bc8c5c48-f24f-49ff-ac2b-aa0e82d2867a": {
+   "name": "Müşteri 8 T11",
+   "type": "customer",
+   "balance": -146283.42,
+   "overdueDebt": 0,
+   "overdueDebtCount": 0,
+   "oldOverdue": 942.7,
+   "listOverdue": 0,
+   "listCount": 0,
+   "vadeLateIn": 0,
+   "vadeRows": [
+    "account|Ödenecek Borç|24779.54|2026-08-08",
+    "account|Ödenecek Borç|38947.49|2026-11-09",
+    "account|Ödenecek Borç|8870|2026-10-16"
+   ],
+   "zil": [
+    "account|Ödenecek Borç|24779.54|overdue",
+    "account|Ödenecek Borç|38947.49|overdue",
+    "account|Ödenecek Borç|8870|overdue"
+   ],
+   "invoices": [
+    {
+     "id": "invoice-f56790d5-1c75-45b6-bcce-b1910df79e6a",
+     "no": "FIS2026000000089",
+     "kind": "sale",
+     "payable": 3141.21,
+     "open": 0,
+     "state": "paid",
+     "planId": "plan-e6ce4d38-a88e-4cd5-86d7-ef6d573fb24a"
+    },
+    {
+     "id": "invoice-91f54a94-e305-4dd9-8896-484112768628",
+     "no": "FIS2026000000083",
+     "kind": "sale",
+     "payable": 6934.98,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-42589208-3226-4fda-b38a-ba8d0b677d5b",
+     "no": "FIS2026000000078",
+     "kind": "sale",
+     "payable": 3597.68,
+     "open": 2828.1,
+     "state": "overdue",
+     "planId": "plan-132a368c-b0dc-43b2-b5bb-851f876ba9ed"
+    },
+    {
+     "id": "invoice-254cb789-1f47-42ef-8d28-7549a41fd714",
+     "no": "FIS2026000000071",
+     "kind": "sale",
+     "payable": 4039.04,
+     "open": 4039.04,
+     "state": "installment",
+     "planId": "plan-e6448393-64f9-45af-ad67-b355a4b75be9"
+    },
+    {
+     "id": "invoice-83370a75-c62a-4864-9971-6bb001a4f4ba",
+     "no": "IAD2026000000010",
+     "kind": "sale_return",
+     "payable": 86.65,
+     "open": 0,
+     "state": "return",
+     "planId": ""
+    },
+    {
+     "id": "invoice-c49bd462-d401-4900-befc-39a762c02755",
+     "no": "FIS2026000000059",
+     "kind": "sale",
+     "payable": 4231.56,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-a8d8cd8e-c5c4-42cd-adfa-bd1be4420283",
+     "no": "IAD2026000000009",
+     "kind": "sale_return",
+     "payable": 2914.49,
+     "open": 0,
+     "state": "return",
+     "planId": ""
+    },
+    {
+     "id": "invoice-57874576-3b0b-4a39-9b6e-e347acf47202",
+     "no": "FIS2026000000058",
+     "kind": "sale",
+     "payable": 5817.41,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-69fc712c-26fe-4581-9ea6-3e42b82358fd",
+     "no": "FIS2026000000057",
+     "kind": "sale",
+     "payable": 1388.46,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-5b9fc551-4057-4d5e-9fce-6b591dfb39de",
+     "no": "FIS2026000000043",
+     "kind": "sale",
+     "payable": 2509.19,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-ca58e863-1a93-473f-9103-261809c04989",
+     "no": "FIS2026000000042",
+     "kind": "sale",
+     "payable": 3207.96,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-a772e021-bad6-4d86-9747-265edb02e0b0",
+     "no": "FIS2026000000034",
+     "kind": "sale",
+     "payable": 5828.98,
+     "open": 0,
+     "state": "paid",
+     "planId": "plan-cf3ba86f-1c82-41ad-8163-ac8bf16c433e"
+    },
+    {
+     "id": "invoice-b827ab81-a53e-452d-877b-660fe894766e",
+     "no": "SMM2026000000001",
+     "kind": "smm",
+     "payable": 7484.84,
+     "open": 0,
+     "state": "paid",
+     "planId": "plan-986bb0af-fd1f-45b7-8ce3-ebab5de7e817"
+    },
+    {
+     "id": "invoice-efcf410e-4a0d-4b37-847d-5acaa26b1f99",
+     "no": "FIS2026000000020",
+     "kind": "sale",
+     "payable": 11698.29,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    }
+   ],
+   "cacheEqualsFresh": true,
+   "netSum": -146283.42,
+   "items": [
+    "entry|payable|account|2026-08-08|24779.54",
+    "payment|payable|plan|2026-09-16|3298.66",
+    "payment|payable|account|2026-09-17|2001",
+    "stock|payable|stock|2026-10-11|3490.44",
+    "entry|payable|account|2026-10-16|8870",
+    "payment|payable|account|2026-10-18|8108.05",
+    "payment|payable|account|2026-10-25|45668",
+    "payment|payable|plan|2026-11-07|11120.24",
+    "entry|payable|account|2026-11-09|38947.49"
+   ],
+   "doubtfulQueue": 0,
+   "overdueKinds": []
+  },
+  "account-4196a05d-c02a-4277-bf82-c78c3f544b33": {
+   "name": "Tedarikçi 9 T11",
+   "type": "supplier",
+   "balance": -514228.79,
+   "overdueDebt": 0,
+   "overdueDebtCount": 0,
+   "oldOverdue": 0,
+   "listOverdue": 0,
+   "listCount": 0,
+   "vadeLateIn": 0,
+   "vadeRows": [
+    "account|Ödenecek Borç|111.05|2026-09-18",
+    "account|Ödenecek Borç|16178.49|2026-08-05",
+    "account|Ödenecek Borç|1753.33|2026-10-09",
+    "account|Ödenecek Borç|1761.88|2026-09-12",
+    "account|Ödenecek Borç|24765.62|2026-07-17",
+    "account|Ödenecek Borç|28157.53|2026-07-26",
+    "account|Ödenecek Borç|3235.93|2026-09-13",
+    "account|Ödenecek Borç|3595.49|2026-08-08",
+    "account|Ödenecek Borç|38484.56|2026-08-02",
+    "account|Ödenecek Borç|38993.69|2026-10-23",
+    "account|Ödenecek Borç|4499.65|2026-07-13",
+    "account|Ödenecek Borç|47538.87|2026-08-24",
+    "account|Ödenecek Borç|49901.83|2026-10-13",
+    "account|Ödenecek Borç|51014.17|2026-07-24",
+    "account|Ödenecek Borç|5750.7|2026-07-24",
+    "account|Ödenecek Borç|62.75|2026-11-02",
+    "account|Ödenecek Borç|6226.13|2026-08-28",
+    "account|Ödenecek Borç|6723.57|2026-10-12",
+    "account|Ödenecek Borç|7537.45|2026-09-13",
+    "account|Ödenecek Borç|80585.75|2026-10-29",
+    "account|Ödenecek Borç|8424.96|2026-11-05",
+    "account|Ödenecek Borç|8629|2026-10-22",
+    "invoice|Alış faturası A11-11 (kalan)|18859.11|2026-08-16",
+    "invoice|Alış faturası A11-24 (kalan)|188.33|2026-10-01",
+    "invoice|Alış faturası A11-30 (kalan)|666.13|2026-09-08",
+    "invoice|Alış faturası A11-39|19164.18|2026-11-08",
+    "invoice|Alış faturası A11-3|23821.04|2026-08-04",
+    "invoice|Alış faturası A11-4 (kalan)|2984.66|2026-09-05",
+    "invoice|Alış faturası A11-43|12503.15|2026-10-23",
+    "invoice|Alış faturası A11-47 (kalan)|2109.79|2026-10-26"
+   ],
+   "zil": [
+    "account|Ödenecek Borç|111.05|overdue",
+    "account|Ödenecek Borç|16178.49|overdue",
+    "account|Ödenecek Borç|1753.33|overdue",
+    "account|Ödenecek Borç|1761.88|overdue",
+    "account|Ödenecek Borç|24765.62|overdue",
+    "account|Ödenecek Borç|28157.53|overdue",
+    "account|Ödenecek Borç|3235.93|overdue",
+    "account|Ödenecek Borç|3595.49|overdue",
+    "account|Ödenecek Borç|38484.56|overdue",
+    "account|Ödenecek Borç|38993.69|overdue",
+    "account|Ödenecek Borç|4499.65|overdue",
+    "account|Ödenecek Borç|47538.87|overdue",
+    "account|Ödenecek Borç|49901.83|overdue",
+    "account|Ödenecek Borç|51014.17|overdue",
+    "account|Ödenecek Borç|5750.7|overdue",
+    "account|Ödenecek Borç|62.75|overdue",
+    "account|Ödenecek Borç|6226.13|overdue",
+    "account|Ödenecek Borç|6723.57|overdue",
+    "account|Ödenecek Borç|7537.45|overdue",
+    "account|Ödenecek Borç|80585.75|overdue",
+    "account|Ödenecek Borç|8424.96|overdue",
+    "account|Ödenecek Borç|8629|overdue"
+   ],
+   "invoices": [
+    {
+     "id": "invoice-ab3f27eb-30d2-447f-b388-c1c91f9bab61",
+     "no": "A11-48",
+     "kind": "purchase",
+     "payable": 58978.14,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-388d2e21-b00d-412b-afdd-a7a86e0c1fbe",
+     "no": "A11-47",
+     "kind": "purchase",
+     "payable": 12426.58,
+     "open": 2109.79,
+     "state": "overdue",
+     "planId": ""
+    },
+    {
+     "id": "invoice-2d2661e5-b839-4295-b0f8-5f8087d169cf",
+     "no": "A11-46",
+     "kind": "purchase",
+     "payable": 16035.05,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-bda91e89-47dc-4f4b-beae-a940df96006f",
+     "no": "A11-44",
+     "kind": "purchase",
+     "payable": 1763.82,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-c8915112-93d8-48fe-8580-fb1b9238525f",
+     "no": "A11-43",
+     "kind": "purchase",
+     "payable": 12503.15,
+     "open": 12503.15,
+     "state": "overdue",
+     "planId": ""
+    },
+    {
+     "id": "invoice-5c2861d1-e4d9-4aa4-800d-439a2bc75456",
+     "no": "A11-27",
+     "kind": "purchase",
+     "payable": 15541.77,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-4c7a9028-cc1d-47e7-bed5-a0a8229e4384",
+     "no": "A11-39",
+     "kind": "purchase",
+     "payable": 19164.18,
+     "open": 19164.18,
+     "state": "overdue",
+     "planId": ""
+    },
+    {
+     "id": "invoice-2fb67b91-59cd-4bf1-9438-6a8f2d322191",
+     "no": "A11-22",
+     "kind": "purchase",
+     "payable": 6789.98,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-4b3c7a8a-a648-4a2d-b57f-e8afb39a5010",
+     "no": "A11-30",
+     "kind": "purchase",
+     "payable": 3286.66,
+     "open": 666.13,
+     "state": "overdue",
+     "planId": ""
+    },
+    {
+     "id": "invoice-d20451b3-ec55-43ed-a643-f3e5569b8dea",
+     "no": "A11-25",
+     "kind": "purchase",
+     "payable": 31604.26,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-1c9c5249-1de6-4430-a8a8-848d3a90a203",
+     "no": "A11-24",
+     "kind": "purchase",
+     "payable": 903.66,
+     "open": 188.33,
+     "state": "overdue",
+     "planId": ""
+    },
+    {
+     "id": "invoice-54ab4a36-9e17-4db9-84c6-2b028ee3504b",
+     "no": "FIS2026000000028",
+     "kind": "purchase_return",
+     "payable": 498.02,
+     "open": 0,
+     "state": "return",
+     "planId": ""
+    },
+    {
+     "id": "invoice-713c78ad-d262-4916-941b-1ed9e352bf7a",
+     "no": "A11-14",
+     "kind": "purchase",
+     "payable": 7711.52,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-d1b3cdd2-f52d-40d5-a035-bdf9a976f4ef",
+     "no": "A11-2",
+     "kind": "purchase",
+     "payable": 11587.37,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-d04f37fe-3062-4bfa-8e46-540508d9b9c2",
+     "no": "A11-11",
+     "kind": "purchase",
+     "payable": 47707.45,
+     "open": 18859.11,
+     "state": "overdue",
+     "planId": ""
+    },
+    {
+     "id": "invoice-13b72eef-7abc-44bf-9691-859d343e6c90",
+     "no": "A11-5",
+     "kind": "purchase",
+     "payable": 9666.02,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-a583a5a0-640d-47c9-8880-60463e79317b",
+     "no": "A11-4",
+     "kind": "purchase",
+     "payable": 9518.59,
+     "open": 2984.66,
+     "state": "overdue",
+     "planId": ""
+    },
+    {
+     "id": "invoice-8bc5b179-8e09-42d8-b314-dca94b1d3fc3",
+     "no": "A11-3",
+     "kind": "purchase",
+     "payable": 23821.04,
+     "open": 23821.04,
+     "state": "overdue",
+     "planId": ""
+    }
+   ],
+   "cacheEqualsFresh": true,
+   "netSum": -514228.79,
+   "items": [
+    "stock|payable|stock|2026-07-13|4499.65",
+    "stock|payable|stock|2026-07-17|24765.62",
+    "stock|payable|stock|2026-07-24|51014.17",
+    "stock|payable|stock|2026-07-24|5750.7",
+    "stock|payable|stock|2026-07-26|28157.53",
+    "stock|payable|stock|2026-08-02|38484.56",
+    "invoice|payable|invoice|2026-08-04|23821.04",
+    "stock|payable|stock|2026-08-05|16178.49",
+    "stock|payable|stock|2026-08-08|3595.49",
+    "invoice|payable|invoice|2026-08-16|18859.11",
+    "stock|payable|stock|2026-08-24|47538.87",
+    "stock|payable|stock|2026-08-28|6226.13",
+    "invoice|payable|invoice|2026-09-05|2984.66",
+    "invoice|payable|invoice|2026-09-08|666.13",
+    "stock|payable|stock|2026-09-12|1761.88",
+    "stock|payable|stock|2026-09-13|3235.93",
+    "stock|payable|stock|2026-09-13|7537.45",
+    "stock|payable|stock|2026-09-18|111.05",
+    "invoice|payable|invoice|2026-10-01|188.33",
+    "stock|payable|stock|2026-10-09|1753.33",
+    "stock|payable|stock|2026-10-12|6723.57",
+    "entry|payable|account|2026-10-13|49901.83",
+    "stock|payable|stock|2026-10-22|8629",
+    "invoice|payable|invoice|2026-10-23|12503.15",
+    "entry|payable|account|2026-10-23|38993.69",
+    "invoice|payable|invoice|2026-10-26|2109.79",
+    "stock|payable|stock|2026-10-29|80585.75",
+    "stock|payable|stock|2026-11-02|62.75",
+    "stock|payable|stock|2026-11-05|8424.96",
+    "invoice|payable|invoice|2026-11-08|19164.18"
+   ],
+   "doubtfulQueue": 0,
+   "overdueKinds": []
+  },
+  "account-03d96f6c-4456-4089-9b92-6a113bf30eb2": {
+   "name": "Tedarikçi 10 T11",
+   "type": "supplier",
+   "balance": -2990147.37,
+   "overdueDebt": 0,
+   "overdueDebtCount": 0,
+   "oldOverdue": 0,
+   "listOverdue": 0,
+   "listCount": 0,
+   "vadeLateIn": 0,
+   "vadeRows": [
+    "account|Ödenecek Borç|10544.92|2026-08-11",
+    "account|Ödenecek Borç|108.83|2026-10-15",
+    "account|Ödenecek Borç|11850.24|2026-07-30",
+    "account|Ödenecek Borç|13197.64|2026-09-13",
+    "account|Ödenecek Borç|13304.14|2026-07-31",
+    "account|Ödenecek Borç|13672.53|2026-08-09",
+    "account|Ödenecek Borç|138.51|2026-09-09",
+    "account|Ödenecek Borç|15214.64|2026-09-07",
+    "account|Ödenecek Borç|16689.61|2026-08-22",
+    "account|Ödenecek Borç|18696.26|2026-11-09",
+    "account|Ödenecek Borç|3378.27|2026-10-17",
+    "account|Ödenecek Borç|34.89|2026-11-05",
+    "account|Ödenecek Borç|37423.4|2026-09-18",
+    "account|Ödenecek Borç|5604.25|2026-08-14",
+    "account|Ödenecek Borç|58704.35|2026-10-21",
+    "account|Ödenecek Borç|6994.64|2026-09-06",
+    "account|Ödenecek Borç|6998.99|2026-10-17",
+    "invoice|Alış faturası A11-10 (kalan)|2257.03|2026-12-09",
+    "invoice|Alış faturası A11-13 (kalan)|284490.31|2026-09-30",
+    "invoice|Alış faturası A11-15 (kalan)|4765.21|2026-08-14",
+    "invoice|Alış faturası A11-17 (kalan)|3255.29|2026-10-08",
+    "invoice|Alış faturası A11-19|179320.79|2026-08-21",
+    "invoice|Alış faturası A11-25 (kalan)|2317.73|2026-11-29",
+    "invoice|Alış faturası A11-39 (kalan)|18.18|2026-12-01",
+    "invoice|Alış faturası A11-45 (kalan)|4942.88|2026-12-08",
+    "invoice|Alış faturası A11-51 (kalan)|3927.96|2026-11-09",
+    "invoice|Alış faturası A11-7 (kalan)|21135.94|2026-08-03",
+    "invoice|Alış faturası A11-9 (kalan)|2251159.94|2026-07-26"
+   ],
+   "zil": [
+    "account|Ödenecek Borç|10544.92|overdue",
+    "account|Ödenecek Borç|108.83|overdue",
+    "account|Ödenecek Borç|11850.24|overdue",
+    "account|Ödenecek Borç|13197.64|overdue",
+    "account|Ödenecek Borç|13304.14|overdue",
+    "account|Ödenecek Borç|13672.53|overdue",
+    "account|Ödenecek Borç|138.51|overdue",
+    "account|Ödenecek Borç|15214.64|overdue",
+    "account|Ödenecek Borç|16689.61|overdue",
+    "account|Ödenecek Borç|18696.26|overdue",
+    "account|Ödenecek Borç|3378.27|overdue",
+    "account|Ödenecek Borç|34.89|overdue",
+    "account|Ödenecek Borç|37423.4|overdue",
+    "account|Ödenecek Borç|5604.25|overdue",
+    "account|Ödenecek Borç|58704.35|overdue",
+    "account|Ödenecek Borç|6994.64|overdue",
+    "account|Ödenecek Borç|6998.99|overdue"
+   ],
+   "invoices": [
+    {
+     "id": "invoice-10ebe00a-3b8e-4dd6-b743-f6f526bc9256",
+     "no": "A11-51",
+     "kind": "purchase",
+     "payable": 7890.17,
+     "open": 3927.96,
+     "state": "overdue",
+     "planId": ""
+    },
+    {
+     "id": "invoice-dbc1ca1b-a0ea-4e77-8329-d195714e22d3",
+     "no": "FIS2026000000086",
+     "kind": "purchase_return",
+     "payable": 23322.05,
+     "open": 0,
+     "state": "return",
+     "planId": ""
+    },
+    {
+     "id": "invoice-15e967cb-5c35-4db2-8c12-d61180ffd21d",
+     "no": "A11-39",
+     "kind": "purchase",
+     "payable": 39.93,
+     "open": 18.18,
+     "state": "partial",
+     "planId": ""
+    },
+    {
+     "id": "invoice-e2837329-488f-4a5c-a87f-0c7440bfdbc3",
+     "no": "A11-45",
+     "kind": "purchase",
+     "payable": 11413.59,
+     "open": 4942.88,
+     "state": "partial",
+     "planId": ""
+    },
+    {
+     "id": "invoice-0a42bbd5-bda5-40bb-bb11-f33357248247",
+     "no": "A11-25",
+     "kind": "purchase",
+     "payable": 5853.73,
+     "open": 2317.73,
+     "state": "partial",
+     "planId": ""
+    },
+    {
+     "id": "invoice-e375c295-f252-44c4-af30-0663480df281",
+     "no": "A11-41",
+     "kind": "purchase",
+     "payable": 55665.78,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-7df2bfa6-df85-436b-b4f5-d798f2e39108",
+     "no": "FIS2026000000070",
+     "kind": "purchase_return",
+     "payable": 377.26,
+     "open": 0,
+     "state": "return",
+     "planId": ""
+    },
+    {
+     "id": "invoice-720be724-be0f-4d38-b52f-4e577fec36c0",
+     "no": "A11-10",
+     "kind": "purchase",
+     "payable": 12648.37,
+     "open": 2257.03,
+     "state": "partial",
+     "planId": ""
+    },
+    {
+     "id": "invoice-604160a1-70c5-47f9-9bee-a1c096461441",
+     "no": "A11-33",
+     "kind": "purchase",
+     "payable": 10,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-841bda42-6572-4d7b-b479-4755c029f666",
+     "no": "A11-31",
+     "kind": "purchase",
+     "payable": 60894.59,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-41841f1c-0b03-48c6-9f17-bdd101e3a43c",
+     "no": "FIS2026000000038",
+     "kind": "purchase_return",
+     "payable": 370.16,
+     "open": 0,
+     "state": "return",
+     "planId": ""
+    },
+    {
+     "id": "invoice-a6dbe97c-b5fc-412f-be67-63d0a174d786",
+     "no": "A11-23",
+     "kind": "purchase",
+     "payable": 9248.54,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-8bb58853-8490-445c-ac5b-d5dfa1a23b40",
+     "no": "A11-21",
+     "kind": "purchase",
+     "payable": 36067.54,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-aa36321a-3599-45f6-94e6-e3f703dc3eff",
+     "no": "A11-19",
+     "kind": "purchase",
+     "payable": 179320.79,
+     "open": 179320.79,
+     "state": "overdue",
+     "planId": ""
+    },
+    {
+     "id": "invoice-2875cbb5-3701-4036-bc66-ce4e5fce9cf1",
+     "no": "A11-17",
+     "kind": "purchase",
+     "payable": 8884.62,
+     "open": 3255.29,
+     "state": "overdue",
+     "planId": ""
+    },
+    {
+     "id": "invoice-b854ae05-e518-4de2-8e7e-6edfcff0130a",
+     "no": "A11-15",
+     "kind": "purchase",
+     "payable": 12395.25,
+     "open": 4765.21,
+     "state": "overdue",
+     "planId": ""
+    },
+    {
+     "id": "invoice-f9d167ff-9460-4462-8f28-c3801c7cea6c",
+     "no": "A11-13",
+     "kind": "purchase",
+     "payable": 285147.76,
+     "open": 284490.31,
+     "state": "overdue",
+     "planId": ""
+    },
+    {
+     "id": "invoice-15ec66ac-1297-4ab1-86eb-816c1dbd9d90",
+     "no": "A11-12",
+     "kind": "purchase",
+     "payable": 1141.36,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-799057e8-547a-43d3-a0e9-a7fdbbd27b9f",
+     "no": "A11-7",
+     "kind": "purchase",
+     "payable": 21941.05,
+     "open": 21135.94,
+     "state": "overdue",
+     "planId": ""
+    },
+    {
+     "id": "invoice-223a260c-f5ab-4a50-863e-dd50c7600fff",
+     "no": "FIS2026000000015",
+     "kind": "purchase_return",
+     "payable": 6751.15,
+     "open": 0,
+     "state": "return",
+     "planId": ""
+    },
+    {
+     "id": "invoice-71787ac7-54cd-417e-b41d-d42255a6a889",
+     "no": "FIS2026000000007",
+     "kind": "purchase_return",
+     "payable": 118379.84,
+     "open": 0,
+     "state": "return",
+     "planId": ""
+    },
+    {
+     "id": "invoice-de619ceb-1039-42a1-a8d0-5f5883472c10",
+     "no": "A11-9",
+     "kind": "purchase",
+     "payable": 2387784.32,
+     "open": 2256467.87,
+     "state": "overdue",
+     "planId": ""
+    },
+    {
+     "id": "invoice-61d4e35e-c40d-4659-a9f5-3b52f1a16d99",
+     "no": "A11-8",
+     "kind": "purchase",
+     "payable": 26317.92,
+     "open": 19566.77,
+     "state": "overdue",
+     "planId": ""
+    }
+   ],
+   "cacheEqualsFresh": true,
+   "netSum": -2990147.37,
+   "items": [
+    "invoice|payable|invoice|2026-07-26|2251159.94",
+    "stock|payable|stock|2026-07-30|11850.24",
+    "stock|payable|stock|2026-07-31|13304.14",
+    "invoice|payable|invoice|2026-08-03|21135.94",
+    "stock|payable|stock|2026-08-09|13672.53",
+    "stock|payable|stock|2026-08-11|10544.92",
+    "stock|payable|stock|2026-08-14|5604.25",
+    "invoice|payable|invoice|2026-08-14|4765.21",
+    "invoice|payable|invoice|2026-08-21|179320.79",
+    "stock|payable|stock|2026-08-22|16689.61",
+    "stock|payable|stock|2026-09-06|6994.64",
+    "stock|payable|stock|2026-09-07|15214.64",
+    "stock|payable|stock|2026-09-09|138.51",
+    "stock|payable|stock|2026-09-13|13197.64",
+    "stock|payable|stock|2026-09-18|37423.4",
+    "invoice|payable|invoice|2026-09-30|284490.31",
+    "invoice|payable|invoice|2026-10-08|3255.29",
+    "stock|payable|stock|2026-10-15|108.83",
+    "stock|payable|stock|2026-10-17|3378.27",
+    "stock|payable|stock|2026-10-17|6998.99",
+    "entry|payable|account|2026-10-21|58704.35",
+    "stock|payable|stock|2026-11-05|34.89",
+    "invoice|payable|invoice|2026-11-09|3927.96",
+    "stock|payable|stock|2026-11-09|18696.26",
+    "invoice|payable|invoice|2026-11-29|2317.73",
+    "invoice|payable|invoice|2026-12-01|18.18",
+    "invoice|payable|invoice|2026-12-08|4942.88",
+    "invoice|payable|invoice|2026-12-09|2257.03"
+   ],
+   "doubtfulQueue": 0,
+   "overdueKinds": []
+  },
+  "account-006c1c18-3867-43ee-8034-57c8052f5df4": {
+   "name": "Tedarikçi 11 T11",
+   "type": "supplier",
+   "balance": -121935.05,
+   "overdueDebt": 0,
+   "overdueDebtCount": 0,
+   "oldOverdue": 0,
+   "listOverdue": 0,
+   "listCount": 0,
+   "vadeLateIn": 0,
+   "vadeRows": [
+    "account|Ödenecek Borç|10385.24|2026-09-16",
+    "account|Ödenecek Borç|129.13|2026-09-07",
+    "account|Ödenecek Borç|1615.1|2026-10-22",
+    "account|Ödenecek Borç|16707.79|2026-07-13",
+    "account|Ödenecek Borç|22.59|2026-10-13",
+    "account|Ödenecek Borç|2489.84|2026-09-16",
+    "account|Ödenecek Borç|3508.68|2026-08-20",
+    "account|Ödenecek Borç|4046.49|2026-08-10",
+    "account|Ödenecek Borç|6692.47|2026-10-12",
+    "account|Ödenecek Borç|8391|2026-08-03",
+    "invoice|Alış faturası A11-1 (kalan)|4357.72|2026-09-23",
+    "invoice|Alış faturası A11-20|9656.63|2026-08-23",
+    "invoice|Alış faturası A11-22|10450.8|2026-09-28",
+    "invoice|Alış faturası A11-28|15858.52|2026-10-09",
+    "invoice|Alış faturası A11-29 (kalan)|6821.69|2026-09-29",
+    "invoice|Alış faturası A11-4 (kalan)|7808.22|2026-08-11",
+    "invoice|Alış faturası A11-40|879.12|2026-11-17",
+    "invoice|Alış faturası A11-42 (kalan)|1115.05|2026-10-23",
+    "invoice|Alış faturası A11-50 (kalan)|1056.76|2026-11-08",
+    "invoice|Alış faturası A11-9|9942.21|2026-08-25"
+   ],
+   "zil": [
+    "account|Ödenecek Borç|10385.24|overdue",
+    "account|Ödenecek Borç|129.13|overdue",
+    "account|Ödenecek Borç|1615.1|overdue",
+    "account|Ödenecek Borç|16707.79|overdue",
+    "account|Ödenecek Borç|22.59|overdue",
+    "account|Ödenecek Borç|2489.84|overdue",
+    "account|Ödenecek Borç|3508.68|overdue",
+    "account|Ödenecek Borç|4046.49|overdue",
+    "account|Ödenecek Borç|6692.47|overdue",
+    "account|Ödenecek Borç|8391|overdue"
+   ],
+   "invoices": [
+    {
+     "id": "invoice-31f7fd60-ca1f-4e5d-887d-da2f6da1cb73",
+     "no": "A11-52",
+     "kind": "purchase",
+     "payable": 7494.66,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-fc8f187e-a546-4e6f-906b-170005c80638",
+     "no": "A11-50",
+     "kind": "purchase",
+     "payable": 8603.92,
+     "open": 1056.76,
+     "state": "overdue",
+     "planId": ""
+    },
+    {
+     "id": "invoice-d3b101ff-1615-4a0c-bdd7-2d4957fa2147",
+     "no": "FIS2026000000087",
+     "kind": "purchase_return",
+     "payable": 1991.3,
+     "open": 0,
+     "state": "return",
+     "planId": ""
+    },
+    {
+     "id": "invoice-b46b3d07-9743-4c44-bcff-0c23a818409e",
+     "no": "FIS2026000000084",
+     "kind": "purchase_return",
+     "payable": 1086.16,
+     "open": 0,
+     "state": "return",
+     "planId": ""
+    },
+    {
+     "id": "invoice-ac23b299-4c49-4633-a790-08957ff34596",
+     "no": "A11-42",
+     "kind": "purchase",
+     "payable": 5676.58,
+     "open": 1115.05,
+     "state": "overdue",
+     "planId": ""
+    },
+    {
+     "id": "invoice-dcd2cb07-6dde-4839-939c-7b0f6e847717",
+     "no": "A11-40",
+     "kind": "purchase",
+     "payable": 879.12,
+     "open": 879.12,
+     "state": "open",
+     "planId": ""
+    },
+    {
+     "id": "invoice-91b5cf91-5a9f-473c-a3c2-18cd53da94b9",
+     "no": "A11-31",
+     "kind": "purchase",
+     "payable": 2690707,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-ed1c0dd3-554d-4f32-8e2a-d5e9e8a1822f",
+     "no": "FIS2026000000061",
+     "kind": "purchase_return",
+     "payable": 1150.6,
+     "open": 0,
+     "state": "return",
+     "planId": ""
+    },
+    {
+     "id": "invoice-63143aa0-424d-40e2-812d-a49cb1f24471",
+     "no": "A11-8",
+     "kind": "purchase",
+     "payable": 47395.06,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-971d9ac1-9a9f-4bf3-9581-1a54f0705e27",
+     "no": "FIS2026000000052",
+     "kind": "purchase_return",
+     "payable": 9326.99,
+     "open": 0,
+     "state": "return",
+     "planId": ""
+    },
+    {
+     "id": "invoice-976bb3ac-83bd-4b63-bef2-887da6984042",
+     "no": "A11-29",
+     "kind": "purchase",
+     "payable": 11864.74,
+     "open": 6821.69,
+     "state": "overdue",
+     "planId": ""
+    },
+    {
+     "id": "invoice-b094380e-1c73-41fd-adde-57e3e2d8bb37",
+     "no": "A11-28",
+     "kind": "purchase",
+     "payable": 15858.52,
+     "open": 15858.52,
+     "state": "overdue",
+     "planId": ""
+    },
+    {
+     "id": "invoice-f718d08f-1b83-4be1-9e78-2483d812e670",
+     "no": "A11-22",
+     "kind": "purchase",
+     "payable": 10450.8,
+     "open": 10450.8,
+     "state": "overdue",
+     "planId": ""
+    },
+    {
+     "id": "invoice-aad9bb6d-c9c1-45fd-ac78-9e983cf2385e",
+     "no": "A11-9",
+     "kind": "purchase",
+     "payable": 9942.21,
+     "open": 9942.21,
+     "state": "overdue",
+     "planId": ""
+    },
+    {
+     "id": "invoice-03fc5c41-e5e3-482c-9d3d-19f2094f24de",
+     "no": "A11-20",
+     "kind": "purchase",
+     "payable": 9656.63,
+     "open": 9656.63,
+     "state": "overdue",
+     "planId": ""
+    },
+    {
+     "id": "invoice-9c86ba23-c295-4b3d-860a-f4c299564f98",
+     "no": "A11-18",
+     "kind": "purchase",
+     "payable": 11196.16,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-6b5f6eba-3c01-4502-9181-b3051acd7d47",
+     "no": "A11-4",
+     "kind": "purchase",
+     "payable": 19002.01,
+     "open": 7808.22,
+     "state": "overdue",
+     "planId": ""
+    },
+    {
+     "id": "invoice-63a87473-e6f0-4523-ba07-e98315871d89",
+     "no": "A11-1",
+     "kind": "purchase",
+     "payable": 5383.14,
+     "open": 4357.72,
+     "state": "overdue",
+     "planId": ""
+    },
+    {
+     "id": "invoice-59269c20-be68-4e36-83a9-05d3db6b3781",
+     "no": "A11-10",
+     "kind": "purchase",
+     "payable": 5168.16,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    },
+    {
+     "id": "invoice-ed02103e-5a13-4291-97d5-e8fe5ec8becc",
+     "no": "A11-7",
+     "kind": "purchase",
+     "payable": 7508.11,
+     "open": 0,
+     "state": "paid",
+     "planId": ""
+    }
+   ],
+   "cacheEqualsFresh": true,
+   "netSum": -121935.05,
+   "items": [
+    "stock|payable|stock|2026-07-13|16707.79",
+    "entry|payable|account|2026-08-03|8391",
+    "stock|payable|stock|2026-08-10|4046.49",
+    "invoice|payable|invoice|2026-08-11|7808.22",
+    "stock|payable|stock|2026-08-20|3508.68",
+    "invoice|payable|invoice|2026-08-23|9656.63",
+    "invoice|payable|invoice|2026-08-25|9942.21",
+    "stock|payable|stock|2026-09-07|129.13",
+    "stock|payable|stock|2026-09-16|2489.84",
+    "stock|payable|stock|2026-09-16|10385.24",
+    "invoice|payable|invoice|2026-09-23|4357.72",
+    "invoice|payable|invoice|2026-09-28|10450.8",
+    "invoice|payable|invoice|2026-09-29|6821.69",
+    "invoice|payable|invoice|2026-10-09|15858.52",
+    "stock|payable|stock|2026-10-12|6692.47",
+    "stock|payable|stock|2026-10-13|22.59",
+    "stock|payable|stock|2026-10-22|1615.1",
+    "invoice|payable|invoice|2026-10-23|1115.05",
+    "invoice|payable|invoice|2026-11-08|1056.76",
+    "invoice|payable|invoice|2026-11-17|879.12"
+   ],
+   "doubtfulQueue": 0,
+   "overdueKinds": []
+  },
+  "account-d3d0cf14-75ff-4da3-b42d-08f2c3e84a5d": {
+   "name": "Personel 12 T11",
+   "type": "other",
+   "balance": -63585.13,
+   "overdueDebt": 0,
+   "overdueDebtCount": 0,
+   "oldOverdue": 0,
+   "listOverdue": 0,
+   "listCount": 0,
+   "vadeLateIn": 0,
+   "vadeRows": [
+    "account|Ödenecek Borç|21830.01|2026-07-19"
+   ],
+   "zil": [
+    "account|Ödenecek Borç|21830.01|overdue"
+   ],
+   "invoices": [],
+   "cacheEqualsFresh": true,
+   "netSum": -63585.13,
+   "items": [
+    "entry|payable|account|2026-07-19|21830.01",
+    "payment|payable|account|2026-07-20|17154.99",
+    "payment|payable|account|2026-09-10|24600.13"
+   ],
+   "doubtfulQueue": 0,
+   "overdueKinds": []
+  },
+  "account-76082e2d-cfa1-43df-8c8b-cdf792644ade": {
+   "name": "Şüpheli Müşteri A T11",
+   "type": "customer",
+   "balance": 39088.59,
+   "overdueDebt": 0,
+   "overdueDebtCount": 0,
+   "oldOverdue": 0,
+   "listOverdue": 0,
+   "listCount": 0,
+   "vadeLateIn": 0,
+   "vadeRows": [],
+   "zil": [],
+   "invoices": [],
+   "cacheEqualsFresh": true,
+   "netSum": 39088.59,
+   "items": [
+    "entry|receivable|account|2026-10-08|2301|ş2301",
+    "entry|receivable|account|2026-10-13|18359|ş18359",
+    "entry|receivable|account|2026-10-17|7455.01|ş7455.01",
+    "entry|receivable|account|2026-10-18|1779.39|ş1779.39",
+    "entry|receivable|account|2026-10-25|9194.19|ş9194.19"
+   ],
+   "doubtfulQueue": 39088.59,
+   "overdueKinds": []
+  },
+  "account-00d02b9d-d68b-4e8d-9d13-70d2835d8a38": {
+   "name": "Şüpheli Müşteri B T11",
+   "type": "customer",
+   "balance": 116229.35,
+   "overdueDebt": 41607.61,
+   "overdueDebtCount": 4,
+   "oldOverdue": 0,
+   "listOverdue": 41607.61,
+   "listCount": 4,
+   "vadeLateIn": 41607.61,
+   "vadeRows": [
+    "account|Tahsil Edilecek Borç|10343.63|2026-11-02",
+    "account|Tahsil Edilecek Borç|11408.86|2026-10-30",
+    "account|Tahsil Edilecek Borç|19404.22|2026-11-09",
+    "account|Tahsil Edilecek Borç|450.9|2026-10-25"
+   ],
+   "zil": [
+    "account|Tahsil Edilecek Borç|10343.63|overdue",
+    "account|Tahsil Edilecek Borç|11408.86|overdue",
+    "account|Tahsil Edilecek Borç|19404.22|overdue",
+    "account|Tahsil Edilecek Borç|450.9|overdue"
+   ],
+   "invoices": [],
+   "cacheEqualsFresh": true,
+   "netSum": 116229.35,
+   "items": [
+    "entry|receivable|account|2026-09-07|7836.61|ş7836.61",
+    "entry|receivable|account|2026-09-10|11012.56|ş11012.56",
+    "entry|receivable|account|2026-09-11|11735.7|ş11735.7",
+    "entry|receivable|account|2026-09-13|16692|ş16692",
+    "entry|receivable|account|2026-09-23|19334|ş19334",
+    "entry|receivable|account|2026-10-25|8461.77|ş8010.87",
+    "entry|receivable|account|2026-10-30|11408.86",
+    "entry|receivable|account|2026-11-02|10343.63",
+    "entry|receivable|account|2026-11-09|19404.22"
+   ],
+   "doubtfulQueue": 74621.74,
+   "overdueKinds": [
+    "entry|account|450.90000000000055",
+    "entry|account|11408.86",
+    "entry|account|10343.63",
+    "entry|account|19404.22"
+   ]
+  }
+ },
+ "integrity": {
+  "ok": true,
+  "bad": []
+ }
+}

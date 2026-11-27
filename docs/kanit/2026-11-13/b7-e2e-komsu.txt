@@ -1,0 +1,31 @@
+banka-210-ekran-aciklama çıkış 0 | [kanit] b7-e2e-banka-210-ekran-aciklama: GEÇTİ · çıkış 0 · 11/11 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 942cc79 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · Node v22.23.4 
+fatura-243-duzen-kaymasi çıkış 0 | [kanit] b7-e2e-fatura-243-duzen-kaymasi: GEÇTİ · çıkış 0 · 7/7 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 942cc79 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · Node v22.23.4 
+senaryo-215 çıkış 0 | [kanit] b7-e2e-senaryo-215: GEÇTİ · çıkış 0 · 73/73 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 942cc79 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · Node v22.23.4 
+senaryo-216 çıkış 0 | [kanit] b7-e2e-senaryo-216: GEÇTİ · çıkış 0 · 54/54 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 942cc79 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · Node v22.23.4 
+senaryo-217 çıkış 0 | [kanit] b7-e2e-senaryo-217: GEÇTİ · çıkış 0 · 65/65 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 942cc79 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · Node v22.23.4 
+senaryo-222 çıkış 0 | [kanit] b7-e2e-senaryo-222: GEÇTİ · çıkış 0 · 60/60 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 942cc79 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · Node v22.23.4 
+senaryo-223 çıkış 0 | TAMAM: 29 denetim geçti, 0 başarısız. [kanit] b7-e2e-senaryo-223: GEÇTİ · çıkış 0 · 29/29 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 942cc79 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · Node v22.23
+senaryo-224 çıkış 0 | TAMAM: 69 denetim geçti, 0 başarısız. [kanit] b7-e2e-senaryo-224: GEÇTİ · çıkış 0 · 69/69 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 942cc79 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · Node v22.23
+senaryo-226 çıkış 0 | TAMAM: 22 denetim geçti, 0 başarısız. [kanit] b7-e2e-senaryo-226: GEÇTİ · çıkış 0 · 22/22 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 942cc79 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · Node v22.23
+senaryo-banka-210-temel çıkış 0 | [kanit] b7-e2e-senaryo-banka-210-temel: GEÇTİ · çıkış 0 · 80/80 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 942cc79 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · Node v22.23.4 
+senaryo-banka-210 çıkış 0 | TAMAM: 428 denetim geçti, 0 başarısız. Ekran görüntüleri: /home/user/ofis---y-netimi/.claude/worktrees/agent-a6c349be9d3823fef/test/e2e/artifacts/senaryo-banka-210 [kanit] b7-e2e-senaryo-banka-210: GEÇTİ · çı
+senaryo-banka-210b çıkış 0 | [kanit] b7-e2e-senaryo-banka-210b: GEÇTİ · çıkış 0 · 90/90 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 942cc79 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · Node v22.23.4 
+senaryo-banka-220 çıkış 0 | [kanit] b7-e2e-senaryo-banka-220: GEÇTİ · çıkış 0 · 76/76 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 942cc79 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · Node v22.23.4 
+senaryo-banka-rapor-243 çıkış 0 | [kanit] b7-e2e-senaryo-banka-rapor-243: GEÇTİ · çıkış 0 · 38/38 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 942cc79 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · Node v22.23.4 
+senaryo-cari-vade-245 çıkış 0 | [kanit] b7-e2e-senaryo-cari-vade-245: GEÇTİ · çıkış 0 · 45/45 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 942cc79 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · Node v22.23.4 
+senaryo-defter-243 çıkış 0 | [kanit] b7-e2e-senaryo-defter-243: GEÇTİ · çıkış 0 · 33/33 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 942cc79 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · Node v22.23.4 
+senaryo-iz32-230 çıkış 0 | [kanit] b7-e2e-senaryo-iz32-230: GEÇTİ · çıkış 0 · 41/41 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 942cc79 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · Node v22.23.4 
+senaryo-pil-karti-245 çıkış 0 | [kanit] b7-e2e-senaryo-pil-karti-245: GEÇTİ · çıkış 0 · 85/85 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 942cc79 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · Node v22.23.4 
+senaryo-portal-244 çıkış 0 | [kanit] b7-e2e-senaryo-portal-244: GEÇTİ · çıkış 0 · 32/32 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 942cc79 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · Node v22.23.4 
+senaryo-pos-220 çıkış 0 | [kanit] b7-e2e-senaryo-pos-220: GEÇTİ · çıkış 0 · 113/113 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 942cc79 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · Node v22.23.4 
+senaryo-rapor çıkış 0 | 87/87 denetim geçti. Ekran görüntüleri: /home/user/ofis---y-netimi/.claude/worktrees/agent-a6c349be9d3823fef/test/e2e/artifacts/senaryo-rapor [kanit] b7-e2e-senaryo-rapor: GEÇTİ · çıkış 0 · 87/87 geçti, 0 ba
+senaryo-supheli-230 çıkış 0 | [kanit] b7-e2e-senaryo-supheli-230: GEÇTİ · çıkış 0 · 67/67 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 942cc79 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · Node v22.23.4 
+senaryo-tahsile-ver-220 çıkış 0 | [kanit] b7-e2e-senaryo-tahsile-ver-220: GEÇTİ · çıkış 0 · 140/140 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 942cc79 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · Node v22.23.4 
+senaryo-taslak çıkış 0 | 31/31 denetim geçti. Ekran görüntüleri: /home/user/ofis---y-netimi/.claude/worktrees/agent-a6c349be9d3823fef/test/e2e/artifacts/senaryo-taslak [kanit] b7-e2e-senaryo-taslak: GEÇTİ · çıkış 0 · 31/31 geçti, 0 
+senaryo-tyk-tur2a-250 çıkış 1 | [kanit] b7-e2e-senaryo-tyk-tur2a-250: BAŞARISIZ (çıkış 1; 1 başarısız, 0 iptal) · çıkış 1 · 39/40 geçti, 1 başarısız, 0 iptal, 0 atlanan · commit 942cc79 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · N
+uiux-a-243 çıkış 0 | [kanit] b7-e2e-uiux-a-243: GEÇTİ · çıkış 0 · 51/51 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 942cc79 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · Node v22.23.4 
+uiux-ui11-244 çıkış 0 | [kanit] b7-e2e-uiux-ui11-244: GEÇTİ · çıkış 0 · 153/153 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 942cc79 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · Node v22.23.4 
+suzgec-cubugu-yaris çıkış 0 | TAMAM: 20 denetim geçti, 0 başarısız. (dört kip: banka-tarih, pos-tarih, rapor-tarih, gelen-tarih) [kanit] b7-e2e-suzgec-cubugu-yaris: GEÇTİ · çıkış 0 · 20/20 geçti, 0 başarısız, 0 iptal, 0 atlanan · co
+ui-ux-217 çıkış 0 | 407 / 407 denetim geçti (59 ekran). Bulgular: /home/user/ofis---y-netimi/.claude/worktrees/agent-a6c349be9d3823fef/test/e2e/artifacts/ui-ux-217/bulgular.md [kanit] b7-e2e-ui-ux-217: GEÇTİ · çıkış 0 · 407/407 ge�
+e2e çıkış 0 | [kanit] b7-e2e-e2e: GEÇTİ · çıkış 0 · 50/50 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 942cc79 +1 izlenmeyen · linux 6.18.44-fc-v445 x64 · Node v22.23.4 
+BITTI

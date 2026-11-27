@@ -1,0 +1,32 @@
+{
+  "ad": "wa3hy-tam",
+  "komut": "npm test",
+  "commit": "b54318f3d9bc5472b6f49475fee4133788912a6a",
+  "dal": "sinama-wa3h",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v378 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-11T17:29:04.913Z",
+  "sure_sn": 3145.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 5314,
+    "gecen": 5314,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../wa3hy-kanit/2026-11-11/wa3hy-tam.log.gz",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-ya-ag",
+  "ham_cikti_sha256": "966b649549283fc44dd264f5203abebe4209d794eb4136a9b71220ebc0af86b9",
+  "ham_cikti_bayt": 2059997
+}

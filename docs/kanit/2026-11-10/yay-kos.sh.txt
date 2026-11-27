@@ -1,0 +1,36 @@
+#!/bin/bash
+# Ana oturum yeniden koşusu: yapım aşaması listesi + D2 tur 3 / Ç5-K tur 2 birleşik sınama ağacı (21d5079e) — kâhin adımları, listenin dişi, kapı, tam npm test
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+A=$S/d2t3-ya-ag; export KANIT_DIR=$S/yay-kanit
+mkdir -p "$KANIT_DIR" || exit 1
+export HUKUK_LICENSE_URL=http://127.0.0.1:9 PLAYWRIGHT_BROWSERS_PATH=$S/pw-1194
+cd "$A" || exit 1
+echo "başladı $(date -u +%H:%M:%S) yük $(cat /proc/loadavg)"
+for tz in UTC Europe/Istanbul; do n=$(echo $tz | tr '/' '-'); TZ=$tz node tools/kanit.mjs kos yay-kahin-cari-$n -- npm run test:kahin-cari > "$KANIT_DIR/kahin-cari-$n.out" 2>&1; echo "kahin-cari $tz çıkış $?"; done
+node tools/kanit.mjs kos yay-kahin-defter -- npm run test:kahin-defter > "$KANIT_DIR/kahin-defter.out" 2>&1; echo "kahin-defter çıkış $?"
+node tools/kanit.mjs kos yay-kahin-mobil-yazma -- npm run test:kahin-mobil-yazma -- --haric E02-es-havale-pos-mobil,E02-es-havale-pos-masaustu > "$KANIT_DIR/kahin-mobil-yazma.out" 2>&1; echo "kahin-mobil-yazma çıkış $?"
+node tools/kanit.mjs kos yay-kapi -- node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/yapim-asamasi-kapisi.test.mjs test/kanit-araci.test.mjs test/ci-kapi-listesi.test.mjs test/platform-tasinabilirlik.test.mjs test/yazim-duzeni.test.mjs test/lisans-servisi-izolasyonu.test.mjs > "$KANIT_DIR/kapi.out" 2>&1; echo "kapi çıkış $?"
+# listenin dişi (d4 senaryosu; geçici liste kopyaları)
+L=test/bagimsiz/cari/YAPIM-ASAMASI.json; D=$S/yay-dis; mkdir -p "$D" || exit 1
+python3 -I - "$L" "$D" <<'PY' || exit 1
+import json, sys, copy
+d = json.load(open(sys.argv[1], encoding="utf-8")); D = sys.argv[2]
+def yaz(ad, k):
+    e = copy.deepcopy(d); e["kayitlar"] = k
+    json.dump(e, open(f"{D}/{ad}.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+k = d["kayitlar"]
+i = next(n for n, x in enumerate(k) if x["senaryo"].startswith("d4") and x["anahtar"] == "k1:kart:K1:taksit1:odenen")
+yaz("i-silindi", k[:i] + k[i+1:])
+k2 = copy.deepcopy(k); k2[i]["program"] = 12345; yaz("ii-deger", k2)
+k3 = copy.deepcopy(k); y = copy.deepcopy(k[i]); y["anahtar"] = "k1:cari:YOK:ana-oturum-denemesi"; k3.append(y); yaz("iii-olmayan", k3)
+yaz("iv-tam", k)
+PY
+for d in i-silindi ii-deger iii-olmayan iv-tam; do
+  KAHIN_YAPIM_ASAMASI=$D/$d.json node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs test/bagimsiz/cari/senaryolar/d4-c5-s50-tek-kuyruk.json --mutasyonsuz > "$KANIT_DIR/dis-$d.out" 2>&1; echo "diş $d çıkış $?"
+done
+# liste bu ağaçta yeniden üretilince AYNI mı (D2 tur 3 kodu da içeride)
+cp "$L" "$D/once.json" && node --disable-warning=ExperimentalWarning test/bagimsiz/cari/kos.mjs --yapim-asamasi-yaz --mutasyonsuz > "$KANIT_DIR/yaz.out" 2>&1; echo "yaz çıkış $?"; cmp "$L" "$D/once.json" && echo "liste yeniden üretimde bayt bayt AYNI" || echo "LİSTE DEĞİŞTİ"
+git status -s | grep -v node_modules
+# tam npm test (ders 41)
+flock -n $S/tam-npm-test.lock flock -s -n $S/olcum.lock node tools/kanit.mjs kos yay-npm-test -- npm test > "$KANIT_DIR/npm-test.out" 2>&1; echo "npm test çıkış $?"
+echo "bitti $(date -u +%H:%M:%S) yük $(cat /proc/loadavg)"

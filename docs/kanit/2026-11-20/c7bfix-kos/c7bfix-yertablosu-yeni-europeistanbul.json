@@ -1,0 +1,32 @@
+{
+  "ad": "c7bfix-yertablosu-yeni-europeistanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/tyk-birlesik8-ekranlar-250.test.mjs",
+  "commit": "93943258aca9da570fc12408f3abcfcd73d81f34",
+  "dal": "worktree-agent-aa660861cba7cd284",
+  "kirli": 1,
+  "izlenmeyen": 16,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-21T00:50:52.329Z",
+  "sure_sn": 2.2,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 12,
+    "gecen": 12,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c7bfix-a66/kanit/2026-11-21/c7bfix-yertablosu-yeni-europeistanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa660861cba7cd284",
+  "ham_cikti_sha256": "770a083a7b9ba0381c9893bc9ef2e45825fb298ad98032bda115b2ff92018ca9",
+  "ham_cikti_bayt": 6393
+}

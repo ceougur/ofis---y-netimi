@@ -16,6 +16,8 @@
   };
   const AMOUNT_FORMAT = new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const amountText = value => AMOUNT_FORMAT.format(Number(value) || 0);
+  // 2.5.0 Ç5-B tur 2b-2 (ekran yürüyüşü 1 Y2): kartın gecikmiş taksitlendirilmemiş kalanı / Taksit İadesi (sunucu totals.overdueExtras) Geciken kutusunda taksit sayısından ayrı.
+  const lateExtrasText = totals => (totals.overdueExtras || []).map(row => ` · ${String(row.label || "").toLocaleLowerCase("tr-TR")} ${money(row.amount)}`).join("");
   const STATUS_TABS = [
     { id: "active", label: "Devam Eden" },
     { id: "overdue", label: "Geciken" },
@@ -414,12 +416,12 @@
     const row = plan => {
       const [label, tone] = STATE[plan.state] || STATE.active;
       const next = plan.next ? `${HOF.formatDate(plan.next.dueDate)}<small>${esc(plan.next.seq)}. taksit · ${esc(dayLabel(plan.next.days))}</small>` : plan.itemCount ? "<small>—</small>" : '<small class="is-warn">Taksit girilmemiş</small>';
-      return `<tr data-plan="${esc(plan.id)}" class="is-${esc(plan.state)}" tabindex="0"><td class="hof-plan-no">${esc(plan.refNo || "")}</td><td><b>${esc(plan.name)}</b><small>${esc(whereText(plan) || "Grupsuz")}${plan.phone ? ` · ${esc(plan.phone)}` : ""}${plan.registeredOn ? ` · kayıt ${esc(HOF.formatDate(plan.registeredOn))}` : ""}</small>${plan.note ? `<small class="hof-plan-row-note" title="${esc(plan.note)}">${esc(plan.note)}</small>` : ""}</td><td class="num">${esc(money(plan.totals.total))}</td><td class="num hof-cash-in">${esc(money(plan.totals.paid))}${progress(plan.totals)}</td><td class="num${plan.totals.remaining > 0 ? " hof-cash-out" : ""}">${esc(money(plan.totals.remaining))}</td><td>${next}</td><td>${badge(label, tone)}${plan.totals.overdueCount ? `<small>${plan.totals.overdueCount} taksit · ${esc(money(plan.totals.overdue))}</small>` : ""}</td></tr>`;
+      return `<tr data-plan="${esc(plan.id)}" class="is-${esc(plan.state)}" tabindex="0"><td class="hof-plan-no">${esc(plan.refNo || "")}</td><td><b>${esc(plan.name)}</b><small>${esc(whereText(plan) || "Grupsuz")}${plan.phone ? ` · ${esc(plan.phone)}` : ""}${plan.registeredOn ? ` · kayıt ${esc(HOF.formatDate(plan.registeredOn))}` : ""}</small>${plan.note ? `<small class="hof-plan-row-note" title="${esc(plan.note)}">${esc(plan.note)}</small>` : ""}</td><td class="num">${esc(money(plan.totals.total))}</td><td class="num hof-cash-in">${esc(money(plan.totals.paid))}${progress(plan.totals)}</td><td class="num${plan.totals.remaining > 0 ? " hof-cash-out" : ""}">${esc(money(plan.totals.remaining))}</td><td>${next}</td><td>${badge(label, tone)}${plan.totals.overdueCount || plan.totals.overdueRest ? `<small>${plan.totals.overdueCount ? `${plan.totals.overdueCount} taksit` : "taksitlendirilmemiş kalan"} · ${esc(money(plan.totals.overdue))}</small>` : ""}</td></tr>`;
     };
     HOF.swap(root, `<div class="hof-cash-bar"><div class="hof-tabs" role="group" aria-label="Durum">${STATUS_TABS.map(item => `<button type="button" data-status="${item.id}" aria-pressed="${String(item.id === view.status)}">${item.label}</button>`).join("")}</div>
       <div class="hof-cash-add">${manage ? `<button type="button" class="hof-button hof-button-small" data-act="new">+ Yeni Kart</button>${canBulk() ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="bulk" title="Carileri seçip her birine aynı planla taksit kartı açın">+ Toplu Taksitlendir</button>' : ""}<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="import" title="Excel dosyasından ya da Google Sheets’ten kartları ve grupları tek seferde oluştur">Excel / Sheets’ten Yükle</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="imports" title="Excel / Sheets’ten yüklenen ve önceki sürümlerde tablodan aktarılan kartlar; yanlışsa buradan geri alınır">Son Aktarımlar</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="groups">Gruplar</button>` : ""}</div></div>
       <div class="hof-plans-filters"><input type="search" data-filter="q" value="${esc(view.q)}" placeholder="Ad, telefon, sıra no, not ara…" aria-label="Ara">${groupOptions()}${canBulk() ? `<button type="button" class="hof-button hof-button-small hof-button-ghost hof-plan-pick" data-act="pick" title="Seçili gruptaki carileri listele, seçip toplu taksitlendir">${PEOPLE_ICON}Cari Seç</button>` : ""}<select data-filter="sort" aria-label="Sıralama">${SORT_OPTIONS.map(([id, label]) => `<option value="${id}" ${id === view.sort ? "selected" : ""}>${label}</option>`).join("")}</select>${outputButtons(listPdfUrl(), "list", "", "Taksit Listesi")}</div>
-      <div class="hof-kpis hof-plans-kpis" data-kpis>${data ? `<div class="hof-cash-balance"><strong>${esc(money(data.totals.remaining))}</strong><span>Kalan Alacak · ${data.totals.count} kart</span></div><div class="${data.totals.overdueCount ? "is-late" : ""}"><strong>${esc(money(data.totals.overdue))}</strong><span>Geciken · ${data.totals.overdueCount} taksit</span></div><div><strong>${esc(money(data.totals.month))}</strong><span>Bu Ay Beklenen</span></div><div><strong>${esc(money(data.totals.paid))}</strong><span>Tahsil Edilen</span></div>` : ""}</div>
+      <div class="hof-kpis hof-plans-kpis" data-kpis>${data ? `<div class="hof-cash-balance"><strong>${esc(money(data.totals.remaining))}</strong><span>Kalan Alacak · ${data.totals.count} kart</span></div><div class="${data.totals.overdueCount || data.totals.overdueRest ? "is-late" : ""}"><strong>${esc(money(data.totals.overdue))}</strong><span>Geciken · ${data.totals.overdueCount} taksit${data.totals.overdueRest ? ` + taksitlendirilmemiş kalan ${esc(money(data.totals.overdueRest))}` : ""}</span></div><div><strong>${esc(money(data.totals.month))}</strong><span>Bu Ay Beklenen</span></div><div><strong>${esc(money(data.totals.paid))}</strong><span>Tahsil Edilen</span></div>` : ""}</div>
       ${groupHint(data)}
       <div class="hof-cash-list hof-plans-list" data-list>${
         !data
@@ -462,7 +464,7 @@
     const entryTest = (ENTRY_FILTERS.find(([id]) => id === view.entryFilter) || ENTRY_FILTERS[0])[2];
     const items = plan.items.filter(itemTest);
     const entries = plan.entries.filter(entryTest);
-    const itemRow = item => `<tr data-item="${esc(item.id)}" class="is-${esc(item.state)}"><td>${item.seq}.</td><td>${esc(HOF.formatDate(item.dueDate))}${item.note ? `<small>${esc(item.note)}</small>` : ""}<small>${item.state === "paid" ? "" : esc(dayLabel(item.days))}</small></td><td class="num">${esc(money(item.amount))}</td><td class="num hof-cash-in">${item.paid ? esc(money(item.paid)) : ""}</td><td class="num${item.remaining > 0 ? " hof-cash-out" : ""}">${esc(money(item.remaining))}</td><td>${itemBadge(item)}</td><td class="hof-cash-actions">${collect && item.remaining > 0 && active ? `<button type="button" class="hof-mini hof-mini-pay" data-pay-item="${esc(item.id)}" title="Bu taksite tahsilat gir" aria-label="${item.seq}. taksite tahsilat gir">₺</button>` : ""}${manage ? `<button type="button" class="hof-mini" data-edit-item="${esc(item.id)}" title="Taksiti düzelt" aria-label="${item.seq}. taksiti düzelt">✎</button><button type="button" class="hof-mini hof-mini-danger" data-delete-item="${esc(item.id)}" title="Taksiti sil" aria-label="${item.seq}. taksiti sil">×</button>` : ""}</td></tr>`;
+    const itemRow = item => `<tr data-item="${esc(item.id)}" class="is-${esc(item.state)}"><td>${item.seq}.</td><td>${esc(HOF.formatDate(item.dueDate))}${item.note ? `<small>${esc(item.note)}</small>` : ""}<small>${item.state === "paid" ? "" : esc(dayLabel(item.days))}</small></td><td class="num">${esc(money(item.amount))}</td><td class="num hof-cash-in">${item.paid ? esc(money(item.paid)) : ""}${item.returned > 0.005 ? `<small class="hof-muted" data-item-returned>iade / değersiz ${esc(money(item.returned))}</small>` : ""}</td><td class="num${item.remaining > 0 ? " hof-cash-out" : ""}">${esc(money(item.remaining))}</td><td>${itemBadge(item)}</td><td class="hof-cash-actions">${collect && (item.ownRemaining ?? item.remaining) > 0.005 && active ? `<button type="button" class="hof-mini hof-mini-pay" data-pay-item="${esc(item.id)}" title="Bu taksite tahsilat gir" aria-label="${item.seq}. taksite tahsilat gir">₺</button>` : ""}${manage ? `<button type="button" class="hof-mini" data-edit-item="${esc(item.id)}" title="Taksiti düzelt" aria-label="${item.seq}. taksiti düzelt">✎</button><button type="button" class="hof-mini hof-mini-danger" data-delete-item="${esc(item.id)}" title="Taksiti sil" aria-label="${item.seq}. taksiti sil">×</button>` : ""}</td></tr>`;
     // Açılış (devir, v2.0.8): Excel'de programa girmeden önce ödenmiş kısım; taksiti kapatır, Kasa'da yoktur, makbuzu olmaz.
     const entryRow = entry => `<tr data-entry="${esc(entry.id)}" data-kind="${esc(entry.kind)}"${entry.opening ? ' data-opening=""' : ""}><td>${esc(HOF.formatDate(entry.date))}</td><td><b>${entry.opening ? 'Açılış (devir) <span class="hof-plan-badge is-muted" title="Programa girmeden önce ödenmiş; taksiti kapatır, Kasa’ya girmez">Kasa Dışı</span>' : entry.kind === "in" ? "Tahsilat" : "Ödeme / İade"}${entry.itemId ? ` · ${esc(plan.items.find(item => item.id === entry.itemId)?.seq || "?")}. taksit` : ""}${entry.receiptNo ? ` <span class="hof-plan-receipt">Makbuz ${esc(entry.receiptNo)}</span>` : ""}${entry.chequeId ? ' <span class="hof-plan-badge is-info" title="Çek / senetle alındı; Kasa’ya evrak tahsil edilince girer">çek / senet</span>' : ""}</b><small>${esc(entry.note || "")}${entry.note ? " · " : ""}${esc(entry.actorName || "—")}${entry.updatedAt ? " · düzeltildi" : ""}</small></td><td class="num hof-cash-in">${entry.kind === "in" ? esc(money(entry.amount)) : ""}</td><td class="num hof-cash-out">${entry.kind === "out" ? esc(money(entry.amount)) : ""}</td><td class="hof-cash-actions">${entry.opening ? "" : `<a class="hof-mini hof-mini-text" href="/api/workspace/plans/${encodeURIComponent(plan.id)}/entries/${encodeURIComponent(entry.id)}/makbuz.pdf" target="_blank" rel="noopener" title="Makbuz (PDF)" aria-label="Makbuz">Makbuz</a>`}${entry.chequeId && HOF.can("cheques.view") ? `<button type="button" class="hof-mini" data-open-cheque="${esc(entry.chequeId)}" title="Çek / senet kartını aç (karşılıksız, geri al buradan)" aria-label="Çek / senet kartını aç">↗</button>` : ""}${entry.editable ? `<button type="button" class="hof-mini" data-edit-entry="${esc(entry.id)}" title="Düzelt" aria-label="Düzelt">✎</button><button type="button" class="hof-mini hof-mini-danger" data-delete-entry="${esc(entry.id)}" title="Sil" aria-label="Sil">×</button>` : ""}</td></tr>`;
     const planWarning = Math.abs(t.unplanned) > 0.005 && plan.items.length ? `<p class="hof-alert">Taksitlerin toplamı (${esc(money(t.planned))}) kartın toplam tutarından (${esc(money(t.total))}) ${t.unplanned > 0 ? "az" : "fazla"}: fark ${esc(money(Math.abs(t.unplanned)))}. Taksitleri düzeltin ya da toplam tutarı güncelleyin.</p>` : "";
@@ -481,7 +483,7 @@
         <div class="hof-plan-actions" role="toolbar" aria-label="Kart işlemleri">
           <span class="hof-plan-toolgroup">${collect && active ? payButton : ""}${manage && active ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="refund" title="Müşteriye yapılan ödeme ya da iade">− Ödeme / İade</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="addItem">+ Taksit</button><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="distribute" title="Toplam tutarı eşit taksitlere böler">Otomatik Dağıt</button>' : ""}</span>
           <span class="hof-plan-toolgroup">${outputButtons(cardPdfUrl(plan), "card", "Taksit Ekstresi - PDF")}${phone ? `<button type="button" class="hof-button hof-button-small hof-button-ghost hof-whatsapp" data-act="whatsapp" data-wa="${esc(phone)}">WhatsApp</button>` : ""}</span>
-          ${manage ? `<span class="hof-plan-toolgroup"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="edit">Düzenle</button>${active ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="close" title="Kart kapanır; uyarı vermez, listede Kapalı altında durur">Kartı Kapat</button>' : '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="reopen">Yeniden Aç</button>'}<button type="button" class="hof-button hof-button-small hof-button-ghost hof-button-danger-ghost" data-act="delete"${plan.deleteBlock ? ` disabled title="${esc(plan.deleteBlock)}"` : ""}>Sil</button></span>` : ""}
+          ${manage ? `<span class="hof-plan-toolgroup"><button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="edit">Düzenle</button>${active ? '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="close" title="Ödeme planı biter; kalan borç carinin borcunda kalır, kart listede Kapalı altında durur">Kartı Kapat</button>' : '<button type="button" class="hof-button hof-button-small hof-button-ghost" data-act="reopen">Yeniden Aç</button>'}<button type="button" class="hof-button hof-button-small hof-button-ghost hof-button-danger-ghost" data-act="delete"${plan.deleteBlock ? ` disabled title="${esc(plan.deleteBlock)}"` : ""}>Sil</button></span>` : ""}
         </div></div>
       ${(manage && plan.deleteBlock) || (collect && payBlock) ? `<ul class="hof-inv-blocks" data-plan-blocks>${manage && plan.deleteBlock ? `<li><b>Sil Kapalı:</b> ${esc(plan.deleteBlock)}</li>` : ""}${collect && payBlock ? `<li><b>Tahsilat Kapalı:</b> ${esc(payBlock)}</li>` : ""}</ul>` : ""}
       <section class="hof-plan-profile" aria-label="Kişi bilgileri">
@@ -499,13 +501,13 @@
         </dl>
         <div class="hof-plan-note"><h4>Bilgi Notu</h4>${plan.note ? `<p>${esc(plan.note)}</p>` : `<p class="hof-empty">Not yok.${manage ? " <b>Düzenle</b> ile adres, okul, sınıf gibi bilgileri ekleyin." : ""}</p>`}</div>
       </section>
-      <div class="hof-kpis hof-plans-kpis"><div><strong>${esc(money(t.total))}</strong><span>Toplam Tutar</span></div><div><strong class="hof-cash-in">${esc(money(t.paid))}</strong><span>Tahsil Edilen · %${share}${t.paidOut ? ` · iade ${esc(money(t.paidOut))}` : ""}</span></div><div class="hof-cash-balance"><strong>${esc(money(t.remaining))}</strong><span>Kalan${t.extra ? ` · fazla ${esc(money(t.extra))}` : ""}</span></div><div class="${t.overdueCount ? "is-late" : ""}"><strong>${esc(money(t.overdue))}</strong><span>Geciken · ${t.overdueCount} taksit</span></div></div>
+      <div class="hof-kpis hof-plans-kpis"><div><strong>${esc(money(t.total))}</strong><span>Toplam Tutar</span></div><div><strong class="hof-cash-in">${esc(money(t.paid))}</strong><span>Tahsil Edilen · %${share}${t.paidOut ? ` · iade ${esc(money(t.paidOut))}` : ""}${t.returned > 0.005 ? ` · iade / değersiz ile kapanan ${esc(money(t.returned))}` : ""}</span></div><div class="hof-cash-balance"><strong>${esc(money(t.remaining))}</strong><span>Kalan${t.extra ? ` · fazla ${esc(money(t.extra))}` : ""}</span></div><div class="${t.overdueCount || t.overdueRest ? "is-late" : ""}" data-plan-late><strong>${esc(money(t.overdue))}</strong><span>Geciken · ${t.overdueCount} taksit${esc(lateExtrasText(t))}</span></div></div>
       <span class="hof-plan-progress hof-plan-progress-wide" aria-hidden="true"><i style="width:${share}%"></i></span>
       ${planWarning}
       <div class="hof-plan-section"><h4>Taksitler <span>${plan.items.length}</span></h4>${plan.items.length ? chips(ITEM_FILTERS, plan.items, view.itemFilter, "data-item-filter") : ""}</div>
       <div class="hof-cash-list hof-plans-items">${items.length ? `<table class="hof-table hof-cash-table hof-plan-items"><thead><tr><th>No</th><th>Vade</th><th class="num">Tutar</th><th class="num">Ödenen</th><th class="num">Kalan</th><th>Durum</th><th></th></tr></thead><tbody>${items.map(itemRow).join("")}</tbody><tfoot><tr><td></td><td>Toplam</td><td class="num">${esc(money(items.reduce((sum, item) => sum + item.amount, 0)))}</td><td class="num hof-cash-in">${esc(money(items.reduce((sum, item) => sum + item.paid, 0)))}</td><td class="num hof-cash-out">${esc(money(items.reduce((sum, item) => sum + item.remaining, 0)))}</td><td colspan="2"></td></tr></tfoot></table>` : noItems}</div>
       <div class="hof-plan-section"><h4>Hareketler <span>${plan.entries.length}</span></h4>${plan.entries.length ? chips(ENTRY_FILTERS, plan.entries, view.entryFilter, "data-entry-filter") : ""}</div>
-      <div class="hof-cash-list hof-plans-entries">${entries.length ? `<table class="hof-table hof-cash-table"><thead><tr><th>Tarih</th><th>İşlem</th><th class="num">Tahsilat</th><th class="num">Ödeme</th><th></th></tr></thead><tbody>${entries.map(entryRow).join("")}</tbody><tfoot><tr><td></td><td>Toplam</td><td class="num hof-cash-in">${esc(money(sums.in))}</td><td class="num hof-cash-out">${esc(money(sums.out))}</td><td></td></tr></tfoot></table>` : plan.entries.length ? '<p class="hof-empty">Bu süzgeçte hareket yok.</p>' : '<p class="hof-empty">Henüz hareket yok. Tahsilat girildiğinde burada ve Kasa’da görünür; her tahsilatın makbuzu PDF olarak alınır.</p>'}</div>
+      <div class="hof-cash-list hof-plans-entries">${entries.length ? `<table class="hof-table hof-cash-table"><thead><tr><th>Tarih</th><th>İşlem</th><th class="num">Tahsilat</th><th class="num">Ödeme</th><th></th></tr></thead><tbody>${entries.map(entryRow).join("")}</tbody><tfoot><tr><td></td><td>Toplam</td><td class="num hof-cash-in">${esc(money(sums.in))}</td><td class="num hof-cash-out">${esc(money(sums.out))}</td><td></td></tr></tfoot></table>` : plan.entries.length ? '<p class="hof-empty">Bu süzgeçte hareket yok.</p>' : t.paid > 0.005 ? `<p class="hof-empty" data-plan-no-entries="account">Bu karta henüz hareket girilmedi. Tahsil Edilen ${esc(money(t.paid))}, carinin karta bağlanmadan girilen tahsilatlarından gelir; o hareketler cari kartında görünür.</p>` : '<p class="hof-empty">Henüz hareket yok. Tahsilat girildiğinde burada ve Kasa’da görünür; her tahsilatın makbuzu PDF olarak alınır.</p>'}</div>
       <div class="hof-actions"><button type="button" class="hof-button hof-button-ghost" data-act="back">Listeye Dön</button><button type="button" class="hof-button" data-close>Kapat</button></div>`);
   }
 
@@ -701,7 +703,17 @@
           if (!data.firstDue) throw new Error("Eşit bölmek için ilk vadeyi seçin.");
           Object.assign(payload, { mode: "auto", count: data.count, firstDue: data.firstDue });
         }
-        const result = plan ? await HOF.api(`/api/workspace/plans/${encodeURIComponent(plan.id)}`, { method: "PUT", body: payload }) : await HOF.api("/api/workspace/plans", { method: "POST", body: payload });
+        // 2.5.0 BİRLEŞİK TUR 3 (3a; iyimser kilit, sunucu lib/row-version.mjs): düzenlemede formun AÇILDIĞI andaki kartın sürümü (updatedAt). Arada başka biri kartı
+        // değiştirdiyse 409 plan-stale: formdaki eski tutar / ad öbür kişinin düzeltmesini sessizce ezmez. İleti formda kalır, kart yenilenir; form kendiliğinden
+        // yeniden göndermez.
+        if (plan) payload.updatedAt = plan.updatedAt || "";
+        let result;
+        try {
+          result = plan ? await HOF.api(`/api/workspace/plans/${encodeURIComponent(plan.id)}`, { method: "PUT", body: payload }) : await HOF.api("/api/workspace/plans", { method: "POST", body: payload });
+        } catch (error) {
+          if (plan && ((error?.status === 409 && error?.data?.code === "plan-stale") || error?.status === 404) && modal) loadPlan(plan.id, { quiet: true }).catch(() => null);
+          throw error;
+        }
         await loadGroups();
         HOF.toast(plan ? "Kart güncellendi." : data.items === "manual" ? "Taksit kartı açıldı; şimdi taksitleri tek tek girin." : "Taksit kartı açıldı.", { type: "success" });
         view.planId = result.id;
@@ -746,7 +758,16 @@
       submitLabel: item ? "Kaydet" : "Taksiti Ekle",
       onSubmit: async data => {
         const url = `/api/workspace/plans/${encodeURIComponent(plan.id)}/items${item ? `/${encodeURIComponent(item.id)}` : ""}`;
-        const result = await HOF.api(url, { method: item ? "PUT" : "POST", body: data });
+        // 2.5.0 BİRLEŞİK TUR 3 (YAN-B; iyimser kilit, sunucu lib/row-version.mjs): düzeltmede formun AÇILDIĞI andaki taksitin sürümü (updatedAt). Arada başka biri
+        // taksiti düzelttiyse 409 plan-item-stale: formdaki eski tutar / vade öbür kişinin düzeltmesini sessizce ezmez. İleti formda kalır, kart yenilenir; form
+        // kendiliğinden yeniden göndermez.
+        let result;
+        try {
+          result = await HOF.api(url, { method: item ? "PUT" : "POST", body: item ? { ...data, updatedAt: item.updatedAt || "" } : data });
+        } catch (error) {
+          if (item && ((error?.status === 409 && error?.data?.code === "plan-item-stale") || error?.status === 404) && modal) loadPlan(plan.id, { quiet: true }).catch(() => null);
+          throw error;
+        }
         HOF.toast(item ? "Taksit düzeltildi." : "Taksit eklendi.", { type: "success" });
         applyPlan(result);
       },
@@ -762,13 +783,27 @@
   // kind: "in" (tahsilat) | "out" (ödeme/iade). item: taksite bağlı tahsilat. entry: düzeltme.
   function editEntry(plan, { kind = "in", item = null, entry = null, amount = null } = {}) {
     const incoming = (entry?.kind || kind) === "in";
-    const openItems = plan.items.filter(row => row.remaining > 0.005 || row.id === entry?.itemId);
-    const suggested = entry ? amountText(entry.amount) : amount ? amountText(amount) : item ? amountText(item.remaining) : plan.next ? amountText(plan.next.remaining) : "";
+    // 2.5.0 Ç5-B kapanış düzeltmesi (S129 = A + dar kontrol DÜŞÜK-4): kart penceresinin göstergeleri ve satırın Ödenen / Kalan'ı Tek Yükümlülük Kuyruğu'ndan
+    // (plan.totals.paid / remaining, item.paid / remaining); bu formun sınırı, sorusu, önerisi ve "Hangi Taksite" listesi kartın KENDİ hesabından (S118 = B — sunucunun
+    // sınırıyla aynı sayı: plan.totals.ownRemaining, item.ownRemaining, plan.ownNext). Carinin avansıyla kapalı görünen ama kartın kendi hesabında açık taksit seçilebilir.
+    const ownLeft = row => row.ownRemaining ?? row.remaining;
+    const ownTotalLeft = plan.totals.ownRemaining ?? plan.totals.remaining ?? 0;
+    const openItems = plan.items.filter(row => ownLeft(row) > 0.005 || row.id === entry?.itemId);
+    // 2.5.0 Ç5-B tur 2b-2 (S118 = B, KULLANICI KARARI 11.11 06:14 AYNEN: "taksit tahsilatında 'Kalanı Aşan Tutar' / 'Kart Ödendi' sınırı, sorusu ve formda ÖNERİLEN tutar kartın
+    // KENDİ kalanından gelir … taksit satırlarındaki kuyruk kalanı 'cari avansı düşülmüş' gösterimi olarak kalır; forma tek satırlık bilgi notu eklenir"): önerilen tutar ve
+    // sıradaki taksit kartın kendi hesabından (ownNext / ownRemaining — sunucu sınırıyla aynı sayı); kuyruk kalanı küçükse aradaki fark bilgi notunda.
+    const ownNext = plan.ownNext || plan.next;
+    const suggested = entry ? amountText(entry.amount) : amount ? amountText(amount) : item ? amountText(item.ownRemaining ?? item.remaining) : ownNext ? amountText(ownNext.remaining) : "";
+    const covered = incoming && !entry && Number.isFinite(plan.totals?.queueRemaining) ? Math.round((ownTotalLeft - plan.totals.queueRemaining) * 100) / 100 : 0;
+    // Sıradaki taksit (kartın kendi hesabı) satırda avansla kapalı görünüyorsa açıklama bunu söyler — "40 gün gecikti" ↔ satırda "Ödendi" çelişmesin (DÜŞÜK-4).
+    const nextRow = ownNext ? plan.items.find(row => row.id === ownNext.id) : null;
+    const nextState = !ownNext ? "" : covered > 0.005 && nextRow && nextRow.remaining <= 0.005 ? "carinin avansıyla kapalı görünüyor" : covered > 0.005 && nextRow && nextRow.remaining < ownNext.remaining - 0.005 ? `${money(Math.round((ownNext.remaining - nextRow.remaining) * 100) / 100)} kadarı carinin avansıyla kapalı görünüyor` : dayLabel(ownNext.days);
+    const coverNote = covered > 0.005 ? `<p class="hof-inline-note" data-cover-note>Carinin avansı bu kartın ${esc(amountText(covered))} TL'sini kapatıyor.</p>` : "";
     // v2.1.0 Aşama 8: istek kimliği form açılışında (aynı gönderim ikinci kez yazılmaz); Havale / EFT seçilince Banka Hesabı (tek hesapta gizli).
     const requestId = HOF.requestId();
     // K8 (2.3.0, plan §3.10/3): ödenmiş kartta yeni tahsilat 409 plan-paid, kalanı aşan tutar 409 plan-overpay; yönetici/uzman/muhasebe
     // "Fazlasını Avans Yaz" ile aynı istek kimliğiyle overpay:true gönderir; yetkisizde sunucunun yol gösteren metni formda kalır.
-    const paidOff = incoming && !entry && plan.totals.total > 0.005 && plan.totals.remaining <= 0.005;
+    const paidOff = incoming && !entry && plan.totals.total > 0.005 && ownTotalLeft <= 0.005;
     HOF.formModal({
       title: entry ? (incoming ? "Tahsilatı Düzelt" : "Ödemeyi Düzelt") : incoming ? "Tahsilat Gir" : "Ödeme / İade Gir",
       eyebrow: plan.name,
@@ -777,17 +812,18 @@
           ? "Bu kart ödendi (kalan 0,00 ₺). Girilen tutar fazla tahsilat (avans) olarak karta ve cariye alacak yazılır; kaydederken onay sorulur."
           : "Bu kart ödendi (kalan 0,00 ₺); yeni tahsilat yazılmaz. Fazla alınan para için yöneticinize başvurun."
         : incoming
-          ? `Kalan ${money(plan.totals.remaining)}${plan.next ? ` · sıradaki ${plan.next.seq}. taksit ${money(plan.next.remaining)} (${dayLabel(plan.next.days)})` : ""}. Tutar seçilen yola (nakit kasa, banka, kredi kartı) tahsilat olarak düşer; kalanı aşan tutar kaydedilmez (yönetici avans yazabilir); çekle/senetle ödemede Çek / Senet Al’da “Taksite Say”ı seçin. Makbuz PDF’i hareketler listesinden alınır.`
+          ? `${covered > 0.005 ? "Kartın kendi tahsilatlarına göre kalanı" : "Kalan"} ${money(ownTotalLeft)}${ownNext ? ` · sıradaki ${ownNext.seq}. taksit ${money(ownNext.remaining)} (${nextState})` : ""}. Tutar seçilen yola (nakit kasa, banka, kredi kartı) tahsilat olarak düşer; kalanı aşan tutar kaydedilmez (yönetici avans yazabilir); çekle/senetle ödemede Çek / Senet Al’da “Taksite Say”ı seçin. Makbuz PDF’i hareketler listesinden alınır.`
           : "Müşteriye geri verilen ya da onun adına yapılan ödeme. Kasa’dan düşer ve kartın ödenen tutarını azaltır.",
       fields: [
         { name: "amount", label: "Tutar (₺)", required: true, inputmode: "decimal", value: suggested, autofocus: true },
         { name: "date", label: "Tarih", type: "date", required: true, max: "today", value: entry?.date || todayIso() },
         // v2.0.13: tahsilat / ödeme yolu (Nakit, Havale / EFT, Kredi Kartı). Çekle/senetle ödeme Çek / Senet Al'dan "Taksite Say" ile.
         HOF.methodField(entry?.method || "cash", { incoming }),
-        ...(incoming ? [{ name: "itemId", label: "Hangi Taksite", type: "select", value: entry?.itemId || item?.id || "", options: [{ value: "", label: "En Eski Açık Taksite (önerilen)" }, ...openItems.map(row => ({ value: row.id, label: `${row.seq}. taksit · ${HOF.formatDate(row.dueDate)} · kalan ${money(row.remaining)}` }))] }] : []),
+        ...(incoming ? [{ name: "itemId", label: "Hangi Taksite", type: "select", value: entry?.itemId || item?.id || "", options: [{ value: "", label: "En Eski Açık Taksite (önerilen)" }, ...openItems.map(row => ({ value: row.id, label: `${row.seq}. taksit · ${HOF.formatDate(row.dueDate)} · kalan ${money(ownLeft(row))}` }))] }] : []),
         { name: "note", label: "Açıklama", maxlength: 300, value: entry?.note || "", placeholder: incoming ? "Ör. Ekim taksidi" : "Ne için", list: incoming ? [] : ["İade", "Fazla Alınan", "İndirim"] },
       ],
       submitLabel: entry ? "Kaydet" : incoming ? "Tahsilatı Kaydet" : "Ödemeyi Kaydet",
+      extraHtml: coverNote,
       onOpen: dialog => {
         // 2.7: seçicide bakiye (tahsilat giriş, geri ödeme çıkış; düzeltmede eski tutar bakiyede).
         // 2.2.0 (İz 3.2): kart yolu tahsilatta POS (taksit sayısı, provizyon, önizleme), geri ödemede POS İadesi (asıl işlem bu kartın POS satışı).
@@ -802,9 +838,12 @@
         // K8: 409 plan-paid / plan-overpay → yetkili "Fazlasını Avans Yaz" derse overpay:true ile (istek kimliği aynı; bayrak içerik sayılmaz) yeniden
         // gönderilir ve Benzer İşlem / eksi bakiye soruları (withConfirms) sürer. Vazgeç ya da yetkisiz: sunucunun metni formda kalır.
         let overpay = false;
+        // 2.5.0 BİRLEŞİK TUR 2 (iyimser kilit; sunucu lib/row-version.mjs): düzeltmede formun AÇILDIĞI andaki hareketin sürümü (updatedAt; hiç düzeltilmemişse
+        // ""). Arada başka biri aynı hareketi düzelttiyse 409 plan-entry-stale: formdaki eski tutar öbür kişinin düzeltmesini sessizce ezmez.
+        const version = entry ? { updatedAt: entry.updatedAt || "" } : {};
         const send = async flags => {
           try {
-            return await HOF.api(url, { method: entry ? "PUT" : "POST", body: { ...body, ...flags, ...(overpay ? { overpay: true } : {}) }, requestId });
+            return await HOF.api(url, { method: entry ? "PUT" : "POST", body: { ...body, ...flags, ...(overpay ? { overpay: true } : {}), ...version }, requestId });
           } catch (error) {
             const code = error?.data?.code;
             if ((code === "plan-paid" || code === "plan-overpay") && !overpay && canManage()) {
@@ -816,7 +855,15 @@
             throw error;
           }
         };
-        const result = HOF.bank?.withConfirms ? await HOF.bank.withConfirms(send) : await send({});
+        let result;
+        try {
+          result = HOF.bank?.withConfirms ? await HOF.bank.withConfirms(send) : await send({});
+        } catch (error) {
+          // Hareket bu arada düzeltildi (409) ya da silindi (404): kart güncel hâle yenilenir, sunucunun iletisi ("… kaydedilmedi …") formda görünür; form
+          // kendiliğinden yeniden göndermez.
+          if (entry && ((error?.status === 409 && error?.data?.code === "plan-entry-stale") || error?.status === 404) && modal) loadPlan(plan.id, { quiet: true }).catch(() => null);
+          throw error;
+        }
         if (result.replayed) {
           applyPlan(result);
           HOF.toast("Bu işlem zaten kaydedildi; ikinci kez yazılmadı.", { type: "info" });
@@ -874,23 +921,37 @@
   }
   // 2.4.3 (uzman UX8): kalanı olan kart tek tıkla kapanıyordu (uyarılar susar, kalan istenmez); düğme pencerenin "Kapat"ıyla da aynı addaydı.
   // Kalan varken açıkça sorulur; kalansız (ödenmiş) kart sorusuz kapanır.
-  async function closePlan(plan) {
+  // 2.5.0 Ç7b (YB-1): onaylanan kalan sunucuya gider (closeRemaining); kalan bu arada değiştiyse (409 plan-close-stale) pencere GÜNCEL kalanla yeniden sorar — eski onay kullanılmaz.
+  // 2.5.0 Ç7b tur 3b (karar (6) "Borçta Kalsın", S205 = A): Kartı Kapat yalnız ödeme planını bitirir; kalan carinin borcunda kalır ve yarından itibaren gecikmiş sayılır (hatırlatma
+  // gider); vazgeçmek ayrı ve görünür işlemdir (cari kartında Alacak Yaz). Pencere sonucu söyler.
+  async function closePlan(plan, retry = 0) {
     const left = Number(plan.totals?.remaining) || 0;
     if (left > 0.004) {
       const go = await HOF.confirm({
         title: "Kartı Kapat",
-        message: `Kalan ${money(left)} açıkken “${plan.name}” kartı kapatılsın mı? Kapalı kart uyarı vermez, kalan tutar artık istenmez${plan.accountId ? " ve carinin borcundan düşülür" : ""}. Gerekirse kart “Yeniden Aç” ile açılır.`,
+        message: plan.accountId
+          ? `Kalan ${money(left)} açıkken “${plan.name}” kartı kapatılsın mı? Ödeme planı biter; kalan borç carinin borcunda kalır, yarından itibaren gecikmiş sayılır. Vazgeçmek için cari kartında Alacak Yaz kullanın. Gerekirse kart “Yeniden Aç” ile açılır.`
+          : `Kalan ${money(left)} açıkken “${plan.name}” kartı kapatılsın mı? Ödeme planı biter; kalan tutar kartta açık kalır. Gerekirse kart “Yeniden Aç” ile açılır.`,
         confirmLabel: "Kartı Kapat",
         danger: true,
       });
       if (!go) return;
     }
-    return setStatus(plan, "closed");
+    try {
+      applyPlan(await HOF.api(`/api/workspace/plans/${encodeURIComponent(plan.id)}`, { method: "PUT", body: { status: "closed", closeRemaining: Math.round(left * 100) / 100 } }));
+      HOF.toast(left > 0.004 && plan.accountId ? "Kart kapatıldı; kalan borç carinin borcunda kalır." : "Kart kapatıldı.", { type: "success" });
+    } catch (error) {
+      if (error?.status === 409 && error?.data?.code === "plan-close-stale" && retry < 2) {
+        HOF.toast(error.message || "Kartın kalanı değişti.", { type: "warning" });
+        return closePlan({ ...plan, totals: { ...(plan.totals || {}), remaining: Number(error.data.remaining) || 0 } }, retry + 1);
+      }
+      HOF.toastError(error);
+    }
   }
   async function setStatus(plan, status) {
     try {
       applyPlan(await HOF.api(`/api/workspace/plans/${encodeURIComponent(plan.id)}`, { method: "PUT", body: { status } }));
-      HOF.toast(status === "closed" ? "Kart kapatıldı; uyarı vermez." : "Kart yeniden açıldı.", { type: "success" });
+      HOF.toast(status === "closed" ? "Kart kapatıldı." : "Kart yeniden açıldı.", { type: "success" });
     } catch (error) {
       HOF.toastError(error);
     }

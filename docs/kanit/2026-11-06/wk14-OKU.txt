@@ -1,0 +1,31 @@
+WK 14 — WhatsApp kâhini güncellemesi 14: S22 (eski S7-d) — KANIT (06.11.2026)
+================================================================================
+
+Karar (AYNEN, docs/2.5.0-IS-LISTESI.md D, KULLANICI KARARI 06.11 05:30 UTC "a"):
+  S22 = A: işteki Yine de Gönder basıldığında şüpheli kaydı yoktu, iş gönderim beklerken kayıt açıldı → S7-b gibi gönderim anında "Atlandı — Şüpheli Alacağı Var";
+  yol kalır (kayıt açıkken yeniden Yine de Gönder basılırsa S16 ile şüphesiz tutarla gider).
+Yorumlar: test/bagimsiz/whatsapp-248/README.md §19 (19.1–19.4 kodlamadan ÖNCE, commit 697d1c54; 19.5–19.9 sonra).
+Kod commit'i: a7b4ea9a (kâhin, senaryolar, kendi testi, senaryolar.json, README). Taban: 549359b0.
+Bağımsızlık: program kodu (server/, client/, bulut/, tools/ — kanit.mjs yalnız çalıştırıldı), program testleri, surucu.mjs, sahte-meta/, başka ajanların kanıtı GÖRÜLMEDİ.
+
+Koşular (hepsi `KANIT_DIR=<not defteri>/wk14-kanit-son node tools/kanit.mjs kos <ad> -- <komut>`, commit a7b4ea9a, kirli dosya 0; sonra buraya kopyalandı):
+  wk14-senaryolar               TZ=UTC              python3 -I test/bagimsiz/whatsapp-248/kahin/senaryolar.py          → 332/332 elle = model; senaryolar.json yazıldı
+  wk14-senaryolar-tz-istanbul   TZ=Europe/Istanbul  aynı                                                                → 332/332; senaryolar.json sha256 iki koşuda AYNI (aşağıda)
+  wk14-kahin                    TZ=UTC              python3 -I test/bagimsiz/whatsapp-248/kahin/kahin_test.py          → 359/359 (F mutasyon 211/211; yeni I11)
+  wk14-kahin-tz-istanbul        TZ=Europe/Istanbul  aynı                                                                → 359/359
+  wk14-eski-326-tam-sonuc-fark  araç wk14-araclar/eski_tam_sonuc_fark.py <eski senaryolar.json> <yeni>                  → 326/326 eski senaryo bayt bayt AYNI (yalnız kararlar'a S22)
+  wk14-eski-kahinle-yeni-senaryolar       araç wk14-araclar/eski_kahinle_yeni.py <eski kâhin> <yeni json> S22 "KULLANICIYA SORULMALI S7-d"
+                                → 6/6 yeni senaryo ESKİ kâhinde BEKLENEN NEDENLE kırmızı (ValueError "KULLANICIYA SORULMALI S7-d … kodlanmadı")
+  wk14-eski-kahinle-yeni-senaryolar-notr  aynı araç, eski kâhinin YALNIZ S7-d hata satırı etkisiz kopyası, kip "ayni"
+                                → 6/6 AYNI (bilgi, ders 38: karar yokken düşülen yol = S22'nin A'sı; A ↔ B dişi M210 — kanıt sayılmaz)
+  wk14-mutant-matrisi           araç wk14-araclar/mutant_matrisi.py <yeni kâhin> <yeni json> S22 M210 M211 M212 M194 M195 M196 M198 M199 M201 M192
+                                → 10/10 mutant en az bir S22 senaryosunda DEĞERLE yakalanıyor (M210 6/6, M211 4/6, M212 4/6)
+
+Eski kâhin kopyası: taban 549359b0'ın kahin/* dosyaları değişiklikten ÖNCE not defterine alındı (git'ten değil):
+  kahin.py ab151093…87cc, kahin_test.py 4cb01b05…cb48, senaryolar.py bdd8d574…be2d, senaryolar.json 273612c5…f1f5 (sha256; tam değerler wk14-eski-kopya-sha256.txt).
+
+Ham çıktı: her <ad>.json'daki "ham_cikti" yolu not defterini gösterir; aynı adlı <ad>.log bu klasördedir, "ham_cikti_sha256" ile denetlenebilir.
+Araçlar (wk14-araclar/) yalnız standart kütüphane; kâhini ya da senaryoları değiştirmez (yalnız okur).
+
+senaryolar.json sha256 (commit a7b4ea9a; UTC koşusundan önce, UTC koşusundan sonra ve İstanbul koşusundan sonra AYNI):
+  3d5d0aac973e17526e097b9e29a884d1a3faafcb5b29766ed66022080141714a  test/bagimsiz/whatsapp-248/kahin/senaryolar.json

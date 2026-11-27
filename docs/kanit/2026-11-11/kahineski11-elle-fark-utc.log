@@ -1,0 +1,27 @@
+d36-c5-s122-kart-odemesi.json: 21 elle beklenti değişti
+    değer                  k1:cari:J13:acikEsitBakiye: "(yok)" → true
+    değer                  k1:cari:J13:acikToplam: "(yok)" → 60000
+    değer                  k1:cari:J13:gecikmis: "(yok)" → 0
+    değer                  k1:fatura:J13F:acik: "(yok)" → 30000
+    değer                  k1:hareket:j13x:kalan: "(yok)" → 30000
+    değer                  k1:kart:KJ13:kalan: "(yok)" → 60000
+    değer                  k1:kart:KJ13:mevcutBorc: "(yok)" → true
+    değer                  k1:kart:KJ13:odenen: "(yok)" → 30000
+    değer                  k1:kart:KJ13:taksit1:odenen: "(yok)" → 30000
+    değer                  k1:kart:KJ13:taksit2:odenen: "(yok)" → 0
+    değer                  k1:kart:KJ13:taksit3:odenen: "(yok)" → 0
+    değer                  k1:projeksiyon:hareket:j13x: "(yok)" → "yok"
+    değer                  k1:takvim:fatura:J13F: "(yok)" → "yok"
+    değer                  k1:takvim:hareket:j13x: "(yok)" → "yok"
+    değer                  k1:vadeTakip:hareket:j13x: "(yok)" → "yok"
+    elleYok kalktı         k1:cari:J13:gecikmis: "yok" → ""
+    elleYok kalktı         k1:fatura:J13F:acik: "yok" → ""
+    elleYok kalktı         k1:hareket:j13x:kalan: "yok" → ""
+    elleYok kalktı         k1:kart:KJ13:kalan: "yok" → ""
+    elleYok kalktı         k1:takvim:hareket:j13x: "yok" → ""
+    elleBelirsiz kalktı    ["cari J13 tanımsız", "birden çok kalemi tüketti"]: "" → ""
+yeni elle senaryo: d37-c5-s126-faturali-kart.json
+# tests 90
+# pass 90
+# fail 0
+90/90 denetim geçti

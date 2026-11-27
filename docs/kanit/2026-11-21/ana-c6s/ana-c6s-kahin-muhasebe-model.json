@@ -1,0 +1,32 @@
+{
+  "ad": "ana-c6s-kahin-muhasebe-model",
+  "komut": "python3 -I test/bagimsiz/muhasebe/test_model.py",
+  "commit": "69e311861e51d1dce02d91c39d8ba144f4308db1",
+  "dal": "c6-sinama",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-21T08:12:31.226Z",
+  "sure_sn": 43.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 223,
+    "gecen": 223,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ana-c6s/kanit/2026-11-21/ana-c6s-kahin-muhasebe-model.log",
+  "klasor": "/dev/shm/c6-sinama",
+  "ham_cikti_sha256": "c5aed30b36cc50025fd9c398e5f90e53520244c460d2373b5f975534c3cf1b25",
+  "ham_cikti_bayt": 376
+}

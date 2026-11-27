@@ -1,0 +1,23 @@
+// Ana oturum — şüpheli kaydı olan cariye TAHSİLAT: program ne yapıyor? (a) bugün tarihli, şüpheli tutarı aşmayan · (b) bugün tarihli, normal alacağı aşan · (c) şüpheliden ÖNCEKİ tarihe (kâhinin N11'i)
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+const K = await import(pathToFileURL(path.join(process.cwd(), "betik/k.mjs")).href);
+const { boot, day, print } = K;
+const out = {};
+const scen = async (name, pay) => {
+  const h = await boot({ now: { time: "2026-10-20T12:00:00+03:00", fixed: false } });
+  try {
+    const a = await h.account(name);
+    await h.entry(a, { kind: "debt", amount: "1000", date: day(-100), dueDate: day(-90), note: "B1000" });
+    h.server.clock.advance({ seconds: 40 });
+    const d = await h.api.post(`/api/workspace/accounts/${a.id}/doubtful`, { amount: "900", date: day(-30), reason: "lawsuit", note: "dava" });
+    h.server.clock.advance({ seconds: 40 });
+    const r = await h.api.post(`/api/workspace/accounts/${a.id}/entries`, { kind: "in", method: "cash", cashForce: true, similarOk: true, ...pay });
+    const card = await h.card(a);
+    out[name] = { supheli: d.status, tahsilat: r.status, kod: r.data?.code || r.data?.error?.code || "", ileti: String(r.data?.error?.message || r.data?.message || r.data?.error || "").slice(0, 260), sorular: Object.keys(r.data || {}).filter(k => /confirm|question|need|ask/i.test(k)), bakiye: card.totals?.balance, supheliOzet: card.doubtful, satirlar: (card.entries || []).map(e => `${e.kind}:${e.amount}:${e.source || ""}`).slice(0, 6) };
+  } catch (e) { out[name] = { HATA: String(e.message).slice(0, 400) }; } finally { await h.server.close(); }
+};
+await scen("a-bugun-100", { amount: "100", date: day(0) });
+await scen("b-bugun-300", { amount: "300", date: day(0) });
+await scen("c-geriye-300", { amount: "300", date: day(-40) });
+print(out);

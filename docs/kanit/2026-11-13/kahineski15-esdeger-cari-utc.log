@@ -1,0 +1,91 @@
+ÜRETİCİ: 20/20 aynı dizi (tur s1 + ux18, tohum 1–10 × 120 işlem)
+ADIMLAR: eski kopyadaki 94 elle senaryonun 0'inin adımları değişti: yok · yeni elle senaryo: d41-c5-s136-s139-s145-s148, d42-c5-s140-s151-satis-karti-iade, d43-c5-bilinen-sinir-sus15
+EŞDEĞERLİK (2.4.9 / 2.4.6 / 2.4.5 / --legacy; eski kopyanın 94 elle + yeni kopyanın yeni 3 elle + 20 rastgele senaryo × 4 kip): 468/468 bayt bayt aynı
+G3 (kural 2.5.0; 117 senaryo — eski kopyanın 94 elle senaryosu + yeni elle + 20 rastgele): eski 49526 denetim · yeni 49200 denetim · değişen / kalkan / yeni toplam 468 · BEKLENMEYEN 0 · yalnız etiketi değişen 0
+  GENEL          degisen      2
+      örn. d39-c5-s130-supheli-kalemleri k1:kasa: 280000 → 250000
+      örn. d39-c5-s130-supheli-kalemleri k1:kasaRapor:giris: 280000 → 250000
+  GENEL          kalkan      46
+      örn. d41-c5-s136-s139-s145-s148 k1:kasa: 175000 → "(denetim yok)"
+      örn. d41-c5-s136-s139-s145-s148 k1:kasaRapor:giris: 205000 → "(denetim yok)"
+      örn. rastgele-s1-3 k3:projeksiyon:cari: 4 → "(denetim yok)"
+      örn. rastgele-s1-3 k3:takvim:cariKalemSayisi: 4 → "(denetim yok)"
+  S136-alan      yeni        21
+      örn. d40-c5-s130-sus-bilinen-sinir k1:projeksiyon:cariToplam:Q4: "(denetim yok)" → 40000
+      örn. d40-c5-s130-sus-bilinen-sinir k1:projeksiyon:hareket:q4o: "(denetim yok)" → {"amount": 20000, "date": "2026-06-02", "direction": "in"}
+      örn. d40-c5-s130-sus-bilinen-sinir k1:projeksiyon:hareket:q4x: "(denetim yok)" → {"amount": 20000, "date": "2026-06-01", "direction": "in"}
+      örn. d40-c5-s130-sus-bilinen-sinir k1:takvim:cariToplam:Q4: "(denetim yok)" → 40000
+  S139           yeni        23
+      örn. d39-c5-s130-supheli-kalemleri k1:cari:N10:gecikmis: "(denetim yok)" → 50000
+      örn. d39-c5-s130-supheli-kalemleri k1:cari:N12:gecikmis: "(denetim yok)" → 40000
+      örn. d39-c5-s130-supheli-kalemleri k1:cari:N13a:gecikmis: "(denetim yok)" → 30000
+      örn. d39-c5-s130-supheli-kalemleri k1:cari:N1:gecikmis: "(denetim yok)" → 80000
+  S140           degisen     22
+      örn. d42-c5-s140-s151-satis-karti-iade k1:cari:T1:acikToplam: 20000 → 50000
+      örn. d42-c5-s140-s151-satis-karti-iade k1:cari:T3:acikEsitBakiye: false → true
+      örn. d42-c5-s140-s151-satis-karti-iade k1:cari:T3:acikToplam: 0 → 50000
+      örn. d42-c5-s140-s151-satis-karti-iade k1:hareket:t1b:kalan: 20000 → 50000
+  S140           kalkan      35
+      örn. d42-c5-s140-s151-satis-karti-iade k1:cari:T4:acikEsitBakiye: false → "(denetim yok)"
+      örn. d42-c5-s140-s151-satis-karti-iade k1:cari:T4:acikToplam: 0 → "(denetim yok)"
+      örn. d42-c5-s140-s151-satis-karti-iade k1:cari:T4:gecikmis: 0 → "(denetim yok)"
+      örn. d42-c5-s140-s151-satis-karti-iade k1:cari:T5:acikEsitBakiye: false → "(denetim yok)"
+  S141           kalkan       3
+      örn. d43-c5-bilinen-sinir-sus15 k1:cari:U2:acikEsitBakiye: true → "(denetim yok)"
+      örn. d43-c5-bilinen-sinir-sus15 k1:cari:U2:acikToplam: 40000 → "(denetim yok)"
+      örn. d43-c5-bilinen-sinir-sus15 k1:fatura:U2F:acik: 40000 → "(denetim yok)"
+  S143           kalkan       3
+      örn. d19-c5-s92-okuma-ayrisan k1:kart:KN4:kalan: 90000 → "(denetim yok)"
+      örn. d34-c5-s110-kendi-borcu k1:kart:KE10:kalan: 90000 → "(denetim yok)"
+      örn. d43-c5-bilinen-sinir-sus15 k1:kart:KU3:kalan: 90000 → "(denetim yok)"
+  S144           kalkan       4
+      örn. d30-c5-s101-bitti-kart k1:kart:KQ1:odenen: 60000 → "(denetim yok)"
+      örn. d30-c5-s101-bitti-kart k1:kart:KQ3:odenen: 60000 → "(denetim yok)"
+      örn. d43-c5-bilinen-sinir-sus15 k1:kart:KU1:odenen: 100000 → "(denetim yok)"
+      örn. d43-c5-bilinen-sinir-sus15 k1:kart:KU2:odenen: 40000 → "(denetim yok)"
+  S145           degisen     18
+      örn. d39-c5-s130-supheli-kalemleri adim:n11t:durum: "ok" → "ret"
+      örn. d39-c5-s130-supheli-kalemleri k1:cari:N11:bakiye: 20000 → 50000
+      örn. d39-c5-s130-supheli-kalemleri k1:hareket:n11x:kalan: 20000 → 50000
+      örn. d41-c5-s136-s139-s145-s148 adim:s1t:durum: "ok" → "ret"
+  S145           kalkan     244
+      örn. d41-c5-s136-s139-s145-s148 adim:s7e:durum: "ok" → "(denetim yok)"
+      örn. d41-c5-s136-s139-s145-s148 adim:s8t:durum: "ok" → "(denetim yok)"
+      örn. d41-c5-s136-s139-s145-s148 adim:s9t:durum: "ok" → "(denetim yok)"
+      örn. d41-c5-s136-s139-s145-s148 k1:cari:S7:bakiye: 70000 → "(denetim yok)"
+  S145           yeni         6
+      örn. d39-c5-s130-supheli-kalemleri k1:cari:N11:gecikmis: "(denetim yok)" → 0
+      örn. d41-c5-s136-s139-s145-s148 k1:cari:S1:gecikmis: "(denetim yok)" → 10000
+      örn. d41-c5-s136-s139-s145-s148 k1:cari:S6:gecikmis: "(denetim yok)" → 0
+      örn. d41-c5-s136-s139-s145-s148 k1:projeksiyon:hareket:s6x: "(denetim yok)" → "yok"
+  S149           kalkan      37
+      örn. c6b-cari-vade-dogrulama k1:takvim:hareket:v9: {"amount": 10000, "dueDate": "2026-06-12", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "s → "(denetim yok)"
+      örn. c6b-cari-vade-dogrulama k2:takvim:hareket:v9: {"amount": 10000, "dueDate": "2026-06-12", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "s → "(denetim yok)"
+      örn. c6b-cari-vade-dogrulama k3:takvim:hareket:v9: {"amount": 10000, "dueDate": "2026-06-12", "direction": "in", "label": "Tahsil Edilecek Borç (Ödeme Sözü)", "s → "(denetim yok)"
+      örn. d12-c5-s69-soz-gunu-ve-gecmis k1:cari:F2:gecikmis: 0 → "(denetim yok)"
+  S151           kalkan       4
+      örn. d42-c5-s140-s151-satis-karti-iade k1:kart:KT7:odenen: 30000 → "(denetim yok)"
+      örn. d42-c5-s140-s151-satis-karti-iade k1:kart:KT7:taksit1:odenen: 30000 → "(denetim yok)"
+      örn. d42-c5-s140-s151-satis-karti-iade k1:kart:KT7:taksit2:odenen: 0 → "(denetim yok)"
+      örn. d42-c5-s140-s151-satis-karti-iade k1:kart:KT7:taksit3:odenen: 0 → "(denetim yok)"
+G3 senaryo senaryo (sınıf/tür: adet; listede olmayan senaryoda fark 0):
+  c6b-cari-vade-dogrulama                  S149/kalkan 3
+  d12-c5-s69-soz-gunu-ve-gecmis            S149/kalkan 2
+  d19-c5-s92-okuma-ayrisan                 S143/kalkan 1
+  d30-c5-s101-bitti-kart                   S144/kalkan 2
+  d34-c5-s110-kendi-borcu                  S143/kalkan 1
+  d39-c5-s130-supheli-kalemleri            GENEL/degisen 2 · S139/yeni 12 · S145/degisen 3 · S145/yeni 1
+  d40-c5-s130-sus-bilinen-sinir            S136-alan/yeni 9 · S139/yeni 2
+  d41-c5-s136-s139-s145-s148               GENEL/kalkan 2 · S136-alan/yeni 12 · S139/yeni 9 · S145/degisen 15 · S145/kalkan 27 · S145/yeni 5
+  d42-c5-s140-s151-satis-karti-iade        S140/degisen 22 · S140/kalkan 35 · S151/kalkan 4
+  d43-c5-bilinen-sinir-sus15               S141/kalkan 3 · S143/kalkan 1 · S144/kalkan 2 · S149/kalkan 4
+  rastgele-s1-10                           S145/kalkan 7
+  rastgele-s1-3                            GENEL/kalkan 6 · S145/kalkan 75 · S149/kalkan 9
+  rastgele-s1-4                            S149/kalkan 1
+  rastgele-s1-7                            S149/kalkan 5
+  rastgele-s1-8                            GENEL/kalkan 20 · S145/kalkan 61 · S149/kalkan 11
+  rastgele-s1-9                            GENEL/kalkan 18 · S145/kalkan 74 · S149/kalkan 2
+# tests 583
+# pass 583
+# fail 0
+583/583 denetim geçti

@@ -1,0 +1,136 @@
+== SON=0 ROOT=taban
+{
+ "F2'ye bağlı çek 300": {
+  "supheli": "200",
+  "normalIsle400": "200",
+  "once": "120 100 · 128 1000 · kuyruk 1000 = F1 600 + F2 400",
+  "yanit": "200",
+  "sonra": "120 100 · 128 700 · kuyruk 700 = F1 600 + F2 100",
+  "sonSatir": [
+   "2026-10-10 A 128 300"
+  ]
+ },
+ "mutabakat": []
+}
+== SON=0 ROOT=agent-a21e56c46518ba374
+{
+ "F2'ye bağlı çek 300": {
+  "supheli": "200",
+  "normalIsle400": "200",
+  "once": "120 100 · 128 1000 · kuyruk 1000 = F1 600 + F2 400",
+  "yanit": "200",
+  "sonra": "120 100 · 128 700 · kuyruk 700 = F1 600 + F2 100",
+  "sonSatir": [
+   "2026-10-10 A 128 300"
+  ]
+ },
+ "mutabakat": []
+}
+== SON=1 ROOT=taban
+{
+ "F2'ye bağlı nakit 300": {
+  "supheli": "200",
+  "normalIsle400": "200",
+  "once": "120 100 · 128 1000 · kuyruk 1000 = F1 600 + F2 400",
+  "yanit": "409 doubtful-normal-exceeds Normal cari hesaba işlenecek tahsilat (300,00 TL) carinin şüpheli dışı borç bakiyesini (100,00 TL) aşıyor; fazlası şüpheli alacaktan düşmek zorunda. Tutarı 100,",
+  "sonra": "120 100 · 128 1000 · kuyruk 1000 = F1 600 + F2 400",
+  "sonSatir": []
+ },
+ "mutabakat": []
+}
+== SON=1 ROOT=agent-a21e56c46518ba374
+{
+ "F2'ye bağlı nakit 300": {
+  "supheli": "200",
+  "normalIsle400": "200",
+  "once": "120 100 · 128 1000 · kuyruk 1000 = F1 600 + F2 400",
+  "yanit": "200",
+  "sonra": "120 100 · 128 700 · kuyruk 700 = F1 600 + F2 100",
+  "sonSatir": [
+   "2026-10-10 A 128 300"
+  ]
+ },
+ "mutabakat": []
+}
+== SON=2 ROOT=taban
+{
+ "F2'ye bağlı nakit 100": {
+  "supheli": "200",
+  "normalIsle400": "200",
+  "once": "120 100 · 128 1000 · kuyruk 1000 = F1 600 + F2 400",
+  "yanit": "200",
+  "sonra": "120 0 · 128 1000 · kuyruk 1000 = F1 600 + F2 400",
+  "sonSatir": [
+   "2026-10-10 A 120 100"
+  ]
+ },
+ "mutabakat": []
+}
+== SON=2 ROOT=agent-a21e56c46518ba374
+{
+ "F2'ye bağlı nakit 100": {
+  "supheli": "200",
+  "normalIsle400": "200",
+  "once": "120 100 · 128 1000 · kuyruk 1000 = F1 600 + F2 400",
+  "yanit": "200",
+  "sonra": "120 100 · 128 900 · kuyruk 900 = F1 600 + F2 300",
+  "sonSatir": [
+   "2026-10-10 A 128 100"
+  ]
+ },
+ "mutabakat": []
+}
+== SON=3 ROOT=taban
+{
+ "F1'e bağlı nakit 300": {
+  "supheli": "200",
+  "normalIsle400": "200",
+  "once": "120 100 · 128 1000 · kuyruk 1000 = F1 600 + F2 400",
+  "yanit": "409 doubtful-normal-exceeds Normal cari hesaba işlenecek tahsilat (300,00 TL) carinin şüpheli dışı borç bakiyesini (100,00 TL) aşıyor; fazlası şüpheli alacaktan düşmek zorunda. Tutarı 100,",
+  "sonra": "120 100 · 128 1000 · kuyruk 1000 = F1 600 + F2 400",
+  "sonSatir": []
+ },
+ "mutabakat": []
+}
+== SON=3 ROOT=agent-a21e56c46518ba374
+{
+ "F1'e bağlı nakit 300": {
+  "supheli": "200",
+  "normalIsle400": "200",
+  "once": "120 100 · 128 1000 · kuyruk 1000 = F1 600 + F2 400",
+  "yanit": "200",
+  "sonra": "120 100 · 128 700 · kuyruk 700 = F1 300 + F2 400",
+  "sonSatir": [
+   "2026-10-10 A 128 300"
+  ]
+ },
+ "mutabakat": []
+}
+== SON=4 ROOT=taban
+{
+ "bağsız nakit 300 (işaretsiz)": {
+  "supheli": "200",
+  "normalIsle400": "200",
+  "once": "120 100 · 128 1000 · kuyruk 1000 = F1 600 + F2 400",
+  "yanit": "200",
+  "sonra": "120 100 · 128 700 · kuyruk 700 = F1 300 + F2 400",
+  "sonSatir": [
+   "2026-10-10 A 128 300"
+  ]
+ },
+ "mutabakat": []
+}
+== SON=4 ROOT=agent-a21e56c46518ba374
+{
+ "bağsız nakit 300 (işaretsiz)": {
+  "supheli": "200",
+  "normalIsle400": "200",
+  "once": "120 100 · 128 1000 · kuyruk 1000 = F1 600 + F2 400",
+  "yanit": "200",
+  "sonra": "120 100 · 128 700 · kuyruk 700 = F1 300 + F2 400",
+  "sonSatir": [
+   "2026-10-10 A 128 300"
+  ]
+ },
+ "mutabakat": []
+}

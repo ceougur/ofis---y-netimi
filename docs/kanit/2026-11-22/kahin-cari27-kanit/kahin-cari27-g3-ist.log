@@ -1,0 +1,29 @@
+ÜRETİCİ: 20/20 aynı dizi (tur s1 + ux18, tohum 1–10 × 120 işlem)
+ADIMLAR: eski kopyadaki 112 elle senaryonun 0'inin adımları değişti: yok · izinli: yok · yeni elle senaryo: d59-c5-s249-s251-kendi-kart-azaltma-iadeli-duzenle
+DİL EKİ (bakım 24): eski kâhinin dilinde olmayan adımlı yeni elle senaryo — eşdeğerlik / G3 dışında: yok
+EŞDEĞERLİK (2.4.9 / 2.4.6 / 2.4.5 / --legacy; eski kopyanın 112 elle + yeni kopyanın yeni 1 elle + 20 rastgele senaryo × 4 kip): 532/532 bayt bayt aynı
+G3 (kural 2.5.0; 133 senaryo — eski kopyanın 112 elle senaryosu + yeni elle + 20 rastgele): eski 79981 denetim · yeni 80062 denetim · değişen / kalkan / yeni toplam 83 · BEKLENMEYEN 0 · yalnız etiketi değişen 0
+  GENEL          yeni         2
+      örn. d59-c5-s249-s251-kendi-kart-azaltma-iadeli-duzenle k1:mizan:120: "(denetim yok)" → 200000
+      örn. d59-c5-s249-s251-kendi-kart-azaltma-iadeli-duzenle k1:mizan:600: "(denetim yok)" → -410000
+  S249           degisen      2
+      örn. d58-c5-s246-s243-kendi-kart-duzenle k1:cari:T3:gecikmis: 0 → 20000
+      örn. d59-c5-s249-s251-kendi-kart-azaltma-iadeli-duzenle k1:cari:U7:gecikmis: 0 → 20000
+  S249           yeni        49
+      örn. d57-c5-s241-s242-duzenle k1:cari:K3:acikEsitBakiye: "(denetim yok)" → false
+      örn. d57-c5-s241-s242-duzenle k1:cari:K3:acikToplam: "(denetim yok)" → 0
+      örn. d57-c5-s241-s242-duzenle k1:cari:K3:gecikmis: "(denetim yok)" → 0
+      örn. d57-c5-s241-s242-duzenle k1:fatura:FK3:acik: "(denetim yok)" → 0
+  S251           yeni        30
+      örn. d58-c5-s246-s243-kendi-kart-duzenle adim:dr4:durum: "(denetim yok)" → "ret"
+      örn. d58-c5-s246-s243-kendi-kart-duzenle k1:cari:R4:acikEsitBakiye: "(denetim yok)" → true
+      örn. d58-c5-s246-s243-kendi-kart-duzenle k1:cari:R4:acikToplam: "(denetim yok)" → 60000
+      örn. d58-c5-s246-s243-kendi-kart-duzenle k1:cari:R4:bakiye: "(denetim yok)" → 60000
+G3 senaryo senaryo (sınıf/tür: adet; listede olmayan senaryoda fark 0):
+  d57-c5-s241-s242-duzenle                 S249/yeni 7
+  d58-c5-s246-s243-kendi-kart-duzenle      S249/degisen 1 · S249/yeni 14 · S251/yeni 15
+  d59-c5-s249-s251-kendi-kart-azaltma-iadeli-duzenle GENEL/yeni 2 · S249/degisen 1 · S249/yeni 28 · S251/yeni 15
+# tests 665
+# pass 665
+# fail 0
+665/665 denetim geçti

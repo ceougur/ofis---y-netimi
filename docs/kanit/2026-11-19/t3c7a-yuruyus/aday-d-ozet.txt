@@ -1,0 +1,302 @@
+CARİ LİSTESİ KPI | ₺143.032,00 ¦ Borçlular · 2 cari ¦ ₺10.800,00 ¦ Alacaklılar · 1 cari ¦ ₺0,00 ¦ Taksitlerden Kalan (bakiyeye dahil) ¦ ₺131.132,00 ¦ Gecikmiş Borç · 127 kalem
+CARİ LİSTESİ |  | 1 | Kalabalık Müşteri Grupsuz | ₺137.166,00 | ₺37.610,00 | ₺99.556,00BorçluGecikmiş ₺99.556,00 | —
+CARİ LİSTESİ |  | 2 | Kalabalık Şüpheli Müşteri ŞüpheliGrupsuz | ₺51.576,00 | ₺8.100,00 | ₺43.476,00BorçluGecikmiş ₺31.576,00 | —
+CARİ LİSTESİ |  | 3 | Sade Tedarikçi TedarikçiGrupsuz | ₺0,00 | ₺10.800,00 | ₺10.800,00Alacaklı | —
+KART Kalabalık Müşteri KPI | ₺137.166,00 ¦ Borç Toplamı ¦ ₺37.610,00 ¦ Alacak Toplamı · Tahsil ₺37.610,00 ¦ ₺99.556,00 ¦ Bakiye · Borçlu ¦ ₺0,00 ¦ Taksitten Kalan (bakiyeye dahil) ¦ ₺99.556,00 ¦ Gecikmiş Borç · 102 kalem
+KART Kalabalık Müşteri ŞÜPHELİ | (yok)
+KART Kalabalık Müşteri HAREKET | Tarih | İşlem | Borç | Alacak | Bakiye | 
+KART Kalabalık Müşteri HAREKET | 03.09.2025 | FaturaSatış Faturası FIS2025000000001 | ₺600,00 |  | ₺600,00Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 06.09.2025 | FaturaSatış Faturası FIS2025000000002 | ₺644,40 |  | ₺1.244,40Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 09.09.2025 | FaturaSatış Faturası FIS2025000000003 | ₺688,80 |  | ₺1.933,20Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 12.09.2025 | FaturaSatış Faturası FIS2025000000004 | ₺733,20 |  | ₺2.666,40Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 13.09.2025 | Tahsilat Havale / EFT Makbuz 1 Faturaya Bağlı |  | ₺300,00 | ₺2.366,40Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 15.09.2025 | FaturaSatış Faturası FIS2025000000005 | ₺777,60 |  | ₺3.144,00Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 18.09.2025 | FaturaSatış Faturası FIS2025000000006 | ₺822,00 |  | ₺3.966,00Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 19.09.2025 | Tahsilat Nakit Makbuz 2 |  | ₺353,00 | ₺3.613,00Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 21.09.2025 | FaturaSatış Faturası FIS2025000000007 | ₺866,40 |  | ₺4.479,40Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 24.09.2025 | FaturaSatış Faturası FIS2025000000009 | ₺910,80 |  | ₺5.390,20Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 25.09.2025 | Tahsilat Nakit Makbuz 3 Faturaya Bağlı |  | ₺406,00 | ₺4.984,20Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 27.09.2025 | FaturaSatış Faturası FIS2025000000010 | ₺955,20 |  | ₺5.939,40Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 30.09.2025 | FaturaSatış Faturası FIS2025000000012 | ₺999,60 |  | ₺6.939,00Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 01.10.2025 | Tahsilat Havale / EFT Makbuz 4 |  | ₺459,00 | ₺6.480,00Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 03.10.2025 | FaturaSatış Faturası FIS2025000000014 | ₺1.044,00 |  | ₺7.524,00Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 06.10.2025 | FaturaSatış Faturası FIS2025000000016 | ₺1.088,40 |  | ₺8.612,40Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 07.10.2025 | Tahsilat Nakit Makbuz 5 Faturaya Bağlı |  | ₺512,00 | ₺8.100,40Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 09.10.2025 | FaturaSatış Faturası FIS2025000000017 | ₺1.132,80 |  | ₺9.233,20Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 12.10.2025 | FaturaSatış Faturası FIS2025000000019 | ₺1.177,20 |  | ₺10.410,40Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 13.10.2025 | Tahsilat Nakit Makbuz 6 |  | ₺565,00 | ₺9.845,40Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 15.10.2025 | FaturaSatış Faturası FIS2025000000021 | ₺1.221,60 |  | ₺11.067,00Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 18.10.2025 | FaturaSatış Faturası FIS2025000000023 | ₺1.266,00 |  | ₺12.333,00Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 19.10.2025 | Tahsilat Havale / EFT Makbuz 7 Faturaya Bağlı |  | ₺618,00 | ₺11.715,00Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 21.10.2025 | FaturaSatış Faturası FIS2025000000024 | ₺1.310,40 |  | ₺13.025,40Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 24.10.2025 | FaturaSatış Faturası FIS2025000000026 | ₺1.354,80 |  | ₺14.380,20Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 25.10.2025 | Tahsilat Nakit Makbuz 8 |  | ₺671,00 | ₺13.709,20Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 27.10.2025 | FaturaSatış Faturası FIS2025000000028 | ₺1.399,20 |  | ₺15.108,40Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 30.10.2025 | FaturaSatış Faturası FIS2025000000030 | ₺1.443,60 |  | ₺16.552,00Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 31.10.2025 | Tahsilat Nakit Makbuz 9 Faturaya Bağlı |  | ₺724,00 | ₺15.828,00Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 02.11.2025 | FaturaSatış Faturası FIS2025000000031 | ₺1.488,00 |  | ₺17.316,00Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 05.11.2025 | FaturaSatış Faturası FIS2025000000033 | ₺1.532,40 |  | ₺18.848,40Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 06.11.2025 | Tahsilat Havale / EFT Makbuz 10 |  | ₺777,00 | ₺18.071,40Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 08.11.2025 | FaturaSatış Faturası FIS2025000000035 | ₺1.576,80 |  | ₺19.648,20Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 11.11.2025 | FaturaSatış Faturası FIS2025000000037 | ₺1.621,20 |  | ₺21.269,40Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 12.11.2025 | Tahsilat Nakit Makbuz 11 Faturaya Bağlı |  | ₺830,00 | ₺20.439,40Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 14.11.2025 | FaturaSatış Faturası FIS2025000000038 | ₺1.665,60 |  | ₺22.105,00Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 17.11.2025 | FaturaSatış Faturası FIS2025000000040 | ₺630,00 |  | ₺22.735,00Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 18.11.2025 | Tahsilat Nakit Makbuz 12 |  | ₺883,00 | ₺21.852,00Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 20.11.2025 | FaturaSatış Faturası FIS2025000000042 | ₺674,40 |  | ₺22.526,40Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 23.11.2025 | FaturaSatış Faturası FIS2025000000044 | ₺718,80 |  | ₺23.245,20Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 24.11.2025 | Tahsilat Havale / EFT Makbuz 13 Faturaya Bağlı |  | ₺936,00 | ₺22.309,20Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 26.11.2025 | FaturaSatış Faturası FIS2025000000045 | ₺763,20 |  | ₺23.072,40Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 29.11.2025 | FaturaSatış Faturası FIS2025000000047 | ₺807,60 |  | ₺23.880,00Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 30.11.2025 | Tahsilat Nakit Makbuz 14 |  | ₺989,00 | ₺22.891,00Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 02.12.2025 | FaturaSatış Faturası FIS2025000000049 | ₺852,00 |  | ₺23.743,00Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 05.12.2025 | FaturaSatış Faturası FIS2025000000051 | ₺896,40 |  | ₺24.639,40Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 06.12.2025 | Tahsilat Nakit Makbuz 15 Faturaya Bağlı |  | ₺342,00 | ₺24.297,40Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 08.12.2025 | FaturaSatış Faturası FIS2025000000052 | ₺940,80 |  | ₺25.238,20Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 11.12.2025 | FaturaSatış Faturası FIS2025000000054 | ₺985,20 |  | ₺26.223,40Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 12.12.2025 | Tahsilat Havale / EFT Makbuz 16 |  | ₺395,00 | ₺25.828,40Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 12.12.2025 | BorçBorç 1 | ₺150,00 |  | ₺25.978,40Borçlu | ✎×
+KART Kalabalık Müşteri HAREKET | 14.12.2025 | FaturaSatış Faturası FIS2025000000056 | ₺1.029,60 |  | ₺27.008,00Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 17.12.2025 | FaturaSatış Faturası FIS2025000000058 | ₺1.074,00 |  | ₺28.082,00Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 18.12.2025 | Tahsilat Nakit Makbuz 17 Faturaya Bağlı |  | ₺448,00 | ₺27.634,00Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 20.12.2025 | FaturaSatış Faturası FIS2025000000059 | ₺1.118,40 |  | ₺28.752,40Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 23.12.2025 | FaturaSatış Faturası FIS2025000000061 | ₺1.162,80 |  | ₺29.915,20Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 24.12.2025 | Tahsilat Nakit Makbuz 18 |  | ₺501,00 | ₺29.414,20Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 26.12.2025 | FaturaSatış Faturası FIS2025000000063 | ₺1.207,20 |  | ₺30.621,40Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 29.12.2025 | FaturaSatış Faturası FIS2025000000065 | ₺1.251,60 |  | ₺31.873,00Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 30.12.2025 | Tahsilat Havale / EFT Makbuz 19 Faturaya Bağlı |  | ₺554,00 | ₺31.319,00Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 01.01.2026 | FaturaSatış Faturası FIS2026000000001 | ₺1.296,00 |  | ₺32.615,00Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 04.01.2026 | FaturaSatış Faturası FIS2026000000003 | ₺1.340,40 |  | ₺33.955,40Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 05.01.2026 | Tahsilat Nakit Makbuz 20 |  | ₺607,00 | ₺33.348,40Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 06.01.2026 | BorçBorç 2 | ₺160,00 |  | ₺33.508,40Borçlu | ✎×
+KART Kalabalık Müşteri HAREKET | 07.01.2026 | FaturaSatış Faturası FIS2026000000005 | ₺1.384,80 |  | ₺34.893,20Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 10.01.2026 | FaturaSatış Faturası FIS2026000000007 | ₺1.429,20 |  | ₺36.322,40Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 11.01.2026 | Tahsilat Nakit Makbuz 21 Faturaya Bağlı |  | ₺660,00 | ₺35.662,40Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 13.01.2026 | FaturaSatış Faturası FIS2026000000008 | ₺1.473,60 |  | ₺37.136,00Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 16.01.2026 | FaturaSatış Faturası FIS2026000000010 | ₺1.518,00 |  | ₺38.654,00Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 17.01.2026 | Tahsilat Havale / EFT Makbuz 22 |  | ₺713,00 | ₺37.941,00Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 19.01.2026 | FaturaSatış Faturası FIS2026000000012 | ₺1.562,40 |  | ₺39.503,40Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 22.01.2026 | FaturaSatış Faturası FIS2026000000014 | ₺1.606,80 |  | ₺41.110,20Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 23.01.2026 | Tahsilat Nakit Makbuz 23 Faturaya Bağlı |  | ₺766,00 | ₺40.344,20Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 25.01.2026 | FaturaSatış Faturası FIS2026000000015 | ₺1.651,20 |  | ₺41.995,40Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 28.01.2026 | FaturaSatış Faturası FIS2026000000017 | ₺615,60 |  | ₺42.611,00Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 29.01.2026 | Tahsilat Nakit Makbuz 24 |  | ₺819,00 | ₺41.792,00Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 31.01.2026 | FaturaSatış Faturası FIS2026000000019 | ₺660,00 |  | ₺42.452,00Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 31.01.2026 | BorçBorç 3 | ₺170,00 |  | ₺42.622,00Borçlu | ✎×
+KART Kalabalık Müşteri HAREKET | 03.02.2026 | FaturaSatış Faturası FIS2026000000021 | ₺704,40 |  | ₺43.326,40Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 04.02.2026 | Tahsilat Havale / EFT Makbuz 25 Faturaya Bağlı |  | ₺872,00 | ₺42.454,40Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 06.02.2026 | FaturaSatış Faturası FIS2026000000022 | ₺748,80 |  | ₺43.203,20Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 09.02.2026 | FaturaSatış Faturası FIS2026000000024 | ₺793,20 |  | ₺43.996,40Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 10.02.2026 | Tahsilat Nakit Makbuz 26 |  | ₺925,00 | ₺43.071,40Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 12.02.2026 | FaturaSatış Faturası FIS2026000000026 | ₺837,60 |  | ₺43.909,00Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 15.02.2026 | FaturaSatış Faturası FIS2026000000028 | ₺882,00 |  | ₺44.791,00Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 16.02.2026 | Tahsilat Nakit Makbuz 27 Faturaya Bağlı |  | ₺978,00 | ₺43.813,00Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 18.02.2026 | FaturaSatış Faturası FIS2026000000029 | ₺926,40 |  | ₺44.739,40Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 21.02.2026 | FaturaSatış Faturası FIS2026000000031 | ₺970,80 |  | ₺45.710,20Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 22.02.2026 | Tahsilat Havale / EFT Makbuz 28 |  | ₺331,00 | ₺45.379,20Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 24.02.2026 | FaturaSatış Faturası FIS2026000000033 | ₺1.015,20 |  | ₺46.394,40Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 25.02.2026 | BorçBorç 4 | ₺180,00 |  | ₺46.574,40Borçlu | ✎×
+KART Kalabalık Müşteri HAREKET | 27.02.2026 | FaturaSatış Faturası FIS2026000000035 | ₺1.059,60 |  | ₺47.634,00Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 28.02.2026 | Tahsilat Nakit Makbuz 29 Faturaya Bağlı |  | ₺384,00 | ₺47.250,00Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 02.03.2026 | FaturaSatış Faturası FIS2026000000036 | ₺1.104,00 |  | ₺48.354,00Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 05.03.2026 | FaturaSatış Faturası FIS2026000000037 | ₺1.148,40 |  | ₺49.502,40Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 06.03.2026 | Tahsilat Nakit Makbuz 30 |  | ₺437,00 | ₺49.065,40Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 08.03.2026 | FaturaSatış Faturası FIS2026000000038 | ₺1.192,80 |  | ₺50.258,20Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 11.03.2026 | FaturaSatış Faturası FIS2026000000039 | ₺1.237,20 |  | ₺51.495,40Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 12.03.2026 | Tahsilat Havale / EFT Makbuz 31 Faturaya Bağlı |  | ₺490,00 | ₺51.005,40Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 14.03.2026 | FaturaSatış Faturası FIS2026000000040 | ₺1.281,60 |  | ₺52.287,00Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 17.03.2026 | FaturaSatış Faturası FIS2026000000041 | ₺1.326,00 |  | ₺53.613,00Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 18.03.2026 | Tahsilat Nakit Makbuz 32 |  | ₺543,00 | ₺53.070,00Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 20.03.2026 | FaturaSatış Faturası FIS2026000000042 | ₺1.370,40 |  | ₺54.440,40Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 22.03.2026 | BorçBorç 5 | ₺190,00 |  | ₺54.630,40Borçlu | ✎×
+KART Kalabalık Müşteri HAREKET | 23.03.2026 | FaturaSatış Faturası FIS2026000000043 | ₺1.414,80 |  | ₺56.045,20Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 24.03.2026 | Tahsilat Nakit Makbuz 33 Faturaya Bağlı |  | ₺596,00 | ₺55.449,20Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 26.03.2026 | FaturaSatış Faturası FIS2026000000044 | ₺1.459,20 |  | ₺56.908,40Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 29.03.2026 | FaturaSatış Faturası FIS2026000000045 | ₺1.503,60 |  | ₺58.412,00Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 30.03.2026 | Tahsilat Havale / EFT Makbuz 34 |  | ₺649,00 | ₺57.763,00Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 01.04.2026 | FaturaSatış Faturası FIS2026000000046 | ₺1.548,00 |  | ₺59.311,00Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 04.04.2026 | FaturaSatış Faturası FIS2026000000047 | ₺1.592,40 |  | ₺60.903,40Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 05.04.2026 | Tahsilat Nakit Makbuz 36 Faturaya Bağlı |  | ₺702,00 | ₺60.201,40Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 07.04.2026 | FaturaSatış Faturası FIS2026000000048 | ₺1.636,80 |  | ₺61.838,20Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 10.04.2026 | FaturaSatış Faturası FIS2026000000049 | ₺601,20 |  | ₺62.439,40Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 11.04.2026 | Tahsilat Nakit Makbuz 37 |  | ₺755,00 | ₺61.684,40Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 13.04.2026 | FaturaSatış Faturası FIS2026000000050 | ₺645,60 |  | ₺62.330,00Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 16.04.2026 | FaturaSatış Faturası FIS2026000000051 | ₺690,00 |  | ₺63.020,00Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 16.04.2026 | BorçBorç 6 | ₺200,00 |  | ₺63.220,00Borçlu | ✎×
+KART Kalabalık Müşteri HAREKET | 17.04.2026 | Tahsilat Havale / EFT Makbuz 39 Faturaya Bağlı |  | ₺808,00 | ₺62.412,00Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 19.04.2026 | FaturaSatış Faturası FIS2026000000052 | ₺734,40 |  | ₺63.146,40Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 22.04.2026 | FaturaSatış Faturası FIS2026000000053 | ₺778,80 |  | ₺63.925,20Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 23.04.2026 | Tahsilat Nakit Makbuz 40 |  | ₺861,00 | ₺63.064,20Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 25.04.2026 | FaturaSatış Faturası FIS2026000000054 | ₺823,20 |  | ₺63.887,40Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 28.04.2026 | FaturaSatış Faturası FIS2026000000055 | ₺867,60 |  | ₺64.755,00Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 29.04.2026 | Tahsilat Nakit Makbuz 42 Faturaya Bağlı |  | ₺914,00 | ₺63.841,00Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 01.05.2026 | FaturaSatış Faturası FIS2026000000056 | ₺912,00 |  | ₺64.753,00Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 04.05.2026 | FaturaSatış Faturası FIS2026000000057 | ₺956,40 |  | ₺65.709,40Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 05.05.2026 | Tahsilat Havale / EFT Makbuz 43 |  | ₺967,00 | ₺64.742,40Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 07.05.2026 | FaturaSatış Faturası FIS2026000000058 | ₺1.000,80 |  | ₺65.743,20Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 10.05.2026 | FaturaSatış Faturası FIS2026000000059 | ₺1.045,20 |  | ₺66.788,40Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 11.05.2026 | Tahsilat Nakit Makbuz 45 Faturaya Bağlı |  | ₺320,00 | ₺66.468,40Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 11.05.2026 | BorçBorç 7 | ₺210,00 |  | ₺66.678,40Borçlu | ✎×
+KART Kalabalık Müşteri HAREKET | 13.05.2026 | FaturaSatış Faturası FIS2026000000060 | ₺1.089,60 |  | ₺67.768,00Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 16.05.2026 | FaturaSatış Faturası FIS2026000000061 | ₺1.134,00 |  | ₺68.902,00Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 17.05.2026 | Tahsilat Nakit Makbuz 46 |  | ₺373,00 | ₺68.529,00Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 19.05.2026 | FaturaSatış Faturası FIS2026000000062 | ₺1.178,40 |  | ₺69.707,40Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 22.05.2026 | FaturaSatış Faturası FIS2026000000063 | ₺1.222,80 |  | ₺70.930,20Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 23.05.2026 | Tahsilat Havale / EFT Makbuz 48 Faturaya Bağlı |  | ₺426,00 | ₺70.504,20Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 25.05.2026 | FaturaSatış Faturası FIS2026000000064 | ₺1.267,20 |  | ₺71.771,40Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 28.05.2026 | FaturaSatış Faturası FIS2026000000065 | ₺1.311,60 |  | ₺73.083,00Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 29.05.2026 | Tahsilat Nakit Makbuz 49 |  | ₺479,00 | ₺72.604,00Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 31.05.2026 | FaturaSatış Faturası FIS2026000000066 | ₺1.356,00 |  | ₺73.960,00Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 03.06.2026 | FaturaSatış Faturası FIS2026000000067 | ₺1.400,40 |  | ₺75.360,40Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 04.06.2026 | Tahsilat Nakit Makbuz 51 Faturaya Bağlı |  | ₺532,00 | ₺74.828,40Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 05.06.2026 | BorçBorç 8 | ₺220,00 |  | ₺75.048,40Borçlu | ✎×
+KART Kalabalık Müşteri HAREKET | 06.06.2026 | FaturaSatış Faturası FIS2026000000068 | ₺1.444,80 |  | ₺76.493,20Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 09.06.2026 | FaturaSatış Faturası FIS2026000000069 | ₺1.489,20 |  | ₺77.982,40Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 10.06.2026 | Tahsilat Havale / EFT Makbuz 52 |  | ₺585,00 | ₺77.397,40Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 12.06.2026 | FaturaSatış Faturası FIS2026000000070 | ₺1.533,60 |  | ₺78.931,00Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 15.06.2026 | FaturaSatış Faturası FIS2026000000071 | ₺1.578,00 |  | ₺80.509,00Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 16.06.2026 | Tahsilat Nakit Makbuz 54 Faturaya Bağlı |  | ₺638,00 | ₺79.871,00Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 18.06.2026 | FaturaSatış Faturası FIS2026000000072 | ₺1.622,40 |  | ₺81.493,40Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 21.06.2026 | FaturaSatış Faturası FIS2026000000073 | ₺1.666,80 |  | ₺83.160,20Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 22.06.2026 | Tahsilat Nakit Makbuz 55 |  | ₺691,00 | ₺82.469,20Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 24.06.2026 | FaturaSatış Faturası FIS2026000000074 | ₺631,20 |  | ₺83.100,40Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 27.06.2026 | FaturaSatış Faturası FIS2026000000075 | ₺675,60 |  | ₺83.776,00Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 28.06.2026 | Tahsilat Havale / EFT Makbuz 57 Faturaya Bağlı |  | ₺744,00 | ₺83.032,00Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 30.06.2026 | FaturaSatış Faturası FIS2026000000076 | ₺720,00 |  | ₺83.752,00Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 30.06.2026 | BorçBorç 9 | ₺230,00 |  | ₺83.982,00Borçlu | ✎×
+KART Kalabalık Müşteri HAREKET | 03.07.2026 | FaturaSatış Faturası FIS2026000000077 | ₺764,40 |  | ₺84.746,40Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 04.07.2026 | Tahsilat Nakit Makbuz 58 |  | ₺797,00 | ₺83.949,40Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 06.07.2026 | FaturaSatış Faturası FIS2026000000078 | ₺808,80 |  | ₺84.758,20Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 09.07.2026 | FaturaSatış Faturası FIS2026000000079 | ₺853,20 |  | ₺85.611,40Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 10.07.2026 | Tahsilat Nakit Makbuz 60 Faturaya Bağlı |  | ₺850,00 | ₺84.761,40Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 12.07.2026 | FaturaSatış Faturası FIS2026000000080 | ₺897,60 |  | ₺85.659,00Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 15.07.2026 | FaturaSatış Faturası FIS2026000000081 | ₺942,00 |  | ₺86.601,00Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 16.07.2026 | Tahsilat Havale / EFT Makbuz 61 |  | ₺903,00 | ₺85.698,00Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 18.07.2026 | FaturaSatış Faturası FIS2026000000082 | ₺986,40 |  | ₺86.684,40Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 21.07.2026 | FaturaSatış Faturası FIS2026000000083 | ₺1.030,80 |  | ₺87.715,20Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 22.07.2026 | Tahsilat Nakit Makbuz 63 Faturaya Bağlı |  | ₺956,00 | ₺86.759,20Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 24.07.2026 | FaturaSatış Faturası FIS2026000000084 | ₺1.075,20 |  | ₺87.834,40Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 25.07.2026 | BorçBorç 10 | ₺240,00 |  | ₺88.074,40Borçlu | ✎×
+KART Kalabalık Müşteri HAREKET | 27.07.2026 | FaturaSatış Faturası FIS2026000000085 | ₺1.119,60 |  | ₺89.194,00Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 28.07.2026 | Tahsilat Nakit Makbuz 64 |  | ₺309,00 | ₺88.885,00Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 30.07.2026 | FaturaSatış Faturası FIS2026000000086 | ₺1.164,00 |  | ₺90.049,00Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 02.08.2026 | FaturaSatış Faturası FIS2026000000087 | ₺1.208,40 |  | ₺91.257,40Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 03.08.2026 | Tahsilat Havale / EFT Makbuz 66 Faturaya Bağlı |  | ₺362,00 | ₺90.895,40Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 05.08.2026 | FaturaSatış Faturası FIS2026000000088 | ₺1.252,80 |  | ₺92.148,20Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 08.08.2026 | FaturaSatış Faturası FIS2026000000089 | ₺1.297,20 |  | ₺93.445,40Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 09.08.2026 | Tahsilat Nakit Makbuz 67 |  | ₺415,00 | ₺93.030,40Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 11.08.2026 | FaturaSatış Faturası FIS2026000000090 | ₺1.341,60 |  | ₺94.372,00Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 14.08.2026 | FaturaSatış Faturası FIS2026000000091 | ₺1.386,00 |  | ₺95.758,00Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 15.08.2026 | Tahsilat Nakit Makbuz 69 Faturaya Bağlı |  | ₺468,00 | ₺95.290,00Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 17.08.2026 | FaturaSatış Faturası FIS2026000000092 | ₺1.430,40 |  | ₺96.720,40Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 20.08.2026 | FaturaSatış Faturası FIS2026000000093 | ₺1.474,80 |  | ₺98.195,20Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 21.08.2026 | Tahsilat Havale / EFT Makbuz 70 |  | ₺521,00 | ₺97.674,20Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 23.08.2026 | FaturaSatış Faturası FIS2026000000094 | ₺1.519,20 |  | ₺99.193,40Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 26.08.2026 | FaturaSatış Faturası FIS2026000000095 | ₺1.563,60 |  | ₺100.757,00Borçlu | Fatura
+KART Kalabalık Müşteri HAREKET | 27.08.2026 | Tahsilat Nakit Makbuz 72 Faturaya Bağlı |  | ₺574,00 | ₺100.183,00Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET | 02.09.2026 | Tahsilat Nakit Makbuz 73 |  | ₺627,00 | ₺99.556,00Borçlu | Makbuz✎×
+KART Kalabalık Müşteri HAREKET |  | Toplam | ₺137.166,00 | ₺37.610,00 |  | 
+KART Kalabalık Müşteri FATURA | TarihNoTürDurumTutarAçık
+KART Kalabalık Müşteri FATURA | 26.08.2026FIS2026000000095Satış FaturasıVadesi Geçti₺1.563,60₺1.563,60
+KART Kalabalık Müşteri FATURA | 23.08.2026FIS2026000000094Satış FaturasıVadesi Geçti₺1.519,20₺1.519,20
+KART Kalabalık Müşteri FATURA | 20.08.2026FIS2026000000093Satış FaturasıVadesi Geçti₺1.474,80₺900,80
+KART Kalabalık Müşteri FATURA | 17.08.2026FIS2026000000092Satış FaturasıVadesi Geçti₺1.430,40₺1.430,40
+KART Kalabalık Müşteri FATURA | 14.08.2026FIS2026000000091Satış FaturasıVadesi Geçti₺1.386,00₺918,00
+KART Kalabalık Müşteri FATURA | 11.08.2026FIS2026000000090Satış FaturasıVadesi Geçti₺1.341,60₺1.341,60
+KART Kalabalık Müşteri FATURA | 08.08.2026FIS2026000000089Satış FaturasıVadesi Geçti₺1.297,20₺1.297,20
+KART Kalabalık Müşteri FATURA | 05.08.2026FIS2026000000088Satış FaturasıVadesi Geçti₺1.252,80₺1.252,80
+API Kalabalık Müşteri | {"debit":137166,"credit":37610,"balance":99556,"collected":37610,"planTotal":0,"planRemaining":0,"overdue":0,"overdueCount":0,"overdueInstallments":0,"overdueDebt":99556,"overdueDebtCount":102,"overdueSince":"2025-11-05","doubtfulQueue":0,"promiseUntil":"","promiseActive":false} | {"count":0,"openCount":0,"openMinor":0,"provisionMinor":0,"collectedMinor":0,"writtenOffMinor":0,"releasedMinor":0}
+KART Kalabalık Şüpheli Müşteri KPI | ₺51.576,00 ¦ Borç Toplamı ¦ ₺8.100,00 ¦ Alacak Toplamı · Tahsil ₺8.100,00 ¦ ₺43.476,00 ¦ Bakiye · Borçlu ¦ ₺0,00 ¦ Taksitten Kalan (bakiyeye dahil) ¦ ₺31.576,00 ¦ Gecikmiş Borç · 25 kalem
+KART Kalabalık Şüpheli Müşteri ŞÜPHELİ | TARİH NEDEN TUTAR KARŞILIK TAHSİL EDİLEN DEĞERSİZ KALAN DURUM  ¦ 22.03.2026 ¦ BNK-2026-000014 ¦   ¦ Dava ¦ dava ¦  ₺20.000,00 ₺0,00 ₺8.100,00 ₺0,00  ¦ ₺11.900,00 ¦  Şüpheli Alacakta Karşılık AyırDeğersiz Alacak YazŞüpheliden Çıkar×
+KART Kalabalık Şüpheli Müşteri HAREKET | Tarih | İşlem | Borç | Alacak | Bakiye | 
+KART Kalabalık Şüpheli Müşteri HAREKET | 23.09.2025 | FaturaSatış Faturası FIS2025000000008 | ₺960,00 |  | ₺960,00Borçlu | Fatura
+KART Kalabalık Şüpheli Müşteri HAREKET | 27.09.2025 | FaturaSatış Faturası FIS2025000000011 | ₺1.009,20 |  | ₺1.969,20Borçlu | Fatura
+KART Kalabalık Şüpheli Müşteri HAREKET | 01.10.2025 | FaturaSatış Faturası FIS2025000000013 | ₺1.058,40 |  | ₺3.027,60Borçlu | Fatura
+KART Kalabalık Şüpheli Müşteri HAREKET | 05.10.2025 | FaturaSatış Faturası FIS2025000000015 | ₺1.107,60 |  | ₺4.135,20Borçlu | Fatura
+KART Kalabalık Şüpheli Müşteri HAREKET | 09.10.2025 | FaturaSatış Faturası FIS2025000000018 | ₺1.156,80 |  | ₺5.292,00Borçlu | Fatura
+KART Kalabalık Şüpheli Müşteri HAREKET | 13.10.2025 | FaturaSatış Faturası FIS2025000000020 | ₺1.206,00 |  | ₺6.498,00Borçlu | Fatura
+KART Kalabalık Şüpheli Müşteri HAREKET | 17.10.2025 | FaturaSatış Faturası FIS2025000000022 | ₺1.255,20 |  | ₺7.753,20Borçlu | Fatura
+KART Kalabalık Şüpheli Müşteri HAREKET | 21.10.2025 | FaturaSatış Faturası FIS2025000000025 | ₺1.304,40 |  | ₺9.057,60Borçlu | Fatura
+KART Kalabalık Şüpheli Müşteri HAREKET | 25.10.2025 | FaturaSatış Faturası FIS2025000000027 | ₺1.353,60 |  | ₺10.411,20Borçlu | Fatura
+KART Kalabalık Şüpheli Müşteri HAREKET | 29.10.2025 | FaturaSatış Faturası FIS2025000000029 | ₺1.402,80 |  | ₺11.814,00Borçlu | Fatura
+KART Kalabalık Şüpheli Müşteri HAREKET | 02.11.2025 | FaturaSatış Faturası FIS2025000000032 | ₺1.452,00 |  | ₺13.266,00Borçlu | Fatura
+KART Kalabalık Şüpheli Müşteri HAREKET | 06.11.2025 | FaturaSatış Faturası FIS2025000000034 | ₺1.501,20 |  | ₺14.767,20Borçlu | Fatura
+KART Kalabalık Şüpheli Müşteri HAREKET | 10.11.2025 | FaturaSatış Faturası FIS2025000000036 | ₺1.550,40 |  | ₺16.317,60Borçlu | Fatura
+KART Kalabalık Şüpheli Müşteri HAREKET | 14.11.2025 | FaturaSatış Faturası FIS2025000000039 | ₺1.599,60 |  | ₺17.917,20Borçlu | Fatura
+KART Kalabalık Şüpheli Müşteri HAREKET | 18.11.2025 | FaturaSatış Faturası FIS2025000000041 | ₺1.648,80 |  | ₺19.566,00Borçlu | Fatura
+KART Kalabalık Şüpheli Müşteri HAREKET | 22.11.2025 | FaturaSatış Faturası FIS2025000000043 | ₺978,00 |  | ₺20.544,00Borçlu | Fatura
+KART Kalabalık Şüpheli Müşteri HAREKET | 26.11.2025 | FaturaSatış Faturası FIS2025000000046 | ₺1.027,20 |  | ₺21.571,20Borçlu | Fatura
+KART Kalabalık Şüpheli Müşteri HAREKET | 30.11.2025 | FaturaSatış Faturası FIS2025000000048 | ₺1.076,40 |  | ₺22.647,60Borçlu | Fatura
+KART Kalabalık Şüpheli Müşteri HAREKET | 04.12.2025 | FaturaSatış Faturası FIS2025000000050 | ₺1.125,60 |  | ₺23.773,20Borçlu | Fatura
+KART Kalabalık Şüpheli Müşteri HAREKET | 08.12.2025 | FaturaSatış Faturası FIS2025000000053 | ₺1.174,80 |  | ₺24.948,00Borçlu | Fatura
+KART Kalabalık Şüpheli Müşteri HAREKET | 12.12.2025 | FaturaSatış Faturası FIS2025000000055 | ₺1.224,00 |  | ₺26.172,00Borçlu | Fatura
+KART Kalabalık Şüpheli Müşteri HAREKET | 16.12.2025 | FaturaSatış Faturası FIS2025000000057 | ₺1.273,20 |  | ₺27.445,20Borçlu | Fatura
+KART Kalabalık Şüpheli Müşteri HAREKET | 20.12.2025 | FaturaSatış Faturası FIS2025000000060 | ₺1.322,40 |  | ₺28.767,60Borçlu | Fatura
+KART Kalabalık Şüpheli Müşteri HAREKET | 24.12.2025 | FaturaSatış Faturası FIS2025000000062 | ₺1.371,60 |  | ₺30.139,20Borçlu | Fatura
+KART Kalabalık Şüpheli Müşteri HAREKET | 28.12.2025 | FaturaSatış Faturası FIS2025000000064 | ₺1.420,80 |  | ₺31.560,00Borçlu | Fatura
+KART Kalabalık Şüpheli Müşteri HAREKET | 01.01.2026 | FaturaSatış Faturası FIS2026000000002 | ₺1.470,00 |  | ₺33.030,00Borçlu | Fatura
+KART Kalabalık Şüpheli Müşteri HAREKET | 05.01.2026 | FaturaSatış Faturası FIS2026000000004 | ₺1.519,20 |  | ₺34.549,20Borçlu | Fatura
+KART Kalabalık Şüpheli Müşteri HAREKET | 09.01.2026 | FaturaSatış Faturası FIS2026000000006 | ₺1.568,40 |  | ₺36.117,60Borçlu | Fatura
+KART Kalabalık Şüpheli Müşteri HAREKET | 13.01.2026 | FaturaSatış Faturası FIS2026000000009 | ₺1.617,60 |  | ₺37.735,20Borçlu | Fatura
+KART Kalabalık Şüpheli Müşteri HAREKET | 17.01.2026 | FaturaSatış Faturası FIS2026000000011 | ₺1.666,80 |  | ₺39.402,00Borçlu | Fatura
+KART Kalabalık Şüpheli Müşteri HAREKET | 21.01.2026 | FaturaSatış Faturası FIS2026000000013 | ₺996,00 |  | ₺40.398,00Borçlu | Fatura
+KART Kalabalık Şüpheli Müşteri HAREKET | 25.01.2026 | FaturaSatış Faturası FIS2026000000016 | ₺1.045,20 |  | ₺41.443,20Borçlu | Fatura
+KART Kalabalık Şüpheli Müşteri HAREKET | 29.01.2026 | FaturaSatış Faturası FIS2026000000018 | ₺1.094,40 |  | ₺42.537,60Borçlu | Fatura
+KART Kalabalık Şüpheli Müşteri HAREKET | 02.02.2026 | FaturaSatış Faturası FIS2026000000020 | ₺1.143,60 |  | ₺43.681,20Borçlu | Fatura
+KART Kalabalık Şüpheli Müşteri HAREKET | 06.02.2026 | FaturaSatış Faturası FIS2026000000023 | ₺1.192,80 |  | ₺44.874,00Borçlu | Fatura
+KART Kalabalık Şüpheli Müşteri HAREKET | 10.02.2026 | FaturaSatış Faturası FIS2026000000025 | ₺1.242,00 |  | ₺46.116,00Borçlu | Fatura
+KART Kalabalık Şüpheli Müşteri HAREKET | 14.02.2026 | FaturaSatış Faturası FIS2026000000027 | ₺1.291,20 |  | ₺47.407,20Borçlu | Fatura
+KART Kalabalık Şüpheli Müşteri HAREKET | 18.02.2026 | FaturaSatış Faturası FIS2026000000030 | ₺1.340,40 |  | ₺48.747,60Borçlu | Fatura
+KART Kalabalık Şüpheli Müşteri HAREKET | 22.02.2026 | FaturaSatış Faturası FIS2026000000032 | ₺1.389,60 |  | ₺50.137,20Borçlu | Fatura
+KART Kalabalık Şüpheli Müşteri HAREKET | 26.02.2026 | FaturaSatış Faturası FIS2026000000034 | ₺1.438,80 |  | ₺51.576,00Borçlu | Fatura
+KART Kalabalık Şüpheli Müşteri HAREKET | 01.04.2026 | Tahsilat Nakit Makbuz 35 |  | ₺400,00 | ₺51.176,00Borçlu | Makbuz✎×
+KART Kalabalık Şüpheli Müşteri HAREKET | 13.04.2026 | Tahsilat Nakit Makbuz 38 |  | ₺420,00 | ₺50.756,00Borçlu | Makbuz✎×
+KART Kalabalık Şüpheli Müşteri HAREKET | 25.04.2026 | Tahsilat Nakit Makbuz 41 |  | ₺440,00 | ₺50.316,00Borçlu | Makbuz✎×
+KART Kalabalık Şüpheli Müşteri HAREKET | 07.05.2026 | Tahsilat Nakit Makbuz 44 |  | ₺460,00 | ₺49.856,00Borçlu | Makbuz✎×
+KART Kalabalık Şüpheli Müşteri HAREKET | 19.05.2026 | Tahsilat Nakit Makbuz 47 |  | ₺480,00 | ₺49.376,00Borçlu | Makbuz✎×
+KART Kalabalık Şüpheli Müşteri HAREKET | 31.05.2026 | Tahsilat Nakit Makbuz 50 |  | ₺500,00 | ₺48.876,00Borçlu | Makbuz✎×
+KART Kalabalık Şüpheli Müşteri HAREKET | 12.06.2026 | Tahsilat Nakit Makbuz 53 |  | ₺520,00 | ₺48.356,00Borçlu | Makbuz✎×
+KART Kalabalık Şüpheli Müşteri HAREKET | 24.06.2026 | Tahsilat Nakit Makbuz 56 |  | ₺540,00 | ₺47.816,00Borçlu | Makbuz✎×
+KART Kalabalık Şüpheli Müşteri HAREKET | 06.07.2026 | Tahsilat Nakit Makbuz 59 |  | ₺560,00 | ₺47.256,00Borçlu | Makbuz✎×
+KART Kalabalık Şüpheli Müşteri HAREKET | 18.07.2026 | Tahsilat Nakit Makbuz 62 |  | ₺580,00 | ₺46.676,00Borçlu | Makbuz✎×
+KART Kalabalık Şüpheli Müşteri HAREKET | 30.07.2026 | Tahsilat Nakit Makbuz 65 |  | ₺600,00 | ₺46.076,00Borçlu | Makbuz✎×
+KART Kalabalık Şüpheli Müşteri HAREKET | 11.08.2026 | Tahsilat Nakit Makbuz 68 |  | ₺620,00 | ₺45.456,00Borçlu | Makbuz✎×
+KART Kalabalık Şüpheli Müşteri HAREKET | 23.08.2026 | Tahsilat Nakit Makbuz 71 |  | ₺640,00 | ₺44.816,00Borçlu | Makbuz✎×
+KART Kalabalık Şüpheli Müşteri HAREKET | 04.09.2026 | Tahsilat Nakit Makbuz 74 |  | ₺660,00 | ₺44.156,00Borçlu | Makbuz✎×
+KART Kalabalık Şüpheli Müşteri HAREKET | 16.09.2026 | Tahsilat Nakit Makbuz 75 |  | ₺680,00 | ₺43.476,00Borçlu | Makbuz✎×
+KART Kalabalık Şüpheli Müşteri HAREKET |  | Toplam | ₺51.576,00 | ₺8.100,00 |  | 
+KART Kalabalık Şüpheli Müşteri FATURA | TarihNoTürDurumTutarAçık
+KART Kalabalık Şüpheli Müşteri FATURA | 26.02.2026FIS2026000000034Satış FaturasıVadesi Geçti₺1.438,80₺1.438,80
+KART Kalabalık Şüpheli Müşteri FATURA | 22.02.2026FIS2026000000032Satış FaturasıVadesi Geçti₺1.389,60₺1.389,60
+KART Kalabalık Şüpheli Müşteri FATURA | 18.02.2026FIS2026000000030Satış FaturasıVadesi Geçti₺1.340,40₺1.340,40
+KART Kalabalık Şüpheli Müşteri FATURA | 14.02.2026FIS2026000000027Satış FaturasıVadesi Geçti₺1.291,20₺1.291,20
+KART Kalabalık Şüpheli Müşteri FATURA | 10.02.2026FIS2026000000025Satış FaturasıVadesi Geçti₺1.242,00₺1.242,00
+KART Kalabalık Şüpheli Müşteri FATURA | 06.02.2026FIS2026000000023Satış FaturasıVadesi Geçti₺1.192,80₺1.192,80
+KART Kalabalık Şüpheli Müşteri FATURA | 02.02.2026FIS2026000000020Satış FaturasıVadesi Geçti₺1.143,60₺1.143,60
+KART Kalabalık Şüpheli Müşteri FATURA | 29.01.2026FIS2026000000018Satış FaturasıVadesi Geçti₺1.094,40₺1.094,40
+API Kalabalık Şüpheli Müşteri | {"debit":51576,"credit":8100,"balance":43476,"collected":8100,"planTotal":0,"planRemaining":0,"overdue":0,"overdueCount":0,"overdueInstallments":0,"overdueDebt":31576,"overdueDebtCount":25,"overdueSince":"2025-11-22","doubtfulQueue":11900,"promiseUntil":"","promiseActive":false} | {"count":1,"openCount":1,"openMinor":1190000,"provisionMinor":0,"collectedMinor":810000,"writtenOffMinor":0,"releasedMinor":0}
+KART Sade Tedarikçi KPI | ₺0,00 ¦ Borç Toplamı ¦ ₺10.800,00 ¦ Alacak Toplamı · Tahsil ₺0,00 ¦ ₺10.800,00 ¦ Bakiye · Alacaklı ¦ ₺0,00 ¦ Taksitten Kalan (bakiyeye dahil) ¦ ₺0,00 ¦ Gecikmiş Borç
+KART Sade Tedarikçi ŞÜPHELİ | (yok)
+KART Sade Tedarikçi HAREKET | Tarih | İşlem | Borç | Alacak | Bakiye | 
+KART Sade Tedarikçi HAREKET | 30.06.2026 | AlacakAlış 1 |  | ₺1.000,00 | ₺1.000,00Alacaklı | ✎×
+KART Sade Tedarikçi HAREKET | 10.07.2026 | AlacakAlış 2 |  | ₺1.100,00 | ₺2.100,00Alacaklı | ✎×
+KART Sade Tedarikçi HAREKET | 20.07.2026 | AlacakAlış 3 |  | ₺1.200,00 | ₺3.300,00Alacaklı | ✎×
+KART Sade Tedarikçi HAREKET | 30.07.2026 | AlacakAlış 4 |  | ₺1.300,00 | ₺4.600,00Alacaklı | ✎×
+KART Sade Tedarikçi HAREKET | 09.08.2026 | AlacakAlış 5 |  | ₺1.400,00 | ₺6.000,00Alacaklı | ✎×
+KART Sade Tedarikçi HAREKET | 19.08.2026 | AlacakAlış 6 |  | ₺1.500,00 | ₺7.500,00Alacaklı | ✎×
+KART Sade Tedarikçi HAREKET | 29.08.2026 | AlacakAlış 7 |  | ₺1.600,00 | ₺9.100,00Alacaklı | ✎×
+KART Sade Tedarikçi HAREKET | 08.09.2026 | AlacakAlış 8 |  | ₺1.700,00 | ₺10.800,00Alacaklı | ✎×
+KART Sade Tedarikçi HAREKET |  | Toplam | ₺0,00 | ₺10.800,00 |  | 
+API Sade Tedarikçi | {"debit":0,"credit":10800,"balance":-10800,"collected":0,"planTotal":0,"planRemaining":0,"overdue":0,"overdueCount":0,"overdueInstallments":0,"overdueDebt":0,"overdueDebtCount":0,"overdueSince":"","doubtfulQueue":0,"promiseUntil":"","promiseActive":false} | {"count":0,"openCount":0,"openMinor":0,"provisionMinor":0,"collectedMinor":0,"writtenOffMinor":0,"releasedMinor":0}
+RAPOR Cari Listesi ve Bakiyeler | Cari No | Cari | Tür | Telefon | Grup | Borç | Alacak | Bakiye | Durum | Geciken
+RAPOR Cari Listesi ve Bakiyeler | 1 | Kalabalık Müşteri | Müşteri |  |  | ₺137.166,00 | ₺37.610,00 | ₺99.556,00 | Borçlu | 
+RAPOR Cari Listesi ve Bakiyeler | 2 | Kalabalık Şüpheli Müşteri | Müşteri |  |  | ₺51.576,00 | ₺8.100,00 | ₺43.476,00 | Borçlu | 
+RAPOR Cari Listesi ve Bakiyeler | 3 | Sade Tedarikçi | Tedarikçi |  |  | ₺0,00 | ₺10.800,00 | ₺10.800,00 | Alacaklı | 
+RAPOR Cari Listesi ve Bakiyeler | TOPLAM |  |  |  |  | ₺188.742,00 | ₺56.510,00 | ₺132.232,00 | Borçlu | 
+RAPOR-API Cari Listesi ve Bakiyeler özet | [["Cari","3"],["Toplam Borç","188.742,00 TL"],["Toplam Alacak","56.510,00 TL"],["Müşteri Alacakları (Borçlu Cariler)","143.032,00 TL"],["Tedarikçi Borçları (Alacaklı Cariler)","10.800,00 TL"],["Net Bakiye (Müşteri Alacakları − Tedarikçi Borçları)","132.232,00 TL"],["Geciken Taksit","0,00 TL"]]
+RAPOR Alacak Yaşlandırma | Cari / Kişi | Vade Gecikme (Gün) | Vadesi Gelmemiş | 1–30 Gün | 31–60 Gün | 61–90 Gün | 90+ Gün | Faturasız Alacak (dilimlere dahil) | Şüpheli Alacak (dilimlere dahil) | Toplam Gecikmiş | Toplam
+RAPOR Alacak Yaşlandırma | Kalabalık Müşteri | 337 | ₺0,00 | ₺0,00 | ₺7.673,60 | ₺9.896,00 | ₺81.986,40 | ₺1.950,00 |  | ₺99.556,00 | ₺99.556,00
+RAPOR Alacak Yaşlandırma | Kalabalık Şüpheli Müşteri | 352 | ₺0,00 | ₺0,00 | ₺0,00 | ₺0,00 | ₺43.476,00 |  | ₺11.900,00 | ₺43.476,00 | ₺43.476,00
+RAPOR Alacak Yaşlandırma | TOPLAM |  | ₺0,00 | ₺0,00 | ₺7.673,60 | ₺9.896,00 | ₺125.462,40 | ₺1.950,00 | ₺11.900,00 | ₺143.032,00 | ₺143.032,00
+RAPOR-API Alacak Yaşlandırma özet | [["Vadesi Gelmemiş","0,00 TL"],["1–30 gün","0,00 TL"],["31–60 gün","7.673,60 TL"],["61–90 gün","9.896,00 TL"],["90+ gün","125.462,40 TL"],["Toplam Gecikmiş","143.032,00 TL"],["Toplam","143.032,00 TL"],["Faturasız Alacak (dilimlere dahil)","1.950,00 TL"],["Şüpheli Alacak (dilimlere dahil)","11.900,00 TL"]]
+MUTABAKAT | 200 ok=true bulgusuz

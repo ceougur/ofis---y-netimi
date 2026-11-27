@@ -1,0 +1,22 @@
+parça 1 · 19 / 37 senaryo · başta 0.86 1.27 1.22 2/140 24664 04:24:55
+e2e çıkış 0 · [kanit] c5a3b-e2e-e2e: GEÇTİ · çıkış 0 · 50/50 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a4b53e9 +1 izlenmeyen · linux 6.18.44-fc-v470 x64 · Node v22.23.4
+senaryo-219 çıkış 0 · [kanit] c5a3b-e2e-senaryo-219: GEÇTİ · çıkış 0 · 74/74 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a4b53e9 +1 izlenmeyen · linux 6.18.44-fc-v470 x64 · Node v22.23.4
+senaryo-220 çıkış 0 · [kanit] c5a3b-e2e-senaryo-220: GEÇTİ · çıkış 0 · 25/25 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a4b53e9 +1 izlenmeyen · linux 6.18.44-fc-v470 x64 · Node v22.23.4
+senaryo-222 çıkış 0 · [kanit] c5a3b-e2e-senaryo-222: GEÇTİ · çıkış 0 · 60/60 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a4b53e9 +1 izlenmeyen · linux 6.18.44-fc-v470 x64 · Node v22.23.4
+senaryo-223 çıkış 0 · [kanit] c5a3b-e2e-senaryo-223: GEÇTİ · çıkış 0 · 29/29 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a4b53e9 +1 izlenmeyen · linux 6.18.44-fc-v470 x64 · Node v22.23.4
+senaryo-224 çıkış 0 · [kanit] c5a3b-e2e-senaryo-224: GEÇTİ · çıkış 0 · 69/69 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a4b53e9 +1 izlenmeyen · linux 6.18.44-fc-v470 x64 · Node v22.23.4
+senaryo-226 çıkış 0 · [kanit] c5a3b-e2e-senaryo-226: GEÇTİ · çıkış 0 · 22/22 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a4b53e9 +1 izlenmeyen · linux 6.18.44-fc-v470 x64 · Node v22.23.4
+senaryo-banka-210 çıkış 0 · [kanit] c5a3b-e2e-senaryo-banka-210: GEÇTİ · çıkış 0 · 428/428 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a4b53e9 +1 izlenmeyen · linux 6.18.44-fc-v470 x64 · Node v22.23.4
+senaryo-banka-210-temel çıkış 0 · [kanit] c5a3b-e2e-senaryo-banka-210-temel: GEÇTİ · çıkış 0 · 80/80 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a4b53e9 +1 izlenmeyen · linux 6.18.44-fc-v470 x64 · Node v22.23.4
+senaryo-banka-210b çıkış 0 · [kanit] c5a3b-e2e-senaryo-banka-210b: GEÇTİ · çıkış 0 · 90/90 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a4b53e9 +1 izlenmeyen · linux 6.18.44-fc-v470 x64 · Node v22.23.4
+senaryo-cari-243 çıkış 0 · [kanit] c5a3b-e2e-senaryo-cari-243: GEÇTİ · çıkış 0 · 70/70 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a4b53e9 +1 izlenmeyen · linux 6.18.44-fc-v470 x64 · Node v22.23.4
+senaryo-cari-vade-245 çıkış 0 · [kanit] c5a3b-e2e-senaryo-cari-vade-245: GEÇTİ · çıkış 0 · 45/45 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a4b53e9 +1 izlenmeyen · linux 6.18.44-fc-v470 x64 · Node v22.23.4
+senaryo-duzeltme-kilidi-250 çıkış 0 · [kanit] c5a3b-e2e-senaryo-duzeltme-kilidi-250: GEÇTİ · çıkış 0 · 79/79 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a4b53e9 +1 izlenmeyen · linux 6.18.44-fc-v470 x64 · Node v22.23.4
+senaryo-duzeltme-kilidi-tur3-250 çıkış 0 · [kanit] c5a3b-e2e-senaryo-duzeltme-kilidi-tur3-250: GEÇTİ · çıkış 0 · 110/110 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a4b53e9 +1 izlenmeyen · linux 6.18.44-fc-v470 x64 · Node v2
+senaryo-ebelge-242 çıkış 0 · [kanit] c5a3b-e2e-senaryo-ebelge-242: GEÇTİ · çıkış 0 · 21/21 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a4b53e9 +1 izlenmeyen · linux 6.18.44-fc-v470 x64 · Node v22.23.4
+senaryo-ebelge-243 çıkış 0 · [kanit] c5a3b-e2e-senaryo-ebelge-243: GEÇTİ · çıkış 0 · 20/20 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a4b53e9 +1 izlenmeyen · linux 6.18.44-fc-v470 x64 · Node v22.23.4
+senaryo-ekstre-ayrinti-245 çıkış 0 · [kanit] c5a3b-e2e-senaryo-ekstre-ayrinti-245: GEÇTİ · çıkış 0 · 37/37 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a4b53e9 +1 izlenmeyen · linux 6.18.44-fc-v470 x64 · Node v22.23.4
+senaryo-ekstre-ayrinti-247 çıkış 0 · [kanit] c5a3b-e2e-senaryo-ekstre-ayrinti-247: GEÇTİ · çıkış 0 · 34/34 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a4b53e9 +1 izlenmeyen · linux 6.18.44-fc-v470 x64 · Node v22.23.4
+senaryo-fatura-243 çıkış 0 · [kanit] c5a3b-e2e-senaryo-fatura-243: GEÇTİ · çıkış 0 · 61/61 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit a4b53e9 +1 izlenmeyen · linux 6.18.44-fc-v470 x64 · Node v22.23.4
+sonda 2.06 1.87 1.54 1/145 2845 04:48:44
+flock çıkış 0

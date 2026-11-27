@@ -1,0 +1,63 @@
+{
+  "ad": "c1-dusuk-mutasyon-eski-test-kirmizi",
+  "komut": "node test/hesap-plani-sinif-250-mutasyon.mjs --kopya /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c1-dusuk-af73/kopya-eski-test --yalniz 14,15,16,17,18,19",
+  "commit": "39e6be385bb80b6b3f38dab8373418d78f021345",
+  "dal": "worktree-agent-af73f309dcf37fc0c",
+  "kirli": 0,
+  "izlenmeyen": 11,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-05T19:53:08.037Z",
+  "sure_sn": 1.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 6,
+    "gecen": 0,
+    "basarisiz": 6,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 6 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "ters bakiye 'aynı' kuralı Kesin Değil'e döner (bütün '—' hesapları) · YEŞİL — kaçırdı · beklenen neden \"136 ters bakiyesi kendi kaleminde işaretli\" GÖRÜLMEDİ",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "191'e Kesin Değil eklenir · YEŞİL — kaçırdı · beklenen neden \"191 ters bakiyesi kendi kaleminde işaretli\" GÖRÜLMEDİ",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "590'a brütleştirme eklenir (→ I.D 136) · YEŞİL — kaçırdı · beklenen neden \"590 ters bakiyesi kendi kaleminde işaretli\" GÖRÜLMEDİ",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "alt hesap tanımı düşer (602.90) · YEŞİL — kaçırdı · beklenen neden \"602.90 alt hesap tanımı\" GÖRÜLMEDİ",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "alt hesap tanımı düşer (610.90) · YEŞİL — kaçırdı · beklenen neden \"610.90 alt hesap tanımı\" GÖRÜLMEDİ",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "eklenen hesabın adı yanlış (690 → Dönem Net Zararı) · YEŞİL — kaçırdı · beklenen neden \"690: kitap \"Dönem Kârı veya Zararı\", program \"Dönem Net Zararı\"\" GÖRÜLMEDİ",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-05/c1-dusuk-mutasyon-eski-test-kirmizi.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-af73f309dcf37fc0c",
+  "ham_cikti_sha256": "2f15ddfff2aaed402d64bd1009e093b61a2f795083be8b38ec50da376a46c861",
+  "ham_cikti_bayt": 1109
+}

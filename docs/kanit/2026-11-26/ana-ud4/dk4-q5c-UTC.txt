@@ -1,0 +1,11 @@
+(node:3882) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+liste: durum=open/collected kalan=0 değersiz=0 tahsil=300000 karşılık=0 oda=287645 odaGün=2026-09-17 bakiye 2423.55
+liste: durum=open/collected kalan=0 değersiz=0 tahsil=300000 karşılık=0 oda=287645 odaGün=2026-09-17 bakiye 2423.55
+Değersiz 2876,45 @2026-09-17: 200
+liste: durum=open/writtenOff kalan=0 değersiz=287645 tahsil=12355 karşılık=0 oda=12355 odaGün=2026-09-17 bakiye -452.9
+Değersiz 123,55 @2026-09-17: 200
+liste: durum=open/writtenOff kalan=0 değersiz=300000 tahsil=0 karşılık=0 oda=0 odaGün= bakiye -576.45
+v2.4.9 gibi sabit deneme: Değersiz 2000 @17.09: 409 doubtful-closed «Bu şüpheli alacak kaydı değersiz yazılarak kapanmış; kalan tutar yok.»
+son: durum=open/writtenOff kalan=0 değersiz=300000 tahsil=0 karşılık=0 oda=0 odaGün= bakiye -576.45 mutabakat TAMAM
+mizan 120 -576.45 128 0 659 3000

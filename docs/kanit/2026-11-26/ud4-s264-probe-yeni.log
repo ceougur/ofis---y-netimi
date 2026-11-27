@@ -1,0 +1,110 @@
+TAP version 13
+# (node:18836) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# \# SONUC P1 değersiz 1.000: 200   → kalan 0 tahsil 2000 değersiz 1000 durum writtenOff
+# \# SONUC P1 değersiz 2.000: 200   → kalan 0 tahsil 0 değersiz 3000 durum writtenOff bakiye 423.55
+# Subtest: S264 komşu durumları
+    # Subtest: P1 kısmi Değersiz 1.000 sonra 2.000 (aynı gün, bağlı tahsilat)
+    ok 1 - P1 kısmi Değersiz 1.000 sonra 2.000 (aynı gün, bağlı tahsilat)
+      ---
+      duration_ms: 210.438451
+      type: 'test'
+      ...
+# \# SONUC P2 kayıt: kalan 0 tahsil 3000 değersiz 0 durum collected
+# \# SONUC P2 değersiz 3.000: 200   → kalan 0 tahsil 0 değersiz 3000 durum writtenOff bakiye 400
+    # Subtest: P2 bağlı tahsilat kaydın tamamını karşılıyor (fatura 3.000, tahsilat 3.000, şüpheli 3.000) → Değersiz 3.000
+    ok 2 - P2 bağlı tahsilat kaydın tamamını karşılıyor (fatura 3.000, tahsilat 3.000, şüpheli 3.000) → Değersiz 3.000
+      ---
+      duration_ms: 159.916647
+      type: 'test'
+      ...
+# \# SONUC P3 önce R1: kalan 0 tahsil 1500 değersiz 0 durum collected | R2: kalan 123.55 tahsil 1376.45 değersiz 0 durum open
+# \# SONUC P3 R1 değersiz 1.500: 200   → R1 kalan 0 tahsil 0 değersiz 1500 durum writtenOff | R2 kalan 0 tahsil 1500 değersiz 0 durum collected bakiye 1923.55
+# \# SONUC P3 R2 değersiz 1.500: 200   → R1 kalan 0 tahsil 0 değersiz 1500 durum writtenOff | R2 kalan 0 tahsil 0 değersiz 1500 durum writtenOff bakiye 423.55
+    # Subtest: P3 aynı gün iki şüpheli kaydı (1.500 + 1.500) — R1'e Değersiz 1.500
+    ok 3 - P3 aynı gün iki şüpheli kaydı (1.500 + 1.500) — R1'e Değersiz 1.500
+      ---
+      duration_ms: 273.75622
+      type: 'test'
+      ...
+# \# SONUC P3b R2 değersiz 1.500: 200   → R1 kalan 0 tahsil 1500 değersiz 0 durum collected | R2 kalan 0 tahsil 0 değersiz 1500 durum writtenOff bakiye 1923.55
+    # Subtest: P3b aynı gün iki kayıt; R2'ye (sonraki) Değersiz 1.500
+    ok 4 - P3b aynı gün iki kayıt; R2'ye (sonraki) Değersiz 1.500
+      ---
+      duration_ms: 217.033691
+      type: 'test'
+      ...
+# \# SONUC P4 karşılık: 400 doubtful-provision-exceeds Karşılık (1.000,00 TL) kalan şüpheli tutarı aşıyor: kalan 123,55 TL → en çok 123,55 TL.
+# \# SONUC P4 değersiz 3.000: 200   → kalan 0 tahsil 0 değersiz 3000 durum writtenOff karşılık 0 kullanılan 0 çözülen 0 zarar 3000
+    # Subtest: P4 karşılık 1.000 ayrılmış kayıt → Değersiz 3.000 (aynı gün)
+    ok 5 - P4 karşılık 1.000 ayrılmış kayıt → Değersiz 3.000 (aynı gün)
+      ---
+      duration_ms: 168.149077
+      type: 'test'
+      ...
+# \# SONUC P5 R2 çıkar: 200   → R1 kalan 0 tahsil 1500 değersiz 0 durum collected | R2 kalan 0 tahsil 1376.45 değersiz 0 durum released
+# \# SONUC P5 R1 değersiz 1.500: 200   → R1 kalan 0 tahsil 0 değersiz 1500 durum writtenOff | R2 kalan 0 tahsil 1500 değersiz 0 durum released bakiye 1923.55
+    # Subtest: P5 aynı gün R1 Şüpheliden Çıkar + R2 (kalan) Değersiz
+    ok 6 - P5 aynı gün R1 Şüpheliden Çıkar + R2 (kalan) Değersiz
+      ---
+      duration_ms: 261.690018
+      type: 'test'
+      ...
+# \# SONUC P6 18.09 değersiz 3.000: 400 doubtful-writeoff-exceeds Değersiz yazılacak tutar (3.000,00 TL) kalan şüpheli tutarı (123,55 TL) aşıyor.
+    # Subtest: P6 ertesi gün Değersiz (aynı gün değil): sınır kalan
+    ok 7 - P6 ertesi gün Değersiz (aynı gün değil): sınır kalan
+      ---
+      duration_ms: 221.096251
+      type: 'test'
+      ...
+# \# SONUC P7 tahsilat 16.09'a: 200   → kalan 0 tahsil 0 değersiz 3000 durum writtenOff bakiye 423.55
+    # Subtest: P7 Değersiz 3.000 kabulünden sonra bağlı tahsilatın tarihi değişir / silinir
+    ok 8 - P7 Değersiz 3.000 kabulünden sonra bağlı tahsilatın tarihi değişir / silinir
+      ---
+      duration_ms: 288.804266
+      type: 'test'
+      ...
+# \# SONUC P8 önce R1: kalan 500 tahsil 1500 değersiz 0 durum open | R2: kalan 1500 tahsil 0 değersiz 0 durum open
+# \# SONUC P8 R2 18.09 değersiz 1.500: 200   → R1 kalan 500 tahsil 1500 değersiz 0 durum open | R2 kalan 0 tahsil 0 değersiz 1500 durum writtenOff
+# \# SONUC P8 R1 17.09 değersiz 2.000: 400 doubtful-writeoff-exceeds Değersiz yazılacak tutar (2.000,00 TL) kalan şüpheli tutarı (2.000,00 TL) aşıyor. satır 4 → 4 olay 33 → 33 → R1 kalan 500 tahsil 1500 değersiz 0 durum open | R2 kalan 0 tahsil 0 değersiz 1500 durum writtenOff bakiye 3300
+# \# SONUC P8 R1 17.09 değersiz 500: 200   → R1 kalan 0 tahsil 1500 değersiz 500 durum writtenOff | R2 kalan 0 tahsil 0 değersiz 1500 durum writtenOff
+# \# OZET
+# P1 değersiz 1.000: 200   → kalan 0 tahsil 2000 değersiz 1000 durum writtenOff
+# P1 değersiz 2.000: 200   → kalan 0 tahsil 0 değersiz 3000 durum writtenOff bakiye 423.55
+# P2 kayıt: kalan 0 tahsil 3000 değersiz 0 durum collected
+# P2 değersiz 3.000: 200   → kalan 0 tahsil 0 değersiz 3000 durum writtenOff bakiye 400
+# P3 önce R1: kalan 0 tahsil 1500 değersiz 0 durum collected | R2: kalan 123.55 tahsil 1376.45 değersiz 0 durum open
+# P3 R1 değersiz 1.500: 200   → R1 kalan 0 tahsil 0 değersiz 1500 durum writtenOff | R2 kalan 0 tahsil 1500 değersiz 0 durum collected bakiye 1923.55
+# P3 R2 değersiz 1.500: 200   → R1 kalan 0 tahsil 0 değersiz 1500 durum writtenOff | R2 kalan 0 tahsil 0 değersiz 1500 durum writtenOff bakiye 423.55
+# P3b R2 değersiz 1.500: 200   → R1 kalan 0 tahsil 1500 değersiz 0 durum collected | R2 kalan 0 tahsil 0 değersiz 1500 durum writtenOff bakiye 1923.55
+# P4 karşılık: 400 doubtful-provision-exceeds Karşılık (1.000,00 TL) kalan şüpheli tutarı aşıyor: kalan 123,55 TL → en çok 123,55 TL.
+# P4 değersiz 3.000: 200   → kalan 0 tahsil 0 değersiz 3000 durum writtenOff karşılık 0 kullanılan 0 çözülen 0 zarar 3000
+# P5 R2 çıkar: 200   → R1 kalan 0 tahsil 1500 değersiz 0 durum collected | R2 kalan 0 tahsil 1376.45 değersiz 0 durum released
+# P5 R1 değersiz 1.500: 200   → R1 kalan 0 tahsil 0 değersiz 1500 durum writtenOff | R2 kalan 0 tahsil 1500 değersiz 0 durum released bakiye 1923.55
+# P6 18.09 değersiz 3.000: 400 doubtful-writeoff-exceeds Değersiz yazılacak tutar (3.000,00 TL) kalan şüpheli tutarı (123,55 TL) aşıyor.
+# P7 tahsilat 16.09'a: 200   → kalan 0 tahsil 0 değersiz 3000 durum writtenOff bakiye 423.55
+# P8 önce R1: kalan 500 tahsil 1500 değersiz 0 durum open | R2: kalan 1500 tahsil 0 değersiz 0 durum open
+# P8 R2 18.09 değersiz 1.500: 200   → R1 kalan 500 tahsil 1500 değersiz 0 durum open | R2 kalan 0 tahsil 0 değersiz 1500 durum writtenOff
+# P8 R1 17.09 değersiz 2.000: 400 doubtful-writeoff-exceeds Değersiz yazılacak tutar (2.000,00 TL) kalan şüpheli tutarı (2.000,00 TL) aşıyor. satır 4 → 4 olay 33 → 33 → R1 kalan 500 tahsil 1500 değersiz 0 durum open | R2 kalan 0 tahsil 0 değersiz 1500 durum writtenOff bakiye 3300
+# P8 R1 17.09 değersiz 500: 200   → R1 kalan 0 tahsil 1500 değersiz 500 durum writtenOff | R2 kalan 0 tahsil 0 değersiz 1500 durum writtenOff
+    # Subtest: P8 güvenlik denetimi: R1 2.000 + R2 1.500 (17.09), bağlı tahsilat 1.500; R2'ye 18.09 Değersiz 1.500; sonra R1'e 17.09 Değersiz 2.000
+    ok 9 - P8 güvenlik denetimi: R1 2.000 + R2 1.500 (17.09), bağlı tahsilat 1.500; R2'ye 18.09 Değersiz 1.500; sonra R1'e 17.09 Değersiz 2.000
+      ---
+      duration_ms: 350.43563
+      type: 'test'
+      ...
+    1..9
+ok 1 - S264 komşu durumları
+  ---
+  duration_ms: 2659.113296
+  type: 'suite'
+  ...
+1..1
+# tests 9
+# suites 1
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3120.159799

@@ -1,0 +1,32 @@
+{
+  "ad": "s229-beklenti-eski-taban-UTC",
+  "komut": "node --test test/bulgu-223.test.mjs test/iade-210.test.mjs test/iade-geri-odeme-246.test.mjs test/iade-kapama-k1.test.mjs test/kapama-rastgele-223.test.mjs test/raporlar-210-banka.test.mjs test/raporlar-224.test.mjs test/tyk-kapanis-dis-250.test.mjs test/tyk-son-250.test.mjs test/ux18-cek-fatura-244.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v726 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-20T23:45:04.203Z",
+  "sure_sn": 32.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 262,
+    "gecen": 262,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../kanit/2026-11-20/s229-beklenti-eski-taban-UTC.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/s229-a343/eski",
+  "ham_cikti_sha256": "975a9f50fe096f2b3b94a0c58d87f97eb21fd71c70e0d2e6e5fe8cb194422120",
+  "ham_cikti_bayt": 96694
+}

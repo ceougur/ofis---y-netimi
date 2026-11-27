@@ -1,0 +1,123 @@
+{
+ "S95": {
+  "bakiye": 10000,
+  "gecikmisKart": 0,
+  "gecikmisKartAdet": 0,
+  "eskiGeciken": 0,
+  "gecikmisListe": 0,
+  "vade": [
+   "invoice:Satış faturası FIS2026000000001:10000@2026-10-30"
+  ],
+  "vadeGecikmis": 0,
+  "zil": [],
+  "kalan": [],
+  "faturalar": [
+   {
+    "no": "FIS2026000000001",
+    "state": "open",
+    "open": 10000,
+    "closers": []
+   },
+   {
+    "no": "ALS17945162225731",
+    "state": "paid",
+    "open": 0,
+    "closers": [
+     "Otomatik (vadesi en önce gelen):6000@2026-09-22"
+    ]
+   }
+  ],
+  "kartlar": []
+ },
+ "S96": {
+  "bakiye": 700,
+  "gecikmisKart": 700,
+  "gecikmisKartAdet": 1,
+  "eskiGeciken": 0,
+  "gecikmisListe": 700,
+  "vade": [
+   "account:Tahsil Edilecek Borç:700@2026-10-10"
+  ],
+  "vadeGecikmis": 700,
+  "zil": [
+   "account:Tahsil Edilecek Borç:700:overdue"
+  ],
+  "kalan": [],
+  "faturalar": [],
+  "kartlar": []
+ },
+ "S96m": {
+  "bakiye": 250,
+  "gecikmisKart": 250,
+  "gecikmisKartAdet": 1,
+  "eskiGeciken": 0,
+  "gecikmisListe": 250,
+  "vade": [
+   "account:Tahsil Edilecek Borç:250@2026-10-17"
+  ],
+  "vadeGecikmis": 250,
+  "zil": [
+   "account:Tahsil Edilecek Borç:250:overdue"
+  ],
+  "kalan": [],
+  "faturalar": [],
+  "kartlar": []
+ },
+ "S97_sira1": {
+  "bakiye": -300,
+  "gecikmisKart": 0,
+  "gecikmisKartAdet": 0,
+  "eskiGeciken": 0,
+  "gecikmisListe": 0,
+  "vade": [],
+  "vadeGecikmis": 0,
+  "zil": [],
+  "kalan": [
+   "debt:1000→0",
+   "credit:300→0"
+  ],
+  "faturalar": [],
+  "kartlar": []
+ },
+ "S97_sira2": {
+  "bakiye": -300,
+  "gecikmisKart": 0,
+  "gecikmisKartAdet": 0,
+  "eskiGeciken": 0,
+  "gecikmisListe": 0,
+  "vade": [],
+  "vadeGecikmis": 0,
+  "zil": [],
+  "kalan": [
+   "credit:300→0",
+   "debt:1000→0"
+  ],
+  "faturalar": [],
+  "kartlar": []
+ },
+ "S98": {
+  "bakiye": 150,
+  "gecikmisKart": 50,
+  "gecikmisKartAdet": 1,
+  "eskiGeciken": 0,
+  "gecikmisListe": 50,
+  "vade": [
+   "account:Tahsil Edilecek Borç:100@2026-11-19",
+   "account:Tahsil Edilecek Borç:50@2026-09-10"
+  ],
+  "vadeGecikmis": 50,
+  "zil": [
+   "account:Tahsil Edilecek Borç:50:overdue"
+  ],
+  "kalan": [
+   "debt:100→100"
+  ],
+  "faturalar": [],
+  "kartlar": []
+ },
+ "mutabakat": {
+  "status": 200,
+  "ok": true,
+  "bad": []
+ }
+}

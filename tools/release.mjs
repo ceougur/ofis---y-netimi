@@ -9,7 +9,7 @@ import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
 import { TRUSTED_UPDATE_KEYS } from "../server/lib/update-keys.mjs";
 import { buildUpdatePackage, keyIdFor } from "./lib/update-package.mjs";
-import { releaseGate } from "./kanit.mjs";
+import { releaseGate, yapimAsamasiGate } from "./kanit.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const { values } = parseArgs({
@@ -24,9 +24,12 @@ const { values } = parseArgs({
 try {
   // Doğrulama kapısı (10.10.2026): imzalı paket yalnız temiz çalışma ağacından ve CI'si (Linux + Windows × Node 22/24, uçtan uca,
   // "Doğrulama Kapısı" işi) YEŞİL olan commit'ten üretilir. Atlatma seçeneği yoktur; CI'yi okumak için gh gerekir.
+  // YAPIM AŞAMASI kapısı (S100 = A, kullanıcı 10.11.2026): cari kâhininin YAPIM AŞAMASI listesi boş değilse (ya da okunamıyorsa) imzalı paket üretilmez.
   const gate = releaseGate();
-  if (!gate.ok) throw new Error(`Doğrulanmamış commit'ten imzalı paket üretilmez:\n  - ${gate.problems.join("\n  - ")}`);
-  console.log(`✓ Doğrulama kapısı: ${gate.ci.commit.slice(0, 7)} CI YEŞİL, çalışma ağacı temiz`);
+  const yapim = yapimAsamasiGate();
+  const problems = [...gate.problems, ...yapim.problems];
+  if (problems.length) throw new Error(`Doğrulanmamış commit'ten imzalı paket üretilmez:\n  - ${problems.join("\n  - ")}`);
+  console.log(`✓ Doğrulama kapısı: ${gate.ci.commit.slice(0, 7)} CI YEŞİL, çalışma ağacı temiz, YAPIM AŞAMASI listesi boş`);
   const pem = values.anahtar ? readFileSync(values.anahtar, "utf8") : process.env.DESTEKOFIS_RELEASE_KEY_FILE ? readFileSync(process.env.DESTEKOFIS_RELEASE_KEY_FILE, "utf8") : process.env.DESTEKOFIS_RELEASE_KEY;
   if (!pem || !pem.includes("PRIVATE KEY")) throw new Error("İmza anahtarı bulunamadı. --anahtar <dosya> verin veya DESTEKOFIS_RELEASE_KEY ortam değişkenini ayarlayın.");
   if (!["stable", "beta"].includes(values.kanal)) throw new Error("Kanal 'stable' veya 'beta' olmalı.");

@@ -1,0 +1,26 @@
+TAP version 13
+# (node:10089) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Ç2 tur 3 — YAN BULGU 2: banka açılış onarımının kaydı kesilmiş JSON olmaz (2.0.26'ya dönüp Tüm Hareketleri Sil → 600 iptal başlığı)
+    # Subtest: 600 tahsilat → GERÇEK 2.0.26 'Tüm Hareketleri Sil' → güncel açılış: 600 başlık iptal; kayıt geçerli JSON (ilk 50 + counts); Mutabakat Testi 200; ikinci açılışta kayıt yinelenmez
+    ok 1 - 600 tahsilat → GERÇEK 2.0.26 'Tüm Hareketleri Sil' → güncel açılış: 600 başlık iptal; kayıt geçerli JSON (ilk 50 + counts); Mutabakat Testi 200; ikinci açılışta kayıt yinelenmez
+      ---
+      duration_ms: 18475.779636
+      type: 'test'
+      ...
+    1..1
+ok 1 - Ç2 tur 3 — YAN BULGU 2: banka açılış onarımının kaydı kesilmiş JSON olmaz (2.0.26'ya dönüp Tüm Hareketleri Sil → 600 iptal başlığı)
+  ---
+  duration_ms: 18477.191924
+  type: 'suite'
+  ...
+1..1
+# tests 1
+# suites 1
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 18841.336617
+cikis=0

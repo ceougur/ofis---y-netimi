@@ -1,0 +1,5 @@
+(node:3917) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:3917) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"root":"/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2t3-ya-ag","name":"surum-2.0.26-zincir","pendingAtStart":true,"baselineHasRuleDiff":false,"firstScan":{"findings":["ledger:rule-diff (44)"],"skipped":null},"scanLogRows":{"before":0,"after":1,"lastSummary":"Kural Değişikliği Farkı (Kilitli Dönem: 05.10.2026 ve Öncesi)"},"secondScan":{"findings":[],"skipped":null},"ruleDiffInFirst":true}

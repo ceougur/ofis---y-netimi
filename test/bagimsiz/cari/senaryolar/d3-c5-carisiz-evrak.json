@@ -1,0 +1,21 @@
+{
+ "dil": "destekofis-cari/3",
+ "ad": "d3-c5-carisiz-evrak",
+ "aciklama": "2.5.0 C13.3 (S49 A): formdan CARİSİZ alınan çek 700 ve senet 300 → B 101 / A 649 ve B 121 / A 649 (602'ye, 519'a, cariye yazılmaz); carili çek 200 normal (B 101 / A 120). Carisiz çekin tahsili B 100 / A 101 (Kasa +700). Carisiz evrakın karşılıksızı kararda yok (SK-2) — bu senaryoda yok.",
+ "dayanak": "KARARLAR.md §13 C13.3",
+ "bugun": "2026-06-15",
+ "adimlar": [
+  {"id": "ca", "islem": "cari_ac", "ad": "A", "isim": "Aras Evrak", "tarih": "2026-05-01"},
+  {"id": "e1", "islem": "evrak", "ad": "E1", "cari": null, "tur": "cek", "tutar": "700", "tarih": "2026-06-01"},
+  {"id": "e2", "islem": "evrak", "ad": "E2", "cari": null, "tur": "senet", "tutar": "300", "tarih": "2026-06-02"},
+  {"id": "e3", "islem": "evrak", "ad": "E3", "cari": "A", "tur": "cek", "tutar": "200", "tarih": "2026-06-03"},
+  {"id": "k1", "islem": "kontrol"},
+  {"id": "h1", "islem": "tahsil", "evrak": "E1", "tarih": "2026-06-10"},
+  {"id": "k2", "islem": "kontrol"}
+ ],
+ "elleBeklenen": {
+  "k1:mizan:101": 90000, "k1:mizan:121": 30000, "k1:mizan:649": -100000, "k1:mizan:120": -20000, "k1:mizan:519": 0, "k1:mizan:100": 0,
+  "k1:cari:A:bakiye": -20000,
+  "k2:mizan:101": 20000, "k2:mizan:121": 30000, "k2:mizan:100": 70000, "k2:mizan:649": -100000, "k2:mizan:120": -20000, "k2:kasa": 70000
+ }
+}

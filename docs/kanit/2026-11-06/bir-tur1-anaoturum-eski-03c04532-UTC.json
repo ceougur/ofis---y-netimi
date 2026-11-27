@@ -1,0 +1,88 @@
+{
+  "ad": "bir-tur1-anaoturum-eski-03c04532-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/birlesik-tur1-yaris-250.test.mjs test/bs4-birlesik-rapor-250.test.mjs test/defter-turu-c4.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v236 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T00:25:41.037Z",
+  "sure_sn": 20,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 26,
+    "gecen": 15,
+    "basarisiz": 11,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 11 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.0 BİRLEŞİK TUR 1 YB-1 — eşzamanlı düzeltmede korumalar işlemin içindeki GÜNCEL satırla (dört uç) › Kasa Engelle: yöneticinin 100 → 650 düzeltmesi yoldayken muhasebe aynı hareketi 100 → 10 yapar → 409 cash-blocked (güncel satırla), Kasa 590 kalır",
+      "konum": "test/birlesik-tur1-yaris-250.test.mjs:174:3",
+      "hata": "cari: yöneticinin düzeltmesi güncel satırla engellenmeli (409 cash-blocked) — yanıt 200  | cari: Kasa -50 (beklenen 590; Engelle politikasında eksiye düşmez) | cari: hareket 650 (beklenen öbür kullanıcının 10'u) | stok: yöneticinin düzeltmesi güncel satırla engellenmeli (409 cash-blocked) — yanıt 200  | stok: Kasa -50 (beklenen 590; Engelle politikasında eksiye düşmez) | stok: hareket 650 (beklenen öbür kullanıcının 10'u) | taksit: yöneticinin düzeltmesi güncel satırla engellenmeli (409 cash-blocked) — yanıt 200  | taksit: Kasa -50 (beklenen 590; Engelle politikasında eksiye düşmez) | taksit: hareket 650 (beklenen öbür kullanıcının 10'u) | kasa: yöneticinin düzeltmesi güncel satırla engellenmeli (409 cash-blocked) — yanıt 200  | kasa: Kasa -50 (beklenen 590; Engelle politikasında eksiye düşmez) | kasa: hareket 650 (beklenen öbür kullanıcının 10'u) · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 BİRLEŞİK TUR 1 YB-1 — eşzamanlı düzeltmede korumalar işlemin içindeki GÜNCEL satırla (dört uç) › Kasa Uyar: aynı yarışta soru GÜNCEL satırla sorulur (409 cash-negative); \"Yine de Kaydet\" (cashForce) yazar, Kasa −50, Değişiklik Geçmişi'nin önceki tutarı 10",
+      "konum": "test/birlesik-tur1-yaris-250.test.mjs:203:3",
+      "hata": "cari: soru sorulmalı (409 cash-negative) — yanıt 200  | cari: Değişiklik Geçmişi önceki tutar 650 (beklenen 10) | stok: soru sorulmalı (409 cash-negative) — yanıt 200  | stok: Değişiklik Geçmişi önceki tutar 650 (beklenen 10) | taksit: soru sorulmalı (409 cash-negative) — yanıt 200  | taksit: Değişiklik Geçmişi önceki tutar 650 (beklenen 10) | kasa: soru sorulmalı (409 cash-negative) — yanıt 200  | kasa: Değişiklik Geçmişi önceki tutar 650 (beklenen 10) · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 BİRLEŞİK TUR 1 YB-1 — eşzamanlı düzeltmede korumalar işlemin içindeki GÜNCEL satırla (dört uç) › silinmiş hareket (Kasa Uyar): gövde yoldayken silinirse doğrudan 404 + BS-3 iletisi — önce yanıltıcı Kasa sorusu yok; hiçbir tablo yazılmaz",
+      "konum": "test/birlesik-tur1-yaris-250.test.mjs:233:3",
+      "hata": "cari: 404 olmalı — yanıt 409 cash-negative Bu tahsilat 1.000,00 TL'den 500,00 TL'ye düzeltilince Nakit Kasa'dan 500,00 TL düşer; Nakit Kasa -800,00 TL iken -1.300, | stok: 404 olmalı — yanıt 409 cash-negative Bu tahsilat 1.000,00 TL'den 500,00 TL'ye düzeltilince Nakit Kasa'dan 500,00 TL düşer; Nakit Kasa -800,00 TL iken -1.300, | taksit: 404 olmalı — yanıt 409 cash-negative Bu tahsilat 1.000,00 TL'den 500,00 TL'ye düzeltilince Nakit Kasa'dan 500,00 TL düşer; Nakit Kasa -800,00 TL iken -1.300, | kasa: 404 olmalı — yanıt 409 cash-negative Bu tahsilat 1.000,00 TL'den 500,00 TL'ye düzeltilince Nakit Kasa'dan 500,00 TL düşer; Nakit Kasa -800,00 TL iken -1.300, · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 BİRLEŞİK TUR 1 YB-1 — eşzamanlı düzeltmede korumalar işlemin içindeki GÜNCEL satırla (dört uç) › taksit K8: tahsilat 600 → 500 düzeltmesi yoldayken muhasebe aynı tahsilatı 600 → 100 yapıp 700 tahsilat ekler → 409 plan-overpay (Fazlasını Avans Yaz sorusu); overpay ile yazılır",
+      "konum": "test/birlesik-tur1-yaris-250.test.mjs:265:3",
+      "hata": "güncel satır 100 → 500 büyüyor: 409 plan-overpay olmalı — yanıt 200 ; kartın net tahsilatı 1200 | kartın net tahsilatı 1200 (beklenen 800) · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 BİRLEŞİK TUR 1 YB-1 — eşzamanlı düzeltmede korumalar işlemin içindeki GÜNCEL satırla (dört uç) › kayıp güncelleme: gövdede yalnız tutar varken arada öbür kullanıcının açıklama düzeltmesi KORUNUR; Değişiklik Geçmişi'nin önceki hâli güncel satır",
+      "konum": "test/birlesik-tur1-yaris-250.test.mjs:298:3",
+      "hata": "cari: açıklama “ilk not” (beklenen öbür kullanıcının “muhasebenin notu”su — bayat satır gövdeyle birleşip sildi) | cari: Değişiklik Geçmişi önceki açıklama “ilk not” (beklenen güncel satırın “muhasebenin notu”su) | stok: açıklama “ilk not” (beklenen öbür kullanıcının “muhasebenin notu”su — bayat satır gövdeyle birleşip sildi) | stok: Değişiklik Geçmişi önceki açıklama “ilk not” (beklenen güncel satırın “muhasebenin notu”su) | taksit: açıklama “ilk not” (beklenen öbür kullanıcının “muhasebenin notu”su — bayat satır gövdeyle birleşip sildi) | taksit: Değişiklik Geçmişi önceki açıklama “ilk not” (beklenen güncel satırın “muhasebenin notu”su) · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 BİRLEŞİK TUR 1 YB-1 — eşzamanlı düzeltmede korumalar işlemin içindeki GÜNCEL satırla (dört uç) › iyimser kilit (gövdede updatedAt): form açıldıktan sonra öbür kullanıcı düzeltirse 409 <uç>-stale, hiçbir tablo yazılmaz; satır öbür kullanıcının değerinde",
+      "konum": "test/birlesik-tur1-yaris-250.test.mjs:324:3",
+      "hata": "cari: 409 account-entry-stale olmalı — yanıt 200  | cari: hiçbir tablo yazılmamalı — account_entries 4:4c52cfd3af967762 → 4:069fbfed98c71bfe; audit_events 127:6ae7c11883f4454a → 128:7662938a245e63f1; fin_events 29:37bca7478e067b8d → 29:7d316cde83eeb349 | cari: satır 650 (beklenen 10) | stok: 409 stock-move-stale olmalı — yanıt 200  | stok: hiçbir tablo yazılmamalı — audit_events 133:e803e4ab11fe1e27 → 134:caaf58507866aea8; fin_events 30:5f2d0bbe945fca8d → 30:64aaa0a7f45956a9; stock_moves 9:9df8875258d0646d → 9:935841b6e8d2c6a6 | stok: satır 650 (beklenen 10) | taksit: 409 plan-entry-stale olmalı — yanıt 200  | taksit: hiçbir tablo yazılmamalı — audit_events 140:67a7249c22250c58 → 141:409fcfb53a72f42b; fin_events 31:dba072a91bc53bc3 → 31:879b617e99dc50e3; plan_entries 8:2e75598c93275111 → 8:3004da0aace7df01 | taksit: satır 650 (beklenen 10) | kasa: 409 cash-entry-stale olmalı — yanıt 200  | kasa: hiçbir tablo yazılmamalı — audit_events 145:c83db4fa3622878c → 146:f97977ace7641a09; cash_entries 12:a6ba907e6c455e72 → 12:0ba25d5ceb67c44b; fin_events 32:427ff94249305269 → 32:949791511b0fbbc5 | kasa: satır 650 (beklenen 10) · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 BİRLEŞİK TUR 1 YB-1 — eşzamanlı düzeltmede korumalar işlemin içindeki GÜNCEL satırla (dört uç) › iyimser kilit sürüm biçimleri: boş / null / createdAt hiç düzeltilmemiş satırda geçer; düzeltilmiş satırda boş, createdAt ve eski sürüm 409; updatedAt yoksa denetim yok (bugünkü davranış)",
+      "konum": "test/birlesik-tur1-yaris-250.test.mjs:360:3",
+      "hata": "cari boş, düzeltilmiş: 200  (beklenen 409 account-entry-stale) | cari createdAt, düzeltilmiş: 200  (beklenen 409 account-entry-stale) | cari eski sürüm: 200 (beklenen 409) | stok boş, düzeltilmiş: 200  (beklenen 409 stock-move-stale) | stok createdAt, düzeltilmiş: 200  (beklenen 409 stock-move-stale) | stok eski sürüm: 200 (beklenen 409) | taksit boş, düzeltilmiş: 200  (beklenen 409 plan-entry-stale) | taksit createdAt, düzeltilmiş: 200  (beklenen 409 plan-entry-stale) | taksit eski sürüm: 200 (beklenen 409) | kasa boş, düzeltilmiş: 200  (beklenen 409 cash-entry-stale) | kasa createdAt, düzeltilmiş: 200  (beklenen 409 cash-entry-stale) | kasa eski sürüm: 200 (beklenen 409) · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 BİRLEŞİK TUR 1 YB-2 — Kasa ↔ Banka transferi: gövde yoldayken silinir ya da öbür tarafı yok olursa 404, hiçbir tablo yazılmaz › transfer gövde yoldayken silinir: 404 Kasa iletisi; tablolar silmeden sonraki hâliyle aynı (sahte cash.transfer.updated yok)",
+      "konum": "test/birlesik-tur1-yaris-250.test.mjs:469:3",
+      "hata": "404 “Kasa hareketi bulunamadı. Başka biri silmiş olabilir.” olmalı — 200 {\"ok\":true,\"data\":{\"id\":\"cash-2744dc3e-5332-40c1-a673-1ba197e7afbf\"}} | hiçbir tablo yazılmamalı — audit_events 5:fb6c0d431df994d7 → 6:f207eafbaf4486cd | Değişiklik Geçmişi'ne silinmiş transfer için \"düzeltildi\" yazıldı · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 BİRLEŞİK TUR 1 YB-2 — Kasa ↔ Banka transferi: gövde yoldayken silinir ya da öbür tarafı yok olursa 404, hiçbir tablo yazılmaz › transferin yalnız öbür tarafı yok (eski / bozuk veri benzetimi, doğrudan silme): 404 \"Transferin öbür tarafı bulunamadı\"; tablolar değişmez",
+      "konum": "test/birlesik-tur1-yaris-250.test.mjs:490:3",
+      "hata": "404 olmalı — 409 {\"ok\":false,\"error\":\"İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (102 Bankalar (Havale / EFT): -350,00 TL fark). Hiçbir değişiklik yazılmadı | hiçbir tablo yazılmamalı — integrity_log 0:e3b0c44298fc1c14 → 1:529ce1cf1ca4a07e · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 BİRLEŞİK TUR 1 YB-2 — transfer düzeltmesi yarışsız aynen (gerileme) › transfer düzeltmesi iki tarafı birlikte günceller; iyimser kilit transferde de çalışır",
+      "konum": "test/birlesik-tur1-yaris-250.test.mjs:517:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 Ç4 Defter Türü › Değişiklik Geçmişi süzgeci: constructor / toString / __proto__ / hasOwnProperty / valueOf değerleri 200 + 0 satır (kendi önekleri); gruplar aynen",
+      "konum": "test/defter-turu-c4.test.mjs:266:3",
+      "hata": "constructor: 500 {\"ok\":false,\"error\":\"Sunucu işlemi tamamlayamadı.\"} | toString: 500 {\"ok\":false,\"error\":\"Sunucu işlemi tamamlayamadı.\"} | __proto__: 500 {\"ok\":false,\"error\":\"Sunucu işlemi tamamlayamadı.\"} | hasOwnProperty: 500 {\"ok\":false,\"error\":\"Sunucu işlemi tamamlayamadı.\"} | valueOf: 500 {\"ok\":false,\"error\":\"Sunucu işlemi tamamlayamadı.\"} | isPrototypeOf: 500 {\"ok\":false,\"error\":\"Sunucu işlemi tamamlayamadı.\"} · + actual - expected · + [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../../../../home/user/ofis---y-netimi/docs/kanit/2026-11-06/bir-tur1-anaoturum-eski-03c04532-UTC.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur1-ana/eski-03c04532",
+  "ham_cikti_sha256": "d2d2e9dc097e81f1aaf7cf63000bc6aeee76bd4a142dce5e2a2a66bbab2f7bc3",
+  "ham_cikti_bayt": 42410
+}

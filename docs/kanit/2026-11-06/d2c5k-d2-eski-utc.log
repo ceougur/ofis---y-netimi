@@ -1,0 +1,346 @@
+TAP version 13
+# Subtest: store.get / store.all — kayıptan sonra PRAGMA ataması yazımdır (2.5.0 BS-6, birleşik tur 5)
+    # Subtest: kayıptan sonra get / all ile PRAGMA ataması ERR_TX_LOST, dosyanın şeması değişmez; atamasız PRAGMA okuması çalışır
+    ok 1 - kayıptan sonra get / all ile PRAGMA ataması ERR_TX_LOST, dosyanın şeması değişmez; atamasız PRAGMA okuması çalışır
+      ---
+      duration_ms: 65.205122
+      type: 'test'
+      ...
+    1..1
+ok 1 - store.get / store.all — kayıptan sonra PRAGMA ataması yazımdır (2.5.0 BS-6, birleşik tur 5)
+  ---
+  duration_ms: 66.141535
+  type: 'suite'
+  ...
+# Subtest: D2 arşiv kayıt defteri ve salt okunur açma
+    # Subtest: diskten tanıma: aynı yıl ama FARKLI devir çalışması (arşivin işareti ↔ çalışma dosyasının devir kaydı) tanınmaz, sahipsiz listesine girer; aynı çalışmanınki tanınır
+    ok 1 - diskten tanıma: aynı yıl ama FARKLI devir çalışması (arşivin işareti ↔ çalışma dosyasının devir kaydı) tanınmaz, sahipsiz listesine girer; aynı çalışmanınki tanınır
+      ---
+      duration_ms: 1522.799343
+      type: 'test'
+      ...
+    1..1
+ok 2 - D2 arşiv kayıt defteri ve salt okunur açma
+  ---
+  duration_ms: 1524.207035
+  type: 'suite'
+  ...
+# Subtest: D2 tur 2 — arşiv göçü yarıda kesilince arşiv kalıcı 'Değişmiş' olmaz (ORTA-1)
+    # Subtest: kesme "kopya-goc-etti" (SIGKILL): yeniden açılışta arşiv uyarısız açılır, Doğrula ok, liste Doğrulandı; kayıt kesinleşir, geçici dosya kalmaz
+    not ok 1 - kesme "kopya-goc-etti" (SIGKILL): yeniden açılışta arşiv uyarısız açılır, Doğrula ok, liste Doğrulandı; kayıt kesinleşir, geçici dosya kalmaz
+      ---
+      duration_ms: 2303.317336
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2c5k-eski-d2/test/devir-d2-arsiv-goc-kesinti-250.test.mjs:147:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        kesme "kopya-goc-etti" (yoklama) sonrası yeniden açılış — ara durum {"dosyaSema":47,"dosyaEski":false,"kayitEski":true,"bekleyen":"yok","calismaKopyasi":false} 
+        + actual - expected
+        
+          {
+        +   dogrula: 'changed',
+        +   liste: 'changed',
+        -   dogrula: 'ok',
+        -   liste: 'ok',
+            okuma: 200,
+        +   uyari: "2025 arşivinin dosyası devirden sonra değişmiş görünüyor (bütünlük özeti tutmuyor); kayıtlar yalnız görüntülenir. Yönetici Devir Yedekleri'ni denetlemeli.",
+        -   uyari: '',
+            yazma: 403
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        okuma: 200
+        yazma: 403
+        uyari: ''
+        dogrula: 'ok'
+        liste: 'ok'
+      actual:
+        okuma: 200
+        yazma: 403
+        uyari: "2025 arşivinin dosyası devirden sonra değişmiş görünüyor (bütünlük özeti tutmuyor); kayıtlar yalnız görüntülenir. Yönetici Devir Yedekleri'ni denetlemeli."
+        dogrula: 'changed'
+        liste: 'changed'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2c5k-eski-d2/test/devir-d2-arsiv-goc-kesinti-250.test.mjs:156:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: kesme "bekleyen-yazildi" (SIGKILL): yeniden açılışta arşiv uyarısız açılır, Doğrula ok, liste Doğrulandı; kayıt kesinleşir, geçici dosya kalmaz
+    not ok 2 - kesme "bekleyen-yazildi" (SIGKILL): yeniden açılışta arşiv uyarısız açılır, Doğrula ok, liste Doğrulandı; kayıt kesinleşir, geçici dosya kalmaz
+      ---
+      duration_ms: 2418.736241
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2c5k-eski-d2/test/devir-d2-arsiv-goc-kesinti-250.test.mjs:147:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        kesme "bekleyen-yazildi" (yoklama) sonrası yeniden açılış — ara durum {"dosyaSema":47,"dosyaEski":false,"kayitEski":true,"bekleyen":"yok","calismaKopyasi":false} 
+        + actual - expected
+        
+          {
+        +   dogrula: 'changed',
+        +   liste: 'changed',
+        -   dogrula: 'ok',
+        -   liste: 'ok',
+            okuma: 200,
+        +   uyari: "2025 arşivinin dosyası devirden sonra değişmiş görünüyor (bütünlük özeti tutmuyor); kayıtlar yalnız görüntülenir. Yönetici Devir Yedekleri'ni denetlemeli.",
+        -   uyari: '',
+            yazma: 403
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        okuma: 200
+        yazma: 403
+        uyari: ''
+        dogrula: 'ok'
+        liste: 'ok'
+      actual:
+        okuma: 200
+        yazma: 403
+        uyari: "2025 arşivinin dosyası devirden sonra değişmiş görünüyor (bütünlük özeti tutmuyor); kayıtlar yalnız görüntülenir. Yönetici Devir Yedekleri'ni denetlemeli."
+        dogrula: 'changed'
+        liste: 'changed'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2c5k-eski-d2/test/devir-d2-arsiv-goc-kesinti-250.test.mjs:156:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: kesme "tasindi" (SIGKILL): yeniden açılışta arşiv uyarısız açılır, Doğrula ok, liste Doğrulandı; kayıt kesinleşir, geçici dosya kalmaz
+    not ok 3 - kesme "tasindi" (SIGKILL): yeniden açılışta arşiv uyarısız açılır, Doğrula ok, liste Doğrulandı; kayıt kesinleşir, geçici dosya kalmaz
+      ---
+      duration_ms: 2414.106751
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2c5k-eski-d2/test/devir-d2-arsiv-goc-kesinti-250.test.mjs:147:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        kesme "tasindi" (yoklama) sonrası yeniden açılış — ara durum {"dosyaSema":47,"dosyaEski":false,"kayitEski":true,"bekleyen":"yok","calismaKopyasi":false} 
+        + actual - expected
+        
+          {
+        +   dogrula: 'changed',
+        +   liste: 'changed',
+        -   dogrula: 'ok',
+        -   liste: 'ok',
+            okuma: 200,
+        +   uyari: "2025 arşivinin dosyası devirden sonra değişmiş görünüyor (bütünlük özeti tutmuyor); kayıtlar yalnız görüntülenir. Yönetici Devir Yedekleri'ni denetlemeli.",
+        -   uyari: '',
+            yazma: 403
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        okuma: 200
+        yazma: 403
+        uyari: ''
+        dogrula: 'ok'
+        liste: 'ok'
+      actual:
+        okuma: 200
+        yazma: 403
+        uyari: "2025 arşivinin dosyası devirden sonra değişmiş görünüyor (bütünlük özeti tutmuyor); kayıtlar yalnız görüntülenir. Yönetici Devir Yedekleri'ni denetlemeli."
+        dogrula: 'changed'
+        liste: 'changed'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2c5k-eski-d2/test/devir-d2-arsiv-goc-kesinti-250.test.mjs:156:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: kesme "tasindi" + kayıt defteri kaybı: arşiv diskten tanınır, bekleyen özet arşiv klasöründeki kayıt kopyasından gelir, yeniden açılışta uyarısız açılır
+    not ok 4 - kesme "tasindi" + kayıt defteri kaybı: arşiv diskten tanınır, bekleyen özet arşiv klasöründeki kayıt kopyasından gelir, yeniden açılışta uyarısız açılır
+      ---
+      duration_ms: 2143.667346
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2c5k-eski-d2/test/devir-d2-arsiv-goc-kesinti-250.test.mjs:165:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        kayıt defteri kaybından sonra yeniden açılış 
+        + actual - expected
+        
+          {
+        +   dogrula: 'changed',
+        +   liste: 'changed',
+        -   dogrula: 'ok',
+        -   liste: 'ok',
+            okuma: 200,
+        +   uyari: "2025 arşivinin dosyası devirden sonra değişmiş görünüyor (bütünlük özeti tutmuyor); kayıtlar yalnız görüntülenir. Yönetici Devir Yedekleri'ni denetlemeli.",
+        -   uyari: '',
+            yazma: 403
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        okuma: 200
+        yazma: 403
+        uyari: ''
+        dogrula: 'ok'
+        liste: 'ok'
+      actual:
+        okuma: 200
+        yazma: 403
+        uyari: "2025 arşivinin dosyası devirden sonra değişmiş görünüyor (bütünlük özeti tutmuyor); kayıtlar yalnız görüntülenir. Yönetici Devir Yedekleri'ni denetlemeli."
+        dogrula: 'changed'
+        liste: 'changed'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2c5k-eski-d2/test/devir-d2-arsiv-goc-kesinti-250.test.mjs:178:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: bekleyen özet ve K2: önceki sürümün ARA ŞEMADA kalmış göçü (dosya bekleyen özeti tutuyor, şema hâlâ eski) açılışta kabul edilip göç sürer — 409 değil; Doğrula da kabul eder; bekleyen özeti de tutmayan değişmiş dosya yine 409 archive-changed
+    not ok 5 - bekleyen özet ve K2: önceki sürümün ARA ŞEMADA kalmış göçü (dosya bekleyen özeti tutuyor, şema hâlâ eski) açılışta kabul edilip göç sürer — 409 değil; Doğrula da kabul eder; bekleyen özeti de tutmayan değişmiş dosya yine 409 archive-changed
+      ---
+      duration_ms: 1281.332418
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2c5k-eski-d2/test/devir-d2-arsiv-goc-kesinti-250.test.mjs:186:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        ara şemada kalmış göç açılır (K2'ye düşmez): 409 {"ok":false,"error":"“001 · Şirket 1” şirketinin 2025 arşivi devirden sonra değişmiş görünüyor (bütünlük özeti tutmuyor); programın bu sürümüne taşınmadı. Yönetici Devir Yedekleri'nden geri yükleyebilir.","code":"archive-changed"}
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2c5k-eski-d2/test/devir-d2-arsiv-goc-kesinti-250.test.mjs:210:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: sözleşme: çalışma kopyasının adı programınkiyle aynı; devir yedeği çalışma kopyasını almaz
+    not ok 6 - sözleşme: çalışma kopyasının adı programınkiyle aynı; devir yedeği çalışma kopyasını almaz
+      ---
+      duration_ms: 0.984834
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2c5k-eski-d2/test/devir-d2-arsiv-goc-kesinti-250.test.mjs:236:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + undefined
+        - 'goc-calisma.sqlite'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'goc-calisma.sqlite'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2c5k-eski-d2/test/devir-d2-arsiv-goc-kesinti-250.test.mjs:238:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..6
+not ok 3 - D2 tur 2 — arşiv göçü yarıda kesilince arşiv kalıcı 'Değişmiş' olmaz (ORTA-1)
+  ---
+  duration_ms: 10567.594716
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2c5k-eski-d2/test/devir-d2-arsiv-goc-kesinti-250.test.mjs:139:1'
+  failureType: 'subtestsFailed'
+  error: '6 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: D2 bakım kipi (G1.1)
+    # Subtest: bakımdaki şirketin arşivi açılmaz (503 maintenance): 001 bakımda eski şemalı arşiv istenince dosya / klasör / kayıt değişmez; açılış sürerken kip açılırsa (özet alınırken, göç kopyası hazırken) iş durur; 002 bakımda açık arşiv örneğine de istek gitmez, closeCompany sonrası yeniden açılmaz; öbür şirketin arşivi açılır; kip kalkınca açılır
+    not ok 1 - bakımdaki şirketin arşivi açılmaz (503 maintenance): 001 bakımda eski şemalı arşiv istenince dosya / klasör / kayıt değişmez; açılış sürerken kip açılırsa (özet alınırken, göç kopyası hazırken) iş durur; 002 bakımda açık arşiv örneğine de istek gitmez, closeCompany sonrası yeniden açılmaz; öbür şirketin arşivi açılır; kip kalkınca açılır
+      ---
+      duration_ms: 2556.983635
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2c5k-eski-d2/test/devir-d2-bakim-250.test.mjs:371:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        001 bakımda 001 arşivi: 200 {"ok":true,"data":{"entries":[{"id":"cash-817a45b2-6565-467b-9bc7-3d6ef3a05654","kind":"in","source":"manual","method":"cash","amount":563.57,"date":"2025-07-04","description":"Elden tahsilat","caseKey":"","caseTitle":"","transferId":"","ac
+        + actual - expected
+        
+          [
+        +   200,
+        +   undefined
+        -   503,
+        -   'maintenance'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 503
+        1: 'maintenance'
+      actual:
+        0: 200
+      operator: 'deepStrictEqual'
+      stack: |-
+        refusedWith (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2c5k-eski-d2/test/devir-d2-bakim-250.test.mjs:386:16)
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2c5k-eski-d2/test/devir-d2-bakim-250.test.mjs:392:7)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 8)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: 001 bakımda veri tabanı korumasının düşürdüğü yazım 503 maintenance (görevlerini devrederek kullanıcı sil), veri değişmez, kip kalkınca 200; koruma ortak katman dışındaki HER tabloda
+    not ok 2 - 001 bakımda veri tabanı korumasının düşürdüğü yazım 503 maintenance (görevlerini devrederek kullanıcı sil), veri değişmez, kip kalkınca 200; koruma ortak katman dışındaki HER tabloda
+      ---
+      duration_ms: 1235.608325
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2c5k-eski-d2/test/devir-d2-bakim-250.test.mjs:458:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        bakımda görevlerini devrederek kullanıcı sil: 500 {"ok":false,"error":"Sunucu işlemi tamamlayamadı."}
+        + actual - expected
+        
+          [
+        +   500,
+        +   undefined
+        -   503,
+        -   'maintenance'
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 503
+        1: 'maintenance'
+      actual:
+        0: 500
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2c5k-eski-d2/test/devir-d2-bakim-250.test.mjs:473:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 4 - D2 bakım kipi (G1.1)
+  ---
+  duration_ms: 3794.816054
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2c5k-eski-d2/test/devir-d2-bakim-250.test.mjs:82:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..4
+# tests 10
+# suites 4
+# pass 2
+# fail 8
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 18512.779485

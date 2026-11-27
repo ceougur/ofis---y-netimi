@@ -1,0 +1,60 @@
+// DOĞRULANMADI'dan (dar kontrol birleşik tur 1): iptal edilen faturaya eskimiş formla yeniden bağlanma (accounts.mjs invoiceLink).
+// ROOT=<ağaç> node iptal-fatura.mjs. A cari kartında faturaya bağlı tahsilatın düzeltme formunu açar (form: invoiceId = F, updatedAt = açıldığı andaki sürüm);
+// B faturayı iptal eder (iptal account_entries.invoice_id'yi boşaltır, updated_at'a dokunmaz); A formda yalnız açıklamayı değiştirip kaydeder (istemci gövdesi).
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+
+const ROOT = path.resolve(process.env.ROOT);
+const imp = rel => import(pathToFileURL(path.join(ROOT, rel)).href);
+const { apiOf, boot, must } = await imp("test/banka-210-ortak.mjs");
+const { createUser } = await imp("test/helpers.mjs");
+const ACC = "/api/workspace/accounts";
+const DAY = "2026-10-08";
+let failed = 0;
+let total = 0;
+const check = (cond, what) => {
+  total += 1;
+  if (!cond) failed += 1;
+  console.log(`${cond ? "ok" : "not ok"} - ${what}`);
+};
+
+const ctx = await boot({ now: { time: "2026-10-08T12:00:00+03:00", fixed: true }, env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" } });
+try {
+  await must("kurulum", ctx.api.post("/api/workspace/bank/setup/dismiss", {}));
+  const other = apiOf(await createUser(ctx.server, ctx.api.client, { username: "iptalmuh", role: "muhasebe" }));
+  const item = await must("hizmet", ctx.api.post("/api/workspace/stock", { kind: "service", code: "HZM-IPT", name: "İptal Hizmeti", unit: "Adet", salePrice: "800" }));
+  const account = await must("cari", ctx.api.post(ACC, { name: "İptal Müşterisi", type: "customer", registeredOn: "2026-09-01" }));
+  const invoice = await must("fatura", ctx.api.post("/api/workspace/invoices", { scenario: "service_sale", accountId: account.id, issueDate: "2026-10-01", lines: [{ itemId: item.id, qty: 1, unitPrice: "800", vatRate: 0 }], payment: { rest: "open", dueDate: "2026-10-01" } }));
+  const linked = await must("bağlı tahsilat", ctx.api.post(`${ACC}/${account.id}/entries`, { kind: "in", amount: "300", date: DAY, method: "cash", invoiceId: invoice.id, note: "ilk not" }));
+  // A formu açar: kartın satırı (istemcinin okuduğu).
+  const card = await must("kart", ctx.api.get(`${ACC}/${account.id}`));
+  const entry = card.entries.find(row => row.id === linked.entryId);
+  check(entry?.invoiceId === invoice.id, `ön koşul: formdaki Kapatılacak Fatura = F (${entry?.invoiceId})`);
+  const form = { amount: "300,00", method: "cash", date: entry.date, invoiceId: entry.invoiceId, note: "A'nın notu", kind: "in", refundOf: "", updatedAt: entry.updatedAt || "" };
+  // B faturayı iptal eder.
+  const before = ctx.store.get("SELECT invoice_id AS invoiceId, updated_at AS updatedAt FROM account_entries WHERE id = ?", linked.entryId);
+  const cancel = await other.post(`/api/workspace/invoices/${invoice.id}/cancel`, { reason: "Yanlış kesildi" });
+  check(cancel.status === 200, `B faturayı iptal etti → ${cancel.status} ${cancel.error || ""}`);
+  const after = ctx.store.get("SELECT invoice_id AS invoiceId, updated_at AS updatedAt FROM account_entries WHERE id = ?", linked.entryId);
+  console.log(`  iptal tahsilatın bağını boşalttı: invoice_id “${before.invoiceId}” → “${after.invoiceId}”; updated_at “${before.updatedAt}” → “${after.updatedAt}” (iptal sürümü ilerletmiyor)`);
+  // A kaydeder (yeni istemcinin gövdesi: updatedAt dahil).
+  const saved = await ctx.api.put(`${ACC}/${account.id}/entries/${linked.entryId}`, form);
+  console.log(`  A'nın kaydı: ${saved.status} ${saved.code || ""} “${saved.error || ""}”`);
+  check(saved.status === 409, "A'nın eskimiş formu 409 aldı (iptal edilen faturaya yeniden bağlanmadı)");
+  const row = ctx.store.get("SELECT invoice_id AS invoiceId, note FROM account_entries WHERE id = ?", linked.entryId);
+  check(row.invoiceId === "" && row.note === "ilk not", `veri tabanı: bağ boş, açıklama değişmedi (${JSON.stringify(row)})`);
+  // Eski istemci gövdesi (updatedAt yok) — aynı sonuç.
+  const { updatedAt: _drop, ...oldForm } = form;
+  const savedOld = await ctx.api.put(`${ACC}/${account.id}/entries/${linked.entryId}`, oldForm);
+  console.log(`  eski istemci gövdesi (updatedAt yok): ${savedOld.status} ${savedOld.code || ""} “${savedOld.error || ""}”`);
+  check(savedOld.status === 409, "updatedAt olmadan da 409 (fatura durumu denetimi)");
+  // Kapatılacak Fatura'yı Otomatik'e alıp kaydetmek serbest (çıkmaz yok).
+  const auto = await ctx.api.put(`${ACC}/${account.id}/entries/${linked.entryId}`, { ...form, invoiceId: "" });
+  check(auto.status === 200, `Otomatik ile kaydedilir → ${auto.status} ${auto.error || ""}`);
+  const integrity = await must("Mutabakat", ctx.api.get("/api/workspace/ledger/integrity"));
+  check(integrity.ok === true, `Mutabakat Testi ok (${JSON.stringify((integrity.failures || []).slice(0, 2))})`);
+} finally {
+  await ctx.server.close();
+}
+console.log(`# tests ${total}\n# pass ${total - failed}\n# fail ${failed}\n# cancelled 0\n# skipped 0\n# todo 0`);
+process.exit(failed ? 1 : 0);

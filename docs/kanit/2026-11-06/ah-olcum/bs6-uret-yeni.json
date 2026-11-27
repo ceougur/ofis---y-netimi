@@ -1,0 +1,17 @@
+{
+  "kod": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ab0062d42feec8f21",
+  "sinirBayt": 98528,
+  "icHata": "disk I/O error",
+  "icHatadanSonra": {
+    "depthIcinde": true,
+    "baglantidaIslem": false
+  },
+  "disHata": "Veri tabanı işlemi yarıda kesildi: SQLite işlemi kendiliğinden geri aldı (ilk hata: disk I/O error). Bu yazım yapılmadı; işlemin tamamı geri alındı, yeniden deneyin.",
+  "kalanSatir": {
+    "disOnce": 0,
+    "ic": 0,
+    "disSonra": 0,
+    "paraSonra": 0
+  },
+  "sondaBaglantidaIslem": false
+}

@@ -1,0 +1,41 @@
+TAP version 13
+# Subtest: 2.5.0 BS-3 ailesi — cari hareketi düzeltmesi: gövde yoldayken hareket silinirse 404 + ileti; hiçbir tablo yazılmaz
+    # Subtest: (a) Borç Yaz ve nakit tahsilat: gövde yoldayken silinirse 404 "Hareket bulunamadı. Başka biri silmiş olabilir." (önceden 200, satır yok)
+    ok 1 - (a) Borç Yaz ve nakit tahsilat: gövde yoldayken silinirse 404 "Hareket bulunamadı. Başka biri silmiş olabilir." (önceden 200, satır yok)
+      ---
+      duration_ms: 800.816233
+      type: 'test'
+      ...
+    # Subtest: (b) silinmemiş harekette düzeltme AYNEN yazar: 200, tutar / açıklama / vade, bakiye ve ekstre doğru; silinmiş harekete doğrudan düzeltme 404
+    ok 2 - (b) silinmemiş harekette düzeltme AYNEN yazar: 200, tutar / açıklama / vade, bakiye ve ekstre doğru; silinmiş harekete doğrudan düzeltme 404
+      ---
+      duration_ms: 156.331363
+      type: 'test'
+      ...
+    # Subtest: (c) iki kullanıcı: kart yüklendikten sonra muhasebe kullanıcısı siler, yöneticinin düzeltmesi 404 alır; yeniden yüklenen kartta hareket yok
+    ok 3 - (c) iki kullanıcı: kart yüklendikten sonra muhasebe kullanıcısı siler, yöneticinin düzeltmesi 404 alır; yeniden yüklenen kartta hareket yok
+      ---
+      duration_ms: 518.402487
+      type: 'test'
+      ...
+    # Subtest: (d) bağlı hareketler: Kapatılacak Fatura'ya bağlı tahsilat ve vadeli Borç Yaz — gövde yoldayken silinirse 404, fatura ve vade izi değişmez
+    ok 4 - (d) bağlı hareketler: Kapatılacak Fatura'ya bağlı tahsilat ve vadeli Borç Yaz — gövde yoldayken silinirse 404, fatura ve vade izi değişmez
+      ---
+      duration_ms: 787.250326
+      type: 'test'
+      ...
+    1..4
+ok 1 - 2.5.0 BS-3 ailesi — cari hareketi düzeltmesi: gövde yoldayken hareket silinirse 404 + ileti; hiçbir tablo yazılmaz
+  ---
+  duration_ms: 3457.505186
+  type: 'suite'
+  ...
+1..1
+# tests 4
+# suites 1
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3944.332637

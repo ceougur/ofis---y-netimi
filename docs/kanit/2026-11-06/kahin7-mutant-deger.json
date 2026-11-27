@@ -1,0 +1,32 @@
+{
+  "ad": "kahin7-mutant-deger",
+  "komut": "python3 -I /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-calisma/mutant_deger.py /home/user/ofis---y-netimi/.claude/worktrees/agent-adf08b000a1310b33/test/bagimsiz/muhasebe",
+  "commit": "39110142c9a9c59c570d03d9f45d18f49f7b54bd",
+  "dal": "worktree-agent-adf08b000a1310b33",
+  "kirli": 1,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T11:18:12.062Z",
+  "sure_sn": 145.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 10,
+    "gecen": 9,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/kahin7-calisma/kanit/2026-11-06/kahin7-mutant-deger.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-adf08b000a1310b33",
+  "ham_cikti_sha256": "9848bdf3bd5fabba2168502b135f7711213d9e0fc0d4a770e5eeba8913111def",
+  "ham_cikti_bayt": 5003
+}

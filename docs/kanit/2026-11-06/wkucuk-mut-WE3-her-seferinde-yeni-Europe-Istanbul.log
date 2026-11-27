@@ -1,0 +1,144 @@
+TAP version 13
+# Subtest: 2.5.0 WE — Elle Bağla webhook bilgileri: program gösterir, kurulum başına, gizli
+    # Subtest: WE-1 yönetici: Callback URL = ofisin adresi + /wa/kanca/<43>, Verify token 43 karakter; yeniden sorulunca ve öbür şirkette AYNI (kurulum başına); WABA'nın bildirim adresinden farklı
+    not ok 1 - WE-1 yönetici: Callback URL = ofisin adresi + /wa/kanca/<43>, Verify token 43 karakter; yeniden sorulunca ve öbür şirkette AYNI (kurulum başına); WABA'nın bildirim adresinden farklı
+      ---
+      duration_ms: 830.802398
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wkucuk-mut-WE3-her-seferinde-yeni/test/whatsapp-we-webhook-bilgisi-250.test.mjs:51:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        ikinci soruşta aynı değerler
+        + actual - expected
+        
+          {
+        +   callbackUrl: 'http://ofis-we.destekofis.test/wa/kanca/GDT7HjFv0Q2rSBf7bzYTT88PVKkdKQqQtrxbv7-XKeg',
+        -   callbackUrl: 'http://ofis-we.destekofis.test/wa/kanca/0w2_TuSBDjw4HmuPFiJzwWJ12iSmD1r7soXxGVmvcQc',
+            ready: true,
+            reason: '',
+        +   verifyToken: 'WgasF6EGlq4jAM_8LXEVs3xaLU63pEYh6cqrHKAnjwk'
+        -   verifyToken: 'O4VSdnHRVQLdYLBoDk98vunRCFKrDnSQnr7uWGPmAVI'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        ready: true
+        callbackUrl: 'http://ofis-we.destekofis.test/wa/kanca/0w2_TuSBDjw4HmuPFiJzwWJ12iSmD1r7soXxGVmvcQc'
+        verifyToken: 'O4VSdnHRVQLdYLBoDk98vunRCFKrDnSQnr7uWGPmAVI'
+        reason: ''
+      actual:
+        ready: true
+        callbackUrl: 'http://ofis-we.destekofis.test/wa/kanca/GDT7HjFv0Q2rSBf7bzYTT88PVKkdKQqQtrxbv7-XKeg'
+        verifyToken: 'WgasF6EGlq4jAM_8LXEVs3xaLU63pEYh6cqrHKAnjwk'
+        reason: ''
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wkucuk-mut-WE3-her-seferinde-yeni/test/whatsapp-we-webhook-bilgisi-250.test.mjs:60:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: WE-2 Meta doğrulaması: GET doğru belirteç → 200 challenge, yanlış / eksik → 403; POST 200 ama İŞLENMEZ (iş Meta Kabul Etti kalır, defterde teslim ve bildirim yolu işareti yok); WABA adresi aynen çalışır
+    ok 2 - WE-2 Meta doğrulaması: GET doğru belirteç → 200 challenge, yanlış / eksik → 403; POST 200 ama İŞLENMEZ (iş Meta Kabul Etti kalır, defterde teslim ve bildirim yolu işareti yok); WABA adresi aynen çalışır
+      ---
+      duration_ms: 905.855959
+      type: 'test'
+      ...
+    # Subtest: WE-3 yetkisiz kullanıcı (Personel) göremez (403); belirteç ve gizli yol yöneticinin öbür yanıtlarında da yok (bağlantı, gönderim durumu, onay, sayaç, işlem geçmişi)
+    ok 3 - WE-3 yetkisiz kullanıcı (Personel) göremez (403); belirteç ve gizli yol yöneticinin öbür yanıtlarında da yok (bağlantı, gönderim durumu, onay, sayaç, işlem geçmişi)
+      ---
+      duration_ms: 768.258191
+      type: 'test'
+      ...
+    # Subtest: WE-4 sızıntı yok: günlük, veri klasöründeki BÜTÜN dosyalar (şirket dosyası, makine defteri, WAL) ve yedek belirteci / gizli yolu AÇIK hâlde taşımaz; ayar yazılamazsa 503 + Türkçe ileti (değer yok)
+    ok 4 - WE-4 sızıntı yok: günlük, veri klasöründeki BÜTÜN dosyalar (şirket dosyası, makine defteri, WAL) ve yedek belirteci / gizli yolu AÇIK hâlde taşımaz; ayar yazılamazsa 503 + Türkçe ileti (değer yok)
+      ---
+      duration_ms: 466.893408
+      type: 'test'
+      ...
+    # Subtest: WE-5 kalıcılık: program yeniden açılınca ve Şirket Verisini Sıfırla'dan sonra AYNI değerler; secret.key değişince (veri başka bilgisayarda) yeni değerler, eski yol kapanır
+    not ok 5 - WE-5 kalıcılık: program yeniden açılınca ve Şirket Verisini Sıfırla'dan sonra AYNI değerler; secret.key değişince (veri başka bilgisayarda) yeni değerler, eski yol kapanır
+      ---
+      duration_ms: 725.694716
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wkucuk-mut-WE3-her-seferinde-yeni/test/whatsapp-we-webhook-bilgisi-250.test.mjs:182:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        yeniden açılışta aynı
+        + actual - expected
+        
+          {
+        +   callbackUrl: 'http://ofis-we.destekofis.test/wa/kanca/hyo1kOizOxrkSdYDCTxSkI3uz7RxvRLwkEUJXf9yoxE',
+        -   callbackUrl: 'http://ofis-we.destekofis.test/wa/kanca/f-PXgdCdAHXu-cDvnW8aJ74-s6S4GKTV8wNn4k7RUZk',
+            ready: true,
+            reason: '',
+        +   verifyToken: 'WbFomtqzcDowPQRClENX_TKl8pGWdG4gXgilYiuEMig'
+        -   verifyToken: 'NPvoNLvPQcduWGZRhhXIuUdmE8Vzmndb5QTJXKU_98E'
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        ready: true
+        callbackUrl: 'http://ofis-we.destekofis.test/wa/kanca/f-PXgdCdAHXu-cDvnW8aJ74-s6S4GKTV8wNn4k7RUZk'
+        verifyToken: 'NPvoNLvPQcduWGZRhhXIuUdmE8Vzmndb5QTJXKU_98E'
+        reason: ''
+      actual:
+        ready: true
+        callbackUrl: 'http://ofis-we.destekofis.test/wa/kanca/hyo1kOizOxrkSdYDCTxSkI3uz7RxvRLwkEUJXf9yoxE'
+        verifyToken: 'WbFomtqzcDowPQRClENX_TKl8pGWdG4gXgilYiuEMig'
+        reason: ''
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wkucuk-mut-WE3-her-seferinde-yeni/test/whatsapp-we-webhook-bilgisi-250.test.mjs:193:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: WE-6 ofisin uzaktan adresi hazır değil: ready false, adres boş, neden Türkçe cümle; belirteç yine gösterilir (aynı)
+    not ok 6 - WE-6 ofisin uzaktan adresi hazır değil: ready false, adres boş, neden Türkçe cümle; belirteç yine gösterilir (aynı)
+      ---
+      duration_ms: 509.943413
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wkucuk-mut-WE3-her-seferinde-yeni/test/whatsapp-we-webhook-bilgisi-250.test.mjs:214:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        adres gelince belirteç değişmez
+        + actual - expected
+        
+        + 'I2lb8lZYUu1tL4bNfdo_t6pMLOxm42b1dzYit4An85Y'
+        - 'CTGt1E2J2EmtGOSud-1Nm-kHCVUfiG9ONTCpPdpZZuc'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'CTGt1E2J2EmtGOSud-1Nm-kHCVUfiG9ONTCpPdpZZuc'
+      actual: 'I2lb8lZYUu1tL4bNfdo_t6pMLOxm42b1dzYit4An85Y'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wkucuk-mut-WE3-her-seferinde-yeni/test/whatsapp-we-webhook-bilgisi-250.test.mjs:224:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..6
+not ok 1 - 2.5.0 WE — Elle Bağla webhook bilgileri: program gösterir, kurulum başına, gizli
+  ---
+  duration_ms: 4209.481798
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/wkucuk-mut-WE3-her-seferinde-yeni/test/whatsapp-we-webhook-bilgisi-250.test.mjs:50:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 6
+# suites 1
+# pass 3
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4657.030369

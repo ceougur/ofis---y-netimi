@@ -1,0 +1,32 @@
+{
+  "ad": "c3t2-rapor-is-parcacigi-istanbul-2",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/banka-210-rapor-is-parcacigi-kapanis.test.mjs",
+  "commit": "4af0aafc514641f3109e53553da3747d1d71d6d4",
+  "dal": "worktree-agent-ae037f9ed9ae9cefe",
+  "kirli": 2,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T07:57:19.738Z",
+  "sure_sn": 6.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 5,
+    "gecen": 5,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3t2-kanit/2026-11-06/c3t2-rapor-is-parcacigi-istanbul-2.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ae037f9ed9ae9cefe",
+  "ham_cikti_sha256": "d80d843eb098f897104728af470083182121cfd29778c64f5be9a2f9af86d02a",
+  "ham_cikti_bayt": 2620
+}

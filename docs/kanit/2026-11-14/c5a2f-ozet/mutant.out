@@ -1,0 +1,26 @@
+başta 12:42:30 yük 1.52 2.61 2.75 7/128 956
+== [kosu1] taban (TZ Europe/Istanbul): TABAN YEŞİL · çıkış 0 {'tests': 18, 'pass': 18, 'fail': 0, 'cancelled': 0} · düşen: 
+== [kosu1] S1-gec-yil-dusulur (TZ Europe/Istanbul): ÖLDÜ · çıkış 1 {'tests': 18, 'pass': 15, 'fail': 3, 'cancelled': 0} · düşen: [y5] [y8] [y10]
+== [kosu1] S2-ipucu-eski (TZ Europe/Istanbul): ÖLDÜ · çıkış 1 {'tests': 18, 'pass': 17, 'fail': 1, 'cancelled': 0} · düşen: [y7]
+== [kosu1] S3-fazla-sayilmaz (TZ Europe/Istanbul): ÖLDÜ · çıkış 1 {'tests': 18, 'pass': 15, 'fail': 3, 'cancelled': 0} · düşen: [y5] [y8] [y10]
+== [kosu1] S4-fazla-satir (TZ Europe/Istanbul): ÖLDÜ · çıkış 1 {'tests': 18, 'pass': 17, 'fail': 1, 'cancelled': 0} · düşen: [y8]
+== [kosu1] S5-bolunmus-ilk (TZ Europe/Istanbul): ÖLDÜ · çıkış 1 {'tests': 18, 'pass': 17, 'fail': 1, 'cancelled': 0} · düşen: [y8]
+== [kosu1] S6-neden-yok (TZ Europe/Istanbul): ÖLDÜ · çıkış 1 {'tests': 18, 'pass': 17, 'fail': 1, 'cancelled': 0} · düşen: [y10]
+== [kosu1] S7-kova-cevrilmez (TZ Europe/Istanbul): ÖLDÜ · çıkış 1 {'tests': 18, 'pass': 16, 'fail': 2, 'cancelled': 0} · düşen: [y8] [y10]
+== [kosu1] S8-kendi-ipucu-yok (TZ Europe/Istanbul): ÖLDÜ · çıkış 1 {'tests': 18, 'pass': 17, 'fail': 1, 'cancelled': 0} · düşen: [y10]
+== [kosu1] K-c-satir-yili (TZ Europe/Istanbul): ÖLDÜ · çıkış 1 {'tests': 18, 'pass': 17, 'fail': 1, 'cancelled': 0} · düşen: [y10]
+== [kosu1] P3-yon-ham (TZ Europe/Istanbul): ÖLDÜ · çıkış 1 {'tests': 18, 'pass': 17, 'fail': 1, 'cancelled': 0} · düşen: [y9]
+== [kosu1] Y2-ortu-once (TZ Europe/Istanbul): YAŞADI · çıkış 0 {'tests': 18, 'pass': 18, 'fail': 0, 'cancelled': 0} · düşen: 
+== [kosu2] taban (TZ UTC): TABAN YEŞİL · çıkış 0 {'tests': 18, 'pass': 18, 'fail': 0, 'cancelled': 0} · düşen: 
+== [kosu2] S1-gec-yil-dusulur (TZ UTC): ÖLDÜ · çıkış 1 {'tests': 18, 'pass': 15, 'fail': 3, 'cancelled': 0} · düşen: [y5] [y8] [y10]
+== [kosu2] S2-ipucu-eski (TZ UTC): ÖLDÜ · çıkış 1 {'tests': 18, 'pass': 17, 'fail': 1, 'cancelled': 0} · düşen: [y7]
+== [kosu2] S3-fazla-sayilmaz (TZ UTC): ÖLDÜ · çıkış 1 {'tests': 18, 'pass': 15, 'fail': 3, 'cancelled': 0} · düşen: [y5] [y8] [y10]
+== [kosu2] S4-fazla-satir (TZ UTC): ÖLDÜ · çıkış 1 {'tests': 18, 'pass': 17, 'fail': 1, 'cancelled': 0} · düşen: [y8]
+== [kosu2] S5-bolunmus-ilk (TZ UTC): ÖLDÜ · çıkış 1 {'tests': 18, 'pass': 17, 'fail': 1, 'cancelled': 0} · düşen: [y8]
+== [kosu2] S6-neden-yok (TZ UTC): ÖLDÜ · çıkış 1 {'tests': 18, 'pass': 17, 'fail': 1, 'cancelled': 0} · düşen: [y10]
+== [kosu2] S7-kova-cevrilmez (TZ UTC): ÖLDÜ · çıkış 1 {'tests': 18, 'pass': 16, 'fail': 2, 'cancelled': 0} · düşen: [y8] [y10]
+== [kosu2] S8-kendi-ipucu-yok (TZ UTC): ÖLDÜ · çıkış 1 {'tests': 18, 'pass': 17, 'fail': 1, 'cancelled': 0} · düşen: [y10]
+== [kosu2] K-c-satir-yili (TZ UTC): ÖLDÜ · çıkış 1 {'tests': 18, 'pass': 17, 'fail': 1, 'cancelled': 0} · düşen: [y10]
+== [kosu2] P3-yon-ham (TZ UTC): ÖLDÜ · çıkış 1 {'tests': 18, 'pass': 17, 'fail': 1, 'cancelled': 0} · düşen: [y9]
+== [kosu2] Y2-ortu-once (TZ UTC): YAŞADI · çıkış 0 {'tests': 18, 'pass': 18, 'fail': 0, 'cancelled': 0} · düşen: 
+çıkış 0 sonda 12:47:09 yük 6.10 4.69 3.60 5/136 2790

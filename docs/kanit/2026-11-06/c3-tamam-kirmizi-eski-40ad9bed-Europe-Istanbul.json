@@ -1,0 +1,53 @@
+{
+  "ad": "c3-tamam-kirmizi-eski-40ad9bed-Europe-Istanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/donmus-defter-bellek-250.test.mjs",
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "izlenmeyen": null,
+  "platform": "linux 6.18.44-fc-v242 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-06T01:34:04.991Z",
+  "sure_sn": 1.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 5,
+    "gecen": 1,
+    "basarisiz": 4,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 4 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.0 Ç3 tamamlama — büyük okumada sıkı satırlar (lib/lean-rows.mjs) › B1: leanAll / leanRows = store.all — aynı anahtarlar, aynı sıra, aynı değerler (metin, tamsayı, ondalık, NULL, BLOB, büyük tamsayı; konumlu ve adlı parametre); tutma sınırı aşılınca da",
+      "konum": "test/donmus-defter-bellek-250.test.mjs:92:3",
+      "hata": "Cannot find module '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3-tamam-a1/eski-40ad9bed/server/lib/lean-rows.mjs' imported from /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3-tamam-a1/eski-40ad9bed/test/donmus-defter-bellek-250.test.mjs"
+    },
+    {
+      "ad": "2.5.0 Ç3 tamamlama — büyük okumada sıkı satırlar (lib/lean-rows.mjs) › B2: sıkı satırlar V8'in hızlı kipinde (ayrı süreç, --allow-natives-syntax: %HasFastProperties); store.all'ın satırı bilgi için ölçülür",
+      "konum": "test/donmus-defter-bellek-250.test.mjs:112:3",
+      "hata": "node:internal/modules/esm/resolve:275 · throw new ERR_MODULE_NOT_FOUND( · ^ (beklenen 0, gelen 1)"
+    },
+    {
+      "ad": "2.5.0 Ç3 tamamlama — büyük okumada sıkı satırlar (lib/lean-rows.mjs) › B5: 2.4.9 kural kopyasını çağıran her yer sıkı depoyla çağırır (kaynak taraması; kopyanın kendisi değişmez)",
+      "konum": "test/donmus-defter-bellek-250.test.mjs:136:3",
+      "hata": "buildRule249 sıkı depo olmadan çağrılıyor: [{\"file\":\"server/lib/ledger-freeze-worker.mjs\",\"line\":31,\"arg\":\"store\"},{\"file\":\"server/lib/ledger-snapshots.mjs\",\"line\":136,\"arg\":\"store\"}] · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.0 Ç3 tamamlama — türetme ve donmuş defter sıkı satırlarla (eski sürüm verisi, güncel şema) › B3: Ana Defter türetmesi (güncel kural ve 2.4.9 kopyası) kaynak satırlarını store.all ile okumaz; çıktı store.all'lı türetmeyle BİREBİR; donmuş okuma ve Kural Değişikliği Farkı da store.all'sız",
+      "konum": "test/donmus-defter-bellek-250.test.mjs:190:3",
+      "hata": "güncel kural: kaynak sorguları store.all'a düşmemeli · + actual - expected · + [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "docs/kanit/2026-11-06/c3-tamam-kirmizi-eski-40ad9bed-Europe-Istanbul.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/c3-tamam-a1/eski-40ad9bed",
+  "ham_cikti_sha256": "21fd29a0f8333112b9acd93539d901d3d3cc0ec017d87caaa1348a9187ac8e57",
+  "ham_cikti_bayt": 23869
+}

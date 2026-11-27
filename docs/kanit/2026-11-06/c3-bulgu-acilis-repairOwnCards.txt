@@ -1,0 +1,26 @@
+2.5.0 Ç3 — BULGU (Ç3 kapsamı DIŞI; TABAN kodda, a2796dd4): büyük veride şirket açılışı dakikalar sürüyor, olay döngüsü boyunca kilitli.
+
+Veri: programın kendi ürettiği 100.000 ölçüm verisi (tools/kapi-olcum.mjs --yalniz-kur; 001'de 226.734 para satırı, ~405.000 satır; 46'ya indirilmiş kopya c3-olcum-veri/n-100000-v46).
+Komut: node --cpu-prof --cpu-prof-dir=<klasör> acilis-profil.mjs <a2796dd4 kopyası> <n-100000-v46>  (2026-11-06 ~00:45 UTC; makine yükü ~3,5)
+Sonuç: createApp 101.719 ms. 2.1.0 kanıtında (docs/2.1.0-KANIT.md) açılış 100.000'de ~11 sn, 1.000.000'da ~3 dk idi. 1.000.000'luk veride açılış 22 dakikada bitmedi (durduruldu).
+Aynı veride Ç3 kodu (8c3a0436) açılışı 97–106 sn (ölçüm JSON'ları c3-olcum-100k-*-veri.json "acilisMs"): Ç3 açılışa ölçülebilir süre eklemiyor.
+
+CPU profili (kendi süresi / toplam süre; server/ altı):
+KENDİ SÜRESİ:
+80.1 sn  all lib/db.mjs:334
+13.1 sn  get lib/db.mjs:333
+1.5 sn  (garbage collector)
+0.6 sn  roundMoney lib/money.mjs:32
+TOPLAM:
+100.3 sn  createApp server/app.mjs:112
+92.9 sn  repairOwnCards routes/invoices.mjs:2072      (app.mjs "Taksit kartı açılış onarımı", Canlı Hata 2 — 2.1.0)
+86.5 sn  coverState routes/invoices.mjs:2027
+86.4 sn  paymentStates routes/invoices.mjs:786
+69.1 sn  accountSettleInput routes/invoices.mjs:763
+16.3 sn  detail routes/accounts.mjs:150
+12.7 sn  openingEntryOf routes/accounts.mjs:577
+7.3 sn  start lib/integrity.mjs:803        (kapının taban taraması — 2.1.0'daki ~11 sn ile uyumlu)
+6.4 sn  refundsFor routes/invoices.mjs:2041
+
+Okuma: açılış onarımı her açılışta kart başına coverState → paymentStates → accountSettleInput (carinin bütün hareketleri) okuyor — ders 47'nin "öğe başına ağır okuma" deseni.
+001'de açılışı, 002'de TEMBEL açılışı (bir isteğin içinde) bekletir. Öneri: ayrı iş (damgayla bir kez koşma ya da toplu SQL), eşdeğerlik testi + aynı veriyle önce / sonra ölçüm.

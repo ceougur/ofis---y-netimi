@@ -425,7 +425,11 @@ describe("Düzeltme, silme, geri yükleme, fatura iptali (plan §3.8, §4.6)", (
       assert.deepEqual(cal.rows.map(row => [row.valueDate, row.kind, row.netMinor]), [["2026-11-12", "fee", -kurus(140)], ["2026-12-14", "fee", -kurus(140)], ["2027-01-12", "fee", -kurus(140)]]);
       const summary = await summaryOf(w.api);
       assert.deepEqual([summary.posPending.netMinor, summary.posPending.feeMinor], [-kurus(420), kurus(420)], "Komisyon Tahsili Bekleyen 420");
-      assert.equal(kurus((await subBalances(w.api))["108.01"]?.balance || 0), 0, "108.01 = 0");
+      // BEKLENTİ BİLEREK DEĞİŞTİ (2.5.0 Ç7a tur 2b, KG-6 = A — kullanıcı 05.11 17:16 (5); KG-20 A "komisyon iadesi yalnız banka iade ederse"): İade Edilmez İptal İadesi'nde
+      // komisyon 420 satış gününde (12.10) 653'e yazıldı; brüt satış ↔ iade 108.01'de netleşir, banka 420'yi valörlerde hesaptan tahsil eder → valörlere kadar 108.01 = −420
+      // (bankaya borç; her Komisyon Tahsili gün fişinde 140 kapanır, sonunda 0). Ziraat ve POS Bekleyen (Net −420) aynen.
+      assert.equal(kurus((await subBalances(w.api))["108.01"]?.balance || 0), -kurus(420), "108.01 = −420 (KG-6: komisyon satış gününde, tahsili valörlerde)");
+      assert.equal(kurus((await trialBalances(w.api))["653"] || 0), kurus(420), "653 = 420 (12.10 — taksitli satışın günü)");
       assert.equal(await balanceOf(w.api, w.acc.ziraat.id), bankBefore, "banka bugün değişmez");
       assert.equal((await must("Ürün B", w.api.get(`/api/workspace/stock/${item.id}`))).qty, 25);
       const refund = (await salesOf(w.api, "?kind=refund")).find(entry => entry.origin?.id === sale.id);

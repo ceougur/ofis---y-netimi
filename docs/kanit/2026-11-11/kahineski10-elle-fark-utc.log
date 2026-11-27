@@ -1,0 +1,64 @@
+d35-c5-s120-elle-borclar.json: 58 elle beklenti değişti
+    değer                  k1:cari:H10:acikEsitBakiye: "(yok)" → true
+    değer                  k1:cari:H10:acikToplam: "(yok)" → 60000
+    değer                  k1:cari:H10:gecikmis: "(yok)" → 0
+    değer                  k1:cari:H11:acikEsitBakiye: "(yok)" → true
+    değer                  k1:cari:H11:acikToplam: "(yok)" → 150000
+    değer                  k1:cari:H11:gecikmis: "(yok)" → 90000
+    değer                  k1:fatura:H10F:acik: "(yok)" → 0
+    değer                  k1:fatura:H11F:acik: "(yok)" → 60000
+    değer                  k1:hareket:h10x:kalan: "(yok)" → 20000
+    değer                  k1:hareket:h10y:kalan: "(yok)" → 40000
+    değer                  k1:hareket:h11x:kalan: "(yok)" → 20000
+    değer                  k1:hareket:h11y:kalan: "(yok)" → 70000
+    değer                  k1:kart:KH10:kalan: "(yok)" → 60000
+    değer                  k1:kart:KH10:mevcutBorc: "(yok)" → true
+    değer                  k1:kart:KH10:odenen: "(yok)" → 30000
+    değer                  k1:kart:KH10:taksit1:odenen: "(yok)" → 30000
+    değer                  k1:kart:KH10:taksit2:odenen: "(yok)" → 0
+    değer                  k1:kart:KH10:taksit3:odenen: "(yok)" → 0
+    değer                  k1:kart:KH11:kalan: "(yok)" → 60000
+    değer                  k1:kart:KH11:mevcutBorc: "(yok)" → true
+    değer                  k1:kart:KH11:odenen: "(yok)" → 30000
+    değer                  k1:kart:KH11:taksit1:odenen: "(yok)" → 30000
+    değer                  k1:kart:KH11:taksit2:odenen: "(yok)" → 0
+    değer                  k1:kart:KH11:taksit3:odenen: "(yok)" → 0
+    değer                  k1:projeksiyon:hareket:h10x: "(yok)" → "yok"
+    değer                  k1:projeksiyon:hareket:h10y: "(yok)" → "yok"
+    değer                  k1:projeksiyon:hareket:h11x: "(yok)" → "yok"
+    değer                  k1:projeksiyon:hareket:h11y: "(yok)" → {"amount": 30000, "date": "2026-03-05", "direction": "in"}
+    değer                  k1:takvim:fatura:H10F: "(yok)" → "yok"
+    değer                  k1:takvim:fatura:H11F: "(yok)" → {"amount": 60000, "direction": "in"}
+    değer                  k1:takvim:hareket:h10x: "(yok)" → "yok"
+    değer                  k1:takvim:hareket:h10y: "(yok)" → "yok"
+    değer                  k1:takvim:hareket:h11x: "(yok)" → "yok"
+    değer                  k1:takvim:hareket:h11y: "(yok)" → {"amount": 30000, "dueDate": "2026-03-05", "direction": "in", "label": "Tahsil Edilecek Borç", "state": "overdue", "days": -41, "cari": "H11", "person": "Hacer Kart Öder"}
+    değer                  k1:vadeTakip:hareket:h10x: "(yok)" → "yok"
+    değer                  k1:vadeTakip:hareket:h10y: "(yok)" → "yok"
+    değer                  k1:vadeTakip:hareket:h11x: "(yok)" → "yok"
+    değer                  k1:vadeTakip:hareket:h11y: "(yok)" → {"amount": 30000, "date": "2026-03-05", "direction": "in"}
+    elleYok kalktı         k1:cari:H10:gecikmis: "yok" → ""
+    elleYok kalktı         k1:cari:H11:gecikmis: "yok" → ""
+    elleYok kalktı         k1:fatura:H10F:acik: "yok" → ""
+    elleYok kalktı         k1:fatura:H11F:acik: "yok" → ""
+    elleYok kalktı         k1:hareket:h10x:kalan: "yok" → ""
+    elleYok kalktı         k1:hareket:h10y:kalan: "yok" → ""
+    elleYok kalktı         k1:hareket:h11x:kalan: "yok" → ""
+    elleYok kalktı         k1:hareket:h11y:kalan: "yok" → ""
+    elleYok kalktı         k1:kart:KH10:kalan: "yok" → ""
+    elleYok kalktı         k1:kart:KH11:kalan: "yok" → ""
+    elleYok kalktı         k1:takvim:hareket:h10x: "yok" → ""
+    elleYok kalktı         k1:takvim:hareket:h11x: "yok" → ""
+    elleBelirsiz kalktı    ["cari H3 tanımsız", "SK-22"]: "" → ""
+    elleBelirsiz kalktı    ["cari H8 tanımsız", "SK-20"]: "" → ""
+    elleBelirsiz kalktı    ["cari H9a tanımsız", "SK-23"]: "" → ""
+    elleBelirsiz kalktı    ["cari H10 tanımsız", "SK-21"]: "" → ""
+    elleBelirsiz kalktı    ["cari H11 tanımsız", "SK-21"]: "" → ""
+    elleBelirsiz eklendi   ["cari H3 tanımsız", "SK-22", "BİLİNEN SINIR", "S124 = C"]: "" → ""
+    elleBelirsiz eklendi   ["cari H8 tanımsız", "SK-20", "BİLİNEN SINIR", "S123 = C"]: "" → ""
+    elleBelirsiz eklendi   ["cari H9a tanımsız", "SK-23", "BİLİNEN SINIR", "S125 = C"]: "" → ""
+yeni elle senaryo: d36-c5-s122-kart-odemesi.json
+# tests 89
+# pass 89
+# fail 0
+89/89 denetim geçti

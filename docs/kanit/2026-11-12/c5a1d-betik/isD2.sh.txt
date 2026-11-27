@@ -1,0 +1,17 @@
+#!/bin/bash
+# Ç5-A tur 1d İş D (a) düzeltme koşusu: eski kopyada (git archive — etiket yok) eski sürüm karşılaştırması ATLANIYORDU (isD.sh'in eski kopya satırları geçersiz);
+# etiketler bu çalışma ağacının git dosyasından okunur (GIT_DIR; yalnız rev-parse — salt okuma).
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+E=$S/c5a1d-eski
+K=$S/c5a1d-kanit/2026-11-12
+export HUKUK_LICENSE_URL=http://127.0.0.1:9 ZORLA_SURE_SN=900 GIT_DIR=/home/user/ofis---y-netimi/.claude/worktrees/agent-ac0e51d0f24e4542e/.git
+AD='eski sürümün verisi yeni kuralla'
+{
+for tz in UTC Europe/Istanbul; do
+  echo "== ESKİ test (c5a1d-taban kopyası + yeni yardımcılar; etiketler GIT_DIR ile) · kip bitir · $tz"
+  (cd $E && DONDURMA_YARIS=bitir TZ=$tz node test/b7-dondurma-yaris-zorla.mjs test/banka-220-senet-121.test.mjs 10 --ad "$AD") 2>&1 | grep -E '^\[zorla' | cut -c1-600
+  echo "== YENİ test ESKİ ürün kodunda (c5a1d-taban kopyası; İş A'sız) · kip bitir · $tz"
+  (cd $E && DONDURMA_YARIS=bitir TZ=$tz node test/b7-dondurma-yaris-zorla.mjs test/banka-220-senet-121-yeni.test.mjs 5 --ad "$AD") 2>&1 | grep -E '^\[zorla' | cut -c1-600
+done
+} > $K/c5a1d-isD-senet-zorla-eski-kopya.txt 2>&1
+echo bitti

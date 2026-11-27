@@ -1,0 +1,54 @@
+// Kara kutu yoklaması 3 (bakım 24, yalnız EŞLEME — kural kaynağı değil): Kartı Kapat (PUT status), kapanış tarihi alanı, iade / iade iptali / fatura düzenleme uçlarının
+// varlığı ve yanıt biçimi. Programın kodu OKUNMAZ.
+import { mkdtempSync } from "node:fs";
+import { tmpdir } from "node:os";
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+const ROOT = process.argv[2];
+const { startTestServer, ADMIN_PASSWORD } = await import(pathToFileURL(path.join(ROOT, "test", "helpers.mjs")).href);
+const veri = mkdtempSync(path.join(tmpdir(), "kc24-yokla3-"));
+const server = await startTestServer({ dataDir: path.join(veri, "data"), now: "2026-10-08T09:00:00", env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, legacyCasePayments: false, legacyTableTransfer: false, legacyTableDues: false });
+const c = server.client();
+const u0 = server.client();
+for (const e of ["", "/edit", "/update", "/lines", "/amend", "/revise", "/reduce"]) for (const m of ["PUT", "PATCH", "POST"]) { const r = await u0[m.toLowerCase()](`/api/workspace/invoices/x1${e}`, {}); if (r.status !== 404) console.log("FATURA UCU VAR", m, e || "(kök)", r.status); }
+if ((await c.login("admin", ADMIN_PASSWORD)).status !== 200) throw new Error("giris");
+const unwrap = r => (r.data && typeof r.data === "object" && "ok" in r.data ? (r.data.ok ? r.data.data : r.data) : r.data);
+const api = async (m, u, b) => { const r = m === "GET" ? await c.get(u) : m === "DELETE" ? await c.del(u) : await c[m.toLowerCase()](u, b); return { status: r.status, data: unwrap(r) }; };
+const kisa = (x, n = 1500) => JSON.stringify(x).slice(0, n);
+const kart = async (pid, et) => { const d = (await api("GET", `/api/workspace/plans/${pid}`)).data; console.log(et, "KART status", d.status, "closedAt", d.closedAt, "total", d.total, "totals", kisa({ t: d.totals.total, p: d.totals.paid, r: d.totals.remaining, o: d.totals.overdue }), "items", kisa(d.items.map(i => [i.dueDate, i.planDueDate, i.amount, i.paid, i.remaining]))); };
+const cari = async (aid, et) => { const d = (await api("GET", `/api/workspace/accounts/${aid}`)).data; console.log(et, "CARI bakiye", d.totals?.balance, "overdueDebt", d.totals?.overdueDebt); };
+const fat = async (fid, et) => { const d = (await api("GET", `/api/workspace/invoices/${fid}`)).data; console.log(et, "FATURA", kisa({ st: d.status, total: d.total ?? d.totals?.grand, open: d.open, ownOpen: d.ownOpen, inPlan: d.inPlan, payState: d.payState, ownPayState: d.ownPayState, lines: (d.lines || []).map(l => [l.id, l.qty, l.unitPrice]) }, 800)); return d; };
+const acc = await api("POST", "/api/workspace/accounts", { name: "Deneme Kişi", type: "customer", phone: "", registeredOn: "2026-09-01" });
+const aid = acc.data?.id;
+const st = await api("POST", "/api/workspace/stock", { kind: "service", code: "KAHIN-HZM", name: "Kâhin Hizmeti", unit: "Adet", salePrice: "100" });
+const urun = st.data?.id;
+const inv = await api("POST", "/api/workspace/invoices", { kind: "sale", scenario: "service_sale", lines: [{ itemId: urun, qty: 3, unitPrice: "300,00", vatRate: 0 }], accountId: aid, issueDate: "2026-09-01", payment: { rest: "open" } });
+const fid = inv.data?.id;
+const pl = await api("POST", "/api/workspace/plans", { name: "Deneme Kişi", registeredOn: "2026-09-02", total: "900,00", accountId: aid, mode: "auto", count: "3", firstDue: "2026-10-05", coversBalance: true });
+const pid = pl.data?.id;
+const kt = await api("POST", `/api/workspace/plans/${pid}/entries`, { kind: "in", amount: "300,00", date: "2026-09-03", method: "cash", cashForce: true, similarOk: true });
+console.log("kart tahsilat", kt.status);
+await kart(pid, "A0"); await cari(aid, "A0");
+const kap = await api("PUT", `/api/workspace/plans/${pid}`, { status: "closed", closedAt: "2026-10-01" });
+console.log("kapat closedAt verildi", kap.status, kap.data?.closedAt);
+await kart(pid, "A1"); await cari(aid, "A1");
+const asil = await fat(fid, "A1");
+const iade = await api("POST", "/api/workspace/invoices", { kind: "sale_return", originalId: fid, issueDate: "2026-10-08", lines: [{ originLineId: asil?.lines?.[0]?.id, qty: 1 }], payment: {} });
+console.log("iade", iade.status, kisa(iade.data, 300));
+await kart(pid, "A2"); await cari(aid, "A2"); await fat(fid, "A2");
+const ac = await api("PUT", `/api/workspace/plans/${pid}`, { status: "active" });
+console.log("yeniden ac", ac.status);
+await kart(pid, "A3"); await cari(aid, "A3");
+const kap2 = await api("PUT", `/api/workspace/plans/${pid}`, { status: "closed" });
+console.log("yeniden kapat", kap2.status);
+await kart(pid, "A4"); await cari(aid, "A4");
+const ip = await api("POST", `/api/workspace/invoices/${iade.data?.id}/cancel`, { reason: "Kâhin denemesi" });
+console.log("iade iptal", ip.status, kisa(ip.data, 300));
+await kart(pid, "A5"); await cari(aid, "A5"); await fat(fid, "A5");
+// fatura düzenleme: GET → PUT aynı gövde, adet 2
+const g = (await api("GET", `/api/workspace/invoices/${fid}`)).data;
+const put = await api("PUT", `/api/workspace/invoices/${fid}`, { ...g, lines: (g.lines || []).map(l => ({ ...l, qty: 2 })), updatedAt: g.updatedAt });
+console.log("fatura duzenle", put.status, kisa(put.data, 600));
+await kart(pid, "A6"); await cari(aid, "A6"); await fat(fid, "A6");
+await server.close?.();
+process.exit(0);

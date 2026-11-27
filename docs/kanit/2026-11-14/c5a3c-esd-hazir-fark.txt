@@ -1,0 +1,15 @@
+satır 1893 1893
+CARİ sirket-001 account-5c95b806-f343-4bac-a19d-08f90e6c5922 alan farkı 108
+    ('.onbellek.doubtful.amount', '9500', '5500')
+    ('.onbellek.doubtful.items[len]', 17, 10)
+    ('.onbellek.invoiceNet.[Map][0][1].doubtful', '600', '0')
+    ('.onbellek.invoiceNet.[Map][1][1].doubtful', '600', '0')
+    ('.onbellek.invoiceNet.[Map][5][1].doubtful', '600', '0')
+    ('.onbellek.invoiceNet.[Map][10][1].doubtful', '600', '0')
+    ('.onbellek.invoiceNet.[Map][12][1].doubtful', '600', '0')
+    ('.onbellek.invoiceNet.[Map][15][1].doubtful', '400', '0')
+    ('.onbellek.invoiceNet.[Map][18][1].doubtful', '600', '0')
+    ('.onbellek.items[10].doubtful', '600', '0')
+    ('.onbellek.items[11].doubtful', '600', '0')
+    ('.onbellek.items[12].doubtful', '600', '0')
+farklı satır 1

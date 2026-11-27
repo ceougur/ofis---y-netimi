@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/home/user/ofis---y-netimi/.claude/worktrees/agent-add6aeab327a65eb5/test/bagimsiz/defter/oz-test.py", line 40, in <module>
+    def calistir(sen, mut=0, kural=K.VARSAYILAN_KURAL):
+                                   ^^^^^^^^^^^^^^^^^^
+AttributeError: module 'kahin_defter' has no attribute 'VARSAYILAN_KURAL'

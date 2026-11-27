@@ -1,0 +1,21 @@
+ÜRETİCİ: 20/20 aynı dizi (tur s1 + ux18, tohum 1–10 × 120 işlem)
+ADIMLAR: eski kopyadaki 89 elle senaryonun 0'inin adımları değişti: yok · yeni elle senaryo: d36-c5-s122-kart-odemesi
+EŞDEĞERLİK (2.4.9 / 2.4.6 / 2.4.5 / --legacy; eski kopyanın 89 elle + yeni kopyanın yeni 1 elle + 20 rastgele senaryo × 4 kip): 440/440 bayt bayt aynı
+G3 (kural 2.5.0; 109 senaryo — eski kopyanın 89 elle senaryosu + yeni elle + 20 rastgele): eski 47167 denetim · yeni 47499 denetim · değişen / kalkan / yeni toplam 332 · BEKLENMEYEN 0 · yalnız etiketi değişen 0
+  S122-OT        yeni        40
+      örn. d36-c5-s122-kart-odemesi k1:cari:J12:acikEsitBakiye: "(denetim yok)" → true
+      örn. d36-c5-s122-kart-odemesi k1:cari:J12:acikToplam: "(denetim yok)" → 60000
+      örn. d36-c5-s122-kart-odemesi k1:cari:J12:gecikmis: "(denetim yok)" → 0
+      örn. d36-c5-s122-kart-odemesi k1:cari:J12b:acikEsitBakiye: "(denetim yok)" → true
+  S122-alan      yeni       292
+      örn. d35-c5-s120-elle-borclar k1:cari:H10:acikEsitBakiye: "(denetim yok)" → true
+      örn. d35-c5-s120-elle-borclar k1:cari:H10:acikToplam: "(denetim yok)" → 60000
+      örn. d35-c5-s120-elle-borclar k1:cari:H10:gecikmis: "(denetim yok)" → 0
+      örn. d35-c5-s120-elle-borclar k1:cari:H11:acikEsitBakiye: "(denetim yok)" → true
+G3 senaryo senaryo (sınıf/tür: adet; listede olmayan senaryoda fark 0):
+  d35-c5-s120-elle-borclar                 S122-alan/yeni 44
+  d36-c5-s122-kart-odemesi                 S122-OT/yeni 40 · S122-alan/yeni 248
+# tests 550
+# pass 550
+# fail 0
+550/550 denetim geçti

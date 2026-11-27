@@ -1,0 +1,17 @@
+    not ok 2 - transferin yalnız öbür tarafı yok (eski / bozuk veri benzetimi, doğrudan silme): 404 "Transferin öbür tarafı bulunamadı"; tablolar değişmez
+      error: |-
+        404 olmalı — 409 {"ok":false,"error":"İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (102 Bankalar (Havale / EFT): -350,00 TL fark). Hiçbir değişiklik yazılmadı | hiçbir tablo yazılmamalı — integrity_log 0:e3b0c44298fc1c14 → 1:5fe6b416f3314379
+        + actual - expected
+        + [
+        +   '404 olmalı — 409 {"ok":false,"error":"İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (102 Bankalar (Havale / EFT): -350,00 TL fark). Hiçbir değişiklik yazılmadı',
+        +   'hiçbir tablo yazılmamalı — integrity_log 0:e3b0c44298fc1c14 → 1:5fe6b416f3314379'
+        + ]
+        - []
+        0: '404 olmalı — 409 {"ok":false,"error":"İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (102 Bankalar (Havale / EFT): -350,00 TL fark). Hiçbir değişiklik yazılmadı'
+        1: 'hiçbir tablo yazılmamalı — integrity_log 0:e3b0c44298fc1c14 → 1:5fe6b416f3314379'
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir-tur1-a7f3/mut/M8/test/birlesik-tur1-yaris-250.test.mjs:506:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+not ok 2 - 2.5.0 BİRLEŞİK TUR 1 YB-2 — Kasa ↔ Banka transferi: gövde yoldayken silinir ya da öbür tarafı yok olursa 404, hiçbir tablo yazılmaz
+  error: '1 subtest failed'

@@ -1,0 +1,44 @@
+başta yük 2.40 3.82 4.03 2/112 5227 · 21:50:32 · uç 0dd3156a
+M1-7A-yansitma-yok: uygulandı (server/lib/financial-statements.mjs)
+M1-7A-yansitma-yok koşu 1: çıkış 1 · geçen 22 · düşen 11 · YAKALANDI · planda gelir tablosu kalemi olan her hesap önek sınıflamasıyla AYN|planda olmayan önekler: 601 A, 611 B, 661 H, 679 I; 690 / 692 / 650 s|Q1: kalemler, 7/A yansıtma, .90 alt satırlar, ara toplamlar, tahmini|Q2: 780 → 660 Finansman Giderleri; satışların maliyeti T(30.06) �|aylar toplamı = çeyrek = yıl (her kalem, satışların maliyeti dah|dönem sınırı: 31.03 maddesi Q1'de, 01.04 maddesi Q2'de (bir gün k|dengesiz madde, sınıflandırılmamış hesap (690 olağan maddede), |dipnot 3 (770.90 tutarı) ve dipnot 6 (.90 gelir / gider)|Gelir Tablosu [01.01, 30.09] elle hesaplanan sayılarla; tahmini satı|iş parçacığı ↔ iş parçacığısız sonuç birebir; değerleme|kilitli dönem DONMUŞ defterden, açık dönem canlı türetmeden; ku|
+M1-7A-yansitma-yok koşu 2: çıkış 1 · geçen 22 · düşen 11 · YAKALANDI · planda gelir tablosu kalemi olan her hesap önek sınıflamasıyla AYN|planda olmayan önekler: 601 A, 611 B, 661 H, 679 I; 690 / 692 / 650 s|Q1: kalemler, 7/A yansıtma, .90 alt satırlar, ara toplamlar, tahmini|Q2: 780 → 660 Finansman Giderleri; satışların maliyeti T(30.06) �|aylar toplamı = çeyrek = yıl (her kalem, satışların maliyeti dah|dönem sınırı: 31.03 maddesi Q1'de, 01.04 maddesi Q2'de (bir gün k|dengesiz madde, sınıflandırılmamış hesap (690 olağan maddede), |dipnot 3 (770.90 tutarı) ve dipnot 6 (.90 gelir / gider)|Gelir Tablosu [01.01, 30.09] elle hesaplanan sayılarla; tahmini satı|iş parçacığı ↔ iş parçacığısız sonuç birebir; değerleme|kilitli dönem DONMUŞ defterden, açık dönem canlı türetmeden; ku|
+M2-iade-ters-isaret: uygulandı (server/lib/financial-statements.mjs)
+M2-iade-ters-isaret koşu 1: çıkış 1 · geçen 29 · düşen 4 · YAKALANDI · Q1: kalemler, 7/A yansıtma, .90 alt satırlar, ara toplamlar, tahmini|aylar toplamı = çeyrek = yıl (her kalem, satışların maliyeti dah|Gelir Tablosu [01.01, 30.09] elle hesaplanan sayılarla; tahmini satı|iç tutarlılık: kalemlerin defter tutarları Hesap Planı Mizanı'n�|
+M2-iade-ters-isaret koşu 2: çıkış 1 · geçen 29 · düşen 4 · YAKALANDI · Q1: kalemler, 7/A yansıtma, .90 alt satırlar, ara toplamlar, tahmini|aylar toplamı = çeyrek = yıl (her kalem, satışların maliyeti dah|Gelir Tablosu [01.01, 30.09] elle hesaplanan sayılarla; tahmini satı|iç tutarlılık: kalemlerin defter tutarları Hesap Planı Mizanı'n�|
+M3-alis-iadesi-dusulmez: uygulandı (server/lib/stock-valuation.mjs)
+M3-alis-iadesi-dusulmez koşu 1: çıkış 1 · geçen 26 · düşen 7 · YAKALANDI · 2025 yıl sonu: DSS 108,00, SMM 1.242,00|2026: DBS = 2025 DSS; 31.01 DSS 108,00; 31.03 DSS 448,00, SMM 320,00|alış iadesi alışlardan değerliyse birim maliyet eksi (formül har|alış iadesi birim maliyeti DÜŞÜRÜR / YÜKSELTİR (iade fiyatı o|Gelir Tablosu [01.01, 30.09] elle hesaplanan sayılarla; tahmini satı|iş parçacığı ↔ iş parçacığısız sonuç birebir; değerleme|kilitli dönem DONMUŞ defterden, açık dönem canlı türetmeden; ku|
+M3-alis-iadesi-dusulmez koşu 2: çıkış 1 · geçen 26 · düşen 7 · YAKALANDI · 2025 yıl sonu: DSS 108,00, SMM 1.242,00|2026: DBS = 2025 DSS; 31.01 DSS 108,00; 31.03 DSS 448,00, SMM 320,00|alış iadesi alışlardan değerliyse birim maliyet eksi (formül har|alış iadesi birim maliyeti DÜŞÜRÜR / YÜKSELTİR (iade fiyatı o|Gelir Tablosu [01.01, 30.09] elle hesaplanan sayılarla; tahmini satı|iş parçacığı ↔ iş parçacığısız sonuç birebir; değerleme|kilitli dönem DONMUŞ defterden, açık dönem canlı türetmeden; ku|
+M4-KG9-eksi-deger: uygulandı (server/lib/stock-valuation.mjs)
+M4-KG9-eksi-deger koşu 1: çıkış 1 · geçen 32 · düşen 1 · YAKALANDI · KG-9 A: eksi miktar 0 değer + eksi stok listesi; M5: ertesi yıl eksi|
+M4-KG9-eksi-deger koşu 2: çıkış 1 · geçen 32 · düşen 1 · YAKALANDI · KG-9 A: eksi miktar 0 değer + eksi stok listesi; M5: ertesi yıl eksi|
+M5-donem-siniri-kayik: uygulandı (server/lib/financial-statements.mjs)
+M5-donem-siniri-kayik koşu 1: çıkış 1 · geçen 30 · düşen 3 · YAKALANDI · Q2: 780 → 660 Finansman Giderleri; satışların maliyeti T(30.06) �|aylar toplamı = çeyrek = yıl (her kalem, satışların maliyeti dah|dönem sınırı: 31.03 maddesi Q1'de, 01.04 maddesi Q2'de (bir gün k|
+M5-donem-siniri-kayik koşu 2: çıkış 1 · geçen 30 · düşen 3 · YAKALANDI · Q2: 780 → 660 Finansman Giderleri; satışların maliyeti T(30.06) �|aylar toplamı = çeyrek = yıl (her kalem, satışların maliyeti dah|dönem sınırı: 31.03 maddesi Q1'de, 01.04 maddesi Q2'de (bir gün k|
+M6-kapanis-sinifi-dahil: uygulandı (server/lib/financial-statements.mjs)
+M6-kapanis-sinifi-dahil koşu 1: çıkış 1 · geçen 29 · düşen 4 · YAKALANDI · Q1: kalemler, 7/A yansıtma, .90 alt satırlar, ara toplamlar, tahmini|Q2: 780 → 660 Finansman Giderleri; satışların maliyeti T(30.06) �|aylar toplamı = çeyrek = yıl (her kalem, satışların maliyeti dah|dengesiz madde, sınıflandırılmamış hesap (690 olağan maddede), |
+M6-kapanis-sinifi-dahil koşu 2: çıkış 1 · geçen 29 · düşen 4 · YAKALANDI · Q1: kalemler, 7/A yansıtma, .90 alt satırlar, ara toplamlar, tahmini|Q2: 780 → 660 Finansman Giderleri; satışların maliyeti T(30.06) �|aylar toplamı = çeyrek = yıl (her kalem, satışların maliyeti dah|dengesiz madde, sınıflandırılmamış hesap (690 olağan maddede), |
+M7-90-ana-satira: uygulandı (server/lib/financial-statements.mjs)
+M7-90-ana-satira koşu 1: çıkış 1 · geçen 31 · düşen 2 · YAKALANDI · Q1: kalemler, 7/A yansıtma, .90 alt satırlar, ara toplamlar, tahmini|dipnot 3 (770.90 tutarı) ve dipnot 6 (.90 gelir / gider)|
+M7-90-ana-satira koşu 2: çıkış 1 · geçen 31 · düşen 2 · YAKALANDI · Q1: kalemler, 7/A yansıtma, .90 alt satırlar, ara toplamlar, tahmini|dipnot 3 (770.90 tutarı) ve dipnot 6 (.90 gelir / gider)|
+M8-kilitli-canli-okur: uygulandı (server/lib/financial-statements.mjs)
+M8-kilitli-canli-okur koşu 1: çıkış 1 · geçen 32 · düşen 1 · YAKALANDI · kilitli dönem DONMUŞ defterden, açık dönem canlı türetmeden; ku|
+M8-kilitli-canli-okur koşu 2: çıkış 1 · geçen 32 · düşen 1 · YAKALANDI · kilitli dönem DONMUŞ defterden, açık dönem canlı türetmeden; ku|
+M9-DBS-onceki-yildan-alinmaz: uygulandı (server/lib/stock-valuation.mjs)
+M9-DBS-onceki-yildan-alinmaz koşu 1: çıkış 1 · geçen 31 · düşen 2 · YAKALANDI · 2026: DBS = 2025 DSS; 31.01 DSS 108,00; 31.03 DSS 448,00, SMM 320,00|KG-9 A: eksi miktar 0 değer + eksi stok listesi; M5: ertesi yıl eksi|
+M9-DBS-onceki-yildan-alinmaz koşu 2: çıkış 1 · geçen 31 · düşen 2 · YAKALANDI · 2026: DBS = 2025 DSS; 31.01 DSS 108,00; 31.03 DSS 448,00, SMM 320,00|KG-9 A: eksi miktar 0 değer + eksi stok listesi; M5: ertesi yıl eksi|
+M10-T-a1-yok: uygulandı (server/lib/financial-statements.mjs)
+M10-T-a1-yok koşu 1: çıkış 1 · geçen 31 · düşen 2 · YAKALANDI · Q2: 780 → 660 Finansman Giderleri; satışların maliyeti T(30.06) �|aylar toplamı = çeyrek = yıl (her kalem, satışların maliyeti dah|
+M10-T-a1-yok koşu 2: çıkış 1 · geçen 31 · düşen 2 · YAKALANDI · Q2: 780 → 660 Finansman Giderleri; satışların maliyeti T(30.06) �|aylar toplamı = çeyrek = yıl (her kalem, satışların maliyeti dah|
+M11-G1-kesme: uygulandı (server/lib/stock-valuation.mjs)
+M11-G1-kesme koşu 1: çıkış 1 · geçen 32 · düşen 1 · YAKALANDI · G-1: ürün başına kuruşa yarım yukarı, toplam = yuvarlanmış sa|
+M11-G1-kesme koşu 2: çıkış 1 · geçen 32 · düşen 1 · YAKALANDI · G-1: ürün başına kuruşa yarım yukarı, toplam = yuvarlanmış sa|
+M12-KG10-kart-fiyati-yok: uygulandı (server/lib/stock-valuation.mjs)
+M12-KG10-kart-fiyati-yok koşu 1: çıkış 1 · geçen 32 · düşen 1 · YAKALANDI · KG-10 A: alışı ve DBS'si olmayan ürün kartın alış fiyatıyla; |
+M12-KG10-kart-fiyati-yok koşu 2: çıkış 1 · geçen 32 · düşen 1 · YAKALANDI · KG-10 A: alışı ve DBS'si olmayan ürün kartın alış fiyatıyla; |
+M13-silinen-urun-sayilir: uygulandı (server/lib/stock-valuation.mjs)
+M13-silinen-urun-sayilir koşu 1: çıkış 1 · geçen 32 · düşen 1 · YAKALANDI · silinmiş ürün kartı silindiği günden itibaren envantere girmez (|
+M13-silinen-urun-sayilir koşu 2: çıkış 1 · geçen 32 · düşen 1 · YAKALANDI · silinmiş ürün kartı silindiği günden itibaren envantere girmez (|
+M14-N01-153-akisina: uygulandı (server/lib/financial-statements.mjs)
+M14-N01-153-akisina koşu 1: çıkış 1 · geçen 32 · düşen 1 · YAKALANDI · yılda 621 hareketi (N-01 yazılmış) varsa o yıl kesin: tahmin ekle|
+M14-N01-153-akisina koşu 2: çıkış 1 · geçen 32 · düşen 1 · YAKALANDI · yılda 621 hareketi (N-01 yazılmış) varsa o yıl kesin: tahmin ekle|
+sonda yük 2.23 3.20 3.76 1/186 7592 · 21:53:20

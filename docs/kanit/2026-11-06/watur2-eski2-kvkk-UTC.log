@@ -1,0 +1,276 @@
+TAP version 13
+# (node:32286) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.0 WhatsApp tur 2 — S62 = A: salt okunur lisansta KVKK silme talebi AÇIK (yalnız bu uç)
+    # Subtest: T2-4 salt okunur: talep 200, içerik + telefon silinir (dosya + defter); toplu gönderim / önizleme / Bildirim Yolu / bağlantı / Yine de Gönder / cari açma hâlâ 403
+    not ok 1 - T2-4 salt okunur: talep 200, içerik + telefon silinir (dosya + defter); toplu gönderim / önizleme / Bildirim Yolu / bağlantı / Yine de Gönder / cari açma hâlâ 403
+      ---
+      duration_ms: 2211.957054
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-kvkk-250.test.mjs:81:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        salt okunurda KVKK talebi açık (eski kod: 403 LICENSE_READ_ONLY) — 403 {"ok":false,"error":"Ücretsiz deneme henüz başlamadı. Program salt okunur çalışıyor; bu işlem yapılamaz.","code":"LICENSE_READ_ONLY","license":{"state":"none","writable":false,"severity":"error","kind
+        
+        403 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 403
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-kvkk-250.test.mjs:104:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..1
+not ok 1 - 2.5.0 WhatsApp tur 2 — S62 = A: salt okunur lisansta KVKK silme talebi AÇIK (yalnız bu uç)
+  ---
+  duration_ms: 2214.045378
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-kvkk-250.test.mjs:80:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 WhatsApp tur 2 — W-3 dk ORTA-1: defter anonimleştirmesi düşerse yeniden denenir (yeniden açılış + bakım turu); S42 kabulü özetle
+    # Subtest: T2-5a bakım turu: defter yeniden anonimleştirilir; B'nin dosyadaki kabulü ÖZETLE yazılmıştı (S42 defter ∪ dosya) → defterde ve dosyada telefon / açık wamid 0
+    not ok 1 - T2-5a bakım turu: defter yeniden anonimleştirilir; B'nin dosyadaki kabulü ÖZETLE yazılmıştı (S42 defter ∪ dosya) → defterde ve dosyada telefon / açık wamid 0
+      ---
+      duration_ms: 1405.921979
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-kvkk-250.test.mjs:175:3'
+      failureType: 'testCodeFailure'
+      error: 'S42: istek sürerken silinen işin kabulü dosyaya ÖZETLE yazıldı (eski kod: açık wamid) — wamid.HBgMOT'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-kvkk-250.test.mjs:178:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T2-5b yeniden açılış (bellekteki bayrak kayboldu): açılıştaki talep uygulaması yeniden denemeyi kurar → ilk bakım turunda defter anonimleştirilir
+    not ok 2 - T2-5b yeniden açılış (bellekteki bayrak kayboldu): açılıştaki talep uygulaması yeniden denemeyi kurar → ilk bakım turunda defter anonimleştirilir
+      ---
+      duration_ms: 1717.649737
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-kvkk-250.test.mjs:192:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        açılıştan sonraki ilk bakım turunda defter temizlendi (eski kod: kalıyor)
+        + actual - expected
+        
+          {
+        +   telefon: 2,
+        +   wamid: 2
+        -   telefon: 0,
+        -   wamid: 0
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        telefon: 0
+        wamid: 0
+      actual:
+        telefon: 2
+        wamid: 2
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-kvkk-250.test.mjs:202:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: T2-5c tur 2'den ÖNCEKİ kodun GERÇEK verisi (whatsapp-kvkk-329d5d1b: defterde 2 telefon + 2 açık wamid, dosyada silinmiş B satırında AÇIK wamid) → açılış + ilk bakım turu: hepsi özetlenir
+    not ok 3 - T2-5c tur 2'den ÖNCEKİ kodun GERÇEK verisi (whatsapp-kvkk-329d5d1b: defterde 2 telefon + 2 açık wamid, dosyada silinmiş B satırında AÇIK wamid) → açılış + ilk bakım turu: hepsi özetlenir
+      ---
+      duration_ms: 297.908772
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-kvkk-250.test.mjs:211:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        açılıştan sonraki ilk bakım turunda defter temizlendi
+        + actual - expected
+        
+          {
+        +   telefon: 2,
+        +   wamid: 2
+        -   telefon: 0,
+        -   wamid: 0
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        telefon: 0
+        wamid: 0
+      actual:
+        telefon: 2
+        wamid: 2
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-kvkk-250.test.mjs:225:14)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 2 - 2.5.0 WhatsApp tur 2 — W-3 dk ORTA-1: defter anonimleştirmesi düşerse yeniden denenir (yeniden açılış + bakım turu); S42 kabulü özetle
+  ---
+  duration_ms: 3422.359059
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-kvkk-250.test.mjs:131:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 WhatsApp tur 2 — W-3 dk ORTA-2: silinmiş işe SONRADAN yazılan hata metni de numarasız (scrubDigits)
+    # Subtest: T2-6a scrubDigits: boşluklu / tireli / parantezli / bitişik numara '…', Meta hata kodu (≤ 7 hane) kalır
+    ok 1 - T2-6a scrubDigits: boşluklu / tireli / parantezli / bitişik numara '…', Meta hata kodu (≤ 7 hane) kalır
+      ---
+      duration_ms: 0.271828
+      type: 'test'
+      ...
+    # Subtest: T2-6b (a) S42 + Meta hatası (ayrıntıda '+90 532 111 22 33'), (b) kabul + talep + sonra 'failed' bildirimi (ayrıntıda '905334445566'), (c) talepten önce yazılmış hata — dosyada, veri klasöründe ve günlükte numara yok
+    not ok 2 - T2-6b (a) S42 + Meta hatası (ayrıntıda '+90 532 111 22 33'), (b) kabul + talep + sonra 'failed' bildirimi (ayrıntıda '905334445566'), (c) talepten önce yazılmış hata — dosyada, veri klasöründe ve günlükte numara yok
+      ---
+      duration_ms: 1531.149772
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-kvkk-250.test.mjs:249:3'
+      failureType: 'testCodeFailure'
+      error: "(a) S42 sonrası hata metni numarasız (eski kod: '+90 532 111 22 33') — Değerlerden biri geçersiz (ör. alıcı numarası). (Meta hata kodu 131009: Parameter value is not valid: to +90 532 111 22 33)"
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-kvkk-250.test.mjs:270:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 3 - 2.5.0 WhatsApp tur 2 — W-3 dk ORTA-2: silinmiş işe SONRADAN yazılan hata metni de numarasız (scrubDigits)
+  ---
+  duration_ms: 1532.073519
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-kvkk-250.test.mjs:240:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 WhatsApp tur 2 — W-3 dk ORTA-3: denetim noktası düşerse bakım turu yeniden dener
+    # Subtest: T2-7 dış okuyucu (açık okuma işlemi) varken talep → WAL / dosyada iz kalır; okuyucu kapanınca BİR bakım turu sonra veri klasöründe silinen telefon 0
+    not ok 1 - T2-7 dış okuyucu (açık okuma işlemi) varken talep → WAL / dosyada iz kalır; okuyucu kapanınca BİR bakım turu sonra veri klasöründe silinen telefon 0
+      ---
+      duration_ms: 1974.485545
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-kvkk-250.test.mjs:299:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        okuyucular kapandıktan sonraki ilk bakım turunda iz kalmadı — şirket dosyası + defter, WAL dahil (eski kod: bir sonraki silmeye dek kalıyor)
+        + actual - expected
+        
+        + [
+        +   '+905321112233 @ destekofis.sqlite',
+        +   '+905321112233 @ destekofis.sqlite-wal',
+        +   '+905321112233 @ whatsapp-gonderim.sqlite-wal'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: '+905321112233 @ destekofis.sqlite'
+        1: '+905321112233 @ destekofis.sqlite-wal'
+        2: '+905321112233 @ whatsapp-gonderim.sqlite-wal'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-kvkk-250.test.mjs:326:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 4 - 2.5.0 WhatsApp tur 2 — W-3 dk ORTA-3: denetim noktası düşerse bakım turu yeniden dener
+  ---
+  duration_ms: 1975.112897
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-kvkk-250.test.mjs:298:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 WhatsApp tur 2 — W-3 dk ORTA-4 (BAŞ MİMAR KARARI A): KVKK araması Silinenler'deki ama WhatsApp kaydı olan carileri de bulur
+    # Subtest: T2-8 silinmiş cari adla / telefonla bulunur (telefon yanıtta yok), talep yapılır; etkin cari ve kaydı olmayan silinmiş cari bu uçta yok; Muhasebe / Avukat / Personel 403
+    not ok 1 - T2-8 silinmiş cari adla / telefonla bulunur (telefon yanıtta yok), talep yapılır; etkin cari ve kaydı olmayan silinmiş cari bu uçta yok; Muhasebe / Avukat / Personel 403
+      ---
+      duration_ms: 1692.215376
+      type: 'test'
+      location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-kvkk-250.test.mjs:335:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        KVKK araması (ad): 404 {"ok":false,"error":"Endpoint bulunamadı."}
+        
+        404 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 404
+      operator: 'strictEqual'
+      stack: |-
+        ok (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-kvkk-250.test.mjs:48:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-kvkk-250.test.mjs:346:22)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 5 - 2.5.0 WhatsApp tur 2 — W-3 dk ORTA-4 (BAŞ MİMAR KARARI A): KVKK araması Silinenler'deki ama WhatsApp kaydı olan carileri de bulur
+  ---
+  duration_ms: 1692.839128
+  type: 'suite'
+  location: '/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/watur2-eski-329d5d1b/test/whatsapp-tur2-kvkk-250.test.mjs:334:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.0 WhatsApp tur 2 — W-3 dk DÜŞÜK-1 (test boşluğu): talep anında açık işin dondurulmuş PDF'i silinir
+    # Subtest: T2-9b 131056 ile Bekliyor'a dönen işin PDF'i dosyada (ön koşul) → talep → wa_job_pdfs satırı 0 (bakım turundan ÖNCE), iş Atlandı — Silme Talebi
+    ok 1 - T2-9b 131056 ile Bekliyor'a dönen işin PDF'i dosyada (ön koşul) → talep → wa_job_pdfs satırı 0 (bakım turundan ÖNCE), iş Atlandı — Silme Talebi
+      ---
+      duration_ms: 1336.536611
+      type: 'test'
+      ...
+    1..1
+ok 6 - 2.5.0 WhatsApp tur 2 — W-3 dk DÜŞÜK-1 (test boşluğu): talep anında açık işin dondurulmuş PDF'i silinir
+  ---
+  duration_ms: 1336.946477
+  type: 'suite'
+  ...
+1..6
+# tests 9
+# suites 6
+# pass 2
+# fail 7
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 13043.971365

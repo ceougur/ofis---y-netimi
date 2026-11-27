@@ -1,0 +1,26 @@
+#!/bin/bash
+# Ana oturum: BİRLEŞİK TUR 8 + 8b'nin ana ağaçta TEK birleşimi (commit'siz bırakır). Her adım hata durdurur.
+# Önce: aday kapısı (tam test dahil) + bütün ekran senaryoları + hız kabul + ekran yürüyüşü bitmiş olmalı. 8b dalı tur 8 dalını İÇERİR → tek uç.
+# Çağrı: bash b8a-birlesim.sh   (YURUYUS=<yürüyüş çıktı klasörü> verilirse ondan da kopyalar)
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+R=/home/user/ofis---y-netimi; A=worktree-agent-a97f589d1520516a5; A8=worktree-agent-a2ba3cc62b2d80923; C=d72fbd1f; L=test/bagimsiz/cari/YAPIM-ASAMASI.json; G=docs/kanit/2026-11-13
+cd $R || exit 1
+[ -z "$(git status -s)" ] || { echo "ana ağaç temiz değil"; git status -s | head -5; exit 1; }
+git merge-base --is-ancestor $A8 $A || { echo "8b dalı tur 8 dalını içermiyor"; exit 1; }
+git merge --no-ff --no-commit $A > $S/b8a-merge.out 2>&1; echo "merge çıkış $? · çakışmalar: $(git status -s | grep -E '^(UU|AA|DU|UD|AU|UA)' | tr '\n' ' ')"
+[ -f .git/MERGE_HEAD ] || { echo "birleşim başlamadı"; tail -5 $S/b8a-merge.out; exit 1; }
+[ "$(git status -s | grep -cE '^(UU|AA|DU|UD|AU|UA)')" = "0" ] || { echo "beklenmeyen çakışma"; exit 1; }
+git checkout $C -- $L || exit 1
+echo "aday $C ile fark (belgeler dışında; BOŞ olmalı): [$(git diff $C --name-only -- . ':!docs' ':!CLAUDE.md' | tr '\n' ' ')]"
+[ -z "$(git diff $C --name-only -- . ':!docs' ':!CLAUDE.md')" ] || { echo "ADAYDAN FARKLI"; exit 1; }
+for w in ci.yml release.yml; do python3 -I -c "import yaml,sys; yaml.safe_load(open(sys.argv[1]))" .github/workflows/$w && echo "$w ayrıştı" || exit 1; done
+kop() { mkdir -p $G/$2 || exit 1; find $S/$1 -maxdepth 1 -type f -exec cp {} $G/$2/ \; ; for d in 2026-11-13 2026-11-12; do [ -d $S/$1/$d ] && cp -r $S/$1/$d/. $G/$2/; done; }
+kop b8a-kanit b8a-aday
+mkdir -p $G/b8a-betik || exit 1
+for f in b8a-aday.sh b8a-e2e.sh b8by-taban.sh b8a-birlesim.sh b8a-olcum/hiz.sh b8a-olcum/olc-b8a.mjs b8a-olcum/yuruyus-b8a.mjs; do cp $S/$f $G/b8a-betik/$(basename $f).txt || exit 1; done
+if [ -n "$YURUYUS" ]; then mkdir -p $G/b8a-yuruyus || exit 1; find $YURUYUS -maxdepth 1 -type f \( -name '*.out' -o -name '*.json' -o -name '*.txt' \) -exec cp {} $G/b8a-yuruyus/ \; ; for p in $YURUYUS_PNG; do cp $YURUYUS/$p $G/b8a-yuruyus/ || exit 1; done; fi
+for d in ana-dk1f ana-k17 ana-c5a2; do mkdir -p $G/$d || exit 1; find $S/$d -maxdepth 1 -type f \( -name '*.json' -o -name '*.out' -o -name '*.sh' -o -name '*.mjs' \) -size -400k -exec cp {} $G/$d/ \; ; done
+[ -d $S/ana-c5a2/kanit ] && { mkdir -p $G/ana-c5a2/kanit && find $S/ana-c5a2/kanit -maxdepth 1 -type f -size -400k -exec cp {} $G/ana-c5a2/kanit/ \; ; }
+for f in $(find $G/ana-dk1f $G/ana-k17 $G/ana-c5a2 $G/b8a-betik -type f \( -name '*.sh' -o -name '*.mjs' \)); do mv $f $f.txt; done
+echo "kanıt eklenen: $(git status -s -uall $G | grep -c '^??') dosya · Windows'ta açılmayan ad: $(git status -s -uall $G | cut -c4- | grep -cE '[<>:"|?*]|[ .]$') · boyut $(du -sh $G | cut -f1)"
+git status -s | grep -v "^?? " | grep -v " docs/kanit/" | cut -c1-110 | head -30; echo "izlenmeyen (kanıt dışı): $(git status -s -uall | grep '^??' | grep -v " $G/" | head -5)"

@@ -1,0 +1,31 @@
+ok 1 - 100000 hareket programın API'siyle yazılmış veride (satır 100000, üretimde başarısız istek 0; taban /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d2-hacim-taban)
+# bes-arsiv-benzetimi: 4636 ms, olay döngüsü en çok 664 ms
+# arsiv-listesi: 5 ms, olay döngüsü en çok 6 ms
+ok 2 - arşiv listesi 5 arşiv
+ok 3 - arşiv listesi ≤ 1 sn ve olay döngüsü ≤ 50 ms (5 / 6)
+# yedek-listesi: 3 ms, olay döngüsü en çok 5 ms
+ok 4 - Yedekler listesi ≤ 1 sn / ≤ 50 ms (3 / 5)
+# arsiv-ornegi-acilis: 3069 ms, olay döngüsü en çok 2879 ms
+not ok 5 - arşiv örneği açıldı; özet akışla, kuruluş ≤ 50 ms olay döngüsü (3069 ms / 2879 ms)
+# arsiv-ilk-istek: 2826 ms, olay döngüsü en çok 389 ms
+# canli-ayni-istek: 2700 ms, olay döngüsü en çok 424 ms
+ok 6 - arşivde Kasa listesi 2826 ms (canlıda aynı istek 2700 ms — arşive özgü ek yük yok)
+# bes-arsiv-dogrulama: 1262 ms, olay döngüsü en çok 43 ms
+ok 7 - 5 arşivin bütünlük denetimi olay döngüsünü ≤ 50 ms tutar (43 ms; toplam 1262 ms)
+# devir-yedegi: 2555 ms, olay döngüsü en çok 42 ms
+ok 8 - devir yedeği alındı (11 dosya, 823 MB, 2555 ms, olay döngüsü en çok 42 ms — VACUUM INTO ana iş parçacığında, rutin yedekle aynı)
+# devir-yedekleri-listesi: 7 ms, olay döngüsü en çok 5 ms
+ok 9 - Devir Yedekleri listesi ≤ 1 sn / ≤ 50 ms (7 / 5)
+# bakim-ac: 9 ms, olay döngüsü en çok 5 ms
+ok 10 - bakım kipi açılışı ≤ 500 ms (9)
+# bakim-kapat: 7 ms, olay döngüsü en çok 5 ms
+# diskten-tanima-taramasi: 1 ms, olay döngüsü en çok 5 ms
+ok 11 - açılıştaki arşiv taraması ≤ 500 ms (1)
+{"dosyaBoyuMB":145,"bes-arsiv-benzetimi":{"ms":4636,"loopMaxMs":664},"arsiv-listesi":{"ms":5,"loopMaxMs":6},"yedek-listesi":{"ms":3,"loopMaxMs":5},"arsiv-ornegi-acilis":{"ms":3069,"loopMaxMs":2879},"arsiv-ilk-istek":{"ms":2826,"loopMaxMs":389},"canli-ayni-istek":{"ms":2700,"loopMaxMs":424},"bes-arsiv-dogrulama":{"ms":1262,"loopMaxMs":43},"devir-yedegi":{"ms":2555,"loopMaxMs":42},"devirYedegiMB":823,"devir-yedekleri-listesi":{"ms":7,"loopMaxMs":5},"bakim-ac":{"ms":9,"loopMaxMs":5},"bakim-kapat":{"ms":7,"loopMaxMs":5},"diskten-tanima-taramasi":{"ms":1,"loopMaxMs":5}}
+1..11
+# tests 11
+# pass 10
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0

@@ -1,0 +1,11 @@
+test/fixtures/surum-2.4.9-s127-kilitsiz/fikstur.json
+test/fixtures/surum-2.4.9-s127/fikstur.json
+test/fixtures/surum-nesneler/03d6e6e4d025bd3f5c5b4f3ccb57e68c743068b53a16a41ed2f79da5bb9efd7e.br
+test/fixtures/surum-nesneler/2df909c66ef7990848de9f2553f927cf481d3691514f8c63b178b186aab91a5f.br
+test/fixtures/surum-nesneler/44fab50b70a7c6a4d32390f7c0f5534ec2682dad58d2f29813288da217a67ac6.br
+test/fixtures/surum-nesneler/702f1b35ad5713bc6c89de8d7312db7f647432eeb7ceaa21ac870150f0d0044d.br
+test/fixtures/surum-nesneler/c108e0c8af8aeddc1001a550385ba9173539a255d96b22faba9ec9960e87efad.br
+test/fixtures/surum-nesneler/ccd267d78fb3a5c23b30a29cf794aa4080e5ad1d85cee41f9bf2d4579a9bbb43.br
+test/guvenilirlik/s127-v249-veri.mjs
+test/s127-tek-kez-250.test.mjs
+test/yaslandirma-carisiz-evrak-250.test.mjs

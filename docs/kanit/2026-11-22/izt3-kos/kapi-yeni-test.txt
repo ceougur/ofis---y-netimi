@@ -1,0 +1,14 @@
+P1 Düzenle azaltma + ikinci Düzenle :: azalt 200 [full(doğrulama)] · aynı 200 [full(doğrulama)] · ikinci azalt 200 [full(doğrulama)] · stok 49 · bakiye 300 · ok
+Y1 açık: son stok hareketi sil + aynı rowid yeni kimlik (aynı içerik) :: 409[invoice:stock] · rowid aynı true id eski · ok
+Y2 açık: son stok hareketi sil + aynı rowid yeni kimlik + miktar 1 → 2 :: 409[invoice:stock] · ok
+Y3 açık: son Kasa satırı sil + aynı rowid yeni kimlik (aynı içerik) :: kabul [full(bulgu: bank:event)] · FARK[bank:event]
+K1 kilitli: son Kasa satırı (kilitli tarih) sil + aynı rowid yeni kimlik (aynı içerik) :: kilit 200 · 409[period-lock] · satır eski · ok
+K2 kilitli: son stok hareketi (kilitli tarihli satış) sil + aynı rowid yeni kimlik (aynı içerik) :: kilit 200 · 409[invoice:stock,period-lock] · ok
+K3 kilitli: UPDATE SET id (eklenmemiş rowid) :: 409[period-lock] [full(doğrulama)] · ok
+K4 açık: UPDATE SET id (eklenmemiş rowid) :: kabul [full(cash_entries: kimlik değişti)] · FARK[bank:event]
+D1 dış: son stok hareketi sil + aynı rowid yeni kimlik (açık) :: rowid aynı true · tarama FARK[invoice:stock] · sonraki yazım 409 []
+D2 dış: kilitli Kasa satırı sil + aynı rowid yeni kimlik :: tarama FARK[bank:event,ledger:rule-diff,ledger:snapshot,period-lock] · sonraki yazım 409 []
+D3 dış: Düzenle'nin rowid'i yeniden kullandığı stok hareketinin miktarı değişir :: rowid yeniden true · tarama FARK[invoice:stock] · sonraki yazım 409 []
+D4 dış: kilitli stok hareketi silinip aynı rowid + aynı kimlikle miktarı değişik geri yazılır :: rowid aynı true · tarama FARK[invoice:stock,ledger:snapshot,period-lock] · sonraki yazım 409 []
+Y4 kapı içi: silinip aynı rowid + aynı kimlikle miktarı değişik geri yazılır (açık) :: 409[invoice:stock] · ok
+K5 kapı içi: kilitli stok hareketi silinip aynı rowid + aynı kimlikle miktarı değişik geri yazılır :: 409[invoice:stock,period-lock] · ok
