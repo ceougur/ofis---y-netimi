@@ -182,7 +182,7 @@ plan 1.433 / 1.405 · rapor 206 / 218 · toplam 17.624 / 17.929 ms; olay döngü
   Net ve bakiyeler iki okumada AYNI; yalnız iki satırın görünen tutarı farklı olabilir (öbür okuma: şüpheliye aktarma ekstre hareketi sayılmaz → Borç Toplamı 0, Alacak Toplamı 0, ama
   o zaman satırların toplamı CH'yi vermez ve 128 ayrı gösterilmek zorunda). Öneri: bugünkü (CH muavini) — kâhin karşılaştırmasında doğrulansın.
 - **BM-2 Alt defter yeri belirsiz hücreler** (D4a'nın yazacağı açılış; D3 bunları planda AYRI listeler, değişmezlerde karşılanmış sayar): 193 Peşin Ödenen Vergiler (vergi listesinde; B-4'e
-  193 eklenmeli), 336 alt hesaplı carisiz satırlar (336.90 kayıt tahsilatları — cari boyutu yok; bugünkü planda modül farkı olarak DURDURUR verir), hesabı atanmamış 102.00 / 108.00
+  193 eklenmeli), carisiz cari kontrol hücreleri (336.90 kayıt tahsilatları — cari boyutu yok; planda `newYear.digerAltDefter` listesinde, b096bcdd; alt defteri `payments` ≤K budanır → yeni yılda nereye yazılacağı belirsiz), hesabı atanmamış 102.00 / 108.00
   (banka listesinde `atanmamis: true`). Öneri: B-4 kararı 190 / 191 / 193 / 360 / 391'i birlikte kapsasın; 336.90 ve 102.00 / 108.00 için D4a'da alt defter satırı.
 - **BM-3 Ön denetimdeki "Mutabakat Testi kırmızı" maddesi.** Ön izleme (salt okuma, ≤ 10 sn bütçe) tam Mutabakat Testi'ni koşmaz; yerine Defter Mutabakatı (Ana Defter ↔ alt defterler,
   `ledger.expected` + `reconcile` — routes/ledger.mjs check() ile aynı tanım) DURDURUR. Tam Mutabakat D4'te kopyada koşar (tasarım §4.1 adım 7). Öneri: böyle kalsın.
