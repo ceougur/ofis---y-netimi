@@ -101,7 +101,7 @@ describe("M2 — sınıflar (kâhin d62 elle beklenenleri; girdi §3 m.1–m.12)
     assert.match(res.steps.a7d2.message, /en çok tutarı \(23,55 TL\) aşıyor/);
     assert.match(res.steps.a7d2.message, /sonraki bir Değersiz Alacak satırını/);
     assert.match(res.steps.a9d1.message, /\(2\.000,00 TL\) aşıyor/);
-    assert.match(res.steps.a1d1.message, /\(3\.000,00 TL\) aşıyor.*faturaya bağlı tahsilatından/);
+    assert.match(res.steps.a1d1.message, /\(3\.000,00 TL\) aşıyor.*faturaya bağlı tahsilatı Değersiz.den sonra sayılır/);
     assert.match(res.steps.a5d1.message, /\(400,00 TL\) aşıyor; sınır: carinin borç bakiyesi/);
     assert.match(res.steps.a10d1.message, /01\.10\.2026 tarihiyle değersiz alacak yazılamaz; yazılabilecek tutar kalmadı.* 17\.09\.2026 tarihiyle en çok 2\.000,00 TL yazılabilir\./);
     assert.match(res.steps.a6d1.message, /18\.09\.2026 tarihiyle yazılabilecek en çok tutarı \(123,55 TL\)/);

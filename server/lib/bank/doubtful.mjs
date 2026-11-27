@@ -802,7 +802,7 @@ export function createDoubtful({ store, bank, period, now, accounts, trash = nul
   // denetimi sınırdan önce) S269'u karşılamıyordu; UD turu 4'ün geri alınan uygulaması (7141a308) sonradan gelen bağsız tahsilatta fazla yazıma izin veriyordu (bakiye −576,45).
   const WHY_TEXT = {
     remaining: "kayıtta kalan şüpheli tutar",
-    sameDay: "kayıtta kalan şüpheli tutar ile o günün faturaya bağlı tahsilatından bu kayda düşen pay (Değersiz o tahsilattan önce sayılır)",
+    sameDay: "kayıtta kalan şüpheli tutar — o günün faturaya bağlı tahsilatı Değersiz'den sonra sayılır, bağsız tahsilatlar tarihi ne olursa olsun düşülür",
     later: "daha fazlası sonraki bir Değersiz Alacak satırını ya da carinin başka bir şüpheli kaydını kalanın dışına taşırırdı",
     balance: "carinin borç bakiyesi; Değersiz yazımı cariyi alacaklıya düşüremez",
     closed: "kayıt kapalı",
