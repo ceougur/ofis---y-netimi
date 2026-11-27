@@ -63,7 +63,9 @@ if (!isMainThread && workerData?.devirPreview) {
     const { ledger } = readOnlyServices({ store, time });
     db.exec("BEGIN");
     try {
-      reply = { type: "result", ok: true, data: runPreview({ store, ledger, job, progress: asama => parentPort.postMessage({ type: "progress", asama }) }) };
+      // Sonuç iş parçacığında JSON'a çevrilir (ana iş parçacığı büyük nesneyi ne kopyalar ne yeniden çevirir — olay döngüsü ≤ 50 ms; ders 47). Rapor satırları PDF / Excel için ayrıca.
+      const data = runPreview({ store, ledger, job, progress: asama => parentPort.postMessage({ type: "progress", asama }) });
+      reply = { type: "result", ok: true, json: JSON.stringify(data), rapor: data.rapor };
     } finally {
       db.exec("COMMIT");
     }
