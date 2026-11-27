@@ -28,6 +28,7 @@
 //       → 191 açılışı dönem boyutuyla: 2026-11 10,00 (önceki yıl: yeni yılın hiçbir mahsubuna girmez), 2027-01 20,00 (Ocak mahsubuna girer).
 //   Dönem Net Kârı = 1.000 + 300 + 100 + 200 − 100 − 130 − 150 = 1.220,00.
 import assert from "node:assert/strict";
+import { katalogaYaz } from "./fixtures/devir-d3-ileti-katalog.mjs";
 import { describe, it } from "node:test";
 import { createStockValuation, MOVE_CLASS } from "../server/lib/stock-valuation.mjs";
 
@@ -377,6 +378,9 @@ describe("D3 ön denetim (DEVIR-PLANI §5 + G4 + S-2 / S-3)", () => {
       assert.equal(out.gecebilir, false, kod);
       assert.equal(out.durdurur[0].git.ekran, ekran, kod);
       assert.ok(out.durdurur[0].metin.length > 20 && /[.]$/.test(out.durdurur[0].metin), `${kod}: cümle`);
+      // D3 tur 3: dört alan dolu (ileti düzeni) — katalog için olgu düzeyindeki ileti kaydedilir.
+      assert.ok(out.durdurur[0].neOldu && out.durdurur[0].neden && out.durdurur[0].neYapmali?.length && out.durdurur[0].nereye?.ekran, `${kod}: dört alan`);
+      katalogaYaz("devir-d3-plan", `olgu düzeyi: ${JSON.stringify(facts)}`, out.durdurur[0], "olgu (ön denetim olgusu elle)");
     }
     const s2 = preflightModule.devirPreflight({ ...base, acilisOlabilir: { adet: 4 } }, planOf(), { today: "2027-03-15" });
     assert.match(s2.durdurur[0].metin, /31\.12\.2026 ve öncesi tarihli 4 kayıt "Açılış Olabilir" listesinde onay bekliyor/);
@@ -402,6 +406,10 @@ describe("D3 ön denetim (DEVIR-PLANI §5 + G4 + S-2 / S-3)", () => {
     const offset = out.uyarir[0];
     assert.deepEqual([offset.baslik, offset.belirgin, offset.git.ekran], ["Önce Aralık Mahsubunu Yapın", true, "Vergi › KDV Mahsup Fişi"]);
     assert.match(out.uyarir.at(-1).metin, /üzerinden 10 gün geçti/);
+    for (const row of out.uyarir) {
+      assert.ok(row.neOldu && row.neden && row.neYapmali?.length && row.nereye?.ekran, `${row.kod}: dört alan`);
+      katalogaYaz("devir-d3-plan", "olgu düzeyi: Aralık mahsubu yok, 2 içe aktarma, 1 şablon, 1 gelen e-Fatura, 1 iptal süresi, eksi stok, kasa -5,00 TL, 001, bugün 10.01.2027", row, "olgu (ön denetim olgusu elle)");
+    }
   });
 });
 

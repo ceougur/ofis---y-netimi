@@ -17,6 +17,7 @@ import { resetEdmCaches } from "../server/lib/einvoice/edm.mjs";
 import { OUR_VKN, startMockEdm } from "./einvoice-mock.mjs";
 import { apiOf, boot, must } from "./banka-210-ortak.mjs";
 import { loginAdmin, startTestServer } from "./helpers.mjs";
+import { katalogaYaz } from "./fixtures/devir-d3-ileti-katalog.mjs";
 
 const planModule = await import("../server/lib/devir/plan.mjs").catch(() => null);
 const K = "2026-12-31";
@@ -120,6 +121,7 @@ describe("D3 tur 2 — e-Belge, taslak ve tekrarlayan fatura olguları gerçek v
     server.clock.set("2027-01-05T10:00:00+03:00");
     const job = await waitPreview(api, { company: "sirket-001", cutoff: K, option: "borc-alacak" });
     assert.equal(job.result.onDenetim.uyarir.find(row => row.kod === "iptal-suresi")?.adet, 1);
+    for (const row of [...job.result.onDenetim.durdurur, ...job.result.onDenetim.uyarir]) katalogaYaz("devir-d3-olgu", "API (sahte EDM): W1–W6, T1, R1–R3; bugün 05.01.2027", row);
     server.clock.set("2027-02-10T12:00:00+03:00");
   });
 });
