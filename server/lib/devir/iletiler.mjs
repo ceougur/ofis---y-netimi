@@ -53,6 +53,7 @@ export const DEVIR_TARGETS = Object.freeze({
   mutabakatTesti: { ekran: "Yönetim › Sistem › Mutabakat Testi", hedef: "admin:integrity" },
   devirRaporu: { ekran: "Devir Raporu", hedef: "devir:report" },
   yilSonuDevri: { ekran: "Ayarlar › Yıl Sonu Devri", hedef: "devir:wizard" },
+  devirYedekleri: { ekran: "Yönetim › Yedekler › Devir Yedekleri", hedef: "admin:backups:devir" },
 });
 
 const sentence = value => {
@@ -126,6 +127,24 @@ export function onIzlemeReddiIletisi(code, { cutoff = "", today = "" } = {}) {
     default:
       return beklenmeyenHataIletisi();
   }
+}
+
+/**
+ * D3 tur 4 — uzman görüşü (2) → BAŞ MİMAR KARARI 27.11: ön izlemeden SONRA veri değişti (plan-reader.mjs onIzlemedenSonraDegisti) — DURDURUR. Kullanımı devri UYGULAYAN pakette (D4: kopyada
+ * yeniden hesaplanan planın damgası ön izlemeninkiyle aynı değilse devir bu iletiyle durur, kullanıcı yeni ön izlemeyi inceleyip yeniden onaylar). Veri yazılmadan önce durulduğu için güvence var.
+ */
+export function onIzlemeBayatIletisi({ onIzlemeAni = "" } = {}) {
+  const at = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(String(onIzlemeAni)) ? ` (${dayText(onIzlemeAni.slice(0, 10))} ${onIzlemeAni.slice(11, 16)})` : "";
+  return devirIletisi({
+    kod: "on-izleme-bayat",
+    seviye: "durdurur",
+    baslik: "Ön İzlemeden Sonra Kayıt Girildi",
+    neOldu: `Onayladığınız ön izlemeden${at} sonra şirkette kayıt girildi ya da bir kayıt değişti`,
+    neden: "Devir, onayladığınız ön izlemenin sayılarıyla yapılmalı; araya giren kayıt açılış bakiyelerini değiştirir, bu yüzden devir durdu",
+    neYapmali: ["Yıl Sonu Devri'nde Ön İzleme'yi yeniden başlatın", "Yeni ön izlemenin sayılarını ve Devir Raporu'nu inceleyin", "Sayılar doğruysa devri yeniden onaylayın"],
+    nereye: DEVIR_TARGETS.yilSonuDevri,
+    guvence: "Verileriniz değişmedi",
+  });
 }
 
 // Yasak kalıplar (kullanıcıya giden metinde): değer sızıntısı, iç kod biçimi, yığın izi, İngilizce iletiler, ISO tarih, nokta ondalıklı tutar.

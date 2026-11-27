@@ -576,6 +576,22 @@ export function buildDevirPlan(facts, { option = "borc-alacak" } = {}) {
   check("onceki-yillar", "Σ Önceki Yıl Sonucu = Ç6 Geçmiş Yıllar — Kapanmamış", closing.bs.hesaplanmis.gecmisYillar.reduce((sum, row) => sum + row.tutarMinor, 0), closing.priorResults.reduce((sum, row) => sum + row.tutarMinor, 0));
   check("stok-dss", "Kapanıştan sonra 153 = Dönem Sonu Stok (DSS)", dssK, totalAfter.get("153") || 0);
   check("stok-acilis", "Σ Stok Açılış Değeri = Arşiv 153", totalAfter.get("153") || 0, stock.reduce((sum, row) => sum + row.degerMinor, 0));
+  // D3 tur 4 — uzman görüşü (4) → BAŞ MİMAR KARARI 27.11: stokta ÜRÜN ÜRÜN (yalnız toplam değil) — her ürünün arşiv K miktarı (okuyucunun bağımsız SQL'i: stok hareketlerinin işaretli toplamı)
+  // = yeni yıl açılış miktarı ve K değeri (değerleme; eksi / silinmiş üründe 0) = açılış değeri. Silinmiş ürün açılışsız (S207 = A), eksi miktar aynen (KG-9 A + M5). Okuyucusuz (elle) olguda yok.
+  if (facts.stockQtyK) {
+    const opened = new Map(stock.map(row => [row.urun, row]));
+    const wrong = [];
+    for (const product of [...(valuationK.products || [])].sort((a, b) => cmp(a.id, b.id))) {
+      const archiveMilli = facts.stockQtyK.get(product.id) || 0;
+      const wantMilli = product.deleted ? 0 : archiveMilli;
+      const wantValue = !product.deleted && archiveMilli > 0 ? product.valueMinor : 0;
+      const row = opened.get(product.id);
+      const gotMilli = Math.round((row?.miktar || 0) * 1000);
+      const gotValue = row?.degerMinor || 0;
+      if (wantMilli !== gotMilli || wantValue !== gotValue) wrong.push({ urun: product.id, kod: product.code || "", ad: product.name || "", birim: product.unit || "", arsivMiktar: archiveMilli / 1000, arsivDegerMinor: wantValue, acilisMiktar: gotMilli / 1000, acilisDegerMinor: gotValue, silinmis: Boolean(product.deleted) });
+    }
+    invariants.push({ kod: "stok-urun", ad: "Her Ürün: Arşiv Kesim Günü Miktarı ve Değeri = Yeni Yıl Açılışı", ok: wrong.length === 0, beklenenMinor: 0, bulunanMinor: wrong.length, urunler: wrong.slice(0, 20) });
+  }
   check("sonuc-sifir", "Kapanıştan sonra 6 / 7 sınıfı bakiyesi", 0, leftover.reduce((sum, row) => sum + Math.abs(row.minor), 0));
   let newG = 0;
   for (const [key, minor] of covered) if (splitKey(key).account !== OPENING_GL) newG -= minor;

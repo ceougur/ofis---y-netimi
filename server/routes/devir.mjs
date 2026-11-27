@@ -11,6 +11,7 @@
 //   GET  /api/admin/devir/preview/:id       { id, company, state (running | done | failed), asama, result? { plan, onDenetim, rapor, zamanlama }, stale, error? } — sonuç iş parçacığında
 //                                           JSON'a çevrilmiş metin olarak eklenir (ana iş parçacığında büyük nesne yok)
 //   GET  /api/admin/devir/preview/:id/report.pdf | report.xlsx   Devir Raporu (ekran = PDF = Excel; aynı satırlar)
+import { existsSync } from "node:fs";
 import path from "node:path";
 import { Worker } from "node:worker_threads";
 import { randomUUID } from "node:crypto";
@@ -161,7 +162,11 @@ export function registerDevirRoutes(router, { auth, companies, backups, maintena
     const existing = running.get(company.id);
     if (existing && previews.get(existing)?.state === "running") return ok(res, { ...publicJob(previews.get(existing)), joined: true });
     const label = createReportHeader({ store: target.store, company: () => company }).companyLabel() || `${company.code} · ${company.name}`;
-    const job = { K: cutoff, today, option, company: { id: company.id, code: company.code, name: company.name, label }, isRoot: company.id === ROOT_COMPANY_ID };
+    // D3 tur 4: şirketin arşiv kaydı (yalnız BU şirketinki; dosya diskte mi) — ön denetim "aynı yıl ikinci kez devredilemez" (BAŞ MİMAR KARARI 27.11); ön izlemeyi hazırlayan ve anı
+    // Devir Raporu'nun başlığına (uzman görüşü (6)).
+    const dataDir = companies.dirsOf?.(company)?.dataDir || "";
+    const arsivler = (companies.archivesOf?.(company.id) || []).map(entry => ({ yil: String(entry.year), kesim: entry.cutoff || "", tarih: entry.createdAt || "", dosyaVar: dataDir ? existsSync(archiveFileOf(dataDir, entry.year)) : true }));
+    const job = { K: cutoff, today, option, company: { id: company.id, code: company.code, name: company.name, label }, isRoot: company.id === ROOT_COMPANY_ID, arsivler, hazirlayan: admin.display_name || admin.username || "", hazirlanma: clockNow().toISOString() };
     const entry = { id: `onizleme-${randomUUID()}`, companyId: company.id, job, state: "running", asama: "basladi", startedAt: clockNow().toISOString(), finishedAt: "", resultJson: "", raporJson: "", error: null, stale: false, label };
     previews.set(entry.id, entry);
     running.set(company.id, entry.id);

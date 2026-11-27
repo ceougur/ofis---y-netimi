@@ -38,7 +38,7 @@ export function runPreview({ store, ledger, accountList = null, job, progress = 
   checkCutoff(job.K, job.today);
   const started = performance.now();
   progress("okuma");
-  const facts = readDevirFacts({ store, ledger, K: job.K, today: job.today, company: job.company || null, accountList });
+  const facts = readDevirFacts({ store, ledger, K: job.K, today: job.today, company: job.company || null, accountList, archives: job.arsivler || [] });
   progress("plan");
   let start = performance.now();
   const plan = buildDevirPlan(facts, { option: job.option || "borc-alacak" });
@@ -47,7 +47,7 @@ export function runPreview({ store, ledger, accountList = null, job, progress = 
   const onDenetim = devirPreflight(facts.preflight, plan, { isRoot: Boolean(job.isRoot), today: job.today, names: new Map((facts.parties || []).map(row => [row.id, row.name])) });
   progress("rapor");
   start = performance.now();
-  const rapor = devirReport(plan, onDenetim, { companyLabel: job.company?.label || "" });
+  const rapor = devirReport(plan, onDenetim, { companyLabel: job.company?.label || "", preparedBy: job.hazirlayan || "", preparedAt: job.hazirlanma || "" });
   const raporMs = Math.round((performance.now() - start) * 10) / 10;
   const zamanlama = { ...facts.timings, plan: planMs, rapor: raporMs, toplam: Math.round((performance.now() - started) * 10) / 10 };
   return { plan, onDenetim, rapor, zamanlama };

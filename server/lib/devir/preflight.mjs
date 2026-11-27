@@ -4,7 +4,7 @@
 // D3 tur 3 (DEVİR NEDEN DURDU — kullanıcı 27.11 11:39): HER madde iletiler.mjs devirIletisi'nden geçer (dört alan: ne oldu, neden duruyor, ne yapmalı, nereye); ilk durdurmada
 // kesilmez — bütün nedenler birlikte, sıra kararlı (bu dosyadaki denetim sırası); uyarılar ayrı listede. S-KD-1 / S-KD-2 (kullanıcı 27.11, öneri A) kural farkı maddelerinde.
 import { CHART, PLAN_SUBS, UNASSIGNED_SUBS } from "../general-ledger.mjs";
-import { DEVIR_DECISIONS } from "./plan.mjs";
+import { DEVIR_DECISIONS, MODULE_ACCOUNTS } from "./plan.mjs";
 import { DEVIR_TARGETS, countText, dayText, devirIletisi, listText, monthText, sideText, tlText } from "./iletiler.mjs";
 
 /** Gidilecek yerler (D5 ekran yönlendirmesi bu anahtarlardan; ad yazım düzenine uygun) — iletiler.mjs DEVIR_TARGETS. */
@@ -23,6 +23,9 @@ const sampleText = (rows = [], max = 3) => {
   return shown.length ? ` (ör. ${listText(shown)}${rows.length > max ? " …" : ""})` : "";
 };
 const TEST_SERIES = /^(TEF|TEA|TES)/;
+// D3 tur 4: modül farkı iletisinde hangi modülün açılışı (plan.mjs MODULE_ACCOUNTS → kullanıcının bildiği ad) ve değişmezlerin gidilecek yeri.
+const MODULE_NAMES = Object.freeze({ kasa: "Kasa'nın", evrak: "Çek / Senet'in", banka: "Banka'nın", cari: "Cari'nin", kart: "taksit kartlarının", supheli: "Şüpheli Alacaklar'ın", stok: "Stok'un", vergi: "vergi hesaplarının" });
+const INVARIANT_TARGETS = Object.freeze({ "stok-dss": "stok", "stok-acilis": "stok", "stok-urun": "stok", denge: "defterMutabakati", "gecici-hesap": "defterMutabakati", "donem-sonucu": "defterMutabakati", "onceki-yillar": "defterMutabakati", "sonuc-sifir": "defterMutabakati" });
 
 /** Plan sorununun iletisi (plan.mjs sorunlar[].kod; okuyucunun sınıflandırılmamış tablosu). names: cari kimliği → ad. */
 export function problemIletisi(problem, { names = new Map(), K = "" } = {}) {
@@ -31,29 +34,37 @@ export function problemIletisi(problem, { names = new Map(), K = "" } = {}) {
   const base = { kod: `plan-${problem.kod}`, seviye: "durdurur", nereye: DEVIR_TARGETS.devirRaporu, ayrinti: problem };
   const support = "Sorun sürerse Devir Raporu'nu (PDF) destek ekibine iletin";
   const neden = "Devirden sonra arşivin kapanışı ile yeni yılın açılışı kuruşu kuruşuna aynı olmalı; tutmayan hesapla devir yapılırsa yeni yılın bakiyeleri yanlış başlar";
+  // D3 tur 4 (kâhin ↔ plan karşılaştırması §9 — EKSİK / KISMİ maddeler): her plan sorununda NE YAPMALI adım adım ve en sonda Ön İzleme'nin yeniden başlatılması; tutarlar yönüyle
+  // (eksi işaret yerine "borç / alacak yönünde"), modül farkında hangi modül, cari farkında hangi hesap.
+  const steps = (...list) => [...list, RESTART, support];
   switch (problem.kod) {
     case "yil-kapanmis":
       return devirIletisi({ ...base, baslik: "Bu Yıl Zaten Devredilmiş", neOldu: `${year} yılı için Kapanış Fişi zaten yazılmış`, neden: "Bir yıl yalnız bir kez devredilir; ikinci devir bakiyeleri iki kez taşır", neYapmali: ["Devir İçin Son İşlem Tarihi olarak henüz devredilmemiş yılın 31 Aralık'ını seçin", "Bu yılın devrini değiştirmek istiyorsanız Devri Yenile'yi kullanın"], nereye: DEVIR_TARGETS.yilSonuDevri });
     case "donem-sonucu-farki":
-      return devirIletisi({ ...base, baslik: "Dönem Sonucu Tutmuyor", neOldu: `${year} yılının dönem sonucu Gelir Tablosu'nda ${tlText(problem.beklenenMinor)}, kapanışta ${tlText(problem.bulunanMinor)} (fark ${tlText(problem.beklenenMinor - problem.bulunanMinor)})`, neden, neYapmali: ["Defter Mutabakatı'nı açıp farkı gösteren hesabı bulun", "Hesap planında olmayan bir gelir / gider hesabına kayıt varsa kaydı düzeltin", support], nereye: DEVIR_TARGETS.defterMutabakati });
+      return devirIletisi({ ...base, baslik: "Dönem Sonucu Tutmuyor", neOldu: `${year} yılının dönem sonucu Gelir Tablosu'nda ${tlText(problem.beklenenMinor)}, kapanışta ${tlText(problem.bulunanMinor)} (fark ${tlText(problem.beklenenMinor - problem.bulunanMinor)})`, neden, neYapmali: steps("Defter Mutabakatı'nı açıp farkı gösteren hesabı bulun", "Hesap planında olmayan bir gelir / gider hesabına kayıt varsa kaydı düzeltin"), nereye: DEVIR_TARGETS.defterMutabakati });
     case "onceki-yil-dengesiz":
-      return devirIletisi({ ...base, baslik: "Önceki Yıl Sonucu Tutmuyor", neOldu: `${problem.yil} yılının Önceki Yıl Sonucu Fişi dengede değil (fark ${tlText(problem.farkMinor)})`, neden, neYapmali: ["Defter Mutabakatı'nı açıp farkı gösteren hesabı bulun", support], nereye: DEVIR_TARGETS.defterMutabakati });
+      return devirIletisi({ ...base, baslik: "Önceki Yıl Sonucu Tutmuyor", neOldu: `${problem.yil} yılının Önceki Yıl Sonucu Fişi dengede değil (fark ${tlText(Math.abs(problem.farkMinor))})`, neden, neYapmali: steps(`Defter Mutabakatı'nı açıp ${problem.yil} yılının farkını gösteren hesabı bulun`, "Hesap planında olmayan bir gelir / gider hesabına kayıt varsa kaydı düzeltin"), nereye: DEVIR_TARGETS.defterMutabakati });
     case "sonuc-hesabi-kaldi":
-      return devirIletisi({ ...base, baslik: "Gelir ve Gider Hesapları Kapanmıyor", neOldu: `Kapanıştan sonra gelir / gider hesaplarında bakiye kalıyor: ${listText((problem.hesaplar || []).map(row => `${accountText(row.hesap)} ${tlText(row.minor)}`))}`, neden, neYapmali: ["Defter Mutabakatı'nı açıp bu hesapların kayıtlarını denetleyin", support], nereye: DEVIR_TARGETS.defterMutabakati });
+      return devirIletisi({ ...base, baslik: "Gelir ve Gider Hesapları Kapanmıyor", neOldu: `Kapanıştan sonra gelir / gider hesaplarında bakiye kalıyor: ${listText((problem.hesaplar || []).map(row => `${accountText(row.hesap)} ${sideText(row.minor)}`))}`, neden, neYapmali: steps("Defter Mutabakatı'nı açıp bu hesapların kayıtlarını denetleyin", "Hesap planında olmayan bir alt hesaba yazılmış kayıt varsa kaydı düzeltin"), nereye: DEVIR_TARGETS.defterMutabakati });
     case "yedi-sinifi-kaldi":
-      return devirIletisi({ ...base, baslik: "Maliyet Hesabı Kapanmıyor", neOldu: `${accountText(problem.hesap, problem.alt)} yansıtmayla kapanmıyor (${tlText(problem.minor)})`, neden, neYapmali: ["Defter Mutabakatı'nı açıp bu hesabın kayıtlarını denetleyin", support], nereye: DEVIR_TARGETS.defterMutabakati });
-    case "modul-farki":
-      return devirIletisi({ ...base, baslik: "Hesap Bakiyesi Modülle Tutmuyor", neOldu: `${accountText(problem.hesap, problem.alt)}${problem.cari ? ` (${party(problem.cari)})` : ""} hesabının ${dayText(K)} bakiyesi Ana Defter'de ${tlText(problem.beklenenMinor)}, modülün açılışında ${tlText(problem.bulunanMinor)} (fark ${tlText(problem.beklenenMinor - problem.bulunanMinor)})`, neden, neYapmali: ["Defter Mutabakatı'nı açıp bu hesabın farkını giderin", "Mutabakat Testi'ni çalıştırın; kırmızı madde kalmasın", RESTART], nereye: DEVIR_TARGETS.defterMutabakati });
+      return devirIletisi({ ...base, baslik: "Maliyet Hesabı Kapanmıyor", neOldu: `${accountText(problem.hesap, problem.alt)} yansıtmayla kapanmıyor (${sideText(problem.minor)})`, neden, neYapmali: steps("Defter Mutabakatı'nı açıp bu hesabın kayıtlarını denetleyin", "Gider türü tanınmayan kayıt varsa gider türünü düzeltin"), nereye: DEVIR_TARGETS.defterMutabakati });
+    case "modul-farki": {
+      const module = MODULE_NAMES[MODULE_ACCOUNTS[problem.hesap]] || "ilgili modülün";
+      return devirIletisi({ ...base, baslik: "Hesap Bakiyesi Modülle Tutmuyor", neOldu: `${accountText(problem.hesap, problem.alt)}${problem.cari ? ` (${party(problem.cari)})` : ""} hesabının ${dayText(K)} bakiyesi Ana Defter'de ${tlText(problem.beklenenMinor)}, ${module} açılışında ${tlText(problem.bulunanMinor)} (fark ${tlText(problem.beklenenMinor - problem.bulunanMinor)})`, neden, neYapmali: steps("Defter Mutabakatı'nı açıp bu hesabın farkını giderin", "Mutabakat Testi'ni çalıştırın; kırmızı madde kalmasın"), nereye: DEVIR_TARGETS.defterMutabakati });
+    }
     case "cari-satir-farki":
-      return devirIletisi({ ...base, baslik: "Cari Bakiyesi Tutmuyor", neOldu: `${party(problem.cari)} carisinin devir satırları ${dayText(K)} bakiyesini vermiyor (bakiye ${tlText(problem.beklenenMinor)}, satırların toplamı ${tlText(problem.bulunanMinor)})`, neden, neYapmali: ["Carinin ekstresini açıp kesim günü bakiyesini denetleyin", "Mutabakat Testi'ni çalıştırın", support], nereye: { ...DEVIR_TARGETS.cari, ...(problem.cari && !String(problem.cari).startsWith("plan:") ? { kayit: { tur: "cari", kimlik: problem.cari } } : {}) } });
+      return devirIletisi({ ...base, baslik: "Cari Bakiyesi Tutmuyor", neOldu: `${party(problem.cari)} carisinin ${problem.hesap ? `${accountText(problem.hesap)} hesabındaki ` : ""}devir satırları ${dayText(K)} bakiyesini vermiyor (bakiye ${tlText(problem.beklenenMinor)}, satırların toplamı ${tlText(problem.bulunanMinor)})`, neden, neYapmali: steps("Carinin ekstresini açıp kesim günü bakiyesini denetleyin", "Mutabakat Testi'ni çalıştırın"), nereye: { ...DEVIR_TARGETS.cari, ...(problem.cari && !String(problem.cari).startsWith("plan:") ? { kayit: { tur: "cari", kimlik: problem.cari } } : {}) } });
     case "supheli-farki":
-      return devirIletisi({ ...base, baslik: "Şüpheli Alacak Tutmuyor", neOldu: `${accountText(problem.hesap)}${problem.cari ? ` (${party(problem.cari)})` : ""} bakiyesi Ana Defter'de ${tlText(problem.beklenenMinor)}, şüpheli alacak kayıtlarında ${tlText(problem.bulunanMinor)}`, neden, neYapmali: ["Defter Mutabakatı'nı açıp şüpheli alacak hesabının farkını giderin", "Mutabakat Testi'ni çalıştırın", support], nereye: DEVIR_TARGETS.defterMutabakati });
+      return devirIletisi({ ...base, baslik: "Şüpheli Alacak Tutmuyor", neOldu: `${accountText(problem.hesap)}${problem.cari ? ` (${party(problem.cari)})` : ""} bakiyesi Ana Defter'de ${tlText(problem.beklenenMinor)}, şüpheli alacak kayıtlarında ${tlText(problem.bulunanMinor)}`, neden, neYapmali: steps("Cari › Şüpheli Alacaklar'da carinin kayıtlarını denetleyin", "Defter Mutabakatı'nı açıp şüpheli alacak hesabının farkını giderin", "Mutabakat Testi'ni çalıştırın"), nereye: DEVIR_TARGETS.supheli });
     case "siniflandirilmamis-tablo":
-      return devirIletisi({ ...base, baslik: "Program Güncellemesi Gerekiyor", neOldu: "Veri dosyasında devirde ne olacağı bu sürümde tanımlı olmayan bir tablo var", neden: "Tanımsız tablonun kayıtları devirde kaybolabilir ya da iki yılda birden kalabilir", neYapmali: ["Programı en son sürüme güncelleyin", support], nereye: DEVIR_TARGETS.yilSonuDevri });
-    case "degismez":
-      return devirIletisi({ ...base, kod: `degismez-${problem.kod2 || "denetim"}`, baslik: "Devir Denetimi Tutmuyor", neOldu: invariantText(problem), neden, neYapmali: ["Defter Mutabakatı'nı açıp farkı gösteren hesabı bulun", "Mutabakat Testi'ni çalıştırın", support], nereye: DEVIR_TARGETS.defterMutabakati });
+      return devirIletisi({ ...base, baslik: "Program Güncellemesi Gerekiyor", neOldu: "Veri dosyasında devirde ne olacağı bu sürümde tanımlı olmayan bir tablo var", neden: "Tanımsız tablonun kayıtları devirde kaybolabilir ya da iki yılda birden kalabilir", neYapmali: ["Programı en son sürüme güncelleyin", RESTART, support], nereye: DEVIR_TARGETS.yilSonuDevri });
+    case "degismez": {
+      const where = INVARIANT_TARGETS[problem.kod2] || (/^vergi-/.test(problem.kod2 || "") ? "kdvMahsup" : "defterMutabakati");
+      const first = where === "stok" ? "Stok'ta bu ürünlerin kesim günü ve öncesindeki hareketlerini denetleyin" : where === "kdvMahsup" ? "Vergi › KDV Mahsup Fişi'nde bu hesabın dönemlerini denetleyin" : "Defter Mutabakatı'nı açıp farkı gösteren hesabı bulun";
+      return devirIletisi({ ...base, kod: `degismez-${problem.kod2 || "denetim"}`, baslik: "Devir Denetimi Tutmuyor", neOldu: invariantText(problem), neden, neYapmali: steps(first, "Mutabakat Testi'ni çalıştırın"), nereye: DEVIR_TARGETS[where] });
+    }
     default:
-      return devirIletisi({ ...base, baslik: "Devir Hesabı Tutmuyor", neOldu: "Devir hesabında beklenmeyen bir tutarsızlık bulundu", neden, neYapmali: ["Mutabakat Testi'ni çalıştırın", support], nereye: DEVIR_TARGETS.mutabakatTesti });
+      return devirIletisi({ ...base, baslik: "Devir Hesabı Tutmuyor", neOldu: "Devir hesabında beklenmeyen bir tutarsızlık bulundu", neden, neYapmali: ["Mutabakat Testi'ni çalıştırın", RESTART, support], nereye: DEVIR_TARGETS.mutabakatTesti });
   }
 }
 
@@ -70,6 +81,12 @@ function invariantText(row) {
       return `Kapanıştan sonra 153 Ticari Mallar bakiyesi (${b}) dönem sonu stok değeriyle (${a}) tutmuyor`;
     case "stok-acilis":
       return `Stok açılış değerlerinin toplamı (${b}) arşivdeki 153 Ticari Mallar bakiyesiyle (${a}) tutmuyor`;
+    case "stok-urun": {
+      // D3 tur 4 (uzman görüşü (4)): ürün ürün — hangi ürün, arşivde ve açılışta kaç birim / kaç TL.
+      const qty = (value, unit) => `${String(Math.round(Number(value) * 1000) / 1000).replace(".", ",")} ${unit || "Birim"}`;
+      const list = (row.urunler || []).slice(0, 5).map(item => `${item.ad || item.kod || "adı okunamayan ürün"}: arşivde ${qty(item.arsivMiktar, item.birim)} / ${tlText(item.arsivDegerMinor)}, açılışta ${qty(item.acilisMiktar, item.birim)} / ${tlText(item.acilisDegerMinor)}`);
+      return `${countText(row.bulunanMinor)} üründe kesim günü miktarı ya da değeri yeni yılın açılışıyla tutmuyor${list.length ? ` (${listText(list)}${row.bulunanMinor > list.length ? " …" : ""})` : ""}`;
+    }
     case "sonuc-sifir":
       return `Kapanıştan sonra gelir / gider hesaplarında toplam ${b} bakiye kalıyor`;
     case "gecici-hesap":
@@ -98,6 +115,49 @@ export function devirPreflight(facts = {}, plan = null, { isRoot = false, today 
   // S-2 / S-3 kararının TEK dalı (A DURDURUR · B UYARIR · C söylenmez — plan.mjs DEVIR_DECISIONS).
   const byDecision = (decision, spec) => (decision === "A" ? block(spec) : decision === "B" ? notice(spec) : null);
   const count = value => Number(value?.adet) || 0;
+  // ---- DURDURUR: AYNI YIL İKİNCİ KEZ DEVREDİLEMEZ (D3 tur 4 — BAŞ MİMAR KARARI 27.11, kullanıcının "devir yarıda kalırsa veya tekrar çalıştırılırsa çift kayıt oluşmasın" sorusu
+  // üzerine): o yılın devri yapılmışsa (çalışma dosyasının devir yılları ya da şirketin arşiv kaydı o yılı gösteriyorsa) DURUR — çare Devri Yenile / Devri Geri Al; devredilmiş yıldan
+  // ÖNCEKİ bir yılın devri de DURUR. Dosya ayarında olup arşiv kaydında olmayan yıl yarıda kalmış devirdir (tasarım §4.2) — ayrı neden, çare destek / Devir Yedekleri.
+  // Takas öncesi aynı denetimin yinelenmesi devri UYGULAYAN pakette (D4).
+  const years = facts.devirYillari || { dosya: [], kayit: [] };
+  const registered = new Map((years.kayit || []).map(row => [row.yil, row]));
+  const marked = new Map((years.dosya || []).map(row => [row.yil, row]));
+  const half = [...marked.keys()].filter(item => !registered.has(item)).sort();
+  if (year && registered.has(year)) {
+    const entry = registered.get(year);
+    const when = dayText(String(marked.get(year)?.tarih || entry.tarih || "").slice(0, 10));
+    block({
+      kod: "devir-yil-devredilmis", baslik: "Bu Yıl Zaten Devredildi",
+      neOldu: `${year} yılı${when ? ` ${when} tarihinde` : ""} zaten devredilmiş; şirketin ${year} arşivi kayıtlı${entry.dosyaVar ? "" : ", ancak arşiv dosyası bulunamadı"}`,
+      neden: "Bir yıl yalnız bir kez devredilir; ikinci devir aynı yılın bakiyelerini yeni yıla ikinci kez taşır ve kayıtlar çift sayılır",
+      neYapmali: [
+        ...(entry.dosyaVar ? [] : ["Yönetim › Yedekler › Devir Yedekleri'nde bu yılın devir yedeğini denetleyin; arşiv dosyası geri gelmeden Devri Yenile ve Devri Geri Al yapılamaz, gerekirse destek ekibine haber verin"]),
+        `${year} yılında düzeltme yapmanız gerekiyorsa Yıl Sonu Devri'nde Devri Yenile'yi kullanın`,
+        "Devri baştan yapmak istiyorsanız önce Devri Geri Al ile bu devri geri alın, sonra yeniden devredin",
+      ],
+      nereye: entry.dosyaVar ? DEVIR_TARGETS.yilSonuDevri : DEVIR_TARGETS.devirYedekleri, ayrinti: { yil: year, dosyaVar: entry.dosyaVar },
+    });
+  }
+  const laterYears = year ? [...new Set([...registered.keys(), ...marked.keys()])].filter(item => item > year).sort() : [];
+  if (laterYears.length) {
+    const last = laterYears.at(-1);
+    block({
+      kod: "devir-sonraki-yil-devredilmis", baslik: "Sonraki Yıl Devredilmiş",
+      neOldu: `${listText(laterYears)} yılı zaten devredilmiş; seçilen ${year} yılı ondan önce`,
+      neden: `${last} yılı devredildiğinde ${year} ve öncesindeki kayıtlar arşive geçti; devredilmiş yıldan önceki bir yıl ayrıca devredilemez`,
+      neYapmali: [`Devir İçin Son İşlem Tarihi olarak ${last} yılından sonraki, henüz bitmiş ve devredilmemiş bir yılın 31 Aralık'ını seçin`, `Eski yılda düzeltme gerekiyorsa ${last} yılının devri için Devri Yenile'yi kullanın`],
+      nereye: DEVIR_TARGETS.yilSonuDevri, ayrinti: { yil: year, sonrakiYillar: laterYears },
+    });
+  }
+  if (half.length) {
+    block({
+      kod: "devir-yarim-kalmis", baslik: "Önceki Devir Yarıda Kalmış",
+      neOldu: `Veri dosyası ${listText(half)} yılının devredildiğini gösteriyor, ancak şirketin arşiv kaydında bu yılın arşivi yok`,
+      neden: "Önceki devir tamamlanmadan kesilmiş olabilir; durum netleşmeden yeni devir yapılırsa aynı yıl iki kez taşınabilir",
+      neYapmali: ["Programı kapatıp yeniden açın; yarıda kalan devir açılışta tanınırsa bu neden kalkar", "Sorun sürerse Yönetim › Yedekler › Devir Yedekleri'ndeki devir öncesi yedeği silmeden destek ekibine haber verin", RESTART],
+      nereye: DEVIR_TARGETS.devirYedekleri, ayrinti: { yillar: half },
+    });
+  }
   // ---- DURDURUR (§5 + G4) ----
   if (count(facts.eBelgeBekleyen)) {
     const n = count(facts.eBelgeBekleyen);
@@ -144,7 +204,7 @@ export function devirPreflight(facts = {}, plan = null, { isRoot = false, today 
     const n = count(facts.bankaIsi);
     block({
       kod: "banka-isi", baslik: "Bekleyen Banka İşi",
-      neOldu: `${countText(n)} banka / POS işi bekliyor (ör. ay sonu komisyon faturası)`,
+      neOldu: `${countText(n)} banka / POS işi bekliyor (ör. ay sonu komisyon faturası)${facts.bankaIsi.enEski ? `; en eskisinin tarihi ${dayText(facts.bankaIsi.enEski)}` : ""}`,
       neden: "Bekleyen iş devirden sonra tamamlanırsa kaydı yanlış yıla düşer",
       neYapmali: ["Banka › Bekleyen İşler'i açın", "İşleri tamamlayın ya da iptal edin", RESTART],
       nereye: DEVIR_TARGETS.bankaIsleri, adet: n,
@@ -156,7 +216,7 @@ export function devirPreflight(facts = {}, plan = null, { isRoot = false, today 
       kod: "defter-mutabakati", baslik: "Defter Mutabakatı",
       neOldu: `Ana Defter alt defterlerle tutmuyor${facts.defterMutabakati.dengeli === false ? " (defter dengesiz)" : ""}${farklar.length ? `: ${listText(farklar)}` : ""}`,
       neden: "Tutmayan defterle devredilirse yeni yılın açılış bakiyeleri yanlış olur",
-      neYapmali: ["Raporlar › Ana Defter › Defter Mutabakatı'nı açın", "Farkı gösteren hesabın kayıtlarını düzeltin", RESTART],
+      neYapmali: ["Raporlar › Ana Defter › Defter Mutabakatı'nı açın", "Farkı gösteren hesabın alt defterindeki (cari, kasa, banka, stok ya da evrak) kayıtlarını Ana Defter'le karşılaştırıp yanlış kaydı düzeltin", "Farkı bulamazsanız Mutabakat Testi'ni çalıştırıp sonucunu destek ekibine iletin", RESTART],
       nereye: DEVIR_TARGETS.defterMutabakati, ayrinti: facts.defterMutabakati.farklar,
     });
   }

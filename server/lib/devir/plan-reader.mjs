@@ -18,6 +18,7 @@ import { postedRuleDiffCorrections, ruleDiffCorrectionPlan, ruleDiffCorrectionYe
 import { INVOICE_KINDS } from "../invoice-math.mjs";
 import { voucherNoText } from "../ledger-vouchers.mjs";
 import { dayAfter } from "./plan.mjs";
+import { DEVIR_YEARS_KEY, devirYearsOfSetting } from "./archives.mjs";
 
 /**
  * Şemadaki HER tablonun devirdeki sınıfı (tasarım §2; BAŞ MİMAR KARARI 27.11 (4): adı planda geçmeyen beş defter tablosu dahil). D dokunulmaz · O ortak katman · B ≤K budanır,
@@ -52,16 +53,39 @@ const columns = (store, table) => new Set(store.all(`PRAGMA table_info(${table})
 const minor = value => Math.round((Number(value) || 0) * 100);
 const ms = start => Math.round((performance.now() - start) * 10) / 10;
 
-/** Veri damgası (tasarım §3.9): okuma anındaki veri — para tablolarının satır sayısı / en büyük rowid'i, denetim izinin son satırı ve dönem kilidi. Ön izlemeden sonra girilen kayıt damgayı değiştirir. */
-function dataVersionOf(store) {
+// Veri damgasına giren denetim izi türleri (D3 tur 4): YALNIZ verinin değişimini yazan iz (kayıt düzenleme / silme satır sayısını değiştirmez — izi değiştirir). Giriş (auth.*), lisans,
+// kullanıcı / rol, rapor / özet görüntüleme, WhatsApp gönderimi, mobil ve benzeri izler damgayı DEĞİŞTİRMEZ — yoksa ön izlemeden sonra bir kullanıcının girişi devri "kayıt girildi" diye durdururdu.
+const DATA_AUDIT_TYPES = ["invoice.%", "account.%", "plan.%", "cheque.%", "cash.%", "bank.%", "stock.%", "doubtful.%", "tax.%", "ledger.%", "accounting.%", "company.%", "import.%", "settings.%", "staff.%"];
+const DATA_AUDIT_SQL = `SELECT COUNT(*) AS n, COALESCE(MAX(rowid), 0) AS m FROM audit_events WHERE ${DATA_AUDIT_TYPES.map(() => "type LIKE ?").join(" OR ")}`;
+
+/**
+ * Veri damgası (tasarım §3.9): okuma anındaki veri — para tablolarının satır sayısı / en büyük rowid'i, verinin değişimini yazan denetim izinin sayısı / son satırı ve dönem kilidi.
+ * Ön izlemeden sonra girilen, düzenlenen ya da silinen kayıt damgayı değiştirir; giriş, görüntüleme ve dışa aktarma değiştirmez.
+ */
+export function devirVeriSurumu(store) {
   const parts = [];
-  for (const table of ["account_entries", "cash_entries", "stock_moves", "plan_entries", "plans", "invoices", "cheques", "cheque_events", "fin_events", "bank_lines", "vat_offsets", "invoice_offsets", "payments", "doubtful_receivables", "doubtful_provisions", "ledger_vouchers", "audit_events", "accounts", "stock_items"]) {
+  for (const table of ["account_entries", "cash_entries", "stock_moves", "plan_entries", "plans", "plan_items", "invoices", "invoice_lines", "cheques", "cheque_events", "fin_events", "bank_lines", "vat_offsets", "invoice_offsets", "payments", "doubtful_receivables", "doubtful_provisions", "ledger_vouchers", "accounts", "stock_items", "bank_jobs", "pos_items"]) {
     if (!has(store, table)) continue;
     const row = store.get(`SELECT COUNT(*) AS n, COALESCE(MAX(rowid), 0) AS m FROM ${table}`);
     parts.push(`${table}:${row.n}:${row.m}`);
   }
+  if (has(store, "audit_events")) {
+    const row = store.get(DATA_AUDIT_SQL, ...DATA_AUDIT_TYPES);
+    parts.push(`iz:${row.n}:${row.m}`);
+  }
   parts.push(`lock:${store.get("SELECT value FROM settings WHERE key = 'ledger.lockedUntil'")?.value || ""}`);
   return createHash("sha256").update(parts.join("|")).digest("hex").slice(0, 24);
+}
+const dataVersionOf = devirVeriSurumu;
+
+/**
+ * Ön izlemeden sonra veri değişti mi? (uzman görüşü (2) → BAŞ MİMAR KARARI 27.11 — SORULABİLEN tek işlev; kullanımı devri UYGULAYAN pakette: değiştiyse devir iletiler.mjs
+ * onIzlemeBayatIletisi ile DURUR). onIzleme: ön izleme sonucunun planı ya da veri damgası (plan.meta.veriSurumu). Dönüş: { degisti, onceki, simdiki }.
+ */
+export function onIzlemedenSonraDegisti(store, onIzleme) {
+  const before = typeof onIzleme === "string" ? onIzleme : onIzleme?.meta?.veriSurumu || onIzleme?.plan?.meta?.veriSurumu || "";
+  const now = devirVeriSurumu(store);
+  return { degisti: !before || before !== now, onceki: before, simdiki: now };
 }
 
 /** Tablo bazında sayım (ön izlemenin "Taşınacak Hareket" satırı; tasarım §3.3): B / A tablolarında ≤K ve >K, öbürlerinde toplam. Ortak katman (O) sayılmaz — 001'de de (madde 42). */
@@ -134,6 +158,15 @@ function chequesAt(store, K) {
     out.push({ id: row.id, direction: row.direction, instrument: row.instrument, amountMinor: minor(row.amount), party: row.party || "", serial: row.serial || "", due: row.due || "", stateK: state });
   }
   return out;
+}
+
+/**
+ * D3 tur 4 — uzman görüşü (4) → BAŞ MİMAR KARARI 27.11: stokta ÜRÜN ÜRÜN değişmez. Ürün başına K miktarı DEĞERLEMEDEN BAĞIMSIZ (tek toplu SQL — stok hareketlerinin işaretli toplamı; ders 47):
+ * planın açılış miktarı (değerlemeden) bununla ürün ürün karşılaştırılır (plan.mjs değişmez "stok-urun"). Dönüş: Map(ürün → binde bir miktar, tamsayı).
+ */
+function stockQtyAt(store, K) {
+  if (!has(store, "stock_moves")) return new Map();
+  return new Map(store.all("SELECT item_id AS id, SUM(CASE WHEN kind = 'out' THEN -qty ELSE qty END) AS q FROM stock_moves WHERE date <= ? GROUP BY item_id", K).map(row => [row.id, Math.round((Number(row.q) || 0) * 1000)]));
 }
 
 /** Taksit kartları (K'de var olan): ≤K net tahsilat (kart başına; tek toplu sorgu), K'de kapalı mı, kapanış kuralı. */
@@ -274,8 +307,14 @@ export function withReserved(items, { reserved, docs, lines }, queued) {
 }
 
 /** Ön denetimin olguları (preflight.mjs; plan §5 + G4 + S-2 / S-3) — yalnız sayım ve küçük örnek listeleri. */
-function preflightFacts({ store, ledger, live, K, today, accountList, names = new Map() }) {
+function preflightFacts({ store, ledger, live, K, today, accountList, names = new Map(), archives = [] }) {
   const facts = {};
+  // D3 tur 4 — AYNI YIL İKİNCİ KEZ DEVREDİLEMEZ (BAŞ MİMAR KARARI 27.11): çalışma dosyasının devir yılları (devir.years — D4 yazar) ve şirketin arşiv kaydı (sirketler.json archives —
+  // routes/devir.mjs işe koyar; yalnız BU şirketin kayıtları, dosyanın diskte olup olmadığıyla). Okunamayan ayar devir yok sayılır; kayıt yine denetler.
+  facts.devirYillari = {
+    dosya: devirYearsOfSetting(store.get("SELECT value FROM settings WHERE key = ?", DEVIR_YEARS_KEY)?.value || "").map(row => ({ yil: row.year, kesim: row.cutoff, tarih: row.at })),
+    kayit: (archives || []).filter(row => /^\d{4}$/.test(String(row?.yil || ""))).map(row => ({ yil: String(row.yil), kesim: String(row.kesim || ""), tarih: String(row.tarih || ""), dosyaVar: row.dosyaVar !== false })),
+  };
   const sample = (sql, ...args) => store.all(`${sql} LIMIT 20`, ...args);
   if (has(store, "invoices")) {
     const cols = columns(store, "invoices");
@@ -295,7 +334,9 @@ function preflightFacts({ store, ledger, live, K, today, accountList, names = ne
     }
     facts.taslakFatura = one("status = 'draft' AND issue_date <= ?", K);
   }
-  facts.bankaIsi = has(store, "bank_jobs") ? { adet: Number(store.get("SELECT COUNT(*) AS n FROM bank_jobs WHERE status = 'pending'").n) || 0 } : { adet: 0 };
+  // D3 tur 4 (karşılaştırma §9 "ne oldu"): adet + en eski işin tarihi (kullanıcı hangi işi arayacağını bilsin).
+  const jobs = has(store, "bank_jobs") ? store.get("SELECT COUNT(*) AS n, COALESCE(MIN(due_date), '') AS first FROM bank_jobs WHERE status = 'pending'") : null;
+  facts.bankaIsi = jobs ? { adet: Number(jobs.n) || 0, enEski: jobs.first || "" } : { adet: 0 };
   const draftMonth = store.get("SELECT value FROM settings WHERE key = 'bank.pos.draftMonth'")?.value || "";
   facts.posGunSonu = { ay: draftMonth };
   facts.posBekleyen = has(store, "pos_items") ? { adet: Number(store.get("SELECT COUNT(*) AS n FROM pos_items WHERE status = 'pending' AND value_date > ?", K).n) || 0 } : { adet: 0 };
@@ -384,7 +425,7 @@ function preflightFacts({ store, ledger, live, K, today, accountList, names = ne
  * Devir planının olguları. ledger: routes/ledger.mjs servis nesnesi (iş parçacığında salt okunur bağlantıyla kurulmuş); accountList: cari listesi (beklenenler için; verilmezse ledger kendisi
  * okur). Çağıran tek okuma işlemi (BEGIN … COMMIT) içinde çağırır. Dönüş: buildDevirPlan girdisi + preflight + zamanlama (bileşen bileşen, ms).
  */
-export function readDevirFacts({ store, ledger, K, today, company = null, accountList = null }) {
+export function readDevirFacts({ store, ledger, K, today, company = null, accountList = null, archives = [] }) {
   const timings = {};
   let start = performance.now();
   const nextDay = dayAfter(K);
@@ -450,10 +491,11 @@ export function readDevirFacts({ store, ledger, K, today, company = null, accoun
   start = performance.now();
   const valuation = createStockValuation(loadValuationInput(store));
   valuation.at(K, { detail: true });
+  const stockQtyK = stockQtyAt(store, K);
   timings.degerleme = ms(start);
   // ---- ön denetimin olguları (Defter Mutabakatı canlı türetmeyle) ----
   start = performance.now();
-  const preflight = preflightFacts({ store, ledger, live, K, today, accountList, names: new Map(parties.map(row => [row.id, row.name])) });
+  const preflight = preflightFacts({ store, ledger, live, K, today, accountList, names: new Map(parties.map(row => [row.id, row.name])), archives });
   timings.onDenetim = ms(start);
   return {
     K,
@@ -464,6 +506,7 @@ export function readDevirFacts({ store, ledger, K, today, company = null, accoun
     ruleVersion: LEDGER_RULE_VERSION,
     entries,
     valuation,
+    stockQtyK,
     closedOn,
     parties,
     obligations,
