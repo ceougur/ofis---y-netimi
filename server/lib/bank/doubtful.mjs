@@ -648,6 +648,11 @@ export function writeOffInvariantProblems(store, { parties = null } = {}) {
     byParty.get(line.party).push(line);
   }
   const has = name => hasTable(store, name);
+  const writtenAfter = (credit, line) => (credit.at > line.at) || (credit.at === line.at && String(credit.key).startsWith("account:") && Number(credit.seq) > Number(line.seq));
+  // 2.5.1 M2 tur 5 (ORTA-B — dar kontrol DK-M2T4; ders 47 / 53 (a)): Silinenler taraması (fatura gövdeleri, dizinsiz instr) önce her cari için HAZIRLANIR, sonra bütün cariler için TEK
+  // geçişte yapılır (writeOffTrashMax) — yalnız taramanın sonucunu GERÇEKTEN okuyabilecek cariler için ve onların gereken en erken anından (writeOffUnbondSince). Önceden Değersiz satırlı
+  // her cari Silinenler'deki bütün faturaların gövdesini ayrı ayrı okuyordu (5.000 silinmiş fatura + 10 cari: Mutabakat ~221 ms).
+  const prepared = [];
   for (const [party, own] of byParty) {
     const ctx = writeOffContextOf(store, party);
     const records = new Map(ctx.rows.records.map(record => [record.id, record]));
@@ -670,15 +675,16 @@ export function writeOffInvariantProblems(store, { parties = null } = {}) {
     // odur, < since ise hiçbir W için koşulu sağlamaz (changed yalnız büyütülür: max(eski, x) ≥ W iff eski ≥ W) — "silme yok" ile aynı. Yazım anı boş satır varsa since '' (bütün satırlar).
     // Geri yüklenmiş satırlar `restored_at >= ''` ile (metin her zaman ≥ '' — IS NOT NULL ile aynı küme; IS NOT NULL planlayıcıya dizini seçtirmiyor, tablo baştan sona okunuyordu).
     // Geri yüklenmiş ya da taslak silinmiş faturanın sayılması AYNEN (gevşetme sonraki sürüme — dar kontrol B). YALNIZ TEST: WRITE_OFF_TEST.fullTrash eski taramayı koşar (eşdeğerlik hakemi).
-    const since = own[0].at;
-    const trashMax = () => {
-      if (!has("trash")) return "";
-      if (WRITE_OFF_TEST.fullTrash) return store.get("SELECT MAX(deleted_at) AS at FROM trash WHERE kind = 'invoice' AND instr(payload_json, ?) > 0", party)?.at || "";
-      return store.get(WRITE_OFF_TRASH_SQL, party, since)?.at || "";
-    };
+    // 2.5.1 M2 tur 5 (ORTA-B): taramanın en erken anı — tur 4'ün "en eski Değersiz satırının yazım anı" (since) yerine YALNIZ sonucu okuyabilecek satırların en erken anı (yoksa
+    // tarama hiç yapılmaz). Gerekçe ve eşdeğerlik: writeOffUnbondSince'in notu. YALNIZ TEST: WRITE_OFF_TEST.fullTrash eski tam taramayı her cari için ayrı koşar (eşdeğerlik hakemi).
+    const unbondIds = new Set(store.all("SELECT id FROM account_entries WHERE account_id = ? AND kind = 'in' AND invoice_id = '' AND source <> 'invoice'", party).map(row => `account:${row.id}`));
+    prepared.push({ party, own, ctx, records, openWorld, changed, since: writeOffUnbondSince(ctx, own, changed, unbondIds, writtenAfter) });
+  }
+  const trashAt = writeOffTrashMax(store, prepared, has("trash"));
+  for (const { party, own, ctx, records, openWorld, changed } of prepared) {
     const lastUnbond = [
       has("invoices") ? store.get("SELECT MAX(cancelled_at) AS at FROM invoices WHERE account_id = ? AND status = 'cancelled' AND kind IN ('sale', 'smm') AND COALESCE(cancelled_at, '') <> ''", party)?.at || "" : "",
-      trashMax(),
+      trashAt.get(party) || "",
     ].sort().pop();
     if (lastUnbond) {
       for (const row of store.all("SELECT id FROM account_entries WHERE account_id = ? AND kind = 'in' AND invoice_id = '' AND source <> 'invoice' AND COALESCE(created_at, '') <= ?", party, lastUnbond)) {
@@ -686,7 +692,6 @@ export function writeOffInvariantProblems(store, { parties = null } = {}) {
         if (!((changed.get(key) || "") >= lastUnbond)) changed.set(key, lastUnbond);
       }
     }
-    const writtenAfter = (credit, line) => (credit.at > line.at) || (credit.at === line.at && String(credit.key).startsWith("account:") && Number(credit.seq) > Number(line.seq));
     // (i)
     for (const [index, line] of own.entries()) {
       const record = records.get(line.recordId);
@@ -717,6 +722,66 @@ export function writeOffInvariantProblems(store, { parties = null } = {}) {
   }
   return out;
 }
+/**
+ * 2.5.1 M2 tur 5 (ORTA-B) — Silinenler taramasının bir cari için GEREKEN en erken anı; tarama gereksizse null.
+ * Taramanın sonucu (lastUnbond) yalnız değişmez (i)'nin alacak süzgecinde, bağsız tahsilat satırının "changed ≥ W'nin yazım anı" karşılaştırmasında okunur: E (bugün bağsız tahsilat — unbondIds)
+ * ancak W'nin gününe ya da sonrasına düşüyorsa (E.date ≥ W.date), bugün bağlı değilse, kendisi Değersiz satırı değilse, W'den SONRA yazılmamışsa ve satırın kendi değişme anı W'nin anının
+ * altındaysa lastUnbond ≥ W.at sonucu değiştirir (yalnız bu (E, W) çiftlerinde). Böyle bir çifti olmayan W için lastUnbond hiçbir değerde etkisizdir (changed yalnız büyütülür:
+ * max(eski, x) ≥ W iff eski ≥ W ya da x ≥ W). Bu yüzden tarama "ilgili W'lerin en erken anı"ndan sonraki silmelere daralır: en büyük silme anı bu andan önceyse hiçbir ilgili W için
+ * koşulu sağlamaz — "silme yok" ile AYNI sonuç (iptal anı — invoices.cancelled_at — ayrıca okunur, değişmez). Hiçbir ilgili W yoksa tarama yapılmaz.
+ */
+function writeOffUnbondSince(ctx, own, changed, unbondIds, writtenAfter) {
+  if (!unbondIds.size) return null;
+  let since = null;
+  for (const line of own) {
+    if (since !== null && line.at >= since) continue;
+    const key = `account:${line.id}`;
+    const reads = ctx.credits.some(credit => unbondIds.has(credit.key) && credit.key !== key && !credit.target && credit.date >= line.date && !ctx.bound.has(credit.key) && !writtenAfter(credit, line) && !((changed.get(credit.key) || "") >= line.at));
+    if (reads) since = line.at;
+  }
+  return since;
+}
+// ?1 en erken an (cariler arasında); açık ve geri yüklenmiş satırlar (WRITE_OFF_TRASH_SQL ile aynı küme, dizinli). Gövde bir kez okunur, cariler JS'te aranır (instr ile aynı: alt dize).
+export const WRITE_OFF_TRASH_ROWS_SQL = `SELECT deleted_at AS at, payload_json AS body FROM trash WHERE restored_at IS NULL AND deleted_at >= ?1 AND kind = 'invoice'
+   UNION ALL
+   SELECT deleted_at, payload_json FROM trash WHERE restored_at >= '' AND deleted_at >= ?1 AND kind = 'invoice'`;
+/**
+ * 2.5.1 M2 tur 5 (ORTA-B) — carilerin Silinenler'deki son fatura silme anı (Map cari → an). Taraması gereken (since !== null) tek cari: dizinli tek sorgu (WRITE_OFF_TRASH_SQL); birden çok
+ * cari: TEK geçiş (her gövde bir kez okunur). YALNIZ TEST: WRITE_OFF_TEST.fullTrash her cari için tur 3'ün tam taramasını koşar (eşdeğerlik hakemi); WRITE_OFF_TEST.count verildiyse
+ * Silinenler sorgularını sayar (count.trash).
+ */
+function writeOffTrashMax(store, prepared, hasTrash) {
+  const out = new Map();
+  if (!hasTrash) return out;
+  const counted = () => {
+    if (WRITE_OFF_TEST.count) WRITE_OFF_TEST.count.trash = (WRITE_OFF_TEST.count.trash || 0) + 1;
+  };
+  if (WRITE_OFF_TEST.fullTrash) {
+    for (const { party } of prepared) {
+      counted();
+      const at = store.get("SELECT MAX(deleted_at) AS at FROM trash WHERE kind = 'invoice' AND instr(payload_json, ?) > 0", party)?.at || "";
+      if (at) out.set(party, at);
+    }
+    return out;
+  }
+  const wanted = prepared.filter(item => item.since !== null);
+  if (!wanted.length) return out;
+  if (wanted.length === 1) {
+    counted();
+    const at = store.get(WRITE_OFF_TRASH_SQL, wanted[0].party, wanted[0].since)?.at || "";
+    if (at) out.set(wanted[0].party, at);
+    return out;
+  }
+  const from = wanted.reduce((min, item) => (item.since < min ? item.since : min), wanted[0].since);
+  counted();
+  for (const row of store.all(WRITE_OFF_TRASH_ROWS_SQL, from)) {
+    const body = typeof row.body === "string" ? row.body : Buffer.from(row.body || "").toString("utf8");
+    for (const { party, since } of wanted) {
+      if (row.at >= since && (!out.has(party) || row.at > out.get(party)) && body.includes(party)) out.set(party, row.at);
+    }
+  }
+  return out;
+}
 /** Carinin defter bakiyesi (kuruş): cari kartının satırlarıyla aynı kaynak (lib/accounts.mjs accountLedger; borç − alacak). */
 export function ledgerBalanceMinor(store, party) {
   const lines = createAccountLines({ store });
@@ -737,7 +802,8 @@ export function ledgerBalanceMinor(store, party) {
  * tutarlı) — bakiye 423,55 kalır."): borç yönlü belgenin (satış faturası, SMM, alıştan iade) Düzenle'si tutarı düşürüyorsa (ya da cari değişiyorsa) editInvoice aynı denetimi action "edit" ile çağırır.
  * Değersiz satırı olmayan caride hiçbir şey okunmaz (null).
  */
-export function writeOffBalanceGuard(store, party, { action = "cancel" } = {}) {
+// kind (2.5.1 M2 tur 5): cari hareketinin türü ("debt" | "out" | "credit") ya da "pos-refund" — iletinin sözcüğü (SK-64: işlemin kendi adıyla).
+export function writeOffBalanceGuard(store, party, { action = "cancel", kind = "" } = {}) {
   if (!party || !hasTable(store, "account_entries")) return null;
   const ownLines = () => store.all("SELECT id, source_id AS recordId, date, CAST(ROUND(amount * 100) AS INTEGER) AS minor FROM account_entries WHERE account_id = ? AND source = 'doubtful' AND kind = 'credit' ORDER BY created_at, rowid", party);
   if (!ownLines().length) return null;
@@ -762,7 +828,19 @@ export function writeOffBalanceGuard(store, party, { action = "cancel" } = {}) {
         "entry-edit": { what: "Borç hareketi düzeltilemez", act: "düzeltmeden", by: "bu düzeltmeyle", then: "borç hareketini düzeltin", op: "borç hareketinin düzeltilmesi" },
         "plan-delete": { what: "Taksit kartı silinemez", act: "silmeden", by: "bu silmeyle", then: "taksit kartını silin", op: "taksit kartının silinmesi" },
         "plan-edit": { what: "Taksit kartı düzenlenemez", act: "düzenlemeden", by: "bu düzenlemeyle", then: "taksit kartını düzenleyin", op: "taksit kartının düzenlenmesi" },
-      }[action] || { what: "İşlem kaydedilemez", act: "işlemden", by: "bu işlemle", then: "işlemi yeniden deneyin", op: "işlem" };
+        // 2.5.1 M2 tur 5 — SK-64 = A (28.11 06:13 UTC — KULLANICI KARARIYLA ÖNERİ UYGULANDI, 20:26 yetkisi; AYNEN: "Değersiz Alacak satırı olan caride Ödeme satırının silinmesi ya da Alacak Yaz
+        // tutarının artırılması cariyi eksiye götürüyorsa … A (ÖNERİ; uygulanacak): reddedilsin (S-M2T2-1 / S-DKM2T3-1 ile aynı kural), bakiye −76,45 kalır … Öneri A: Değersiz'li caride eksiye
+        // götüren her kayıt değişikliği tek kural."). İleti işlemin kendi adıyla (görev metni: 'Borç hareketi' DEĞİL).
+        "entry-delete:out": { what: "Ödeme hareketi silinemez", act: "silmeden", by: "bu silmeyle", then: "ödeme hareketini silin", op: "ödeme hareketinin silinmesi" },
+        "entry-edit:out": { what: "Ödeme hareketi düzeltilemez", act: "düzeltmeden", by: "bu düzeltmeyle", then: "ödeme hareketini düzeltin", op: "ödeme hareketinin düzeltilmesi" },
+        "entry-delete:pos-refund": { what: "POS İadesi silinemez", act: "silmeden", by: "bu silmeyle", then: "POS İadesini silin", op: "POS İadesinin silinmesi" },
+        "entry-edit:pos-refund": { what: "POS İadesi düzeltilemez", act: "düzeltmeden", by: "bu düzeltmeyle", then: "POS İadesini düzeltin", op: "POS İadesinin düzeltilmesi" },
+        "entry-edit:credit": { what: "Alacak hareketi düzeltilemez", act: "düzeltmeden", by: "bu düzeltmeyle", then: "alacak hareketini düzeltin", op: "alacak hareketinin düzeltilmesi" },
+        "plan-entry-delete": { what: "Taksit kartının ödeme / iade hareketi silinemez", act: "silmeden", by: "bu silmeyle", then: "taksit kartının ödeme / iade hareketini silin", op: "taksit kartının ödeme / iade hareketinin silinmesi" },
+        "plan-entry-edit": { what: "Taksit kartının ödeme / iade hareketi düzeltilemez", act: "düzeltmeden", by: "bu düzeltmeyle", then: "taksit kartının ödeme / iade hareketini düzeltin", op: "taksit kartının ödeme / iade hareketinin düzeltilmesi" },
+        // 2.5.1 M2 tur 5 — ORTA-A (dar kontrol DK-M2T4; S-DKM2T3-1 = A'nın uygulanmamış yolu): Otomatik Dağıt kartın toplamını düşürüyorsa kart düzenlemesiyle aynı kural.
+        "plan-distribute": { what: "Otomatik Dağıt kaydedilemez", act: "dağıtımdan", by: "bu dağıtımla", then: "Otomatik Dağıt'ı yeniden yapın", op: "taksit kartının toplamının düşürülmesi" },
+      }[kind && kind !== "debt" ? `${action}:${kind}` : action] || { what: "İşlem kaydedilemez", act: "işlemden", by: "bu işlemle", then: "işlemi yeniden deneyin", op: "işlem" };
       const many = lines.length > 1 ? ` (carinin ${lines.length} Değersiz Alacak satırı, toplam ${tl(total)})` : "";
       const could = room > 0 ? `${words.by} o kayda en çok ${tl(room)} Değersiz Alacak yazılabilirdi` : `${words.by} o kayda Değersiz Alacak yazılamazdı`;
       // Neden: Değersiz yüzünden eksi (tur 2 cümlesi AYNEN) ya da Değersiz olmadan da eksi (S-M2T2-1 = A — Değersiz satırı silinse de cari alacaklı kalırdı).
