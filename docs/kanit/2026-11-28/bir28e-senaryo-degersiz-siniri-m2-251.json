@@ -1,0 +1,32 @@
+{
+  "ad": "bir28e-senaryo-degersiz-siniri-m2-251",
+  "komut": "node test/e2e/senaryo-degersiz-siniri-m2-251.mjs",
+  "commit": "a4f54ffa4c4f0793b088a5fe35e9db3d91465bdb",
+  "dal": "claude/epic-thompson-w0lc2l",
+  "kirli": 0,
+  "izlenmeyen": 18,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-28T16:59:16.666Z",
+  "sure_sn": 28.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 24,
+    "gecen": 24,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-28/bir28e-senaryo-degersiz-siniri-m2-251.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "3a35e3a77f0dcac11771d8c95e20f885154d3386b544b0f57a9f64066ea5a1c9",
+  "ham_cikti_bayt": 2732
+}
