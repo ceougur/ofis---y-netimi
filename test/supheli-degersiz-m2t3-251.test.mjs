@@ -114,6 +114,25 @@ describe("2.5.1 M2 tur 3 — S-M2T2-1 = A: Değersiz satırı olan caride eksiye
       server.close();
     }
   });
+  it("bakiyeyi DÜŞÜRMEYEN işlem eksi caride de kabul: iadenin Düzenle'si iadeyi küçültünce (eksi bakiye azalır)", async () => {
+    // Elle: T (+ ek borç 2.000) + Değersiz (2.423,55) − kısmi iade 0,5 adet = 1.450 (973,55) − avans 3.000 (05.10) = −2.026,45; iade Düzenle 0,5 → 0,25 adet (1.450 → 725): −2.026,45 + 725 = −1.301,45.
+    const { server, api, store } = await boot();
+    try {
+      const b = await base(api, "M2T3 İade Küçült", { extra: 2000 });
+      const detail = await must("fatura ayrıntısı", api.get(`${INV}/${b.inv.id}`));
+      const line = (detail.lines || detail.invoice?.lines || [])[0];
+      const body = qty => ({ kind: "sale_return", accountId: b.a.id, originalId: b.inv.id, issueDate: "2026-10-01", lines: [{ originLineId: line.id, qty }], payment: { cash: [], cheques: [], endorse: [], rest: "open" }, force: true });
+      const half = await must("kısmi iade", api.post(INV, body(0.5)));
+      assert.equal(await balanceOf(api, b.a.id), 973.55);
+      await must("avans", api.post(`${ACC}/${b.a.id}/entries`, { kind: "in", amount: "3000", date: "2026-10-05", method: "cash", cashForce: true, similarOk: true, note: "Avans" }));
+      assert.equal(await balanceOf(api, b.a.id), -2026.45);
+      await must("iade küçülür", api.post(`${INV}/${half.id}/edit`, body(0.25)));
+      assert.equal(payableOf(store, half.id), 725);
+      assert.equal(await balanceOf(api, b.a.id), -1301.45);
+    } finally {
+      server.close();
+    }
+  });
   it("kilitli dönemde dönem kilidi iletisi önce gelir (Değersiz denetimi değil)", async () => {
     const { server, api } = await boot();
     try {
