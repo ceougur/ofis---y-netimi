@@ -36,10 +36,10 @@ const log = (...x) => out.push(x.join(" "));
 {
   const b = await base("Ö2 Alıştan İade");
   const item = await ok("ürün", api.post("/api/workspace/stock", { kind: "goods", code: "O2", name: "Ürün O2", unit: "Adet" }));
-  const p = await ok("mal alışı", api.post(INV, { scenario: "goods_purchase", accountId: b.a.id, number: "ALS-O2", issueDate: "2026-10-01", lines: [{ itemId: item.id, qty: 10, unitPrice: "100", vatRate: 0 }], payment: { rest: "open" }, ...force }));
+  const p = await ok("mal alışı", api.post(INV, { scenario: "goods_purchase", accountId: b.a.id, number: "ALS-O2", issueDate: "2026-09-10", lines: [{ itemId: item.id, qty: 10, unitPrice: "100", vatRate: 0 }], payment: { rest: "open" }, ...force }));
   const full = (await api.get(`${INV}/${p.id}`)).data;
   const lineId = (full.lines || full.invoice?.lines || [])[0]?.id;
-  const body = cash => ({ scenario: "purchase_return", accountId: b.a.id, originalId: p.id, issueDate: "2026-10-03", lines: [{ itemId: item.id, qty: 5, unitPrice: "100", vatRate: 0, ...(lineId ? { originalLineId: lineId } : {}) }], payment: cashPay(cash), ...force });
+  const body = cash => ({ kind: "purchase_return", originalId: p.id, issueDate: "2026-09-10", lines: [{ originLineId: lineId, qty: 5 }], payment: cashPay(cash), ...force });
   const ret = await api.post(INV, body([]));
   log("(2a) Alış 1.000 + Alıştan İade 500 (peşinsiz):", short(ret), "bakiye", await bal(b.a.id));
   if (ret.status === 200) {
