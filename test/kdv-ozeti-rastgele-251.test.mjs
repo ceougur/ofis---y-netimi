@@ -7,6 +7,11 @@
 //   azalan ayın sonucu fişten, azalma sonraki ayda (S-DKM1-1 = A) — kural ancak azalmanın düşüldüğü ayı içeren aralıkta geçerli.
 //   Taban (t251-m1k4): Ocak–Temmuz 300 tohumda 11 sapma (hepsi eksi — 'güncel değil' ayın artışı sonraki azalmayı götürüyordu; ör. tohum 230 −300), yıl dönümü 150 tohumda 2
 //   (küçük tur 5'in tohum formülüyle; küçük tur 6'dan beri yıl dönümü seti ayrı formülle — t251-m1k4'teki sayısı docs/kanit/2026-11-28/m1k6-* altında).
+//   2.5.1 M1 küçük tur 8 (mali müşavir S ORTA-1; aynı sınıf dar kontrol tur 6 + 7 tohum 86): DEĞİŞMEZ 'kayıtsız ay raporu = ön izleme' — 391 / 191 satırı ve etkin fişi olmayan
+//   her ay (aralığın ayları + bugünkü ay) için tek ay raporu o ayın mahsup ön izlemesine eşittir; ayrılıyorsa raporda açıklayan not ('Mahsup Edilmemiş Ay', 'Zincirle Uyuşmayan
+//   Mahsup Fişi', 'Güncel Olmayan Önceki Fiş') vardır. İkinci evre (yalnız ilk evreden SONRA, üretecin önceki sayılarını değiştirmez): bütün fişler geri alınır, aylar sırayla
+//   yeniden mahsup edilir, sonra 1–2 değişiklik (çoğu alış İptal Et — azalış bugünkü kayıtsız ayda düşülür); kayıtsız ay değişmezi ve bugünkü ayın sonuna kadarki aralıkta
+//   Ödenecek − Sonraki + Önceki = 391 − 191 yeniden denetlenir. Taban (t251-aday-taban) kodunda kırmızı: kayıtsız ay 0 / 0 / 0 ↔ ön izleme, aralık 391 − 191'den eksik.
 //   Sahte saat (ders 13): her tohumun sunucusu sabit 'bugün'le açılır. Tohum sayısı KDV_RASTGELE_TOHUM / KDV_RASTGELE_YIL_TOHUM ile ARTIRILABİLİR (alt sınır 300 / 150).
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
@@ -26,6 +31,11 @@ const monthEnd = month => {
   const [y, m] = month.split("-").map(Number);
   return new Date(Date.UTC(y, m, 0)).toISOString().slice(0, 10);
 };
+const nextMonth = month => {
+  const [y, m] = month.split("-").map(Number);
+  return m === 12 ? `${y + 1}-01` : `${y}-${String(m + 1).padStart(2, "0")}`;
+};
+const EXPLAIN = ["Mahsup Edilmemiş Ay", "Zincirle Uyuşmayan Mahsup Fişi", "Güncel Olmayan Önceki Fiş"];
 const count = (name, floor) => Math.max(floor, Number(process.env[name]) || floor);
 
 /** Tek şirketli program; sayılar yanıt gövdesinden (ders 3). */
@@ -44,6 +54,16 @@ async function program(now, prefix) {
     offset: async month => {
       const r = await api.post(`${TAX}/vat-offset`, { month });
       return r.status === 200 ? JSON.stringify([r.data.offset.carryInMinor, r.data.offset.payableMinor, r.data.offset.carryOutMinor]) : `RED ${r.status}`;
+    },
+    preview: async month => {
+      const p = (await must(`ön izleme ${month}`, api.get(`${TAX}/vat-offset?month=${month}`))).preview;
+      return [p.carryInMinor, p.payableMinor, p.carryOutMinor];
+    },
+    activeMonths: async () => (await must("fiş listesi", api.get(`${TAX}/vat-offset`))).offsets.filter(item => item.status === "active").map(item => item.month).sort(),
+    /** Etkin fişlerin hepsini en yeniden başlayarak geri alır. */
+    reverseAll: async () => {
+      const list = (await must("fiş listesi", api.get(`${TAX}/vat-offset`))).offsets.filter(item => item.status === "active").sort((a, b) => (a.month < b.month ? 1 : -1));
+      for (const item of list) await must(`geri al ${item.month}`, api.post(`${TAX}/vat-offset/${item.id}/reverse`, {}));
     },
     report: async (from, to) => {
       const res = await api.get(`${RC}/kdv-ozeti?from=${from}&to=${to}`);
@@ -109,6 +129,38 @@ async function runSeed(seed, { now, months, last, salt = [7919, 17] }) {
     if (each[0].three[0] !== range.three[0]) broken.push(`ilk ayın Önceki'si ${each[0].three[0]} ≠ aralığın ${range.three[0]}`);
     if (each.at(-1).three[2] !== range.three[2]) broken.push(`son ayın Sonraki'si ${each.at(-1).three[2]} ≠ aralığın ${range.three[2]}`);
     for (let i = 1; i < each.length; i += 1) if (each[i - 1].three[2] !== each[i].three[0]) broken.push(`${all[i - 1]} Sonraki ${each[i - 1].three[2]} ≠ ${all[i]} Önceki ${each[i].three[0]}`);
+    // Küçük tur 8: kayıtsız ay raporu = ön izleme (ayrılıyorsa açıklayan not var). Bugünkü ay (last'tan sonraki) her zaman kayıtsız.
+    const current = nextMonth(last);
+    const quiet = async phase => {
+      const active = new Set(await h.activeMonths());
+      for (const m of [...all, current]) {
+        const r = await h.report(`${m}-01`, monthEnd(m));
+        if (r.h391 !== 0 || r.h191 !== 0 || active.has(m)) continue;
+        const p = await h.preview(m);
+        const explained = EXPLAIN.some(key => key in r.summary);
+        if (!explained && JSON.stringify(r.three) !== JSON.stringify(p)) broken.push(`${phase} kayıtsız ${m}: rapor ${r.three.join(" / ")} ≠ ön izleme ${p.join(" / ")} (açıklayan not yok)`);
+      }
+    };
+    await quiet("1. evre");
+    // İkinci evre: sırayla yeniden mahsup + mahsuptan sonra değişiklik (çoğu alış İptal Et).
+    await h.reverseAll();
+    for (const m of all) log.push(`2. evre fiş ${m} ${await h.offset(m)}`);
+    const later = 1 + Math.floor(rng() * 2);
+    for (let i = 0; i < later; i += 1) {
+      if (rng() < 0.75 && buys.length) {
+        const [m, id] = buys.splice(Math.floor(rng() * buys.length), 1)[0];
+        await h.cancel(id);
+        log.push(`2. evre alış iptal ${m}`);
+      } else if (sells.length) {
+        const [m, id] = sells.splice(Math.floor(rng() * sells.length), 1)[0];
+        await h.cancel(id);
+        log.push(`2. evre satış iptal ${m}`);
+      }
+    }
+    await quiet("2. evre");
+    const whole = await h.report(`${all[0]}-01`, monthEnd(current));
+    const balance2 = whole.three[1] - whole.three[2] + whole.three[0];
+    if (balance2 !== whole.h391 - whole.h191) broken.push(`2. evre ${all[0]}..${current}: Ödenecek − Sonraki + Önceki ${balance2} ≠ 391 − 191 ${whole.h391 - whole.h191} (aralık ${whole.three.join(" / ")})`);
     return broken.length ? [`tohum ${seed}: ${broken.join("; ")} | ${log.join("; ")}`] : [];
   } finally {
     await h.ctx.server.close();
