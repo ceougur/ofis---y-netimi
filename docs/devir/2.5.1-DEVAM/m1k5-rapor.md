@@ -2,7 +2,7 @@
 
 Taban `t251-m1k4` (4850ae2a, küçük tur 4'ün dal ucu) → dal ucu: bu raporun son commit'i (dal `worktree-agent-a925406d24b0912d5`). PUSH YOK. KDV Mahsup Fişi, ön izlemesi ve defter
 DEĞİŞMEDİ (kabul D: taban = yeni BİREBİR) — yalnız Rapor Merkezi'nin KDV Özeti görünümü.
-Ortam (son okuma): yük 4,3 / 4 çekirdek (öbür ajanlarla; her koşudan önce okundu), bellek boş 2 GB (kullanılabilir 11 GB), disk boş 6,6 GB. Arka plan işim: SON İLETİDE YOK (hepsi bitti).
+Ortam (son okuma): yük 3,2 / 4 çekirdek (koşular sırasında öbür ajanlarla 4–7; her koşudan önce okundu, yük > 4 iken bir kez beklendi), bellek boş 3 GB (kullanılabilir 11 GB), disk boş 7,4 GB. Arka plan işim: SON İLETİDE YOK (hepsi bitti).
 
 ## A. DEĞİŞEN GÖZLENEBİLİR DAVRANIŞ (önce = taban → sonra; Raporlar → Tüm Raporlar → KDV Özeti (Beyanname Hazırlığı); ekran = PDF = Excel)
 1. **Kararın örneği AYNEN** (Ocak alış KDV 1.000 fiş 0 / 0 / 1.000; Şubat satış 2.000 alış 500 fiş 1.000 / 500 / 0; Mart satış 1.000 alış 200 + 100 fiş 0 / 700 / 0; Nisan satış 500
@@ -61,7 +61,7 @@ KÂHİN ELLE (karar metni + elle hesap; programın kodundan türetilmedi — der
 | 2 yeni dosya (9 sınama) UTC | 2/9, **7 kırmızı** | **9/9** |
 | aynı, Europe/Istanbul | 2/9, **7 kırmızı** | **9/9** |
 | `senaryo-kdv-mahsup-sonrasi-251` UTC | 39/45, **6 kırmızı** (yalnız F adımı) | **45/45** |
-| aynı, Europe/Istanbul | — (taban İstanbul ekranda koşulmadı — DENENMEYEN) | (§4 F) |
+| aynı, Europe/Istanbul | — (taban İstanbul ekranda koşulmadı — DENENMEYEN) | **45/45** |
 Kırmızıların NEDENİ (günlükten okundu — `m1k5-ham/m1k5-yeni-test-taban-utc.log`, ist aynı): kararın örneği Ocak–Nisan 0 / **1.400** / 0 (beklenen 1.600); yıl dönümü Bu Yıl 0 / **1.200** / 0
 (1.400); yan etki Nisan **500** (700) ve not yok; iki ardışık 2.100 (2.300); devreden yönlü 2.200 (2.400); rastgele Ocak–Temmuz **300 tohumda 11 sapma** — tohum 115 (−200), 144 (−300),
 154 (−100), 158 (−400), 162 (−600), 165 (−100), 166 (−200), 196 (−500), **230 (−300)**, 266 (−200), 273 (−600) — dar kontrolün listesiyle AYNI 11 tohum, hepsi EKSİ yönde (ödenecek eksik
@@ -84,7 +84,20 @@ rapor 500 ve uyuşmazlık notu YOK, Ocak–Nisan 1.400 (fişler, 391 / 191 ve no
 - **G** hız: yeni sorgu / döngü YOK (tek satırda koşul; `done` listesine yazılan değer değişti) — **ÖLÇÜLMEDİ** (ana oturum ölçer: `ana-kabul/betik/kabul.sh`).
 
 ### 4F-ekran (yeni kod)
-(EKRAN_SONUCLARI)
+| Senaryo | UTC | Europe/Istanbul |
+|---|---|---|
+| senaryo-kdv-mahsup-sonrasi-251 (F adımı yeni) | **45/45** | **45/45** |
+| senaryo-kdv-zincir-251 | 12/12 | 12/12 |
+| senaryo-kdv-devreden-251 | 14/14 | 14/14 |
+| senaryo-kdv-donemi-250 | 23/23 | 23/23 |
+| senaryo-defter-243 | 33/33 | 33/33 |
+| senaryo-c7b-kabul-250 | 39/39 | 39/39 |
+| senaryo-mobil-247 | 77/77 | 77/77 |
+| senaryo-banka-210 | 429/429 | 429/429 |
+Beklentisi değişen eski adım YOK (mahsup-sonrasi'ye yalnız F eklendi). Görüntüler (baktım): `m1k5-ekran/yeni/m1k5-kdv-ozeti-ocak-nisan.png` — özet 391 ₺3.500, 191 ₺1.900, Önceki 0,
+Ödenecek ₺1.600, Sonraki 0; "KDV Mahsup Fişi: Ocak 2026, Şubat 2026, Mart 2026"; "Mahsuptan Sonra Değişen Ay" kartı Şubat (güncel değil) + Mart (azalan) metniyle tam genişlikte;
+`m1k5-kdv-ozeti-nisan.png` — 391 ₺500, 191 0, Ödenecek ₺700 (not yok — §9); `m1k5-kdv-ozeti-nisan-fisli.png` — Ödenecek ₺700 + "Zincirle Uyuşmayan Mahsup Fişi" kartı (§A.2 metni). Taban
+karşılıkları `m1k5-ekran/taban/` (Ocak–Nisan ₺1.400, Nisan ₺500, uyuşmazlık kartı YOK).
 
 ## 5. MUTANT TABLOSU
 Ayrı kopyalar `/dev/shm/m1k5-kdv/mut-utc`, `mut-ist` (archive e380053e: server, test, client, tools, package.json); `m1k5-betik/mutant.py` = tur 4'ün betiği AYNEN (40 mutant; M3 yalnız metin
@@ -149,7 +162,14 @@ dağılımı kayar — rapor Mart 700 / Nisan 700 → fişler Mart 900 / Nisan 5
   ön izlemesinden farklı olabilir. Doğrusu için 'Mahsuptan Sonra Değişen Ay' satırındaki ilk aydan başlayarak mahsupları geri alın ve ayları sırayla yeniden mahsup edin."
 
 ## 15. COMMIT LİSTESİ (t251-m1k4..dal ucu)
-(COMMITLER)
+- d7d40957 rapor taslağı: nasıl bozulur listesi (koddan önce)
+- e380053e KDV Özeti kodu (S-DKM1K-1 = A) + iki yeni test dosyası + yeni-test.sh
+- 74911317 ekran senaryosuna F adımı + küçük tur 5 betikleri
+- 8500d7a7 rapor taslağı + mutant betiğinde eşzamanlılık 2
+- f744e4cd T2 eşdeğerlik betiği; komşu süre sınırı
+- 1e4623f3 rapor taslağı (testler, kabul, mutantlar)
+- 29ad5bc0 Kanıt: ham çıktılar, ekran görüntüleri
+- (son iki) Kanıt: ekran İstanbul + rapor son hâli (bu belge)
 
 ## 16. ANA OTURUMUN YENİDEN KOŞACAĞI KOMUTLAR
 ```
@@ -165,4 +185,6 @@ python3 -I docs/kanit/2026-11-28/m1k5-betik/mutant.py <ayrı kopya> <çıktı.js
 python3 -I docs/kanit/2026-11-28/m1k5-betik/esdegerlik.py <ayrı kopya> <TZ> [taban]                       # 76/76; taban satırıyla 16 kırmızı (ana ağaçta KOŞMAYIN — kopyaya yazar, sonra geri alır)
 ROOT=<kök> HUKUK_LICENSE_URL=http://127.0.0.1:9 node docs/kanit/2026-11-28/m1k5-betik/yan-etki.mjs        # yan etki dökümü (notların tam metni)
 ```
-(KOPYALAR)
+Not: mutant kopyaları `/dev/shm/m1k5-kdv/mut-utc`, `mut-ist` (archive kopyaları) KALDIRILDI. `/dev/shm/m1k5-kdv/eski` (worktree --detach t251-m1k4; içine iki yeni test dosyası + değişen
+ekran senaryosu kopyalandı + node_modules bağı) DURUYOR — ana oturum taban kırmızısını yinelemek için kullanabilir; işi bitince bağı tam yolla silip kopyalanan üç dosyayı geri alarak
+(`git -C /dev/shm/m1k5-kdv/eski checkout -- test/e2e/senaryo-kdv-mahsup-sonrasi-251.mjs`, iki yeni dosyayı tam yolla sil) `git worktree remove` ile kaldırır.
