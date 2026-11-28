@@ -43,6 +43,8 @@ const NOT_LABEL = new Set([
   "Unvan ▾", "Kalan Gün",
   // 2.5.0 BS-5 yeni maddeler.
   "Defter türünü seçmek",
+  // 2.5.1 aday: yeni madde başı vurguları (kılavuzun kendi sözü).
+  "Hangi taksit gecikti", "Değersiz Alacak yazılmış caride değişiklik", "Taksit numarası", "KDV Özeti'nde notlar",
 ]);
 // Program dışı ekranlar (Windows, Meta Geliştirici Paneli, Excel, telefonun tarayıcısı) ve örnek değerler: aranmaz, listede ayrıca yazılır.
 const DIS_EKRAN = new Set([
