@@ -172,6 +172,30 @@ describe("2.5.1 M2 tur 5 — SK-64 = A: Değersiz'li caride Ödeme silme / Alaca
       server.close();
     }
   });
+  // Ayna yol (alacak yönlü belge): Alış Faturası 100 (01.10; Değersiz'li cariden alış — yeni alacak, kabul) → 323,55; Düzenle 100 → 1.000 → −576,45 → RET (323,55 kalır); 100 → 423,55 (tam 0) kabul.
+  it("Alış Faturası Düzenle'si tutarı artırıp eksiye götürüyorsa → 409 'Alış faturası düzenlenemez'; tam 0'a götüren artış kabul; ileti yolu işe yarar", async () => {
+    const { server, api, store } = await boot();
+    try {
+      const b = await base(api, "M2T5 Alış");
+      const body = price => ({ scenario: "expense_purchase", accountId: b.a.id, number: "ALS-1", issueDate: "2026-10-01", lines: [{ name: "Gider", qty: 1, unitPrice: String(price), vatRate: 0, expense: "rent" }], payment: { rest: "open" } });
+      const p = await must("alış 100", api.post(INV, body(100)));
+      assert.equal(await balanceOf(api, b.a.id), 323.55);
+      const r = await api.post(`${INV}/${p.id}/edit`, body(1000));
+      assertRefusal(r, { what: "Alış faturası düzenlenemez", act: "düzenlemeden", after: "576,45", then: "faturayı düzenleyin" });
+      assert.equal(Number(store.get("SELECT payable_total AS p FROM invoices WHERE id = ?", p.id).p), 100);
+      assert.equal(await balanceOf(api, b.a.id), 323.55);
+      await must("tam 0", api.post(`${INV}/${p.id}/edit`, body("423,55")));
+      assert.equal(await balanceOf(api, b.a.id), 0);
+      assert.equal((await integrityOf(api)).ok, true);
+      const again = await api.post(`${INV}/${p.id}/edit`, body(1000));
+      assertRefusal(again, { what: "Alış faturası düzenlenemez", act: "düzenlemeden", after: "576,45", then: "faturayı düzenleyin" });
+      await followFix(api, again, b, () => api.post(`${INV}/${p.id}/edit`, body(1000)));
+      assert.equal(await balanceOf(api, b.a.id), 2423.55);
+      assert.equal((await integrityOf(api)).ok, true);
+    } finally {
+      server.close();
+    }
+  });
   it("POS İadesi silme → 409 'POS İadesi silinemez' (−76,45 kalır); ileti yolu silmeyi kabul ettirir", async () => {
     const { server, api, store } = await boot();
     try {

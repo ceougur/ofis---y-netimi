@@ -835,6 +835,7 @@ export function writeOffBalanceGuard(store, party, { action = "cancel", kind = "
         "entry-edit:out": { what: "Ödeme hareketi düzeltilemez", act: "düzeltmeden", by: "bu düzeltmeyle", then: "ödeme hareketini düzeltin", op: "ödeme hareketinin düzeltilmesi" },
         "entry-delete:pos-refund": { what: "POS İadesi silinemez", act: "silmeden", by: "bu silmeyle", then: "POS İadesini silin", op: "POS İadesinin silinmesi" },
         "entry-edit:pos-refund": { what: "POS İadesi düzeltilemez", act: "düzeltmeden", by: "bu düzeltmeyle", then: "POS İadesini düzeltin", op: "POS İadesinin düzeltilmesi" },
+        "edit:purchase": { what: "Alış faturası düzenlenemez", act: "düzenlemeden", by: "bu düzenlemeyle", then: "faturayı düzenleyin", op: "alış faturasının tutarının artırılması" },
         "entry-edit:credit": { what: "Alacak hareketi düzeltilemez", act: "düzeltmeden", by: "bu düzeltmeyle", then: "alacak hareketini düzeltin", op: "alacak hareketinin düzeltilmesi" },
         "plan-entry-delete": { what: "Taksit kartının ödeme / iade hareketi silinemez", act: "silmeden", by: "bu silmeyle", then: "taksit kartının ödeme / iade hareketini silin", op: "taksit kartının ödeme / iade hareketinin silinmesi" },
         "plan-entry-edit": { what: "Taksit kartının ödeme / iade hareketi düzeltilemez", act: "düzeltmeden", by: "bu düzeltmeyle", then: "taksit kartının ödeme / iade hareketini düzeltin", op: "taksit kartının ödeme / iade hareketinin düzeltilmesi" },
