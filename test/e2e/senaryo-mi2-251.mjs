@@ -20,7 +20,7 @@ const imp = rel => import(pathToFileURL(path.join(ROOT, rel)).href);
 const { createApp } = await imp("server/app.mjs");
 const { buildXlsx } = await imp("server/lib/xlsx-write.mjs");
 const { escClose } = await import(pathToFileURL(path.join(HERE, "esc-kapat.mjs")).href);
-const { xlsxRows } = await import(pathToFileURL(path.join(HERE, "..", "fixtures", "rapor-dosya-oku.mjs")).href);
+const { pdfText, xlsxRows } = await import(pathToFileURL(path.join(HERE, "..", "fixtures", "rapor-dosya-oku.mjs")).href);
 
 const OUT = process.env.EKRAN_DIR || path.join(HERE, "artifacts", "senaryo-mi2-251");
 fs.rmSync(OUT, { recursive: true, force: true });
@@ -292,6 +292,115 @@ try {
   const waAll = await page.$(`${ACC} [data-act="waStatement"]`);
   ok(!waAll, "bu süzgeçte 'Tümüne WhatsApp' düğmesi yok (yalnız işaretlenenlere)");
   await shot("liste-odeme-yapanlar");
+
+  // 2.5.1 Mİ tur 3 (dar kontrol Mİ ORTA-1; ana oturumun yeniden üretimi DK-PROBE — docs/kanit/2026-11-27/ana-dkmi/p5-wa-aralik.mjs): 'Ödeme Yapanlar' açıkken dönem
+  // 'Tarih Aralığı'na çevrilip günler seçilmeden önce: ekran eski ödeyenleri gösteriyor, 'Tümüne WhatsApp' geri geliyor (istekte dönem / süzgeç yok → pencerede 3 cari),
+  // PDF / Excel dönemsiz kuruluyordu. Şimdi: seçim BEKLER, ekran + PDF + Excel son uygulanan dönemle (Bugün · ödeme yapanlar) ve bu açıkça yazılı; 'Tümüne WhatsApp' yok;
+  // toplu gönderim yalnız ekrandaki işaretlenenlere. Beklenen ödeyenler VERİ TABANINDAN (bugün tahsilatı > 0 olan aktif cariler).
+  console.log("\n■ 5b. 'Ödeme Yapanlar' açıkken dönem 'Tarih Aralığı' (günler seçilmeden): ekran = PDF = Excel, 'Tümüne WhatsApp' yok");
+  const activeIds = app.store.all("SELECT id, name FROM accounts WHERE deleted_at IS NULL AND status = 'active' ORDER BY name");
+  const dbPayers = activeIds.filter(row => dbToday(row.id).total > 0.005).map(row => row.name).sort();
+  const screenNames = () => page.$$eval(`${ACC} tr[data-account] td:nth-child(3) > b:first-child`, nodes => nodes.map(node => node.textContent.trim()).sort());
+  const linkParams = async selector => {
+    const href = await page.$eval(`${ACC} ${selector}`, node => node.getAttribute("href")).catch(() => "");
+    return href ? Object.fromEntries(new URL(href, BASE).searchParams) : null;
+  };
+  const fileNames = async selector => {
+    const href = await page.$eval(`${ACC} ${selector}`, node => node.getAttribute("href")).catch(() => "");
+    if (!href) return { names: null, text: "" };
+    const res = await page.request.get(new URL(href, BASE).href);
+    const buffer = Buffer.from(await res.body());
+    if (/\.xlsx/.test(href)) {
+      const sheet = xlsxRows(buffer);
+      const at = sheet.findIndex(row => row.includes("Ad / Unvan"));
+      const col = at >= 0 ? sheet[at].indexOf("Ad / Unvan") : -1;
+      return { names: at >= 0 ? sheet.slice(at + 1).map(row => row[col]).filter(name => activeIds.some(item => item.name === name)).sort() : null, text: "" };
+    }
+    const text = pdfText(buffer);
+    return { names: activeIds.map(item => item.name).filter(name => text.includes(name)).sort(), text };
+  };
+  ok(dbPayers.length === 2 && activeIds.length === 3, `veri tabanı: aktif cari ${activeIds.length}, bugün ödeme yapan ${JSON.stringify(dbPayers)} (beklenen 3 / Can + Elif)`);
+  const waBodies = [];
+  const onWaRequest = req => {
+    if (/\/api\/workspace\/whatsapp\/targets/.test(req.url()) && req.method() === "POST") waBodies.push(JSON.parse(req.postData() || "{}"));
+  };
+  page.on("request", onWaRequest);
+  // Dar kontrolün yolu: Bugün'den doğrudan 'Tarih Aralığı' seçilir (seçicide ok tuşlarıyla inmek aradaki her dönemi — Dün, Bu Hafta, Bu Ay — sırayla UYGULAR; o
+  // yolda son uygulanan Bu Ay olur, beklenen sayı burada yalnız Bugün için yazıldı).
+  await page.focus(`${ACC} select[data-period]`);
+  await page.selectOption(`${ACC} select[data-period]`, "range");
+  await page.waitForSelector(`${ACC} input[data-period-from]`, { timeout: 15000 });
+  await page.waitForTimeout(900);
+  const pendingRows = await screenNames();
+  const pendingKpi = await page.$eval(`${ACC} [data-collected-kpi]`, node => node.textContent.replace(/\s+/g, " ").trim()).catch(() => "");
+  const pendingHint = await page.$eval(`${ACC} [data-period-pending]`, node => node.textContent.replace(/\s+/g, " ").trim()).catch(() => "");
+  const waAllPending = await page.$(`${ACC} [data-act="waStatement"], ${ACC} [data-act="waMessage"]`);
+  const waAllTitle = waAllPending ? await waAllPending.getAttribute("title") : "";
+  await shot("aralik-bekleyen-odeme-yapanlar");
+  ok(JSON.stringify(pendingRows) === JSON.stringify(dbPayers), `ekran (günler seçilmeden) son uygulanan dönemin ödeyenleri: ${JSON.stringify(pendingRows)} (beklenen veri tabanı ${JSON.stringify(dbPayers)})`);
+  ok(/Bugün/.test(pendingKpi) && /2 cari/.test(pendingKpi), `Tahsilat kartı ekranın dönemini yazar: "${pendingKpi}" (beklenen Bugün · 2 cari)`);
+  ok(/Başlangıç ve bitiş günlerini seçin/.test(pendingHint) && /Seçim tamamlanana kadar ekran, PDF ve Excel: Bugün/.test(pendingHint) && /Bu Dönemde Ödeme Yapanlar/.test(pendingHint), `bekleyen seçim açıkça yazılı: "${pendingHint}"`);
+  ok(!waAllPending, `'Tümüne WhatsApp' düğmesi yok (önce VAR idi: "${waAllTitle || "—"}")`);
+  const pdfParams = await linkParams('a[data-pdf="list"]');
+  const xlsxParams = await linkParams("[data-xlsx]");
+  ok(pdfParams?.period === "today" && pdfParams?.paid === "1", `PDF bağlantısı ekranın dönemiyle: period=${pdfParams?.period ?? "yok"} paid=${pdfParams?.paid ?? "yok"} (beklenen today / 1)`);
+  ok(xlsxParams?.period === "today" && xlsxParams?.paid === "1", `Excel bağlantısı ekranın dönemiyle: period=${xlsxParams?.period ?? "yok"} paid=${xlsxParams?.paid ?? "yok"} (beklenen today / 1)`);
+  const pendingPdf = await fileNames('a[data-pdf="list"]');
+  const pendingXlsx = await fileNames("[data-xlsx]");
+  ok(JSON.stringify(pendingPdf.names) === JSON.stringify(pendingRows) && /Bu Dönemde Ödeme Yapanlar/.test(pendingPdf.text), `PDF'in satırları = ekran: ${JSON.stringify(pendingPdf.names)}`);
+  ok(JSON.stringify(pendingXlsx.names) === JSON.stringify(pendingRows), `Excel'in satırları = ekran: ${JSON.stringify(pendingXlsx.names)}`);
+  // Eski kodda düğme vardı: tıklanırsa gönderim penceresi kaç cari açıyor (kanıt — kırmızının nedeni). Yeni kodda bu dal çalışmaz.
+  if (waAllPending) {
+    await waAllPending.click();
+    await page.waitForTimeout(2500);
+    const dialog = await page.$eval(TOP, node => node.textContent.replace(/\s+/g, " ").trim().slice(0, 160)).catch(() => "");
+    ok(false, `'Tümüne WhatsApp' tıklandı: istek ${JSON.stringify(waBodies.at(-1) || {})} · pencere "${dialog}"`);
+    await escClose(page);
+    await page.waitForTimeout(400);
+  }
+  // Başlık kutusu (klavye: Space) yalnız ekrandakileri seçer; 'WhatsApp Ekstre' isteği yalnız bu kimlikler.
+  await page.focus(`${ACC} input[data-select-all]`);
+  await page.keyboard.press("Space");
+  await page.waitForSelector(`${ACC} [data-selbar].is-active [data-act="waStatement"]`, { timeout: 5000 });
+  waBodies.length = 0;
+  await page.click(`${ACC} [data-act="waStatement"]`);
+  await page.waitForTimeout(2500);
+  const sentBody = waBodies.at(-1) || {};
+  const sentNames = (sentBody.ids || []).map(id => activeIds.find(item => item.id === id)?.name || id).sort();
+  const dialogText = await page.$eval(TOP, node => node.textContent.replace(/\s+/g, " ").trim()).catch(() => "");
+  await shot("aralik-bekleyen-wa-secilenler");
+  ok(sentBody.all !== true && JSON.stringify(sentNames) === JSON.stringify(pendingRows), `toplu ekstre isteği yalnız ekrandakiler: ${JSON.stringify(sentNames)} (all: ${sentBody.all === true})`);
+  ok(/2 Cari/.test(dialogText) && !/Deniz Grupsuz/.test(dialogText), `gönderim penceresi 2 cari, ödemesi olmayan yok: "${dialogText.slice(0, 120)}"`);
+  await escClose(page);
+  await page.waitForTimeout(400);
+  page.off("request", onWaRequest);
+  // Bekleyen seçimde Grup Özeti'ne geç: ekranın, PDF'in ve Excel'in dönemi aynı (son uygulanan).
+  await page.click(`${ACC} [data-display="groups"]`);
+  await page.waitForSelector(`${ACC} table[data-groups]`, { timeout: 15000 });
+  const groupsKpi = await page.$eval(`${ACC} [data-collected-kpi]`, node => node.textContent.replace(/\s+/g, " ").trim()).catch(() => "");
+  const groupsXlsx = await linkParams("[data-xlsx]");
+  const groupsPdf = await linkParams('a[data-pdf="groups"]');
+  ok(/Bugün/.test(groupsKpi) && groupsXlsx?.period === "today" && groupsPdf?.period === "today", `Grup Özeti (bekleyen seçim): kart "${groupsKpi}", Excel ${groupsXlsx?.period ?? "dönemsiz"}, PDF ${groupsPdf?.period ?? "dönemsiz"}`);
+  await page.click(`${ACC} [data-display="list"]`);
+  await page.waitForSelector(`${ACC} table.hof-acc-table`, { timeout: 15000 });
+  // Başlangıç bitişten sonra (elle yazılır; seçicinin sınırı atlatılır): yine bekler, nedeni yazılı.
+  await page.fill(`${ACC} input[data-period-from]`, iso(1));
+  await page.waitForTimeout(400);
+  await page.fill(`${ACC} input[data-period-to]`, TODAY);
+  await page.waitForTimeout(900);
+  const wrongHint = await page.$eval(`${ACC} [data-period-pending]`, node => node.textContent.replace(/\s+/g, " ").trim()).catch(() => "");
+  const wrongRows = await screenNames();
+  ok(/Başlangıç tarihi bitiş tarihinden sonra olamaz/.test(wrongHint) && JSON.stringify(wrongRows) === JSON.stringify(dbPayers) && !(await page.$(`${ACC} [data-act="waStatement"]`)), `başlangıç > bitiş: "${wrongHint}" · ekran ${JSON.stringify(wrongRows)} · Tümüne WhatsApp yok`);
+  // Geçerli aralık (bugün – bugün): uygulanır; ekran = PDF = Excel = aralığın ödeyenleri; bekleyen yazı kalkar.
+  await page.fill(`${ACC} input[data-period-from]`, TODAY);
+  await page.waitForTimeout(1200);
+  const rangeRows = await screenNames();
+  const rangeXlsx = await linkParams("[data-xlsx]");
+  const rangeHint = await page.$(`${ACC} [data-period-pending]`);
+  ok(JSON.stringify(rangeRows) === JSON.stringify(dbPayers) && rangeXlsx?.period === "range" && rangeXlsx?.from === TODAY && rangeXlsx?.to === TODAY && rangeXlsx?.paid === "1" && !rangeHint, `geçerli aralık uygulandı: ekran ${JSON.stringify(rangeRows)}, Excel ${rangeXlsx?.period} ${rangeXlsx?.from}–${rangeXlsx?.to} paid=${rangeXlsx?.paid}`);
+  await page.selectOption(`${ACC} select[data-period]`, "today");
+  await page.waitForTimeout(900);
+  ok(await page.$eval(`${ACC} input[data-paid]`, node => node.checked).catch(() => false), "'Bu Dönemde Ödeme Yapanlar' açık kaldı (Bugün)");
 
   console.log("\n■ 6. Grup Özeti → Excel (indirilen dosya): satırlar ve TOPLAM ekranla aynı");
   await page.click(`${ACC} [data-display="groups"]`);

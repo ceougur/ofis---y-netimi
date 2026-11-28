@@ -331,4 +331,39 @@ describe("Mİ-2 — dönemlik tahsilat ve Grup Özeti", () => {
     assert.equal(seen.status, 200);
     assert.equal(seen.data.totals.collected.total, 1630);
   });
+
+  // 2.5.1 Mİ tur 3 (dar kontrol Mİ SONRAKİ SÜRÜME maddesi 'dişsiz test'; prensip §4 'yalnız teste dokunan DÜŞÜK aynı turda'): yukarıdaki senaryoda 'Diğer' hep 0'dı —
+  // 'Diğer' sınıfı kapatılsa (Kredi Kartına İade POS'a düşse) test yeşil kalıyordu. TUR 1 BAŞ MİMAR KARARI (4) AYNEN: "POS Komisyon İadesi / Kredi Kartına İade
+  // 'Diğer' sütununda (raporla aynı tanım) — KABUL". Beklenenler ELLE (ders 5): B Grubu'ndaki tedarikçiden Kredi Kartına İade 45 → Diğer 45 (POS 0); Tahsilat
+  // 1.630 + 45 = 1.675; satırlar = TOPLAM; rapor eşdeğerliği; PDF / Excel'de 'Diğer' sütunu (değer varken). EN SONDA koşar (öbür testlerin sayıları değişmesin).
+  it("(d) 'Diğer': Kredi Kartına İade Diğer sütununda (POS'a karışmaz) — Liste, Grup Özeti, TOPLAM, PDF, Excel ve 'Cari Bazında Tahsilat' raporuyla aynı", async () => {
+    const { trIban } = await import("./banka-210-hesap-ortak.mjs");
+    const bank = "/api/workspace/bank/accounts";
+    const demand = await h.must("vadesiz hesap", h.api.post(bank, { bankName: "Ziraat Bankası", name: "Ana TL Hesabı", kind: "demand", currency: "TRY", iban: trIban(10, 2512511), opening: { date: "2026-10-01", amount: "10.000", confirmed: true } }));
+    const card = await h.must("kredi kartı", h.api.post(bank, { bankName: "Ziraat Bankası", name: "World", kind: "card", parentId: demand.id, creditLimit: "50.000", opening: { date: "2026-10-01", amount: "0", confirmed: true } }));
+    await h.must("Kredi Kartına İade 45", h.api.post(`/api/workspace/accounts/${ids.tedarik.id}/entries`, { kind: "in", method: "card", amount: "45", cardRefund: true, bankAccountId: card.id, date: TODAY, similarOk: true }));
+    const stored = h.store.get("SELECT e.method, b.kind AS bankKind FROM account_entries e LEFT JOIN bank_accounts b ON b.id = e.fin_ref WHERE e.account_id = ? AND e.kind = 'in' AND e.amount = 45", ids.tedarik.id);
+    assert.deepEqual([stored?.method, stored?.bankKind], ["card", "card"], "veri tabanı: giriş, kart yolu, bağı Kredi Kartı hesabı");
+    const list = await listOf("period=today");
+    //                       total cash card bank cheque note other opening
+    assert.deepEqual(pick(rowOf(list, ids.tedarik.id).collected), [45, 0, 0, 0, 0, 0, 45, 0], "tedarikçi: Kredi Kartına İade 45 Diğer'de, POS 0");
+    assert.deepEqual(pick(list.totals.collected), [1675, 170, 200, 360, 400, 500, 45, 300], "kart: Tahsilat 1.675 = 1.630 + Diğer 45; POS 200 değişmedi");
+    const s = await summaryOf("period=today");
+    const b = s.groups.find(row => row.name === "B Grubu");
+    assert.deepEqual([b.collected.total, b.collected.card, b.collected.other], [115, 0, 45], "B Grubu: taksit 70 + Diğer 45; POS 0");
+    assert.deepEqual([s.totals.collected.total, s.totals.collected.card, s.totals.collected.other], [1675, 200, 45], "TOPLAM: Diğer 45, POS 200");
+    assert.equal(Math.round(s.groups.reduce((acc, row) => acc + row.collected.other, 0) * 100) / 100, s.totals.collected.other, "Diğer: satırlar = TOPLAM");
+    const report = await h.must("rapor", h.api.get(`/api/workspace/report-center/cari-tahsilat?from=${TODAY}&to=${TODAY}`));
+    const r = report.rows.find(row => row[report.headers.indexOf("Cari")] === "Kırtasiye Tedarik");
+    assert.ok(r, "raporda tedarikçinin satırı var");
+    assert.equal(num(r[report.headers.indexOf("Toplam")]), 45, "rapor Toplam = ekranın Tahsilat'ı (45)");
+    const { pdfText, xlsxRows } = await import("./fixtures/rapor-dosya-oku.mjs");
+    const pdf = pdfText((await h.client.raw("GET", "/api/workspace/accounts/group-summary.pdf?period=today&title=Cari")).buffer);
+    assert.ok(pdf.includes("Diğer"), "Grup Özeti PDF'inde 'Diğer' sütunu (değer varken)");
+    const rows = xlsxRows((await h.client.raw("GET", "/api/workspace/accounts/group-summary.xlsx?period=today&title=Cari")).buffer);
+    const head = rows.findIndex(row => row[0] === "Grup");
+    const col = rows[head].indexOf("Diğer");
+    assert.ok(col > 0, `Grup Özeti Excel başlığında 'Diğer': ${JSON.stringify(rows[head])}`);
+    assert.deepEqual([num(rows.find(row => row[0] === "B Grubu")[col]), num(rows.find(row => row[0] === "TOPLAM")[col])], [45, 45], "Excel B Grubu ve TOPLAM Diğer 45");
+  });
 });

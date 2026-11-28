@@ -143,12 +143,25 @@
   const body = () => modal?.dialog.querySelector("[data-accounts]");
   // Dönem yalnız tam seçilmişse gider (Tarih Aralığı'nda iki gün de seçili ve başlangıç ≤ bitiş); yoksa istek bugünkü gibi.
   const periodReady = () => Boolean(view.period) && (view.period !== "range" || (Boolean(view.from) && Boolean(view.to) && view.from <= view.to));
-  const periodParams = () => (periodReady() ? { period: view.period, ...(view.period === "range" ? { from: view.from, to: view.to } : {}), ...(view.paid ? { paid: "1" } : {}) } : {});
+  // 2.5.1 Mİ tur 3 (dar kontrol Mİ ORTA-1): ekrandaki listenin YÜKLENDİĞİ dönem ("uygulanan"). Seçici Tarih Aralığı'nda günler henüz geçerli değilken seçim BEKLER;
+  // liste, PDF, Excel, Grup Özeti ve arka plan yenilemesi son uygulanan dönemle (ve onun "Bu Dönemde Ödeme Yapanlar" süzgeciyle) kurulur — ekran = PDF = Excel.
+  // Önce bekleyen seçim PDF / Excel'i dönemsiz kuruyor, 'Tümüne WhatsApp' geri geliyordu (ekranda eski ödeyenler, gönderim süzgeçteki herkese).
+  const applied = { period: "", from: "", to: "", paid: false };
+  const syncApplied = () => {
+    if (view.period && !periodReady()) return;
+    applied.period = view.period;
+    applied.from = view.period === "range" ? view.from : "";
+    applied.to = view.period === "range" ? view.to : "";
+    applied.paid = Boolean(view.period) && Boolean(view.paid);
+  };
+  const periodPending = () => Boolean(view.period) && !periodReady();
+  const periodParams = () => (applied.period ? { period: applied.period, ...(applied.period === "range" ? { from: applied.from, to: applied.to } : {}), ...(applied.paid ? { paid: "1" } : {}) } : {});
   const query = () => new URLSearchParams({ q: view.q, type: view.type, group: view.group, subgroup: view.subgroup, status: view.status, balance: view.balance, sort: view.sort, ...periodParams() });
   const groupsQuery = () => new URLSearchParams({ q: view.q, type: view.type, status: view.status, balance: view.balance, ...periodParams() });
-  // "Bu Dönemde Ödeme Yapanlar" açıkken toplu seçim yalnız TEK TEK işaretlenenlerle: WhatsApp toplu gönderiminin "süzgeçteki hepsi" çözümü bu süzgeci bilmez,
-  // ekranda görünmeyen carilere gitmesin.
-  const explicitOnly = () => Boolean(view.paid) && periodReady();
+  // "Bu Dönemde Ödeme Yapanlar" kutusu işaretliyken (ya da ekrandaki liste bu süzgeçle yüklenmişken) toplu seçim yalnız TEK TEK işaretlenenlerle ve 'Tümüne
+  // WhatsApp' hiç görünmez (BAŞ MİMAR KARARI 27.11 (5)): WhatsApp toplu gönderiminin "süzgeçteki hepsi" çözümü dönemi ve bu süzgeci bilmez, ekranda görünmeyen
+  // carilere gitmesin.
+  const explicitOnly = () => Boolean(view.paid) || applied.paid;
   const filterBody = () => ({ q: view.q, type: view.type, group: view.group, subgroup: view.subgroup, status: view.status, balance: view.balance });
   const listPdfUrl = () => `/api/workspace/accounts/liste.pdf?${query()}&title=${encodeURIComponent(moduleName())}`;
   const listXlsxUrl = () => `/api/workspace/accounts/export.xlsx?${query()}&title=${encodeURIComponent(moduleName())}`;
@@ -169,6 +182,8 @@
   async function loadListOnce({ more = false, keep = false } = {}) {
     const load = lists.start({ quiet: keep, more });
     if (!load) return false;
+    // Yeni yükleme seçicinin hazır dönemini uygular; "Daha Fazla" ve arka plan yenilemesi ekrandaki listenin dönemiyle sürer (Mİ tur 3).
+    if (!more && !keep) syncApplied();
     if (!keep && !more && view.listError) {
       view.listError = "";
       if (!view.list && view.mode === "list") renderList();
@@ -214,7 +229,10 @@
   let groupsRequest = 0;
   async function loadGroups({ keep = false } = {}) {
     const ticket = ++groupsRequest;
-    if (!keep) view.groupsError = "";
+    if (!keep) {
+      view.groupsError = "";
+      syncApplied();
+    }
     try {
       const data = await HOF.api(`/api/workspace/accounts/group-summary?${groupsQuery()}`, keep ? { background: true } : {});
       if (ticket !== groupsRequest) return;
@@ -390,7 +408,11 @@
   const periodBar = () => {
     const range = view.period === "range" ? `<input type="date" data-period-from value="${esc(view.from)}" aria-label="Başlangıç tarihi" max="${esc(view.to || "")}"><span class="hof-muted">–</span><input type="date" data-period-to value="${esc(view.to)}" aria-label="Bitiş tarihi" min="${esc(view.from || "")}">` : "";
     const paid = view.period ? `<label class="hof-acc-paid"><input type="checkbox" data-paid ${view.paid ? "checked" : ""}> Bu Dönemde Ödeme Yapanlar</label>` : "";
-    const hint = view.period === "range" && !periodReady() ? '<small class="hof-muted">Başlangıç ve bitiş günlerini seçin.</small>' : "";
+    // Bekleyen seçim (Mİ tur 3): ekranın hangi dönemi gösterdiği açıkça yazılır (PDF / Excel de o dönemle).
+    const shown = (view.display === "groups" ? view.groups : view.list)?.period || null;
+    const pendingWhy = view.from && view.to && view.from > view.to ? "Başlangıç tarihi bitiş tarihinden sonra olamaz." : "Başlangıç ve bitiş günlerini seçin.";
+    const pendingNow = shown ? ` Seçim tamamlanana kadar ekran, PDF ve Excel: ${periodText(shown)}${applied.paid ? " · Bu Dönemde Ödeme Yapanlar" : ""}.` : " Seçim tamamlanana kadar ekran, PDF ve Excel dönemsiz.";
+    const hint = periodPending() ? `<small class="hof-muted" data-period-pending>${esc(pendingWhy + pendingNow)}</small>` : "";
     // 2.5.1 Mİ tur 2 (BAŞ MİMAR KARARI 27.11 (4)): "Tahsilat Dönemi:" etiketi seçenekten AYRI, her durumda görünür (önce yalnız "Tahsilat Dönemi: Yok" seçeneğinin metniydi —
     // dönem seçilince ve Grup Özeti'nde kayboluyordu).
     return `<div class="hof-acc-period" role="group" aria-label="Tahsilat dönemi"><span class="hof-acc-period-label" data-period-label>Tahsilat Dönemi:</span><select data-period aria-label="Tahsilat dönemi">${PERIODS.filter(([id]) => id || view.display === "list").map(([id, label]) => `<option value="${id}" ${id === view.period ? "selected" : ""}>${label}</option>`).join("")}</select>${range}${paid}${hint}</div>`;
