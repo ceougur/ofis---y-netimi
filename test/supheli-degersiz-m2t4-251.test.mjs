@@ -348,6 +348,7 @@ describe("2.5.1 M2 tur 4 — ORTA-1: değişmez (i)'nin Silinenler taraması diz
   it("sorgu planı: iki Silinenler sorgusunda tablo baştan sona okunmaz (SCAN trash yok)", async () => {
     const { server, store } = await boot();
     try {
+      assert.ok(D.WRITE_OFF_TRASH_SQL && D.WRITE_OFF_ACTIVITY_TRASH_SQL, "dizinli Silinenler sorguları yok (tur 4 öncesi kod — tam tarama)");
       for (const [sql, args] of [[D.WRITE_OFF_TRASH_SQL, ["account-x", "2026-10-15T09:00:00.000Z"]], [D.WRITE_OFF_ACTIVITY_TRASH_SQL, ["2026-10-15T09:00:00.000Z", "account-x"]]]) {
         const plan = store.all(`EXPLAIN QUERY PLAN ${sql}`, ...args).map(row => row.detail);
         assert.ok(plan.some(line => /USING (COVERING )?INDEX idx_trash_open/.test(line)), plan.join(" | "));
