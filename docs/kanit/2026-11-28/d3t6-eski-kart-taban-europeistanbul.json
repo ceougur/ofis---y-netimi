@@ -1,0 +1,53 @@
+{
+  "ad": "d3t6-eski-kart-taban-europeistanbul",
+  "komut": "node --disable-warning=ExperimentalWarning --test test/devir-d3-eski-kapali-kart.test.mjs",
+  "commit": "d183d7808e3684e83ae3b0533c276a8763139be4",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-28T00:12:52.717Z",
+  "sure_sn": 2.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 8,
+    "gecen": 4,
+    "basarisiz": 4,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 4 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "D3 tur 6 — v2.0.12'de kapatılmış (closed_at boş) taksit kartı devir planında programın kapanış günüyle › devir planı (K = 31.12.2026): K öncesi ve K günü kapanan kart KAPALI, kalan 0; K sonrası kapanan ve açık kart AÇIK, kalan 700",
+      "konum": "test/devir-d3-eski-kapali-kart.test.mjs:89:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "D3 tur 6 — v2.0.12'de kapatılmış (closed_at boş) taksit kartı devir planında programın kapanış günüyle › Devir Raporu: '2 açık (1.400,00 TL) · 3 kapalı'; 'Kalan 0 Taksit' satırı YOK; açık iki kartın satırı 'Kalan 2 Taksit 700,00 TL'; durduran yok, sorun yok",
+      "konum": "test/devir-d3-eski-kapali-kart.test.mjs:109:3",
+      "hata": "[[\"5 açık (3.500,00 TL) · 0 kapalı\",\"\"],[\"Kalan 0 Taksit\",\"700,00 TL\"],[\"Kalan 2 Taksit\",\"700,00 TL\"],[\"Kalan 2 Taksit\",\"700,00 TL\"],[\"Kalan 0 Taksit\",\"700,00 TL\"],[\"Kalan 0 Taksit\",\"700,00 TL\"]] (beklenen true, gelen false)"
+    },
+    {
+      "ad": "D3 tur 6 — dar kontrolün DOĞRULANMADI maddesi: carisiz, v2.0.12'de kapatılmış kart 127'de sebepsiz durdurma doğurmaz › plan: carisiz kart KAPALI, kalan 0",
+      "konum": "test/devir-d3-eski-kapali-kart.test.mjs:132:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · { (beklenen , gelen )"
+    },
+    {
+      "ad": "D3 tur 6 — dar kontrolün DOĞRULANMADI maddesi: carisiz, v2.0.12'de kapatılmış kart 127'de sebepsiz durdurma doğurmaz › 127 modül farkı YOK; 'Hesap Bakiyesi Modülle Tutmuyor' durdurması YOK",
+      "konum": "test/devir-d3-eski-kapali-kart.test.mjs:138:3",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3t6/kanit/2026-11-28/d3t6-eski-kart-taban-europeistanbul.log",
+  "klasor": "/dev/shm/d3t6-eski/eski",
+  "ham_cikti_sha256": "c58767666a62049b545bedad95493f8f51989b314825957f7da365006f67a0ef",
+  "ham_cikti_bayt": 7982
+}

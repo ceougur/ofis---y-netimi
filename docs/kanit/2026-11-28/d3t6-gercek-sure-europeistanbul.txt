@@ -1,0 +1,9 @@
+00:30:41 basla t11 europeistanbul
+[kanit] d3t6-gercek-t11-europeistanbul: GEÇTİ · çıkış 0 · 22/22 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 4d5231e +1 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+00:43:25 bitti t11 europeistanbul (cikis 0)
+00:43:25 basla t7 europeistanbul
+[kanit] d3t6-gercek-t7-europeistanbul: GEÇTİ · çıkış 0 · 22/22 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 4d5231e +1 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+00:56:59 bitti t7 europeistanbul (cikis 0)
+00:56:59 basla t23 europeistanbul
+[kanit] d3t6-gercek-t23-europeistanbul: GEÇTİ · çıkış 0 · 22/22 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 4d5231e +1 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+01:08:18 bitti t23 europeistanbul (cikis 0)

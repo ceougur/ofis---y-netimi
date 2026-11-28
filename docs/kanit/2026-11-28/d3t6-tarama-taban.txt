@@ -1,0 +1,1 @@
+t251-d3t6-taban:server/lib/devir/plan-reader.mjs:186:  const closedAt = cols.has("closed_at") ? "COALESCE(p.closed_at, '')" : "''";
