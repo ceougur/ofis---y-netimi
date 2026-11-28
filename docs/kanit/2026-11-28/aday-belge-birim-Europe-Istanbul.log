@@ -1,0 +1,960 @@
+TAP version 13
+# Subtest: 2.2.0 İz 2.9: görünen metinde "Kurumsal Kart" yok, "Kredi Kartı"
+    # Subtest: istemci kaynağı (client/assets/hof-*.js, admin.js): yorum dışında "kurumsal kart" geçmez
+    ok 1 - istemci kaynağı (client/assets/hof-*.js, admin.js): yorum dışında "kurumsal kart" geçmez
+      ---
+      duration_ms: 49.625394
+      type: 'test'
+      ...
+    # Subtest: sunucu kaynağı (server/**/*.mjs): yorum dışında "kurumsal kart" geçmez (hata ve açıklama metinleri, hesap türü adı, 309 adı)
+    ok 2 - sunucu kaynağı (server/**/*.mjs): yorum dışında "kurumsal kart" geçmez (hata ve açıklama metinleri, hesap türü adı, 309 adı)
+      ---
+      duration_ms: 99.997447
+      type: 'test'
+      ...
+    # Subtest: kullanım kılavuzu (docs/kilavuz/DestekOfis-Kullanim-Kilavuzu.html): "Kurumsal Kart" / "Kurumsal Kredi Kartı" yok
+    ok 3 - kullanım kılavuzu (docs/kilavuz/DestekOfis-Kullanim-Kilavuzu.html): "Kurumsal Kart" / "Kurumsal Kredi Kartı" yok
+      ---
+      duration_ms: 22.847795
+      type: 'test'
+      ...
+    # Subtest: çalışan sunucu: kullanıcıya dönen adlar ve hata metni
+        # Subtest: kart hesabının tür adı "Kredi Kartı"; kart yolunda kart seçilmeden ödeme → 400 "Kredi Kartı seçin"; 309 adı "Diğer Mali Borçlar (Kredi Kartları)"
+        ok 1 - kart hesabının tür adı "Kredi Kartı"; kart yolunda kart seçilmeden ödeme → 400 "Kredi Kartı seçin"; 309 adı "Diğer Mali Borçlar (Kredi Kartları)"
+          ---
+          duration_ms: 153.03184
+          type: 'test'
+          ...
+        1..1
+    ok 4 - çalışan sunucu: kullanıcıya dönen adlar ve hata metni
+      ---
+      duration_ms: 776.597995
+      type: 'suite'
+      ...
+    1..4
+ok 1 - 2.2.0 İz 2.9: görünen metinde "Kurumsal Kart" yok, "Kredi Kartı"
+  ---
+  duration_ms: 950.640158
+  type: 'suite'
+  ...
+# Subtest: ürün dosyalarında görünen eski e-posta ve site adresi kalmaz (istisnalar dışında)
+ok 2 - ürün dosyalarında görünen eski e-posta ve site adresi kalmaz (istisnalar dışında)
+  ---
+  duration_ms: 108.506929
+  type: 'test'
+  ...
+# Subtest: destek e-postası destek@destekofis.net; lisans adresi DEĞİŞMEDİ
+ok 3 - destek e-postası destek@destekofis.net; lisans adresi DEĞİŞMEDİ
+  ---
+  duration_ms: 1.757878
+  type: 'test'
+  ...
+# Subtest: kanıt aracı: özet satırları
+    # Subtest: node:test TAP ve spec biçimleri; son özet alınır
+    ok 1 - node:test TAP ve spec biçimleri; son özet alınır
+      ---
+      duration_ms: 4.448729
+      type: 'test'
+      ...
+    # Subtest: projedeki arayüz senaryosu biçimleri
+    ok 2 - projedeki arayüz senaryosu biçimleri
+      ---
+      duration_ms: 3.355589
+      type: 'test'
+      ...
+    # Subtest: mutabakat ve güvenilirlik koşucuları; yarıda kalan tohum iptal sayılır
+    ok 3 - mutabakat ve güvenilirlik koşucuları; yarıda kalan tohum iptal sayılır
+      ---
+      duration_ms: 0.708648
+      type: 'test'
+      ...
+    # Subtest: defter kâhini (test:kahin-defter): fark, atlanan/reddedilen olay ve yakalanmayan mutasyon başarısız sayılır
+    ok 4 - defter kâhini (test:kahin-defter): fark, atlanan/reddedilen olay ve yakalanmayan mutasyon başarısız sayılır
+      ---
+      duration_ms: 0.699065
+      type: 'test'
+      ...
+    # Subtest: tanınmayan ya da boş çıktı özet sayılmaz
+    ok 5 - tanınmayan ya da boş çıktı özet sayılmaz
+      ---
+      duration_ms: 0.352175
+      type: 'test'
+      ...
+    1..5
+ok 4 - kanıt aracı: özet satırları
+  ---
+  duration_ms: 13.994634
+  type: 'suite'
+  ...
+# Subtest: kanıt aracı: hüküm
+    # Subtest: GEÇTİ yalnız çıkış 0 + özet temiz + en az bir test
+    ok 1 - GEÇTİ yalnız çıkış 0 + özet temiz + en az bir test
+      ---
+      duration_ms: 0.297089
+      type: 'test'
+      ...
+    # Subtest: çıkış kodu ile özet çelişirse ÇELİŞKİ (geçmedi)
+    ok 2 - çıkış kodu ile özet çelişirse ÇELİŞKİ (geçmedi)
+      ---
+      duration_ms: 0.379823
+      type: 'test'
+      ...
+    # Subtest: başarısız, yarıda, başlatılamayan
+    ok 3 - başarısız, yarıda, başlatılamayan
+      ---
+      duration_ms: 0.813103
+      type: 'test'
+      ...
+    1..3
+ok 5 - kanıt aracı: hüküm
+  ---
+  duration_ms: 1.889243
+  type: 'suite'
+  ...
+# Subtest: kanıt aracı: komut kabuksuz çalışır (Windows'ta argüman bölünmez)
+    # Subtest: Linux/macOS: komut olduğu gibi
+    ok 1 - Linux/macOS: komut olduğu gibi
+      ---
+      duration_ms: 0.590392
+      type: 'test'
+      ...
+    # Subtest: Windows: node → bu Node; npm/npx → bu Node'un npm-cli.js/npx-cli.js'i; .cmd/.bat reddedilir
+    ok 2 - Windows: node → bu Node; npm/npx → bu Node'un npm-cli.js/npx-cli.js'i; .cmd/.bat reddedilir
+      ---
+      duration_ms: 1.555499
+      type: 'test'
+      ...
+    # Subtest: gerçek: bu platformda npm aracın içinden çalışır (çıkış 0; özet olmadığı için BELİRSİZ)
+    ok 3 - gerçek: bu platformda npm aracın içinden çalışır (çıkış 0; özet olmadığı için BELİRSİZ)
+      ---
+      duration_ms: 318.077164
+      type: 'test'
+      ...
+    1..3
+ok 6 - kanıt aracı: komut kabuksuz çalışır (Windows'ta argüman bölünmez)
+  ---
+  duration_ms: 320.614608
+  type: 'suite'
+  ...
+# Subtest: kanıt aracı: gerçek koşu kaydı
+    # Subtest: alt klasörlü ad: klasör yoksa açılır, kayıt ve ham çıktı alt klasöre yazılır
+    ok 1 - alt klasörlü ad: klasör yoksa açılır, kayıt ve ham çıktı alt klasöre yazılır
+      ---
+      duration_ms: 254.409492
+      type: 'test'
+      ...
+    # Subtest: geçen komut: çıkış 0, kayıt GEÇTİ, ham çıktı ve sha256 yazılır
+    ok 2 - geçen komut: çıkış 0, kayıt GEÇTİ, ham çıktı ve sha256 yazılır
+      ---
+      duration_ms: 276.66872
+      type: 'test'
+      ...
+    # Subtest: özetinde başarısız olan ama 0 ile çıkan komut GEÇMEZ (çelişki), araç 1 döner
+    ok 3 - özetinde başarısız olan ama 0 ile çıkan komut GEÇMEZ (çelişki), araç 1 döner
+      ---
+      duration_ms: 288.968247
+      type: 'test'
+      ...
+    # Subtest: özetsiz 0 çıkış BELİRSİZ; 3 ile çıkan komut BAŞARISIZ ve gerçek kodu kaydedilir
+    ok 4 - özetsiz 0 çıkış BELİRSİZ; 3 ile çıkan komut BAŞARISIZ ve gerçek kodu kaydedilir
+      ---
+      duration_ms: 531.547218
+      type: 'test'
+      ...
+    # Subtest: kapı kanıt klasöründeki kayıt olmayan JSON'u (kâhin fark/ham çıktısı) yok sayar, çökmez (Uzun Doğrulama 19.10.2026)
+    ok 5 - kapı kanıt klasöründeki kayıt olmayan JSON'u (kâhin fark/ham çıktısı) yok sayar, çökmez (Uzun Doğrulama 19.10.2026)
+      ---
+      duration_ms: 348.689198
+      type: 'test'
+      ...
+    1..5
+ok 7 - kanıt aracı: gerçek koşu kaydı
+  ---
+  duration_ms: 1700.698186
+  type: 'suite'
+  ...
+# Subtest: yalnız belge değişen commit (ci.yml paths-ignore, kullanıcı kararı 13.10.2026)
+    # Subtest: yalnız CLAUDE.md değişen commit: hüküm koşusu olan ata commit'ten (YEŞİL)
+    ok 1 - yalnız CLAUDE.md değişen commit: hüküm koşusu olan ata commit'ten (YEŞİL)
+      ---
+      duration_ms: 1.291783
+      type: 'test'
+      ...
+    # Subtest: ata commit kırmızıysa yalnız belge commit'i de KIRMIZI
+    ok 2 - ata commit kırmızıysa yalnız belge commit'i de KIRMIZI
+      ---
+      duration_ms: 0.294933
+      type: 'test'
+      ...
+    # Subtest: kod değişen commit'in koşusu yoksa ata kullanılmaz (BELİRSİZ)
+    ok 3 - kod değişen commit'in koşusu yoksa ata kullanılmaz (BELİRSİZ)
+      ---
+      duration_ms: 0.133517
+      type: 'test'
+      ...
+    # Subtest: testlerin okuduğu plan/kanıt belgesi yalnız belge sayılmaz
+    ok 4 - testlerin okuduğu plan/kanıt belgesi yalnız belge sayılmaz
+      ---
+      duration_ms: 0.115075
+      type: 'test'
+      ...
+    # Subtest: ci.yml push paths-ignore listesi BELGE_YOLLARI ile aynı; pull_request süzgeçsiz
+    ok 5 - ci.yml push paths-ignore listesi BELGE_YOLLARI ile aynı; pull_request süzgeçsiz
+      ---
+      duration_ms: 0.528366
+      type: 'test'
+      ...
+    1..5
+ok 8 - yalnız belge değişen commit (ci.yml paths-ignore, kullanıcı kararı 13.10.2026)
+  ---
+  duration_ms: 2.618489
+  type: 'suite'
+  ...
+# Subtest: doğrulama kapısı: CI okuma (yalnız ci.yml, kapı işi şart)
+    # Subtest: bütün işler başarılı ve kapı işi var → YEŞİL
+    ok 1 - bütün işler başarılı ve kapı işi var → YEŞİL
+      ---
+      duration_ms: 0.301007
+      type: 'test'
+      ...
+    # Subtest: Windows işi kırmızı → KIRMIZI (Linux yeşili yetmez)
+    ok 2 - Windows işi kırmızı → KIRMIZI (Linux yeşili yetmez)
+      ---
+      duration_ms: 0.208217
+      type: 'test'
+      ...
+    # Subtest: atlanan iş yeşil sayılmaz
+    ok 3 - atlanan iş yeşil sayılmaz
+      ---
+      duration_ms: 0.135911
+      type: 'test'
+      ...
+    # Subtest: kapı işi olmayan (eski) commit YEŞİL değil
+    ok 4 - kapı işi olmayan (eski) commit YEŞİL değil
+      ---
+      duration_ms: 0.150422
+      type: 'test'
+      ...
+    # Subtest: koşu sürüyorsa, listedeki işler yeşil olsa da BEKLİYOR
+    ok 5 - koşu sürüyorsa, listedeki işler yeşil olsa da BEKLİYOR
+      ---
+      duration_ms: 0.106159
+      type: 'test'
+      ...
+    # Subtest: aynı commit'in ikinci koşusu kırmızıysa YEŞİL değil
+    ok 6 - aynı commit'in ikinci koşusu kırmızıysa YEŞİL değil
+      ---
+      duration_ms: 0.167312
+      type: 'test'
+      ...
+    # Subtest: başka iş akışlarının koşuları (ör. yayın) hükme girmez
+    ok 7 - başka iş akışlarının koşuları (ör. yayın) hükme girmez
+      ---
+      duration_ms: 0.135932
+      type: 'test'
+      ...
+    # Subtest: GitHub okunamazsa ya da koşu yoksa BELİRSİZ (asla YEŞİL değil)
+    ok 8 - GitHub okunamazsa ya da koşu yoksa BELİRSİZ (asla YEŞİL değil)
+      ---
+      duration_ms: 0.14176
+      type: 'test'
+      ...
+    1..8
+ok 9 - doğrulama kapısı: CI okuma (yalnız ci.yml, kapı işi şart)
+  ---
+  duration_ms: 1.530506
+  type: 'suite'
+  ...
+# Subtest: doğrulama kapısı: CI'deki kapı işinin hükmü
+    # Subtest: dört platform + e2e, aynı sayı, bu commit → geçer
+    ok 1 - dört platform + e2e, aynı sayı, bu commit → geçer
+      ---
+      duration_ms: 0.597123
+      type: 'test'
+      ...
+    # Subtest: Windows kaydı yoksa geçmez
+    ok 2 - Windows kaydı yoksa geçmez
+      ---
+      duration_ms: 0.146935
+      type: 'test'
+      ...
+    # Subtest: çelişkili kayıt (çıkış 0, özette başarısız) geçmez
+    ok 3 - çelişkili kayıt (çıkış 0, özette başarısız) geçmez
+      ---
+      duration_ms: 0.214654
+      type: 'test'
+      ...
+    # Subtest: Windows Linux'tan az test koştuysa geçmez
+    ok 4 - Windows Linux'tan az test koştuysa geçmez
+      ---
+      duration_ms: 0.483637
+      type: 'test'
+      ...
+    # Subtest: atlanan test varsa geçmez (o platformda doğrulanmadı)
+    ok 5 - atlanan test varsa geçmez (o platformda doğrulanmadı)
+      ---
+      duration_ms: 0.162931
+      type: 'test'
+      ...
+    # Subtest: başka commit'te ya da değişmiş ağaçta koşan kayıt geçmez
+    ok 6 - başka commit'te ya da değişmiş ağaçta koşan kayıt geçmez
+      ---
+      duration_ms: 0.200257
+      type: 'test'
+      ...
+    # Subtest: işin kendisi kırmızıysa (needs) kayıtlar temiz olsa da geçmez
+    ok 7 - işin kendisi kırmızıysa (needs) kayıtlar temiz olsa da geçmez
+      ---
+      duration_ms: 0.093047
+      type: 'test'
+      ...
+    # Subtest: aynı adla iki kayıt (biri eski) geçmez
+    ok 8 - aynı adla iki kayıt (biri eski) geçmez
+      ---
+      duration_ms: 0.158801
+      type: 'test'
+      ...
+    1..8
+ok 10 - doğrulama kapısı: CI'deki kapı işinin hükmü
+  ---
+  duration_ms: 2.343998
+  type: 'suite'
+  ...
+# Subtest: doğrulama kapısı: Stop kancası ve imzalı paket kapısı
+    # Subtest: her şey yeşilse kanca durdurmaz
+    ok 1 - her şey yeşilse kanca durdurmaz
+      ---
+      duration_ms: 0.429695
+      type: 'test'
+      ...
+    # Subtest: CI sürerken/kırmızıyken kanca yanıtı BİR KEZ durdurur ve gerçek durumu verir
+    ok 2 - CI sürerken/kırmızıyken kanca yanıtı BİR KEZ durdurur ve gerçek durumu verir
+      ---
+      duration_ms: 0.273079
+      type: 'test'
+      ...
+    # Subtest: CI yeşil ama gönderilmemiş commit ya da değişmiş dosya varsa kanca durdurur
+    ok 3 - CI yeşil ama gönderilmemiş commit ya da değişmiş dosya varsa kanca durdurur
+      ---
+      duration_ms: 0.364127
+      type: 'test'
+      ...
+    # Subtest: imzalı paket kapısı: değişmiş/izlenmeyen dosya ya da yeşil olmayan CI → ret; temiz + YEŞİL → izin
+    ok 4 - imzalı paket kapısı: değişmiş/izlenmeyen dosya ya da yeşil olmayan CI → ret; temiz + YEŞİL → izin
+      ---
+      duration_ms: 0.26139
+      type: 'test'
+      ...
+    # Subtest: tools/release.mjs CI/git okunamayınca anahtarı okumadan reddeder (atlatma seçeneği yok)
+    ok 5 - tools/release.mjs CI/git okunamayınca anahtarı okumadan reddeder (atlatma seçeneği yok)
+      ---
+      duration_ms: 121.000446
+      type: 'test'
+      ...
+    1..5
+ok 11 - doğrulama kapısı: Stop kancası ve imzalı paket kapısı
+  ---
+  duration_ms: 122.621532
+  type: 'suite'
+  ...
+# Subtest: doğrulama kapısı: kanca komutu (Stop / SubagentStop)
+    # Subtest: kancayı tetikleyen klasör (ajanın worktree'si) git deposu değilse durdurur ve nedenini yazar; ikinci denemede bırakır
+    ok 1 - kancayı tetikleyen klasör (ajanın worktree'si) git deposu değilse durdurur ve nedenini yazar; ikinci denemede bırakır
+      ---
+      duration_ms: 189.488995
+      type: 'test'
+      ...
+    # Subtest: depodaki .claude/settings.json Stop ve SubagentStop kancasını bu komuta bağlar
+    ok 2 - depodaki .claude/settings.json Stop ve SubagentStop kancasını bu komuta bağlar
+      ---
+      duration_ms: 0.435294
+      type: 'test'
+      ...
+    1..2
+ok 12 - doğrulama kapısı: kanca komutu (Stop / SubagentStop)
+  ---
+  duration_ms: 190.086577
+  type: 'suite'
+  ...
+# Subtest: kanıt aracı: çağrıldığı klasörde koşar (başka worktree'den çağrılınca ana depo değil)
+    # Subtest: komut ve commit, aracın deposu değil çağrılan klasörün deposu
+    ok 1 - komut ve commit, aracın deposu değil çağrılan klasörün deposu
+      ---
+      duration_ms: 252.066173
+      type: 'test'
+      ...
+    1..1
+ok 13 - kanıt aracı: çağrıldığı klasörde koşar (başka worktree'den çağrılınca ana depo değil)
+  ---
+  duration_ms: 252.192768
+  type: 'suite'
+  ...
+# Subtest: kanıt aracı: başarısız testlerin adı, yeri ve hatası
+    # Subtest: gerçek node --test (tap): yalnız en içteki düşen testler, üst grup adıyla; yer ve hata; çıktının sonunda
+    ok 1 - gerçek node --test (tap): yalnız en içteki düşen testler, üst grup adıyla; yer ve hata; çıktının sonunda
+      ---
+      duration_ms: 292.726855
+      type: 'test'
+      ...
+    # Subtest: gerçek node --test (spec): yalnız en içteki düşen testler, üst grup adıyla; yer ve hata; çıktının sonunda
+    ok 2 - gerçek node --test (spec): yalnız en içteki düşen testler, üst grup adıyla; yer ve hata; çıktının sonunda
+      ---
+      duration_ms: 321.36674
+      type: 'test'
+      ...
+    # Subtest: Windows yolu kısaltılır; senaryo koşucusunun ✗ satırları; geçen koşuda liste boş
+    ok 3 - Windows yolu kısaltılır; senaryo koşucusunun ✗ satırları; geçen koşuda liste boş
+      ---
+      duration_ms: 2.180268
+      type: 'test'
+      ...
+    # Subtest: kapı özeti başarısız testleri adıyla yazar
+    ok 4 - kapı özeti başarısız testleri adıyla yazar
+      ---
+      duration_ms: 77.531713
+      type: 'test'
+      ...
+    1..4
+ok 14 - kanıt aracı: başarısız testlerin adı, yeri ve hatası
+  ---
+  duration_ms: 694.144648
+  type: 'suite'
+  ...
+# Subtest: kanıt aracı: ci --bekle push'tan hemen sonra koşunun oluşmasını bekler
+    # Subtest: sürüyor ya da henüz koşu yok → bekle; GitHub okunamadı, YEŞİL, KIRMIZI → bekleme
+    ok 1 - sürüyor ya da henüz koşu yok → bekle; GitHub okunamadı, YEŞİL, KIRMIZI → bekleme
+      ---
+      duration_ms: 0.370489
+      type: 'test'
+      ...
+    1..1
+ok 15 - kanıt aracı: ci --bekle push'tan hemen sonra koşunun oluşmasını bekler
+  ---
+  duration_ms: 0.49365
+  type: 'suite'
+  ...
+# Subtest: Kılavuz PDF sürümü (client/kilavuz)
+    # Subtest: PDF metni okunur (boş değil, bilinen başlık var)
+    ok 1 - PDF metni okunur (boş değil, bilinen başlık var)
+      ---
+      duration_ms: 252.534197
+      type: 'test'
+      ...
+    # Subtest: PDF kapağı ve dip notu = HTML sürümü = program sürümü
+    ok 2 - PDF kapağı ve dip notu = HTML sürümü = program sürümü
+      ---
+      duration_ms: 0.540799
+      type: 'test'
+      ...
+    1..2
+ok 16 - Kılavuz PDF sürümü (client/kilavuz)
+  ---
+  duration_ms: 254.502006
+  type: 'suite'
+  ...
+# Subtest: Kullanım kılavuzu sürümü
+    # Subtest: kapakta “Sürüm <program sürümü>” yazar
+    ok 1 - kapakta “Sürüm <program sürümü>” yazar
+      ---
+      duration_ms: 4.180936
+      type: 'test'
+      ...
+    # Subtest: dip notta “DestekOfis <program sürümü> · Kısa Kullanım Kılavuzu” yazar
+    ok 2 - dip notta “DestekOfis <program sürümü> · Kısa Kullanım Kılavuzu” yazar
+      ---
+      duration_ms: 0.464513
+      type: 'test'
+      ...
+    1..2
+ok 17 - Kullanım kılavuzu sürümü
+  ---
+  duration_ms: 6.07857
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 M4 iOS / simge algılaması (client/mobil/karekod.js)
+    # Subtest: iPhone ve iPad (masaüstü imzası + dokunmatik) iOS; Android ve masaüstü değil
+    ok 1 - iPhone ve iPad (masaüstü imzası + dokunmatik) iOS; Android ve masaüstü değil
+      ---
+      duration_ms: 0.946987
+      type: 'test'
+      ...
+    # Subtest: tarayıcı sekmesi ↔ ana ekran simgesi: navigator.standalone ya da display-mode: standalone
+    ok 2 - tarayıcı sekmesi ↔ ana ekran simgesi: navigator.standalone ya da display-mode: standalone
+      ---
+      duration_ms: 0.411685
+      type: 'test'
+      ...
+    1..2
+ok 18 - 2.4.8 M4 iOS / simge algılaması (client/mobil/karekod.js)
+  ---
+  duration_ms: 2.238077
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 M4 karekod metninden eşleme kodu — yalnız bu ofisin adresi
+    # Subtest: bu ofisin eşleme adresi → kod
+    ok 1 - bu ofisin eşleme adresi → kod
+      ---
+      duration_ms: 1.631517
+      type: 'test'
+      ...
+    # Subtest: başka ofisin adresi → 'başka bir ofisin' iletisi; biçimsiz / başka site / yol → 'eşleme karekodu değil'
+    ok 2 - başka ofisin adresi → 'başka bir ofisin' iletisi; biçimsiz / başka site / yol → 'eşleme karekodu değil'
+      ---
+      duration_ms: 0.486651
+      type: 'test'
+      ...
+    # Subtest: kamera hataları açık ileti verir (izin reddi ayrı)
+    ok 3 - kamera hataları açık ileti verir (izin reddi ayrı)
+      ---
+      duration_ms: 0.2105
+      type: 'test'
+      ...
+    1..3
+ok 19 - 2.4.8 M4 karekod metninden eşleme kodu — yalnız bu ofisin adresi
+  ---
+  duration_ms: 2.547367
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 M4 karekod çözücü (client/mobil/vendor/jsqr-1.4.0.js; Apache 2.0)
+    # Subtest: çözücü npm jsqr@1.4.0 dist/jsQR.js ile bayt bayt aynı (yalnız ES modülü sarmalı); lisans ve kaynak dosya başında, lisans metni yanında
+    ok 1 - çözücü npm jsqr@1.4.0 dist/jsQR.js ile bayt bayt aynı (yalnız ES modülü sarmalı); lisans ve kaynak dosya başında, lisans metni yanında
+      ---
+      duration_ms: 2.512466
+      type: 'test'
+      ...
+    # Subtest: programın kendi karekodu (Yönetim → Mobil Cihazlar adresi) piksellerden okunur → aynı eşleme kodu
+    ok 2 - programın kendi karekodu (Yönetim → Mobil Cihazlar adresi) piksellerden okunur → aynı eşleme kodu
+      ---
+      duration_ms: 771.453907
+      type: 'test'
+      ...
+    1..2
+ok 20 - 2.4.8 M4 karekod çözücü (client/mobil/vendor/jsqr-1.4.0.js; Apache 2.0)
+  ---
+  duration_ms: 774.579238
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 M4 sunucu: kamera izni yalnız mobil sayfada; kabuk karekod.js'i taşır
+    # Subtest: /mobil/ belgesi camera=(self) (ofis ağı + uzak dinleyici); masaüstü ve öbür yanıtlar camera=()
+    ok 1 - /mobil/ belgesi camera=(self) (ofis ağı + uzak dinleyici); masaüstü ve öbür yanıtlar camera=()
+      ---
+      duration_ms: 71.557147
+      type: 'test'
+      ...
+    # Subtest: hizmet çalışanı karekod.js'i kabukta tutar (app.js'in durağan içe aktarması; sunucu kapalıyken sayfa açılır)
+    ok 2 - hizmet çalışanı karekod.js'i kabukta tutar (app.js'in durağan içe aktarması; sunucu kapalıyken sayfa açılır)
+      ---
+      duration_ms: 0.615748
+      type: 'test'
+      ...
+    1..2
+ok 21 - 2.4.8 M4 sunucu: kamera izni yalnız mobil sayfada; kabuk karekod.js'i taşır
+  ---
+  duration_ms: 476.960609
+  type: 'suite'
+  ...
+# Subtest: 2.4.8 M4/M5 ekran ve kılavuz metinleri
+    # Subtest: M4: yönlendirme sayfası üç adım, eşleme yok; simgede Karekodu Okut + yeni karekod notu
+    ok 1 - M4: yönlendirme sayfası üç adım, eşleme yok; simgede Karekodu Okut + yeni karekod notu
+      ---
+      duration_ms: 0.627032
+      type: 'test'
+      ...
+    # Subtest: M5: Son Özeti Göster giriş formunun alanlarından ÖNCE; uyarı cümlesi
+    ok 2 - M5: Son Özeti Göster giriş formunun alanlarından ÖNCE; uyarı cümlesi
+      ---
+      duration_ms: 0.401312
+      type: 'test'
+      ...
+    # Subtest: kılavuz: iPhone'da Ana Ekrana Ekle → simgede Karekodu Okut; Android bugünkü gibi
+    ok 3 - kılavuz: iPhone'da Ana Ekrana Ekle → simgede Karekodu Okut; Android bugünkü gibi
+      ---
+      duration_ms: 1.594672
+      type: 'test'
+      ...
+    1..3
+ok 22 - 2.4.8 M4/M5 ekran ve kılavuz metinleri
+  ---
+  duration_ms: 2.864595
+  type: 'suite'
+  ...
+# Subtest: kurulum sonrası sürüm etkinleştirme (bootstrap etkinlestir)
+    # Subtest: ilk kurulumda kurulan sürümü etkinleştirir
+    ok 1 - ilk kurulumda kurulan sürümü etkinleştirir
+      ---
+      duration_ms: 80.141847
+      type: 'test'
+      ...
+    # Subtest: yükseltmede yeni sürümü etkinleştirir, öncekini saklar, daha eskileri siler
+    ok 2 - yükseltmede yeni sürümü etkinleştirir, öncekini saklar, daha eskileri siler
+      ---
+      duration_ms: 57.371295
+      type: 'test'
+      ...
+    # Subtest: otomatik güncellemeyle gelmiş daha yeni sürümü eski kurulum dosyası geri almaz
+    ok 3 - otomatik güncellemeyle gelmiş daha yeni sürümü eski kurulum dosyası geri almaz
+      ---
+      duration_ms: 99.890259
+      type: 'test'
+      ...
+    1..3
+ok 23 - kurulum sonrası sürüm etkinleştirme (bootstrap etkinlestir)
+  ---
+  duration_ms: 239.373211
+  type: 'suite'
+  ...
+# Subtest: Windows kurulum düzeni (bootstrap)
+    # Subtest: bootstrap etkin sürümü açar; veri kurulum kökündeki data klasörüne yazılır
+    ok 1 - bootstrap etkin sürümü açar; veri kurulum kökündeki data klasörüne yazılır
+      ---
+      duration_ms: 1211.537119
+      type: 'test'
+      ...
+    # uygulama alt süreci bootstrap kapandıktan 0 ms sonra kapandı (linux)
+    # Subtest: 'surum' ve 'yedek' alt komutları çalışır
+    ok 2 - 'surum' ve 'yedek' alt komutları çalışır
+      ---
+      duration_ms: 294.255282
+      type: 'test'
+      ...
+    # Subtest: hizmet ÇALIŞIRKEN ve yazarken 'yedek' alınır; yedek bütün ve okunur
+    ok 3 - hizmet ÇALIŞIRKEN ve yazarken 'yedek' alınır; yedek bütün ve okunur
+      ---
+      duration_ms: 1405.609243
+      type: 'test'
+      ...
+    # hizmet açıkken yedek 301 ms; bu sürede 5 giriş yazıldı
+    # uygulama alt süreci bootstrap kapandıktan 0 ms sonra kapandı (linux)
+    # Subtest: etkin sürüm açılamazsa önceki sürüme dönülür ve açılamayan sürüm işaretlenir
+    ok 4 - etkin sürüm açılamazsa önceki sürüme dönülür ve açılamayan sürüm işaretlenir
+      ---
+      duration_ms: 885.632232
+      type: 'test'
+      ...
+    # uygulama alt süreci bootstrap kapandıktan 0 ms sonra kapandı (linux)
+    # Subtest: current.json bozuk veya olmayan sürümü gösteriyorsa kurulu en yeni sürümle açılır
+    ok 5 - current.json bozuk veya olmayan sürümü gösteriyorsa kurulu en yeni sürümle açılır
+      ---
+      duration_ms: 975.17238
+      type: 'test'
+      ...
+    # uygulama alt süreci bootstrap kapandıktan 0 ms sonra kapandı (linux)
+    1..5
+ok 24 - Windows kurulum düzeni (bootstrap)
+  ---
+  duration_ms: 4849.004616
+  type: 'suite'
+  ...
+# Subtest: kurulum sonrası sağlık kontrolü (bootstrap saglik)
+    # Subtest: sağlık ucu 200 dönünce hemen başarılı olur
+    ok 1 - sağlık ucu 200 dönünce hemen başarılı olur
+      ---
+      duration_ms: 179.15819
+      type: 'test'
+      ...
+    # Subtest: servis bakım yanıtı veriyorsa (açılışta güncelleme) çalışıyor sayılır
+    ok 2 - servis bakım yanıtı veriyorsa (açılışta güncelleme) çalışıyor sayılır
+      ---
+      duration_ms: 2145.850313
+      type: 'test'
+      ...
+    # Subtest: servis başlatılamadıysa veya hiç yanıt yoksa başarısız olur ve servis günlüğünü yazdırır
+    ok 3 - servis başlatılamadıysa veya hiç yanıt yoksa başarısız olur ve servis günlüğünü yazdırır
+      ---
+      duration_ms: 4235.503493
+      type: 'test'
+      ...
+    1..3
+ok 25 - kurulum sonrası sağlık kontrolü (bootstrap saglik)
+  ---
+  duration_ms: 6565.587258
+  type: 'suite'
+  ...
+# Subtest: statik dosyalar
+    # Subtest: ana sayfayı güvenlik başlıkları ve CSP ile sunar
+    ok 1 - ana sayfayı güvenlik başlıkları ve CSP ile sunar
+      ---
+      duration_ms: 26.592524
+      type: 'test'
+      ...
+    # Subtest: değişmeyen dosyada 304 döner ve sıkıştırma uygular
+    ok 2 - değişmeyen dosyada 304 döner ve sıkıştırma uygular
+      ---
+      duration_ms: 33.580683
+      type: 'test'
+      ...
+    # Subtest: klasör dışına çıkma ve gizli dosya denemelerini engeller
+    ok 3 - klasör dışına çıkma ve gizli dosya denemelerini engeller
+      ---
+      duration_ms: 13.56363
+      type: 'test'
+      ...
+    # Subtest: bilinmeyen sayfada tarayıcıya HTML 404 gösterir
+    ok 4 - bilinmeyen sayfada tarayıcıya HTML 404 gösterir
+      ---
+      duration_ms: 3.710667
+      type: 'test'
+      ...
+    # Subtest: bilinmeyen API ucu 404, desteklenmeyen yöntem 405 döner
+    ok 5 - bilinmeyen API ucu 404, desteklenmeyen yöntem 405 döner
+      ---
+      duration_ms: 15.253847
+      type: 'test'
+      ...
+    1..5
+ok 26 - statik dosyalar
+  ---
+  duration_ms: 504.587981
+  type: 'suite'
+  ...
+# Subtest: servis yöneticisi (supervisor)
+    # Subtest: bakım sayfası markalı, otomatik yenilenen bir HTML üretir
+    ok 1 - bakım sayfası markalı, otomatik yenilenen bir HTML üretir
+      ---
+      duration_ms: 0.938035
+      type: 'test'
+      ...
+    # Subtest: istekleri uygulamaya iletir; oturum çerezi ve istemci IP'si korunur
+    ok 2 - istekleri uygulamaya iletir; oturum çerezi ve istemci IP'si korunur
+      ---
+      duration_ms: 102.709958
+      type: 'test'
+      ...
+    # Subtest: canlı olay akışını (SSE) kapıdan geçirir; tarayıcı kapanınca uygulama tarafı da kapanır
+    ok 3 - canlı olay akışını (SSE) kapıdan geçirir; tarayıcı kapanınca uygulama tarafı da kapanır
+      ---
+      duration_ms: 84.861703
+      type: 'test'
+      ...
+    # Subtest: UDP keşif sinyaline sunucu adresiyle yanıt verir
+    ok 4 - UDP keşif sinyaline sunucu adresiyle yanıt verir
+      ---
+      duration_ms: 802.445091
+      type: 'test'
+      ...
+    # Subtest: uygulama çökerse bakım yanıtı verir ve kendini yeniden başlatır
+    ok 5 - uygulama çökerse bakım yanıtı verir ve kendini yeniden başlatır
+      ---
+      duration_ms: 1753.915764
+      type: 'test'
+      ...
+    # Subtest: güncelleme kipinde kullanıcıya 'Sistem güncelleniyor' sayfası gösterir
+    ok 6 - güncelleme kipinde kullanıcıya 'Sistem güncelleniyor' sayfası gösterir
+      ---
+      duration_ms: 641.837693
+      type: 'test'
+      ...
+    1..6
+ok 27 - servis yöneticisi (supervisor)
+  ---
+  duration_ms: 4479.329047
+  type: 'suite'
+  ...
+# Subtest: servis günlükleri
+    # Subtest: nssm'in kenara ayırdığı eski günlüklerden yalnızca en yeni 10 tanesi kalır
+    ok 1 - nssm'in kenara ayırdığı eski günlüklerden yalnızca en yeni 10 tanesi kalır
+      ---
+      duration_ms: 4.503468
+      type: 'test'
+      ...
+    1..1
+ok 28 - servis günlükleri
+  ---
+  duration_ms: 4.930401
+  type: 'suite'
+  ...
+# Subtest: öksüz süreç koruması
+    # Subtest: servis yöneticisi zorla kapatılınca uygulama da kapanır
+    ok 1 - servis yöneticisi zorla kapatılınca uygulama da kapanır
+      ---
+      duration_ms: 8182.363505
+      type: 'test'
+      ...
+    1..1
+ok 29 - öksüz süreç koruması
+  ---
+  duration_ms: 8182.69142
+  type: 'suite'
+  ...
+# Subtest: sürüm karşılaştırma
+    # Subtest: anlamsal sürüm kurallarına uyar
+    ok 1 - anlamsal sürüm kurallarına uyar
+      ---
+      duration_ms: 1.156945
+      type: 'test'
+      ...
+    1..1
+ok 30 - sürüm karşılaştırma
+  ---
+  duration_ms: 2.095488
+  type: 'suite'
+  ...
+# Subtest: imzalı güncelleme bildirgesi
+    # Subtest: güvenilen anahtarla imzalı bildirgeyi kabul eder
+    ok 1 - güvenilen anahtarla imzalı bildirgeyi kabul eder
+      ---
+      duration_ms: 2.372124
+      type: 'test'
+      ...
+    # Subtest: değiştirilmiş içerik, bilinmeyen anahtar ve sahte kimlik reddedilir
+    ok 2 - değiştirilmiş içerik, bilinmeyen anahtar ve sahte kimlik reddedilir
+      ---
+      duration_ms: 1.874856
+      type: 'test'
+      ...
+    # Subtest: geçersiz bildirge alanları reddedilir
+    ok 3 - geçersiz bildirge alanları reddedilir
+      ---
+      duration_ms: 2.490826
+      type: 'test'
+      ...
+    # Subtest: uyumluluk: eski sürüm, kanal, en düşük sürüm, çalışma zamanı ve başlatıcı
+    ok 4 - uyumluluk: eski sürüm, kanal, en düşük sürüm, çalışma zamanı ve başlatıcı
+      ---
+      duration_ms: 1.283864
+      type: 'test'
+      ...
+    # Subtest: ürüne gömülü anahtar geçerli bir Ed25519 açık anahtarıdır
+    ok 5 - ürüne gömülü anahtar geçerli bir Ed25519 açık anahtarıdır
+      ---
+      duration_ms: 0.946463
+      type: 'test'
+      ...
+    # Subtest: sürüm notları CHANGELOG'dan çıkarılır
+    ok 6 - sürüm notları CHANGELOG'dan çıkarılır
+      ---
+      duration_ms: 1.118812
+      type: 'test'
+      ...
+    1..6
+ok 31 - imzalı güncelleme bildirgesi
+  ---
+  duration_ms: 10.912141
+  type: 'suite'
+  ...
+# Subtest: güncelleyici (sahte GitHub ile)
+    # Subtest: kararlı kanalda en yeni kararlı sürümü bulur; ön sürümü yalnızca beta kanalı görür
+    ok 1 - kararlı kanalda en yeni kararlı sürümü bulur; ön sürümü yalnızca beta kanalı görür
+      ---
+      duration_ms: 68.993064
+      type: 'test'
+      ...
+    # Subtest: indirir, özeti doğrular ve paketi app\\<sürüm> olarak açar
+    ok 2 - indirir, özeti doğrular ve paketi app\\<sürüm> olarak açar
+      ---
+      duration_ms: 266.52317
+      type: 'test'
+      ...
+    # Subtest: kurulu sürüm işlevle okunur: yerinde güncellemeden sonra aynı sürüm yeniden önerilmez; çalışan/etkin klasöre dokunulmaz (2.0.6 saha hatası)
+    ok 3 - kurulu sürüm işlevle okunur: yerinde güncellemeden sonra aynı sürüm yeniden önerilmez; çalışan/etkin klasöre dokunulmaz (2.0.6 saha hatası)
+      ---
+      duration_ms: 279.408533
+      type: 'test'
+      ...
+    # Subtest: paket özeti tutmazsa hiçbir şey kurulmaz
+    ok 4 - paket özeti tutmazsa hiçbir şey kurulmaz
+      ---
+      duration_ms: 82.238487
+      type: 'test'
+      ...
+    # Subtest: yayın etiketi ile bildirge sürümü uyuşmazsa veya imza geçersizse kurulmaz
+    ok 5 - yayın etiketi ile bildirge sürümü uyuşmazsa veya imza geçersizse kurulmaz
+      ---
+      duration_ms: 945.296465
+      type: 'test'
+      ...
+    # Subtest: daha önce başarısız olan sürüm atlanır; kurulum dosyası gerektiren sürüm bildirilir
+    ok 6 - daha önce başarısız olan sürüm atlanır; kurulum dosyası gerektiren sürüm bildirilir
+      ---
+      duration_ms: 26.908036
+      type: 'test'
+      ...
+    # Subtest: ağ hatası yeniden denenebilir, olmayan depo denenemez olarak bildirilir
+    ok 7 - ağ hatası yeniden denenebilir, olmayan depo denenemez olarak bildirilir
+      ---
+      duration_ms: 156.514708
+      type: 'test'
+      ...
+    # Subtest: imzalı bildirge adresi (GitHub dışı kaynak) da desteklenir
+    ok 8 - imzalı bildirge adresi (GitHub dışı kaynak) da desteklenir
+      ---
+      duration_ms: 239.756475
+      type: 'test'
+      ...
+    # Subtest: paket içindeki sürüm bildirgeyle aynı değilse veya dosya eksikse açılmaz
+    ok 9 - paket içindeki sürüm bildirgeyle aynı değilse veya dosya eksikse açılmaz
+      ---
+      duration_ms: 3.36029
+      type: 'test'
+      ...
+    1..9
+ok 32 - güncelleyici (sahte GitHub ile)
+  ---
+  duration_ms: 3950.499151
+  type: 'suite'
+  ...
+# Subtest: kurulum düzeni yardımcıları
+    # Subtest: current.json atomik yazılır; eski sürümler ve yarım klasörler temizlenir
+    ok 1 - current.json atomik yazılır; eski sürümler ve yarım klasörler temizlenir
+      ---
+      duration_ms: 3.718408
+      type: 'test'
+      ...
+    1..1
+ok 33 - kurulum düzeni yardımcıları
+  ---
+  duration_ms: 3.864863
+  type: 'suite'
+  ...
+# Subtest: yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+    # Subtest: arayüz dosyalarında kurala uymayan ad yok
+    ok 1 - arayüz dosyalarında kurala uymayan ad yok
+      ---
+      duration_ms: 98.489713
+      type: 'test'
+      ...
+    # Subtest: hareket türü adları ve programın varsayılan adları kurala uyuyor
+    ok 2 - hareket türü adları ve programın varsayılan adları kurala uyuyor
+      ---
+      duration_ms: 7.535379
+      type: 'test'
+      ...
+    # Subtest: derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+    ok 3 - derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+      ---
+      duration_ms: 2.635452
+      type: 'test'
+      ...
+    # Subtest: Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+    ok 4 - Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+      ---
+      duration_ms: 4.468406
+      type: 'test'
+      ...
+    # Subtest: mobil görünümde (client/mobil) kurala uymayan ad yok
+    ok 5 - mobil görünümde (client/mobil) kurala uymayan ad yok
+      ---
+      duration_ms: 4.849559
+      type: 'test'
+      ...
+    # Subtest: rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+    ok 6 - rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+      ---
+      duration_ms: 48.497165
+      type: 'test'
+      ...
+    1..6
+ok 34 - yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+  ---
+  duration_ms: 167.984982
+  type: 'suite'
+  ...
+1..34
+# tests 119
+# suites 33
+# pass 119
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 37651.200928

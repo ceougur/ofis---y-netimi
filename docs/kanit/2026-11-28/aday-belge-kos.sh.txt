@@ -1,0 +1,20 @@
+#!/bin/bash
+# aday-belge testleri: tek seferlik yük bekleme (en çok 30 dk), sonra sırayla; her koşu kanit.mjs kos ile.
+cd /home/user/ofis---y-netimi/.claude/worktrees/agent-a7d50eab8a798ea51 || exit 1
+S=/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad
+export HUKUK_LICENSE_URL=http://127.0.0.1:9 KANIT_DIR=$S/aday-belge-kanit/kanit PLAYWRIGHT_BROWSERS_PATH=$S/pw-1194
+for i in $(seq 1 60); do l=$(cut -d' ' -f1 /proc/loadavg); awk -v l="$l" 'BEGIN{exit !(l<=4)}' && break; sleep 30; done
+echo "baslangic yuk: $(cat /proc/loadavg)"; free -g | head -2; df -h / | tail -1
+BIRIM="test/kilavuz-surum.test.mjs test/kilavuz-pdf-surum.test.mjs test/yazim-duzeni.test.mjs test/static.test.mjs test/banka-220-kredi-karti-metin.test.mjs test/gorunen-adres-247.test.mjs test/mobil-karekod-248.test.mjs test/updater.test.mjs test/kanit-araci.test.mjs test/packaging.test.mjs test/supervisor.test.mjs"
+for tz in UTC Europe/Istanbul; do
+  t=${tz//\//-}
+  TZ=$tz node tools/kanit.mjs kos aday-belge-birim-$t -- node --disable-warning=ExperimentalWarning --test --test-concurrency=1 $BIRIM; echo "birim $tz cikis $?"
+done
+# Dişi: eski (2.5.0) PDF verilince kırmızı olmalı (beklenen neden: PDF sürümü 2.5.0 ≠ HTML 2.5.1 / program 2.5.1)
+TZ=UTC KILAVUZ_PDF=$S/aday-belge-kanit/eski-kilavuz-2.5.0.pdf node tools/kanit.mjs kos aday-belge-pdf-surum-eski -- node --test test/kilavuz-pdf-surum.test.mjs; echo "eski pdf cikis $?"
+TZ=Europe/Istanbul node tools/kanit.mjs kos aday-belge-pdf-denetle -- node docs/kilavuz/pdf-denetle.mjs; echo "pdf-denetle cikis $?"
+for tz in UTC Europe/Istanbul; do
+  t=${tz//\//-}
+  TZ=$tz node tools/kanit.mjs kos aday-belge-kilavuz-metin-$t -- npm run test:kilavuz-metin; echo "kilavuz-metin $tz cikis $?"
+done
+echo "bitis yuk: $(cat /proc/loadavg)"

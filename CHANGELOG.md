@@ -2,6 +2,11 @@
 
 Sürümler [anlamsal sürümleme](https://semver.org/lang/tr/) kurallarına uyar.
 
+## 2.5.1 — KDV Özeti, Değersiz Alacak ve Müşteri İstekleri
+
+- Yeni: geciken taksitin numarası her yerde ("45 gün gecikti (2. taksit)"; makbuz, ekstre, WhatsApp ve raporlarda taksitler boşluksuz 1, 2, 3…); Cari'de Grup Özeti (grup ve alt grup başına bakiye, gecikmiş borç, tahsilat), Tahsilat Dönemi ve Bu Dönemde Ödeme Yapanlar; KDV Özeti'nde Önceki Dönemden Devreden KDV, Ödenecek KDV ve Sonraki Döneme Devreden KDV, KDV Mahsup Fişi'yle aynı hesapla ve ayları sırayla mahsup ederek.
+- İyileştirmeler: KDV Özeti mahsuptan sonra değişen ayları, kayıtsız ayları ve İndirilecek KDV azalışını notla gösterir, onarım yolunu söyler; Değersiz Alacak Yaz doğru sınırı önerir, Değersiz Alacak yazılmış caride cariyi eksiye düşürecek değişiklikler nedeni ve yapılacaklarıyla reddedilir; uzun hata iletileri ekranın altında kalır, KDV kartları ve mahsup penceresi küçük ekrana sığar. Ayrıntı: docs/2.5.1-DEGISIKLIKLER.md.
+
 ## 2.5.0 — Ana Defter Çekirdeği ve Açılış Düzeni
 
 - Yeni: Ana Defter'in temeli — Tekdüzen hesap planı ve alt hesaplar, saklanan yevmiye fişleri, şirket başına Defter Türü, kilitli dönemin defteri donar (güncelleme kilitli ayların raporlarını değiştirmez; fark Kural Farkı Düzeltme fişiyle), açılışlar 519 Eşleştirilecek Açılış Bakiyeleri'nde toplanır ve Açılış Eşleştirme ile sermayeye dağıtılır; alış faturasında KDV İndirim Dönemi.
