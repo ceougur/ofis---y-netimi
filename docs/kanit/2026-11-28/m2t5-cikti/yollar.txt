@@ -1,0 +1,16 @@
+== agent-a9a57b6814460a732
+stok satışı silme (hareket 200): yanıt 200 · bakiye -76.45 → -576.45 · Mutabakat tamam
+verilen senet silme (giriş 200): yanıt 200 · bakiye -76.45 → -576.45 · Mutabakat tamam
+alış faturası tutar artırma 100 → 1.000 (giriş 200): yanıt 409 doubtful-writeoff-balance · bakiye 323.55 → 323.55 · Mutabakat tamam · ileti Alış faturası düzenlenemez: bu caride 17.09.2026 tarihli 3.000,00 TL Değersiz Alacak satırı var; düzenlemeden sonra cari 576,45 TL alacaklı (eksi bakiye) olurdu
+Alacak satırını Değersiz'li cariye taşıma (hedef cari): yanıt 200 · bakiye 423.55 → -576.45 · Mutabakat tamam
+yeni Alacak Yaz 1.000 (BM-M2T4-3): yanıt 200 · bakiye 423.55 → -576.45 · Mutabakat tamam
+tahsilat 10 → 500 (BM-M2T4-3): yanıt 200 · bakiye -586.45 → -1076.45 · Mutabakat tamam
+Silinenler'den Alacak Yaz geri yükleme: yanıt 200 · bakiye 423.55 → -576.45 · Mutabakat tamam
+== eski
+stok satışı silme (hareket 200): yanıt 200 · bakiye -76.45 → -576.45 · Mutabakat tamam
+verilen senet silme (giriş 200): yanıt 200 · bakiye -76.45 → -576.45 · Mutabakat tamam
+alış faturası tutar artırma 100 → 1.000 (giriş 200): yanıt 200 · bakiye 323.55 → -576.45 · Mutabakat tamam
+Alacak satırını Değersiz'li cariye taşıma (hedef cari): yanıt 200 · bakiye 423.55 → -576.45 · Mutabakat tamam
+yeni Alacak Yaz 1.000 (BM-M2T4-3): yanıt 200 · bakiye 423.55 → -576.45 · Mutabakat tamam
+tahsilat 10 → 500 (BM-M2T4-3): yanıt 200 · bakiye -586.45 → -1076.45 · Mutabakat tamam
+Silinenler'den Alacak Yaz geri yükleme: yanıt 200 · bakiye 423.55 → -576.45 · Mutabakat tamam
