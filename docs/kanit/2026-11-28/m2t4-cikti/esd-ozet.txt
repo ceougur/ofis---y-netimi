@@ -1,0 +1,27 @@
+### UTC sizinti başla 05:28 2.13 2.65 2.89 4/151 5485
+cikis 0
+# TZ=UTC {"steps":4000,"snapshots":3452,"quotes":25483,"diffs":0,"writes":191,"over":43,"statusDiff":0,"restored":14,"released":18,"recDel":25,"s155":14,"later":0,"mid":0,"draftDel":143,"invDel":22,"invRestored":5}
+# fark 0
+### UTC acik başla 05:33 5.12 4.42 3.64 4/170 7178
+cikis 0
+# TZ=UTC {"steps":4000,"snapshots":3452,"quotes":25483,"diffs":0,"writes":191,"over":43,"statusDiff":0,"restored":14,"released":18,"recDel":25,"s155":14,"later":0,"mid":0,"draftDel":143,"invDel":22,"invRestored":5}
+# fark 0
+### UTC ozgun başla 05:37 5.17 4.86 4.03 3/151 8081
+cikis 0
+# TZ=UTC {"steps":4000,"snapshots":3302,"quotes":22211,"diffs":42,"writes":171,"over":47,"statusDiff":1,"restored":16,"released":23,"recDel":37,"s155":2,"later":0,"mid":0}
+# fark 43
+### Europe/Istanbul sizinti başla 05:41 2.80 3.63 3.70 2/136 9087
+cikis 0
+# TZ=Europe/Istanbul {"steps":4000,"snapshots":3452,"quotes":25483,"diffs":0,"writes":191,"over":43,"statusDiff":0,"restored":14,"released":18,"recDel":25,"s155":14,"later":0,"mid":0,"draftDel":143,"invDel":22,"invRestored":5}
+# fark 0
+### Europe/Istanbul acik başla 05:46 5.03 4.30 3.95 5/162 10944
+cikis 0
+# TZ=Europe/Istanbul {"steps":4000,"snapshots":3452,"quotes":25483,"diffs":0,"writes":191,"over":43,"statusDiff":0,"restored":14,"released":18,"recDel":25,"s155":14,"later":0,"mid":0,"draftDel":143,"invDel":22,"invRestored":5}
+# fark etiketleri []
+# fark 0
+### Europe/Istanbul ozgun başla 05:50 3.56 4.04 3.96 3/151 11695
+cikis 0
+# TZ=Europe/Istanbul {"steps":4000,"snapshots":3302,"quotes":22211,"diffs":42,"writes":171,"over":47,"statusDiff":1,"restored":16,"released":23,"recDel":37,"s155":2,"later":0,"mid":0}
+# fark etiketleri ["t37 c2","kilit 2026-09-17","kilit 2026-09-30"]
+# fark 43
+BITTI 05:54 3.58 4.15 4.04 1/202 13538

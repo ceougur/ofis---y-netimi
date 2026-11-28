@@ -1,0 +1,6 @@
+bakiye 2279.85 · S2 listesi: bugün [150000,150000] en iyi ["2026-09-19",150000,150000]
+Mutabakat (önce) true
+S2 @2026-09-19: form sınır 150000 öneri 150000 remaining → önerilen yazım 200 
+S2 @2026-09-25: form sınır 150000 öneri 150000 remaining → önerilen yazım 200 
+S2 @2026-10-01: form sınır 150000 öneri 150000 remaining → önerilen yazım 200 
+S2 @2026-10-15: form sınır 150000 öneri 150000 remaining → önerilen yazım 200 
