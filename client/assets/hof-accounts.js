@@ -411,7 +411,7 @@
     // Bekleyen seçim (Mİ tur 3): ekranın hangi dönemi gösterdiği açıkça yazılır (PDF / Excel de o dönemle).
     const shown = (view.display === "groups" ? view.groups : view.list)?.period || null;
     const pendingWhy = view.from && view.to && view.from > view.to ? "Başlangıç tarihi bitiş tarihinden sonra olamaz." : "Başlangıç ve bitiş günlerini seçin.";
-    const pendingNow = shown ? ` Ekran, PDF ve Excel şimdilik önceki seçimi gösteriyor: ${periodText(shown)}${applied.paid ? " · Bu Dönemde Ödeme Yapanlar" : ""}.` : " Ekran, PDF ve Excel şimdilik dönemsiz.";
+    const pendingNow = shown ? ` Seçim tamamlanana kadar ekran, PDF ve Excel: ${periodText(shown)}${applied.paid ? " · Bu Dönemde Ödeme Yapanlar" : ""}.` : " Seçim tamamlanana kadar ekran, PDF ve Excel dönemsiz.";
     const hint = periodPending() ? `<small class="hof-muted" data-period-pending>${esc(pendingWhy + pendingNow)}</small>` : "";
     // 2.5.1 Mİ tur 2 (BAŞ MİMAR KARARI 27.11 (4)): "Tahsilat Dönemi:" etiketi seçenekten AYRI, her durumda görünür (önce yalnız "Tahsilat Dönemi: Yok" seçeneğinin metniydi —
     // dönem seçilince ve Grup Özeti'nde kayboluyordu).

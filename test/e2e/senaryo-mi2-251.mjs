@@ -339,7 +339,7 @@ try {
   await shot("aralik-bekleyen-odeme-yapanlar");
   ok(JSON.stringify(pendingRows) === JSON.stringify(dbPayers), `ekran (günler seçilmeden) son uygulanan dönemin ödeyenleri: ${JSON.stringify(pendingRows)} (beklenen veri tabanı ${JSON.stringify(dbPayers)})`);
   ok(/Bugün/.test(pendingKpi) && /2 cari/.test(pendingKpi), `Tahsilat kartı ekranın dönemini yazar: "${pendingKpi}" (beklenen Bugün · 2 cari)`);
-  ok(/Başlangıç ve bitiş günlerini seçin/.test(pendingHint) && /önceki seçimi gösteriyor: Bugün/.test(pendingHint) && /Bu Dönemde Ödeme Yapanlar/.test(pendingHint), `bekleyen seçim açıkça yazılı: "${pendingHint}"`);
+  ok(/Başlangıç ve bitiş günlerini seçin/.test(pendingHint) && /Seçim tamamlanana kadar ekran, PDF ve Excel: Bugün/.test(pendingHint) && /Bu Dönemde Ödeme Yapanlar/.test(pendingHint), `bekleyen seçim açıkça yazılı: "${pendingHint}"`);
   ok(!waAllPending, `'Tümüne WhatsApp' düğmesi yok (önce VAR idi: "${waAllTitle || "—"}")`);
   const pdfParams = await linkParams('a[data-pdf="list"]');
   const xlsxParams = await linkParams("[data-xlsx]");
