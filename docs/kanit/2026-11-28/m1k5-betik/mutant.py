@@ -126,7 +126,7 @@ for name, rel, old, new in MUTANTS:
             continue
         open(path, "w", encoding="utf-8").write(s.replace(old, new))
         env = dict(os.environ, HUKUK_LICENSE_URL="http://127.0.0.1:9", TZ=tz)
-        r = subprocess.run(["node", "--test", "--test-reporter=tap", *TESTS, *([RANDOM] if name.startswith("T") else [])], cwd=root, env=env, capture_output=True, text=True, timeout=3000)
+        r = subprocess.run(["node", "--test", "--test-concurrency=2", "--test-reporter=tap", *TESTS, *([RANDOM] if name.startswith("T") else [])], cwd=root, env=env, capture_output=True, text=True, timeout=3000)
         lines = r.stdout.splitlines()
         count = lambda key: next((l.split()[-1] for l in lines if l.startswith(f"# {key} ")), "?")
         failed = [l.strip()[:160] for l in lines if l.startswith("    not ok ")]
