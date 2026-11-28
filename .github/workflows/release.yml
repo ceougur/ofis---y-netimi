@@ -108,6 +108,7 @@ jobs:
       - run: npm run test:senaryo-kdv-devreden-251
       - run: npm run test:senaryo-kdv-zincir-251
       - run: npm run test:senaryo-kdv-mahsup-sonrasi-251
+      - run: npm run test:senaryo-ui251-gorunum
       - run: npm run test:senaryo-mi1-251
       - run: npm run test:senaryo-mi2-251
       - run: npm run test:senaryo-degersiz-siniri-m2-251

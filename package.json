@@ -102,6 +102,7 @@
     "test:senaryo-kdv-devreden-251": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-kdv-devreden-251.mjs",
     "test:senaryo-kdv-zincir-251": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-kdv-zincir-251.mjs",
     "test:senaryo-kdv-mahsup-sonrasi-251": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-kdv-mahsup-sonrasi-251.mjs",
+    "test:senaryo-ui251-gorunum": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-ui251-gorunum.mjs",
     "test:senaryo-mi1-251": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-mi1-251.mjs",
     "test:senaryo-mi2-251": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-mi2-251.mjs",
     "test:senaryo-degersiz-siniri-m2-251": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-degersiz-siniri-m2-251.mjs",
