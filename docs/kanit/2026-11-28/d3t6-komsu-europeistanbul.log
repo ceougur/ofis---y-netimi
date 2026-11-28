@@ -1,0 +1,1496 @@
+TAP version 13
+# Subtest: D3 tur 3 — tur 2'nin açıkları: K'den sonra Düzenle ile eklenen peşin ve K'den sonra kurulan çek bağı (ikisi de ≤K satırda)
+    # Subtest: veri tabanı (ders 3): peşin satırı 15.12.2026 tarihli (10.01.2027'de yazıldı); çekin ilk olayı 20.12.2026 tarihli ve faturaya bağlı
+    ok 1 - veri tabanı (ders 3): peşin satırı 15.12.2026 tarihli (10.01.2027'de yazıldı); çekin ilk olayı 20.12.2026 tarihli ve faturaya bağlı
+      ---
+      duration_ms: 2.129603
+      type: 'test'
+      ...
+    # Subtest: plan: faturanın K açık kalemi 300,00 (1.000 − 400 peşin − 300 çek; elle); bağ listesinde bu fatura YOK; DURDURUR yok
+    ok 2 - plan: faturanın K açık kalemi 300,00 (1.000 − 400 peşin − 300 çek; elle); bağ listesinde bu fatura YOK; DURDURUR yok
+      ---
+      duration_ms: 0.207533
+      type: 'test'
+      ...
+    # Subtest: devirsiz eşi: programın bugünkü fatura kalanı = planın K açık kalemi (300,00; K'den sonra başka hareket yok)
+    ok 3 - devirsiz eşi: programın bugünkü fatura kalanı = planın K açık kalemi (300,00; K'den sonra başka hareket yok)
+      ---
+      duration_ms: 9.958933
+      type: 'test'
+      ...
+    1..3
+ok 1 - D3 tur 3 — tur 2'nin açıkları: K'den sonra Düzenle ile eklenen peşin ve K'den sonra kurulan çek bağı (ikisi de ≤K satırda)
+  ---
+  duration_ms: 1179.446137
+  type: 'suite'
+  ...
+# Subtest: D3 tur 2 — K sonrası bağlar (bağ yönlendirmesi) ve K / K+1 aynı tutarlı kayıtlar
+    # Subtest: bağ listesi (elle): K sonrası satırın ≤K belgeye HER bağı — Kapatılacak Fatura, çek olayı, banka havalesi, Mahsup Et'in iki tarafı, iade → asıl fatura; iki tarafı ≤K ya da >K olan bağ YOK
+    ok 1 - bağ listesi (elle): K sonrası satırın ≤K belgeye HER bağı — Kapatılacak Fatura, çek olayı, banka havalesi, Mahsup Et'in iki tarafı, iade → asıl fatura; iki tarafı ≤K ya da >K olan bağ YOK
+      ---
+      duration_ms: 6.646211
+      type: 'test'
+      ...
+    # Subtest: açık kalemler (elle): K sonrası bağlı tahsilat K'deki kalanı DÜŞÜRMEZ; ≤K bağlı kısım düşer; kapanmış fatura açık kalem değil; iki tarafı >K olan cariye satır YOK
+    ok 2 - açık kalemler (elle): K sonrası bağlı tahsilat K'deki kalanı DÜŞÜRMEZ; ≤K bağlı kısım düşer; kapanmış fatura açık kalem değil; iki tarafı >K olan cariye satır YOK
+      ---
+      duration_ms: 0.326652
+      type: 'test'
+      ...
+    # Subtest: DEVİRSİZ EŞDEĞER (aynı kilitle — S24 = A): bağı açık kaleme YÖNLENDİRİLMİŞ devirli kuyruk = devirsiz (gecikmiş, açık kalemler, en eski vade); elle: A1 02.01 = 600, A2 02.01 = 0, A8 11.01 = 900
+    ok 3 - DEVİRSİZ EŞDEĞER (aynı kilitle — S24 = A): bağı açık kaleme YÖNLENDİRİLMİŞ devirli kuyruk = devirsiz (gecikmiş, açık kalemler, en eski vade); elle: A1 02.01 = 600, A2 02.01 = 0, A8 11.01 = 900
+      ---
+      duration_ms: 44.605579
+      type: 'test'
+      ...
+    # Subtest: S-T2-1 = B (KULLANICI 27.11.2026; D3 tur 4 — tur 2'de sayılar 400 ↔ 250 idi): K sonrası Mahsup Et'in KARŞI belgesi ≤K (B2) — gecikmiş 01.01–29.01 devirsiz 400,00 = devirli 400,00
+    ok 4 - S-T2-1 = B (KULLANICI 27.11.2026; D3 tur 4 — tur 2'de sayılar 400 ↔ 250 idi): K sonrası Mahsup Et'in KARŞI belgesi ≤K (B2) — gecikmiş 01.01–29.01 devirsiz 400,00 = devirli 400,00
+      ---
+      duration_ms: 1.612647
+      type: 'test'
+      ...
+    # Subtest: DİŞ (D4a şartı): K sonrası bağ açık kaleme yönlendirilmezse (bağsız gibi dağılırsa) A8'de devirli ≠ devirsiz — planın `baglar` listesi gerekli
+    ok 5 - DİŞ (D4a şartı): K sonrası bağ açık kaleme yönlendirilmezse (bağsız gibi dağılırsa) A8'de devirli ≠ devirsiz — planın `baglar` listesi gerekli
+      ---
+      duration_ms: 4.045985
+      type: 'test'
+      ...
+    # Subtest: K günü / K+1 günü aynı tutarlı iki kayıt (h1): 31.12'ler K bakiyesinde (150,00), 01.01'ler yeni yılda; tablo sayımı ≤K 17 / >K 12 (elle: 13 fatura + 4 elle / 3 fatura + 8 elle + 1 çek)
+    ok 6 - K günü / K+1 günü aynı tutarlı iki kayıt (h1): 31.12'ler K bakiyesinde (150,00), 01.01'ler yeni yılda; tablo sayımı ≤K 17 / >K 12 (elle: 13 fatura + 4 elle / 3 fatura + 8 elle + 1 çek)
+      ---
+      duration_ms: 0.385607
+      type: 'test'
+      ...
+    1..6
+ok 2 - D3 tur 2 — K sonrası bağlar (bağ yönlendirmesi) ve K / K+1 aynı tutarlı kayıtlar
+  ---
+  duration_ms: 2387.083365
+  type: 'suite'
+  ...
+# Subtest: D3 tur 2 — banka, POS, kredi kartı, kredi alt hesapları: K bakiyesi = açılış
+    # Subtest: her alt hesap K bakiyesiyle (elle): Z 390,00 · G 11.000,00 · POS 780,00 (bekleyen; komisyon tahsilat günü gider) · kart −200,00 · kredi −10.000,00; sahibi (banka hesabı / POS) belli
+    ok 1 - her alt hesap K bakiyesiyle (elle): Z 390,00 · G 11.000,00 · POS 780,00 (bekleyen; komisyon tahsilat günü gider) · kart −200,00 · kredi −10.000,00; sahibi (banka hesabı / POS) belli
+      ---
+      duration_ms: 4.509291
+      type: 'test'
+      ...
+    # Subtest: kapanış = açılış: her alt hesapta arşiv K bakiyesi = yeni yıl açılışı; K sonrası havale K'ye girmez; modül farkı YOK; sayılar (2 hesap, 11.390,00, kart −200,00, kredi −10.000,00, POS 780,00)
+    ok 2 - kapanış = açılış: her alt hesapta arşiv K bakiyesi = yeni yıl açılışı; K sonrası havale K'ye girmez; modül farkı YOK; sayılar (2 hesap, 11.390,00, kart −200,00, kredi −10.000,00, POS 780,00)
+      ---
+      duration_ms: 0.358598
+      type: 'test'
+      ...
+    1..2
+ok 3 - D3 tur 2 — banka, POS, kredi kartı, kredi alt hesapları: K bakiyesi = açılış
+  ---
+  duration_ms: 1293.940236
+  type: 'suite'
+  ...
+# Subtest: D3 tur 5 — veri damgasının iz türü listesi (kaynak taraması)
+    # Subtest: tarama boş değil (ders 4): bilinen iz türleri bulunur (fatura, cari hareketi, kilit, defter dondurması, banka)
+    ok 1 - tarama boş değil (ders 4): bilinen iz türleri bulunur (fatura, cari hareketi, kilit, defter dondurması, banka)
+      ---
+      duration_ms: 222.31662
+      type: 'test'
+      ...
+    # Subtest: her iz türü sınıflandırılmış: ya veri damgasında ya gerekçeli VERİ DIŞI listede (yeni para yazıcısı listeye girmeden eklenemez)
+    ok 2 - her iz türü sınıflandırılmış: ya veri damgasında ya gerekçeli VERİ DIŞI listede (yeni para yazıcısı listeye girmeden eklenemez)
+      ---
+      duration_ms: 193.909459
+      type: 'test'
+      ...
+    # Subtest: çakışma yok: veri damgasındaki bir tür VERİ DIŞI listede değil; dışlananlar (görüntüleme / dışa aktarma) veri ad alanında ve gerçekten var
+    ok 3 - çakışma yok: veri damgasındaki bir tür VERİ DIŞI listede değil; dışlananlar (görüntüleme / dışa aktarma) veri ad alanında ve gerçekten var
+      ---
+      duration_ms: 150.324278
+      type: 'test'
+      ...
+    # Subtest: v-5: devirde budanan / kalan (B / A) her tablo ya damganın saydığı tablolarda ya yazımı iz türüyle / gerekçeyle karşılanmış
+    ok 4 - v-5: devirde budanan / kalan (B / A) her tablo ya damganın saydığı tablolarda ya yazımı iz türüyle / gerekçeyle karşılanmış
+      ---
+      duration_ms: 0.393066
+      type: 'test'
+      ...
+    # Subtest: ders 27: tarama CRLF'li kaynakta da aynı türleri bulur
+    ok 5 - ders 27: tarama CRLF'li kaynakta da aynı türleri bulur
+      ---
+      duration_ms: 0.352018
+      type: 'test'
+      ...
+    1..5
+ok 4 - D3 tur 5 — veri damgasının iz türü listesi (kaynak taraması)
+  ---
+  duration_ms: 568.465814
+  type: 'suite'
+  ...
+# Subtest: D3 tur 5 — veri damgası: veriyi değiştirmeyen yazım damgayı değiştirmez, para tablosuna yazan değiştirir
+    # Subtest: ön izlemenin damgası = okuyucunun damgası; hemen sonra 'değişmedi'
+    ok 1 - ön izlemenin damgası = okuyucunun damgası; hemen sonra 'değişmedi'
+      ---
+      duration_ms: 2.360669
+      type: 'test'
+      ...
+    # Subtest: v-1 ARKA PLAN (veriyi değiştirmeyen): zamanlanmış yedeğin turu, bütünlük taraması, analiz işçisi, defter dondurmasının boş turu → damga AYNI
+    ok 2 - v-1 ARKA PLAN (veriyi değiştirmeyen): zamanlanmış yedeğin turu, bütünlük taraması, analiz işçisi, defter dondurmasının boş turu → damga AYNI
+      ---
+      duration_ms: 436.16588
+      type: 'test'
+      ...
+    # Subtest: v-1 KULLANICI (veriyi değiştirmeyen): ikinci giriş + çıkış, şirket seçimi (002 ↔ 001), ekran durumu, fatura PDF'i, cari ekstresi, Devir Raporu PDF'i → damga AYNI
+    ok 3 - v-1 KULLANICI (veriyi değiştirmeyen): ikinci giriş + çıkış, şirket seçimi (002 ↔ 001), ekran durumu, fatura PDF'i, cari ekstresi, Devir Raporu PDF'i → damga AYNI
+      ---
+      duration_ms: 245.856256
+      type: 'test'
+      ...
+    # Subtest: v-2 PARA TABLOSUNA YAZAN: cari kartı düzeltmesi, taksit tahsilatı tutar düzeltmesi, kayıt tahsilatı tutar düzeltmesi, tekrarlayan faturanın taslağı → damga DEĞİŞİR (her biri ayrı)
+    ok 4 - v-2 PARA TABLOSUNA YAZAN: cari kartı düzeltmesi, taksit tahsilatı tutar düzeltmesi, kayıt tahsilatı tutar düzeltmesi, tekrarlayan faturanın taslağı → damga DEĞİŞİR (her biri ayrı)
+      ---
+      duration_ms: 221.570749
+      type: 'test'
+      ...
+    1..4
+ok 5 - D3 tur 5 — veri damgası: veriyi değiştirmeyen yazım damgayı değiştirmez, para tablosuna yazan değiştirir
+  ---
+  duration_ms: 2520.881235
+  type: 'suite'
+  ...
+# Subtest: D3 devirsiz eşdeğer — API'den girilen veri, iki seçenek, gecikmiş / kalan / bakiye
+    # Subtest: plan elle hesaplanan sayılarla: C1 açık kalemler (vade, söz), net 0; C2 avans net −300 ve açık kalem yok; S1 alacak kalemi 700
+    ok 1 - plan elle hesaplanan sayılarla: C1 açık kalemler (vade, söz), net 0; C2 avans net −300 ve açık kalem yok; S1 alacak kalemi 700
+      ---
+      duration_ms: 340.00654
+      type: 'test'
+      ...
+    # Subtest: borc-alacak: her t ≥ K+1 için gecikmiş(t) ve borç tarafı açık kalemleri (vade, kalan) devirli = devirsiz; elle: C1 01.01 = 500, 11.01 = 500, 01.02 = 1.100
+    ok 2 - borc-alacak: her t ≥ K+1 için gecikmiş(t) ve borç tarafı açık kalemleri (vade, kalan) devirli = devirsiz; elle: C1 01.01 = 500, 11.01 = 500, 01.02 = 1.100
+      ---
+      duration_ms: 388.29684
+      type: 'test'
+      ...
+    # Subtest: sadece-bakiye: her t ≥ K+1 için gecikmiş(t) ve borç tarafı açık kalemleri (vade, kalan) devirli = devirsiz; elle: C1 01.01 = 500, 11.01 = 500, 01.02 = 1.100
+    ok 3 - sadece-bakiye: her t ≥ K+1 için gecikmiş(t) ve borç tarafı açık kalemleri (vade, kalan) devirli = devirsiz; elle: C1 01.01 = 500, 11.01 = 500, 01.02 = 1.100
+      ---
+      duration_ms: 346.641069
+      type: 'test'
+      ...
+    # Subtest: TEHLİKE (tasarım §3.5 madde 4): Borç / Alacak Toplamı kuyruğa AYRI ve bağsız alacak gibi girerse gecikmiş değişir — netleşme kuralı gerekli (bu testin dişi)
+    ok 4 - TEHLİKE (tasarım §3.5 madde 4): Borç / Alacak Toplamı kuyruğa AYRI ve bağsız alacak gibi girerse gecikmiş değişir — netleşme kuralı gerekli (bu testin dişi)
+      ---
+      duration_ms: 324.194767
+      type: 'test'
+      ...
+    # Subtest: ROL (D4a şartı): ödeme rolündeki kalem Borç Yaz gibi (yükümlülük) yazılırsa sonraki alışla netleşme değişir — planın `rol` alanı gerekli (bu testin dişi)
+    ok 5 - ROL (D4a şartı): ödeme rolündeki kalem Borç Yaz gibi (yükümlülük) yazılırsa sonraki alışla netleşme değişir — planın `rol` alanı gerekli (bu testin dişi)
+      ---
+      duration_ms: 326.727623
+      type: 'test'
+      ...
+    # Subtest: bakiye: devirli kuyruğun satırları (net + açık kalemler + K sonrası) = devirsiz carinin bugünkü bakiyesi
+    ok 6 - bakiye: devirli kuyruğun satırları (net + açık kalemler + K sonrası) = devirsiz carinin bugünkü bakiyesi
+      ---
+      duration_ms: 322.52055
+      type: 'test'
+      ...
+    1..6
+ok 6 - D3 devirsiz eşdeğer — API'den girilen veri, iki seçenek, gecikmiş / kalan / bakiye
+  ---
+  duration_ms: 3187.61752
+  type: 'suite'
+  ...
+# Subtest: D3 tur 6 — v2.0.12'de kapatılmış (closed_at boş) taksit kartı devir planında programın kapanış günüyle
+    # Subtest: veri tabanı (ders 3): göçten sonra dört kapalı kartta closed_at BOŞ, kapanış kuralı '2.4.9'; son güncelleme günleri 25.06 / 25.06 / 31.12.2026 / 03.01.2027
+    ok 1 - veri tabanı (ders 3): göçten sonra dört kapalı kartta closed_at BOŞ, kapanış kuralı '2.4.9'; son güncelleme günleri 25.06 / 25.06 / 31.12.2026 / 03.01.2027
+      ---
+      duration_ms: 2.096107
+      type: 'test'
+      ...
+    # Subtest: devirsiz program: kapalı kartın carisinde bakiye 0, planRemaining 0; açık kartta 700; K'de (genel defter 120) K sonrası kapanan kartın carisi 700
+    ok 2 - devirsiz program: kapalı kartın carisinde bakiye 0, planRemaining 0; açık kartta 700; K'de (genel defter 120) K sonrası kapanan kartın carisi 700
+      ---
+      duration_ms: 31.964408
+      type: 'test'
+      ...
+    # Subtest: devir planı (K = 31.12.2026): K öncesi ve K günü kapanan kart KAPALI, kalan 0; K sonrası kapanan ve açık kart AÇIK, kalan 700
+    ok 3 - devir planı (K = 31.12.2026): K öncesi ve K günü kapanan kart KAPALI, kalan 0; K sonrası kapanan ve açık kart AÇIK, kalan 700
+      ---
+      duration_ms: 0.398441
+      type: 'test'
+      ...
+    # Subtest: carinin devir satırı = devirsiz K bakiyesi (kapalı kartın carisi 0 / satırsız; K sonrası kapanan 700)
+    ok 4 - carinin devir satırı = devirsiz K bakiyesi (kapalı kartın carisi 0 / satırsız; K sonrası kapanan 700)
+      ---
+      duration_ms: 2.267053
+      type: 'test'
+      ...
+    # Subtest: Devir Raporu: '2 açık (1.400,00 TL) · 3 kapalı'; 'Kalan 0 Taksit' satırı YOK; açık iki kartın satırı 'Kalan 2 Taksit 700,00 TL'; durduran yok, sorun yok
+    ok 5 - Devir Raporu: '2 açık (1.400,00 TL) · 3 kapalı'; 'Kalan 0 Taksit' satırı YOK; açık iki kartın satırı 'Kalan 2 Taksit 700,00 TL'; durduran yok, sorun yok
+      ---
+      duration_ms: 0.395481
+      type: 'test'
+      ...
+    1..5
+ok 7 - D3 tur 6 — v2.0.12'de kapatılmış (closed_at boş) taksit kartı devir planında programın kapanış günüyle
+  ---
+  duration_ms: 827.62045
+  type: 'suite'
+  ...
+# Subtest: D3 tur 6 — dar kontrolün DOĞRULANMADI maddesi: carisiz, v2.0.12'de kapatılmış kart 127'de sebepsiz durdurma doğurmaz
+    # Subtest: genel defter: carisiz kapalı kartın 127 bakiyesi K'de 0 (689 kapanış günü 25.06.2026)
+    ok 1 - genel defter: carisiz kapalı kartın 127 bakiyesi K'de 0 (689 kapanış günü 25.06.2026)
+      ---
+      duration_ms: 2.413116
+      type: 'test'
+      ...
+    # Subtest: plan: carisiz kart KAPALI, kalan 0
+    ok 2 - plan: carisiz kart KAPALI, kalan 0
+      ---
+      duration_ms: 0.406907
+      type: 'test'
+      ...
+    # Subtest: 127 modül farkı YOK; 'Hesap Bakiyesi Modülle Tutmuyor' durdurması YOK
+    ok 3 - 127 modül farkı YOK; 'Hesap Bakiyesi Modülle Tutmuyor' durdurması YOK
+      ---
+      duration_ms: 0.215328
+      type: 'test'
+      ...
+    1..3
+ok 8 - D3 tur 6 — dar kontrolün DOĞRULANMADI maddesi: carisiz, v2.0.12'de kapatılmış kart 127'de sebepsiz durdurma doğurmaz
+  ---
+  duration_ms: 688.960726
+  type: 'suite'
+  ...
+# Subtest: D3 tur 4 — çek / senet yön × durum: planın açılışı doğru yönde ve durumda
+    # Subtest: veri tabanı (ders 3): evrakların bugünkü durumu
+    ok 1 - veri tabanı (ders 3): evrakların bugünkü durumu
+      ---
+      duration_ms: 2.624129
+      type: 'test'
+      ...
+    # Subtest: her sınıf doğru hesapta / alt hesapta / yönde; tahsil edilmiş ve ödenmiş evrak listede YOK (elle)
+    ok 2 - her sınıf doğru hesapta / alt hesapta / yönde; tahsil edilmiş ve ödenmiş evrak listede YOK (elle)
+      ---
+      duration_ms: 0.57693
+      type: 'test'
+      ...
+    # Subtest: kapanış = açılış: evrak hesaplarının arşiv K bakiyesi = planın açılışı (işaretli; alınan +, verilen −); modül farkı / sorun YOK
+    ok 3 - kapanış = açılış: evrak hesaplarının arşiv K bakiyesi = planın açılışı (işaretli; alınan +, verilen −); modül farkı / sorun YOK
+      ---
+      duration_ms: 0.431956
+      type: 'test'
+      ...
+    # Subtest: karşılıksızın carisi: faturası yeniden açık (kendi vadesiyle); devirli = devirsiz (portföyden, senet, cirodan)
+    ok 4 - karşılıksızın carisi: faturası yeniden açık (kendi vadesiyle); devirli = devirsiz (portföyden, senet, cirodan)
+      ---
+      duration_ms: 3.671122
+      type: 'test'
+      ...
+    1..4
+ok 9 - D3 tur 4 — çek / senet yön × durum: planın açılışı doğru yönde ve durumda
+  ---
+  duration_ms: 1523.98916
+  type: 'suite'
+  ...
+# Subtest: D3 tur 2 — evrakın K'deki durumu (çek / senet, alınan / verilen, bankada tahsil, ciro, karşılıksız, K sonrası değişen)
+    # Subtest: her evrak K'deki durumuyla (elle): durum, hesap / alt hesap, tutar, vade; kapanmış / K sonrası alınmış / silinmiş evrak YOK; K sonrası olay K durumunu değiştirmez
+    ok 1 - her evrak K'deki durumuyla (elle): durum, hesap / alt hesap, tutar, vade; kapanmış / K sonrası alınmış / silinmiş evrak YOK; K sonrası olay K durumunu değiştirmez
+      ---
+      duration_ms: 7.056006
+      type: 'test'
+      ...
+    # Subtest: ön izleme sayıları (elle): portföy 5 / 2.270,00 · tahsilde 2 / 1.300,00 · ciroda 2 / 550,00 · karşılıksız 1 / 350,00 · verilen ödenmemiş 3 / 1.600,00
+    ok 2 - ön izleme sayıları (elle): portföy 5 / 2.270,00 · tahsilde 2 / 1.300,00 · ciroda 2 / 550,00 · karşılıksız 1 / 350,00 · verilen ödenmemiş 3 / 1.600,00
+      ---
+      duration_ms: 0.222007
+      type: 'test'
+      ...
+    # Subtest: kapanış = açılış (elle): 101.01 1.770,00 · 121.01 500,00 · 101.02 1.300,00 · 103 −1.300,00 · 321 −300,00; modül farkı YOK; Z'nin bakiyesi 0 ve satırı yok
+    ok 3 - kapanış = açılış (elle): 101.01 1.770,00 · 121.01 500,00 · 101.02 1.300,00 · 103 −1.300,00 · 321 −300,00; modül farkı YOK; Z'nin bakiyesi 0 ve satırı yok
+      ---
+      duration_ms: 0.198441
+      type: 'test'
+      ...
+    1..3
+ok 10 - D3 tur 2 — evrakın K'deki durumu (çek / senet, alınan / verilen, bankada tahsil, ciro, karşılıksız, K sonrası değişen)
+  ---
+  duration_ms: 1837.940547
+  type: 'suite'
+  ...
+# tutamaç benzetimden önce 2026: 0 — arsiv/2026
+# Subtest: D3 tur 4 — aynı yıl ikinci kez devredilemez (bu yıl / sonraki yıl / yarıda kalmış devir; iki şirket)
+    # Subtest: devir yokken: üç neden de YOK (yanlış durdurma yok)
+    ok 1 - devir yokken: üç neden de YOK (yanlış durdurma yok)
+      ---
+      duration_ms: 393.328911
+      type: 'test'
+      ...
+    # Subtest: y-1: aynı yıl (dosya ayarı + arşiv kaydı) → DURDURUR 'Bu Yıl Zaten Devredildi'; çare Devri Yenile / Devri Geri Al; dört alan
+    ok 2 - y-1: aynı yıl (dosya ayarı + arşiv kaydı) → DURDURUR 'Bu Yıl Zaten Devredildi'; çare Devri Yenile / Devri Geri Al; dört alan
+      ---
+      duration_ms: 444.853487
+      type: 'test'
+      ...
+# tutamaç benzetimden önce 2026: 0 — arsiv/2026
+    # Subtest: y-4: ayarda 2026 var, arşiv kaydı yok (yarıda kalmış devir) → DURDURUR 'Önceki Devir Yarıda Kalmış' (Devir Yedekleri); 'bu yıl devredildi' DEĞİL
+    ok 3 - y-4: ayarda 2026 var, arşiv kaydı yok (yarıda kalmış devir) → DURDURUR 'Önceki Devir Yarıda Kalmış' (Devir Yedekleri); 'bu yıl devredildi' DEĞİL
+      ---
+      duration_ms: 330.026496
+      type: 'test'
+      ...
+    # Subtest: y-2: arşiv kaydı var, dosya ayarı yok → DURDURUR 'Bu Yıl Zaten Devredildi'
+    ok 4 - y-2: arşiv kaydı var, dosya ayarı yok → DURDURUR 'Bu Yıl Zaten Devredildi'
+      ---
+      duration_ms: 329.021656
+      type: 'test'
+      ...
+# tutamaç y-3 (dosya silinir): 0 — arsiv/2026
+    # Subtest: y-3: arşiv kaydı var ama arşiv dosyası yok → DURDURUR; ilette 'arşiv dosyası bulunamadı' + Devir Yedekleri
+    ok 5 - y-3: arşiv kaydı var ama arşiv dosyası yok → DURDURUR; ilette 'arşiv dosyası bulunamadı' + Devir Yedekleri
+      ---
+      duration_ms: 621.305843
+      type: 'test'
+      ...
+# tutamaç benzetimden önce 2027: 0 — arsiv/2027
+    # Subtest: y-7: Devri Geri Al'dan sonra (kayıt ve ayar kalktı) → GEÇER
+    ok 6 - y-7: Devri Geri Al'dan sonra (kayıt ve ayar kalktı) → GEÇER
+      ---
+      duration_ms: 331.914408
+      type: 'test'
+      ...
+# tutamaç benzetimden önce 2025: 0 — arsiv/2025
+    # Subtest: y-5: sonraki yıl (2027) devredilmiş, 2026 seçildi → DURDURUR 'Sonraki Yıl Devredilmiş'
+    ok 7 - y-5: sonraki yıl (2027) devredilmiş, 2026 seçildi → DURDURUR 'Sonraki Yıl Devredilmiş'
+      ---
+      duration_ms: 383.487831
+      type: 'test'
+      ...
+    # Subtest: y-6: önceki yıl (2025) devredilmiş, 2026 seçildi → GEÇER
+    ok 8 - y-6: önceki yıl (2025) devredilmiş, 2026 seçildi → GEÇER
+      ---
+      duration_ms: 388.189448
+      type: 'test'
+      ...
+# tutamaç benzetimden önce 2026: 0 — arsiv/2026
+    # Subtest: y-9: devir yılları ayarı bozuk (JSON değil) → ayar yok sayılır, arşiv kaydı yok → GEÇER
+    ok 9 - y-9: devir yılları ayarı bozuk (JSON değil) → ayar yok sayılır, arşiv kaydı yok → GEÇER
+      ---
+      duration_ms: 333.061142
+      type: 'test'
+      ...
+    # Subtest: y-8: iki şirket — 002'nin 2026 devri 001'i durdurmaz; 002'nin kendi ön izlemesi durur
+    ok 10 - y-8: iki şirket — 002'nin 2026 devri 001'i durdurmaz; 002'nin kendi ön izlemesi durur
+      ---
+      duration_ms: 650.131354
+      type: 'test'
+      ...
+    1..10
+ok 11 - D3 tur 4 — aynı yıl ikinci kez devredilemez (bu yıl / sonraki yıl / yarıda kalmış devir; iki şirket)
+  ---
+  duration_ms: 5197.990669
+  type: 'suite'
+  ...
+# Subtest: D3 tur 4 — her neden üretilir ve dört alanı temiz (iç kod / İngilizce / alan adı / tablo adı yok)
+    # Subtest: bütün ön denetim maddeleri + bütün plan sorunları + bütün değişmezler + redler: dört alan, yasak kalıp yok, tablo adı yok, adımlar var
+    ok 1 - bütün ön denetim maddeleri + bütün plan sorunları + bütün değişmezler + redler: dört alan, yasak kalıp yok, tablo adı yok, adımlar var
+      ---
+      duration_ms: 19.355054
+      type: 'test'
+      ...
+    # Subtest: kâhin ↔ plan karşılaştırması §9'un EKSİK maddeleri tamam: plan sorunlarında adım adım + Ön İzleme'yi yeniden başlat; tutar yönüyle; modülün adı; şüphelide Şüpheli Alacaklar
+    ok 2 - kâhin ↔ plan karşılaştırması §9'un EKSİK maddeleri tamam: plan sorunlarında adım adım + Ön İzleme'yi yeniden başlat; tutar yönüyle; modülün adı; şüphelide Şüpheli Alacaklar
+      ---
+      duration_ms: 1.926538
+      type: 'test'
+      ...
+    # Subtest: KAYNAK TARAMASI: kaynaktaki her neden kodu üretildi; planın / okuyucunun her sorun türünün kendi iletisi var (varsayılana düşmez)
+    ok 3 - KAYNAK TARAMASI: kaynaktaki her neden kodu üretildi; planın / okuyucunun her sorun türünün kendi iletisi var (varsayılana düşmez)
+      ---
+      duration_ms: 12.807207
+      type: 'test'
+      ...
+    1..3
+ok 12 - D3 tur 4 — her neden üretilir ve dört alanı temiz (iç kod / İngilizce / alan adı / tablo adı yok)
+  ---
+  duration_ms: 35.00693
+  type: 'suite'
+  ...
+# Subtest: D3 tur 3 — (a)(b)(e) API verisiyle bütün durdurma nedenleri birlikte: dört alan, veriyle aynı değerler, kararlı sıra, Devir Raporu'nda iki başlık
+    # Subtest: (a) her DURDURUR nedeni dört alanlı; sayı / belge no / tarih veri tabanıyla aynı
+    ok 1 - (a) her DURDURUR nedeni dört alanlı; sayı / belge no / tarih veri tabanıyla aynı
+      ---
+      duration_ms: 22.115635
+      type: 'test'
+      ...
+    # Subtest: (a) UYARIR maddeleri de dört alanlı; uyarılar durdururla karışmaz
+    ok 2 - (a) UYARIR maddeleri de dört alanlı; uyarılar durdururla karışmaz
+      ---
+      duration_ms: 0.660004
+      type: 'test'
+      ...
+    # Subtest: (b) iki ön izleme: nedenler ve sıraları bayt bayt aynı
+    ok 3 - (b) iki ön izleme: nedenler ve sıraları bayt bayt aynı
+      ---
+      duration_ms: 0.290848
+      type: 'test'
+      ...
+    # Subtest: (e) Devir Raporu: 'Devri Durduran Nedenler' ve 'Uyarılar' ayrı başlıklar; ekran = Excel = PDF aynı cümleler
+    ok 4 - (e) Devir Raporu: 'Devri Durduran Nedenler' ve 'Uyarılar' ayrı başlıklar; ekran = Excel = PDF aynı cümleler
+      ---
+      duration_ms: 88.043933
+      type: 'test'
+      ...
+    1..4
+ok 13 - D3 tur 3 — (a)(b)(e) API verisiyle bütün durdurma nedenleri birlikte: dört alan, veriyle aynı değerler, kararlı sıra, Devir Raporu'nda iki başlık
+  ---
+  duration_ms: 1681.502289
+  type: 'suite'
+  ...
+# Subtest: D3 tur 3 — (a) Defter Mutabakatı (kural kancası; ön izlemenin aynı işlevi, iş parçacığısız)
+    # Subtest: Defter Mutabakatı DURDURUR (120 farkı 500,00 TL; dört alan)
+    ok 1 - Defter Mutabakatı DURDURUR (120 farkı 500,00 TL; dört alan)
+      ---
+      duration_ms: 1.221619
+      type: 'test'
+      ...
+    1..1
+ok 14 - D3 tur 3 — (a) Defter Mutabakatı (kural kancası; ön izlemenin aynı işlevi, iş parçacığısız)
+  ---
+  duration_ms: 575.170786
+  type: 'suite'
+  ...
+# Subtest: D3 tur 3 — (a) planın kendi sorunları (program tutarlı veride üretmez — OLGU düzeyinde, her sorun türü): cari adı, hesap, iki tutar
+    # Subtest: her plan sorunu ve değişmez dört alanlı; tutarlar sorundaki sayılarla aynı
+    ok 1 - her plan sorunu ve değişmez dört alanlı; tutarlar sorundaki sayılarla aynı
+      ---
+      duration_ms: 3.2669
+      type: 'test'
+      ...
+    1..1
+ok 15 - D3 tur 3 — (a) planın kendi sorunları (program tutarlı veride üretmez — OLGU düzeyinde, her sorun türü): cari adı, hesap, iki tutar
+  ---
+  duration_ms: 3.529169
+  type: 'suite'
+  ...
+# Subtest: D3 tur 3 — (a)(c) ön izleme reddi ve beklenmeyen hata: Türkçe dört alan + 'Verileriniz değişmedi.'; yalnız uyarı varken geçilebilir
+    # Subtest: (c) temiz şirket: DURDURUR yok, yalnız uyarı (Aralık mahsubu, 001) → geçilebilir
+    ok 1 - (c) temiz şirket: DURDURUR yok, yalnız uyarı (Aralık mahsubu, 001) → geçilebilir
+      ---
+      duration_ms: 281.114484
+      type: 'test'
+      ...
+    # Subtest: ret: 31.12 olmayan tarih / bu yıl / geçersiz seçenek → 400, kod makine alanında, ileti dört alanlı
+    ok 2 - ret: 31.12 olmayan tarih / bu yıl / geçersiz seçenek → 400, kod makine alanında, ileti dört alanlı
+      ---
+      duration_ms: 8.751747
+      type: 'test'
+      ...
+    # Subtest: beklenmeyen hata (okuyucunun okuduğu sütun yok — ham veri): Türkçe cümle + 'Verileriniz değişmedi.'; ham ileti yanıta girmez; veri aynı
+    ok 3 - beklenmeyen hata (okuyucunun okuduğu sütun yok — ham veri): Türkçe cümle + 'Verileriniz değişmedi.'; ham ileti yanıta girmez; veri aynı
+      ---
+      duration_ms: 302.014882
+      type: 'test'
+      ...
+    1..3
+ok 16 - D3 tur 3 — (a)(c) ön izleme reddi ve beklenmeyen hata: Türkçe dört alan + 'Verileriniz değişmedi.'; yalnız uyarı varken geçilebilir
+  ---
+  duration_ms: 961.586954
+  type: 'suite'
+  ...
+# Subtest: D3 tur 3 — (d) kaynak tarayan denetim: durdurma / uyarı / ret yolu ileti yardımcısını atlayamaz (satır bölme /\\r?\\n/ — ders 27)
+    # Subtest: preflight.mjs: stop / warn listesine yalnız devirIletisi ya da problemIletisi girer; ham 'metin:' yok
+    ok 1 - preflight.mjs: stop / warn listesine yalnız devirIletisi ya da problemIletisi girer; ham 'metin:' yok
+      ---
+      duration_ms: 1.682708
+      type: 'test'
+      ...
+    # Subtest: routes/devir.mjs ön izleme bölümü: HttpError yalnız refuse() ile; başarısız işin iletisi ham hata iletisi değil
+    ok 2 - routes/devir.mjs ön izleme bölümü: HttpError yalnız refuse() ile; başarısız işin iletisi ham hata iletisi değil
+      ---
+      duration_ms: 0.859333
+      type: 'test'
+      ...
+    # Subtest: devir modüllerinde iletiler.mjs dışında seviye / metin nesnesi kurulmaz
+    ok 3 - devir modüllerinde iletiler.mjs dışında seviye / metin nesnesi kurulmaz
+      ---
+      duration_ms: 2.057834
+      type: 'test'
+      ...
+    # Subtest: iletiDenetimi yasak kalıpları yakalar (dişi)
+    ok 4 - iletiDenetimi yasak kalıpları yakalar (dişi)
+      ---
+      duration_ms: 0.600562
+      type: 'test'
+      ...
+    1..4
+ok 17 - D3 tur 3 — (d) kaynak tarayan denetim: durdurma / uyarı / ret yolu ileti yardımcısını atlayamaz (satır bölme /\\r?\\n/ — ders 27)
+  ---
+  duration_ms: 5.427804
+  type: 'suite'
+  ...
+# Subtest: D3 tur 3 — S-KD-3 = B: Excel'den / elle yüklenen taksit kartı Kayıt Tarihi'ne göre (yükleme anı değil)
+    # Subtest: veri tabanı (ders 3): Kayıt Tarihleri 20.12.2026 / 31.12.2026 / 01.01.2027, yükleme 03.01.2027
+    ok 1 - veri tabanı (ders 3): Kayıt Tarihleri 20.12.2026 / 31.12.2026 / 01.01.2027, yükleme 03.01.2027
+      ---
+      duration_ms: 2.369546
+      type: 'test'
+      ...
+    # Subtest: defter maddesi Kayıt Tarihi'nde (yükleme günü değil): Excel 20.12.2026 B 120 / A 519 9.000; K günü 31.12.2026; K+1 01.01.2027
+    ok 2 - defter maddesi Kayıt Tarihi'nde (yükleme günü değil): Excel 20.12.2026 B 120 / A 519 9.000; K günü 31.12.2026; K+1 01.01.2027
+      ---
+      duration_ms: 2.970417
+      type: 'test'
+      ...
+    # Subtest: plan (K = 31.12.2026): Excel kartı ESKİ yılda — carinin K bakiyesi 9.000, açılış satırları 9.000, kart 9.000 açık; K günü kartı 5.000; K+1 kartı yeni yılda (planda yok)
+    ok 3 - plan (K = 31.12.2026): Excel kartı ESKİ yılda — carinin K bakiyesi 9.000, açılış satırları 9.000, kart 9.000 açık; K günü kartı 5.000; K+1 kartı yeni yılda (planda yok)
+      ---
+      duration_ms: 0.42892
+      type: 'test'
+      ...
+    # Subtest: elle girilmiş kart (aynı Kayıt Tarihi, 9.000) Excel kartıyla AYNI plan sayıları; taksit vadeleri programın kart ekranıyla aynı (devirsiz eşdeğer)
+    ok 4 - elle girilmiş kart (aynı Kayıt Tarihi, 9.000) Excel kartıyla AYNI plan sayıları; taksit vadeleri programın kart ekranıyla aynı (devirsiz eşdeğer)
+      ---
+      duration_ms: 9.487198
+      type: 'test'
+      ...
+    1..4
+ok 18 - D3 tur 3 — S-KD-3 = B: Excel'den / elle yüklenen taksit kartı Kayıt Tarihi'ne göre (yükleme anı değil)
+  ---
+  duration_ms: 1346.809546
+  type: 'suite'
+  ...
+# Subtest: D3 tur 5 — S-T4-1 = A: kilitten sonra kurulan bağ kilitli bağsız kapanışı kaydırmaz (plan A'yı verir; devirsiz farkı ayrı sınıf)
+    # Subtest: veri tabanı (ders 3): kilit K, bağlı tahsilatlar kilitten SONRA yazıldı ve ≤K faturaya bağlı; iade asıl faturaya bağlı
+    ok 1 - veri tabanı (ders 3): kilit K, bağlı tahsilatlar kilitten SONRA yazıldı ve ≤K faturaya bağlı; iade asıl faturaya bağlı
+      ---
+      duration_ms: 1.934698
+      type: 'test'
+      ...
+    # Subtest: K1 plan (elle; S-T4-1 = A): K'de FIS-3 408,00 + FIS-2 1.245,40 açık; FIS-1 kapalı; 128,00'in bağı ARŞİV BAŞVURUSU (FIS-1'in belge numarası); K bakiyesi 1.653,40
+    ok 2 - K1 plan (elle; S-T4-1 = A): K'de FIS-3 408,00 + FIS-2 1.245,40 açık; FIS-1 kapalı; 128,00'in bağı ARŞİV BAŞVURUSU (FIS-1'in belge numarası); K bakiyesi 1.653,40
+      ---
+      duration_ms: 0.430798
+      type: 'test'
+      ...
+    # Subtest: K1 DEVİRLİ görünüm (sayılar AYNEN): 280,00 (22.12.2026) + 1.245,40 (19.01.2027); 19.01'e kadar gecikmiş 280,00, 20.01'den 1.525,40; bakiye 1.525,40
+    ok 3 - K1 DEVİRLİ görünüm (sayılar AYNEN): 280,00 (22.12.2026) + 1.245,40 (19.01.2027); 19.01'e kadar gecikmiş 280,00, 20.01'den 1.525,40; bakiye 1.525,40
+      ---
+      duration_ms: 8.805425
+      type: 'test'
+      ...
+    # Subtest: K1 DEVİRSİZ (programın bugünkü tek borç sırası): ya S-T4-1 öncesi 408,00 / 1.117,40 (BEKLENEN FARK — imza: bağ 128,00 kilitli bağsız kapanışı kaydırıyor) ya kilit paketi sonrası A; başkası BAŞARISIZ
+    ok 4 - K1 DEVİRSİZ (programın bugünkü tek borç sırası): ya S-T4-1 öncesi 408,00 / 1.117,40 (BEKLENEN FARK — imza: bağ 128,00 kilitli bağsız kapanışı kaydırıyor) ya kilit paketi sonrası A; başkası BAŞARISIZ
+      ---
+      duration_ms: 4.770519
+      type: 'test'
+      ...
+    # Subtest: K2 (iadesiz aynı sınıf) ve K4 (kilit K, kısmi bağsız kapanmış belgeye Ocak mahsubu): devirli = devirsiz, S-T4-1 imzası YOK; K4'te ayrılan = devirsiz kuyruğun payı 300
+    ok 5 - K2 (iadesiz aynı sınıf) ve K4 (kilit K, kısmi bağsız kapanmış belgeye Ocak mahsubu): devirli = devirsiz, S-T4-1 imzası YOK; K4'te ayrılan = devirsiz kuyruğun payı 300
+      ---
+      duration_ms: 4.097992
+      type: 'test'
+      ...
+    # Subtest: imza başka farkları yutmaz: K1'in devirli satırları bozulursa (kalem tutarı değişir — bakiye kayar) imza null
+    ok 6 - imza başka farkları yutmaz: K1'in devirli satırları bozulursa (kalem tutarı değişir — bakiye kayar) imza null
+      ---
+      duration_ms: 3.343693
+      type: 'test'
+      ...
+    1..6
+ok 19 - D3 tur 5 — S-T4-1 = A: kilitten sonra kurulan bağ kilitli bağsız kapanışı kaydırmaz (plan A'yı verir; devirsiz farkı ayrı sınıf)
+  ---
+  duration_ms: 1756.454381
+  type: 'suite'
+  ...
+# Subtest: D3 tur 5 — Dönem Kilidi K'den ÖNCE (30.06): kilitli dönemdeki belgeye K sonrası Mahsup Et (DOĞRULANMADI-2)
+    # Subtest: K3: ayrılan 150 = devirsiz kuyruğun payı (kilit sınırı dahil); K'de satış 150 açık kalem (vade 01.05); devirli = devirsiz her gün
+    ok 1 - K3: ayrılan 150 = devirsiz kuyruğun payı (kilit sınırı dahil); K'de satış 150 açık kalem (vade 01.05); devirli = devirsiz her gün
+      ---
+      duration_ms: 2.422819
+      type: 'test'
+      ...
+    1..1
+ok 20 - D3 tur 5 — Dönem Kilidi K'den ÖNCE (30.06): kilitli dönemdeki belgeye K sonrası Mahsup Et (DOĞRULANMADI-2)
+  ---
+  duration_ms: 1661.970188
+  type: 'suite'
+  ...
+# Subtest: D3 tur 3 — S-KD-1 = A: düzeltme fişinin düzeltemediği alt defter farkı (cari / alt hesap başına; toplamı 0 olsa da) devri DURDURUR; Kilidi Aç → Yeniden Kilitle ile geçer
+    # Subtest: aynı caride 120 −4.000 / 128 +4.000 (toplam 0): DURDURUR, ileti iki satırı ve çareyi söyler; Kilidi Aç → Yeniden Kilitle (gerçek API) → GEÇER
+    ok 1 - aynı caride 120 −4.000 / 128 +4.000 (toplam 0): DURDURUR, ileti iki satırı ve çareyi söyler; Kilidi Aç → Yeniden Kilitle (gerçek API) → GEÇER
+      ---
+      duration_ms: 1106.857921
+      type: 'test'
+      ...
+    # Subtest: iki AYRI caride +4.000 / −4.000 (hesap toplamı 0): DURDURUR (cari başına)
+    ok 2 - iki AYRI caride +4.000 / −4.000 (hesap toplamı 0): DURDURUR (cari başına)
+      ---
+      duration_ms: 470.195805
+      type: 'test'
+      ...
+    # Subtest: aynı cari, aynı hesap, aynı yılın iki maddesinde +4.000 / −4.000 (kilit günündeki birikim 0): kural farkı DURDURMAZ (yanlış durdurma yok)
+    ok 3 - aynı cari, aynı hesap, aynı yılın iki maddesinde +4.000 / −4.000 (kilit günündeki birikim 0): kural farkı DURDURMAZ (yanlış durdurma yok)
+      ---
+      duration_ms: 416.812188
+      type: 'test'
+      ...
+    # Subtest: fark hiç yokken (kilit 31.12.2026, kanca yok): kural farkı DURDURMAZ
+    ok 4 - fark hiç yokken (kilit 31.12.2026, kanca yok): kural farkı DURDURMAZ
+      ---
+      duration_ms: 938.89832
+      type: 'test'
+      ...
+    1..4
+ok 21 - D3 tur 3 — S-KD-1 = A: düzeltme fişinin düzeltemediği alt defter farkı (cari / alt hesap başına; toplamı 0 olsa da) devri DURDURUR; Kilidi Aç → Yeniden Kilitle ile geçer
+  ---
+  duration_ms: 2934.441448
+  type: 'suite'
+  ...
+# Subtest: D3 tur 3 — S-KD-2 = A: kilit K'de / K'yi aşıyorken ≤K farkının fişi yeni yıla düşer → DURDURUR; kilit geri alınır, fiş eski yılda, eski yılın kârı fiş kadar değişir
+    # Subtest: kilit = 31.12.2026: DURDURUR (fiş 01.01.2027'ye düşüyor); ileti fiş tutarını (3.000,00 TL) ve kâr etkisini söyler; çare (kilit 30.12 → fiş 31.12 → kilit 31.12) → GEÇER, kâr 10.000 → 7.000
+    ok 1 - kilit = 31.12.2026: DURDURUR (fiş 01.01.2027'ye düşüyor); ileti fiş tutarını (3.000,00 TL) ve kâr etkisini söyler; çare (kilit 30.12 → fiş 31.12 → kilit 31.12) → GEÇER, kâr 10.000 → 7.000
+      ---
+      duration_ms: 1472.367963
+      type: 'test'
+      ...
+    # Subtest: kilit = 31.12.2026 iken fiş YENİ YILA yazılmış (01.01.2027): DURDURUR; Ters Kaydet → kilit 30.12 → fiş 31.12 → kilit 31.12 → GEÇER, kâr 7.000
+    ok 2 - kilit = 31.12.2026 iken fiş YENİ YILA yazılmış (01.01.2027): DURDURUR; Ters Kaydet → kilit 30.12 → fiş 31.12 → kilit 31.12 → GEÇER, kâr 7.000
+      ---
+      duration_ms: 1461.883591
+      type: 'test'
+      ...
+    # Subtest: kilit K'den ÖNCE (30.06.2026): S-3 iletisi (fiş 01.07.2026, eski yılda) — S-KD-2 değil; fiş yazılınca GEÇER, kâr 7.000
+    ok 3 - kilit K'den ÖNCE (30.06.2026): S-3 iletisi (fiş 01.07.2026, eski yılda) — S-KD-2 değil; fiş yazılınca GEÇER, kâr 7.000
+      ---
+      duration_ms: 885.194654
+      type: 'test'
+      ...
+    # Subtest: kilit hiç yok: kural farkı tanımsız — DURDURMAZ; kâr canlı türetmeden 7.000
+    ok 4 - kilit hiç yok: kural farkı tanımsız — DURDURMAZ; kâr canlı türetmeden 7.000
+      ---
+      duration_ms: 454.92961
+      type: 'test'
+      ...
+    # Subtest: kilit K'yi AŞIYOR (15.01.2027), fark ≤K maddede: DURDURUR (fiş 16.01.2027); fark YALNIZ K'den sonraki maddedeyse S-3 genel iletisi
+    ok 5 - kilit K'yi AŞIYOR (15.01.2027), fark ≤K maddede: DURDURUR (fiş 16.01.2027); fark YALNIZ K'den sonraki maddedeyse S-3 genel iletisi
+      ---
+      duration_ms: 1810.497288
+      type: 'test'
+      ...
+    1..5
+ok 22 - D3 tur 3 — S-KD-2 = A: kilit K'de / K'yi aşıyorken ≤K farkının fişi yeni yıla düşer → DURDURUR; kilit geri alınır, fiş eski yılda, eski yılın kârı fiş kadar değişir
+  ---
+  duration_ms: 6085.937217
+  type: 'suite'
+  ...
+# Subtest: D3 tur 3 — S-KD-2 GERÇEK eski sürüm verisiyle (ders 17): v2.4.9'un GERÇEK kodunun ürettiği fikstür (surum-2.4.9-s127; kilit 31.12.2025, Excel kartları) — K = 31.12.2025
+    # Subtest: kilit K'de (31.12.2025), kural farkı ≤K maddelerde: DURDURUR 'Kural Farkı Eski Yılda Düzeltilmeli'; ilette yazan fiş tutarı = kilit 30.12.2025'e alınınca Kural Farkı Düzeltme ön izlemesinin tutarı; çare → GEÇER
+    ok 1 - kilit K'de (31.12.2025), kural farkı ≤K maddelerde: DURDURUR 'Kural Farkı Eski Yılda Düzeltilmeli'; ilette yazan fiş tutarı = kilit 30.12.2025'e alınınca Kural Farkı Düzeltme ön izlemesinin tutarı; çare → GEÇER
+      ---
+      duration_ms: 1369.778719
+      type: 'test'
+      ...
+    1..1
+ok 23 - D3 tur 3 — S-KD-2 GERÇEK eski sürüm verisiyle (ders 17): v2.4.9'un GERÇEK kodunun ürettiği fikstür (surum-2.4.9-s127; kilit 31.12.2025, Excel kartları) — K = 31.12.2025
+  ---
+  duration_ms: 1825.518435
+  type: 'suite'
+  ...
+# Subtest: D3 tur 5 — S-T2-1 = B: Borç Yaz karşısıyla K sonrası Mahsup Et (devirli = devirsiz)
+    # Subtest: veri tabanı (ders 3): mahsuplar yerinde (B6'nınki silindi), Borç Yaz satırları ve Vade Tarihleri; 002'nin mahsubu 002'nin dosyasında
+    ok 1 - veri tabanı (ders 3): mahsuplar yerinde (B6'nınki silindi), Borç Yaz satırları ve Vade Tarihleri; 002'nin mahsubu 002'nin dosyasında
+      ---
+      duration_ms: 2.112875
+      type: 'test'
+      ...
+    # Subtest: açık kalemler (elle): Borç Yaz'ın ayrılan payı Borç Yaz'ın açık kaleminde (Vade Tarihi korunur); ana belgesi ≤K alışta alışın kaleminde; K bakiyesi değişmez
+    ok 2 - açık kalemler (elle): Borç Yaz'ın ayrılan payı Borç Yaz'ın açık kaleminde (Vade Tarihi korunur); ana belgesi ≤K alışta alışın kaleminde; K bakiyesi değişmez
+      ---
+      duration_ms: 4.676056
+      type: 'test'
+      ...
+    # Subtest: ayırım listesi (elle): Borç Yaz karşısı yeni yıla ayrıldı / iki belge ≤K K'de kapandı; silinen ve K günü mahsubu YOK
+    ok 3 - ayırım listesi (elle): Borç Yaz karşısı yeni yıla ayrıldı / iki belge ≤K K'de kapandı; silinen ve K günü mahsubu YOK
+      ---
+      duration_ms: 0.568611
+      type: 'test'
+      ...
+    # Subtest: bağ listesi (elle): mahsubun ≤K Borç Yaz karşısı satırın DEVİR KALEMİNE (line:); ana belgesi ≤K alış faturanın kalemine; iki belgesi ≤K mahsup işaretli
+    ok 4 - bağ listesi (elle): mahsubun ≤K Borç Yaz karşısı satırın DEVİR KALEMİNE (line:); ana belgesi ≤K alış faturanın kalemine; iki belgesi ≤K mahsup işaretli
+      ---
+      duration_ms: 0.458331
+      type: 'test'
+      ...
+    # Subtest: DEVİRSİZ EŞDEĞER (aynı kilitle): gecikmiş, borç tarafı açık kalemler, en eski vade — her senaryo, her gün; B1 01.01 = 100, B3 her gün 0
+    ok 5 - DEVİRSİZ EŞDEĞER (aynı kilitle): gecikmiş, borç tarafı açık kalemler, en eski vade — her senaryo, her gün; B1 01.01 = 100, B3 her gün 0
+      ---
+      duration_ms: 27.915582
+      type: 'test'
+      ...
+    # Subtest: 002: kendi Borç Yaz mahsubu kendi planında ayrılır; 001'in planı 002'nin carisini içermez
+    ok 6 - 002: kendi Borç Yaz mahsubu kendi planında ayrılır; 001'in planı 002'nin carisini içermez
+      ---
+      duration_ms: 0.458446
+      type: 'test'
+      ...
+    # Subtest: iki seçenek eşdeğer (Sadece Bakiyeyi Aktar): açık kalemler ve ayırım AYNI
+    ok 7 - iki seçenek eşdeğer (Sadece Bakiyeyi Aktar): açık kalemler ve ayırım AYNI
+      ---
+      duration_ms: 416.579767
+      type: 'test'
+      ...
+    1..7
+ok 24 - D3 tur 5 — S-T2-1 = B: Borç Yaz karşısıyla K sonrası Mahsup Et (devirli = devirsiz)
+  ---
+  duration_ms: 2879.488027
+  type: 'suite'
+  ...
+# Subtest: D3 tur 4 — S-T2-1 = B: K sonrası Mahsup Et'in ≤K belgesi K kuyruğunda o mahsuba ayrılır (devirli = devirsiz)
+    # Subtest: veri tabanı (ders 3): mahsuplar — M4'ün mahsubu silindi, öbürleri yerinde; 002'nin mahsubu 002'nin dosyasında
+    ok 1 - veri tabanı (ders 3): mahsuplar — M4'ün mahsubu silindi, öbürleri yerinde; 002'nin mahsubu 002'nin dosyasında
+      ---
+      duration_ms: 5.360793
+      type: 'test'
+      ...
+    # Subtest: açık kalemler (elle): ayrılan pay ≤K belgenin açık kaleminde; K bakiyesi değişmez
+    ok 2 - açık kalemler (elle): ayrılan pay ≤K belgenin açık kaleminde; K bakiyesi değişmez
+      ---
+      duration_ms: 0.804091
+      type: 'test'
+      ...
+    # Subtest: ayırım listesi (elle): yeni yıla ayrılan / K'de kapanan; tutar = devirsiz kuyruğun mahsuba verdiği pay; silinmiş mahsup ve ≤K mahsup YOK
+    ok 3 - ayırım listesi (elle): yeni yıla ayrılan / K'de kapanan; tutar = devirsiz kuyruğun mahsuba verdiği pay; silinmiş mahsup ve ≤K mahsup YOK
+      ---
+      duration_ms: 0.48226
+      type: 'test'
+      ...
+    # Subtest: bağ listesi (elle): ayrılan belgeye K sonrası mahsup → DEVİR KALEMİNE (Alacak Yaz satırı dahil); iki belgesi ≤K mahsup 'k-de-kapandi' işaretli
+    ok 4 - bağ listesi (elle): ayrılan belgeye K sonrası mahsup → DEVİR KALEMİNE (Alacak Yaz satırı dahil); iki belgesi ≤K mahsup 'k-de-kapandi' işaretli
+      ---
+      duration_ms: 0.510423
+      type: 'test'
+      ...
+    # Subtest: DEVİRSİZ EŞDEĞER (aynı kilitle): gecikmiş, açık kalemler, en eski vade — her senaryo, her gün; örnek AYNEN: M1 01.01 = 400, 01.02 = 550
+    ok 5 - DEVİRSİZ EŞDEĞER (aynı kilitle): gecikmiş, açık kalemler, en eski vade — her senaryo, her gün; örnek AYNEN: M1 01.01 = 400, 01.02 = 550
+      ---
+      duration_ms: 28.426694
+      type: 'test'
+      ...
+    # Subtest: 002: kendi mahsubu kendi planında ayrılır; 001'in planı 002'nin carisini içermez
+    ok 6 - 002: kendi mahsubu kendi planında ayrılır; 001'in planı 002'nin carisini içermez
+      ---
+      duration_ms: 0.401744
+      type: 'test'
+      ...
+    # Subtest: iki seçenek eşdeğer (Sadece Bakiyeyi Aktar): açık kalemler ve ayırım AYNI
+    ok 7 - iki seçenek eşdeğer (Sadece Bakiyeyi Aktar): açık kalemler ve ayırım AYNI
+      ---
+      duration_ms: 342.825508
+      type: 'test'
+      ...
+    1..7
+ok 25 - D3 tur 4 — S-T2-1 = B: K sonrası Mahsup Et'in ≤K belgesi K kuyruğunda o mahsuba ayrılır (devirli = devirsiz)
+  ---
+  duration_ms: 3070.829135
+  type: 'suite'
+  ...
+# Subtest: D3 tur 2 — e-Belge, taslak ve tekrarlayan fatura olguları gerçek veri tabanından
+    # Subtest: veri tabanındaki durumlar (önce bunlar — ders 3): W1 / W5 Gönderilecek, W2 Gönderilmeyecek, W3 'none' + entegratör izi (Sonucu Belirsiz; gönderim 502), W4 Gönderildi, W6 numaralı 'none', T1 / T2 taslak
+    ok 1 - veri tabanındaki durumlar (önce bunlar — ders 3): W1 / W5 Gönderilecek, W2 Gönderilmeyecek, W3 'none' + entegratör izi (Sonucu Belirsiz; gönderim 502), W4 Gönderildi, W6 numaralı 'none', T1 / T2 taslak
+      ---
+      duration_ms: 2.069782
+      type: 'test'
+      ...
+    # Subtest: ön denetim (10.02.2027; elle): DURDURUR bekleyen 2 (W1 + W6), listeden silinen 1, sonucu belirsiz 1, taslak 1; UYARIR şablon 1; K sonrası W5 / T2 / R3 sayılmaz
+    ok 2 - ön denetim (10.02.2027; elle): DURDURUR bekleyen 2 (W1 + W6), listeden silinen 1, sonucu belirsiz 1, taslak 1; UYARIR şablon 1; K sonrası W5 / T2 / R3 sayılmaz
+      ---
+      duration_ms: 384.92118
+      type: 'test'
+      ...
+    # Subtest: iptal süresi (05.01.2027): 30.12'de iletilen e-Arşiv için UYARIR 1; aynı belge 10.02.2027'de sayılmaz (yukarıda)
+    ok 3 - iptal süresi (05.01.2027): 30.12'de iletilen e-Arşiv için UYARIR 1; aynı belge 10.02.2027'de sayılmaz (yukarıda)
+      ---
+      duration_ms: 325.495543
+      type: 'test'
+      ...
+    1..3
+ok 26 - D3 tur 2 — e-Belge, taslak ve tekrarlayan fatura olguları gerçek veri tabanından
+  ---
+  duration_ms: 1834.733239
+  type: 'suite'
+  ...
+# Subtest: D3 tur 2 — Dönem Kilidi: kilit yok / K'den önce / K / K'yi aşan → aynı plan; ön izleme kilide dokunmaz
+    # Subtest: dört kilit durumunda plan (veri damgası hariç) bayt bayt AYNI, değişmezler tutar; her ön izlemeden önce ve sonra kilit + kilit izi AYNI
+    ok 1 - dört kilit durumunda plan (veri damgası hariç) bayt bayt AYNI, değişmezler tutar; her ön izlemeden önce ve sonra kilit + kilit izi AYNI
+      ---
+      duration_ms: 2479.149514
+      type: 'test'
+      ...
+    1..1
+ok 27 - D3 tur 2 — Dönem Kilidi: kilit yok / K'den önce / K / K'yi aşan → aynı plan; ön izleme kilide dokunmaz
+  ---
+  duration_ms: 3032.676723
+  type: 'suite'
+  ...
+# Subtest: D3 tur 2 — kilitli dönemde KURAL DEĞİŞİKLİĞİ: plan donmuş defteri (karma yevmiye) okur, canlı türetmeyi değil; Kural Farkı devri DURDURUR (S-3 = A)
+    # Subtest: elle: K kapanışında 600 = 1.000,00 (donmuş), 120 = 1.000,00; Dönem Net Kârı 1.000,00; ön denetim 'Kural Farkı Düzeltme Fişi'ni Yazın' DURDURUR
+    ok 1 - elle: K kapanışında 600 = 1.000,00 (donmuş), 120 = 1.000,00; Dönem Net Kârı 1.000,00; ön denetim 'Kural Farkı Düzeltme Fişi'ni Yazın' DURDURUR
+      ---
+      duration_ms: 39.014326
+      type: 'test'
+      ...
+    1..1
+ok 28 - D3 tur 2 — kilitli dönemde KURAL DEĞİŞİKLİĞİ: plan donmuş defteri (karma yevmiye) okur, canlı türetmeyi değil; Kural Farkı devri DURDURUR (S-3 = A)
+  ---
+  duration_ms: 885.027272
+  type: 'suite'
+  ...
+# Subtest: D3 devir planı — ÖRNEK A (elle): kapanış sırası, 7/A, 691 → 692, önceki yıl, N-13, cari satırları
+    # Subtest: kesim tarihi: yalnız geçmiş bir yılın 31 Aralık'ı (EK-1 M11)
+    ok 1 - kesim tarihi: yalnız geçmiş bir yılın 31 Aralık'ı (EK-1 M11)
+      ---
+      duration_ms: 1.600389
+      type: 'test'
+      ...
+    # Subtest: kapanış fişleri elle hesaplanan satırlarla ve sırayla: önceki yıl (570.2025) → N-01 → N-02 → N-03 → N-04 (691 hariç) → N-06 (691 → 692) → N-07
+    ok 2 - kapanış fişleri elle hesaplanan satırlarla ve sırayla: önceki yıl (570.2025) → N-01 → N-02 → N-03 → N-04 (691 hariç) → N-06 (691 → 692) → N-07
+      ---
+      duration_ms: 11.373092
+      type: 'test'
+      ...
+    # Subtest: arşiv K kapanışı ve değişmezler: 6 / 7 = 0, 153 = DSS, 590 = Ç6 Dönem Net Kârı, Σ önceki yıl = Ç6 Geçmiş Yıllar, yeni yıl 519 = arşiv 519, bilanço dengede
+    ok 3 - arşiv K kapanışı ve değişmezler: 6 / 7 = 0, 153 = DSS, 590 = Ç6 Dönem Net Kârı, Σ önceki yıl = Ç6 Geçmiş Yıllar, yeni yıl 519 = arşiv 519, bilanço dengede
+      ---
+      duration_ms: 3.306966
+      type: 'test'
+      ...
+    # Subtest: N-13 fişi yalnız alt defteri olmayan hesaplara (570.2025, 590) ve 519'a; modül açılışları (kasa, banka, stok, KDV) alt defterden; S-1 = A (590 aynen)
+    ok 4 - N-13 fişi yalnız alt defteri olmayan hesaplara (570.2025, 590) ve 519'a; modül açılışları (kasa, banka, stok, KDV) alt defterden; S-1 = A (590 aynen)
+      ---
+      duration_ms: 5.061147
+      type: 'test'
+      ...
+    # Subtest: cari satırları (M12): Borç Toplamı / Alacak Toplamı + açık kalemler (asıl vade; açıklama belge no + tarih); bakiyesi 0 + kalemsiz cariye satır YOK; satırlar = K bakiyesi
+    ok 5 - cari satırları (M12): Borç Toplamı / Alacak Toplamı + açık kalemler (asıl vade; açıklama belge no + tarih); bakiyesi 0 + kalemsiz cariye satır YOK; satırlar = K bakiyesi
+      ---
+      duration_ms: 1.296951
+      type: 'test'
+      ...
+    # Subtest: Sadece Bakiyeyi Aktar: tek Devir Bakiyesi satırı (net ≠ 0 ise) + aynı açık kalemler; iki seçenekte kuyruğa giren net AYNI
+    ok 6 - Sadece Bakiyeyi Aktar: tek Devir Bakiyesi satırı (net ≠ 0 ise) + aynı açık kalemler; iki seçenekte kuyruğa giren net AYNI
+      ---
+      duration_ms: 1.905541
+      type: 'test'
+      ...
+    # Subtest: belirlenimli: aynı olgular → bayt bayt aynı plan (iki koşu)
+    ok 7 - belirlenimli: aynı olgular → bayt bayt aynı plan (iki koşu)
+      ---
+      duration_ms: 1.772201
+      type: 'test'
+      ...
+    # Subtest: zarar yılı: 692 → 591 (B 591 / A 692)
+    ok 8 - zarar yılı: 692 → 591 (B 591 / A 692)
+      ---
+      duration_ms: 1.270354
+      type: 'test'
+      ...
+    # Subtest: carisiz cari kontrol hücresi (336.90 kayıt tahsilatları — KG-3 A) ayrı listede; modül farkı DEĞİL
+    ok 9 - carisiz cari kontrol hücresi (336.90 kayıt tahsilatları — KG-3 A) ayrı listede; modül farkı DEĞİL
+      ---
+      duration_ms: 1.323299
+      type: 'test'
+      ...
+    # Subtest: K yılı zaten kapanmış (Kapanış Fişi var) → plan sorunu, ön denetim DURDURUR
+    ok 10 - K yılı zaten kapanmış (Kapanış Fişi var) → plan sorunu, ön denetim DURDURUR
+      ---
+      duration_ms: 4.560116
+      type: 'test'
+      ...
+    1..10
+ok 29 - D3 devir planı — ÖRNEK A (elle): kapanış sırası, 7/A, 691 → 692, önceki yıl, N-13, cari satırları
+  ---
+  duration_ms: 34.790955
+  type: 'suite'
+  ...
+# Subtest: D3 devir planı — ÖRNEK B (elle): şüpheli, kartlar, stok, KDV dönem boyutu
+    # Subtest: kapanış: N-01 = SMM 130,00; 770 → 632 yansıtma; Dönem Net Kârı 1.220,00; değişmezler tutar
+    ok 1 - kapanış: N-01 = SMM 130,00; 770 → 632 yansıtma; Dönem Net Kârı 1.220,00; değişmezler tutar
+      ---
+      duration_ms: 1.420597
+      type: 'test'
+      ...
+    # Subtest: şüpheli (M13): CH açık kalemi = fatura kalanı − şüpheli pay (600,00); 128 / 129 ayrı açılış; aynı tutar iki kez taşınmaz
+    ok 2 - şüpheli (M13): CH açık kalemi = fatura kalanı − şüpheli pay (600,00); 128 / 129 ayrı açılış; aynı tutar iki kez taşınmaz
+      ---
+      duration_ms: 2.389168
+      type: 'test'
+      ...
+    # Subtest: kartlar: açık kartın taksitleri açık kalem DEĞİL (net satırda — M2); Borçta Kalsın kalanı açık kalem; kapalı kart da tek açılış; carisiz kart 127
+    ok 3 - kartlar: açık kartın taksitleri açık kalem DEĞİL (net satırda — M2); Borçta Kalsın kalanı açık kalem; kapalı kart da tek açılış; carisiz kart 127
+      ---
+      duration_ms: 0.947396
+      type: 'test'
+      ...
+    # Subtest: stok (KG-9, M5, S207): eksi miktar devreder, değer 0; silinmiş ve sıfır miktarlı ürüne açılış YOK; eksi stoklu ürün sayısı
+    ok 4 - stok (KG-9, M5, S207): eksi miktar devreder, değer 0; silinmiş ve sıfır miktarlı ürüne açılış YOK; eksi stoklu ürün sayısı
+      ---
+      duration_ms: 0.938206
+      type: 'test'
+      ...
+    # Subtest: KDV dönem boyutu (M8): Aralık alışının dönemi Ocak → 191@2027-01 (yeni yılın Ocak mahsubuna girer); Kasım 191'i önceki yıl
+    ok 5 - KDV dönem boyutu (M8): Aralık alışının dönemi Ocak → 191@2027-01 (yeni yılın Ocak mahsubuna girer); Kasım 191'i önceki yıl
+      ---
+      duration_ms: 0.824493
+      type: 'test'
+      ...
+    # Subtest: modül ↔ Ana Defter farkı (kartın ödenen tutarı defterle tutmuyor) → plan sorunu 'modul-farki', ön denetim DURDURUR
+    ok 6 - modül ↔ Ana Defter farkı (kartın ödenen tutarı defterle tutmuyor) → plan sorunu 'modul-farki', ön denetim DURDURUR
+      ---
+      duration_ms: 1.46896
+      type: 'test'
+      ...
+    1..6
+ok 30 - D3 devir planı — ÖRNEK B (elle): şüpheli, kartlar, stok, KDV dönem boyutu
+  ---
+  duration_ms: 8.304333
+  type: 'suite'
+  ...
+# Subtest: D3 ön denetim (DEVIR-PLANI §5 + G4 + S-2 / S-3)
+    # Subtest: temiz veri: DURDURUR yok, geçilebilir
+    ok 1 - temiz veri: DURDURUR yok, geçilebilir
+      ---
+      duration_ms: 3.1914
+      type: 'test'
+      ...
+    # Subtest: her DURDURUR maddesi kendi olgusuyla (Türkçe cümle + gidilecek yer)
+    ok 2 - her DURDURUR maddesi kendi olgusuyla (Türkçe cümle + gidilecek yer)
+      ---
+      duration_ms: 11.221487
+      type: 'test'
+      ...
+    # Subtest: S-2 / S-3 tek yerden: B seçilirse UYARIR, C seçilirse hiç söylenmez
+    ok 3 - S-2 / S-3 tek yerden: B seçilirse UYARIR, C seçilirse hiç söylenmez
+      ---
+      duration_ms: 2.645937
+      type: 'test'
+      ...
+    # Subtest: UYARIR maddeleri: Aralık mahsubu (belirgin + bağlantı), içe aktarma, şablon, gelen kutusu, iptal süresi, eksi stok, eksi kasa, 001 yeniden başlatma, erken devir
+    ok 4 - UYARIR maddeleri: Aralık mahsubu (belirgin + bağlantı), içe aktarma, şablon, gelen kutusu, iptal süresi, eksi stok, eksi kasa, 001 yeniden başlatma, erken devir
+      ---
+      duration_ms: 1.188928
+      type: 'test'
+      ...
+    1..4
+ok 31 - D3 ön denetim (DEVIR-PLANI §5 + G4 + S-2 / S-3)
+  ---
+  duration_ms: 18.474586
+  type: 'suite'
+  ...
+# Subtest: D3 tablo sınıflaması (plan §8.16; tasarım §2): şemadaki her tablo bir sınıfta
+    # Subtest: bugünkü şemanın 86 tablosu DEVIR_TABLE_CLASSES'ta; ortak katman O; beş defter tablosu B (BAŞ MİMAR 27.11 (4))
+    ok 1 - bugünkü şemanın 86 tablosu DEVIR_TABLE_CLASSES'ta; ortak katman O; beş defter tablosu B (BAŞ MİMAR 27.11 (4))
+      ---
+      duration_ms: 107.918634
+      type: 'test'
+      ...
+    1..1
+ok 32 - D3 tablo sınıflaması (plan §8.16; tasarım §2): şemadaki her tablo bir sınıfta
+  ---
+  duration_ms: 108.154521
+  type: 'suite'
+  ...
+# Subtest: D3 tur 5 — K kuyruğunda payı sıfıra inmiş belgeye ≤K bağlı tahsilat (devirli = devirsiz)
+    # Subtest: veri tabanı (ders 3): bağlı tahsilatlar ≤K tarihli ve satışa bağlı; mahsuplar yerinde
+    ok 1 - veri tabanı (ders 3): bağlı tahsilatlar ≤K tarihli ve satışa bağlı; mahsuplar yerinde
+      ---
+      duration_ms: 3.030431
+      type: 'test'
+      ...
+    # Subtest: plan (elle): ayrılan pay açık kalemde; bağın kapatamadığı kısım bağsız (avans net satırda ya da başka borcu kapatır); K bakiyesi değişmez
+    ok 2 - plan (elle): ayrılan pay açık kalemde; bağın kapatamadığı kısım bağsız (avans net satırda ya da başka borcu kapatır); K bakiyesi değişmez
+      ---
+      duration_ms: 0.543002
+      type: 'test'
+      ...
+    # Subtest: DEVİRSİZ EŞDEĞER: gecikmiş, açık kalemler, en eski vade her gün AYNI; Z1 / Z2 gecikmiş 0, Z3 200
+    ok 3 - DEVİRSİZ EŞDEĞER: gecikmiş, açık kalemler, en eski vade her gün AYNI; Z1 / Z2 gecikmiş 0, Z3 200
+      ---
+      duration_ms: 6.581408
+      type: 'test'
+      ...
+    1..3
+ok 33 - D3 tur 5 — K kuyruğunda payı sıfıra inmiş belgeye ≤K bağlı tahsilat (devirli = devirsiz)
+  ---
+  duration_ms: 1811.838322
+  type: 'suite'
+  ...
+# Subtest: D3 tur 4 — stok ürün ürün değişmezi (eksi, silinmiş, sıfır, K sonrası hareket)
+    # Subtest: veri tabanı (ders 3): P3 kartı silindi (200), stok hareketleri K'ye kadar P1 7, P2 −3, P3 4, P4 0, P5 5
+    ok 1 - veri tabanı (ders 3): P3 kartı silindi (200), stok hareketleri K'ye kadar P1 7, P2 −3, P3 4, P4 0, P5 5
+      ---
+      duration_ms: 2.278543
+      type: 'test'
+      ...
+    # Subtest: plan (elle): P1 7 / 350,00 · P2 −3 / 0 (eksi) · P5 5 / 50,00; silinmiş P3 ve sıfır P4 satırsız; ürün değişmezi TUTAR
+    ok 2 - plan (elle): P1 7 / 350,00 · P2 −3 / 0 (eksi) · P5 5 / 50,00; silinmiş P3 ve sıfır P4 satırsız; ürün değişmezi TUTAR
+      ---
+      duration_ms: 0.372854
+      type: 'test'
+      ...
+    # Subtest: bozulma (olgu): P1 ile P5'in K miktarı yer değiştirir (toplam aynı) → 'stok-urun' kırılır; toplam değişmezleri tutar; ön denetim ürün adlarıyla DURDURUR (dört alan, Stok)
+    ok 3 - bozulma (olgu): P1 ile P5'in K miktarı yer değiştirir (toplam aynı) → 'stok-urun' kırılır; toplam değişmezleri tutar; ön denetim ürün adlarıyla DURDURUR (dört alan, Stok)
+      ---
+      duration_ms: 29.741926
+      type: 'test'
+      ...
+    1..3
+ok 34 - D3 tur 4 — stok ürün ürün değişmezi (eksi, silinmiş, sıfır, K sonrası hareket)
+  ---
+  duration_ms: 1259.052718
+  type: 'suite'
+  ...
+# Subtest: D3 tur 2 — şüpheli cari (K sonrası bağlı tahsilat), K sonrası Borçta Kalsın kartı, BM-1, BM-6
+    # Subtest: (e) şüpheli K payı (elle): D1 128 = 600 (K sonrası bağlı tahsilat düşmez), D2 128 = 600 (yalnız ≤K tahsilat), D3 128 = 500 / 129 = 500 (Değersiz K sonrası); şüpheli farkı YOK, DURDURUR YOK
+    ok 1 - (e) şüpheli K payı (elle): D1 128 = 600 (K sonrası bağlı tahsilat düşmez), D2 128 = 600 (yalnız ≤K tahsilat), D3 128 = 500 / 129 = 500 (Değersiz K sonrası); şüpheli farkı YOK, DURDURUR YOK
+      ---
+      duration_ms: 3.60225
+      type: 'test'
+      ...
+    # Subtest: BM-1 (SABİT — kâhin sonucu beklenir; davranış değişmez): D1 Borç Toplamı 600,00 · Alacak Toplamı 600,00 · açık kalem S1 400,00 (vade 01.11); CH K bakiyesi 400,00
+    ok 2 - BM-1 (SABİT — kâhin sonucu beklenir; davranış değişmez): D1 Borç Toplamı 600,00 · Alacak Toplamı 600,00 · açık kalem S1 400,00 (vade 01.11); CH K bakiyesi 400,00
+      ---
+      duration_ms: 0.42926
+      type: 'test'
+      ...
+    # Subtest: (f) K'den SONRA Borçta Kalsın: kart K'de AÇIK, ödenen 300 / kalan 900; taksitler 2–4 300'er; kartın taşıdığı kalem açık kalem DEĞİL; ≤K Borçta Kalsın kartı KAPALI, kalanı açık kalem 2 × 300 (vade 15.11 / 15.12)
+    ok 3 - (f) K'den SONRA Borçta Kalsın: kart K'de AÇIK, ödenen 300 / kalan 900; taksitler 2–4 300'er; kartın taşıdığı kalem açık kalem DEĞİL; ≤K Borçta Kalsın kartı KAPALI, kalanı açık kalem 2 × 300 (vade 15.11 / 15.12)
+      ---
+      duration_ms: 0.467907
+      type: 'test'
+      ...
+    # Subtest: (f) DEVİRSİZ EŞDEĞER (taksitler): planın taksit vadesi ve kalanı = devirsiz programın bugünkü taksitleri (S205 = A: Borçta Kalsın kalemin vadesi MIN(asıl, kapanış günü 10.01.2027) — elle)
+    ok 4 - (f) DEVİRSİZ EŞDEĞER (taksitler): planın taksit vadesi ve kalanı = devirsiz programın bugünkü taksitleri (S205 = A: Borçta Kalsın kalemin vadesi MIN(asıl, kapanış günü 10.01.2027) — elle)
+      ---
+      duration_ms: 4.259948
+      type: 'test'
+      ...
+    # Subtest: BM-6: ödeme rolündeki açık kalem ÖDEME satırı yazmaya yetecek alanları taşır — rol, asıl tarih (vade), tutar, yön, karşı kalem (kaynak satırın kimliği, veri tabanında)
+    ok 5 - BM-6: ödeme rolündeki açık kalem ÖDEME satırı yazmaya yetecek alanları taşır — rol, asıl tarih (vade), tutar, yön, karşı kalem (kaynak satırın kimliği, veri tabanında)
+      ---
+      duration_ms: 0.568703
+      type: 'test'
+      ...
+    1..5
+ok 35 - D3 tur 2 — şüpheli cari (K sonrası bağlı tahsilat), K sonrası Borçta Kalsın kartı, BM-1, BM-6
+  ---
+  duration_ms: 1532.538801
+  type: 'suite'
+  ...
+# Subtest: D3 tur 5 — kâhin okuması (a): K sonrası mahsup kendi gününden itibaren — tarih tarih devirli = devirsiz
+    # Subtest: devirsiz PROGRAM (cari kartının Gecikmiş Borç'u, o günün verisiyle) — elle: 250 · 250 · 400 · 400 · 550 (kâhinin (a) okumasıyla aynı)
+    ok 1 - devirsiz PROGRAM (cari kartının Gecikmiş Borç'u, o günün verisiyle) — elle: 250 · 250 · 400 · 400 · 550 (kâhinin (a) okumasıyla aynı)
+      ---
+      duration_ms: 4.151353
+      type: 'test'
+      ...
+    # Subtest: o gün hazırlanan ön izlemenin DEVİRLİ eşdeğeri = devirsiz program, TARİH TARİH; mahsuptan önce ayırım YOK (alış satışı netler), mahsuptan sonra alış 150 ayrılır
+    ok 2 - o gün hazırlanan ön izlemenin DEVİRLİ eşdeğeri = devirsiz program, TARİH TARİH; mahsuptan önce ayırım YOK (alış satışı netler), mahsuptan sonra alış 150 ayrılır
+      ---
+      duration_ms: 0.361568
+      type: 'test'
+      ...
+    # Subtest: GERİYE DÖNÜK görünüm (bütün veriyle, geçmiş günün gecikmişi): Mahsup Et tarihten bağımsız 0. adım → devirsiz = devirli = 400 · 400 · 400 · 400 · 550; programda ileri tarihli Mahsup Et girilemez
+    ok 3 - GERİYE DÖNÜK görünüm (bütün veriyle, geçmiş günün gecikmişi): Mahsup Et tarihten bağımsız 0. adım → devirsiz = devirli = 400 · 400 · 400 · 400 · 550; programda ileri tarihli Mahsup Et girilemez
+      ---
+      duration_ms: 10.1356
+      type: 'test'
+      ...
+    1..3
+ok 36 - D3 tur 5 — kâhin okuması (a): K sonrası mahsup kendi gününden itibaren — tarih tarih devirli = devirsiz
+  ---
+  duration_ms: 2854.336662
+  type: 'suite'
+  ...
+# Subtest: D3 tur 5 — kâhin okuması (b): bakiyesi 0 caride S-T2-1 ayırmasıyla iki yönlü kalem
+    # Subtest: doğal sırada program Mahsup Et'i REDDEDER (409, satışın açık tutarı 0,00 TL) — örnek yalnız geriye tarihli girişle oluşur
+    ok 1 - doğal sırada program Mahsup Et'i REDDEDER (409, satışın açık tutarı 0,00 TL) — örnek yalnız geriye tarihli girişle oluşur
+      ---
+      duration_ms: 0.654831
+      type: 'test'
+      ...
+    # Subtest: plan (elle): K bakiyesi 0; Kasım satışının 150'si ayrılır (açık kalem 150, vade 30.11); avans 150 net satırda (EK-1 M2 A); iki seçenekte satırlar
+    ok 2 - plan (elle): K bakiyesi 0; Kasım satışının 150'si ayrılır (açık kalem 150, vade 30.11); avans 150 net satırda (EK-1 M2 A); iki seçenekte satırlar
+      ---
+      duration_ms: 0.397384
+      type: 'test'
+      ...
+    # Subtest: devirli = devirsiz (iki seçenek, her gün): gecikmiş 0, açık kalem yok; cari kartı bakiyesi −150 (avans)
+    ok 3 - devirli = devirsiz (iki seçenek, her gün): gecikmiş 0, açık kalem yok; cari kartı bakiyesi −150 (avans)
+      ---
+      duration_ms: 30.08723
+      type: 'test'
+      ...
+    1..3
+ok 37 - D3 tur 5 — kâhin okuması (b): bakiyesi 0 caride S-T2-1 ayırmasıyla iki yönlü kalem
+  ---
+  duration_ms: 1766.387387
+  type: 'suite'
+  ...
+# Subtest: D3 devir ön izleme uçları
+    # Subtest: yetki: yalnız system.manage — Muhasebe ve Personel 403, oturumsuz 401
+    ok 1 - yetki: yalnız system.manage — Muhasebe ve Personel 403, oturumsuz 401
+      ---
+      duration_ms: 249.727593
+      type: 'test'
+      ...
+    # Subtest: ret: K 31 Aralık değil (400 DEVIR_K_31_ARALIK), geçmiş yıl değil (400 DEVIR_K_GELECEK), seçenek geçersiz (400), şirket yok (404), ön izleme yok (404)
+    ok 2 - ret: K 31 Aralık değil (400 DEVIR_K_31_ARALIK), geçmiş yıl değil (400 DEVIR_K_GELECEK), seçenek geçersiz (400), şirket yok (404), ön izleme yok (404)
+      ---
+      duration_ms: 13.669914
+      type: 'test'
+      ...
+    # Subtest: sonuç: plan + ön denetim + rapor; aynı adlı iki cari ayrı; K günündeki kayıt arşivde, K+1'deki yeni yılda (madde 9); budama sayıları ortak katmanı saymaz (madde 42)
+    ok 3 - sonuç: plan + ön denetim + rapor; aynı adlı iki cari ayrı; K günündeki kayıt arşivde, K+1'deki yeni yılda (madde 9); budama sayıları ortak katmanı saymaz (madde 42)
+      ---
+      duration_ms: 383.760177
+      type: 'test'
+      ...
+    # Subtest: belirlenimli + iş parçacığı = iş parçacığısız: aynı veride iki ön izleme bayt bayt aynı plan; şirket örneğinin kendi hizmetleriyle (runPreview) de aynı
+    ok 4 - belirlenimli + iş parçacığı = iş parçacığısız: aynı veride iki ön izleme bayt bayt aynı plan; şirket örneğinin kendi hizmetleriyle (runPreview) de aynı
+      ---
+      duration_ms: 738.23007
+      type: 'test'
+      ...
+    # Subtest: veri damgası: ön izlemeden sonra girilen kayıt damgayı değiştirir (madde 38)
+    ok 5 - veri damgası: ön izlemeden sonra girilen kayıt damgayı değiştirir (madde 38)
+      ---
+      duration_ms: 731.711812
+      type: 'test'
+      ...
+    # Subtest: aynı şirkette tek ön izleme: eşzamanlı iki istek aynı işi döndürür (madde 39)
+    ok 6 - aynı şirkette tek ön izleme: eşzamanlı iki istek aynı işi döndürür (madde 39)
+      ---
+      duration_ms: 337.968371
+      type: 'test'
+      ...
+    # Subtest: iki şirket: 002'nin planı yalnız 002'nin verisi (madde 12)
+    ok 7 - iki şirket: 002'nin planı yalnız 002'nin verisi (madde 12)
+      ---
+      duration_ms: 328.314856
+      type: 'test'
+      ...
+    # Subtest: Devir Raporu: ekran = PDF = Excel (aynı satırlar, TOPLAM satırları); yazım düzeni
+    ok 8 - Devir Raporu: ekran = PDF = Excel (aynı satırlar, TOPLAM satırları); yazım düzeni
+      ---
+      duration_ms: 418.875638
+      type: 'test'
+      ...
+    # Subtest: bakım kipi ön izleme sürerken açılırsa sonuç bayat (madde 40)
+    ok 9 - bakım kipi ön izleme sürerken açılırsa sonuç bayat (madde 40)
+      ---
+      duration_ms: 814.078345
+      type: 'test'
+      ...
+    # Subtest: iş parçacığı öldürülünce veri aynı; sonraki ön izleme baştan ve aynı sonuç (madde 10)
+    ok 10 - iş parçacığı öldürülünce veri aynı; sonraki ön izleme baştan ve aynı sonuç (madde 10)
+      ---
+      duration_ms: 658.452394
+      type: 'test'
+      ...
+    1..10
+ok 38 - D3 devir ön izleme uçları
+  ---
+  duration_ms: 5594.403971
+  type: 'suite'
+  ...
+# Subtest: D3 tur 4 — uzmanın ilk kabul testi (saf hesap): açılış 6.000, Ocak tahsilatı 1.000 yeni yılda, 05.01'de bakiye 5.000, asıl vade
+    # Subtest: veri tabanı (ders 3): fatura 10.000 (vade 20.12.2026), Aralık tahsilatı 4.000, 02.01.2027 banka tahsilatı 1.000
+    ok 1 - veri tabanı (ders 3): fatura 10.000 (vade 20.12.2026), Aralık tahsilatı 4.000, 02.01.2027 banka tahsilatı 1.000
+      ---
+      duration_ms: 2.371066
+      type: 'test'
+      ...
+    # Subtest: (1) planın cari açılışı 6.000 (iki seçenek): açık kalem 6.000 — ASIL VADE 20.12.2026, belge no ve tarihi; Ocak tahsilatı açılışa girmez
+    ok 2 - (1) planın cari açılışı 6.000 (iki seçenek): açık kalem 6.000 — ASIL VADE 20.12.2026, belge no ve tarihi; Ocak tahsilatı açılışa girmez
+      ---
+      duration_ms: 0.382827
+      type: 'test'
+      ...
+    # Subtest: (1) K sonrası 1.000 tahsilat yeni yılda AYNEN kalır: budanmaz (K sonrası sayımda), açılışa katılmaz, bağ listesinde yok (bağsız)
+    ok 3 - (1) K sonrası 1.000 tahsilat yeni yılda AYNEN kalır: budanmaz (K sonrası sayımda), açılışa katılmaz, bağ listesinde yok (bağsız)
+      ---
+      duration_ms: 0.266813
+      type: 'test'
+      ...
+    # Subtest: (1) DEVİRLİ = DEVİRSİZ 05.01.2027: bakiye 5.000, gecikmiş 5.000 (vade 20.12.2026); vadesiz fatura belge günüyle (10.12.2026) gecikmişte
+    ok 4 - (1) DEVİRLİ = DEVİRSİZ 05.01.2027: bakiye 5.000, gecikmiş 5.000 (vade 20.12.2026); vadesiz fatura belge günüyle (10.12.2026) gecikmişte
+      ---
+      duration_ms: 5.035668
+      type: 'test'
+      ...
+    # Subtest: (2) veri damgası: giriş, ekranları okuma, rapor indirme ve ikinci ön izleme DEĞİŞTİRMEZ; tahsilat girişi ve var olan kaydın tutar düzeltmesi DEĞİŞTİRİR
+    ok 5 - (2) veri damgası: giriş, ekranları okuma, rapor indirme ve ikinci ön izleme DEĞİŞTİRMEZ; tahsilat girişi ve var olan kaydın tutar düzeltmesi DEĞİŞTİRİR
+      ---
+      duration_ms: 482.926824
+      type: 'test'
+      ...
+    # Subtest: (2) ileti: 'Ön İzlemeden Sonra Kayıt Girildi' — DURDURUR, dört alan, yeni ön izlemeyi inceleyip yeniden onaylayın
+    ok 6 - (2) ileti: 'Ön İzlemeden Sonra Kayıt Girildi' — DURDURUR, dört alan, yeni ön izlemeyi inceleyip yeniden onaylayın
+      ---
+      duration_ms: 1.888987
+      type: 'test'
+      ...
+    # Subtest: (6) Devir Raporu başlığı: hazırlayan, aktarılan kalem sayıları, uyarılar / istisnalar — en başta 'Özet' bölümü; ekran = PDF = Excel
+    ok 7 - (6) Devir Raporu başlığı: hazırlayan, aktarılan kalem sayıları, uyarılar / istisnalar — en başta 'Özet' bölümü; ekran = PDF = Excel
+      ---
+      duration_ms: 31.525452
+      type: 'test'
+      ...
+    1..7
+ok 39 - D3 tur 4 — uzmanın ilk kabul testi (saf hesap): açılış 6.000, Ocak tahsilatı 1.000 yeni yılda, 05.01'de bakiye 5.000, asıl vade
+  ---
+  duration_ms: 1868.545855
+  type: 'suite'
+  ...
+# Subtest: D3 tur 4 — (3) ön izleme e-Belge servisine istek GÖNDERMEZ, kullanım kaydını DEĞİŞTİRMEZ
+    # Subtest: sahte EDM'ye istek 0; şirketin ve makinenin kullanım satırları aynı; ön denetim bekleyen belgeyi yine söyler (sayım veriden)
+    ok 1 - sahte EDM'ye istek 0; şirketin ve makinenin kullanım satırları aynı; ön denetim bekleyen belgeyi yine söyler (sayım veriden)
+      ---
+      duration_ms: 362.926344
+      type: 'test'
+      ...
+    1..1
+ok 40 - D3 tur 4 — (3) ön izleme e-Belge servisine istek GÖNDERMEZ, kullanım kaydını DEĞİŞTİRMEZ
+  ---
+  duration_ms: 1082.409823
+  type: 'suite'
+  ...
+# Subtest: D3 tur 3 — S-C5C-9 eki: devirde durdurulacak WhatsApp gönderimi UYARIR (durdurmaz); sayılar şirketin kuyruğundan
+    # Subtest: veri tabanı (ders 3): 001'de iş 1 Sürüyor (2 iş bekliyor), iş 2 Duraklatıldı (1 iş)
+    ok 1 - veri tabanı (ders 3): 001'de iş 1 Sürüyor (2 iş bekliyor), iş 2 Duraklatıldı (1 iş)
+      ---
+      duration_ms: 2.490372
+      type: 'test'
+      ...
+    # Subtest: 001: UYARIR 'WhatsApp Gönderimi Durdurulacak' — 2 iş (1 süren, 1 duraklatılmış), 3 kişi; dört alan; kuyruk değişmedi; 002'nin işi sayılmadı
+    ok 2 - 001: UYARIR 'WhatsApp Gönderimi Durdurulacak' — 2 iş (1 süren, 1 duraklatılmış), 3 kişi; dört alan; kuyruk değişmedi; 002'nin işi sayılmadı
+      ---
+      duration_ms: 332.857551
+      type: 'test'
+      ...
+    # Subtest: 002: yalnız kendi işi (1 iş, 1 kişi) — öbür şirketin işi sayılmaz
+    ok 3 - 002: yalnız kendi işi (1 iş, 1 kişi) — öbür şirketin işi sayılmaz
+      ---
+      duration_ms: 279.869951
+      type: 'test'
+      ...
+    # Subtest: işler bitince / iptal edilince uyarı YOK; durdurur listesi uyarıyla değişmemişti
+    ok 4 - işler bitince / iptal edilince uyarı YOK; durdurur listesi uyarıyla değişmemişti
+      ---
+      duration_ms: 825.383455
+      type: 'test'
+      ...
+    1..4
+ok 41 - D3 tur 3 — S-C5C-9 eki: devirde durdurulacak WhatsApp gönderimi UYARIR (durdurmaz); sayılar şirketin kuyruğundan
+  ---
+  duration_ms: 2417.306468
+  type: 'suite'
+  ...
+# Subtest: D3 ön izleme ve zaman (sahte saat, iki saat dilimi)
+    # Subtest: saat 2026-12-31T23:59:00+03:00: K = 31.12.2026 yalnız yerel gün 2027 olunca kabul; K günündeki kayıt arşive, sonraki yeni yıla
+    ok 1 - saat 2026-12-31T23:59:00+03:00: K = 31.12.2026 yalnız yerel gün 2027 olunca kabul; K günündeki kayıt arşive, sonraki yeni yıla
+      ---
+      duration_ms: 704.226956
+      type: 'test'
+      ...
+    # Subtest: saat 2027-01-01T00:00:00+03:00: K = 31.12.2026 yalnız yerel gün 2027 olunca kabul; K günündeki kayıt arşive, sonraki yeni yıla
+    ok 2 - saat 2027-01-01T00:00:00+03:00: K = 31.12.2026 yalnız yerel gün 2027 olunca kabul; K günündeki kayıt arşive, sonraki yeni yıla
+      ---
+      duration_ms: 923.097006
+      type: 'test'
+      ...
+    # Subtest: saat 2027-01-01T03:00:00+03:00: K = 31.12.2026 yalnız yerel gün 2027 olunca kabul; K günündeki kayıt arşive, sonraki yeni yıla
+    ok 3 - saat 2027-01-01T03:00:00+03:00: K = 31.12.2026 yalnız yerel gün 2027 olunca kabul; K günündeki kayıt arşive, sonraki yeni yıla
+      ---
+      duration_ms: 791.648683
+      type: 'test'
+      ...
+    # Subtest: Şubat'ta devir (15.02.2027): ocak ve şubat kayıtları yeni yılda; Aralık uyarısı gün sayısıyla
+    ok 4 - Şubat'ta devir (15.02.2027): ocak ve şubat kayıtları yeni yılda; Aralık uyarısı gün sayısıyla
+      ---
+      duration_ms: 888.574765
+      type: 'test'
+      ...
+    # Subtest: 29 Şubat'lı yıl (bugün 29.02.2028): K = 31.12.2027; 29.02 kaydı yeni yılda; iki yıl geride K = 31.12.2026 da hesaplanır
+    ok 5 - 29 Şubat'lı yıl (bugün 29.02.2028): K = 31.12.2027; 29.02 kaydı yeni yılda; iki yıl geride K = 31.12.2026 da hesaplanır
+      ---
+      duration_ms: 1097.416302
+      type: 'test'
+      ...
+    1..5
+ok 42 - D3 ön izleme ve zaman (sahte saat, iki saat dilimi)
+  ---
+  duration_ms: 4406.707382
+  type: 'suite'
+  ...
+# Subtest: gerçek programı ayrı süreçte açan her test ve araç (test/ + tools/) lisans servisini yerel ölü adrese yönlendirir
+ok 43 - gerçek programı ayrı süreçte açan her test ve araç (test/ + tools/) lisans servisini yerel ölü adrese yönlendirir
+  ---
+  duration_ms: 12.284585
+  type: 'test'
+  ...
+# Subtest: aynı süreçte gerçek programı açan her createApp çağrısı (test/ + tools/) lisans servisine deneme atamaz
+ok 44 - aynı süreçte gerçek programı açan her createApp çağrısı (test/ + tools/) lisans servisine deneme atamaz
+  ---
+  duration_ms: 143.775921
+  type: 'test'
+  ...
+# Subtest: gerçek kurulum paketini kuran/servisi başlatan her iş akışı işi lisans servisini önce engeller, nöbetçiyle kanıtlar
+ok 45 - gerçek kurulum paketini kuran/servisi başlatan her iş akışı işi lisans servisini önce engeller, nöbetçiyle kanıtlar
+  ---
+  duration_ms: 2.574893
+  type: 'test'
+  ...
+# Subtest: iş akışlarında lisans servisi adresi gerçek servise çevrilmez
+ok 46 - iş akışlarında lisans servisi adresi gerçek servise çevrilmez
+  ---
+  duration_ms: 0.594869
+  type: 'test'
+  ...
+# Subtest: lisans servisi adresi yalnız yerel ölü adres ya da yerel sahte servistir
+ok 47 - lisans servisi adresi yalnız yerel ölü adres ya da yerel sahte servistir
+  ---
+  duration_ms: 1.239198
+  type: 'test'
+  ...
+# Subtest: 2.4.6 Maliyet Hesap Kartı bağsızlığı (kaynak taraması)
+    # Subtest: maliyet modülü SQL'de yalnız maliyet_* tablolarını anar (para / stok / cari / kasa / fatura / defter yok)
+    ok 1 - maliyet modülü SQL'de yalnız maliyet_* tablolarını anar (para / stok / cari / kasa / fatura / defter yok)
+      ---
+      duration_ms: 6.008392
+      type: 'test'
+      ...
+    # Subtest: maliyet modülü yalnız izinli yardımcıları içe alır (cari, kasa, stok, fatura, banka, defter, taksit, çek modülü yok)
+    ok 2 - maliyet modülü yalnız izinli yardımcıları içe alır (cari, kasa, stok, fatura, banka, defter, taksit, çek modülü yok)
+      ---
+      duration_ms: 1.837051
+      type: 'test'
+      ...
+    # Subtest: programın geri kalanı maliyet_* tablolarını anmaz (yalnız göç ve Şirket Verisini Sıfırla listesi)
+    ok 3 - programın geri kalanı maliyet_* tablolarını anmaz (yalnız göç ve Şirket Verisini Sıfırla listesi)
+      ---
+      duration_ms: 76.891848
+      type: 'test'
+      ...
+    # Subtest: mutabakat kapısı ve para tabloları listesi maliyet tablolarını içermez (para tablosu değil)
+    ok 4 - mutabakat kapısı ve para tabloları listesi maliyet tablolarını içermez (para tablosu değil)
+      ---
+      duration_ms: 0.718983
+      type: 'test'
+      ...
+    1..4
+ok 48 - 2.4.6 Maliyet Hesap Kartı bağsızlığı (kaynak taraması)
+  ---
+  duration_ms: 86.641398
+  type: 'suite'
+  ...
+# Subtest: platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta yok
+    # Subtest: taranan dosya var
+    ok 1 - taranan dosya var
+      ---
+      duration_ms: 0.647342
+      type: 'test'
+      ...
+    # Subtest: import(path.join/resolve(…)) yerine import(pathToFileURL(…).href)
+    ok 2 - import(path.join/resolve(…)) yerine import(pathToFileURL(…).href)
+      ---
+      duration_ms: 172.747917
+      type: 'test'
+      ...
+    # Subtest: new URL(…, import.meta.url).pathname yerine fileURLToPath(…)
+    ok 3 - new URL(…, import.meta.url).pathname yerine fileURLToPath(…)
+      ---
+      duration_ms: 153.968171
+      type: 'test'
+      ...
+    # Subtest: signal === "SIGKILL" iddiası Windows kolu olmadan (process.platform === "win32")
+    ok 4 - signal === "SIGKILL" iddiası Windows kolu olmadan (process.platform === "win32")
+      ---
+      duration_ms: 174.694315
+      type: 'test'
+      ...
+    # Subtest: path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join("/"))
+    ok 5 - path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join("/"))
+      ---
+      duration_ms: 431.430693
+      type: 'test'
+      ...
+    1..5
+ok 49 - platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta yok
+  ---
+  duration_ms: 934.544154
+  type: 'suite'
+  ...
+# Subtest: platform taşınabilirliği: depodaki dosya adları Windows'ta açılır
+    # Subtest: dosya adlarında < > : " | ? * yok, ad boşluk ya da noktayla bitmiyor
+    ok 1 - dosya adlarında < > : " | ? * yok, ad boşluk ya da noktayla bitmiyor
+      ---
+      duration_ms: 73.225909
+      type: 'test'
+      ...
+    1..1
+ok 50 - platform taşınabilirliği: depodaki dosya adları Windows'ta açılır
+  ---
+  duration_ms: 73.361008
+  type: 'suite'
+  ...
+# Subtest: yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+    # Subtest: arayüz dosyalarında kurala uymayan ad yok
+    ok 1 - arayüz dosyalarında kurala uymayan ad yok
+      ---
+      duration_ms: 85.247702
+      type: 'test'
+      ...
+    # Subtest: hareket türü adları ve programın varsayılan adları kurala uyuyor
+    ok 2 - hareket türü adları ve programın varsayılan adları kurala uyuyor
+      ---
+      duration_ms: 5.889997
+      type: 'test'
+      ...
+    # Subtest: derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+    ok 3 - derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+      ---
+      duration_ms: 2.295329
+      type: 'test'
+      ...
+    # Subtest: Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+    ok 4 - Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+      ---
+      duration_ms: 5.943103
+      type: 'test'
+      ...
+    # Subtest: mobil görünümde (client/mobil) kurala uymayan ad yok
+    ok 5 - mobil görünümde (client/mobil) kurala uymayan ad yok
+      ---
+      duration_ms: 8.367796
+      type: 'test'
+      ...
+    # Subtest: rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+    ok 6 - rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+      ---
+      duration_ms: 34.339316
+      type: 'test'
+      ...
+    1..6
+ok 51 - yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+  ---
+  duration_ms: 143.21994
+  type: 'suite'
+  ...
+1..51
+# tests 193
+# suites 46
+# pass 193
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 90271.941427

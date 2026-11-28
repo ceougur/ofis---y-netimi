@@ -1,0 +1,3 @@
+budama: [{"table":"plan_items","sinif":"A","toplam":10,"kOncesi":10,"kSonrasi":0},{"table":"plans","sinif":"A","toplam":5,"kOncesi":5,"kSonrasi":0}]
+hareket: {"budanacak":20,"tasinacak":0} kartlar: ["kapali","acik","acik","kapali","kapali"]
+rapor: "Taşınan Hareket","0 hareket yeni yılda kalır · 20 hareket arşivde kalır"

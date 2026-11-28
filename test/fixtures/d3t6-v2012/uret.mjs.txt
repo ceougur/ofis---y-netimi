@@ -1,0 +1,63 @@
+// 2.5.1 D3 TUR 6 — v2.0.12'nin GERÇEK koduyla (git worktree add --detach … v2.0.12; ders 23, 54) taksit kartı verisi üretir — programın KENDİ API'siyle (elle kayıt yok).
+// v2.0.12'de closed_at sütunu YOK (2.0.13 ekledi, geriye doldurmadı; göç 53 bu kartlara '2.4.9' kapanış kuralı yazar): kapatılan kartın kapanış günü programın tanımıyla
+// "son güncelleme günü" (lib/accounts.mjs closeDaySql). v2.0.12'de sahte saat yok → süreç saati (test/fixtures/surec-saati.mjs installProcessClock) ile her adım kendi gününde.
+// Kullanım (bu dosyayı .mjs adıyla kopyalayıp): ROOT=<v2.0.12 kökü> OUT=<boş klasör> SAAT=<yeni deponun test/fixtures/surec-saati.mjs yolu> HUKUK_LICENSE_URL=http://127.0.0.1:9 node uret.mjs
+// Çıktı: OUT/fixture/ (destekofis.sqlite.gz, veri klasörünün .json dosyaları, v2012.json) — test/fixtures/d3t6-v2012/ altına kopyalanır.
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+import { copyFileSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { gzipSync } from "node:zlib";
+
+const { ROOT, OUT, SAAT } = process.env;
+const { installProcessClock } = await import(pathToFileURL(SAAT).href);
+const at = iso => installProcessClock(new Date(iso).getTime());
+at("2026-05-01T10:00:00+03:00");
+const helpers = await import(pathToFileURL(path.join(ROOT, "test/helpers.mjs")).href);
+const dataDir = path.join(OUT, "uretim-data");
+mkdirSync(dataDir, { recursive: true });
+const srv = await helpers.startTestServer({ dataDir, env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" } });
+const c = srv.client();
+// Saat ileri alınınca oturum süresi dolar → her saat adımında yeniden giriş.
+const login = async () => {
+  const lg = await c.login("admin", helpers.ADMIN_PASSWORD);
+  if (lg.status !== 200) throw new Error(`login ${lg.status}`);
+};
+const step = async iso => {
+  at(iso);
+  await login();
+};
+await login();
+const must = async (label, p) => {
+  const r = await p;
+  if (r.status !== 200) throw new Error(`${label}: ${r.status} ${JSON.stringify(r.data).slice(0, 300)}`);
+  return r.data.data;
+};
+// Beş kart, her biri 1.000 TL / 2 taksit (Kayıt 01.05.2026, ilk vade 15.06.2026; v2.0.12 kartla birlikte cariyi açar) + 20.06.2026 300 TL tahsilat.
+const ADLAR = { haziran: "Kapali Kart Haziran", acik: "Acik Kart", kGunu: "Kapali Kart K Gunu", kSonrasi: "Kapali Kart K Sonrasi", carisiz: "Kapali Kart Carisiz Olacak" };
+const cards = {};
+for (const [key, name] of Object.entries(ADLAR)) cards[key] = await must(`kart ${name}`, c.post("/api/workspace/plans", { name, total: 1000, count: 2, firstDue: "2026-06-15", registeredOn: "2026-05-01" }));
+await step("2026-06-20T10:00:00+03:00");
+for (const card of Object.values(cards)) await must("tahsilat", c.post(`/api/workspace/plans/${card.id}/entries`, { kind: "in", amount: 300, date: "2026-06-20" }));
+const close = async (key, iso) => {
+  await step(iso);
+  const r = await must(`kapat ${key}`, c.put(`/api/workspace/plans/${cards[key].id}`, { status: "closed" }));
+  if (r.status !== "closed") throw new Error(`kapanmadı ${key}`);
+};
+// Kapanış anları (UTC günü = programın kapanış günü; öğlen +03 → iki TZ'de aynı gün): K = 31.12.2026'dan ÖNCE, K GÜNÜ, K'den SONRA.
+await close("haziran", "2026-06-25T12:00:00+03:00");
+await close("carisiz", "2026-06-25T12:00:00+03:00");
+await close("kGunu", "2026-12-31T12:00:00+03:00");
+await close("kSonrasi", "2027-01-03T12:00:00+03:00");
+const rows = srv.app.store.all("SELECT name, status, total, account_id AS accountId, registered_on AS registeredOn, created_at AS createdAt, updated_at AS updatedAt FROM plans ORDER BY name");
+const cols = srv.app.store.all("PRAGMA table_info(plans)").map(r => r.name);
+const out = { kod: "v2.0.12", kartlar: Object.fromEntries(Object.entries(cards).map(([k, v]) => [k, { id: v.id, accountId: v.accountId, ad: ADLAR[k] }])), satirlar: rows, closedAtSutunu: cols.includes("closed_at") };
+await srv.app.close();
+const files = readdirSync(dataDir);
+for (const f of files) if (/-(wal|shm)$/.test(f) && readFileSync(path.join(dataDir, f)).length > 0) throw new Error(`WAL dosyası boş değil: ${f}`);
+const fx = path.join(OUT, "fixture");
+mkdirSync(fx, { recursive: true });
+writeFileSync(path.join(fx, "destekofis.sqlite.gz"), gzipSync(readFileSync(path.join(dataDir, "destekofis.sqlite"))));
+for (const f of files) if (f.endsWith(".json")) copyFileSync(path.join(dataDir, f), path.join(fx, f));
+writeFileSync(path.join(fx, "v2012.json"), `${JSON.stringify(out, null, 1)}\n`);
+console.log("veri klasörü:", JSON.stringify(files));
+console.log(JSON.stringify(out, null, 1));

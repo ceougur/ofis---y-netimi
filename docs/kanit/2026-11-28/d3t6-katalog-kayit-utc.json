@@ -1,0 +1,32 @@
+{
+  "ad": "d3t6-katalog-kayit-utc",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/devir-d3-acik.test.mjs test/devir-d3-bag.test.mjs test/devir-d3-banka.test.mjs test/devir-d3-damga-kaynak.test.mjs test/devir-d3-damga.test.mjs test/devir-d3-esdeger.test.mjs test/devir-d3-eski-kapali-kart.test.mjs test/devir-d3-evrak-sinif.test.mjs test/devir-d3-evrak.test.mjs test/devir-d3-ikinci.test.mjs test/devir-d3-ileti-tum.test.mjs test/devir-d3-ileti.test.mjs test/devir-d3-kart-tarihi.test.mjs test/devir-d3-kilit-bag.test.mjs test/devir-d3-kural.test.mjs test/devir-d3-mahsup-borc.test.mjs test/devir-d3-mahsup.test.mjs test/devir-d3-olgu.test.mjs test/devir-d3-plan.test.mjs test/devir-d3-sifir-pay.test.mjs test/devir-d3-stok.test.mjs test/devir-d3-supheli.test.mjs test/devir-d3-tarih.test.mjs test/devir-d3-uc.test.mjs test/devir-d3-uzman.test.mjs test/devir-d3-wa.test.mjs test/devir-d3-zaman.test.mjs",
+  "commit": "4d5231ec4cefafa493447191e5edc2124d0be865",
+  "dal": "worktree-agent-a3502020a3b9af408",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-28T01:02:24.439Z",
+  "sure_sn": 81.5,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 172,
+    "gecen": 172,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/d3t6/kanit/2026-11-28/d3t6-katalog-kayit-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a3502020a3b9af408",
+  "ham_cikti_sha256": "628324a3504398c8cff6afc2ed5ee3384cb53f86246734483f20b9cd32178578",
+  "ham_cikti_bayt": 74753
+}

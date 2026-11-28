@@ -1,0 +1,79 @@
+veri klasörü: ["destekofis.sqlite"]
+{
+ "kod": "v2.0.12",
+ "kartlar": {
+  "haziran": {
+   "id": "plan-c5064673-97c2-41b4-a2f1-8e14bc3094f3",
+   "accountId": "account-a30e0078-cea2-49ad-89ad-36de9908ce5a",
+   "ad": "Kapali Kart Haziran"
+  },
+  "acik": {
+   "id": "plan-9b52b5eb-2e36-4a64-a15d-9f3b7028f90f",
+   "accountId": "account-8b56f1fc-7e1e-4119-9e32-16ee1fb18abe",
+   "ad": "Acik Kart"
+  },
+  "kGunu": {
+   "id": "plan-ce70760e-0a3d-430e-a630-a93d8cdcebf7",
+   "accountId": "account-457d6147-b140-48f5-b68b-e0556d21276e",
+   "ad": "Kapali Kart K Gunu"
+  },
+  "kSonrasi": {
+   "id": "plan-a45faa79-5451-4555-a993-b2319b69c98a",
+   "accountId": "account-900737ce-886e-4baf-ac33-36c4b9d401e3",
+   "ad": "Kapali Kart K Sonrasi"
+  },
+  "carisiz": {
+   "id": "plan-6f4803d2-2b42-49dd-a9f1-ed43377aaf0d",
+   "accountId": "account-4ae2bdd3-4494-49f5-ad98-645d5d42bd0c",
+   "ad": "Kapali Kart Carisiz Olacak"
+  }
+ },
+ "satirlar": [
+  {
+   "name": "Acik Kart",
+   "status": "active",
+   "total": 1000,
+   "accountId": "account-8b56f1fc-7e1e-4119-9e32-16ee1fb18abe",
+   "registeredOn": "2026-05-01",
+   "createdAt": "2026-05-01T07:00:00.384Z",
+   "updatedAt": "2026-05-01T07:00:00.384Z"
+  },
+  {
+   "name": "Kapali Kart Carisiz Olacak",
+   "status": "closed",
+   "total": 1000,
+   "accountId": "account-4ae2bdd3-4494-49f5-ad98-645d5d42bd0c",
+   "registeredOn": "2026-05-01",
+   "createdAt": "2026-05-01T07:00:00.426Z",
+   "updatedAt": "2026-06-25T09:00:00.048Z"
+  },
+  {
+   "name": "Kapali Kart Haziran",
+   "status": "closed",
+   "total": 1000,
+   "accountId": "account-a30e0078-cea2-49ad-89ad-36de9908ce5a",
+   "registeredOn": "2026-05-01",
+   "createdAt": "2026-05-01T07:00:00.364Z",
+   "updatedAt": "2026-06-25T09:00:00.051Z"
+  },
+  {
+   "name": "Kapali Kart K Gunu",
+   "status": "closed",
+   "total": 1000,
+   "accountId": "account-457d6147-b140-48f5-b68b-e0556d21276e",
+   "registeredOn": "2026-05-01",
+   "createdAt": "2026-05-01T07:00:00.411Z",
+   "updatedAt": "2026-12-31T09:00:00.048Z"
+  },
+  {
+   "name": "Kapali Kart K Sonrasi",
+   "status": "closed",
+   "total": 1000,
+   "accountId": "account-900737ce-886e-4baf-ac33-36c4b9d401e3",
+   "registeredOn": "2026-05-01",
+   "createdAt": "2026-05-01T07:00:00.419Z",
+   "updatedAt": "2027-01-03T09:00:00.046Z"
+  }
+ ],
+ "closedAtSutunu": false
+}

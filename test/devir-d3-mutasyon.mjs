@@ -48,6 +48,8 @@ const DAMGA = "test/devir-d3-damga.test.mjs";
 const DAMGAKAYNAK = "test/devir-d3-damga-kaynak.test.mjs";
 const TARIH = "test/devir-d3-tarih.test.mjs";
 const ILETITUM = "test/devir-d3-ileti-tum.test.mjs";
+// D3 tur 6 (dar kontrol ORTA-1): v2.0.12'nin gerçek koduyla kapatılmış (closed_at boş) kart
+const ESKIKART = "test/devir-d3-eski-kapali-kart.test.mjs";
 // [no, ad, dosya, eski metin (dosyada TAM BİR KEZ), yeni metin, koşulacak testler, çıktıda beklenen neden (düzenli ifade)]
 const MUTASYONLAR = [
   [1, "açık kalemin vadesi kaybolur (K+1 olur; vadesizde belge günü yerine)", PLAN, "      vade: item.vade || item.date,", "      vade: nextDay,", [ELLE, ESDEGER], /not ok \d+ - (cari satırları|.*gecikmiş)/],
@@ -119,6 +121,9 @@ const MUTASYONLAR = [
   [62, "veri damgası: görüntüleme izi (fatura PDF'i) yine damgaya girer (tur 4 hâli — devir sebepsiz durur)", READER, "\"%.exported\", \"invoice.pdf\", \"invoice.pdf.bulk\"", "\"%.exported\", \"invoice.pdf.bulk\"", [DAMGA], /not ok \d+ - v-1 KULLANICI/],
   [63, "mahsup geriye dönük (K'de) uygulanmış sayılır — ayrılan pay yeni yıla taşınmaz", READER, "    const kind = old.length === 2 ? \"k-de-kapandi\" : \"yeni-yila-ayrildi\";", "    const kind = \"k-de-kapandi\";", [TARIH, MAHSUPBORC], /not ok \d+ - (o gün hazırlanan|açık kalemler)/],
   [64, "bakiyesi 0 caride açık kalem varken de satır yazılmaz (iki yönlü kalem yutulur)", PLAN, "  if (balance === 0 && !open.length) return { rows: [], open, balance, openDebt: 0, openCredit: 0, net: 0 };", "  if (balance === 0) return { rows: [], open, balance, openDebt: 0, openCredit: 0, net: 0 };", [TARIH], /not ok \d+ - plan \(elle\): K bakiyesi 0/],
+  // ---- D3 tur 6: kartın kapanış günü programın tanımıyla (closed_at; boşsa son güncelleme günü; Kayıt Tarihi'nden önce değil) ----
+  [65, "kart kapanış günü yalnız closed_at'tan okunur (tur 1–5 hâli — 2.0.13 öncesi kapatılmış kart K'de açık)", READER, "  const closedAt = cols.has(\"closed_at\") && cols.has(\"registered_on\") ? closeDaySql(\"p\") :", "  const closedAt = cols.has(\"closed_at\") && cols.has(\"registered_on\") ? \"COALESCE(p.closed_at, '')\" :", [ESKIKART], /not ok \d+ - devir planı \(K = 31\.12\.2026\)/],
+  [66, "son güncelleme yedeği tarihsiz okunur (kapalı kart K'den SONRA kapanmış olsa da K'de kapalı)", READER, "      closedAtK: row.status === \"closed\" && Boolean(row.closedAt) && String(row.closedAt).slice(0, 10) <= K,", "      closedAtK: row.status === \"closed\" && (Boolean(row.closedAt) || true),", [ESKIKART], /not ok \d+ - devir planı \(K = 31\.12\.2026\)/],
 ];
 
 const run = files => {
@@ -129,7 +134,7 @@ const run = files => {
 };
 
 // D3 tur 5: tabanda D3'ün BÜTÜN test dosyaları (tur 1'den beri eksik devir-d3-uc ve devir-d3-zaman dahil) — tabanda yeşil olmayan dosyanın mutasyondaki kırmızısı anlamsızdır.
-const TABAN = [ELLE, ESDEGER, UC, ZAMAN, BAG, EVRAK, BANKA, OLGU, SUPHELI, ILETI, KURAL, KART, WA, ACIK, MAHSUP, IKINCI, UZMAN, STOK, EVRAKSINIF, ILETITUM, MAHSUPBORC, KILITBAG, SIFIRPAY, DAMGA, DAMGAKAYNAK, TARIH];
+const TABAN = [ELLE, ESDEGER, UC, ZAMAN, BAG, EVRAK, BANKA, OLGU, SUPHELI, ILETI, KURAL, KART, WA, ACIK, MAHSUP, IKINCI, UZMAN, STOK, EVRAKSINIF, ILETITUM, MAHSUPBORC, KILITBAG, SIFIRPAY, DAMGA, DAMGAKAYNAK, TARIH, ESKIKART];
 const missing = readdirSync(path.join(COPY, "test")).filter(name => /^devir-d3-.+\.test\.mjs$/.test(name)).map(name => `test/${name}`).filter(name => !TABAN.includes(name));
 if (missing.length) throw new Error(`mutasyon tabanında olmayan D3 testi: ${missing.join(", ")} — TABAN listesine ekleyin`);
 const taban = run(TABAN);

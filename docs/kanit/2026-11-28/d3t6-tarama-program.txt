@@ -1,0 +1,11 @@
+server/lib/accounts.mjs:32:export const closeDaySql = (alias = "p") => `MAX(COALESCE(${alias}.closed_at, substr(${alias}.updated_at, 1, 10)), COALESCE(NULLIF(${alias}.registered_on, ''), substr(${alias}.created_at, 1, 10)))`;
+server/lib/accounts.mjs:47:  const closed = plan?.closedAt || String(plan?.updatedAt || "").slice(0, 10);
+server/lib/accounts.mjs:173:      const closedOn = plan.closedAt || String(plan.updatedAt || "").slice(0, 10);
+server/lib/bank/doubtful.mjs:116:      `SELECT 'plan-close:' || p.id, p.account_id, MAX(COALESCE(p.closed_at, substr(p.updated_at, 1, 10)), ${openedOn}),
+server/lib/devir/plan-reader.mjs:193:  const closedAt = cols.has("closed_at") && cols.has("registered_on") ? closeDaySql("p") : `MAX(${cols.has("closed_at") ? "COALESCE(p.closed_at, substr(p.updated_at, 1, 10))" : "substr(p.updated_at, 1, 10)"}, ${opened})`;
+server/lib/integrity-scope.mjs:408:          const closedOn = row => (row.status === "closed" && row.close_rule === CLOSE_RULE_WAIVE && !row.deleted_at ? [day(row.closed_at || row.updated_at), day(row.registered_on || row.created_at)].sort().at(-1) : "");
+server/lib/integrity-scope.mjs:421:          if (plan && waivesRemaining(plan) && !plan.deletedAt && locked([day(plan.closedAt || plan.updatedAt), day(plan.registeredOn || plan.createdAt)].sort().at(-1))) return "kapatılmış kartın tahsilatı";
+server/lib/integrity.mjs:186:                   MAX(COALESCE(p.closed_at, substr(p.updated_at, 1, 10)), COALESCE(NULLIF(p.registered_on, ''), substr(p.created_at, 1, 10))) AS closed_on,
+server/lib/ledger-rule-249/ledger-rows.mjs:87:        `SELECT p.id, p.rowid AS seq, p.total, p.status, p.covers_balance AS coversBalance, COALESCE(NULLIF(p.registered_on, ''), substr(p.created_at, 1, 10)) AS date, COALESCE(p.closed_at, substr(p.updated_at, 1, 10)) AS closedOn,
+server/routes/ledger.mjs:152:        `SELECT p.id, p.rowid AS seq, p.total, p.status, ${closeRule} AS closeRule, p.covers_balance AS coversBalance, COALESCE(NULLIF(p.registered_on, ''), substr(p.created_at, 1, 10)) AS date, COALESCE(p.closed_at, substr(p.updated_at, 1, 10)) AS closedOn,
+server/routes/plans.mjs:856:    const row = store.get("SELECT status, close_rule AS closeRule, COALESCE(closed_at, substr(updated_at, 1, 10)) AS closedOn, COALESCE(NULLIF(registered_on, ''), substr(created_at, 1, 10)) AS startOn FROM plans WHERE id = ?", planId);
