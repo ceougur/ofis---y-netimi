@@ -560,6 +560,43 @@ body:has(.hof-modal-backdrop.is-visible) .hof-toasts {
   background: rgba(0, 0, 0, 0.06);
   color: var(--do-ink);
 }
+/* 2.5.1 aday UI turu (UI-1): uzun hata bildirimi (hof-toast-long; 300 harften uzun ya da "Ne yapmalı:" içeren — hof-core.js). 380 px'lik kutuda ~760 harflik
+   ret iletisi 22 satır / 426 px oluyor, pencere açıkken üst ortada iletinin söylediği düğmeyi (cari kartı → Şüpheli Alacak satırının ×'ı) örtüyordu.
+   Geniş (en çok 720 px, ~9 satır), pencere açıkken ALTTA ortada; metin kutusu ekranın yarısını geçmez (sığmazsa kendi içinde kayar) → en çok iki uzun bildirim
+   ekrana sığar. Kopyala alt satırda, × sağ üstte. Kısa bildirimler (uzun bildirim yokken) eskisi gibi. */
+.hof-toasts:has(.hof-toast-long) {
+  width: min(720px, calc(100vw - 36px));
+}
+body:has(.hof-modal-backdrop.is-visible) .hof-toasts:has(.hof-toast-long) {
+  top: auto;
+  bottom: 14px;
+}
+.hof-toast-long {
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: flex-end;
+  row-gap: 6px;
+}
+.hof-toast-long .hof-toast-text {
+  flex: 1 1 calc(100% - 40px);
+  min-width: 0;
+  max-height: calc(50vh - 110px);
+  overflow-y: auto;
+}
+.hof-toast-long.is-scroll .hof-toast-text {
+  pointer-events: auto;
+}
+.hof-toast-long .hof-toast-close {
+  order: 1;
+}
+.hof-toast-long .hof-toast-count,
+.hof-toast-long .hof-toast-action,
+.hof-toast-long .hof-toast-copy {
+  order: 2;
+}
+.hof-toast-long .hof-toast-copybox {
+  order: 3;
+}
 
 /* ---------- Bilgi şeridi ---------- */
 .hof-banner {
@@ -8910,6 +8947,12 @@ button.hof-source-card:focus-visible {
     margin: 0 0 2px;
     font-size: 19px;
   }
+  /* 2.5.1 aday UI turu (UI-2): KDV Özeti'nin tutar kartları (6 kart, uzun adlar) tek satıra sığmıyor, 1366×768'de "Ödenecek KDV" kesik, "Sonraki Döneme
+     Devreden KDV" gizli kalıyordu (yana kaydırmayı kimse fark etmiyor). KDV Özeti'nde kartlar alçak ekranda da satıra sarılır; öbür raporlar eskisi gibi. */
+  .hof-rc-summary:not(.is-kdv-notes):has(~ .hof-rc-table.is-kdv) {
+    flex-wrap: wrap;
+    overflow-x: visible;
+  }
 }
 
 /* ---------- Çek / Senet (hof-cheques.js) ---------- */
@@ -11541,6 +11584,19 @@ input[type="search"]::-webkit-search-cancel-button {
 /* 2.4.3 MM3: Vergi Ödemesi ve KDV Mahsup Fişi (hof-tax.js) */
 .hof-tax-warn { margin: 6px 0; color: var(--do-warn); font-weight: 700; }
 .hof-tax-h3 { margin: 18px 0 6px; font: 700 13px var(--do-font); }
+/* 2.5.1 aday UI turu (UI-3): "Mahsup Edilen Aylar" tablosu 820 px'lik pencereye sığmıyordu — "Mahsuptan Sonra Değişti" rozeti tek satırda tabloyu taşırıyor,
+   en yeni mahsubun "Geri Al" düğmesi yalnız yana kaydırınca görünüyordu. Bu tabloda tutar başlıkları ve Durum rozeti satıra kırılır; tutarlar tek satırda kalır. */
+[data-vat-root] .hof-tax-h3 + .hof-rep-table th.num {
+  white-space: normal;
+}
+[data-vat-root] .hof-tax-h3 + .hof-rep-table .hof-plan-badge {
+  border-radius: 8px;
+  line-height: 1.3;
+  white-space: normal;
+}
+[data-vat-root] .hof-tax-h3 + .hof-rep-table [data-vat-reverse] {
+  white-space: nowrap;
+}
 /* 2.4.4 (E5): Web Servis Kullanıcı Adı alanına adres yazılınca görünen uyarı. */
 .hof-field small[data-integ-user-warn] {
   color: var(--do-danger);
