@@ -1,0 +1,32 @@
+{
+  "ad": "bir28b-kahin-cari",
+  "komut": "npm run test:kahin-cari",
+  "commit": "39b798826b63e98c7c4c341d59f54724377c7645",
+  "dal": "claude/epic-thompson-w0lc2l",
+  "kirli": 0,
+  "izlenmeyen": 18,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-28T07:59:36.552Z",
+  "sure_sn": 504.4,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 25957,
+    "gecen": 25957,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-28/bir28b-kahin-cari.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "bfbe781f2ca8999741ec8cc935b7e494ae0c6426eed81347ab6f1ef65db6c3a0",
+  "ham_cikti_bayt": 85894
+}
