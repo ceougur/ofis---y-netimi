@@ -1,0 +1,32 @@
+{
+  "ad": "bir28c-senaryo-mi1-251",
+  "komut": "node test/e2e/senaryo-mi1-251.mjs",
+  "commit": "1ca68ea667765b38d937a721938711b04a174ad8",
+  "dal": "claude/epic-thompson-w0lc2l",
+  "kirli": 0,
+  "izlenmeyen": 10,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-28T10:45:01.449Z",
+  "sure_sn": 45.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 12,
+    "gecen": 12,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-28/bir28c-senaryo-mi1-251.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "b6b7d54dfd8d25f2fbe77354c095bb147a4f119cf31869eb03d2c3f8d27d429e",
+  "ham_cikti_bayt": 2086
+}
