@@ -425,34 +425,42 @@ export function writeOffDays(ctx, record, { today, lockedUntil = "", balanceMino
   for (const credit of ctx.credits) if (ctx.bound.has(credit.key) && credit.date > first && credit.date < today) days.add(credit.date);
   const sorted = [...days].sort();
   // Seçim kuralı (tur 1 AYNEN): gün sırasıyla; öneri büyük olan, öneri eşitse sınırı büyük olan; tam eşitlikte en erken gün. anyMinor = en büyük sınır.
-  const choose = quotes => {
-    let best = quotes[0];
-    for (const quote of quotes) if (quote.offerMinor > best.offerMinor || (quote.offerMinor === best.offerMinor && quote.limitMinor > best.limitMinor)) best = quote;
-    return best;
-  };
-  const out = quotes => ({ today: quotes[quotes.length - 1].date === today ? quotes[quotes.length - 1] : null, first: quotes[0], best: choose(quotes), anyMinor: Math.max(...quotes.map(quote => quote.limitMinor)) });
+  const out = quotes => ({ today: quotes[quotes.length - 1].date === today ? quotes[quotes.length - 1] : null, first: quotes[0], best: chooseWriteOffQuote(quotes), anyMinor: Math.max(...quotes.map(quote => quote.limitMinor)) });
   const quoteOf = day => writeOffLimitOf(ctx, record, day, { balanceMinor });
   if (WRITE_OFF_TEST.exact || sorted.length <= 2) return out(sorted.map(quoteOf));
-  // Tur 2 hız (2): ara günler YALNIZ sonucu değiştirebilirse hesaplanır. Gün d'nin sınırı ≤ üst ucu cap(d) = min(F(S, d), bakiye) ve öneri ≤ sınır. F(S, d) gün ilerledikçe ARTMAZ: d₂ > d₁
-  // dünyası d₁ dünyasına yalnız [d₁, d₂) günlerinin bağlı satırlarını EKLER; d₁'den önce iki dünya aynı, eklenen satırlar kalanı yalnız küçültür ve ayırıcının her olayı (sırayla alacak,
-  // bağlı pay, Değersiz, çıkarma, karşılık) küçük kalanı küçük bırakır → cap(d) sondan öncekilerin cap'inden büyük olamaz. Gün d şu durumda seçimi ve anyMinor'u DEĞİŞTİREMEZ: cap(d) < en
-  // iyinin önerisi; ya da cap(d) = en iyinin önerisi ve (en iyinin sınırı > cap(d) ya da en iyi d'den önceki gün). Bu koşul bir günde sağlanırsa sonraki her günde de sağlanır (cap artmaz,
-  // en iyi yalnız iyileşir, tarih ilerler) → tarama durur. Sonuç tam taramayla BİREBİR (eşdeğerlik testi WRITE_OFF_TEST.exact ile).
-  const quotes = new Map([[sorted[0], quoteOf(sorted[0])], [sorted[sorted.length - 1], quoteOf(sorted[sorted.length - 1])]]);
-  const known = () => sorted.filter(day => quotes.has(day)).map(day => quotes.get(day));
-  const capOf = quote => Math.max(0, Math.min(quote.roomMinor ?? 0, Number(balanceMinor) || 0));
+  return out(pickWriteOffQuotes(sorted, quoteOf, day => writeOffRoomBefore(ctx, record.id, day), balanceMinor));
+}
+/** Seçim kuralı (tur 1 AYNEN): gün sırasıyla; öneri büyük olan, öneri eşitse sınırı büyük olan; tam eşitlikte en erken gün. */
+export function chooseWriteOffQuote(quotes) {
+  let best = quotes[0];
+  for (const quote of quotes) if (quote.offerMinor > best.offerMinor || (quote.offerMinor === best.offerMinor && quote.limitMinor > best.limitMinor)) best = quote;
+  return best;
+}
+/**
+ * Tur 2 hız (2) — SAF işlev (birim testi: test/supheli-degersiz-hiz-m2t2-251.test.mjs, rastgele tablolarla tam taramaya karşı): aday günler (artan) için hesaplanması GEREKEN teklifler, gün sırasıyla.
+ * Gün d'nin sınırı ≤ üst ucu cap(d) = min(F(S, d), bakiye) ve öneri ≤ sınır. F(S, d) gün ilerledikçe ARTMAZ: d₂ > d₁ dünyası d₁ dünyasına yalnız [d₁, d₂) günlerinin bağlı satırlarını EKLER;
+ * d₁'den önce iki dünya aynı, eklenen satırlar kalanı yalnız küçültür ve ayırıcının her olayı (sırayla alacak, bağlı pay, Değersiz, çıkarma, karşılık) küçük kalanı küçük bırakır → cap(d)
+ * öncekilerin cap'inden büyük olamaz. Gün d seçimi ve anyMinor'u DEĞİŞTİREMEZ: cap(d) < en iyinin önerisi; ya da cap(d) = en iyinin önerisi ve (en iyinin sınırı > cap(d) ya da en iyi d'den
+ * önceki gün). Bu koşul bir günde sağlanırsa sonraki her günde de sağlanır (cap artmaz, en iyi yalnız iyileşir, tarih ilerler) → tarama durur. İlk gün ve bugün her zaman hesaplanır.
+ * quoteOf(gün) → { date, limitMinor, offerMinor, roomMinor }; roomOf(gün) → F(S, gün).
+ */
+export function pickWriteOffQuotes(days, quoteOf, roomOf, balanceMinor) {
+  const quotes = new Map([[days[0], quoteOf(days[0])], [days[days.length - 1], quoteOf(days[days.length - 1])]]);
+  const known = () => days.filter(day => quotes.has(day)).map(day => quotes.get(day));
+  const balance = Number(balanceMinor) || 0;
+  const capOf = room => Math.max(0, Math.min(Math.max(0, room ?? 0), balance));
   const idle = (cap, day) => {
-    const best = choose(known());
+    const best = chooseWriteOffQuote(known());
     return cap < best.offerMinor || (cap === best.offerMinor && (best.limitMinor > cap || best.date < day));
   };
-  let upper = capOf(quotes.get(sorted[0]));
-  for (const day of sorted.slice(1, -1)) {
+  let upper = capOf(quotes.get(days[0]).roomMinor);
+  for (const day of days.slice(1, -1)) {
     if (idle(upper, day)) break;
-    upper = Math.max(0, Math.min(Math.max(0, writeOffRoomBefore(ctx, record.id, day)), Number(balanceMinor) || 0));
+    upper = capOf(roomOf(day));
     if (idle(upper, day)) break;
     quotes.set(day, quoteOf(day));
   }
-  return out(known());
+  return known();
 }
 
 /** Ana Defter'in beklenenleri (routes/ledger.mjs expected): 128 = Σ kalan; 129 = −Σ karşılık; kontrol hesabı (120/320/336) başına düşülecek kalan. */

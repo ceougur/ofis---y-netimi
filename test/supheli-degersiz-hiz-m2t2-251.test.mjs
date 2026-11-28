@@ -109,6 +109,40 @@ describe("2.5.1 M2 tur 2 — S155 dalı ve aradaki bağlı tahsilat günü: kıs
   });
 });
 
+// Budama kuralı (pickWriteOffQuotes — SAF) rastgele tablolarla tam taramaya karşı: F (room) gün ilerledikçe artmayan, sınır ≤ min(F, bakiye), öneri ≤ sınır; eşitlikler bilerek sık (küçük değer
+// kümesi). Seçim (öneri → sınır → en erken gün) ve anyMinor tam taramayla BİREBİR; ilk gün ve bugün her zaman hesaplanır.
+describe("2.5.1 M2 tur 2 — budama kuralı (saf işlev) tam taramayla aynı: 20.000 rastgele tablo", () => {
+  it("en iyi gün / öneri / sınır ve anyMinor birebir; ilk gün ve bugün hesaplanır", () => {
+    assert.equal(typeof doubtfulLib.pickWriteOffQuotes, "function", "pickWriteOffQuotes yok (tur 2 öncesi kod)");
+    const rand = mulberry(2511);
+    let saved = 0;
+    for (let n = 0; n < 20000; n += 1) {
+      const count = 3 + Math.floor(rand() * 10);
+      const days = Array.from({ length: count }, (_, i) => `2026-09-${String(10 + i).padStart(2, "0")}`);
+      const balance = [0, 100, 200, 300, 500][Math.floor(rand() * 5)];
+      let room = [100, 200, 300, 500, 800][Math.floor(rand() * 5)];
+      const table = new Map();
+      for (const day of days) {
+        room = Math.max(0, room - [0, 0, 0, 100][Math.floor(rand() * 4)]);
+        const cap = Math.max(0, Math.min(room, balance));
+        const limitMinor = [cap, cap, Math.floor(cap / 2), 0][Math.floor(rand() * 4)];
+        const offerMinor = [limitMinor, limitMinor, Math.floor(limitMinor / 2), 0][Math.floor(rand() * 4)];
+        table.set(day, { date: day, roomMinor: room, limitMinor, offerMinor });
+      }
+      const asked = new Set();
+      const quoteOf = day => (asked.add(day), table.get(day));
+      const picked = doubtfulLib.pickWriteOffQuotes(days, quoteOf, day => table.get(day).roomMinor, balance);
+      const full = days.map(day => table.get(day));
+      const best = list => doubtfulLib.chooseWriteOffQuote(list);
+      const any = list => Math.max(...list.map(quote => quote.limitMinor));
+      assert.deepEqual([best(picked).date, best(picked).offerMinor, best(picked).limitMinor, any(picked)], [best(full).date, best(full).offerMinor, best(full).limitMinor, any(full)], `tablo ${n}: ${JSON.stringify(full)} bakiye ${balance}`);
+      assert.ok(asked.has(days[0]) && asked.has(days[count - 1]), `tablo ${n}: ilk gün / bugün hesaplanmadı`);
+      saved += count - asked.size;
+    }
+    assert.ok(saved > 20000, `budama hiç gün kazandırmadı (${saved})`);
+  });
+});
+
 // HIZ DİŞİ (süre yerine İŞ SAYISI — yükten bağımsız, CI'de kararlı): dar kontrol DK-M2 YÜKSEK-1'in verisi (p6) küçültülmüş — Açılış borcu 6.000 (02.01) · 03.01 Şüpheliye Al 5.000 ·
 // 30 GÜNDE faturaya bağlı tahsilat (her gün fatura 1.000 + bağlı 999). Kayıt bağlı tahsilatlardan önce → aday gün 32 (ilk gün, 30 bağlı gün, bugün). Tur 1 her aday günü hesaplıyordu
 // (32 sınır hesabı + denemeler); kısa yol sonucu değiştiremeyecek günleri hesaplamaz: liste 2 sınır hesabı (ilk gün + bugün), deneme YOK (sonra Değersiz satırı yok; S155 üst sınırla).

@@ -136,6 +136,25 @@ describe("2.5.1 M2 tur 2 — S-DKM2-2 = A: Değersiz'den sonra iptal de iade de 
   });
 });
 
+// SINIR ("Değersiz yüzünden"): cari Değersiz olmadan da eksi kalacaksa (müşterinin avansı iptal edilen faturayı aşıyor) ret KODLANMADI — kararın iki okuması (m2t2-rapor.md KULLANICIYA
+// SORULMALI S-M2T2-1); yanıta kadar iptal kabul edilir. Yanıt A gelirse bu test ret bekleyecek biçimde değişir. Elle: Değersiz sonrası 423,55 − avans 3.000 = −2.576,45; iptal −2.900 →
+// −5.476,45; Değersiz olmasaydı −2.476,45 (yine eksi).
+describe("2.5.1 M2 tur 2 — S-DKM2-2 sınırı: Değersiz olmadan da eksi kalacak iptal (soru açık) bugünkü gibi kabul", () => {
+  it("avanslı caride iptal 200, bakiye −5.476,45, Mutabakat tamam", async () => {
+    const { server, api } = await boot();
+    try {
+      const b = await base(api, "M2T2 Avanslı İptal");
+      await must("avans", api.post(`${ACC}/${b.a.id}/entries`, { kind: "in", amount: "3000", date: "2026-10-05", method: "cash", cashForce: true, similarOk: true, note: "Avans" }));
+      assert.equal(await balanceOf(api, b.a.id), -2576.45);
+      await must("iptal", api.post(`${INV}/${b.inv.id}/cancel`, { reason: "Hatalı" }));
+      assert.equal(await balanceOf(api, b.a.id), -5476.45);
+      assert.equal((await integrityOf(api)).ok, true);
+    } finally {
+      server.close();
+    }
+  });
+});
+
 describe("2.5.1 M2 tur 2 — v2.5.0'ın GERÇEK verisi (Değersiz → iptal o sürümde kabul): Mutabakat yanlış kırmızıya düşmez", () => {
   it("fixture (v2.5.0 üretimi): Mutabakat tamam; sonraki işlem ve Değersiz satırını silme kabul", async () => {
     const dir = path.join(path.dirname(fileURLToPath(import.meta.url)), "fixtures", "m2t2-v250-iptal");
