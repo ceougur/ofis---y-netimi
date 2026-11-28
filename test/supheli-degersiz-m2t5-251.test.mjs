@@ -385,6 +385,10 @@ describe("2.5.1 M2 tur 5 — ORTA-B: Silinenler taraması Silinenler'deki fatura
         spy.restore();
       }
       assert.equal(spy.seen.length, 1, `Silinenler sorgusu sayısı ${spy.seen.length} (cari başına ayrı tarama — tur 4 hâli)`);
+      // Tek geçişin sorgusu da dizinli (SCAN trash yok — tur 4'ün sorgu planı denetimiyle aynı ölçü).
+      const plan = store.all(`EXPLAIN QUERY PLAN ${spy.seen[0].sql}`, "2026-09-01T00:00:00.000Z").map(row => row.detail);
+      assert.ok(plan.filter(line => /^(SCAN|SEARCH) trash\b/.test(line)).length > 0 && plan.filter(line => /^(SCAN|SEARCH) trash\b/.test(line)).every(line => /USING (COVERING )?INDEX idx_trash_open/.test(line)), plan.join(" | "));
+      assert.ok(spy.seen[0].rows >= 200, `tek geçiş ${spy.seen[0].rows} satır okudu`);
       D.WRITE_OFF_TEST.fullTrash = true;
       try {
         assert.equal(fast, JSON.stringify(D.writeOffInvariantProblems(store)));
