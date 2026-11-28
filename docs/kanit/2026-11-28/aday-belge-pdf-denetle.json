@@ -1,0 +1,32 @@
+{
+  "ad": "aday-belge-pdf-denetle",
+  "komut": "node docs/kilavuz/pdf-denetle.mjs",
+  "commit": "a50cdb30cd7784e7dc68a61a20c5aa0d447a2dec",
+  "dal": "worktree-agent-a7d50eab8a798ea51",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-28T17:03:09.036Z",
+  "sure_sn": 11.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 39,
+    "gecen": 39,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/aday-belge-kanit/kanit/2026-11-28/aday-belge-pdf-denetle.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a7d50eab8a798ea51",
+  "ham_cikti_sha256": "7f1c5907c2290e103662e415cf1965ef9fabb4d1c6e1a7316d6a60e9f962ed63",
+  "ham_cikti_bayt": 2210
+}
