@@ -328,6 +328,25 @@ describe("2.5.1 M1 küçük tur 8 — yıl dönümü (Aralık azalışı Ocak'ta
       assert.deepEqual(await c.preview("001", "2026-07"), [20000, 0, 20000], "ön izleme defterdeki 200 (DEĞİŞMEDİ)");
       assert.ok(String(jul.summary[STALE_BEFORE] || "").startsWith("Önceki aylarda güncel olmayan mahsup fişi var (Haziran 2026)"), `not var (${jul.summary[STALE_BEFORE]})`);
       assert.ok(!(NOTE in jul.summary) && !jul.reduction.length, "azalış yok — satır / not yok");
+      // 002 — devreden yönde azalış düşülen kayıtsız ay, ardından bir kayıtsız ay daha: Mayıs alış KDV 1.000 → fiş devreden 1.000; Haziran alış 200 → fiş devreden 1.200;
+      // Haziran alışı İptal Et → Temmuz (kayıtsız) 1.200 devredenle −200 azalış → sonraki döneme 1.000 (= ön izleme); Ağustos o 1.000'i alır (Haziran'ın 1.200'ünü DEĞİL).
+      await c.buy("002", "2026-05-10", 5000);
+      assert.deepEqual(await c.offset("002", "2026-05"), [0, 0, 100000], "002 Mayıs fişi devreden 1.000");
+      const hb = await c.buy("002", "2026-06-10", 1000);
+      assert.deepEqual(await c.offset("002", "2026-06"), [100000, 0, 120000], "002 Haziran fişi devreden 1.200");
+      await c.cancel("002", hb);
+      const preview = await c.preview("002", "2026-07");
+      assert.deepEqual(preview, [120000, 0, 100000], "002 Temmuz ön izlemesi 1.200 → 1.000 (DEĞİŞMEDİ)");
+      const jul2 = await c.report("002", monthRange("2026-07"), "002 Temmuz");
+      assert.deepEqual(jul2.three, preview, `002 Temmuz raporu = ön izleme (taban 1.200 / 0 / 1.200) ${JSON.stringify(jul2.data.summary)}`);
+      assert.deepEqual(jul2.reduction, [[`${R} (Haziran 2026)`, "200,00 TL"]], "002 Temmuz özet satırı");
+      balanced(jul2, "002 Temmuz", 20000);
+      const aug2 = await c.report("002", monthRange("2026-08"), "002 Ağustos");
+      assert.deepEqual(aug2.three, [100000, 0, 100000], "002 Ağustos: Temmuz'un sonraki döneme devredeni 1.000");
+      assert.ok(String(aug2.summary[PENDING] || "").startsWith("Temmuz 2026 ("), `002 Ağustos Mahsup Edilmemiş Ay: Temmuz (${aug2.summary[PENDING]})`);
+      const span2 = await c.report("002", { from: "2026-05-01", to: "2026-08-31" }, "002 Mayıs–Ağustos");
+      assert.deepEqual([span2.h391, span2.h191, ...span2.three], [0, 100000, 0, 0, 100000], "002 Mayıs–Ağustos: sonraki 1.000 = 191 1.000 (taban 1.200)");
+      balanced(span2, "002 Mayıs–Ağustos");
     } finally {
       await c.close();
     }
