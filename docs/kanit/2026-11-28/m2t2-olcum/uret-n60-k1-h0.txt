@@ -1,0 +1,3 @@
+(node:443) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+kurulum sn 9.6 N 60 K 1

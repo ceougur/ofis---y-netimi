@@ -1,0 +1,413 @@
+TAP version 13
+# (node:9968) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.1 M2 tur 2 — S155 dalı ve aradaki bağlı tahsilat günü: kısa yol tam hesapla aynı, elle beklenen sınır / öneri
+    # Subtest: 17.09: sınır 3.000 / öneri 2.923,55; bugün 123,55; en iyi öneri 2.923,55 (en erken gün) ve önerilen tutar o günle kabul
+    not ok 1 - 17.09: sınır 3.000 / öneri 2.923,55; bugün 123,55; en iyi öneri 2.923,55 (en erken gün) ve önerilen tutar o günle kabul
+      ---
+      duration_ms: 1427.102367
+      type: 'test'
+      location: '/dev/shm/m2t2-a2da/eski/test/supheli-degersiz-hiz-m2t2-251.test.mjs:74:3'
+      failureType: 'testCodeFailure'
+      error: 'WRITE_OFF_TEST yok (tur 2 öncesi kod)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: '=='
+      stack: |-
+        exact (file:///dev/shm/m2t2-a2da/eski/test/supheli-degersiz-hiz-m2t2-251.test.mjs:32:10)
+        TestContext.<anonymous> (file:///dev/shm/m2t2-a2da/eski/test/supheli-degersiz-hiz-m2t2-251.test.mjs:85:7)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..1
+not ok 1 - 2.5.1 M2 tur 2 — S155 dalı ve aradaki bağlı tahsilat günü: kısa yol tam hesapla aynı, elle beklenen sınır / öneri
+  ---
+  duration_ms: 1428.376141
+  type: 'suite'
+  location: '/dev/shm/m2t2-a2da/eski/test/supheli-degersiz-hiz-m2t2-251.test.mjs:73:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.1 M2 tur 2 — hız dişi: liste ve form ucunun iş sayısı bağlı tahsilat GÜNÜ sayısıyla büyümez
+    # Subtest: 30 bağlı tahsilat günü: liste 2 sınır hesabı + 0 deneme; Değersiz satırından sonra 2 sınır hesabı + ≤ 2 deneme; form ucu ≤ 3 sınır hesabı
+    not ok 1 - 30 bağlı tahsilat günü: liste 2 sınır hesabı + 0 deneme; Değersiz satırından sonra 2 sınır hesabı + ≤ 2 deneme; form ucu ≤ 3 sınır hesabı
+      ---
+      duration_ms: 782.288578
+      type: 'test'
+      location: '/dev/shm/m2t2-a2da/eski/test/supheli-degersiz-hiz-m2t2-251.test.mjs:117:3'
+      failureType: 'testCodeFailure'
+      error: 'WRITE_OFF_TEST yok (tur 2 öncesi kod)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m2t2-a2da/eski/test/supheli-degersiz-hiz-m2t2-251.test.mjs:125:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 2 - 2.5.1 M2 tur 2 — hız dişi: liste ve form ucunun iş sayısı bağlı tahsilat GÜNÜ sayısıyla büyümez
+  ---
+  duration_ms: 782.874179
+  type: 'suite'
+  location: '/dev/shm/m2t2-a2da/eski/test/supheli-degersiz-hiz-m2t2-251.test.mjs:116:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.1 M2 tur 2 — Değersiz sınırı hız düzeltmesi: tur 1'in tam hesabıyla BİREBİR (liste, form ucu, işlem içi yol; F(S, D) günle artmaz)
+    # Subtest: tohum 1: 8 cari × 16 adım + dönem kilidi — her adımda kısa yol = tam hesap
+    not ok 1 - tohum 1: 8 cari × 16 adım + dönem kilidi — her adımda kısa yol = tam hesap
+      ---
+      duration_ms: 943.398798
+      type: 'test'
+      location: '/dev/shm/m2t2-a2da/eski/test/supheli-degersiz-hiz-m2t2-251.test.mjs:158:5'
+      failureType: 'testCodeFailure'
+      error: 'WRITE_OFF_TEST yok (tur 2 öncesi kod)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: '=='
+      stack: |-
+        exact (file:///dev/shm/m2t2-a2da/eski/test/supheli-degersiz-hiz-m2t2-251.test.mjs:32:10)
+        compare (file:///dev/shm/m2t2-a2da/eski/test/supheli-degersiz-hiz-m2t2-251.test.mjs:169:11)
+        TestContext.<anonymous> (file:///dev/shm/m2t2-a2da/eski/test/supheli-degersiz-hiz-m2t2-251.test.mjs:244:19)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tohum 2: 8 cari × 16 adım + dönem kilidi — her adımda kısa yol = tam hesap
+    not ok 2 - tohum 2: 8 cari × 16 adım + dönem kilidi — her adımda kısa yol = tam hesap
+      ---
+      duration_ms: 764.301774
+      type: 'test'
+      location: '/dev/shm/m2t2-a2da/eski/test/supheli-degersiz-hiz-m2t2-251.test.mjs:158:5'
+      failureType: 'testCodeFailure'
+      error: 'WRITE_OFF_TEST yok (tur 2 öncesi kod)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: '=='
+      stack: |-
+        exact (file:///dev/shm/m2t2-a2da/eski/test/supheli-degersiz-hiz-m2t2-251.test.mjs:32:10)
+        compare (file:///dev/shm/m2t2-a2da/eski/test/supheli-degersiz-hiz-m2t2-251.test.mjs:169:11)
+        TestContext.<anonymous> (file:///dev/shm/m2t2-a2da/eski/test/supheli-degersiz-hiz-m2t2-251.test.mjs:244:19)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tohum 3: 8 cari × 16 adım + dönem kilidi — her adımda kısa yol = tam hesap
+    not ok 3 - tohum 3: 8 cari × 16 adım + dönem kilidi — her adımda kısa yol = tam hesap
+      ---
+      duration_ms: 558.675916
+      type: 'test'
+      location: '/dev/shm/m2t2-a2da/eski/test/supheli-degersiz-hiz-m2t2-251.test.mjs:158:5'
+      failureType: 'testCodeFailure'
+      error: 'WRITE_OFF_TEST yok (tur 2 öncesi kod)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: '=='
+      stack: |-
+        exact (file:///dev/shm/m2t2-a2da/eski/test/supheli-degersiz-hiz-m2t2-251.test.mjs:32:10)
+        compare (file:///dev/shm/m2t2-a2da/eski/test/supheli-degersiz-hiz-m2t2-251.test.mjs:169:11)
+        TestContext.<anonymous> (file:///dev/shm/m2t2-a2da/eski/test/supheli-degersiz-hiz-m2t2-251.test.mjs:244:19)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tohum 4: 8 cari × 16 adım + dönem kilidi — her adımda kısa yol = tam hesap
+    not ok 4 - tohum 4: 8 cari × 16 adım + dönem kilidi — her adımda kısa yol = tam hesap
+      ---
+      duration_ms: 564.642876
+      type: 'test'
+      location: '/dev/shm/m2t2-a2da/eski/test/supheli-degersiz-hiz-m2t2-251.test.mjs:158:5'
+      failureType: 'testCodeFailure'
+      error: 'WRITE_OFF_TEST yok (tur 2 öncesi kod)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: '=='
+      stack: |-
+        exact (file:///dev/shm/m2t2-a2da/eski/test/supheli-degersiz-hiz-m2t2-251.test.mjs:32:10)
+        compare (file:///dev/shm/m2t2-a2da/eski/test/supheli-degersiz-hiz-m2t2-251.test.mjs:169:11)
+        TestContext.<anonymous> (file:///dev/shm/m2t2-a2da/eski/test/supheli-degersiz-hiz-m2t2-251.test.mjs:244:19)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..4
+not ok 3 - 2.5.1 M2 tur 2 — Değersiz sınırı hız düzeltmesi: tur 1'in tam hesabıyla BİREBİR (liste, form ucu, işlem içi yol; F(S, D) günle artmaz)
+  ---
+  duration_ms: 2831.927663
+  type: 'suite'
+  location: '/dev/shm/m2t2-a2da/eski/test/supheli-degersiz-hiz-m2t2-251.test.mjs:156:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:9969) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.1 M2 tur 2 — S-DKM2-2 = A: Değersiz'den sonra iptal de iade de cariyi eksiye düşürecekse reddedilir
+    # Subtest: fatura iptali → 409 doubtful-writeoff-balance, dört parçalı ileti (en çok 123,55); hiçbir şey yazılmaz
+    not ok 1 - fatura iptali → 409 doubtful-writeoff-balance, dört parçalı ileti (en çok 123,55); hiçbir şey yazılmaz
+      ---
+      duration_ms: 1464.640188
+      type: 'test'
+      location: '/dev/shm/m2t2-a2da/eski/test/supheli-degersiz-iptal-iade-m2t2-251.test.mjs:61:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Şüpheli Alacak Kayıtları (kayıt = başlık = karşılık = değersiz satırı)). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.
+        + actual - expected
+        
+        + 'ledger-integrity'
+        - 'doubtful-writeoff-balance'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'doubtful-writeoff-balance'
+      actual: 'ledger-integrity'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m2t2-a2da/eski/test/supheli-degersiz-iptal-iade-m2t2-251.test.mjs:68:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: fatura silme (iptali çağırır) → aynı ret; fatura yerinde
+    not ok 2 - fatura silme (iptali çağırır) → aynı ret; fatura yerinde
+      ---
+      duration_ms: 1032.900475
+      type: 'test'
+      location: '/dev/shm/m2t2-a2da/eski/test/supheli-degersiz-iptal-iade-m2t2-251.test.mjs:78:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Şüpheli Alacak Kayıtları (kayıt = başlık = karşılık = değersiz satırı)). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.
+        + actual - expected
+        
+        + 'ledger-integrity'
+        - 'doubtful-writeoff-balance'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'doubtful-writeoff-balance'
+      actual: 'ledger-integrity'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m2t2-a2da/eski/test/supheli-degersiz-iptal-iade-m2t2-251.test.mjs:84:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: tam iade → 409, ileti 'İade faturası kaydedilemez' (en çok 100,00); iade yazılmaz
+    not ok 3 - tam iade → 409, ileti 'İade faturası kaydedilemez' (en çok 100,00); iade yazılmaz
+      ---
+      duration_ms: 1103.006329
+      type: 'test'
+      location: '/dev/shm/m2t2-a2da/eski/test/supheli-degersiz-iptal-iade-m2t2-251.test.mjs:91:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"id":"invoice-46d596e1-7a5b-4665-ba4a-1255e41f255b","kind":"sale_return","kindLabel":"Satıştan İade Faturası","scenario":"sale_return","scenarioLabel":"Satıştan İade","status":"issued","statusLabel":"Kaydedildi","number":"IAD2026000000001","displayNo":"IAD2026000000001","internalNumber":true,"ettn":"d65c4977-edce-4eb3-b824-815f3452ffb1","issueDate":"2026-10-01","issueTime":"09:00","accountId":"ac
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m2t2-a2da/eski/test/supheli-degersiz-iptal-iade-m2t2-251.test.mjs:96:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: iade cariyi eksiye düşürmüyorsa kabul; iadenin Düzenle'si eksiye düşürünce 409 (öncesi Düzenle'den önceki bakiye)
+    not ok 4 - iade cariyi eksiye düşürmüyorsa kabul; iadenin Düzenle'si eksiye düşürünce 409 (öncesi Düzenle'den önceki bakiye)
+      ---
+      duration_ms: 882.086545
+      type: 'test'
+      location: '/dev/shm/m2t2-a2da/eski/test/supheli-degersiz-iptal-iade-m2t2-251.test.mjs:105:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"id":"invoice-5a4fd284-126f-4889-8aa1-37d159f12d44","kind":"sale_return","kindLabel":"Satıştan İade Faturası","scenario":"sale_return","scenarioLabel":"Satıştan İade","status":"issued","statusLabel":"Kaydedildi","number":"IAD2026000000001","displayNo":"IAD2026000000001","internalNumber":true,"ettn":"4206a4b5-0b18-4191-adb0-6e9013939395","issueDate":"2026-10-01","issueTime":"09:00","accountId":"ac
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m2t2-a2da/eski/test/supheli-degersiz-iptal-iade-m2t2-251.test.mjs:113:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: iptal cariyi eksiye düşürmüyorsa kabul ve Mutabakat yeşil (bağı kopan tahsilat değişmez (i)'de 'sonradan değişmiş')
+    not ok 5 - iptal cariyi eksiye düşürmüyorsa kabul ve Mutabakat yeşil (bağı kopan tahsilat değişmez (i)'de 'sonradan değişmiş')
+      ---
+      duration_ms: 782.622668
+      type: 'test'
+      location: '/dev/shm/m2t2-a2da/eski/test/supheli-degersiz-iptal-iade-m2t2-251.test.mjs:123:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        iptal: 409 {"ok":false,"error":"İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Şüpheli Alacak Kayıtları (kayıt = başlık = karşılık = değersiz satırı)). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.","code":"ledger-integrity","failures":[{"code":"doubtful:records","name":"Şüpheli Alacak Kayıtları (kayıt = başlık = karşılık = değersiz satırı)","ok":false,"count":1,"sample":["Değersiz Alacak satırı 17.09.2026 3.000,00 TL: yazıldığı andaki sınırı (123,55 TL) aşıyor — kaydın kalanından önce yararlanan bağsız tahsilat düşülmeden yazılmış (S270)"],"tables":["stock_moves","account_entries
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///dev/shm/m2t2-a2da/eski/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/m2t2-a2da/eski/test/supheli-degersiz-iptal-iade-m2t2-251.test.mjs:128:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..5
+not ok 4 - 2.5.1 M2 tur 2 — S-DKM2-2 = A: Değersiz'den sonra iptal de iade de cariyi eksiye düşürecekse reddedilir
+  ---
+  duration_ms: 5269.756067
+  type: 'suite'
+  location: '/dev/shm/m2t2-a2da/eski/test/supheli-degersiz-iptal-iade-m2t2-251.test.mjs:60:1'
+  failureType: 'subtestsFailed'
+  error: '5 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.1 M2 tur 2 — v2.5.0'ın GERÇEK verisi (Değersiz → iptal o sürümde kabul): Mutabakat yanlış kırmızıya düşmez
+    # Subtest: fixture (v2.5.0 üretimi): Mutabakat tamam; sonraki işlem ve Değersiz satırını silme kabul
+    not ok 1 - fixture (v2.5.0 üretimi): Mutabakat tamam; sonraki işlem ve Değersiz satırını silme kabul
+      ---
+      duration_ms: 589.671603
+      type: 'test'
+      location: '/dev/shm/m2t2-a2da/eski/test/supheli-degersiz-iptal-iade-m2t2-251.test.mjs:140:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        [{"code":"doubtful:records","name":"Şüpheli Alacak Kayıtları (kayıt = başlık = karşılık = değersiz satırı)","ok":false,"count":1,"sample":["Değersiz Alacak satırı 17.09.2026 3.000,00 TL: yazıldığı andaki sınırı (123,55 TL) aşıyor — kaydın kalanından önce yararlanan bağsız tahsilat düşülmeden yazılmış (S270)"]}]
+        
+        false !== true
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m2t2-a2da/eski/test/supheli-degersiz-iptal-iade-m2t2-251.test.mjs:156:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 5 - 2.5.1 M2 tur 2 — v2.5.0'ın GERÇEK verisi (Değersiz → iptal o sürümde kabul): Mutabakat yanlış kırmızıya düşmez
+  ---
+  duration_ms: 590.155348
+  type: 'suite'
+  location: '/dev/shm/m2t2-a2da/eski/test/supheli-degersiz-iptal-iade-m2t2-251.test.mjs:139:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.1 M2 tur 2 — S-DKM2-3 = C: öbür kaydın silinmesi reddi KALIR, ileti doğru anlatır
+    # Subtest: S2 silinirse bağsız tahsilat Değersiz yazılan S1'e düşer → 409 doubtful-delete-conflict, dört parçalı ileti; S2 yerinde, bakiye 2.300
+    not ok 1 - S2 silinirse bağsız tahsilat Değersiz yazılan S1'e düşer → 409 doubtful-delete-conflict, dört parçalı ileti; S2 yerinde, bakiye 2.300
+      ---
+      duration_ms: 755.918323
+      type: 'test'
+      location: '/dev/shm/m2t2-a2da/eski/test/supheli-degersiz-iptal-iade-m2t2-251.test.mjs:170:3'
+      failureType: 'testCodeFailure'
+      error: 'Şüpheli alacak kaydı silinemez: carinin öbür şüpheli kayıtları bozulurdu (20.09.2026 tarihli 3.000,00 TL Değersiz Alacak satırı yazıldığı andaki sınırı aşardı). Önce Değersiz Alacak satırını silin, sonra yeniden deneyin.'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'Şüpheli alacak kaydı silinemez: carinin öbür şüpheli kayıtları bozulurdu (20.09.2026 tarihli 3.000,00 TL Değersiz Alacak satırı yazıldığı andaki sınırı aşardı). Önce Değersiz Alacak satırını silin, sonra yeniden deneyin.'
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m2t2-a2da/eski/test/supheli-degersiz-iptal-iade-m2t2-251.test.mjs:185:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 6 - 2.5.1 M2 tur 2 — S-DKM2-3 = C: öbür kaydın silinmesi reddi KALIR, ileti doğru anlatır
+  ---
+  duration_ms: 756.344833
+  type: 'suite'
+  location: '/dev/shm/m2t2-a2da/eski/test/supheli-degersiz-iptal-iade-m2t2-251.test.mjs:169:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.1 M2 tur 2 — kapı reddinin iletisi: yalnız Değersiz sınırı (S270) nedeniyse anlaşılır Türkçe cümle
+    # Subtest: writeoff-limit / writeoff-balance → ne oldu / neden / ne yapmalı / nereye; başka nedenle birlikteyse genel ileti
+    not ok 1 - writeoff-limit / writeoff-balance → ne oldu / neden / ne yapmalı / nereye; başka nedenle birlikteyse genel ileti
+      ---
+      duration_ms: 0.557571
+      type: 'test'
+      location: '/dev/shm/m2t2-a2da/eski/test/supheli-degersiz-iptal-iade-m2t2-251.test.mjs:198:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected
+        
+        + 'İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Şüpheli Alacak Kayıtları). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.'
+        - "Bu kayıtla carinin 17.09.2026 tarihli 3.000,00 TL Değersiz Alacak satırı şüpheli kaydın kalanını aşar: Değersiz Alacak, kayda düşen tahsilatlar çıkınca kalanı (en çok 123,55 TL) aşamaz. Ne yapmalı: önce Değersiz Alacak satırını silin (cari kartı → Şüpheli Alacak → kaydın Değersiz satırındaki × düğmesi), sonra bu kaydı yeniden girin; gerekirse Değersiz Alacak'ı yeniden yazın (form yazılabilecek tutarı gösterir). Hiçbir değişiklik yazılmadı."
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: "Bu kayıtla carinin 17.09.2026 tarihli 3.000,00 TL Değersiz Alacak satırı şüpheli kaydın kalanını aşar: Değersiz Alacak, kayda düşen tahsilatlar çıkınca kalanı (en çok 123,55 TL) aşamaz. Ne yapmalı: önce Değersiz Alacak satırını silin (cari kartı → Şüpheli Alacak → kaydın Değersiz satırındaki × düğmesi), sonra bu kaydı yeniden girin; gerekirse Değersiz Alacak'ı yeniden yazın (form yazılabilecek tutarı gösterir). Hiçbir değişiklik yazılmadı."
+      actual: 'İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Şüpheli Alacak Kayıtları). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m2t2-a2da/eski/test/supheli-degersiz-iptal-iade-m2t2-251.test.mjs:203:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:466:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:435:3)
+        node:internal/per_context/primordials:466:9
+        Array.map (<anonymous>)
+      ...
+    1..1
+not ok 7 - 2.5.1 M2 tur 2 — kapı reddinin iletisi: yalnız Değersiz sınırı (S270) nedeniyse anlaşılır Türkçe cümle
+  ---
+  duration_ms: 0.649304
+  type: 'suite'
+  location: '/dev/shm/m2t2-a2da/eski/test/supheli-degersiz-iptal-iade-m2t2-251.test.mjs:197:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..7
+# tests 14
+# suites 7
+# pass 0
+# fail 14
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7334.961674

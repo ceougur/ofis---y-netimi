@@ -1,0 +1,18 @@
+// 2.5.1 M2 tur 2 — v2.5.0'ın GERÇEK koduyla üretilmiş veri (CLAUDE.md test kuralı: "TEST VERİSİ programın KENDİSİNİN ürettiği veridir"; dar kontrol DK-M2 p5b'nin üretim adımı AYNEN).
+// Olaylar (v2.5.0 API'si; sahte saat 15.10.2026 12:00 +03:00, akan saat): cari · Fatura 2.900 (10.09) · Borç Yaz 3.400 (12.09) · 17.09 faturaya bağlı tahsilat 2.876,45 · 17.09 Şüpheliye Al
+// 3.000 · Değersiz 3.000 @17.09 (S264; v2.5.0 kabul) · FATURA İPTALİ (v2.5.0 kabul; bakiye −2.476,45). Kalıcı test test/supheli-degersiz-iptal-iade-m2t2-251.test.mjs yeni kodla açar:
+// Mutabakat YANLIŞ kırmızıya düşmemeli (değişmez (i): bağı iptalle kopan tahsilat 'sonradan değişmiş').
+// Üretim (ayrı kopyada; ders 23): git worktree add --detach <kök> v2.5.0 (node_modules ana depoya bağlı) →
+//   ROOT=<v2.5.0 kökü> VERI=<boş klasör> MODE=uret HUKUK_LICENSE_URL=http://127.0.0.1:9 node p5b-iptal-veri.mjs
+//   (betik: dar kontrolün not defteri dk-m2/betik/p5b-iptal-veri.mjs; aşağıda üretim kısmı AYNEN)
+// Sonra: node -e 'new (require("node:sqlite").DatabaseSync)("<VERI>/data/destekofis.sqlite").exec("VACUUM INTO \x27destekofis.sqlite\x27")' ; gzip -9 -n destekofis.sqlite
+//   sirketler.json ve ids.json (cari, kayıt kimliği) üretimin data/ ve VERI/ klasörlerinden AYNEN.
+//
+// const a = (await api.post(ACC, { name: "DK G1 Müşteri", type: "customer", registeredOn: "2026-09-01", phone: "0500 555 09 09" })).data;
+// const inv = (await api.post("/api/workspace/invoices", { scenario: "service_sale", accountId: a.id, issueDate: "2026-09-10", lines: [{ name: "Hizmet", qty: 1, unitPrice: "2900", vatRate: 0 }], payment: { rest: "open" } })).data;
+// await api.post(`${ACC}/${a.id}/entries`, { kind: "debt", amount: "3400", date: "2026-09-12", note: "Borç" });
+// await api.post(`${ACC}/${a.id}/entries`, { kind: "in", amount: "2876,45", date: "2026-09-17", method: "cash", cashForce: true, similarOk: true, note: "Bağlı", invoiceId: inv.id });
+// const s = (await api.post(`${ACC}/${a.id}/doubtful`, { amount: "3000", date: "2026-09-17", reason: "lawsuit" })).data.record.id;
+// show("Değersiz 3000", await api.post(`${ACC}/${a.id}/doubtful/${s}/write-off`, { amount: "3000", date: "2026-09-17" }));   // v2.5.0: 200
+// show("fatura iptali", await api.post(`/api/workspace/invoices/${inv.id}/cancel`, { reason: "Hatalı" }));                 // v2.5.0: 200
+// console.log("bakiye", (await api.get(`${ACC}/${a.id}`)).data.totals.balance);                                              // v2.5.0: -2476.45

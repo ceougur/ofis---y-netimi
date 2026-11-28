@@ -1,0 +1,204 @@
+TAP version 13
+# (node:18674) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.1 M2 tur 2 — S-DKM2-2 = A: Değersiz'den sonra iptal de iade de cariyi eksiye düşürecekse reddedilir
+    # Subtest: fatura iptali → 409 doubtful-writeoff-balance, dört parçalı ileti (en çok 123,55); hiçbir şey yazılmaz
+    ok 1 - fatura iptali → 409 doubtful-writeoff-balance, dört parçalı ileti (en çok 123,55); hiçbir şey yazılmaz
+      ---
+      duration_ms: 1031.038452
+      type: 'test'
+      ...
+    # Subtest: fatura silme (iptali çağırır) → aynı ret; fatura yerinde
+    ok 2 - fatura silme (iptali çağırır) → aynı ret; fatura yerinde
+      ---
+      duration_ms: 800.956617
+      type: 'test'
+      ...
+    # Subtest: tam iade → 409, ileti 'İade faturası kaydedilemez' (en çok 100,00); iade yazılmaz
+    ok 3 - tam iade → 409, ileti 'İade faturası kaydedilemez' (en çok 100,00); iade yazılmaz
+      ---
+      duration_ms: 806.153419
+      type: 'test'
+      ...
+    # Subtest: iade cariyi eksiye düşürmüyorsa kabul; iadenin Düzenle'si eksiye düşürünce 409 (öncesi Düzenle'den önceki bakiye)
+    ok 4 - iade cariyi eksiye düşürmüyorsa kabul; iadenin Düzenle'si eksiye düşürünce 409 (öncesi Düzenle'den önceki bakiye)
+      ---
+      duration_ms: 1064.773488
+      type: 'test'
+      ...
+    # Subtest: iptal cariyi eksiye düşürmüyorsa kabul ve Mutabakat yeşil (bağı kopan tahsilat değişmez (i)'de 'sonradan değişmiş')
+    ok 5 - iptal cariyi eksiye düşürmüyorsa kabul ve Mutabakat yeşil (bağı kopan tahsilat değişmez (i)'de 'sonradan değişmiş')
+      ---
+      duration_ms: 1099.691308
+      type: 'test'
+      ...
+    1..5
+ok 1 - 2.5.1 M2 tur 2 — S-DKM2-2 = A: Değersiz'den sonra iptal de iade de cariyi eksiye düşürecekse reddedilir
+  ---
+  duration_ms: 4803.606186
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M2 tur 3 — S-M2T2-1 = A: Değersiz olmadan da eksi kalacak iptal de reddedilir
+    # Subtest: avanslı caride iptal 409, bakiye −2.576,45 kalır, fatura yerinde, Mutabakat tamam
+    ok 1 - avanslı caride iptal 409, bakiye −2.576,45 kalır, fatura yerinde, Mutabakat tamam
+      ---
+      duration_ms: 1123.048774
+      type: 'test'
+      ...
+    1..1
+ok 2 - 2.5.1 M2 tur 3 — S-M2T2-1 = A: Değersiz olmadan da eksi kalacak iptal de reddedilir
+  ---
+  duration_ms: 1123.266243
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M2 tur 2 — v2.5.0'ın GERÇEK verisi (Değersiz → iptal o sürümde kabul): Mutabakat yanlış kırmızıya düşmez
+    # Subtest: fixture (v2.5.0 üretimi): Mutabakat tamam; sonraki işlem ve Değersiz satırını silme kabul
+    ok 1 - fixture (v2.5.0 üretimi): Mutabakat tamam; sonraki işlem ve Değersiz satırını silme kabul
+      ---
+      duration_ms: 518.866426
+      type: 'test'
+      ...
+    1..1
+ok 3 - 2.5.1 M2 tur 2 — v2.5.0'ın GERÇEK verisi (Değersiz → iptal o sürümde kabul): Mutabakat yanlış kırmızıya düşmez
+  ---
+  duration_ms: 519.117181
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M2 tur 2 — S-DKM2-3 = C: öbür kaydın silinmesi reddi KALIR, ileti doğru anlatır
+    # Subtest: S2 silinirse bağsız tahsilat Değersiz yazılan S1'e düşer → 409 doubtful-delete-conflict, dört parçalı ileti; S2 yerinde, bakiye 2.300
+    ok 1 - S2 silinirse bağsız tahsilat Değersiz yazılan S1'e düşer → 409 doubtful-delete-conflict, dört parçalı ileti; S2 yerinde, bakiye 2.300
+      ---
+      duration_ms: 771.002885
+      type: 'test'
+      ...
+    1..1
+ok 4 - 2.5.1 M2 tur 2 — S-DKM2-3 = C: öbür kaydın silinmesi reddi KALIR, ileti doğru anlatır
+  ---
+  duration_ms: 771.294114
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M2 tur 2 — kapı reddinin iletisi: yalnız Değersiz sınırı (S270) nedeniyse anlaşılır Türkçe cümle
+    # Subtest: writeoff-limit / writeoff-balance → ne oldu / neden / ne yapmalı / nereye; başka nedenle birlikteyse genel ileti
+    ok 1 - writeoff-limit / writeoff-balance → ne oldu / neden / ne yapmalı / nereye; başka nedenle birlikteyse genel ileti
+      ---
+      duration_ms: 1.226906
+      type: 'test'
+      ...
+    1..1
+ok 5 - 2.5.1 M2 tur 2 — kapı reddinin iletisi: yalnız Değersiz sınırı (S270) nedeniyse anlaşılır Türkçe cümle
+  ---
+  duration_ms: 1.465691
+  type: 'suite'
+  ...
+# (node:18675) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.1 M2 tur 3 — S-M2T2-1 = A: Değersiz satırı olan caride eksiye götüren iptal / iade her durumda ret
+    # Subtest: avanslı caride tam iade → 409 'İade faturası kaydedilemez' (Değersiz olmasaydı da 2.476,45 alacaklı); iade yazılmaz, bakiye −2.576,45
+    ok 1 - avanslı caride tam iade → 409 'İade faturası kaydedilemez' (Değersiz olmasaydı da 2.476,45 alacaklı); iade yazılmaz, bakiye −2.576,45
+      ---
+      duration_ms: 987.286626
+      type: 'test'
+      ...
+    # Subtest: iletideki 'ne yapmalı' işe yarar: Değersiz satırı silinince aynı iptal kabul, bakiye −2.476,45, Mutabakat tamam
+    ok 2 - iletideki 'ne yapmalı' işe yarar: Değersiz satırı silinince aynı iptal kabul, bakiye −2.476,45, Mutabakat tamam
+      ---
+      duration_ms: 958.041051
+      type: 'test'
+      ...
+    # Subtest: iki Değersiz satırı (1.000 + 2.000 @17.09): avanslı iptal 409, ileti son satırı ve toplamı anlatır
+    ok 3 - iki Değersiz satırı (1.000 + 2.000 @17.09): avanslı iptal 409, ileti son satırı ve toplamı anlatır
+      ---
+      duration_ms: 809.64441
+      type: 'test'
+      ...
+    # Subtest: Değersiz satırı OLMAYAN avanslı caride iptal kabul (denetim okumaz), bakiye −2.476,45
+    ok 4 - Değersiz satırı OLMAYAN avanslı caride iptal kabul (denetim okumaz), bakiye −2.476,45
+      ---
+      duration_ms: 843.798467
+      type: 'test'
+      ...
+# (node:18675) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:18675) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: kilitli dönemde dönem kilidi iletisi önce gelir (Değersiz denetimi değil)
+    not ok 5 - kilitli dönemde dönem kilidi iletisi önce gelir (Değersiz denetimi değil)
+      ---
+      duration_ms: 1521.386492
+      type: 'test'
+      location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-ae39a10810940388a/test/supheli-degersiz-m2t3-251.test.mjs:117:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Belge 10.09.2026 tarihli; 30.09.2026 ve öncesi kilitli dönem. Düzenlemek için dönem kilidi açılmalı.
+        + actual - expected
+        
+        + 'invoice-locked'
+        - 'period-locked'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'period-locked'
+      actual: 'invoice-locked'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/user/ofis---y-netimi/.claude/worktrees/agent-ae39a10810940388a/test/supheli-degersiz-m2t3-251.test.mjs:127:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..5
+not ok 6 - 2.5.1 M2 tur 3 — S-M2T2-1 = A: Değersiz satırı olan caride eksiye götüren iptal / iade her durumda ret
+  ---
+  duration_ms: 5121.96837
+  type: 'suite'
+  location: '/home/user/ofis---y-netimi/.claude/worktrees/agent-ae39a10810940388a/test/supheli-degersiz-m2t3-251.test.mjs:53:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.1 M2 tur 3 — S-M2T2-2 = A: Değersiz'den sonra fatura TUTARININ Düzenle ile düşürülmesi iade gibi reddedilir
+    # Subtest: 2.900 → 100 → 409 'Fatura düzenlenemez' (düzenlemeden sonra 2.376,45 alacaklı); fatura 2.900 kalır, bakiye 423,55
+    ok 1 - 2.900 → 100 → 409 'Fatura düzenlenemez' (düzenlemeden sonra 2.376,45 alacaklı); fatura 2.900 kalır, bakiye 423,55
+      ---
+      duration_ms: 1061.475793
+      type: 'test'
+      ...
+    # Subtest: avanslı caride 2.900 → 2.800 → 409 (eksiyi büyütür); bakiye −2.576,45
+    ok 2 - avanslı caride 2.900 → 2.800 → 409 (eksiyi büyütür); bakiye −2.576,45
+      ---
+      duration_ms: 930.960743
+      type: 'test'
+      ...
+    # Subtest: tutar artışı (2.900 → 3.000) ve eksiye düşürmeyen azalış (ek borçlu caride 2.900 → 2.000) kabul; Mutabakat tamam
+    ok 3 - tutar artışı (2.900 → 3.000) ve eksiye düşürmeyen azalış (ek borçlu caride 2.900 → 2.000) kabul; Mutabakat tamam
+      ---
+      duration_ms: 883.921829
+      type: 'test'
+      ...
+    # Subtest: Düzenle'de cari değişirse (borç bu cariden çıkar) eski cari denetlenir: 409, eski carinin bakiyesi 223,55 kalır
+    ok 4 - Düzenle'de cari değişirse (borç bu cariden çıkar) eski cari denetlenir: 409, eski carinin bakiyesi 223,55 kalır
+      ---
+      duration_ms: 797.649406
+      type: 'test'
+      ...
+    # Subtest: tutarı DEĞİŞMEYEN Düzenle'de peşin tahsilat eklenmesi denetlenmez (tahsilattır; tutar düşürmesi değil) — cari eksiye gitse de kabul
+    ok 5 - tutarı DEĞİŞMEYEN Düzenle'de peşin tahsilat eklenmesi denetlenmez (tahsilattır; tutar düşürmesi değil) — cari eksiye gitse de kabul
+      ---
+      duration_ms: 702.542692
+      type: 'test'
+      ...
+    1..5
+ok 7 - 2.5.1 M2 tur 3 — S-M2T2-2 = A: Değersiz'den sonra fatura TUTARININ Düzenle ile düşürülmesi iade gibi reddedilir
+  ---
+  duration_ms: 4377.224822
+  type: 'suite'
+  ...
+1..7
+# tests 19
+# suites 7
+# pass 18
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 10154.481136

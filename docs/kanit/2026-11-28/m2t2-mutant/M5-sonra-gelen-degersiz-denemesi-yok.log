@@ -1,0 +1,2204 @@
+TAP version 13
+# (node:18244) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.1 M2 tur 2 — S155 dalı ve aradaki bağlı tahsilat günü: kısa yol tam hesapla aynı, elle beklenen sınır / öneri
+    # Subtest: 17.09: sınır 3.000 / öneri 2.923,55; bugün 123,55; en iyi öneri 2.923,55 (en erken gün) ve önerilen tutar o günle kabul
+    ok 1 - 17.09: sınır 3.000 / öneri 2.923,55; bugün 123,55; en iyi öneri 2.923,55 (en erken gün) ve önerilen tutar o günle kabul
+      ---
+      duration_ms: 1087.152449
+      type: 'test'
+      ...
+    1..1
+ok 1 - 2.5.1 M2 tur 2 — S155 dalı ve aradaki bağlı tahsilat günü: kısa yol tam hesapla aynı, elle beklenen sınır / öneri
+  ---
+  duration_ms: 1088.205599
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M2 tur 2 — budama kuralı (saf işlev) tam taramayla aynı: 20.000 rastgele tablo
+    # Subtest: en iyi gün / öneri / sınır ve anyMinor birebir; ilk gün ve bugün hesaplanır
+    ok 1 - en iyi gün / öneri / sınır ve anyMinor birebir; ilk gün ve bugün hesaplanır
+      ---
+      duration_ms: 249.5046
+      type: 'test'
+      ...
+    1..1
+ok 2 - 2.5.1 M2 tur 2 — budama kuralı (saf işlev) tam taramayla aynı: 20.000 rastgele tablo
+  ---
+  duration_ms: 249.702461
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M2 tur 2 — hız dişi: liste ve form ucunun iş sayısı bağlı tahsilat GÜNÜ sayısıyla büyümez
+    # Subtest: 30 bağlı tahsilat günü: liste 2 sınır hesabı + 0 deneme; Değersiz satırından sonra 2 sınır hesabı + ≤ 2 deneme; form ucu ≤ 3 sınır hesabı
+    ok 1 - 30 bağlı tahsilat günü: liste 2 sınır hesabı + 0 deneme; Değersiz satırından sonra 2 sınır hesabı + ≤ 2 deneme; form ucu ≤ 3 sınır hesabı
+      ---
+      duration_ms: 4144.398419
+      type: 'test'
+      ...
+    1..1
+ok 3 - 2.5.1 M2 tur 2 — hız dişi: liste ve form ucunun iş sayısı bağlı tahsilat GÜNÜ sayısıyla büyümez
+  ---
+  duration_ms: 4144.731101
+  type: 'suite'
+  ...
+# (node:18244) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# \# M2T2 eşdeğerlik tohum 1: {"snapshots":136,"quotes":1810,"txQuotes":867,"monotone":3898,"writes":6,"partial":3,"restored":1,"released":1,"midBest":0,"proposalDiff":0,"laterTarget":20,"s155":0}
+# Subtest: 2.5.1 M2 tur 2 — Değersiz sınırı hız düzeltmesi: tur 1'in tam hesabıyla BİREBİR (liste, form ucu, işlem içi yol; F(S, D) günle artmaz)
+    # Subtest: tohum 1: 8 cari × 16 adım + dönem kilidi — her adımda kısa yol = tam hesap
+    ok 1 - tohum 1: 8 cari × 16 adım + dönem kilidi — her adımda kısa yol = tam hesap
+      ---
+      duration_ms: 10855.555947
+      type: 'test'
+      ...
+    # Subtest: tohum 2: 8 cari × 16 adım + dönem kilidi — her adımda kısa yol = tam hesap
+    not ok 2 - tohum 2: 8 cari × 16 adım + dönem kilidi — her adımda kısa yol = tam hesap
+      ---
+      duration_ms: 1288.304147
+      type: 'test'
+      location: '/dev/shm/m2t2-a2da/mut/test/supheli-degersiz-hiz-m2t2-251.test.mjs:192:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        tohum 2 cari 0 adım 13 (partial): ekran (liste / form ucu) kısa yol ≠ tam hesap
+        + actual - expected
+        ... Skipped lines
+        
+          {
+            quotes: {
+              'dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24|2026-09-12': {
+        +       anyMinor: 272480,
+        -       anyMinor: 19843,
+                balanceMinor: 272480,
+                best: {
+                  date: '2026-09-15',
+        +         limitMinor: 272480,
+        +         offerMinor: 272480,
+        -         limitMinor: 19843,
+        -         offerMinor: 19843,
+                  s155: false,
+                  s155Text: '',
+        +         why: 'balance',
+        +         whyText: 'carinin borç bakiyesi; Değersiz yazımı cariyi alacaklıya düşüremez'
+        -         why: 'later',
+        -         whyText: 'daha fazlası sonraki bir Değersiz Alacak satırını ya da carinin başka bir şüpheli kaydını kalanın dışına taşırırdı'
+                },
+                blocked: 'before',
+                blockedText: 'tarih şüpheli kaydın tarihinden (15.09.2026) önce',
+                date: '2026-09-12',
+                limitMinor: 0,
+        ...
+              'dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24|2026-09-13': {
+        +       anyMinor: 272480,
+        -       anyMinor: 19843,
+                balanceMinor: 272480,
+                best: {
+                  date: '2026-09-15',
+        +         limitMinor: 272480,
+        +         offerMinor: 272480,
+        -         limitMinor: 19843,
+        -         offerMinor: 19843,
+                  s155: false,
+                  s155Text: '',
+        +         why: 'balance',
+        +         whyText: 'carinin borç bakiyesi; Değersiz yazımı cariyi alacaklıya düşüremez'
+        -         why: 'later',
+        -         whyText: 'daha fazlası sonraki bir Değersiz Alacak satırını ya da carinin başka bir şüpheli kaydını kalanın dışına taşırırdı'
+                },
+                blocked: 'before',
+                blockedText: 'tarih şüpheli kaydın tarihinden (15.09.2026) önce',
+                date: '2026-09-13',
+                limitMinor: 0,
+        ...
+              'dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24|2026-09-16': {
+        +       anyMinor: 272480,
+        -       anyMinor: 19843,
+                balanceMinor: 272480,
+                best: {
+                  date: '2026-09-15',
+        +         limitMinor: 272480,
+        +         offerMinor: 272480,
+        -         limitMinor: 19843,
+        -         offerMinor: 19843,
+                  s155: false,
+                  s155Text: '',
+        +         why: 'balance',
+        +         whyText: 'carinin borç bakiyesi; Değersiz yazımı cariyi alacaklıya düşüremez'
+        -         why: 'later',
+        -         whyText: 'daha fazlası sonraki bir Değersiz Alacak satırını ya da carinin başka bir şüpheli kaydını kalanın dışına taşırırdı'
+                },
+                blocked: '',
+                blockedText: '',
+                date: '2026-09-16',
+                limitMinor: 19843,
+        ...
+              'dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24|2026-09-17': {
+        +       anyMinor: 272480,
+        -       anyMinor: 19843,
+                balanceMinor: 272480,
+                best: {
+                  date: '2026-09-15',
+        +         limitMinor: 272480,
+        +         offerMinor: 272480,
+        -         limitMinor: 19843,
+        -         offerMinor: 19843,
+                  s155: false,
+                  s155Text: '',
+        +         why: 'balance',
+        +         whyText: 'carinin borç bakiyesi; Değersiz yazımı cariyi alacaklıya düşüremez'
+        -         why: 'later',
+        -         whyText: 'daha fazlası sonraki bir Değersiz Alacak satırını ya da carinin başka bir şüpheli kaydını kalanın dışına taşırırdı'
+                },
+                blocked: '',
+                blockedText: '',
+                date: '2026-09-17',
+                limitMinor: 19843,
+        ...
+              'dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24|2026-09-19': {
+        +       anyMinor: 272480,
+        -       anyMinor: 19843,
+                balanceMinor: 272480,
+                best: {
+                  date: '2026-09-15',
+        +         limitMinor: 272480,
+        +         offerMinor: 272480,
+        -         limitMinor: 19843,
+        -         offerMinor: 19843,
+                  s155: false,
+                  s155Text: '',
+        +         why: 'balance',
+        +         whyText: 'carinin borç bakiyesi; Değersiz yazımı cariyi alacaklıya düşüremez'
+        -         why: 'later',
+        -         whyText: 'daha fazlası sonraki bir Değersiz Alacak satırını ya da carinin başka bir şüpheli kaydını kalanın dışına taşırırdı'
+                },
+                blocked: '',
+                blockedText: '',
+                date: '2026-09-19',
+                limitMinor: 19843,
+        ...
+              'dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24|2026-09-25': {
+        +       anyMinor: 272480,
+        -       anyMinor: 19843,
+                balanceMinor: 272480,
+                best: {
+                  date: '2026-09-15',
+        +         limitMinor: 272480,
+        +         offerMinor: 272480,
+        -         limitMinor: 19843,
+        -         offerMinor: 19843,
+                  s155: false,
+                  s155Text: '',
+        +         why: 'balance',
+        +         whyText: 'carinin borç bakiyesi; Değersiz yazımı cariyi alacaklıya düşüremez'
+        -         why: 'later',
+        -         whyText: 'daha fazlası sonraki bir Değersiz Alacak satırını ya da carinin başka bir şüpheli kaydını kalanın dışına taşırırdı'
+                },
+                blocked: '',
+                blockedText: '',
+                date: '2026-09-25',
+                limitMinor: 19843,
+        ...
+              'dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24|2026-09-30': {
+        +       anyMinor: 272480,
+        -       anyMinor: 19843,
+                balanceMinor: 272480,
+                best: {
+                  date: '2026-09-15',
+        +         limitMinor: 272480,
+        +         offerMinor: 272480,
+        -         limitMinor: 19843,
+        -         offerMinor: 19843,
+                  s155: false,
+                  s155Text: '',
+        +         why: 'balance',
+        +         whyText: 'carinin borç bakiyesi; Değersiz yazımı cariyi alacaklıya düşüremez'
+        -         why: 'later',
+        -         whyText: 'daha fazlası sonraki bir Değersiz Alacak satırını ya da carinin başka bir şüpheli kaydını kalanın dışına taşırırdı'
+                },
+                blocked: '',
+                blockedText: '',
+                date: '2026-09-30',
+                limitMinor: 19843,
+        ...
+              'dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24|2026-10-01': {
+        +       anyMinor: 272480,
+        -       anyMinor: 19843,
+                balanceMinor: 272480,
+                best: {
+                  date: '2026-09-15',
+        +         limitMinor: 272480,
+        +         offerMinor: 272480,
+        -         limitMinor: 19843,
+        -         offerMinor: 19843,
+                  s155: false,
+                  s155Text: '',
+        +         why: 'balance',
+        +         whyText: 'carinin borç bakiyesi; Değersiz yazımı cariyi alacaklıya düşüremez'
+        -         why: 'later',
+        -         whyText: 'daha fazlası sonraki bir Değersiz Alacak satırını ya da carinin başka bir şüpheli kaydını kalanın dışına taşırırdı'
+                },
+                blocked: '',
+                blockedText: '',
+                date: '2026-10-01',
+                limitMinor: 19843,
+        ...
+              'dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24|2026-10-07': {
+        +       anyMinor: 272480,
+        -       anyMinor: 19843,
+                balanceMinor: 272480,
+                best: {
+                  date: '2026-09-15',
+        +         limitMinor: 272480,
+        +         offerMinor: 272480,
+        -         limitMinor: 19843,
+        -         offerMinor: 19843,
+                  s155: false,
+                  s155Text: '',
+        +         why: 'balance',
+        +         whyText: 'carinin borç bakiyesi; Değersiz yazımı cariyi alacaklıya düşüremez'
+        -         why: 'later',
+        -         whyText: 'daha fazlası sonraki bir Değersiz Alacak satırını ya da carinin başka bir şüpheli kaydını kalanın dışına taşırırdı'
+                },
+                blocked: '',
+                blockedText: '',
+                date: '2026-10-07',
+                limitMinor: 19843,
+        ...
+              'dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24|2026-10-15': {
+        +       anyMinor: 272480,
+        -       anyMinor: 19843,
+                balanceMinor: 272480,
+                best: {
+                  date: '2026-09-15',
+        +         limitMinor: 272480,
+        +         offerMinor: 272480,
+        -         limitMinor: 19843,
+        -         offerMinor: 19843,
+                  s155: false,
+                  s155Text: '',
+        +         why: 'balance',
+        +         whyText: 'carinin borç bakiyesi; Değersiz yazımı cariyi alacaklıya düşüremez'
+        -         why: 'later',
+        -         whyText: 'daha fazlası sonraki bir Değersiz Alacak satırını ya da carinin başka bir şüpheli kaydını kalanın dışına taşırırdı'
+                },
+                blocked: '',
+                blockedText: '',
+                date: '2026-10-15',
+                limitMinor: 19843,
+        ...
+                writeOff: {
+        +         anyMinor: 272480,
+        -         anyMinor: 19843,
+                  best: {
+                    date: '2026-09-15',
+        +           limitMinor: 272480,
+        +           offerMinor: 272480,
+        -           limitMinor: 19843,
+        -           offerMinor: 19843,
+                    s155: false,
+                    s155Text: '',
+        +           why: 'balance',
+        +           whyText: 'carinin borç bakiyesi; Değersiz yazımı cariyi alacaklıya düşüremez'
+        -           why: 'later',
+        -           whyText: 'daha fazlası sonraki bir Değersiz Alacak satırını ya da carinin başka bir şüpheli kaydını kalanın dışına taşırırdı'
+                  },
+                  today: {
+                    date: '2026-10-15',
+                    limitMinor: 19843,
+                    offerMinor: 19843,
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        records:
+          0:
+            id: 'dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24'
+            writeOff:
+              anyMinor: 19843
+              today:
+                date: '2026-10-15'
+                limitMinor: 19843
+                offerMinor: 19843
+                why: 'remaining'
+                whyText: 'kayıtta kalan şüpheli tutar'
+                s155: false
+                s155Text: ''
+              best:
+                date: '2026-09-15'
+                limitMinor: 19843
+                offerMinor: 19843
+                why: 'later'
+                whyText: 'daha fazlası sonraki bir Değersiz Alacak satırını ya da carinin başka bir şüpheli kaydını kalanın dışına taşırırdı'
+                s155: false
+                s155Text: ''
+        quotes:
+          dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24|2026-09-12:
+            recordId: 'dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24'
+            date: '2026-09-12'
+            limitMinor: 0
+            offerMinor: 0
+            why: 'closed'
+            whyText: 'kayıt kapalı'
+            s155: false
+            s155Text: ''
+            blocked: 'before'
+            blockedText: 'tarih şüpheli kaydın tarihinden (15.09.2026) önce'
+            today:
+              date: '2026-10-15'
+              limitMinor: 19843
+              offerMinor: 19843
+              why: 'remaining'
+              whyText: 'kayıtta kalan şüpheli tutar'
+              s155: false
+              s155Text: ''
+            best:
+              date: '2026-09-15'
+              limitMinor: 19843
+              offerMinor: 19843
+              why: 'later'
+              whyText: 'daha fazlası sonraki bir Değersiz Alacak satırını ya da carinin başka bir şüpheli kaydını kalanın dışına taşırırdı'
+              s155: false
+              s155Text: ''
+            anyMinor: 19843
+            balanceMinor: 272480
+          dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24|2026-09-13:
+            recordId: 'dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24'
+            date: '2026-09-13'
+            limitMinor: 0
+            offerMinor: 0
+            why: 'closed'
+            whyText: 'kayıt kapalı'
+            s155: false
+            s155Text: ''
+            blocked: 'before'
+            blockedText: 'tarih şüpheli kaydın tarihinden (15.09.2026) önce'
+            today:
+              date: '2026-10-15'
+              limitMinor: 19843
+              offerMinor: 19843
+              why: 'remaining'
+              whyText: 'kayıtta kalan şüpheli tutar'
+              s155: false
+              s155Text: ''
+            best:
+              date: '2026-09-15'
+              limitMinor: 19843
+              offerMinor: 19843
+              why: 'later'
+              whyText: 'daha fazlası sonraki bir Değersiz Alacak satırını ya da carinin başka bir şüpheli kaydını kalanın dışına taşırırdı'
+              s155: false
+              s155Text: ''
+            anyMinor: 19843
+            balanceMinor: 272480
+          dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24|2026-09-16:
+            recordId: 'dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24'
+            date: '2026-09-16'
+            limitMinor: 19843
+            offerMinor: 19843
+            why: 'remaining'
+            whyText: 'kayıtta kalan şüpheli tutar'
+            s155: false
+            s155Text: ''
+            blocked: ''
+            blockedText: ''
+            today:
+              date: '2026-10-15'
+              limitMinor: 19843
+              offerMinor: 19843
+              why: 'remaining'
+              whyText: 'kayıtta kalan şüpheli tutar'
+              s155: false
+              s155Text: ''
+            best:
+              date: '2026-09-15'
+              limitMinor: 19843
+              offerMinor: 19843
+              why: 'later'
+              whyText: 'daha fazlası sonraki bir Değersiz Alacak satırını ya da carinin başka bir şüpheli kaydını kalanın dışına taşırırdı'
+              s155: false
+              s155Text: ''
+            anyMinor: 19843
+            balanceMinor: 272480
+          dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24|2026-09-17:
+            recordId: 'dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24'
+            date: '2026-09-17'
+            limitMinor: 19843
+            offerMinor: 19843
+            why: 'remaining'
+            whyText: 'kayıtta kalan şüpheli tutar'
+            s155: false
+            s155Text: ''
+            blocked: ''
+            blockedText: ''
+            today:
+              date: '2026-10-15'
+              limitMinor: 19843
+              offerMinor: 19843
+              why: 'remaining'
+              whyText: 'kayıtta kalan şüpheli tutar'
+              s155: false
+              s155Text: ''
+            best:
+              date: '2026-09-15'
+              limitMinor: 19843
+              offerMinor: 19843
+              why: 'later'
+              whyText: 'daha fazlası sonraki bir Değersiz Alacak satırını ya da carinin başka bir şüpheli kaydını kalanın dışına taşırırdı'
+              s155: false
+              s155Text: ''
+            anyMinor: 19843
+            balanceMinor: 272480
+          dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24|2026-09-19:
+            recordId: 'dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24'
+            date: '2026-09-19'
+            limitMinor: 19843
+            offerMinor: 19843
+            why: 'remaining'
+            whyText: 'kayıtta kalan şüpheli tutar'
+            s155: false
+            s155Text: ''
+            blocked: ''
+            blockedText: ''
+            today:
+              date: '2026-10-15'
+              limitMinor: 19843
+              offerMinor: 19843
+              why: 'remaining'
+              whyText: 'kayıtta kalan şüpheli tutar'
+              s155: false
+              s155Text: ''
+            best:
+              date: '2026-09-15'
+              limitMinor: 19843
+              offerMinor: 19843
+              why: 'later'
+              whyText: 'daha fazlası sonraki bir Değersiz Alacak satırını ya da carinin başka bir şüpheli kaydını kalanın dışına taşırırdı'
+              s155: false
+              s155Text: ''
+            anyMinor: 19843
+            balanceMinor: 272480
+          dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24|2026-09-25:
+            recordId: 'dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24'
+            date: '2026-09-25'
+            limitMinor: 19843
+            offerMinor: 19843
+            why: 'remaining'
+            whyText: 'kayıtta kalan şüpheli tutar'
+            s155: false
+            s155Text: ''
+            blocked: ''
+            blockedText: ''
+            today:
+              date: '2026-10-15'
+              limitMinor: 19843
+              offerMinor: 19843
+              why: 'remaining'
+              whyText: 'kayıtta kalan şüpheli tutar'
+              s155: false
+              s155Text: ''
+            best:
+              date: '2026-09-15'
+              limitMinor: 19843
+              offerMinor: 19843
+              why: 'later'
+              whyText: 'daha fazlası sonraki bir Değersiz Alacak satırını ya da carinin başka bir şüpheli kaydını kalanın dışına taşırırdı'
+              s155: false
+              s155Text: ''
+            anyMinor: 19843
+            balanceMinor: 272480
+          dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24|2026-09-30:
+            recordId: 'dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24'
+            date: '2026-09-30'
+            limitMinor: 19843
+            offerMinor: 19843
+            why: 'remaining'
+            whyText: 'kayıtta kalan şüpheli tutar'
+            s155: false
+            s155Text: ''
+            blocked: ''
+            blockedText: ''
+            today:
+              date: '2026-10-15'
+              limitMinor: 19843
+              offerMinor: 19843
+              why: 'remaining'
+              whyText: 'kayıtta kalan şüpheli tutar'
+              s155: false
+              s155Text: ''
+            best:
+              date: '2026-09-15'
+              limitMinor: 19843
+              offerMinor: 19843
+              why: 'later'
+              whyText: 'daha fazlası sonraki bir Değersiz Alacak satırını ya da carinin başka bir şüpheli kaydını kalanın dışına taşırırdı'
+              s155: false
+              s155Text: ''
+            anyMinor: 19843
+            balanceMinor: 272480
+          dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24|2026-10-01:
+            recordId: 'dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24'
+            date: '2026-10-01'
+            limitMinor: 19843
+            offerMinor: 19843
+            why: 'remaining'
+            whyText: 'kayıtta kalan şüpheli tutar'
+            s155: false
+            s155Text: ''
+            blocked: ''
+            blockedText: ''
+            today:
+              date: '2026-10-15'
+              limitMinor: 19843
+              offerMinor: 19843
+              why: 'remaining'
+              whyText: 'kayıtta kalan şüpheli tutar'
+              s155: false
+              s155Text: ''
+            best:
+              date: '2026-09-15'
+              limitMinor: 19843
+              offerMinor: 19843
+              why: 'later'
+              whyText: 'daha fazlası sonraki bir Değersiz Alacak satırını ya da carinin başka bir şüpheli kaydını kalanın dışına taşırırdı'
+              s155: false
+              s155Text: ''
+            anyMinor: 19843
+            balanceMinor: 272480
+          dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24|2026-10-07:
+            recordId: 'dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24'
+            date: '2026-10-07'
+            limitMinor: 19843
+            offerMinor: 19843
+            why: 'remaining'
+            whyText: 'kayıtta kalan şüpheli tutar'
+            s155: false
+            s155Text: ''
+            blocked: ''
+            blockedText: ''
+            today:
+              date: '2026-10-15'
+              limitMinor: 19843
+              offerMinor: 19843
+              why: 'remaining'
+              whyText: 'kayıtta kalan şüpheli tutar'
+              s155: false
+              s155Text: ''
+            best:
+              date: '2026-09-15'
+              limitMinor: 19843
+              offerMinor: 19843
+              why: 'later'
+              whyText: 'daha fazlası sonraki bir Değersiz Alacak satırını ya da carinin başka bir şüpheli kaydını kalanın dışına taşırırdı'
+              s155: false
+              s155Text: ''
+            anyMinor: 19843
+            balanceMinor: 272480
+          dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24|2026-10-15:
+            recordId: 'dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24'
+            date: '2026-10-15'
+            limitMinor: 19843
+            offerMinor: 19843
+            why: 'remaining'
+            whyText: 'kayıtta kalan şüpheli tutar'
+            s155: false
+            s155Text: ''
+            blocked: ''
+            blockedText: ''
+            today:
+              date: '2026-10-15'
+              limitMinor: 19843
+              offerMinor: 19843
+              why: 'remaining'
+              whyText: 'kayıtta kalan şüpheli tutar'
+              s155: false
+              s155Text: ''
+            best:
+              date: '2026-09-15'
+              limitMinor: 19843
+              offerMinor: 19843
+              why: 'later'
+              whyText: 'daha fazlası sonraki bir Değersiz Alacak satırını ya da carinin başka bir şüpheli kaydını kalanın dışına taşırırdı'
+              s155: false
+              s155Text: ''
+            anyMinor: 19843
+            balanceMinor: 272480
+      actual:
+        records:
+          0:
+            id: 'dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24'
+            writeOff:
+              anyMinor: 272480
+              today:
+                date: '2026-10-15'
+                limitMinor: 19843
+                offerMinor: 19843
+                why: 'remaining'
+                whyText: 'kayıtta kalan şüpheli tutar'
+                s155: false
+                s155Text: ''
+              best:
+                date: '2026-09-15'
+                limitMinor: 272480
+                offerMinor: 272480
+                why: 'balance'
+                whyText: 'carinin borç bakiyesi; Değersiz yazımı cariyi alacaklıya düşüremez'
+                s155: false
+                s155Text: ''
+        quotes:
+          dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24|2026-09-12:
+            recordId: 'dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24'
+            date: '2026-09-12'
+            limitMinor: 0
+            offerMinor: 0
+            why: 'closed'
+            whyText: 'kayıt kapalı'
+            s155: false
+            s155Text: ''
+            blocked: 'before'
+            blockedText: 'tarih şüpheli kaydın tarihinden (15.09.2026) önce'
+            today:
+              date: '2026-10-15'
+              limitMinor: 19843
+              offerMinor: 19843
+              why: 'remaining'
+              whyText: 'kayıtta kalan şüpheli tutar'
+              s155: false
+              s155Text: ''
+            best:
+              date: '2026-09-15'
+              limitMinor: 272480
+              offerMinor: 272480
+              why: 'balance'
+              whyText: 'carinin borç bakiyesi; Değersiz yazımı cariyi alacaklıya düşüremez'
+              s155: false
+              s155Text: ''
+            anyMinor: 272480
+            balanceMinor: 272480
+          dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24|2026-09-13:
+            recordId: 'dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24'
+            date: '2026-09-13'
+            limitMinor: 0
+            offerMinor: 0
+            why: 'closed'
+            whyText: 'kayıt kapalı'
+            s155: false
+            s155Text: ''
+            blocked: 'before'
+            blockedText: 'tarih şüpheli kaydın tarihinden (15.09.2026) önce'
+            today:
+              date: '2026-10-15'
+              limitMinor: 19843
+              offerMinor: 19843
+              why: 'remaining'
+              whyText: 'kayıtta kalan şüpheli tutar'
+              s155: false
+              s155Text: ''
+            best:
+              date: '2026-09-15'
+              limitMinor: 272480
+              offerMinor: 272480
+              why: 'balance'
+              whyText: 'carinin borç bakiyesi; Değersiz yazımı cariyi alacaklıya düşüremez'
+              s155: false
+              s155Text: ''
+            anyMinor: 272480
+            balanceMinor: 272480
+          dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24|2026-09-16:
+            recordId: 'dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24'
+            date: '2026-09-16'
+            limitMinor: 19843
+            offerMinor: 19843
+            why: 'remaining'
+            whyText: 'kayıtta kalan şüpheli tutar'
+            s155: false
+            s155Text: ''
+            blocked: ''
+            blockedText: ''
+            today:
+              date: '2026-10-15'
+              limitMinor: 19843
+              offerMinor: 19843
+              why: 'remaining'
+              whyText: 'kayıtta kalan şüpheli tutar'
+              s155: false
+              s155Text: ''
+            best:
+              date: '2026-09-15'
+              limitMinor: 272480
+              offerMinor: 272480
+              why: 'balance'
+              whyText: 'carinin borç bakiyesi; Değersiz yazımı cariyi alacaklıya düşüremez'
+              s155: false
+              s155Text: ''
+            anyMinor: 272480
+            balanceMinor: 272480
+          dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24|2026-09-17:
+            recordId: 'dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24'
+            date: '2026-09-17'
+            limitMinor: 19843
+            offerMinor: 19843
+            why: 'remaining'
+            whyText: 'kayıtta kalan şüpheli tutar'
+            s155: false
+            s155Text: ''
+            blocked: ''
+            blockedText: ''
+            today:
+              date: '2026-10-15'
+              limitMinor: 19843
+              offerMinor: 19843
+              why: 'remaining'
+              whyText: 'kayıtta kalan şüpheli tutar'
+              s155: false
+              s155Text: ''
+            best:
+              date: '2026-09-15'
+              limitMinor: 272480
+              offerMinor: 272480
+              why: 'balance'
+              whyText: 'carinin borç bakiyesi; Değersiz yazımı cariyi alacaklıya düşüremez'
+              s155: false
+              s155Text: ''
+            anyMinor: 272480
+            balanceMinor: 272480
+          dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24|2026-09-19:
+            recordId: 'dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24'
+            date: '2026-09-19'
+            limitMinor: 19843
+            offerMinor: 19843
+            why: 'remaining'
+            whyText: 'kayıtta kalan şüpheli tutar'
+            s155: false
+            s155Text: ''
+            blocked: ''
+            blockedText: ''
+            today:
+              date: '2026-10-15'
+              limitMinor: 19843
+              offerMinor: 19843
+              why: 'remaining'
+              whyText: 'kayıtta kalan şüpheli tutar'
+              s155: false
+              s155Text: ''
+            best:
+              date: '2026-09-15'
+              limitMinor: 272480
+              offerMinor: 272480
+              why: 'balance'
+              whyText: 'carinin borç bakiyesi; Değersiz yazımı cariyi alacaklıya düşüremez'
+              s155: false
+              s155Text: ''
+            anyMinor: 272480
+            balanceMinor: 272480
+          dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24|2026-09-25:
+            recordId: 'dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24'
+            date: '2026-09-25'
+            limitMinor: 19843
+            offerMinor: 19843
+            why: 'remaining'
+            whyText: 'kayıtta kalan şüpheli tutar'
+            s155: false
+            s155Text: ''
+            blocked: ''
+            blockedText: ''
+            today:
+              date: '2026-10-15'
+              limitMinor: 19843
+              offerMinor: 19843
+              why: 'remaining'
+              whyText: 'kayıtta kalan şüpheli tutar'
+              s155: false
+              s155Text: ''
+            best:
+              date: '2026-09-15'
+              limitMinor: 272480
+              offerMinor: 272480
+              why: 'balance'
+              whyText: 'carinin borç bakiyesi; Değersiz yazımı cariyi alacaklıya düşüremez'
+              s155: false
+              s155Text: ''
+            anyMinor: 272480
+            balanceMinor: 272480
+          dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24|2026-09-30:
+            recordId: 'dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24'
+            date: '2026-09-30'
+            limitMinor: 19843
+            offerMinor: 19843
+            why: 'remaining'
+            whyText: 'kayıtta kalan şüpheli tutar'
+            s155: false
+            s155Text: ''
+            blocked: ''
+            blockedText: ''
+            today:
+              date: '2026-10-15'
+              limitMinor: 19843
+              offerMinor: 19843
+              why: 'remaining'
+              whyText: 'kayıtta kalan şüpheli tutar'
+              s155: false
+              s155Text: ''
+            best:
+              date: '2026-09-15'
+              limitMinor: 272480
+              offerMinor: 272480
+              why: 'balance'
+              whyText: 'carinin borç bakiyesi; Değersiz yazımı cariyi alacaklıya düşüremez'
+              s155: false
+              s155Text: ''
+            anyMinor: 272480
+            balanceMinor: 272480
+          dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24|2026-10-01:
+            recordId: 'dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24'
+            date: '2026-10-01'
+            limitMinor: 19843
+            offerMinor: 19843
+            why: 'remaining'
+            whyText: 'kayıtta kalan şüpheli tutar'
+            s155: false
+            s155Text: ''
+            blocked: ''
+            blockedText: ''
+            today:
+              date: '2026-10-15'
+              limitMinor: 19843
+              offerMinor: 19843
+              why: 'remaining'
+              whyText: 'kayıtta kalan şüpheli tutar'
+              s155: false
+              s155Text: ''
+            best:
+              date: '2026-09-15'
+              limitMinor: 272480
+              offerMinor: 272480
+              why: 'balance'
+              whyText: 'carinin borç bakiyesi; Değersiz yazımı cariyi alacaklıya düşüremez'
+              s155: false
+              s155Text: ''
+            anyMinor: 272480
+            balanceMinor: 272480
+          dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24|2026-10-07:
+            recordId: 'dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24'
+            date: '2026-10-07'
+            limitMinor: 19843
+            offerMinor: 19843
+            why: 'remaining'
+            whyText: 'kayıtta kalan şüpheli tutar'
+            s155: false
+            s155Text: ''
+            blocked: ''
+            blockedText: ''
+            today:
+              date: '2026-10-15'
+              limitMinor: 19843
+              offerMinor: 19843
+              why: 'remaining'
+              whyText: 'kayıtta kalan şüpheli tutar'
+              s155: false
+              s155Text: ''
+            best:
+              date: '2026-09-15'
+              limitMinor: 272480
+              offerMinor: 272480
+              why: 'balance'
+              whyText: 'carinin borç bakiyesi; Değersiz yazımı cariyi alacaklıya düşüremez'
+              s155: false
+              s155Text: ''
+            anyMinor: 272480
+            balanceMinor: 272480
+          dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24|2026-10-15:
+            recordId: 'dbt-6cfd85c2-e692-4da8-a9f2-266f04b72d24'
+            date: '2026-10-15'
+            limitMinor: 19843
+            offerMinor: 19843
+            why: 'remaining'
+            whyText: 'kayıtta kalan şüpheli tutar'
+            s155: false
+            s155Text: ''
+            blocked: ''
+            blockedText: ''
+            today:
+              date: '2026-10-15'
+              limitMinor: 19843
+              offerMinor: 19843
+              why: 'remaining'
+              whyText: 'kayıtta kalan şüpheli tutar'
+              s155: false
+              s155Text: ''
+            best:
+              date: '2026-09-15'
+              limitMinor: 272480
+              offerMinor: 272480
+              why: 'balance'
+              whyText: 'carinin borç bakiyesi; Değersiz yazımı cariyi alacaklıya düşüremez'
+              s155: false
+              s155Text: ''
+            anyMinor: 272480
+            balanceMinor: 272480
+      operator: 'deepStrictEqual'
+      stack: |-
+        compare (file:///dev/shm/m2t2-a2da/mut/test/supheli-degersiz-hiz-m2t2-251.test.mjs:210:18)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/m2t2-a2da/mut/test/supheli-degersiz-hiz-m2t2-251.test.mjs:278:13)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+# (node:18244) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# \# M2T2 eşdeğerlik tohum 3: {"snapshots":136,"quotes":1750,"txQuotes":884,"monotone":3950,"writes":3,"partial":4,"restored":0,"released":1,"midBest":0,"proposalDiff":0,"laterTarget":42,"s155":0}
+    # Subtest: tohum 3: 8 cari × 16 adım + dönem kilidi — her adımda kısa yol = tam hesap
+    ok 3 - tohum 3: 8 cari × 16 adım + dönem kilidi — her adımda kısa yol = tam hesap
+      ---
+      duration_ms: 9565.30397
+      type: 'test'
+      ...
+    # Subtest: tohum 4: 8 cari × 16 adım + dönem kilidi — her adımda kısa yol = tam hesap
+    not ok 4 - tohum 4: 8 cari × 16 adım + dönem kilidi — her adımda kısa yol = tam hesap
+      ---
+      duration_ms: 2190.148108
+      type: 'test'
+      location: '/dev/shm/m2t2-a2da/mut/test/supheli-degersiz-hiz-m2t2-251.test.mjs:192:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        tohum 4 cari 2 adım 4 (write): ekran (liste / form ucu) kısa yol ≠ tam hesap
+        + actual - expected
+        ... Skipped lines
+        
+          {
+            quotes: {
+              'dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb|2026-09-12': {
+        +       anyMinor: 80842,
+        -       anyMinor: 0,
+                balanceMinor: 590000,
+                best: {
+                  date: '2026-09-17',
+        +         limitMinor: 80842,
+        +         offerMinor: 80842,
+        -         limitMinor: 0,
+        -         offerMinor: 0,
+                  s155: false,
+                  s155Text: '',
+        +         why: 'sameDay',
+        +         whyText: "kayıtta kalan şüpheli tutar — o günün faturaya bağlı tahsilatı Değersiz'den sonra sayılır, bağsız tahsilatlar tarihi ne olursa olsun düşülür"
+        -         why: 'later',
+        -         whyText: 'daha fazlası sonraki bir Değersiz Alacak satırını ya da carinin başka bir şüpheli kaydını kalanın dışına taşırırdı'
+                },
+                blocked: 'before',
+                blockedText: 'tarih şüpheli kaydın tarihinden (17.09.2026) önce',
+                date: '2026-09-12',
+                limitMinor: 0,
+        ...
+              'dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb|2026-09-13': {
+        +       anyMinor: 80842,
+        -       anyMinor: 0,
+                balanceMinor: 590000,
+                best: {
+                  date: '2026-09-17',
+        +         limitMinor: 80842,
+        +         offerMinor: 80842,
+        -         limitMinor: 0,
+        -         offerMinor: 0,
+                  s155: false,
+                  s155Text: '',
+        +         why: 'sameDay',
+        +         whyText: "kayıtta kalan şüpheli tutar — o günün faturaya bağlı tahsilatı Değersiz'den sonra sayılır, bağsız tahsilatlar tarihi ne olursa olsun düşülür"
+        -         why: 'later',
+        -         whyText: 'daha fazlası sonraki bir Değersiz Alacak satırını ya da carinin başka bir şüpheli kaydını kalanın dışına taşırırdı'
+                },
+                blocked: 'before',
+                blockedText: 'tarih şüpheli kaydın tarihinden (17.09.2026) önce',
+                date: '2026-09-13',
+                limitMinor: 0,
+        ...
+              'dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb|2026-09-16': {
+        +       anyMinor: 80842,
+        -       anyMinor: 0,
+                balanceMinor: 590000,
+                best: {
+                  date: '2026-09-17',
+        +         limitMinor: 80842,
+        +         offerMinor: 80842,
+        -         limitMinor: 0,
+        -         offerMinor: 0,
+                  s155: false,
+                  s155Text: '',
+        +         why: 'sameDay',
+        +         whyText: "kayıtta kalan şüpheli tutar — o günün faturaya bağlı tahsilatı Değersiz'den sonra sayılır, bağsız tahsilatlar tarihi ne olursa olsun düşülür"
+        -         why: 'later',
+        -         whyText: 'daha fazlası sonraki bir Değersiz Alacak satırını ya da carinin başka bir şüpheli kaydını kalanın dışına taşırırdı'
+                },
+                blocked: 'before',
+                blockedText: 'tarih şüpheli kaydın tarihinden (17.09.2026) önce',
+                date: '2026-09-16',
+                limitMinor: 0,
+        ...
+              'dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb|2026-09-17': {
+        +       anyMinor: 80842,
+        -       anyMinor: 0,
+                balanceMinor: 590000,
+                best: {
+                  date: '2026-09-17',
+        +         limitMinor: 80842,
+        +         offerMinor: 80842,
+        -         limitMinor: 0,
+        -         offerMinor: 0,
+                  s155: false,
+                  s155Text: '',
+        +         why: 'sameDay',
+        +         whyText: "kayıtta kalan şüpheli tutar — o günün faturaya bağlı tahsilatı Değersiz'den sonra sayılır, bağsız tahsilatlar tarihi ne olursa olsun düşülür"
+        -         why: 'later',
+        -         whyText: 'daha fazlası sonraki bir Değersiz Alacak satırını ya da carinin başka bir şüpheli kaydını kalanın dışına taşırırdı'
+                },
+                blocked: '',
+                blockedText: '',
+                date: '2026-09-17',
+        +       limitMinor: 80842,
+        +       offerMinor: 80842,
+        -       limitMinor: 0,
+        -       offerMinor: 0,
+                recordId: 'dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb',
+                s155: false,
+                s155Text: '',
+                today: {
+                  date: '2026-10-15',
+        ...
+                },
+        +       why: 'sameDay',
+        +       whyText: "kayıtta kalan şüpheli tutar — o günün faturaya bağlı tahsilatı Değersiz'den sonra sayılır, bağsız tahsilatlar tarihi ne olursa olsun düşülür"
+        -       why: 'later',
+        -       whyText: 'daha fazlası sonraki bir Değersiz Alacak satırını ya da carinin başka bir şüpheli kaydını kalanın dışına taşırırdı'
+              },
+              'dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb|2026-09-19': {
+        +       anyMinor: 80842,
+        -       anyMinor: 0,
+                balanceMinor: 590000,
+                best: {
+                  date: '2026-09-17',
+        +         limitMinor: 80842,
+        +         offerMinor: 80842,
+        -         limitMinor: 0,
+        -         offerMinor: 0,
+                  s155: false,
+                  s155Text: '',
+        +         why: 'sameDay',
+        +         whyText: "kayıtta kalan şüpheli tutar — o günün faturaya bağlı tahsilatı Değersiz'den sonra sayılır, bağsız tahsilatlar tarihi ne olursa olsun düşülür"
+        -         why: 'later',
+        -         whyText: 'daha fazlası sonraki bir Değersiz Alacak satırını ya da carinin başka bir şüpheli kaydını kalanın dışına taşırırdı'
+                },
+                blocked: '',
+                blockedText: '',
+                date: '2026-09-19',
+                limitMinor: 0,
+        ...
+              'dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb|2026-09-25': {
+        +       anyMinor: 80842,
+        -       anyMinor: 0,
+                balanceMinor: 590000,
+                best: {
+                  date: '2026-09-17',
+        +         limitMinor: 80842,
+        +         offerMinor: 80842,
+        -         limitMinor: 0,
+        -         offerMinor: 0,
+                  s155: false,
+                  s155Text: '',
+        +         why: 'sameDay',
+        +         whyText: "kayıtta kalan şüpheli tutar — o günün faturaya bağlı tahsilatı Değersiz'den sonra sayılır, bağsız tahsilatlar tarihi ne olursa olsun düşülür"
+        -         why: 'later',
+        -         whyText: 'daha fazlası sonraki bir Değersiz Alacak satırını ya da carinin başka bir şüpheli kaydını kalanın dışına taşırırdı'
+                },
+                blocked: '',
+                blockedText: '',
+                date: '2026-09-25',
+                limitMinor: 0,
+        ...
+              'dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb|2026-09-30': {
+        +       anyMinor: 80842,
+        -       anyMinor: 0,
+                balanceMinor: 590000,
+                best: {
+                  date: '2026-09-17',
+        +         limitMinor: 80842,
+        +         offerMinor: 80842,
+        -         limitMinor: 0,
+        -         offerMinor: 0,
+                  s155: false,
+                  s155Text: '',
+        +         why: 'sameDay',
+        +         whyText: "kayıtta kalan şüpheli tutar — o günün faturaya bağlı tahsilatı Değersiz'den sonra sayılır, bağsız tahsilatlar tarihi ne olursa olsun düşülür"
+        -         why: 'later',
+        -         whyText: 'daha fazlası sonraki bir Değersiz Alacak satırını ya da carinin başka bir şüpheli kaydını kalanın dışına taşırırdı'
+                },
+                blocked: '',
+                blockedText: '',
+                date: '2026-09-30',
+                limitMinor: 0,
+        ...
+              'dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb|2026-10-01': {
+        +       anyMinor: 80842,
+        -       anyMinor: 0,
+                balanceMinor: 590000,
+                best: {
+                  date: '2026-09-17',
+        +         limitMinor: 80842,
+        +         offerMinor: 80842,
+        -         limitMinor: 0,
+        -         offerMinor: 0,
+                  s155: false,
+                  s155Text: '',
+        +         why: 'sameDay',
+        +         whyText: "kayıtta kalan şüpheli tutar — o günün faturaya bağlı tahsilatı Değersiz'den sonra sayılır, bağsız tahsilatlar tarihi ne olursa olsun düşülür"
+        -         why: 'later',
+        -         whyText: 'daha fazlası sonraki bir Değersiz Alacak satırını ya da carinin başka bir şüpheli kaydını kalanın dışına taşırırdı'
+                },
+                blocked: '',
+                blockedText: '',
+                date: '2026-10-01',
+                limitMinor: 0,
+        ...
+              'dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb|2026-10-07': {
+        +       anyMinor: 80842,
+        -       anyMinor: 0,
+                balanceMinor: 590000,
+                best: {
+                  date: '2026-09-17',
+        +         limitMinor: 80842,
+        +         offerMinor: 80842,
+        -         limitMinor: 0,
+        -         offerMinor: 0,
+                  s155: false,
+                  s155Text: '',
+        +         why: 'sameDay',
+        +         whyText: "kayıtta kalan şüpheli tutar — o günün faturaya bağlı tahsilatı Değersiz'den sonra sayılır, bağsız tahsilatlar tarihi ne olursa olsun düşülür"
+        -         why: 'later',
+        -         whyText: 'daha fazlası sonraki bir Değersiz Alacak satırını ya da carinin başka bir şüpheli kaydını kalanın dışına taşırırdı'
+                },
+                blocked: '',
+                blockedText: '',
+                date: '2026-10-07',
+                limitMinor: 0,
+        ...
+              'dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb|2026-10-15': {
+        +       anyMinor: 80842,
+        -       anyMinor: 0,
+                balanceMinor: 590000,
+                best: {
+                  date: '2026-09-17',
+        +         limitMinor: 80842,
+        +         offerMinor: 80842,
+        -         limitMinor: 0,
+        -         offerMinor: 0,
+                  s155: false,
+                  s155Text: '',
+        +         why: 'sameDay',
+        +         whyText: "kayıtta kalan şüpheli tutar — o günün faturaya bağlı tahsilatı Değersiz'den sonra sayılır, bağsız tahsilatlar tarihi ne olursa olsun düşülür"
+        -         why: 'later',
+        -         whyText: 'daha fazlası sonraki bir Değersiz Alacak satırını ya da carinin başka bir şüpheli kaydını kalanın dışına taşırırdı'
+                },
+                blocked: '',
+                blockedText: '',
+                date: '2026-10-15',
+                limitMinor: 0,
+        ...
+                writeOff: {
+        +         anyMinor: 80842,
+        -         anyMinor: 0,
+                  best: {
+                    date: '2026-09-17',
+        +           limitMinor: 80842,
+        +           offerMinor: 80842,
+        -           limitMinor: 0,
+        -           offerMinor: 0,
+                    s155: false,
+                    s155Text: '',
+        +           why: 'sameDay',
+        +           whyText: "kayıtta kalan şüpheli tutar — o günün faturaya bağlı tahsilatı Değersiz'den sonra sayılır, bağsız tahsilatlar tarihi ne olursa olsun düşülür"
+        -           why: 'later',
+        -           whyText: 'daha fazlası sonraki bir Değersiz Alacak satırını ya da carinin başka bir şüpheli kaydını kalanın dışına taşırırdı'
+                  },
+                  today: {
+                    date: '2026-10-15',
+                    limitMinor: 0,
+                    offerMinor: 0,
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        records:
+          0:
+            id: 'dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb'
+            writeOff:
+              anyMinor: 0
+              today:
+                date: '2026-10-15'
+                limitMinor: 0
+                offerMinor: 0
+                why: 'remaining'
+                whyText: 'kayıtta kalan şüpheli tutar'
+                s155: false
+                s155Text: ''
+              best:
+                date: '2026-09-17'
+                limitMinor: 0
+                offerMinor: 0
+                why: 'later'
+                whyText: 'daha fazlası sonraki bir Değersiz Alacak satırını ya da carinin başka bir şüpheli kaydını kalanın dışına taşırırdı'
+                s155: false
+                s155Text: ''
+        quotes:
+          dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb|2026-09-12:
+            recordId: 'dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb'
+            date: '2026-09-12'
+            limitMinor: 0
+            offerMinor: 0
+            why: 'closed'
+            whyText: 'kayıt kapalı'
+            s155: false
+            s155Text: ''
+            blocked: 'before'
+            blockedText: 'tarih şüpheli kaydın tarihinden (17.09.2026) önce'
+            today:
+              date: '2026-10-15'
+              limitMinor: 0
+              offerMinor: 0
+              why: 'remaining'
+              whyText: 'kayıtta kalan şüpheli tutar'
+              s155: false
+              s155Text: ''
+            best:
+              date: '2026-09-17'
+              limitMinor: 0
+              offerMinor: 0
+              why: 'later'
+              whyText: 'daha fazlası sonraki bir Değersiz Alacak satırını ya da carinin başka bir şüpheli kaydını kalanın dışına taşırırdı'
+              s155: false
+              s155Text: ''
+            anyMinor: 0
+            balanceMinor: 590000
+          dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb|2026-09-13:
+            recordId: 'dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb'
+            date: '2026-09-13'
+            limitMinor: 0
+            offerMinor: 0
+            why: 'closed'
+            whyText: 'kayıt kapalı'
+            s155: false
+            s155Text: ''
+            blocked: 'before'
+            blockedText: 'tarih şüpheli kaydın tarihinden (17.09.2026) önce'
+            today:
+              date: '2026-10-15'
+              limitMinor: 0
+              offerMinor: 0
+              why: 'remaining'
+              whyText: 'kayıtta kalan şüpheli tutar'
+              s155: false
+              s155Text: ''
+            best:
+              date: '2026-09-17'
+              limitMinor: 0
+              offerMinor: 0
+              why: 'later'
+              whyText: 'daha fazlası sonraki bir Değersiz Alacak satırını ya da carinin başka bir şüpheli kaydını kalanın dışına taşırırdı'
+              s155: false
+              s155Text: ''
+            anyMinor: 0
+            balanceMinor: 590000
+          dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb|2026-09-16:
+            recordId: 'dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb'
+            date: '2026-09-16'
+            limitMinor: 0
+            offerMinor: 0
+            why: 'closed'
+            whyText: 'kayıt kapalı'
+            s155: false
+            s155Text: ''
+            blocked: 'before'
+            blockedText: 'tarih şüpheli kaydın tarihinden (17.09.2026) önce'
+            today:
+              date: '2026-10-15'
+              limitMinor: 0
+              offerMinor: 0
+              why: 'remaining'
+              whyText: 'kayıtta kalan şüpheli tutar'
+              s155: false
+              s155Text: ''
+            best:
+              date: '2026-09-17'
+              limitMinor: 0
+              offerMinor: 0
+              why: 'later'
+              whyText: 'daha fazlası sonraki bir Değersiz Alacak satırını ya da carinin başka bir şüpheli kaydını kalanın dışına taşırırdı'
+              s155: false
+              s155Text: ''
+            anyMinor: 0
+            balanceMinor: 590000
+          dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb|2026-09-17:
+            recordId: 'dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb'
+            date: '2026-09-17'
+            limitMinor: 0
+            offerMinor: 0
+            why: 'later'
+            whyText: 'daha fazlası sonraki bir Değersiz Alacak satırını ya da carinin başka bir şüpheli kaydını kalanın dışına taşırırdı'
+            s155: false
+            s155Text: ''
+            blocked: ''
+            blockedText: ''
+            today:
+              date: '2026-10-15'
+              limitMinor: 0
+              offerMinor: 0
+              why: 'remaining'
+              whyText: 'kayıtta kalan şüpheli tutar'
+              s155: false
+              s155Text: ''
+            best:
+              date: '2026-09-17'
+              limitMinor: 0
+              offerMinor: 0
+              why: 'later'
+              whyText: 'daha fazlası sonraki bir Değersiz Alacak satırını ya da carinin başka bir şüpheli kaydını kalanın dışına taşırırdı'
+              s155: false
+              s155Text: ''
+            anyMinor: 0
+            balanceMinor: 590000
+          dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb|2026-09-19:
+            recordId: 'dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb'
+            date: '2026-09-19'
+            limitMinor: 0
+            offerMinor: 0
+            why: 'remaining'
+            whyText: 'kayıtta kalan şüpheli tutar'
+            s155: false
+            s155Text: ''
+            blocked: ''
+            blockedText: ''
+            today:
+              date: '2026-10-15'
+              limitMinor: 0
+              offerMinor: 0
+              why: 'remaining'
+              whyText: 'kayıtta kalan şüpheli tutar'
+              s155: false
+              s155Text: ''
+            best:
+              date: '2026-09-17'
+              limitMinor: 0
+              offerMinor: 0
+              why: 'later'
+              whyText: 'daha fazlası sonraki bir Değersiz Alacak satırını ya da carinin başka bir şüpheli kaydını kalanın dışına taşırırdı'
+              s155: false
+              s155Text: ''
+            anyMinor: 0
+            balanceMinor: 590000
+          dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb|2026-09-25:
+            recordId: 'dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb'
+            date: '2026-09-25'
+            limitMinor: 0
+            offerMinor: 0
+            why: 'remaining'
+            whyText: 'kayıtta kalan şüpheli tutar'
+            s155: false
+            s155Text: ''
+            blocked: ''
+            blockedText: ''
+            today:
+              date: '2026-10-15'
+              limitMinor: 0
+              offerMinor: 0
+              why: 'remaining'
+              whyText: 'kayıtta kalan şüpheli tutar'
+              s155: false
+              s155Text: ''
+            best:
+              date: '2026-09-17'
+              limitMinor: 0
+              offerMinor: 0
+              why: 'later'
+              whyText: 'daha fazlası sonraki bir Değersiz Alacak satırını ya da carinin başka bir şüpheli kaydını kalanın dışına taşırırdı'
+              s155: false
+              s155Text: ''
+            anyMinor: 0
+            balanceMinor: 590000
+          dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb|2026-09-30:
+            recordId: 'dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb'
+            date: '2026-09-30'
+            limitMinor: 0
+            offerMinor: 0
+            why: 'remaining'
+            whyText: 'kayıtta kalan şüpheli tutar'
+            s155: false
+            s155Text: ''
+            blocked: ''
+            blockedText: ''
+            today:
+              date: '2026-10-15'
+              limitMinor: 0
+              offerMinor: 0
+              why: 'remaining'
+              whyText: 'kayıtta kalan şüpheli tutar'
+              s155: false
+              s155Text: ''
+            best:
+              date: '2026-09-17'
+              limitMinor: 0
+              offerMinor: 0
+              why: 'later'
+              whyText: 'daha fazlası sonraki bir Değersiz Alacak satırını ya da carinin başka bir şüpheli kaydını kalanın dışına taşırırdı'
+              s155: false
+              s155Text: ''
+            anyMinor: 0
+            balanceMinor: 590000
+          dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb|2026-10-01:
+            recordId: 'dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb'
+            date: '2026-10-01'
+            limitMinor: 0
+            offerMinor: 0
+            why: 'remaining'
+            whyText: 'kayıtta kalan şüpheli tutar'
+            s155: false
+            s155Text: ''
+            blocked: ''
+            blockedText: ''
+            today:
+              date: '2026-10-15'
+              limitMinor: 0
+              offerMinor: 0
+              why: 'remaining'
+              whyText: 'kayıtta kalan şüpheli tutar'
+              s155: false
+              s155Text: ''
+            best:
+              date: '2026-09-17'
+              limitMinor: 0
+              offerMinor: 0
+              why: 'later'
+              whyText: 'daha fazlası sonraki bir Değersiz Alacak satırını ya da carinin başka bir şüpheli kaydını kalanın dışına taşırırdı'
+              s155: false
+              s155Text: ''
+            anyMinor: 0
+            balanceMinor: 590000
+          dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb|2026-10-07:
+            recordId: 'dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb'
+            date: '2026-10-07'
+            limitMinor: 0
+            offerMinor: 0
+            why: 'remaining'
+            whyText: 'kayıtta kalan şüpheli tutar'
+            s155: false
+            s155Text: ''
+            blocked: ''
+            blockedText: ''
+            today:
+              date: '2026-10-15'
+              limitMinor: 0
+              offerMinor: 0
+              why: 'remaining'
+              whyText: 'kayıtta kalan şüpheli tutar'
+              s155: false
+              s155Text: ''
+            best:
+              date: '2026-09-17'
+              limitMinor: 0
+              offerMinor: 0
+              why: 'later'
+              whyText: 'daha fazlası sonraki bir Değersiz Alacak satırını ya da carinin başka bir şüpheli kaydını kalanın dışına taşırırdı'
+              s155: false
+              s155Text: ''
+            anyMinor: 0
+            balanceMinor: 590000
+          dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb|2026-10-15:
+            recordId: 'dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb'
+            date: '2026-10-15'
+            limitMinor: 0
+            offerMinor: 0
+            why: 'remaining'
+            whyText: 'kayıtta kalan şüpheli tutar'
+            s155: false
+            s155Text: ''
+            blocked: ''
+            blockedText: ''
+            today:
+              date: '2026-10-15'
+              limitMinor: 0
+              offerMinor: 0
+              why: 'remaining'
+              whyText: 'kayıtta kalan şüpheli tutar'
+              s155: false
+              s155Text: ''
+            best:
+              date: '2026-09-17'
+              limitMinor: 0
+              offerMinor: 0
+              why: 'later'
+              whyText: 'daha fazlası sonraki bir Değersiz Alacak satırını ya da carinin başka bir şüpheli kaydını kalanın dışına taşırırdı'
+              s155: false
+              s155Text: ''
+            anyMinor: 0
+            balanceMinor: 590000
+      actual:
+        records:
+          0:
+            id: 'dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb'
+            writeOff:
+              anyMinor: 80842
+              today:
+                date: '2026-10-15'
+                limitMinor: 0
+                offerMinor: 0
+                why: 'remaining'
+                whyText: 'kayıtta kalan şüpheli tutar'
+                s155: false
+                s155Text: ''
+              best:
+                date: '2026-09-17'
+                limitMinor: 80842
+                offerMinor: 80842
+                why: 'sameDay'
+                whyText: "kayıtta kalan şüpheli tutar — o günün faturaya bağlı tahsilatı Değersiz'den sonra sayılır, bağsız tahsilatlar tarihi ne olursa olsun düşülür"
+                s155: false
+                s155Text: ''
+        quotes:
+          dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb|2026-09-12:
+            recordId: 'dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb'
+            date: '2026-09-12'
+            limitMinor: 0
+            offerMinor: 0
+            why: 'closed'
+            whyText: 'kayıt kapalı'
+            s155: false
+            s155Text: ''
+            blocked: 'before'
+            blockedText: 'tarih şüpheli kaydın tarihinden (17.09.2026) önce'
+            today:
+              date: '2026-10-15'
+              limitMinor: 0
+              offerMinor: 0
+              why: 'remaining'
+              whyText: 'kayıtta kalan şüpheli tutar'
+              s155: false
+              s155Text: ''
+            best:
+              date: '2026-09-17'
+              limitMinor: 80842
+              offerMinor: 80842
+              why: 'sameDay'
+              whyText: "kayıtta kalan şüpheli tutar — o günün faturaya bağlı tahsilatı Değersiz'den sonra sayılır, bağsız tahsilatlar tarihi ne olursa olsun düşülür"
+              s155: false
+              s155Text: ''
+            anyMinor: 80842
+            balanceMinor: 590000
+          dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb|2026-09-13:
+            recordId: 'dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb'
+            date: '2026-09-13'
+            limitMinor: 0
+            offerMinor: 0
+            why: 'closed'
+            whyText: 'kayıt kapalı'
+            s155: false
+            s155Text: ''
+            blocked: 'before'
+            blockedText: 'tarih şüpheli kaydın tarihinden (17.09.2026) önce'
+            today:
+              date: '2026-10-15'
+              limitMinor: 0
+              offerMinor: 0
+              why: 'remaining'
+              whyText: 'kayıtta kalan şüpheli tutar'
+              s155: false
+              s155Text: ''
+            best:
+              date: '2026-09-17'
+              limitMinor: 80842
+              offerMinor: 80842
+              why: 'sameDay'
+              whyText: "kayıtta kalan şüpheli tutar — o günün faturaya bağlı tahsilatı Değersiz'den sonra sayılır, bağsız tahsilatlar tarihi ne olursa olsun düşülür"
+              s155: false
+              s155Text: ''
+            anyMinor: 80842
+            balanceMinor: 590000
+          dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb|2026-09-16:
+            recordId: 'dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb'
+            date: '2026-09-16'
+            limitMinor: 0
+            offerMinor: 0
+            why: 'closed'
+            whyText: 'kayıt kapalı'
+            s155: false
+            s155Text: ''
+            blocked: 'before'
+            blockedText: 'tarih şüpheli kaydın tarihinden (17.09.2026) önce'
+            today:
+              date: '2026-10-15'
+              limitMinor: 0
+              offerMinor: 0
+              why: 'remaining'
+              whyText: 'kayıtta kalan şüpheli tutar'
+              s155: false
+              s155Text: ''
+            best:
+              date: '2026-09-17'
+              limitMinor: 80842
+              offerMinor: 80842
+              why: 'sameDay'
+              whyText: "kayıtta kalan şüpheli tutar — o günün faturaya bağlı tahsilatı Değersiz'den sonra sayılır, bağsız tahsilatlar tarihi ne olursa olsun düşülür"
+              s155: false
+              s155Text: ''
+            anyMinor: 80842
+            balanceMinor: 590000
+          dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb|2026-09-17:
+            recordId: 'dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb'
+            date: '2026-09-17'
+            limitMinor: 80842
+            offerMinor: 80842
+            why: 'sameDay'
+            whyText: "kayıtta kalan şüpheli tutar — o günün faturaya bağlı tahsilatı Değersiz'den sonra sayılır, bağsız tahsilatlar tarihi ne olursa olsun düşülür"
+            s155: false
+            s155Text: ''
+            blocked: ''
+            blockedText: ''
+            today:
+              date: '2026-10-15'
+              limitMinor: 0
+              offerMinor: 0
+              why: 'remaining'
+              whyText: 'kayıtta kalan şüpheli tutar'
+              s155: false
+              s155Text: ''
+            best:
+              date: '2026-09-17'
+              limitMinor: 80842
+              offerMinor: 80842
+              why: 'sameDay'
+              whyText: "kayıtta kalan şüpheli tutar — o günün faturaya bağlı tahsilatı Değersiz'den sonra sayılır, bağsız tahsilatlar tarihi ne olursa olsun düşülür"
+              s155: false
+              s155Text: ''
+            anyMinor: 80842
+            balanceMinor: 590000
+          dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb|2026-09-19:
+            recordId: 'dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb'
+            date: '2026-09-19'
+            limitMinor: 0
+            offerMinor: 0
+            why: 'remaining'
+            whyText: 'kayıtta kalan şüpheli tutar'
+            s155: false
+            s155Text: ''
+            blocked: ''
+            blockedText: ''
+            today:
+              date: '2026-10-15'
+              limitMinor: 0
+              offerMinor: 0
+              why: 'remaining'
+              whyText: 'kayıtta kalan şüpheli tutar'
+              s155: false
+              s155Text: ''
+            best:
+              date: '2026-09-17'
+              limitMinor: 80842
+              offerMinor: 80842
+              why: 'sameDay'
+              whyText: "kayıtta kalan şüpheli tutar — o günün faturaya bağlı tahsilatı Değersiz'den sonra sayılır, bağsız tahsilatlar tarihi ne olursa olsun düşülür"
+              s155: false
+              s155Text: ''
+            anyMinor: 80842
+            balanceMinor: 590000
+          dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb|2026-09-25:
+            recordId: 'dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb'
+            date: '2026-09-25'
+            limitMinor: 0
+            offerMinor: 0
+            why: 'remaining'
+            whyText: 'kayıtta kalan şüpheli tutar'
+            s155: false
+            s155Text: ''
+            blocked: ''
+            blockedText: ''
+            today:
+              date: '2026-10-15'
+              limitMinor: 0
+              offerMinor: 0
+              why: 'remaining'
+              whyText: 'kayıtta kalan şüpheli tutar'
+              s155: false
+              s155Text: ''
+            best:
+              date: '2026-09-17'
+              limitMinor: 80842
+              offerMinor: 80842
+              why: 'sameDay'
+              whyText: "kayıtta kalan şüpheli tutar — o günün faturaya bağlı tahsilatı Değersiz'den sonra sayılır, bağsız tahsilatlar tarihi ne olursa olsun düşülür"
+              s155: false
+              s155Text: ''
+            anyMinor: 80842
+            balanceMinor: 590000
+          dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb|2026-09-30:
+            recordId: 'dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb'
+            date: '2026-09-30'
+            limitMinor: 0
+            offerMinor: 0
+            why: 'remaining'
+            whyText: 'kayıtta kalan şüpheli tutar'
+            s155: false
+            s155Text: ''
+            blocked: ''
+            blockedText: ''
+            today:
+              date: '2026-10-15'
+              limitMinor: 0
+              offerMinor: 0
+              why: 'remaining'
+              whyText: 'kayıtta kalan şüpheli tutar'
+              s155: false
+              s155Text: ''
+            best:
+              date: '2026-09-17'
+              limitMinor: 80842
+              offerMinor: 80842
+              why: 'sameDay'
+              whyText: "kayıtta kalan şüpheli tutar — o günün faturaya bağlı tahsilatı Değersiz'den sonra sayılır, bağsız tahsilatlar tarihi ne olursa olsun düşülür"
+              s155: false
+              s155Text: ''
+            anyMinor: 80842
+            balanceMinor: 590000
+          dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb|2026-10-01:
+            recordId: 'dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb'
+            date: '2026-10-01'
+            limitMinor: 0
+            offerMinor: 0
+            why: 'remaining'
+            whyText: 'kayıtta kalan şüpheli tutar'
+            s155: false
+            s155Text: ''
+            blocked: ''
+            blockedText: ''
+            today:
+              date: '2026-10-15'
+              limitMinor: 0
+              offerMinor: 0
+              why: 'remaining'
+              whyText: 'kayıtta kalan şüpheli tutar'
+              s155: false
+              s155Text: ''
+            best:
+              date: '2026-09-17'
+              limitMinor: 80842
+              offerMinor: 80842
+              why: 'sameDay'
+              whyText: "kayıtta kalan şüpheli tutar — o günün faturaya bağlı tahsilatı Değersiz'den sonra sayılır, bağsız tahsilatlar tarihi ne olursa olsun düşülür"
+              s155: false
+              s155Text: ''
+            anyMinor: 80842
+            balanceMinor: 590000
+          dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb|2026-10-07:
+            recordId: 'dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb'
+            date: '2026-10-07'
+            limitMinor: 0
+            offerMinor: 0
+            why: 'remaining'
+            whyText: 'kayıtta kalan şüpheli tutar'
+            s155: false
+            s155Text: ''
+            blocked: ''
+            blockedText: ''
+            today:
+              date: '2026-10-15'
+              limitMinor: 0
+              offerMinor: 0
+              why: 'remaining'
+              whyText: 'kayıtta kalan şüpheli tutar'
+              s155: false
+              s155Text: ''
+            best:
+              date: '2026-09-17'
+              limitMinor: 80842
+              offerMinor: 80842
+              why: 'sameDay'
+              whyText: "kayıtta kalan şüpheli tutar — o günün faturaya bağlı tahsilatı Değersiz'den sonra sayılır, bağsız tahsilatlar tarihi ne olursa olsun düşülür"
+              s155: false
+              s155Text: ''
+            anyMinor: 80842
+            balanceMinor: 590000
+          dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb|2026-10-15:
+            recordId: 'dbt-fae1de44-77ae-4852-be4f-fe2b55564bdb'
+            date: '2026-10-15'
+            limitMinor: 0
+            offerMinor: 0
+            why: 'remaining'
+            whyText: 'kayıtta kalan şüpheli tutar'
+            s155: false
+            s155Text: ''
+            blocked: ''
+            blockedText: ''
+            today:
+              date: '2026-10-15'
+              limitMinor: 0
+              offerMinor: 0
+              why: 'remaining'
+              whyText: 'kayıtta kalan şüpheli tutar'
+              s155: false
+              s155Text: ''
+            best:
+              date: '2026-09-17'
+              limitMinor: 80842
+              offerMinor: 80842
+              why: 'sameDay'
+              whyText: "kayıtta kalan şüpheli tutar — o günün faturaya bağlı tahsilatı Değersiz'den sonra sayılır, bağsız tahsilatlar tarihi ne olursa olsun düşülür"
+              s155: false
+              s155Text: ''
+            anyMinor: 80842
+            balanceMinor: 590000
+      operator: 'deepStrictEqual'
+      stack: |-
+        compare (file:///dev/shm/m2t2-a2da/mut/test/supheli-degersiz-hiz-m2t2-251.test.mjs:210:18)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/m2t2-a2da/mut/test/supheli-degersiz-hiz-m2t2-251.test.mjs:278:13)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..4
+not ok 4 - 2.5.1 M2 tur 2 — Değersiz sınırı hız düzeltmesi: tur 1'in tam hesabıyla BİREBİR (liste, form ucu, işlem içi yol; F(S, D) günle artmaz)
+  ---
+  duration_ms: 23900.160449
+  type: 'suite'
+  location: '/dev/shm/m2t2-a2da/mut/test/supheli-degersiz-hiz-m2t2-251.test.mjs:190:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:18245) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.1 M2 tur 2 — S-DKM2-2 = A: Değersiz'den sonra iptal de iade de cariyi eksiye düşürecekse reddedilir
+    # Subtest: fatura iptali → 409 doubtful-writeoff-balance, dört parçalı ileti (en çok 123,55); hiçbir şey yazılmaz
+    ok 1 - fatura iptali → 409 doubtful-writeoff-balance, dört parçalı ileti (en çok 123,55); hiçbir şey yazılmaz
+      ---
+      duration_ms: 733.679747
+      type: 'test'
+      ...
+    # Subtest: fatura silme (iptali çağırır) → aynı ret; fatura yerinde
+    ok 2 - fatura silme (iptali çağırır) → aynı ret; fatura yerinde
+      ---
+      duration_ms: 688.701387
+      type: 'test'
+      ...
+    # Subtest: tam iade → 409, ileti 'İade faturası kaydedilemez' (en çok 100,00); iade yazılmaz
+    ok 3 - tam iade → 409, ileti 'İade faturası kaydedilemez' (en çok 100,00); iade yazılmaz
+      ---
+      duration_ms: 729.996076
+      type: 'test'
+      ...
+    # Subtest: iade cariyi eksiye düşürmüyorsa kabul; iadenin Düzenle'si eksiye düşürünce 409 (öncesi Düzenle'den önceki bakiye)
+    ok 4 - iade cariyi eksiye düşürmüyorsa kabul; iadenin Düzenle'si eksiye düşürünce 409 (öncesi Düzenle'den önceki bakiye)
+      ---
+      duration_ms: 772.134563
+      type: 'test'
+      ...
+    # Subtest: iptal cariyi eksiye düşürmüyorsa kabul ve Mutabakat yeşil (bağı kopan tahsilat değişmez (i)'de 'sonradan değişmiş')
+    ok 5 - iptal cariyi eksiye düşürmüyorsa kabul ve Mutabakat yeşil (bağı kopan tahsilat değişmez (i)'de 'sonradan değişmiş')
+      ---
+      duration_ms: 603.980286
+      type: 'test'
+      ...
+    1..5
+ok 5 - 2.5.1 M2 tur 2 — S-DKM2-2 = A: Değersiz'den sonra iptal de iade de cariyi eksiye düşürecekse reddedilir
+  ---
+  duration_ms: 3529.617941
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M2 tur 2 — S-DKM2-2 sınırı: Değersiz olmadan da eksi kalacak iptal (soru açık) bugünkü gibi kabul
+    # Subtest: avanslı caride iptal 200, bakiye −5.476,45, Mutabakat tamam
+    ok 1 - avanslı caride iptal 200, bakiye −5.476,45, Mutabakat tamam
+      ---
+      duration_ms: 835.476178
+      type: 'test'
+      ...
+    1..1
+ok 6 - 2.5.1 M2 tur 2 — S-DKM2-2 sınırı: Değersiz olmadan da eksi kalacak iptal (soru açık) bugünkü gibi kabul
+  ---
+  duration_ms: 835.85683
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M2 tur 2 — v2.5.0'ın GERÇEK verisi (Değersiz → iptal o sürümde kabul): Mutabakat yanlış kırmızıya düşmez
+    # Subtest: fixture (v2.5.0 üretimi): Mutabakat tamam; sonraki işlem ve Değersiz satırını silme kabul
+    ok 1 - fixture (v2.5.0 üretimi): Mutabakat tamam; sonraki işlem ve Değersiz satırını silme kabul
+      ---
+      duration_ms: 354.660807
+      type: 'test'
+      ...
+    1..1
+ok 7 - 2.5.1 M2 tur 2 — v2.5.0'ın GERÇEK verisi (Değersiz → iptal o sürümde kabul): Mutabakat yanlış kırmızıya düşmez
+  ---
+  duration_ms: 354.975854
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M2 tur 2 — S-DKM2-3 = C: öbür kaydın silinmesi reddi KALIR, ileti doğru anlatır
+    # Subtest: S2 silinirse bağsız tahsilat Değersiz yazılan S1'e düşer → 409 doubtful-delete-conflict, dört parçalı ileti; S2 yerinde, bakiye 2.300
+    ok 1 - S2 silinirse bağsız tahsilat Değersiz yazılan S1'e düşer → 409 doubtful-delete-conflict, dört parçalı ileti; S2 yerinde, bakiye 2.300
+      ---
+      duration_ms: 585.966089
+      type: 'test'
+      ...
+    1..1
+ok 8 - 2.5.1 M2 tur 2 — S-DKM2-3 = C: öbür kaydın silinmesi reddi KALIR, ileti doğru anlatır
+  ---
+  duration_ms: 586.16964
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M2 tur 2 — kapı reddinin iletisi: yalnız Değersiz sınırı (S270) nedeniyse anlaşılır Türkçe cümle
+    # Subtest: writeoff-limit / writeoff-balance → ne oldu / neden / ne yapmalı / nereye; başka nedenle birlikteyse genel ileti
+    ok 1 - writeoff-limit / writeoff-balance → ne oldu / neden / ne yapmalı / nereye; başka nedenle birlikteyse genel ileti
+      ---
+      duration_ms: 0.986969
+      type: 'test'
+      ...
+    1..1
+ok 9 - 2.5.1 M2 tur 2 — kapı reddinin iletisi: yalnız Değersiz sınırı (S270) nedeniyse anlaşılır Türkçe cümle
+  ---
+  duration_ms: 1.20758
+  type: 'suite'
+  ...
+# (node:18246) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:18246) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: M2 — sınıflar (kâhin d62 elle beklenenleri; girdi §3 m.1–m.12)
+    # Subtest: her adımın sonucu (durum + kod) beklenen
+    not ok 1 - her adımın sonucu (durum + kod) beklenen
+      ---
+      duration_ms: 3.056186
+      type: 'test'
+      location: '/dev/shm/m2t2-a2da/mut/test/supheli-degersiz-siniri-m2-251.test.mjs:89:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   'a6d3: beklenen [409,"doubtful-closed"], program 400 doubtful-writeoff-exceeds Değersiz alacak yazılamadı: carinin başka bir Değersiz Alacak satırı kalanın dışına taşardı. Hiçbir şey kaydedilmedi.',
+        +   'a21d3: beklenen [409,"doubtful-closed"], program 400 doubtful-writeoff-exceeds Değersiz alacak yazılamadı: carinin başka bir Değersiz Alacak satırı kalanın dışına taşardı. Hiçbir şey kaydedilmedi.'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'a6d3: beklenen [409,"doubtful-closed"], program 400 doubtful-writeoff-exceeds Değersiz alacak yazılamadı: carinin başka bir Değersiz Alacak satırı kalanın dışına taşardı. Hiçbir şey kaydedilmedi.'
+        1: 'a21d3: beklenen [409,"doubtful-closed"], program 400 doubtful-writeoff-exceeds Değersiz alacak yazılamadı: carinin başka bir Değersiz Alacak satırı kalanın dışına taşardı. Hiçbir şey kaydedilmedi.'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m2t2-a2da/mut/test/supheli-degersiz-siniri-m2-251.test.mjs:96:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: carilerin bakiyesi (k1)
+    ok 2 - carilerin bakiyesi (k1)
+      ---
+      duration_ms: 0.385374
+      type: 'test'
+      ...
+    # Subtest: liste / form ucunun okuduğu defter bakiyesi her caride cari kartının bakiyesiyle aynı (yazım yolu kartın bakiyesini okur)
+    ok 3 - liste / form ucunun okuduğu defter bakiyesi her caride cari kartının bakiyesiyle aynı (yazım yolu kartın bakiyesini okur)
+      ---
+      duration_ms: 2.116687
+      type: 'test'
+      ...
+    # Subtest: Mutabakat Testi tamam (değişmez; m.10 düzeltmeleri ve m.11 avansı reddedilmedi, ihlal yok)
+    ok 4 - Mutabakat Testi tamam (değişmez; m.10 düzeltmeleri ve m.11 avansı reddedilmedi, ihlal yok)
+      ---
+      duration_ms: 66.041361
+      type: 'test'
+      ...
+    # Subtest: ret iletileri gerçek sınırı ve nedeni söyler (dk-ud3 DÜŞÜK-1, dk-ud4 'breaks')
+    not ok 5 - ret iletileri gerçek sınırı ve nedeni söyler (dk-ud3 DÜŞÜK-1, dk-ud4 'breaks')
+      ---
+      duration_ms: 0.492602
+      type: 'test'
+      location: '/dev/shm/m2t2-a2da/mut/test/supheli-degersiz-siniri-m2-251.test.mjs:111:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        The input did not match the regular expression /en çok tutarı \(23,55 TL\) aşıyor/. Input:
+        
+        'Değersiz alacak yazılamadı: carinin başka bir Değersiz Alacak satırı kalanın dışına taşardı. Hiçbir şey kaydedilmedi.'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: 'Değersiz alacak yazılamadı: carinin başka bir Değersiz Alacak satırı kalanın dışına taşardı. Hiçbir şey kaydedilmedi.'
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m2t2-a2da/mut/test/supheli-degersiz-siniri-m2-251.test.mjs:112:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: kayıtların durumu: kısmi zincir (A2 / A3) ve bağlı = şüpheli (A4) Değersiz Yazıldı, kalan 0
+    ok 6 - kayıtların durumu: kısmi zincir (A2 / A3) ve bağlı = şüpheli (A4) Değersiz Yazıldı, kalan 0
+      ---
+      duration_ms: 0.314875
+      type: 'test'
+      ...
+    1..6
+not ok 10 - M2 — sınıflar (kâhin d62 elle beklenenleri; girdi §3 m.1–m.12)
+  ---
+  duration_ms: 12640.646286
+  type: 'suite'
+  location: '/dev/shm/m2t2-a2da/mut/test/supheli-degersiz-siniri-m2-251.test.mjs:80:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: M2 — liste 'writeOff' alanı, formun sınır ucu ve bildirim (S268 / S269 / Y30-6; girdi §2 m.5)
+    # Subtest: S269: kısmi Değersiz'den sonra kayıt 'Değersiz Yazıldı' (kalan 0) görünür ama yazılabilir — liste alanı 17.09 tarihiyle 2.000, bugün 0
+    ok 1 - S269: kısmi Değersiz'den sonra kayıt 'Değersiz Yazıldı' (kalan 0) görünür ama yazılabilir — liste alanı 17.09 tarihiyle 2.000, bugün 0
+      ---
+      duration_ms: 3.832805
+      type: 'test'
+      ...
+    # Subtest: formun ucu: seçilen tarihin sınırı + en çok yazdıran gün; kayıttan önce / ileri tarih yazılamaz
+    ok 2 - formun ucu: seçilen tarihin sınırı + en çok yazdıran gün; kayıttan önce / ileri tarih yazılamaz
+      ---
+      duration_ms: 9.703652
+      type: 'test'
+      ...
+    # Subtest: S-M2-1 = B: @17.09 3.000 (o günün bağlı payından önce), @18.09 123,55 (önceki günün payı düşülmüş); sonradan gelen bağsız (S270) @17.09 2.000
+    ok 3 - S-M2-1 = B: @17.09 3.000 (o günün bağlı payından önce), @18.09 123,55 (önceki günün payı düşülmüş); sonradan gelen bağsız (S270) @17.09 2.000
+      ---
+      duration_ms: 9.512351
+      type: 'test'
+      ...
+    # Subtest: Y30-6: S155 — sınır 3.000, önerilen 2.923,55 (öbür açık kayıt 500); önerilen tutar kabul, sınır reddedilir
+    ok 4 - Y30-6: S155 — sınır 3.000, önerilen 2.923,55 (öbür açık kayıt 500); önerilen tutar kabul, sınır reddedilir
+      ---
+      duration_ms: 72.606454
+      type: 'test'
+      ...
+    # Subtest: bildirim verisi: bu yazımın tutarı, yazımdan sonraki gerçek kalan ve aynı tarihle daha yazılabilecek tutar
+    ok 5 - bildirim verisi: bu yazımın tutarı, yazımdan sonraki gerçek kalan ve aynı tarihle daha yazılabilecek tutar
+      ---
+      duration_ms: 33.872908
+      type: 'test'
+      ...
+    # Subtest: Değersiz'den SONRA Şüpheliden Çıkar kabul; değişmez çıkarılmış kaydı Değersiz anının dünyasında açık sayar (ihlal yok)
+    ok 6 - Değersiz'den SONRA Şüpheliden Çıkar kabul; değişmez çıkarılmış kaydı Değersiz anının dünyasında açık sayar (ihlal yok)
+      ---
+      duration_ms: 6.886727
+      type: 'test'
+      ...
+# (node:18246) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: m.12 Dönem Kilidi 17.09: liste en çok yazdıran gün 18.09 (123,55), formun ucu 17.09'u kilitli söyler
+    ok 7 - m.12 Dönem Kilidi 17.09: liste en çok yazdıran gün 18.09 (123,55), formun ucu 17.09'u kilitli söyler
+      ---
+      duration_ms: 264.293613
+      type: 'test'
+      ...
+    1..7
+ok 11 - M2 — liste 'writeOff' alanı, formun sınır ucu ve bildirim (S268 / S269 / Y30-6; girdi §2 m.5)
+  ---
+  duration_ms: 1620.010202
+  type: 'suite'
+  ...
+# Subtest: M2 — S270 değişmezi: geri alınan uygulamanın bozuk durumu (Değersiz 3.000, bakiye −576,45) Mutabakat Testi'nde ve kapıda YAKALANIR
+    # Subtest: meşru sıra temiz; bağsız tahsilat Değersiz'den ÖNCE yazılmış ve Değersiz 3.000 yapılınca (geri alınan uygulamanın durumu, bakiye −576,45) iki koşul da kırmızı, kapı sonraki yazımı reddeder
+    ok 1 - meşru sıra temiz; bağsız tahsilat Değersiz'den ÖNCE yazılmış ve Değersiz 3.000 yapılınca (geri alınan uygulamanın durumu, bakiye −576,45) iki koşul da kırmızı, kapı sonraki yazımı reddeder
+      ---
+      duration_ms: 50.395961
+      type: 'test'
+      ...
+    1..1
+ok 12 - M2 — S270 değişmezi: geri alınan uygulamanın bozuk durumu (Değersiz 3.000, bakiye −576,45) Mutabakat Testi'nde ve kapıda YAKALANIR
+  ---
+  duration_ms: 717.885527
+  type: 'suite'
+  ...
+# Subtest: M2 — iki şirket ve yedekten geri yükleme (ders 17)
+    # Subtest: 002'de aynı sınıflar aynı sonucu verir (sınır işlevi şirketler arasında bellek paylaşmaz); 001'in yedeği geri yüklenince sınır ve öneri aynı
+    ok 1 - 002'de aynı sınıflar aynı sonucu verir (sınır işlevi şirketler arasında bellek paylaşmaz); 001'in yedeği geri yüklenince sınır ve öneri aynı
+      ---
+      duration_ms: 3011.417454
+      type: 'test'
+      ...
+    1..1
+ok 13 - M2 — iki şirket ve yedekten geri yükleme (ders 17)
+  ---
+  duration_ms: 3058.568749
+  type: 'suite'
+  ...
+# \# M2 rastgele tohum 1: {"written":12,"refusedOver":34,"restored":1}
+# Subtest: M2 — rastgele sıra, tohum 1 (girdi §3 m.13)
+    # Subtest: her Değersiz adımında: önerilen tutar KABUL, sınır + 0,01 RET, bakiye ≥ 0; her adımda değişmez boş; sonda Mutabakat Testi tamam
+    ok 1 - her Değersiz adımında: önerilen tutar KABUL, sınır + 0,01 RET, bakiye ≥ 0; her adımda değişmez boş; sonda Mutabakat Testi tamam
+      ---
+      duration_ms: 3143.352773
+      type: 'test'
+      ...
+    1..1
+ok 14 - M2 — rastgele sıra, tohum 1 (girdi §3 m.13)
+  ---
+  duration_ms: 3593.244115
+  type: 'suite'
+  ...
+# \# M2 rastgele tohum 2: {"written":5,"refusedOver":21,"restored":0}
+# Subtest: M2 — rastgele sıra, tohum 2 (girdi §3 m.13)
+    # Subtest: her Değersiz adımında: önerilen tutar KABUL, sınır + 0,01 RET, bakiye ≥ 0; her adımda değişmez boş; sonda Mutabakat Testi tamam
+    ok 1 - her Değersiz adımında: önerilen tutar KABUL, sınır + 0,01 RET, bakiye ≥ 0; her adımda değişmez boş; sonda Mutabakat Testi tamam
+      ---
+      duration_ms: 3214.12205
+      type: 'test'
+      ...
+    1..1
+ok 15 - M2 — rastgele sıra, tohum 2 (girdi §3 m.13)
+  ---
+  duration_ms: 3638.769338
+  type: 'suite'
+  ...
+# Subtest: M2 — rastgele sıra, tohum 3 (girdi §3 m.13)
+    # Subtest: her Değersiz adımında: önerilen tutar KABUL, sınır + 0,01 RET, bakiye ≥ 0; her adımda değişmez boş; sonda Mutabakat Testi tamam
+    not ok 1 - her Değersiz adımında: önerilen tutar KABUL, sınır + 0,01 RET, bakiye ≥ 0; her adımda değişmez boş; sonda Mutabakat Testi tamam
+      ---
+      duration_ms: 637.382928
+      type: 'test'
+      location: '/dev/shm/m2t2-a2da/mut/test/supheli-degersiz-siniri-m2-251.test.mjs:287:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        tohum 3 cari 2 adım 7: önerilen 84,31 @2026-09-17 reddedildi: doubtful-writeoff-exceeds Değersiz alacak yazılamadı: carinin başka bir Değersiz Alacak satırı kalanın dışına taşardı. Hiçbir şey kaydedilmedi.
+        
+        400 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 400
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m2t2-a2da/mut/test/supheli-degersiz-siniri-m2-251.test.mjs:318:22)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..1
+not ok 16 - M2 — rastgele sıra, tohum 3 (girdi §3 m.13)
+  ---
+  duration_ms: 1159.091835
+  type: 'suite'
+  location: '/dev/shm/m2t2-a2da/mut/test/supheli-degersiz-siniri-m2-251.test.mjs:281:3'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..16
+# tests 34
+# suites 16
+# pass 29
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 29915.776323

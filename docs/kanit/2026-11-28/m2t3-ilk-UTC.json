@@ -1,0 +1,38 @@
+{
+  "ad": "m2t3-ilk-UTC",
+  "komut": "node --test test/supheli-degersiz-m2t3-251.test.mjs test/supheli-degersiz-iptal-iade-m2t2-251.test.mjs",
+  "commit": "56a06efb057467d6d3987d46b6efc7009a0549fa",
+  "dal": "worktree-agent-ae39a10810940388a",
+  "kirli": 3,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-28T02:26:59.419Z",
+  "sure_sn": 10.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 19,
+    "gecen": 18,
+    "basarisiz": 1,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 1 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.1 M2 tur 3 — S-M2T2-1 = A: Değersiz satırı olan caride eksiye götüren iptal / iade her durumda ret › kilitli dönemde dönem kilidi iletisi önce gelir (Değersiz denetimi değil)",
+      "konum": "test/supheli-degersiz-m2t3-251.test.mjs:117:3",
+      "hata": "Belge 10.09.2026 tarihli; 30.09.2026 ve öncesi kilitli dönem. Düzenlemek için dönem kilidi açılmalı. · + actual - expected · + 'invoice-locked' (beklenen period-locked, gelen invoice-locked)"
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/m2t3-ae39/kanit/2026-11-28/m2t3-ilk-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ae39a10810940388a",
+  "ham_cikti_sha256": "d4285bad471993fec5fc6aecdc8da81625aeab5401d259966688a5ca821cd590",
+  "ham_cikti_bayt": 10090
+}

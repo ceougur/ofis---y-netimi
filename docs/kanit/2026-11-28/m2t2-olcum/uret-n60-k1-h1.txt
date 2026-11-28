@@ -1,0 +1,4 @@
+(node:569) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+hedef Değersiz 200 
+kurulum sn 10.6 N 60 K 1

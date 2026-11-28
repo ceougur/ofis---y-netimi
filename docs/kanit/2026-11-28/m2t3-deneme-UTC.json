@@ -1,0 +1,32 @@
+{
+  "ad": "m2t3-deneme-UTC",
+  "komut": "node --test --test-name-pattern=DÜŞÜRMEYEN test/supheli-degersiz-m2t3-251.test.mjs",
+  "commit": "90c9ed94dc2827a8811120e8076f1fc33290a568",
+  "dal": "worktree-agent-ae39a10810940388a",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-28T02:32:56.068Z",
+  "sure_sn": 1.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 1,
+    "gecen": 1,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/m2t3-ae39/kanit/2026-11-28/m2t3-deneme-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ae39a10810940388a",
+  "ham_cikti_sha256": "5b71421de1393f8ee5549b026ec274a7222707838377e9d94fdae9269f3cc4a3",
+  "ham_cikti_bayt": 922
+}

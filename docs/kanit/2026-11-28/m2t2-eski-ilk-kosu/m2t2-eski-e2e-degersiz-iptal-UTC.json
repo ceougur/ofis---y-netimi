@@ -1,0 +1,68 @@
+{
+  "ad": "m2t2-eski-e2e-degersiz-iptal-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-degersiz-iptal-m2t2-251.mjs",
+  "commit": "08f1a2d75c99381929b5ab8e622448d9e82cc22a",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 5,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-28T00:43:28.207Z",
+  "sure_sn": 10.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 14,
+    "gecen": 7,
+    "basarisiz": 7,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 7 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "ileti ne oldu: \"İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Şüpheli Alacak Kayıtları (kayıt = başlık = karşılık = d\"",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "ileti neden (−2.476,45)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "ileti sınır (123,55)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "ileti ne yapmalı + nereye",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "bildirim: \"Şüpheli alacak kaydı silinemez: carinin öbür şüpheli kayıtları bozulurdu (20.09.2026 tarihli 3.000,00 TL Değersiz Alacak satırı yazıldığı andaki sınırı aşardı). Önce Değersiz Alacak satırını silin, so\"",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "bildirim ne yapmalı + nereye",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "eski (yanlış) anlatım yok",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/m2t2/kanit/2026-11-28/m2t2-eski-e2e-degersiz-iptal-UTC.log",
+  "klasor": "/dev/shm/m2t2-a2da/eski",
+  "ham_cikti_sha256": "8216be5e94151a3643fb7bc0e5455fe393144c778bc17a914588a16ad05435ff",
+  "ham_cikti_bayt": 1178
+}

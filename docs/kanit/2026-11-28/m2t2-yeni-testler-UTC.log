@@ -1,0 +1,163 @@
+TAP version 13
+# (node:10549) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.1 M2 tur 2 — S155 dalı ve aradaki bağlı tahsilat günü: kısa yol tam hesapla aynı, elle beklenen sınır / öneri
+    # Subtest: 17.09: sınır 3.000 / öneri 2.923,55; bugün 123,55; en iyi öneri 2.923,55 (en erken gün) ve önerilen tutar o günle kabul
+    ok 1 - 17.09: sınır 3.000 / öneri 2.923,55; bugün 123,55; en iyi öneri 2.923,55 (en erken gün) ve önerilen tutar o günle kabul
+      ---
+      duration_ms: 1594.551563
+      type: 'test'
+      ...
+    1..1
+ok 1 - 2.5.1 M2 tur 2 — S155 dalı ve aradaki bağlı tahsilat günü: kısa yol tam hesapla aynı, elle beklenen sınır / öneri
+  ---
+  duration_ms: 1596.738451
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M2 tur 2 — hız dişi: liste ve form ucunun iş sayısı bağlı tahsilat GÜNÜ sayısıyla büyümez
+    # Subtest: 30 bağlı tahsilat günü: liste 2 sınır hesabı + 0 deneme; Değersiz satırından sonra 2 sınır hesabı + ≤ 2 deneme; form ucu ≤ 3 sınır hesabı
+    ok 1 - 30 bağlı tahsilat günü: liste 2 sınır hesabı + 0 deneme; Değersiz satırından sonra 2 sınır hesabı + ≤ 2 deneme; form ucu ≤ 3 sınır hesabı
+      ---
+      duration_ms: 4507.76284
+      type: 'test'
+      ...
+    1..1
+ok 2 - 2.5.1 M2 tur 2 — hız dişi: liste ve form ucunun iş sayısı bağlı tahsilat GÜNÜ sayısıyla büyümez
+  ---
+  duration_ms: 4507.999204
+  type: 'suite'
+  ...
+# (node:10549) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:10549) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# \# M2T2 eşdeğerlik tohum 1: {"snapshots":136,"quotes":1810,"txQuotes":867,"monotone":3898,"writes":6,"partial":3,"restored":1,"released":1,"midBest":0,"proposalDiff":0,"laterTarget":20,"s155":0}
+# Subtest: 2.5.1 M2 tur 2 — Değersiz sınırı hız düzeltmesi: tur 1'in tam hesabıyla BİREBİR (liste, form ucu, işlem içi yol; F(S, D) günle artmaz)
+    # Subtest: tohum 1: 8 cari × 16 adım + dönem kilidi — her adımda kısa yol = tam hesap
+    ok 1 - tohum 1: 8 cari × 16 adım + dönem kilidi — her adımda kısa yol = tam hesap
+      ---
+      duration_ms: 12347.989269
+      type: 'test'
+      ...
+# (node:10549) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:10549) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# \# M2T2 eşdeğerlik tohum 2: {"snapshots":136,"quotes":1630,"txQuotes":824,"monotone":3658,"writes":8,"partial":2,"restored":1,"released":1,"midBest":0,"proposalDiff":0,"laterTarget":5,"s155":0}
+    # Subtest: tohum 2: 8 cari × 16 adım + dönem kilidi — her adımda kısa yol = tam hesap
+    ok 2 - tohum 2: 8 cari × 16 adım + dönem kilidi — her adımda kısa yol = tam hesap
+      ---
+      duration_ms: 9985.628716
+      type: 'test'
+      ...
+# (node:10549) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# \# M2T2 eşdeğerlik tohum 3: {"snapshots":136,"quotes":1750,"txQuotes":884,"monotone":3950,"writes":3,"partial":4,"restored":0,"released":1,"midBest":0,"proposalDiff":0,"laterTarget":42,"s155":0}
+    # Subtest: tohum 3: 8 cari × 16 adım + dönem kilidi — her adımda kısa yol = tam hesap
+    ok 3 - tohum 3: 8 cari × 16 adım + dönem kilidi — her adımda kısa yol = tam hesap
+      ---
+      duration_ms: 9472.544039
+      type: 'test'
+      ...
+# (node:10549) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# \# M2T2 eşdeğerlik tohum 4: {"snapshots":136,"quotes":1460,"txQuotes":757,"monotone":3302,"writes":4,"partial":1,"restored":1,"released":1,"midBest":0,"proposalDiff":0,"laterTarget":16,"s155":0}
+    # Subtest: tohum 4: 8 cari × 16 adım + dönem kilidi — her adımda kısa yol = tam hesap
+    ok 4 - tohum 4: 8 cari × 16 adım + dönem kilidi — her adımda kısa yol = tam hesap
+      ---
+      duration_ms: 8809.620845
+      type: 'test'
+      ...
+    1..4
+ok 3 - 2.5.1 M2 tur 2 — Değersiz sınırı hız düzeltmesi: tur 1'in tam hesabıyla BİREBİR (liste, form ucu, işlem içi yol; F(S, D) günle artmaz)
+  ---
+  duration_ms: 40616.433856
+  type: 'suite'
+  ...
+# (node:10550) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.1 M2 tur 2 — S-DKM2-2 = A: Değersiz'den sonra iptal de iade de cariyi eksiye düşürecekse reddedilir
+    # Subtest: fatura iptali → 409 doubtful-writeoff-balance, dört parçalı ileti (en çok 123,55); hiçbir şey yazılmaz
+    ok 1 - fatura iptali → 409 doubtful-writeoff-balance, dört parçalı ileti (en çok 123,55); hiçbir şey yazılmaz
+      ---
+      duration_ms: 1235.542337
+      type: 'test'
+      ...
+    # Subtest: fatura silme (iptali çağırır) → aynı ret; fatura yerinde
+    ok 2 - fatura silme (iptali çağırır) → aynı ret; fatura yerinde
+      ---
+      duration_ms: 1018.324041
+      type: 'test'
+      ...
+    # Subtest: tam iade → 409, ileti 'İade faturası kaydedilemez' (en çok 100,00); iade yazılmaz
+    ok 3 - tam iade → 409, ileti 'İade faturası kaydedilemez' (en çok 100,00); iade yazılmaz
+      ---
+      duration_ms: 1063.704558
+      type: 'test'
+      ...
+    # Subtest: iade cariyi eksiye düşürmüyorsa kabul; iadenin Düzenle'si eksiye düşürünce 409 (öncesi Düzenle'den önceki bakiye)
+    ok 4 - iade cariyi eksiye düşürmüyorsa kabul; iadenin Düzenle'si eksiye düşürünce 409 (öncesi Düzenle'den önceki bakiye)
+      ---
+      duration_ms: 1013.098473
+      type: 'test'
+      ...
+    # Subtest: iptal cariyi eksiye düşürmüyorsa kabul ve Mutabakat yeşil (bağı kopan tahsilat değişmez (i)'de 'sonradan değişmiş')
+    ok 5 - iptal cariyi eksiye düşürmüyorsa kabul ve Mutabakat yeşil (bağı kopan tahsilat değişmez (i)'de 'sonradan değişmiş')
+      ---
+      duration_ms: 789.177678
+      type: 'test'
+      ...
+    1..5
+ok 4 - 2.5.1 M2 tur 2 — S-DKM2-2 = A: Değersiz'den sonra iptal de iade de cariyi eksiye düşürecekse reddedilir
+  ---
+  duration_ms: 5121.262018
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M2 tur 2 — v2.5.0'ın GERÇEK verisi (Değersiz → iptal o sürümde kabul): Mutabakat yanlış kırmızıya düşmez
+    # Subtest: fixture (v2.5.0 üretimi): Mutabakat tamam; sonraki işlem ve Değersiz satırını silme kabul
+    ok 1 - fixture (v2.5.0 üretimi): Mutabakat tamam; sonraki işlem ve Değersiz satırını silme kabul
+      ---
+      duration_ms: 606.442049
+      type: 'test'
+      ...
+    1..1
+ok 5 - 2.5.1 M2 tur 2 — v2.5.0'ın GERÇEK verisi (Değersiz → iptal o sürümde kabul): Mutabakat yanlış kırmızıya düşmez
+  ---
+  duration_ms: 606.668979
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M2 tur 2 — S-DKM2-3 = C: öbür kaydın silinmesi reddi KALIR, ileti doğru anlatır
+    # Subtest: S2 silinirse bağsız tahsilat Değersiz yazılan S1'e düşer → 409 doubtful-delete-conflict, dört parçalı ileti; S2 yerinde, bakiye 2.300
+    ok 1 - S2 silinirse bağsız tahsilat Değersiz yazılan S1'e düşer → 409 doubtful-delete-conflict, dört parçalı ileti; S2 yerinde, bakiye 2.300
+      ---
+      duration_ms: 970.141271
+      type: 'test'
+      ...
+    1..1
+ok 6 - 2.5.1 M2 tur 2 — S-DKM2-3 = C: öbür kaydın silinmesi reddi KALIR, ileti doğru anlatır
+  ---
+  duration_ms: 970.450902
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M2 tur 2 — kapı reddinin iletisi: yalnız Değersiz sınırı (S270) nedeniyse anlaşılır Türkçe cümle
+    # Subtest: writeoff-limit / writeoff-balance → ne oldu / neden / ne yapmalı / nereye; başka nedenle birlikteyse genel ileti
+    ok 1 - writeoff-limit / writeoff-balance → ne oldu / neden / ne yapmalı / nereye; başka nedenle birlikteyse genel ileti
+      ---
+      duration_ms: 0.863702
+      type: 'test'
+      ...
+    1..1
+ok 7 - 2.5.1 M2 tur 2 — kapı reddinin iletisi: yalnız Değersiz sınırı (S270) nedeniyse anlaşılır Türkçe cümle
+  ---
+  duration_ms: 0.991893
+  type: 'suite'
+  ...
+1..7
+# tests 14
+# suites 7
+# pass 14
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 47357.637874

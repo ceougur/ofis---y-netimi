@@ -81,7 +81,22 @@ export class GateEquivalenceError extends HttpError {
 // Birleşik tur 8 (S145 = A, S155 = A — KULLANICI KARARI 13.11 08:35 AYNEN: "Şüpheli Alacak kuralının ölçüsü TOPLAM borçtur: bir kayıt … ancak 'kayıttan sonra carinin borcu açık
 // şüpheli tutarın altına düşüyorsa' reddedilir … anlaşılır ileti bu kurala göre yazılır"): yalnız ret nedeni şüpheli kuralıysa (doubtful:balance) ileti anlaşılır cümle; KURAL,
 // durum kodu (409 ledger-integrity) ve kapının öbür nedenlerdeki genel iletisi AYNEN.
+// 2.5.1 M2 tur 2 (görev: "kapı reddinde writeoff-limit / writeoff-balance nedenlerinin anlaşılır Türkçe iletisi (S155 deseniyle)"; S270 = A değişmezi AYNEN: "hiçbir sırada bir şüpheli kaydın
+// Değersiz toplamı, o kayda şüpheliye alınan tutardan kayda düşmüş tahsilatlar çıkınca kalanı aşamaz; Değersiz yazımı cariyi alacaklıya (eksi bakiyeye) düşürmez"): ret YALNIZ bu nedenle
+// ise ne oldu / neden / ne yapmalı / nereye; KURAL, durum kodu ve öbür nedenlerdeki genel ileti AYNEN.
+const WRITEOFF_WHERE = "cari kartı → Şüpheli Alacak → kaydın Değersiz satırındaki × düğmesi";
+const writeOffText = failures => {
+  if (!failures.length || !failures.every(item => item.code === "doubtful:records" && Array.isArray(item.writeOffs) && item.writeOffs.length)) return "";
+  const first = failures[0].writeOffs[0];
+  const day = String(first.date || "").split("-").reverse().join(".");
+  const what = `${day} tarihli ${money((first.minor || 0) / 100)} Değersiz Alacak satırı`;
+  const fix = `Ne yapmalı: önce Değersiz Alacak satırını silin (${WRITEOFF_WHERE}), sonra bu kaydı yeniden girin; gerekirse Değersiz Alacak'ı yeniden yazın (form yazılabilecek tutarı gösterir). Hiçbir değişiklik yazılmadı.`;
+  if (first.kind === "writeoff-balance") return `Bu kayıtla carinin ${what} cariyi alacaklıya (eksi bakiye ${money((first.balanceMinor || 0) / 100)}) düşürür; Değersiz Alacak yazımı cariyi alacaklıya düşüremez. ${fix}`;
+  return `Bu kayıtla carinin ${what} şüpheli kaydın kalanını aşar: Değersiz Alacak, kayda düşen tahsilatlar çıkınca kalanı (en çok ${money((first.roomMinor || 0) / 100)}) aşamaz. ${fix}`;
+};
 const doubtfulText = failures => {
+  const writeOff = writeOffText(failures);
+  if (writeOff) return writeOff;
   if (!failures.length || !failures.every(item => item.code === "doubtful:balance")) return "";
   const party = failures[0].figures?.[0];
   if (!party) return "";
@@ -584,7 +599,9 @@ export function createIntegrity({ store, ledger, accounts = () => null, stock = 
     // 128/129 toplamı gl:128 / gl:129 (reconciliation) ile. Yalnız şüpheli alacak kullanılmış veride görünür (denetim sayısı 2.2.0 ile aynı kalır).
     if (doubtfulUsed(store)) {
       const problems = doubtfulProblems(store);
-      checks.push({ code: "doubtful:records", name: "Şüpheli Alacak Kayıtları (kayıt = başlık = karşılık = değersiz satırı)", ok: problems.length === 0, count: problems.length, sample: problems.slice(0, 5).map(item => item.sample) });
+      // 2.5.1 M2 tur 2: ret yalnız Değersiz Alacak sınırı (S270 — writeoff-limit / writeoff-balance) nedeniyse anlaşılır ileti için rakamlar (doubtfulText); alan yalnız o zaman var.
+      const writeOffs = problems.length && problems.every(item => item.figure) ? problems.slice(0, 5).map(item => item.figure) : null;
+      checks.push({ code: "doubtful:records", name: "Şüpheli Alacak Kayıtları (kayıt = başlık = karşılık = değersiz satırı)", ok: problems.length === 0, count: problems.length, sample: problems.slice(0, 5).map(item => item.sample), ...(writeOffs ? { writeOffs } : {}) });
       lap("doubtful");
     }
     // 2.5.0 Ç3 (lib/ledger-snapshots.mjs checks): donmuş defter ("ledger:snapshot") ve Kural Değişikliği Farkı ("ledger:rule-diff", uyarı). YALNIZ tam taramada (açılış, Mutabakat

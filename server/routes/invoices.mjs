@@ -37,7 +37,7 @@ import { parseAmount, roundMoney } from "../lib/money.mjs";
 import { METHODS, METHODS_IN, METHODS_OUT, methodLabel, methodInput } from "../lib/pay-method.mjs";
 import { bankForm, negativeConfirmed } from "../lib/bank/module-ref.mjs";
 import { posMetaOf } from "../lib/bank/pos.mjs";
-import { doubtfulState } from "../lib/bank/doubtful.mjs";
+import { doubtfulState, writeOffBalanceGuard } from "../lib/bank/doubtful.mjs";
 import { canUser } from "../lib/permissions.mjs";
 import { createSecretBox } from "../lib/secret-box.mjs";
 import { addMonths, dayText, isoDay } from "../lib/plans.mjs";
@@ -1161,6 +1161,15 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       // Yalnız AZALTMADA (tutar düştü ya da cari değişti — borç bu cariden çıktı): Düzenle'de eklenen peşin ödeme kartı küçültmez (ödemedir, iade değil); tutarı düşmeyen Düzenle kapsam okumaz (ders 47).
       const decrease = doc.account?.id && doc.account.id !== existing.accountId ? Number(existing.tryPayable) || 0 : roundMoney((Number(existing.tryPayable) || 0) - c2(doc.money.payable));
       const coverPre = (existing.kind === "sale" || existing.kind === "smm") && !existing.planId && decrease > 0.005 && plans()?.hasShrinkableCover?.(existing.accountId) ? coverState(existing.id) : null;
+      // 2.5.1 M2 tur 2 — S-DKM2-2 = A: satıştan iadenin Düzenle'si (iade büyüdü) cariyi Değersiz Alacak satırı varken eksiye götürüyorsa 409; öncesi Düzenle'den önceki bakiye.
+      // 2.5.1 M2 tur 3 — S-M2T2-2 = A ("iade gibi reddedilsin (S241 = A ile tutarlı)"): borç yönlü belgenin (satış faturası, SMM, alıştan iade) Düzenle'si TUTARI düşürüyorsa ya da cari değişiyorsa
+      // (borç bu cariden çıkar) aynı denetim — eski cari için. Tutarı düşmeyen Düzenle denetlenmez: aynı Düzenle'de eklenen peşin tahsilat bir tahsilattır (sıradan tahsilat da reddedilmez).
+      // Kural ve ileti lib/bank/doubtful.mjs writeOffBalanceGuard. Hiçbir şey yazılmadan ÖNCE çağrılır (öncesi Düzenle'den önceki bakiye).
+      const writeOffGuard = existing.kind === "sale_return"
+        ? writeOffBalanceGuard(store, existing.accountId, { action: "return" })
+        : INVOICE_KINDS[existing.kind]?.party === "debt" && decrease > 0.005
+          ? writeOffBalanceGuard(store, existing.accountId, { action: "edit" })
+          : null;
       // BULGU-2 (§19.6): faturanın KENDİ kartı açık, tahsilatsız ve yeni ödeme planı kayıtlıyla aynıysa kart kaldırılıp yeniden kurulmaz (writeIssued karar verir).
       const keepPlan = ownPlanToKeep(existing);
       reverseEffects(user, existing, touched, { force, edit: true, keepPlanId: keepPlan?.id || "" });
@@ -1207,6 +1216,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
         before: { accountId: existing.accountId, date: existing.issueDate, payable: existing.tryPayable, lines: before.map(line => ({ name: line.name, qty: line.qty, unitPrice: line.unitPrice, vatRate: line.vatRate })) },
         after: { accountId: doc.account.id, date: doc.date, payable: c2(doc.money.payable), lines: after.map(line => ({ name: line.name, qty: line.qty, unitPrice: line.unitPrice, vatRate: line.vatRate })) },
       });
+      writeOffGuard?.check();
       return written;
     } });
     k7.prime(result);
@@ -2529,6 +2539,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const result = bank.post({ user, module: "invoice", op: edit ? "update" : "create", prev: edit || undefined, similarOk: force.similar === true, guard: k7?.guard || null, write: () => {
       k7?.capture();
       period?.assertOpen(doc.date, "Fatura");
+      // 2.5.1 M2 tur 2 — S-DKM2-2 = A: yeni satıştan iade cariyi Değersiz Alacak yüzünden eksiye düşürüyorsa 409 (Düzenle'de denetim editInvoice'ta — öncesi Düzenle'den önceki bakiye).
+      const writeOffGuard = !edit && doc.kind === "sale_return" ? writeOffBalanceGuard(store, doc.account.id, { action: "return" }) : null;
       // v2.0.24: iadeden önce asıl faturanın açığı ve onu kapsayan kartlar (düzenlemede eski iade geri alınmadan önce).
       const before = pre !== undefined ? pre : doc.kind === "sale_return" && doc.original?.id ? coverState(doc.original.id) : null;
       ensureNewItems(user, doc, invoiceId, touched);
@@ -2716,6 +2728,7 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       // 2.2.0 (plan §4.3/4): POS komisyon faturası taslağı kaydedilince o ayın KDV'li kesinti ve iade satırları bu faturaya bağlanır (aynı işlem).
       if (id && !edit) bankModule?.()?.pos?.invoiceIssued?.(user, invoiceId);
       if (!edit) audit(user, id ? "invoice.issued" : "invoice.created", invoiceId, { kind: doc.kind, number, accountId: doc.account.id, payable: c2(money.payable), currency: doc.currency, date: doc.date, originalId: doc.original?.id || "", payment: { cash: payment.cash.length, cheques: payment.cheques.length, endorse: payment.endorse.length, mode: payment.mode } });
+      writeOffGuard?.check();
       return { id: invoiceId, number, ...(orderHeld ? { orderHeld } : {}) };
     } });
     k7?.prime(result);
@@ -2868,6 +2881,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       const fee = fromBank ? null : bankFeeOf(invoice.id);
       if (fee) throw new HttpError(409, bankFeeText(fee), { code: "invoice-bank-fee", eventNo: fee.no });
       period?.assertOpen(invoice.issueDate, "Bu fatura");
+      // 2.5.1 M2 tur 2 — S-DKM2-2 = A (iptal de iade de reddedilir; kural ve ileti lib/bank/doubtful.mjs writeOffBalanceGuard): Değersiz Alacak satırı olan caride iptal öncesi bakiye.
+      const writeOffGuard = writeOffBalanceGuard(store, invoice.accountId, { action: "cancel" });
       // 2.5.0 Ç5-A tur 2 — S160 = A: iptal (ve iptali çağıran silme, e-Belge iptali, Banka'dan Ters Kaydet) aşağıda bu faturaya bağlı tahsilatların bağını düşürür; bağlı
       // tahsilat (cari hareketi 'in' ya da Kapatılacak Fatura ile bağlanmış alınan evrak) kilitli dönemdeyse 409 — kilitli defter sessizce değişmez (yönetici kilidi açar).
       const lock = period?.lockedUntil() || "";
@@ -2918,6 +2933,8 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
         if (row.accountId) touched.cheques.accountIds.push(row.accountId);
       }
       audit(user, "invoice.cancelled", invoice.id, { number: invoice.number, kind: invoice.kind, payable: invoice.tryPayable, reason, ...(relinked.length ? { doubtfulRelinked: relinked.map(entry => ({ id: entry.id, date: entry.date, amount: entry.amount })) } : {}), ...(unbonded.length ? { chequesUnbonded: unbonded.map(row => row.chequeId) } : {}) });
+      // 2.5.1 M2 tur 2 — S-DKM2-2 = A: iptal cariyi Değersiz Alacak yüzünden eksiye düşürüyorsa 409 (önizlemede de — e-Arşiv iptali entegratöre gitmeden önce).
+      writeOffGuard?.check();
       if (dryRun) throw DRY_RUN;
       return invoice;
       } });
