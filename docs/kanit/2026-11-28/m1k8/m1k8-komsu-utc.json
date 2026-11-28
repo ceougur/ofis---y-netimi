@@ -1,0 +1,32 @@
+{
+  "ad": "m1k8-komsu-utc",
+  "komut": "node --test --test-concurrency=2 test/banka-210-fis.test.mjs test/banka-220-pos-kdv.test.mjs test/c7b-degismez-250.test.mjs test/c7b-eski-surum-sinif-250.test.mjs test/c7b-gecis-gunu-250.test.mjs test/c7b-goc52-kilit-izi-250.test.mjs test/c7b-kdv-donemi-250.test.mjs test/c7b-kdv-ozeti-donem-250.test.mjs test/c7b-kdv-s4-250.test.mjs test/c7b-kitap-turetme-250.test.mjs test/c7b-sifirla-kdv-mahsup-250.test.mjs test/defter-243-ux24-toplam.test.mjs test/defter-243-vergi.test.mjs test/defter-hiz-esdegerlik-250.test.mjs test/defter-kaynak-iz-250.test.mjs test/devir-d3-damga-kaynak.test.mjs test/ekstre-ayrinti-245.test.mjs test/fis-defteri-250.test.mjs test/kdv-ozeti-devreden-251.test.mjs test/kdv-ozeti-devreden-onarim-251.test.mjs test/kdv-ozeti-karma-251.test.mjs test/kdv-ozeti-kayitsiz-ay-251.test.mjs test/kdv-ozeti-mahsup-sonrasi-251.test.mjs test/kdv-ozeti-s4-guncel-degil-251.test.mjs test/kdv-ozeti-uyusmazlik-yonu-251.test.mjs test/kdv-ozeti-yalniz391-251.test.mjs test/kdv-ozeti-zincir-251.test.mjs test/license.test.mjs test/mobil-247.test.mjs test/raporlar-210-banka.test.mjs test/raporlar-224.test.mjs test/stopaj-tevkifat-iade-244.test.mjs test/yazim-duzeni.test.mjs",
+  "commit": "f4408ec655d2dfa584af4a4e6cd2a16637840dcc",
+  "dal": "worktree-agent-a7024fa39f44e1be5",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-28T15:08:55.029Z",
+  "sure_sn": 117,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 346,
+    "gecen": 346,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/m1k8/kanit/2026-11-28/m1k8-komsu-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a7024fa39f44e1be5",
+  "ham_cikti_sha256": "841c3cd6247fc7f81fc348caac0db844267b3bc1473a9a5368945cb7897b400a",
+  "ham_cikti_bayt": 146658
+}
