@@ -63,6 +63,7 @@ Ana oturumun ölçüm / ekran yürüyüşü / yeniden üretim betikleri (kapsay�
 - **HIZ** (kullanıcı 27.11 18:36 AYNEN: "taksit tahsilat raporu, tüm cari hareket raporu ve devir ön izlemesi hız yavaşlamalarını düzeltmeyi sonraki sürüme bırak"): üç yavaşlık + Değersiz Yaz / Silinenler'den geri yükleme ~6 sn (2.5.0'dan).
 - **Ç6-ÖN + Ç6-EKRAN** (Gelir Tablosu / Bilanço düzeltmesi ve ekranları) — kullanıcı 27.11 19:58 kararıyla zaten sonraki sürüm.
 
+- **ADAY DAR KONTROLÜ ORTA-1 / ORTA-2** (kullanıcı 28.11 17:30 UTC, AYNEN: "bir sonraki sürümde düzeltilsin 2 bulguda" (S-DKA-1 yanıtı) ve "Sonraki sürüme bırak" (S-DKA-2 yanıtı)): KDV Özeti kayıtsız ay atlanınca azalışın ay kayması (S-DKA-1; öneri A) ve aynı ret ikinci kez denenince uzun bildirimin gizli kalması (S-DKA-2) + altı DÜŞÜK — ayrıntı iş listesi B (28.11 17:30).
 ### 2.5 SONRAKİ SÜRÜME (20.11 kuralı) listesi
 `docs/2.5.1-IS-LISTESI.md` B bölümünün TAMAMI aynen taşınır (test düzeni, kâhin iç bakımı, yaşayan mutantlar, görünüm ayrıntıları, ölçüm nüansları).
 
