@@ -2094,7 +2094,9 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
               const pending = view.pending(firstMonth, lastMonth);
               // B (karar (3)): zincirle uyuşmayan mahsup fişi — fiş önceki bir ay atlanarak kesilmiş; rapor zinciri gösterir, iki sayı notta.
               const mismatches = view.mismatchesUntil ? view.mismatchesUntil(lastMonth) : [];
-              return { positions, startMinor, payableMinor, carryOutMinor, pending, mismatches, chain: view.mode === "chain" };
+              // 2.5.1 M1 küçük tur 6 (karar (1)(b)): aralık dışındaki (önceki) "güncel değil" fiş aralığın sayısını etkiliyorsa o aylar (etkilemiyorsa boş).
+              const staleBefore = view.staleBefore ? view.staleBefore(firstMonth, lastMonth) : [];
+              return { positions, startMinor, payableMinor, carryOutMinor, pending, mismatches, staleBefore, chain: view.mode === "chain" };
             })()
           : null;
         const docRows = list.map(row => [monthLabel(row.month), KIND[row.kind] || row.kind, `%${row.rate}`, String(row.count), money(roundMoney(row.net)), money(roundMoney(row.vat)), money(roundMoney(row.withheld))]);
@@ -2147,7 +2149,18 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
           if (item.usedMinor !== item.chainMinor) {
             return `${item.label} fişi ${lira(item.usedMinor)} devredenle kesilmiş, sırayla mahsupta ${lira(item.chainMinor)} olmalıydı${turned ? `; fiş ${offsetResult} yazmış, sırayla mahsupta ${chainResult} çıkar` : ""}`;
           }
+          // 2.5.1 M1 küçük tur 6 (KDV tur 5 dar kontrolü ORTA-1; baş mimar kararı 28.11 07:40 (1)(a)): zincirin S4 emilimi fişinkinden EKSİ (önceki "güncel değil" ay) → fiş azalmayı
+          // düşmemiş; öbür yönün cümlesi AYNEN.
+          if (item.absorbShort) return `${item.label} fişi ${offsetResult} yazmış, sırayla mahsupta ${chainResult} olmalıydı — fiş İndirilecek KDV'deki azalmayı düşmemiş`;
           return `${item.label} fişi ${offsetResult} yazmış, sırayla mahsupta ${chainResult} olmalıydı — İndirilecek KDV'deki azalma sırayla mahsupta daha önceki bir ayda düşülür`;
+        };
+        // Uyuşmazlık notunun onarımı: eksi yönlü fiş varsa mahsup fişi güncel olmayan İLK aydan (ay adıyla) başlanır — o ay, notun öbür aylarından da önce ya da onlarla aynıdır
+        // (önceki zincirle uyuşmayan fiş de güncel olmayan fiş sayılır), onarım hepsini kapsar; eksi yönlü fiş yoksa metin AYNEN.
+        const mismatchRepair = list => {
+          const restart = list.filter(item => item.absorbShort).map(item => item.restartMonth).sort()[0];
+          return restart
+            ? `mahsup fişi güncel olmayan ilk aydan (${monthLabel(restart)}) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin`
+            : "bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin";
         };
         // Ay ortasında başlayan / biten aralık: belge satırları aralıktaki günlerden, devreden / ödenecek ayın tamamından (KDV aylık) — dışarıda kalan belge varsa söylenir.
         const partial =
@@ -2191,6 +2204,11 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
               ];
               return [["KDV Mahsup Fişi", list.map(item => item.label).join(", ")], ...(parts.length ? [["Mahsuptan Sonra Değişen Ay", parts.join("; ")]] : [])];
             })(),
+            // 2.5.1 M1 küçük tur 6 (baş mimar kararı 28.11 07:40 (1)(b)): tek ay / kısmi aralıkta aralığın sayısını aralık DIŞINDAKİ (önceki) "güncel değil" fiş etkiliyorsa kısa not;
+            // etkilemiyorsa yok (vatView.staleBefore karşı hesapla bakar).
+            ...(vat?.staleBefore?.length
+              ? [["Güncel Olmayan Önceki Fiş", `Önceki aylarda güncel olmayan mahsup fişi var (${vat.staleBefore.slice(0, 6).map(monthLabel).join(", ")}${vat.staleBefore.length > 6 ? ` ve ${vat.staleBefore.length - 6} ay daha` : ""}); bu ${firstMonth === lastMonth ? "ayın" : "aralığın"} sayıları mahsup ön izlemesinden ayrılır`]]
+              : []),
             ...(vat?.pending.length
               ? [
                   [
@@ -2210,7 +2228,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
                     `${vat.mismatches
                       .slice(0, 6)
                       .map(mismatchText)
-                      .join("; ")}${vat.mismatches.length > 6 ? ` ve ${vat.mismatches.length - 6} ay daha` : ""} (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)`,
+                      .join("; ")}${vat.mismatches.length > 6 ? ` ve ${vat.mismatches.length - 6} ay daha` : ""} (raporda sırayla mahsup sayıları; ${mismatchRepair(vat.mismatches)})`,
                   ],
                 ]
               : []),

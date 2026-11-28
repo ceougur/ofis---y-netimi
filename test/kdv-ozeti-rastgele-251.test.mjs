@@ -5,7 +5,8 @@
 //   DEĞİŞMEZ (her tohumda; ilk aydan önce KDV hareketi yok, son ay fişsiz): aralığın Ödenecek − Sonraki + Önceki = 391 − 191; ayların Ödenecek toplamı = aralığın Ödenecek'i;
 //   ay zinciri sürekli (bir ayın Sonraki'si = sonraki ayın Önceki'si; ilk ayın Önceki'si = aralığın, son ayın Sonraki'si = aralığın). Tek ay aralığında 391 − 191 aranmaz:
 //   azalan ayın sonucu fişten, azalma sonraki ayda (S-DKM1-1 = A) — kural ancak azalmanın düşüldüğü ayı içeren aralıkta geçerli.
-//   Taban (t251-m1k4): Ocak–Temmuz 300 tohumda 11 sapma (hepsi eksi — 'güncel değil' ayın artışı sonraki azalmayı götürüyordu; ör. tohum 230 −300), yıl dönümü 150 tohumda 2.
+//   Taban (t251-m1k4): Ocak–Temmuz 300 tohumda 11 sapma (hepsi eksi — 'güncel değil' ayın artışı sonraki azalmayı götürüyordu; ör. tohum 230 −300), yıl dönümü 150 tohumda 2
+//   (küçük tur 5'in tohum formülüyle; küçük tur 6'dan beri yıl dönümü seti ayrı formülle — t251-m1k4'teki sayısı docs/kanit/2026-11-28/m1k6-* altında).
 //   Sahte saat (ders 13): her tohumun sunucusu sabit 'bugün'le açılır. Tohum sayısı KDV_RASTGELE_TOHUM / KDV_RASTGELE_YIL_TOHUM ile ARTIRILABİLİR (alt sınır 300 / 150).
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
@@ -54,8 +55,10 @@ async function program(now, prefix) {
 }
 
 /** Bir tohum: dar kontrolün s2 üreteci AYNEN (sıra ve olasılıklar); dönen değer bozulan kuralların listesi (boşsa TAMAM). */
-async function runSeed(seed, { now, months, last }) {
-  const rng = (state => () => ((state = (state * 1103515245 + 12345) % 2147483648) / 2147483648))(seed * 7919 + 17);
+async function runSeed(seed, { now, months, last, salt = [7919, 17] }) {
+  // 2.5.1 M1 küçük tur 6 (baş mimar kararı 28.11 07:40 (1)(d); prensip §4 — yalnız test): yıl dönümü seti AYRI tohum formülüyle (salt) başka veri şekilleri üretir — aynı formülle
+  // Ocak–Temmuz setinin verisini aylar kaydırılmış olarak yineliyordu (yeni sınıf katmıyordu). Tohum sayısı ve süre AYNI.
+  const rng = (state => () => ((state = (state * 1103515245 + 12345) % 2147483648) / 2147483648))(seed * salt[0] + salt[1]);
   const pick = list => list[Math.floor(rng() * list.length)];
   const h = await program(now, `R${seed}`);
   const log = [];
@@ -126,7 +129,7 @@ describe("2.5.1 M1 küçük tur 5 — KDV Özeti rastgele sıra: aralık toplam�
   });
   it(`yıl dönümü Eylül 2026 – Mart 2027, ${count("KDV_RASTGELE_YIL_TOHUM", 150)} tohum: sapma 0 (taban t251-m1k4: 2)`, async () => {
     const seeds = count("KDV_RASTGELE_YIL_TOHUM", 150);
-    const failures = await runAll(seeds, { now: "2027-04-15T12:00:00+03:00", months: ["2026-09", "2026-10", "2026-11", "2026-12", "2027-01", "2027-02"], last: "2027-03" });
+    const failures = await runAll(seeds, { now: "2027-04-15T12:00:00+03:00", months: ["2026-09", "2026-10", "2026-11", "2026-12", "2027-01", "2027-02"], last: "2027-03", salt: [104729, 613] });
     assert.deepEqual(failures, [], `${seeds} tohumda ${failures.length} sapma:\n${failures.join("\n")}`);
   });
 });

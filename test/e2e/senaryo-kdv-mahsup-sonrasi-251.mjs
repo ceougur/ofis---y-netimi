@@ -7,7 +7,8 @@
 //   Değişen Ay: Ocak 2026 (bu ayın kayıtları fişten sonra değişti; …)".
 //   C adımı (küçük tur 2): karma ay (S-M1K-1 = A). D adımı (küçük tur 3): devreden yönde yalnız satış KDV'si (S-M1K2-1 = A) — ikinci kurulumda (saat 15.05.2026).
 //   E adımı (küçük tur 4): ödenecek yönde kesilmiş fişte yalnız satış KDV'si azalır (S-M1K3-1 = A) — üçüncü kurulumda (saat 15.05.2026).
-//   F adımı (küçük tur 5): 'güncel değil' (İ artmış) aydan sonra azalan ay (S-DKM1K-1 = A) + Nisan mahsubunun yan etkisi — dördüncü kurulumda (saat 15.05.2026).
+//   F adımı (küçük tur 5): 'güncel değil' (İ artmış) aydan sonra azalan ay (S-DKM1K-1 = A) + Nisan mahsubunun yan etkisi — dördüncü kurulumda (saat 15.05.2026). Küçük tur 6:
+//   Nisan tek ay kısa notu ve uyuşmazlık notunun TAM cümlesi (yön + onarım ayı), notun söylediği onarımdan sonra notlar kalkar (baş mimar kararı 28.11 07:40 (1)(a)–(c)).
 // Çıkış: "N geçti, M kaldı". Ekran görüntüleri EKRAN_DIR'e.
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -416,6 +417,11 @@ try {
   t = await table();
   r = results(summary, t.foot);
   ok(JSON.stringify(r.summary) === JSON.stringify(["0,00", "700,00", "0,00"]) && JSON.stringify(r.foot) === JSON.stringify(r.summary), `S-DKM1K-1: Nisan 0 / 700 / 0 (taban 500; ön izleme 500), tablo altı = özet (${JSON.stringify(r)})`);
+  // 2.5.1 M1 küçük tur 6 (baş mimar kararı 28.11 07:40 (1)(b)–(c)): Nisan TEK AY — sayısını aralık dışındaki 'güncel değil' Şubat etkiliyor → kısa not, TAM cümlesiyle (taban: not yok).
+  ok(
+    summary["Güncel Olmayan Önceki Fiş"] === "Önceki aylarda güncel olmayan mahsup fişi var (Şubat 2026); bu ayın sayıları mahsup ön izlemesinden ayrılır",
+    `tur 6 (b): Nisan tek ay kısa not (ekranda): ${summary["Güncel Olmayan Önceki Fiş"]}`,
+  );
   await shot("m1k5-kdv-ozeti-nisan");
   // Yan etki: Nisan ön izlemeyle (defterin saklı İ'leri) mahsup edilir → fiş 500; rapor 700 kalır, uyuşmazlık notu.
   ok((await fis4("2026-04")) === "[0,50000,0]", "Nisan fişi ön izlemeyle 0 / 500 / 0 (defter DEĞİŞMEDİ)");
@@ -425,15 +431,33 @@ try {
   t = await table();
   r = results(summary, t.foot);
   ok(JSON.stringify(r.summary) === JSON.stringify(["0,00", "700,00", "0,00"]) && JSON.stringify(r.foot) === JSON.stringify(r.summary), `yan etki: Nisan fişliyken rapor 0 / 700 / 0 (${JSON.stringify(r)})`);
-  ok(
-    String(summary["Zincirle Uyuşmayan Mahsup Fişi"] || "").replace(/₺([\d.,]+)/g, "$1 TL").startsWith("Nisan 2026 fişi ödenecek KDV 500,00 TL yazmış, sırayla mahsupta ödenecek KDV 700,00 TL olmalıydı"),
-    `yan etki: Nisan uyuşmazlık notu (ekranda): ${summary["Zincirle Uyuşmayan Mahsup Fişi"]}`,
-  );
+  // 2.5.1 M1 küçük tur 6 (baş mimar kararı 28.11 07:40 (1)(a), (c)): notun TAM cümlesi — neden 'fiş azalmayı düşmemiş', onarım güncel olmayan ilk aydan (Şubat 2026); taban: 'azalma
+  // … daha önceki bir ayda düşülür' + 'bu ayın ve sonraki mahsupları geri alıp …' (ters neden, sonuç vermeyen onarım).
+  const MISMATCH_F =
+    "Nisan 2026 fişi ödenecek KDV 500,00 TL yazmış, sırayla mahsupta ödenecek KDV 700,00 TL olmalıydı — fiş İndirilecek KDV'deki azalmayı düşmemiş (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Şubat 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)";
+  ok(String(summary["Zincirle Uyuşmayan Mahsup Fişi"] || "").replace(/₺([\d.,]+)/g, "$1 TL") === MISMATCH_F, `yan etki: Nisan uyuşmazlık notu (ekranda, tam cümle): ${summary["Zincirle Uyuşmayan Mahsup Fişi"]}`);
   await shot("m1k5-kdv-ozeti-nisan-fisli");
   await range("2026-01-01", "2026-04-30");
   summary = await summaryOf();
   r = results(summary, (await table()).foot);
   ok(JSON.stringify(r.summary) === JSON.stringify(["0,00", "1600,00", "0,00"]), `yan etki: Ocak–Nisan yine 1.600 (${JSON.stringify(r)})`);
+  ok(String(summary["Zincirle Uyuşmayan Mahsup Fişi"] || "").replace(/₺([\d.,]+)/g, "$1 TL") === MISMATCH_F, `yan etki: Ocak–Nisan'da da aynı not: ${summary["Zincirle Uyuşmayan Mahsup Fişi"]}`);
+  // Notun söylediği onarım (veri API'den): Şubat'tan başlayarak geri al (Nisan → Mart → Şubat), ayları sırayla yeniden mahsup et → ekranda notlar kalkar, rapor = fişler.
+  const list4 = (await must("mahsup listesi (4)", api4.get("/api/workspace/tax/vat-offset"))).offsets.filter(item => item.status === "active");
+  for (const month of ["2026-04", "2026-03", "2026-02"]) await must(`${month} geri al (4)`, api4.post(`/api/workspace/tax/vat-offset/${list4.find(item => item.month === month).id}/reverse`, {}));
+  const g4 = [];
+  for (const month of ["2026-02", "2026-03", "2026-04"]) g4.push(await fis4(month));
+  ok(JSON.stringify(g4) === JSON.stringify(["[100000,20000,0]", "[0,90000,0]", "[0,50000,0]"]), `onarım: yeniden fişler Şubat 200 / Mart 900 / Nisan 500 (${JSON.stringify(g4)})`);
+  await range("2026-01-01", "2026-03-31");
+  await range("2026-01-01", "2026-04-30");
+  summary = await summaryOf();
+  t = await table();
+  r = results(summary, t.foot);
+  ok(JSON.stringify(r.summary) === JSON.stringify(["0,00", "1600,00", "0,00"]), `onarım: Ocak–Nisan 1.600 (${JSON.stringify(r)})`);
+  const fixedLines = t.body.filter(item => item[1] === "Ödenecek KDV").map(item => digits(item[5]));
+  ok(JSON.stringify(fixedLines) === JSON.stringify(["200,00", "900,00", "500,00"]), `onarım: ay satırları = fişler (${JSON.stringify(fixedLines)})`);
+  ok(!("Zincirle Uyuşmayan Mahsup Fişi" in summary) && !("Mahsuptan Sonra Değişen Ay" in summary) && !("Güncel Olmayan Önceki Fiş" in summary), `onarım: notlar kalkar (${JSON.stringify(Object.keys(summary))})`);
+  await shot("m1k6-kdv-ozeti-onarim");
 } catch (error) {
   failed += 1;
   console.log(`✗ beklenmeyen hata: ${error.stack || error.message}`);
