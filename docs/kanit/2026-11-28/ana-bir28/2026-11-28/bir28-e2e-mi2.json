@@ -1,0 +1,32 @@
+{
+  "ad": "bir28-e2e-mi2",
+  "komut": "npm run test:senaryo-mi2-251",
+  "commit": "f065a6ad6e5c46ad364a89be5ef3fbedba7a446f",
+  "dal": "claude/epic-thompson-w0lc2l",
+  "kirli": 0,
+  "izlenmeyen": 0,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-28T04:20:15.232Z",
+  "sure_sn": 81.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 42,
+    "gecen": 42,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/bir28/kanit/2026-11-28/bir28-e2e-mi2.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "3986e9463564b0d1919bdcf7f8d04f7e45ab8e9f5d2faf76f9811149cbc0869b",
+  "ham_cikti_bayt": 5753
+}

@@ -1,0 +1,63 @@
+{
+  "ad": "m23rk-eski3-test-Istanbul",
+  "komut": "node --test test/supheli-degersiz-iptal-iade-m2t2-251.test.mjs test/supheli-degersiz-m2t3-251.test.mjs",
+  "commit": "bf7e7d2184ca46ac36542872f584acdc9b9b6d99",
+  "dal": "HEAD",
+  "kirli": 2,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-28T03:18:35.505Z",
+  "sure_sn": 8.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 20,
+    "gecen": 14,
+    "basarisiz": 6,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 6 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.1 M2 tur 3 — S-M2T2-1 = A: Değersiz olmadan da eksi kalacak iptal de reddedilir › avanslı caride iptal 409, bakiye −2.576,45 kalır, fatura yerinde, Mutabakat tamam",
+      "konum": "test/supheli-degersiz-iptal-iade-m2t2-251.test.mjs:144:3",
+      "hata": "{\"id\":\"invoice-cf563a02-af57-431e-ad30-2c1064a7fd47\",\"kind\":\"sale\",\"kindLabel\":\"Satış Faturası\",\"scenario\":\"service_sale\",\"scenarioLabel\":\"Hizmet Satışı\",\"status\":\"cancelled\",\"statusLabel\":\"İptal Edildi\",\"number\":\"FIS2026000000001\",\"displayNo\":\"FIS2026000000001\",\"internalNumber\":false,\"ettn\":\"63cf4720-c1cc-404a-aaef-b44657358d83\",\"issueDate\":\"2026-09-10\",\"issueTime\":\"12:00\",\"accountId\":\"account-28 · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "2.5.1 M2 tur 3 — S-M2T2-1 = A: Değersiz satırı olan caride eksiye götüren iptal / iade her durumda ret › avanslı caride tam iade → 409 'İade faturası kaydedilemez' (Değersiz olmasaydı da 2.476,45 alacaklı); iade yazılmaz, bakiye −2.576,45",
+      "konum": "test/supheli-degersiz-m2t3-251.test.mjs:54:3",
+      "hata": "{\"id\":\"invoice-631103ef-e3d3-4467-bba9-797acbf24838\",\"kind\":\"sale_return\",\"kindLabel\":\"Satıştan İade Faturası\",\"scenario\":\"sale_return\",\"scenarioLabel\":\"Satıştan İade\",\"status\":\"issued\",\"statusLabel\":\"Kaydedildi\",\"number\":\"IAD2026000000001\",\"displayNo\":\"IAD2026000000001\",\"internalNumber\":true,\"ettn\":\"f984ce85-dd94-4973-ac4e-abbdd8f10b36\",\"issueDate\":\"2026-10-01\",\"issueTime\":\"12:00\",\"accountId\":\"ac · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "2.5.1 M2 tur 3 — S-M2T2-1 = A: Değersiz satırı olan caride eksiye götüren iptal / iade her durumda ret › iki Değersiz satırı (1.000 + 2.000 @17.09): avanslı iptal 409, ileti son satırı ve toplamı anlatır",
+      "konum": "test/supheli-degersiz-m2t3-251.test.mjs:89:3",
+      "hata": "{\"id\":\"invoice-b6cc474d-35a3-4455-b1b4-a4521ae040de\",\"kind\":\"sale\",\"kindLabel\":\"Satış Faturası\",\"scenario\":\"service_sale\",\"scenarioLabel\":\"Hizmet Satışı\",\"status\":\"cancelled\",\"statusLabel\":\"İptal Edildi\",\"number\":\"FIS2026000000001\",\"displayNo\":\"FIS2026000000001\",\"internalNumber\":false,\"ettn\":\"4b23c612-7a3e-4d58-b0ff-74bc3966e1ec\",\"issueDate\":\"2026-09-10\",\"issueTime\":\"12:00\",\"accountId\":\"account-73 · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "2.5.1 M2 tur 3 — S-M2T2-2 = A: Değersiz'den sonra fatura TUTARININ Düzenle ile düşürülmesi iade gibi reddedilir › 2.900 → 100 → 409 'Fatura düzenlenemez' (düzenlemeden sonra 2.376,45 alacaklı); fatura 2.900 kalır, bakiye 423,55",
+      "konum": "test/supheli-degersiz-m2t3-251.test.mjs:155:3",
+      "hata": "{\"id\":\"invoice-3d3fde65-625d-40ff-8fab-99c56dd0560e\",\"kind\":\"sale\",\"kindLabel\":\"Satış Faturası\",\"scenario\":\"service_sale\",\"scenarioLabel\":\"Hizmet Satışı\",\"status\":\"issued\",\"statusLabel\":\"Kaydedildi\",\"number\":\"FIS2026000000001\",\"displayNo\":\"FIS2026000000001\",\"internalNumber\":false,\"ettn\":\"b7c43bed-5648-4e37-88c2-ddec4aa8f16b\",\"issueDate\":\"2026-09-10\",\"issueTime\":\"12:00\",\"accountId\":\"account-6012a74 · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "2.5.1 M2 tur 3 — S-M2T2-2 = A: Değersiz'den sonra fatura TUTARININ Düzenle ile düşürülmesi iade gibi reddedilir › avanslı caride 2.900 → 2.800 → 409 (eksiyi büyütür); bakiye −2.576,45",
+      "konum": "test/supheli-degersiz-m2t3-251.test.mjs:175:3",
+      "hata": "{\"id\":\"invoice-962c3f90-0061-4d0f-aedf-cc987462160b\",\"kind\":\"sale\",\"kindLabel\":\"Satış Faturası\",\"scenario\":\"service_sale\",\"scenarioLabel\":\"Hizmet Satışı\",\"status\":\"issued\",\"statusLabel\":\"Kaydedildi\",\"number\":\"FIS2026000000001\",\"displayNo\":\"FIS2026000000001\",\"internalNumber\":false,\"ettn\":\"6c1c9251-b15d-4fa3-a711-4c6aaad22ced\",\"issueDate\":\"2026-09-10\",\"issueTime\":\"12:00\",\"accountId\":\"account-844b3a6 · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "2.5.1 M2 tur 3 — S-M2T2-2 = A: Değersiz'den sonra fatura TUTARININ Düzenle ile düşürülmesi iade gibi reddedilir › Düzenle'de cari değişirse (borç bu cariden çıkar) eski cari denetlenir: 409, eski carinin bakiyesi 223,55 kalır",
+      "konum": "test/supheli-degersiz-m2t3-251.test.mjs:206:3",
+      "hata": "{\"id\":\"invoice-75450185-c491-4d7e-bc66-9704eb619174\",\"kind\":\"sale\",\"kindLabel\":\"Satış Faturası\",\"scenario\":\"service_sale\",\"scenarioLabel\":\"Hizmet Satışı\",\"status\":\"issued\",\"statusLabel\":\"Kaydedildi\",\"number\":\"FIS2026000000002\",\"displayNo\":\"FIS2026000000002\",\"internalNumber\":false,\"ettn\":\"d9a436a6-c719-4161-a4e0-70ac8c511b46\",\"issueDate\":\"2026-10-10\",\"issueTime\":\"12:00\",\"accountId\":\"account-5ba92d1 · 200 !== 409 (beklenen 409, gelen 200)"
+    }
+  ],
+  "ham_cikti": "../kanit/2026-11-28/m23rk-eski3-test-Istanbul.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/m23rk/eski3",
+  "ham_cikti_sha256": "bfaa5d400d9f9f2a3afb988bd9947e0eba7a23d4f064cd6de9bae7707465f315",
+  "ham_cikti_bayt": 17310
+}

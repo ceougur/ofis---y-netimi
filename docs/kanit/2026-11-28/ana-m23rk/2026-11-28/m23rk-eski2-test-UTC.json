@@ -1,0 +1,113 @@
+{
+  "ad": "m23rk-eski2-test-UTC",
+  "komut": "node --test test/supheli-degersiz-hiz-m2t2-251.test.mjs test/supheli-degersiz-iptal-iade-m2t2-251.test.mjs",
+  "commit": "08f1a2d75c99381929b5ab8e622448d9e82cc22a",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 5,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-28T03:16:57.958Z",
+  "sure_sn": 7.1,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 16,
+    "gecen": 0,
+    "basarisiz": 16,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 16 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.1 M2 tur 2 — S155 dalı ve aradaki bağlı tahsilat günü: kısa yol tam hesapla aynı, elle beklenen sınır / öneri › 17.09: sınır 3.000 / öneri 2.923,55; bugün 123,55; en iyi öneri 2.923,55 (en erken gün) ve önerilen tutar o günle kabul",
+      "konum": "test/supheli-degersiz-hiz-m2t2-251.test.mjs:74:3",
+      "hata": "WRITE_OFF_TEST yok (tur 2 öncesi kod)"
+    },
+    {
+      "ad": "2.5.1 M2 tur 2 — budama kuralı (saf işlev) tam taramayla aynı: 20.000 rastgele tablo › en iyi gün / öneri / sınır ve anyMinor birebir; ilk gün ve bugün hesaplanır",
+      "konum": "test/supheli-degersiz-hiz-m2t2-251.test.mjs:115:3",
+      "hata": "pickWriteOffQuotes yok (tur 2 öncesi kod) · + actual - expected · + 'undefined' (beklenen function, gelen undefined)"
+    },
+    {
+      "ad": "2.5.1 M2 tur 2 — hız dişi: liste ve form ucunun iş sayısı bağlı tahsilat GÜNÜ sayısıyla büyümez › 30 bağlı tahsilat günü: liste 2 sınır hesabı + 0 deneme; Değersiz satırından sonra 2 sınır hesabı + ≤ 2 deneme; form ucu ≤ 3 sınır hesabı",
+      "konum": "test/supheli-degersiz-hiz-m2t2-251.test.mjs:151:3",
+      "hata": "WRITE_OFF_TEST yok (tur 2 öncesi kod)"
+    },
+    {
+      "ad": "2.5.1 M2 tur 2 — Değersiz sınırı hız düzeltmesi: tur 1'in tam hesabıyla BİREBİR (liste, form ucu, işlem içi yol; F(S, D) günle artmaz) › tohum 1: 8 cari × 16 adım + dönem kilidi — her adımda kısa yol = tam hesap",
+      "konum": "test/supheli-degersiz-hiz-m2t2-251.test.mjs:192:5",
+      "hata": "WRITE_OFF_TEST yok (tur 2 öncesi kod)"
+    },
+    {
+      "ad": "2.5.1 M2 tur 2 — Değersiz sınırı hız düzeltmesi: tur 1'in tam hesabıyla BİREBİR (liste, form ucu, işlem içi yol; F(S, D) günle artmaz) › tohum 2: 8 cari × 16 adım + dönem kilidi — her adımda kısa yol = tam hesap",
+      "konum": "test/supheli-degersiz-hiz-m2t2-251.test.mjs:192:5",
+      "hata": "WRITE_OFF_TEST yok (tur 2 öncesi kod)"
+    },
+    {
+      "ad": "2.5.1 M2 tur 2 — Değersiz sınırı hız düzeltmesi: tur 1'in tam hesabıyla BİREBİR (liste, form ucu, işlem içi yol; F(S, D) günle artmaz) › tohum 3: 8 cari × 16 adım + dönem kilidi — her adımda kısa yol = tam hesap",
+      "konum": "test/supheli-degersiz-hiz-m2t2-251.test.mjs:192:5",
+      "hata": "WRITE_OFF_TEST yok (tur 2 öncesi kod)"
+    },
+    {
+      "ad": "2.5.1 M2 tur 2 — Değersiz sınırı hız düzeltmesi: tur 1'in tam hesabıyla BİREBİR (liste, form ucu, işlem içi yol; F(S, D) günle artmaz) › tohum 4: 8 cari × 16 adım + dönem kilidi — her adımda kısa yol = tam hesap",
+      "konum": "test/supheli-degersiz-hiz-m2t2-251.test.mjs:192:5",
+      "hata": "WRITE_OFF_TEST yok (tur 2 öncesi kod)"
+    },
+    {
+      "ad": "2.5.1 M2 tur 2 — S-DKM2-2 = A: Değersiz'den sonra iptal de iade de cariyi eksiye düşürecekse reddedilir › fatura iptali → 409 doubtful-writeoff-balance, dört parçalı ileti (en çok 123,55); hiçbir şey yazılmaz",
+      "konum": "test/supheli-degersiz-iptal-iade-m2t2-251.test.mjs:61:3",
+      "hata": "İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Şüpheli Alacak Kayıtları (kayıt = başlık = karşılık = değersiz satırı)). Hiçbir değişiklik yazılmadı; yöneticinize bildirin. · + actual - expected · + 'ledger-integrity' (beklenen doubtful-writeoff-balance, gelen ledger-integrity)"
+    },
+    {
+      "ad": "2.5.1 M2 tur 2 — S-DKM2-2 = A: Değersiz'den sonra iptal de iade de cariyi eksiye düşürecekse reddedilir › fatura silme (iptali çağırır) → aynı ret; fatura yerinde",
+      "konum": "test/supheli-degersiz-iptal-iade-m2t2-251.test.mjs:78:3",
+      "hata": "İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Şüpheli Alacak Kayıtları (kayıt = başlık = karşılık = değersiz satırı)). Hiçbir değişiklik yazılmadı; yöneticinize bildirin. · + actual - expected · + 'ledger-integrity' (beklenen doubtful-writeoff-balance, gelen ledger-integrity)"
+    },
+    {
+      "ad": "2.5.1 M2 tur 2 — S-DKM2-2 = A: Değersiz'den sonra iptal de iade de cariyi eksiye düşürecekse reddedilir › tam iade → 409, ileti 'İade faturası kaydedilemez' (en çok 100,00); iade yazılmaz",
+      "konum": "test/supheli-degersiz-iptal-iade-m2t2-251.test.mjs:91:3",
+      "hata": "{\"id\":\"invoice-c726b0f9-ba0e-457c-a32f-0c0a3e105a64\",\"kind\":\"sale_return\",\"kindLabel\":\"Satıştan İade Faturası\",\"scenario\":\"sale_return\",\"scenarioLabel\":\"Satıştan İade\",\"status\":\"issued\",\"statusLabel\":\"Kaydedildi\",\"number\":\"IAD2026000000001\",\"displayNo\":\"IAD2026000000001\",\"internalNumber\":true,\"ettn\":\"832aa9d5-4f25-4cd9-8a70-2d3e5f3a7a1e\",\"issueDate\":\"2026-10-01\",\"issueTime\":\"09:00\",\"accountId\":\"ac · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "2.5.1 M2 tur 2 — S-DKM2-2 = A: Değersiz'den sonra iptal de iade de cariyi eksiye düşürecekse reddedilir › iade cariyi eksiye düşürmüyorsa kabul; iadenin Düzenle'si eksiye düşürünce 409 (öncesi Düzenle'den önceki bakiye)",
+      "konum": "test/supheli-degersiz-iptal-iade-m2t2-251.test.mjs:105:3",
+      "hata": "{\"id\":\"invoice-e902d105-ce66-4a5d-bb3f-a19455cc4ec8\",\"kind\":\"sale_return\",\"kindLabel\":\"Satıştan İade Faturası\",\"scenario\":\"sale_return\",\"scenarioLabel\":\"Satıştan İade\",\"status\":\"issued\",\"statusLabel\":\"Kaydedildi\",\"number\":\"IAD2026000000001\",\"displayNo\":\"IAD2026000000001\",\"internalNumber\":true,\"ettn\":\"88f1ddb9-3dc0-400b-9d25-fa149d3a0df2\",\"issueDate\":\"2026-10-01\",\"issueTime\":\"09:00\",\"accountId\":\"ac · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "2.5.1 M2 tur 2 — S-DKM2-2 = A: Değersiz'den sonra iptal de iade de cariyi eksiye düşürecekse reddedilir › iptal cariyi eksiye düşürmüyorsa kabul ve Mutabakat yeşil (bağı kopan tahsilat değişmez (i)'de 'sonradan değişmiş')",
+      "konum": "test/supheli-degersiz-iptal-iade-m2t2-251.test.mjs:123:3",
+      "hata": "iptal: 409 {\"ok\":false,\"error\":\"İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Şüpheli Alacak Kayıtları (kayıt = başlık = karşılık = değersiz satırı)). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.\",\"code\":\"ledger-integrity\",\"failures\":[{\"code\":\"doubtful:records\",\"name\":\"Şüpheli Alacak Kayıtları (kayıt = başlık = karşılık = değersiz satırı)\",\"ok\":false,\"count\":1,\"sample\":[\"Değersiz Alacak satırı 17.09.2026 3.000,00 TL: yazıldığı andaki sınırı (123,55 TL) aşıyor — kaydın kalanından önce yararlanan bağsız tahsilat düşülmeden yazılmış (S270)\"],\"tables\":[\"stock_moves\",\"account_entries · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "2.5.1 M2 tur 2 — S-DKM2-2 sınırı: Değersiz olmadan da eksi kalacak iptal (soru açık) bugünkü gibi kabul › avanslı caride iptal 200, bakiye −5.476,45, Mutabakat tamam",
+      "konum": "test/supheli-degersiz-iptal-iade-m2t2-251.test.mjs:143:3",
+      "hata": "iptal: 409 {\"ok\":false,\"error\":\"İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Şüpheli Alacak Kayıtları (kayıt = başlık = karşılık = değersiz satırı)). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.\",\"code\":\"ledger-integrity\",\"failures\":[{\"code\":\"doubtful:records\",\"name\":\"Şüpheli Alacak Kayıtları (kayıt = başlık = karşılık = değersiz satırı)\",\"ok\":false,\"count\":1,\"sample\":[\"Değersiz Alacak satırı 17.09.2026 3.000,00 TL: yazıldığı andaki sınırı (123,55 TL) aşıyor — kaydın kalanından önce yararlanan bağsız tahsilat düşülmeden yazılmış (S270)\"],\"tables\":[\"stock_moves\",\"account_entries · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "2.5.1 M2 tur 2 — v2.5.0'ın GERÇEK verisi (Değersiz → iptal o sürümde kabul): Mutabakat yanlış kırmızıya düşmez › fixture (v2.5.0 üretimi): Mutabakat tamam; sonraki işlem ve Değersiz satırını silme kabul",
+      "konum": "test/supheli-degersiz-iptal-iade-m2t2-251.test.mjs:159:3",
+      "hata": "[{\"code\":\"doubtful:records\",\"name\":\"Şüpheli Alacak Kayıtları (kayıt = başlık = karşılık = değersiz satırı)\",\"ok\":false,\"count\":1,\"sample\":[\"Değersiz Alacak satırı 17.09.2026 3.000,00 TL: yazıldığı andaki sınırı (123,55 TL) aşıyor — kaydın kalanından önce yararlanan bağsız tahsilat düşülmeden yazılmış (S270)\"]}] · false !== true (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.5.1 M2 tur 2 — S-DKM2-3 = C: öbür kaydın silinmesi reddi KALIR, ileti doğru anlatır › S2 silinirse bağsız tahsilat Değersiz yazılan S1'e düşer → 409 doubtful-delete-conflict, dört parçalı ileti; S2 yerinde, bakiye 2.300",
+      "konum": "test/supheli-degersiz-iptal-iade-m2t2-251.test.mjs:189:3",
+      "hata": "Şüpheli alacak kaydı silinemez: carinin öbür şüpheli kayıtları bozulurdu (20.09.2026 tarihli 3.000,00 TL Değersiz Alacak satırı yazıldığı andaki sınırı aşardı). Önce Değersiz Alacak satırını silin, sonra yeniden deneyin. (beklenen , gelen Şüpheli alacak kaydı silinemez: carinin öbür şüpheli kayıtları bozulurdu (20.09.2026 tarihli 3.000,00 TL Değersiz Alacak satırı yazıldığı andaki sınırı aşardı). Önce Değersiz Alacak satırını silin, sonra yeniden deneyin.)"
+    },
+    {
+      "ad": "2.5.1 M2 tur 2 — kapı reddinin iletisi: yalnız Değersiz sınırı (S270) nedeniyse anlaşılır Türkçe cümle › writeoff-limit / writeoff-balance → ne oldu / neden / ne yapmalı / nereye; başka nedenle birlikteyse genel ileti",
+      "konum": "test/supheli-degersiz-iptal-iade-m2t2-251.test.mjs:217:3",
+      "hata": "Expected values to be strictly equal: · + actual - expected · + 'İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Şüpheli Alacak Kayıtları). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.' (beklenen Bu kayıtla carinin 17.09.2026 tarihli 3.000,00 TL Değersiz Alacak satırı şüpheli kaydın kalanını aşar: Değersiz Alacak, kayda düşen tahsilatlar çıkınca kalanı (en çok 123,55 TL) aşamaz. Ne yapmalı: önce Değersiz Alacak satırını silin (cari kartı → Şüpheli Alacak → kaydın Değersiz satırındaki × düğmesi), sonra bu kaydı yeniden girin; gerekirse Değersiz Alacak'ı yeniden yazın (form yazılabilecek tutarı gösterir). Hiçbir değişiklik yazılmadı., gelen İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Şüpheli Alacak Kayıtları). Hiçbir değişiklik yazılmadı; yöneticinize bildirin.)"
+    }
+  ],
+  "ham_cikti": "../kanit/2026-11-28/m23rk-eski2-test-UTC.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/m23rk/eski2",
+  "ham_cikti_sha256": "a564937458f91bc08e5c2dea464d485644dbaa0a813265ceb224755e83a7ddfc",
+  "ham_cikti_bayt": 30999
+}

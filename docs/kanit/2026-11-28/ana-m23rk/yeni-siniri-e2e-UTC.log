@@ -1,0 +1,40 @@
+
+■ 1 Form tarihi bugün; ipucu bugünün ve 17.09'un sınırını söyler
+  ✓ açık kayıtta Değersiz Alacak Yaz düğmesi
+  ✓ form tarihi bugün (2026-10-15) — kendiliğinden geriye kurulmaz
+  ✓ önerilen tutar bugünün sınırı 123,55 (123,55)
+  ✓ ipucu: "15.10.2026 tarihiyle en çok ₺123,55 yazılabilir (kayıtta kalan şüpheli tutar). 17.09.2026 tarihiyle en çok ₺3.000,00 yazılabilir."
+
+■ 2 Tarih 17.09.2026 (klavye + Tab) → ipucu ve önerilen tutar yenilenir
+  ✓ tarih 2026-09-17
+  ✓ ipucu: "17.09.2026 tarihiyle en çok ₺3.000,00 yazılabilir (kayıtta kalan şüpheli tutar — o günün faturaya bağlı tahsilatı Değersiz'den sonra sayılır, bağsız tahsilatlar tarihi ne olursa olsun düşülür)."
+  ✓ önerilen tutar 3.000,00 (3.000,00)
+
+■ 3 1.000 yazılır (insan hızı); bildirim bu yazımı ve gerçek kalanı söyler; düğme durur (S269)
+  ✓ bildirim: "Değersiz alacak yazıldı: ₺1.000,00 · şüphelide kalan ₺0,00 · 17.09.2026 tarihiyle en çok ₺2.000,00 daha yazılabilir."
+  ✓ veri tabanı: Değersiz toplamı 1000
+  ✓ kayıt durumu: Değersiz Yazıldı
+  ✓ S269: kalanı o günün bağlı payıyla 0 görünen kayıtta düğme DURUR
+
+■ 4 Kalanın yazılması: 2.000,01 ret, 2.000 kabul
+  ✓ ipucu: "15.10.2026 tarihiyle yazılabilecek tutar yok (kayıtta kalan şüpheli tutar). 17.09.2026 tarihiyle en çok ₺2.000,00 yazılabilir."
+  ✓ bugünün tarihiyle yazılabilecek tutar yok → tutar boş gelir, eski 'kalan' (0,00) önerilmez ("")
+  ✓ önerilen tutar 2.000,00
+  ✓ 2.000,01: form açık, ileti "Değersiz yazılacak tutar (2.000,01 TL) bu kayda 17.09.2026 tarihiyle yazılabilecek en çok tutarı (2.000,00 TL) aşıyor; sınır: kayıtta kalan şüpheli tutar — o gü"
+  ✓ reddedilen yazım iz bırakmaz
+  ✓ veri tabanı: Değersiz toplamı 3000 (3.000)
+  ✓ bakiye 423.55 (423,55)
+
+■ 5 Fazla yazımın reddi — 01.10 bağsız 1.000 (S270)
+  ✓ ipucu: "17.09.2026 tarihiyle en çok ₺2.000,00 yazılabilir (kayıtta kalan şüpheli tutar — o günün faturaya bağlı tahsilatı Değersiz'den sonra sayılır, bağsız tahsilatlar tarihi ne olursa olsun düşülür)."
+  ✓ 3.000 ret: "Değersiz yazılacak tutar (3.000,00 TL) bu kayda 17.09.2026 tarihiyle yazılabilecek en çok tutarı (2.000,00 TL) aşıyor; sınır: kayıtta kalan şüpheli tutar — o gü"
+  ✓ hiçbir satır yazılmadı
+  ✓ bakiye değişmedi (2423.55)
+
+■ 6 Mutabakat Testi ve sayfa hataları
+  ✓ Mutabakat Testi tamam
+  ✓ sayfa hatası yok
+
+24 geçti, 0 kaldı
+
+[kanit] m23rk-yeni-siniri-e2e-UTC: GEÇTİ · çıkış 0 · 24/24 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit c4700b0 +1 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4

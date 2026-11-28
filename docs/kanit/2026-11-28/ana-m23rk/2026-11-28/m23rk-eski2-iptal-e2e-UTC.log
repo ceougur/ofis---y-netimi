@@ -1,0 +1,23 @@
+
+■ 1 Değersiz'den sonra fatura İptal Et → ret, pencere açık, dört parçalı ileti
+2026-11-28T03:19:16.829Z [WARN] Mutabakat: işlem geri alındı (Şüpheli Alacak Kayıtları (kayıt = başlık = karşılık = değersiz satırı)).
+  ✗ ileti ne oldu: "İşlem geri alındı: kayıt defterler arasında sapma oluşturacaktı (Şüpheli Alacak Kayıtları (kayıt = başlık = karşılık = d"
+  ✗ ileti neden (−2.476,45)
+  ✗ ileti sınır (123,55)
+  ✗ ileti ne yapmalı + nereye
+  ✓ pencere açık kalır
+  ✓ veri tabanı: fatura iptal edilmedi
+  ✓ bakiye 423.55 (423,55)
+
+■ 2 Öbür şüpheli kaydın silinmesi reddi KALIR; ileti doğru anlatır (S-DKM2-3 = C)
+  ✗ bildirim: "Şüpheli alacak kaydı silinemez: carinin öbür şüpheli kayıtları bozulurdu (20.09.2026 tarihli 3.000,00 TL Değersiz Alacak satırı yazıldığı andaki sınırı aşardı). Önce Değersiz Alacak satırını silin, so"
+  ✗ bildirim ne yapmalı + nereye
+  ✗ eski (yanlış) anlatım yok
+  ✓ veri tabanı: S2 silinmedi
+  ✓ bakiye 2300 (2.300)
+
+■ 3 Mutabakat Testi ve sayfa hataları
+  ✓ Mutabakat Testi tamam
+  ✓ sayfa hatası yok
+
+7 geçti, 7 kaldı

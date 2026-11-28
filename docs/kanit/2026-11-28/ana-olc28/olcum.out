@@ -1,0 +1,276 @@
+OLCUM 28.11 · nproc 4 · başta 0.50 1.11 2.39 2/119 18225 · 03:55:07
+=== /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc251/olc-m2.mjs · m2-a (0e96418a) · başta 0.50 1.11 2.39 1/119 18236 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc28/m2-a · veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc28/v · yük (başta) 0.50 1.11 2.39
+ölçülen cari account-2242338a-e304-479c-860e-559607894371: 9 şüpheli kaydı, 35 cari satırı
+tur 1 · yük 0.81 1.13 2.36
+  şüpheli kayıt listesi: 200 · 3 ms · olay döngüsü en çok 0 ms
+  cari kartı: 200 · 56.6 ms · olay döngüsü en çok 55.1 ms
+  form sınır ucu (yalnız yeni kod): 405 · 4.6 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 5685.9 ms · olay döngüsü en çok 0 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 5562.1 ms · olay döngüsü en çok 5561.6 ms
+tur 2 · yük 0.93 1.14 2.34
+  şüpheli kayıt listesi: 200 · 13.8 ms · olay döngüsü en çok 0 ms
+  cari kartı: 200 · 67.4 ms · olay döngüsü en çok 65.8 ms
+  form sınır ucu (yalnız yeni kod): 405 · 2.7 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 6112.5 ms · olay döngüsü en çok 6111.1 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 5989.2 ms · olay döngüsü en çok 5985.3 ms
+tur 3 · yük 0.95 1.13 2.31
+  şüpheli kayıt listesi: 200 · 10.8 ms · olay döngüsü en çok 9.3 ms
+  cari kartı: 200 · 74 ms · olay döngüsü en çok 0 ms
+  form sınır ucu (yalnız yeni kod): 405 · 1.8 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 6099.6 ms · olay döngüsü en çok 0 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 6073.3 ms · olay döngüsü en çok 6073.4 ms
+tur 4 · yük 1.03 1.14 2.30
+  şüpheli kayıt listesi: 200 · 9.3 ms · olay döngüsü en çok 0 ms
+  cari kartı: 200 · 75.8 ms · olay döngüsü en çok 0 ms
+  form sınır ucu (yalnız yeni kod): 405 · 2 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 6089.9 ms · olay döngüsü en çok 0 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 6249.8 ms · olay döngüsü en çok 6249.5 ms
+tur 5 · yük 1.42 1.23 2.30
+  şüpheli kayıt listesi: 200 · 9.5 ms · olay döngüsü en çok 0 ms
+  cari kartı: 200 · 73.8 ms · olay döngüsü en çok 0 ms
+  form sınır ucu (yalnız yeni kod): 405 · 2.3 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 6275.7 ms · olay döngüsü en çok 6274.7 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 5882.4 ms · olay döngüsü en çok 5884.6 ms
+ORTANCA (ms):
+  şüpheli kayıt listesi: 9.5 (n=5, en az 3, en çok 13.8)
+  cari kartı: 73.8 (n=5, en az 56.6, en çok 75.8)
+  form sınır ucu (yalnız yeni kod): 2.3 (n=5, en az 1.8, en çok 4.6)
+  YAZIM Değersiz Yaz: 6099.6 (n=5, en az 5685.9, en çok 6275.7)
+  YAZIM Silinenler'den geri yükleme: 5989.2 (n=5, en az 5562.1, en çok 6249.8)
+yük (sonda) 1.30 1.21 2.27
+çıkış 0 · sonda 1.30 1.21 2.27 1/113 18527
+=== /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc251/olc-m2.mjs · m2-b (08f1a2d7) · başta 1.30 1.21 2.27 1/113 18534 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc28/m2-b · veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc28/v · yük (başta) 1.30 1.21 2.27
+ölçülen cari account-2242338a-e304-479c-860e-559607894371: 9 şüpheli kaydı, 35 cari satırı
+tur 1 · yük 1.41 1.24 2.26
+  şüpheli kayıt listesi: 200 · 4.6 ms · olay döngüsü en çok 0 ms
+  cari kartı: 200 · 70.3 ms · olay döngüsü en çok 0 ms
+  form sınır ucu (yalnız yeni kod): 200 · 5.9 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 6622 ms · olay döngüsü en çok 0 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 6130 ms · olay döngüsü en çok 6127.9 ms
+tur 2 · yük 1.36 1.24 2.24
+  şüpheli kayıt listesi: 200 · 10.5 ms · olay döngüsü en çok 0 ms
+  cari kartı: 200 · 76.6 ms · olay döngüsü en çok 0 ms
+  form sınır ucu (yalnız yeni kod): 200 · 4.3 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 6524.5 ms · olay döngüsü en çok 0 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 6205.3 ms · olay döngüsü en çok 6203.4 ms
+tur 3 · yük 1.26 1.23 2.21
+  şüpheli kayıt listesi: 200 · 11.1 ms · olay döngüsü en çok 0 ms
+  cari kartı: 200 · 82.8 ms · olay döngüsü en çok 0 ms
+  form sınır ucu (yalnız yeni kod): 200 · 6.2 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 5971.5 ms · olay döngüsü en çok 0 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 6051.5 ms · olay döngüsü en çok 6052.4 ms
+tur 4 · yük 1.18 1.21 2.18
+  şüpheli kayıt listesi: 200 · 10.8 ms · olay döngüsü en çok 0 ms
+  cari kartı: 200 · 77.1 ms · olay döngüsü en çok 0 ms
+  form sınır ucu (yalnız yeni kod): 200 · 3.8 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 6381.9 ms · olay döngüsü en çok 6383.7 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 6310.5 ms · olay döngüsü en çok 6308.2 ms
+tur 5 · yük 1.13 1.20 2.16
+  şüpheli kayıt listesi: 200 · 11.6 ms · olay döngüsü en çok 10.2 ms
+  cari kartı: 200 · 78.2 ms · olay döngüsü en çok 0 ms
+  form sınır ucu (yalnız yeni kod): 200 · 4.6 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 6548 ms · olay döngüsü en çok 0 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 6436.2 ms · olay döngüsü en çok 6434.1 ms
+ORTANCA (ms):
+  şüpheli kayıt listesi: 10.8 (n=5, en az 4.6, en çok 11.6)
+  cari kartı: 77.1 (n=5, en az 70.3, en çok 82.8)
+  form sınır ucu (yalnız yeni kod): 4.6 (n=5, en az 3.8, en çok 6.2)
+  YAZIM Değersiz Yaz: 6524.5 (n=5, en az 5971.5, en çok 6622)
+  YAZIM Silinenler'den geri yükleme: 6205.3 (n=5, en az 6051.5, en çok 6436.2)
+yük (sonda) 1.46 1.26 2.16
+çıkış 0 · sonda 1.46 1.26 2.16 1/112 18559
+=== /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc251/olc-m2.mjs · m2-c (c4700b0e) · başta 1.46 1.26 2.16 1/112 18566 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc28/m2-c · veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc28/v · yük (başta) 1.46 1.26 2.16
+ölçülen cari account-2242338a-e304-479c-860e-559607894371: 9 şüpheli kaydı, 35 cari satırı
+tur 1 · yük 1.39 1.26 2.14
+  şüpheli kayıt listesi: 200 · 4.3 ms · olay döngüsü en çok 0 ms
+  cari kartı: 200 · 63.6 ms · olay döngüsü en çok 0 ms
+  form sınır ucu (yalnız yeni kod): 200 · 4.9 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 6149.8 ms · olay döngüsü en çok 0 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 6376.6 ms · olay döngüsü en çok 6371.1 ms
+tur 2 · yük 1.36 1.26 2.12
+  şüpheli kayıt listesi: 200 · 12.5 ms · olay döngüsü en çok 10.8 ms
+  cari kartı: 200 · 84.3 ms · olay döngüsü en çok 0 ms
+  form sınır ucu (yalnız yeni kod): 200 · 6 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 6419 ms · olay döngüsü en çok 0 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 5998.4 ms · olay döngüsü en çok 5993.7 ms
+tur 3 · yük 1.26 1.24 2.09
+  şüpheli kayıt listesi: 200 · 55 ms · olay döngüsü en çok 46.3 ms
+  cari kartı: 200 · 103.4 ms · olay döngüsü en çok 100.2 ms
+  form sınır ucu (yalnız yeni kod): 200 · 4 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 6209.8 ms · olay döngüsü en çok 0 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 6014.4 ms · olay döngüsü en çok 6010.4 ms
+tur 4 · yük 1.18 1.23 2.07
+  şüpheli kayıt listesi: 200 · 10.9 ms · olay döngüsü en çok 9.3 ms
+  cari kartı: 200 · 67.4 ms · olay döngüsü en çok 0 ms
+  form sınır ucu (yalnız yeni kod): 200 · 3.6 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 6240 ms · olay döngüsü en çok 0 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 6078.1 ms · olay döngüsü en çok 6073.4 ms
+tur 5 · yük 1.14 1.22 2.05
+  şüpheli kayıt listesi: 200 · 10.6 ms · olay döngüsü en çok 0 ms
+  cari kartı: 200 · 78.4 ms · olay döngüsü en çok 0 ms
+  form sınır ucu (yalnız yeni kod): 200 · 4.2 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 6142 ms · olay döngüsü en çok 0 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 6235.8 ms · olay döngüsü en çok 6236.9 ms
+ORTANCA (ms):
+  şüpheli kayıt listesi: 10.9 (n=5, en az 4.3, en çok 55)
+  cari kartı: 78.4 (n=5, en az 63.6, en çok 103.4)
+  form sınır ucu (yalnız yeni kod): 4.2 (n=5, en az 3.6, en çok 6)
+  YAZIM Değersiz Yaz: 6209.8 (n=5, en az 6142, en çok 6419)
+  YAZIM Silinenler'den geri yükleme: 6078.1 (n=5, en az 5998.4, en çok 6376.6)
+yük (sonda) 1.25 1.23 2.04
+çıkış 0 · sonda 1.25 1.23 2.04 1/113 18594
+=== /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc251/olc-m2.mjs · m2-a (0e96418a) · başta 1.25 1.23 2.04 1/114 18602 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc28/m2-a · veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc28/v · yük (başta) 1.25 1.23 2.04
+ölçülen cari account-2242338a-e304-479c-860e-559607894371: 9 şüpheli kaydı, 35 cari satırı
+tur 1 · yük 1.58 1.31 2.04
+  şüpheli kayıt listesi: 200 · 3.9 ms · olay döngüsü en çok 0 ms
+  cari kartı: 200 · 66.9 ms · olay döngüsü en çok 0 ms
+  form sınır ucu (yalnız yeni kod): 405 · 6.1 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 6181.6 ms · olay döngüsü en çok 0 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 5973.9 ms · olay döngüsü en çok 5972.7 ms
+tur 2 · yük 1.42 1.29 2.02
+  şüpheli kayıt listesi: 200 · 10.4 ms · olay döngüsü en çok 0 ms
+  cari kartı: 200 · 73.9 ms · olay döngüsü en çok 0 ms
+  form sınır ucu (yalnız yeni kod): 405 · 3.2 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 6118 ms · olay döngüsü en çok 6119.5 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 5680.7 ms · olay döngüsü en çok 5679.1 ms
+tur 3 · yük 1.32 1.28 2.00
+  şüpheli kayıt listesi: 200 · 9.3 ms · olay döngüsü en çok 8.1 ms
+  cari kartı: 200 · 71.5 ms · olay döngüsü en çok 0 ms
+  form sınır ucu (yalnız yeni kod): 405 · 2 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 5914.8 ms · olay döngüsü en çok 0 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 5865.4 ms · olay döngüsü en çok 5863.6 ms
+tur 4 · yük 1.43 1.31 2.00
+  şüpheli kayıt listesi: 200 · 9.2 ms · olay döngüsü en çok 0 ms
+  cari kartı: 200 · 69 ms · olay döngüsü en çok 0 ms
+  form sınır ucu (yalnız yeni kod): 405 · 1.8 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 5843.6 ms · olay döngüsü en çok 0 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 6300.6 ms · olay döngüsü en çok 6295.7 ms
+tur 5 · yük 1.31 1.28 1.97
+  şüpheli kayıt listesi: 200 · 11.1 ms · olay döngüsü en çok 9.7 ms
+  cari kartı: 200 · 77.2 ms · olay döngüsü en çok 0 ms
+  form sınır ucu (yalnız yeni kod): 405 · 1.9 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 6139.1 ms · olay döngüsü en çok 6140.5 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 5993.9 ms · olay döngüsü en çok 5993.7 ms
+ORTANCA (ms):
+  şüpheli kayıt listesi: 9.3 (n=5, en az 3.9, en çok 11.1)
+  cari kartı: 71.5 (n=5, en az 66.9, en çok 77.2)
+  form sınır ucu (yalnız yeni kod): 2 (n=5, en az 1.8, en çok 6.1)
+  YAZIM Değersiz Yaz: 6118 (n=5, en az 5843.6, en çok 6181.6)
+  YAZIM Silinenler'den geri yükleme: 5973.9 (n=5, en az 5680.7, en çok 6300.6)
+yük (sonda) 1.24 1.27 1.96
+çıkış 0 · sonda 1.24 1.27 1.96 1/114 18744
+=== /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc251/olc-m2.mjs · m2-b (08f1a2d7) · başta 1.22 1.27 1.95 1/114 18751 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc28/m2-b · veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc28/v · yük (başta) 1.22 1.27 1.95
+ölçülen cari account-2242338a-e304-479c-860e-559607894371: 9 şüpheli kaydı, 35 cari satırı
+tur 1 · yük 1.43 1.31 1.95
+  şüpheli kayıt listesi: 200 · 4.7 ms · olay döngüsü en çok 0 ms
+  cari kartı: 200 · 70.9 ms · olay döngüsü en çok 0 ms
+  form sınır ucu (yalnız yeni kod): 200 · 6.3 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 6595.3 ms · olay döngüsü en çok 0 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 6223.4 ms · olay döngüsü en çok 6220.2 ms
+tur 2 · yük 1.37 1.30 1.93
+  şüpheli kayıt listesi: 200 · 10.9 ms · olay döngüsü en çok 9.3 ms
+  cari kartı: 200 · 77.8 ms · olay döngüsü en çok 0 ms
+  form sınır ucu (yalnız yeni kod): 200 · 4.4 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 6446 ms · olay döngüsü en çok 0 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 6380.3 ms · olay döngüsü en çok 6379.5 ms
+tur 3 · yük 1.29 1.29 1.92
+  şüpheli kayıt listesi: 200 · 10.6 ms · olay döngüsü en çok 0 ms
+  cari kartı: 200 · 74.1 ms · olay döngüsü en çok 0 ms
+  form sınır ucu (yalnız yeni kod): 200 · 9 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 6211.4 ms · olay döngüsü en çok 6207.6 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 5950.4 ms · olay döngüsü en çok 5947.5 ms
+tur 4 · yük 1.20 1.27 1.90
+  şüpheli kayıt listesi: 200 · 13.1 ms · olay döngüsü en çok 8.6 ms
+  cari kartı: 200 · 86.7 ms · olay döngüsü en çok 0 ms
+  form sınır ucu (yalnız yeni kod): 200 · 3.7 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 5973.5 ms · olay döngüsü en çok 0 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 5801 ms · olay döngüsü en çok 5800.7 ms
+tur 5 · yük 1.15 1.25 1.88
+  şüpheli kayıt listesi: 200 · 9.8 ms · olay döngüsü en çok 0 ms
+  cari kartı: 200 · 71.6 ms · olay döngüsü en çok 0 ms
+  form sınır ucu (yalnız yeni kod): 200 · 3.6 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 5816.8 ms · olay döngüsü en çok 0 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 5761 ms · olay döngüsü en çok 5763 ms
+ORTANCA (ms):
+  şüpheli kayıt listesi: 10.6 (n=5, en az 4.7, en çok 13.1)
+  cari kartı: 74.1 (n=5, en az 70.9, en çok 86.7)
+  form sınır ucu (yalnız yeni kod): 4.4 (n=5, en az 3.6, en çok 9)
+  YAZIM Değersiz Yaz: 6211.4 (n=5, en az 5816.8, en çok 6595.3)
+  YAZIM Silinenler'den geri yükleme: 5950.4 (n=5, en az 5761, en çok 6380.3)
+yük (sonda) 1.19 1.25 1.87
+çıkış 0 · sonda 1.19 1.25 1.87 1/113 18777
+=== /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc251/olc-m2.mjs · m2-c (c4700b0e) · başta 1.19 1.25 1.87 1/113 18784 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc28/m2-c · veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc28/v · yük (başta) 1.19 1.25 1.87
+ölçülen cari account-2242338a-e304-479c-860e-559607894371: 9 şüpheli kaydı, 35 cari satırı
+tur 1 · yük 1.39 1.30 1.87
+  şüpheli kayıt listesi: 200 · 4.6 ms · olay döngüsü en çok 0 ms
+  cari kartı: 200 · 65.6 ms · olay döngüsü en çok 0 ms
+  form sınır ucu (yalnız yeni kod): 200 · 5.4 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 5809.7 ms · olay döngüsü en çok 0 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 5956.4 ms · olay döngüsü en çok 5955.9 ms
+tur 2 · yük 1.35 1.29 1.85
+  şüpheli kayıt listesi: 200 · 9.7 ms · olay döngüsü en çok 0 ms
+  cari kartı: 200 · 66.6 ms · olay döngüsü en çok 0 ms
+  form sınır ucu (yalnız yeni kod): 200 · 3.7 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 6218 ms · olay döngüsü en çok 0 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 5988.3 ms · olay döngüsü en çok 5985.3 ms
+tur 3 · yük 1.27 1.28 1.84
+  şüpheli kayıt listesi: 200 · 10.4 ms · olay döngüsü en çok 0 ms
+  cari kartı: 200 · 82.3 ms · olay döngüsü en çok 0 ms
+  form sınır ucu (yalnız yeni kod): 200 · 4.5 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 6298.5 ms · olay döngüsü en çok 0 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 6067.2 ms · olay döngüsü en çok 6065 ms
+tur 4 · yük 1.27 1.28 1.82
+  şüpheli kayıt listesi: 200 · 13.7 ms · olay döngüsü en çok 0 ms
+  cari kartı: 200 · 71 ms · olay döngüsü en çok 69.5 ms
+  form sınır ucu (yalnız yeni kod): 200 · 3.6 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 6037.4 ms · olay döngüsü en çok 6039.8 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 6415.4 ms · olay döngüsü en çok 6408.9 ms
+tur 5 · yük 1.19 1.26 1.81
+  şüpheli kayıt listesi: 200 · 13 ms · olay döngüsü en çok 10.3 ms
+  cari kartı: 200 · 99.8 ms · olay döngüsü en çok 0 ms
+  form sınır ucu (yalnız yeni kod): 200 · 4.6 ms · olay döngüsü en çok 0 ms
+  YAZIM Değersiz Yaz: 200 · 6300.7 ms · olay döngüsü en çok 0 ms
+  YAZIM Silinenler'den geri yükleme: 200 · 5675.3 ms · olay döngüsü en çok 5674.9 ms
+ORTANCA (ms):
+  şüpheli kayıt listesi: 10.4 (n=5, en az 4.6, en çok 13.7)
+  cari kartı: 71 (n=5, en az 65.6, en çok 99.8)
+  form sınır ucu (yalnız yeni kod): 4.5 (n=5, en az 3.6, en çok 5.4)
+  YAZIM Değersiz Yaz: 6218 (n=5, en az 5809.7, en çok 6300.7)
+  YAZIM Silinenler'den geri yükleme: 5988.3 (n=5, en az 5675.3, en çok 6415.4)
+yük (sonda) 1.21 1.26 1.80
+çıkış 0 · sonda 1.21 1.26 1.80 1/112 18809
+=== /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc28/olc-devir.mjs · d3-a (d183d780) · başta 1.20 1.26 1.79 1/112 18816 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc28/d3-a · veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc28/v · yük (başta) 1.20 1.26 1.79
+  ilk (soğuk) 15818.5 ms · durum done
+  devir ön izlemesi (K 31.12.2026): ılık ortanca 17891.7 ms (en az 17484.1, en çok 17981.6) · olay döngüsü en çok 175.5 ms · durum done · zamanlama {"okuma":1109.5,"yevmiye":2132.2,"tekBorcSirasi":10129.1,"degerleme":504.3,"onDenetim":1403.5,"plan":1534.1,"rapor":220.8,"toplam":17036.7}
+  özet: taksitKarti null · hata -
+yük (sonda) 1.07 1.20 1.72
+çıkış 0 · sonda 1.07 1.20 1.72 1/112 18844
+=== /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc28/olc-devir.mjs · d3-b (aa6dfe29) · başta 1.07 1.20 1.72 1/113 18852 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc28/d3-b · veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc28/v · yük (başta) 1.07 1.20 1.72
+  ilk (soğuk) 18131.8 ms · durum done
+  devir ön izlemesi (K 31.12.2026): ılık ortanca 17798 ms (en az 17208.7, en çok 18036.5) · olay döngüsü en çok 165.8 ms · durum done · zamanlama {"okuma":1004.5,"yevmiye":2156.6,"tekBorcSirasi":10209.8,"degerleme":508.1,"onDenetim":1361.1,"plan":1421.7,"rapor":214.6,"toplam":16879.5}
+  özet: taksitKarti null · hata -
+yük (sonda) 1.53 1.31 1.71
+çıkış 0 · sonda 1.53 1.31 1.71 1/113 18879
+=== /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc28/olc-devir.mjs · d3-a (d183d780) · başta 1.49 1.30 1.71 1/113 18886 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc28/d3-a · veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc28/v · yük (başta) 1.49 1.30 1.71
+  ilk (soğuk) 17850.8 ms · durum done
+  devir ön izlemesi (K 31.12.2026): ılık ortanca 17841.8 ms (en az 17440.7, en çok 18003.7) · olay döngüsü en çok 221.4 ms · durum done · zamanlama {"okuma":998.5,"yevmiye":1952.4,"tekBorcSirasi":10019.2,"degerleme":408.8,"onDenetim":1314.2,"plan":1655.8,"rapor":216.6,"toplam":16568.5}
+  özet: taksitKarti null · hata -
+yük (sonda) 1.31 1.28 1.66
+çıkış 0 · sonda 1.31 1.28 1.66 1/113 18909
+=== /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc28/olc-devir.mjs · d3-b (aa6dfe29) · başta 1.31 1.28 1.66 1/116 18919 
+kod /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc28/d3-b · veri /tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/olc28/v · yük (başta) 1.31 1.28 1.66
+  ilk (soğuk) 17537.7 ms · durum done
+  devir ön izlemesi (K 31.12.2026): ılık ortanca 17071.6 ms (en az 16689.4, en çok 17147.2) · olay döngüsü en çok 175.1 ms · durum done · zamanlama {"okuma":936.6,"yevmiye":1875.6,"tekBorcSirasi":9963.7,"degerleme":450,"onDenetim":1325.7,"plan":1366.8,"rapor":214.9,"toplam":16136.5}
+  özet: taksitKarti null · hata -
+yük (sonda) 1.57 1.34 1.64
+çıkış 0 · sonda 1.57 1.34 1.64 1/116 18945
+bitti 04:15:26 · 1.19 1.28 1.58 1/113 19049

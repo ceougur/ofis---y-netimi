@@ -1,0 +1,435 @@
+TAP version 13
+# (node:14416) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.1 M2 tur 2 — S155 dalı ve aradaki bağlı tahsilat günü: kısa yol tam hesapla aynı, elle beklenen sınır / öneri
+    # Subtest: 17.09: sınır 3.000 / öneri 2.923,55; bugün 123,55; en iyi öneri 2.923,55 (en erken gün) ve önerilen tutar o günle kabul
+    ok 1 - 17.09: sınır 3.000 / öneri 2.923,55; bugün 123,55; en iyi öneri 2.923,55 (en erken gün) ve önerilen tutar o günle kabul
+      ---
+      duration_ms: 906.287531
+      type: 'test'
+      ...
+    1..1
+ok 1 - 2.5.1 M2 tur 2 — S155 dalı ve aradaki bağlı tahsilat günü: kısa yol tam hesapla aynı, elle beklenen sınır / öneri
+  ---
+  duration_ms: 907.212142
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M2 tur 2 — budama kuralı (saf işlev) tam taramayla aynı: 20.000 rastgele tablo
+    # Subtest: en iyi gün / öneri / sınır ve anyMinor birebir; ilk gün ve bugün hesaplanır
+    ok 1 - en iyi gün / öneri / sınır ve anyMinor birebir; ilk gün ve bugün hesaplanır
+      ---
+      duration_ms: 192.3993
+      type: 'test'
+      ...
+    1..1
+ok 2 - 2.5.1 M2 tur 2 — budama kuralı (saf işlev) tam taramayla aynı: 20.000 rastgele tablo
+  ---
+  duration_ms: 192.644091
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M2 tur 2 — hız dişi: liste ve form ucunun iş sayısı bağlı tahsilat GÜNÜ sayısıyla büyümez
+    # Subtest: 30 bağlı tahsilat günü: liste 2 sınır hesabı + 0 deneme; Değersiz satırından sonra 2 sınır hesabı + ≤ 2 deneme; form ucu ≤ 3 sınır hesabı
+    ok 1 - 30 bağlı tahsilat günü: liste 2 sınır hesabı + 0 deneme; Değersiz satırından sonra 2 sınır hesabı + ≤ 2 deneme; form ucu ≤ 3 sınır hesabı
+      ---
+      duration_ms: 3707.206202
+      type: 'test'
+      ...
+    1..1
+ok 3 - 2.5.1 M2 tur 2 — hız dişi: liste ve form ucunun iş sayısı bağlı tahsilat GÜNÜ sayısıyla büyümez
+  ---
+  duration_ms: 3707.59899
+  type: 'suite'
+  ...
+# (node:14416) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# \# M2T2 eşdeğerlik tohum 1: {"snapshots":136,"quotes":1810,"txQuotes":867,"monotone":3898,"writes":6,"partial":3,"restored":1,"released":1,"midBest":0,"proposalDiff":0,"laterTarget":20,"s155":0}
+# Subtest: 2.5.1 M2 tur 2 — Değersiz sınırı hız düzeltmesi: tur 1'in tam hesabıyla BİREBİR (liste, form ucu, işlem içi yol; F(S, D) günle artmaz)
+    # Subtest: tohum 1: 8 cari × 16 adım + dönem kilidi — her adımda kısa yol = tam hesap
+    ok 1 - tohum 1: 8 cari × 16 adım + dönem kilidi — her adımda kısa yol = tam hesap
+      ---
+      duration_ms: 11509.561779
+      type: 'test'
+      ...
+# (node:14416) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# \# M2T2 eşdeğerlik tohum 2: {"snapshots":136,"quotes":1630,"txQuotes":824,"monotone":3658,"writes":8,"partial":2,"restored":1,"released":1,"midBest":0,"proposalDiff":0,"laterTarget":5,"s155":0}
+    # Subtest: tohum 2: 8 cari × 16 adım + dönem kilidi — her adımda kısa yol = tam hesap
+    ok 2 - tohum 2: 8 cari × 16 adım + dönem kilidi — her adımda kısa yol = tam hesap
+      ---
+      duration_ms: 9892.144444
+      type: 'test'
+      ...
+# (node:14416) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# \# M2T2 eşdeğerlik tohum 3: {"snapshots":136,"quotes":1750,"txQuotes":884,"monotone":3950,"writes":3,"partial":4,"restored":0,"released":1,"midBest":0,"proposalDiff":0,"laterTarget":42,"s155":0}
+    # Subtest: tohum 3: 8 cari × 16 adım + dönem kilidi — her adımda kısa yol = tam hesap
+    ok 3 - tohum 3: 8 cari × 16 adım + dönem kilidi — her adımda kısa yol = tam hesap
+      ---
+      duration_ms: 9172.314478
+      type: 'test'
+      ...
+# (node:14416) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# \# M2T2 eşdeğerlik tohum 4: {"snapshots":136,"quotes":1460,"txQuotes":757,"monotone":3302,"writes":4,"partial":1,"restored":1,"released":1,"midBest":0,"proposalDiff":0,"laterTarget":16,"s155":0}
+    # Subtest: tohum 4: 8 cari × 16 adım + dönem kilidi — her adımda kısa yol = tam hesap
+    ok 4 - tohum 4: 8 cari × 16 adım + dönem kilidi — her adımda kısa yol = tam hesap
+      ---
+      duration_ms: 8090.64181
+      type: 'test'
+      ...
+    1..4
+ok 4 - 2.5.1 M2 tur 2 — Değersiz sınırı hız düzeltmesi: tur 1'in tam hesabıyla BİREBİR (liste, form ucu, işlem içi yol; F(S, D) günle artmaz)
+  ---
+  duration_ms: 38665.430656
+  type: 'suite'
+  ...
+# (node:14417) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.1 M2 tur 2 — S-DKM2-2 = A: Değersiz'den sonra iptal de iade de cariyi eksiye düşürecekse reddedilir
+    # Subtest: fatura iptali → 409 doubtful-writeoff-balance, dört parçalı ileti (en çok 123,55); hiçbir şey yazılmaz
+    ok 1 - fatura iptali → 409 doubtful-writeoff-balance, dört parçalı ileti (en çok 123,55); hiçbir şey yazılmaz
+      ---
+      duration_ms: 951.479944
+      type: 'test'
+      ...
+    # Subtest: fatura silme (iptali çağırır) → aynı ret; fatura yerinde
+    ok 2 - fatura silme (iptali çağırır) → aynı ret; fatura yerinde
+      ---
+      duration_ms: 582.780074
+      type: 'test'
+      ...
+    # Subtest: tam iade → 409, ileti 'İade faturası kaydedilemez' (en çok 100,00); iade yazılmaz
+    ok 3 - tam iade → 409, ileti 'İade faturası kaydedilemez' (en çok 100,00); iade yazılmaz
+      ---
+      duration_ms: 662.941878
+      type: 'test'
+      ...
+    # Subtest: iade cariyi eksiye düşürmüyorsa kabul; iadenin Düzenle'si eksiye düşürünce 409 (öncesi Düzenle'den önceki bakiye)
+    ok 4 - iade cariyi eksiye düşürmüyorsa kabul; iadenin Düzenle'si eksiye düşürünce 409 (öncesi Düzenle'den önceki bakiye)
+      ---
+      duration_ms: 604.006877
+      type: 'test'
+      ...
+    # Subtest: iptal cariyi eksiye düşürmüyorsa kabul ve Mutabakat yeşil (bağı kopan tahsilat değişmez (i)'de 'sonradan değişmiş')
+    ok 5 - iptal cariyi eksiye düşürmüyorsa kabul ve Mutabakat yeşil (bağı kopan tahsilat değişmez (i)'de 'sonradan değişmiş')
+      ---
+      duration_ms: 667.201013
+      type: 'test'
+      ...
+    1..5
+ok 5 - 2.5.1 M2 tur 2 — S-DKM2-2 = A: Değersiz'den sonra iptal de iade de cariyi eksiye düşürecekse reddedilir
+  ---
+  duration_ms: 3469.6337
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M2 tur 3 — S-M2T2-1 = A: Değersiz olmadan da eksi kalacak iptal de reddedilir
+    # Subtest: avanslı caride iptal 409, bakiye −2.576,45 kalır, fatura yerinde, Mutabakat tamam
+    ok 1 - avanslı caride iptal 409, bakiye −2.576,45 kalır, fatura yerinde, Mutabakat tamam
+      ---
+      duration_ms: 685.752465
+      type: 'test'
+      ...
+    1..1
+ok 6 - 2.5.1 M2 tur 3 — S-M2T2-1 = A: Değersiz olmadan da eksi kalacak iptal de reddedilir
+  ---
+  duration_ms: 686.029978
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M2 tur 2 — v2.5.0'ın GERÇEK verisi (Değersiz → iptal o sürümde kabul): Mutabakat yanlış kırmızıya düşmez
+    # Subtest: fixture (v2.5.0 üretimi): Mutabakat tamam; sonraki işlem ve Değersiz satırını silme kabul
+    ok 1 - fixture (v2.5.0 üretimi): Mutabakat tamam; sonraki işlem ve Değersiz satırını silme kabul
+      ---
+      duration_ms: 286.290394
+      type: 'test'
+      ...
+    1..1
+ok 7 - 2.5.1 M2 tur 2 — v2.5.0'ın GERÇEK verisi (Değersiz → iptal o sürümde kabul): Mutabakat yanlış kırmızıya düşmez
+  ---
+  duration_ms: 286.744131
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M2 tur 2 — S-DKM2-3 = C: öbür kaydın silinmesi reddi KALIR, ileti doğru anlatır
+    # Subtest: S2 silinirse bağsız tahsilat Değersiz yazılan S1'e düşer → 409 doubtful-delete-conflict, dört parçalı ileti; S2 yerinde, bakiye 2.300
+    ok 1 - S2 silinirse bağsız tahsilat Değersiz yazılan S1'e düşer → 409 doubtful-delete-conflict, dört parçalı ileti; S2 yerinde, bakiye 2.300
+      ---
+      duration_ms: 471.736192
+      type: 'test'
+      ...
+    1..1
+ok 8 - 2.5.1 M2 tur 2 — S-DKM2-3 = C: öbür kaydın silinmesi reddi KALIR, ileti doğru anlatır
+  ---
+  duration_ms: 471.939897
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M2 tur 2 — kapı reddinin iletisi: yalnız Değersiz sınırı (S270) nedeniyse anlaşılır Türkçe cümle
+    # Subtest: writeoff-limit / writeoff-balance → ne oldu / neden / ne yapmalı / nereye; başka nedenle birlikteyse genel ileti
+    ok 1 - writeoff-limit / writeoff-balance → ne oldu / neden / ne yapmalı / nereye; başka nedenle birlikteyse genel ileti
+      ---
+      duration_ms: 0.759168
+      type: 'test'
+      ...
+    1..1
+ok 9 - 2.5.1 M2 tur 2 — kapı reddinin iletisi: yalnız Değersiz sınırı (S270) nedeniyse anlaşılır Türkçe cümle
+  ---
+  duration_ms: 0.978566
+  type: 'suite'
+  ...
+# (node:14423) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.1 M2 tur 3 — S-M2T2-1 = A: Değersiz satırı olan caride eksiye götüren iptal / iade her durumda ret
+    # Subtest: avanslı caride tam iade → 409 'İade faturası kaydedilemez' (Değersiz olmasaydı da 2.476,45 alacaklı); iade yazılmaz, bakiye −2.576,45
+    ok 1 - avanslı caride tam iade → 409 'İade faturası kaydedilemez' (Değersiz olmasaydı da 2.476,45 alacaklı); iade yazılmaz, bakiye −2.576,45
+      ---
+      duration_ms: 770.592491
+      type: 'test'
+      ...
+    # Subtest: iletideki 'ne yapmalı' işe yarar: Değersiz satırı silinince aynı iptal kabul, bakiye −2.476,45, Mutabakat tamam
+    ok 2 - iletideki 'ne yapmalı' işe yarar: Değersiz satırı silinince aynı iptal kabul, bakiye −2.476,45, Mutabakat tamam
+      ---
+      duration_ms: 784.861505
+      type: 'test'
+      ...
+    # Subtest: iki Değersiz satırı (1.000 + 2.000 @17.09): avanslı iptal 409, ileti son satırı ve toplamı anlatır
+    ok 3 - iki Değersiz satırı (1.000 + 2.000 @17.09): avanslı iptal 409, ileti son satırı ve toplamı anlatır
+      ---
+      duration_ms: 604.069563
+      type: 'test'
+      ...
+    # Subtest: Değersiz satırı OLMAYAN avanslı caride iptal kabul (denetim okumaz), bakiye −2.476,45
+    ok 4 - Değersiz satırı OLMAYAN avanslı caride iptal kabul (denetim okumaz), bakiye −2.476,45
+      ---
+      duration_ms: 533.900027
+      type: 'test'
+      ...
+    # Subtest: bakiyeyi DÜŞÜRMEYEN işlem eksi caride de kabul: iadenin Düzenle'si iadeyi küçültünce (eksi bakiye azalır)
+    ok 5 - bakiyeyi DÜŞÜRMEYEN işlem eksi caride de kabul: iadenin Düzenle'si iadeyi küçültünce (eksi bakiye azalır)
+      ---
+      duration_ms: 684.062551
+      type: 'test'
+      ...
+# (node:14423) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: kilitli dönemde dönem kilidi iletisi önce gelir (Değersiz denetimi değil)
+    ok 6 - kilitli dönemde dönem kilidi iletisi önce gelir (Değersiz denetimi değil)
+      ---
+      duration_ms: 917.467668
+      type: 'test'
+      ...
+    1..6
+ok 10 - 2.5.1 M2 tur 3 — S-M2T2-1 = A: Değersiz satırı olan caride eksiye götüren iptal / iade her durumda ret
+  ---
+  duration_ms: 4296.497842
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M2 tur 3 — S-M2T2-2 = A: Değersiz'den sonra fatura TUTARININ Düzenle ile düşürülmesi iade gibi reddedilir
+    # Subtest: 2.900 → 100 → 409 'Fatura düzenlenemez' (düzenlemeden sonra 2.376,45 alacaklı); fatura 2.900 kalır, bakiye 423,55
+    ok 1 - 2.900 → 100 → 409 'Fatura düzenlenemez' (düzenlemeden sonra 2.376,45 alacaklı); fatura 2.900 kalır, bakiye 423,55
+      ---
+      duration_ms: 585.700329
+      type: 'test'
+      ...
+    # Subtest: avanslı caride 2.900 → 2.800 → 409 (eksiyi büyütür); bakiye −2.576,45
+    ok 2 - avanslı caride 2.900 → 2.800 → 409 (eksiyi büyütür); bakiye −2.576,45
+      ---
+      duration_ms: 634.839485
+      type: 'test'
+      ...
+    # Subtest: tutar artışı (2.900 → 3.000) ve eksiye düşürmeyen azalış (ek borçlu caride 2.900 → 2.000) kabul; Mutabakat tamam
+    ok 3 - tutar artışı (2.900 → 3.000) ve eksiye düşürmeyen azalış (ek borçlu caride 2.900 → 2.000) kabul; Mutabakat tamam
+      ---
+      duration_ms: 793.089142
+      type: 'test'
+      ...
+    # Subtest: Düzenle'de cari değişirse (borç bu cariden çıkar) eski cari denetlenir: 409, eski carinin bakiyesi 223,55 kalır
+    ok 4 - Düzenle'de cari değişirse (borç bu cariden çıkar) eski cari denetlenir: 409, eski carinin bakiyesi 223,55 kalır
+      ---
+      duration_ms: 760.501089
+      type: 'test'
+      ...
+    # Subtest: tutarı DEĞİŞMEYEN Düzenle'de peşin tahsilat eklenmesi denetlenmez (tahsilattır; tutar düşürmesi değil) — cari eksiye gitse de kabul
+    ok 5 - tutarı DEĞİŞMEYEN Düzenle'de peşin tahsilat eklenmesi denetlenmez (tahsilattır; tutar düşürmesi değil) — cari eksiye gitse de kabul
+      ---
+      duration_ms: 856.408715
+      type: 'test'
+      ...
+    1..5
+ok 11 - 2.5.1 M2 tur 3 — S-M2T2-2 = A: Değersiz'den sonra fatura TUTARININ Düzenle ile düşürülmesi iade gibi reddedilir
+  ---
+  duration_ms: 3631.156092
+  type: 'suite'
+  ...
+# (node:14446) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:14446) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: M2 — sınıflar (kâhin d62 elle beklenenleri; girdi §3 m.1–m.12)
+    # Subtest: her adımın sonucu (durum + kod) beklenen
+    ok 1 - her adımın sonucu (durum + kod) beklenen
+      ---
+      duration_ms: 1.892016
+      type: 'test'
+      ...
+    # Subtest: carilerin bakiyesi (k1)
+    ok 2 - carilerin bakiyesi (k1)
+      ---
+      duration_ms: 0.237882
+      type: 'test'
+      ...
+    # Subtest: liste / form ucunun okuduğu defter bakiyesi her caride cari kartının bakiyesiyle aynı (yazım yolu kartın bakiyesini okur)
+    ok 3 - liste / form ucunun okuduğu defter bakiyesi her caride cari kartının bakiyesiyle aynı (yazım yolu kartın bakiyesini okur)
+      ---
+      duration_ms: 2.064924
+      type: 'test'
+      ...
+    # Subtest: Mutabakat Testi tamam (değişmez; m.10 düzeltmeleri ve m.11 avansı reddedilmedi, ihlal yok)
+    ok 4 - Mutabakat Testi tamam (değişmez; m.10 düzeltmeleri ve m.11 avansı reddedilmedi, ihlal yok)
+      ---
+      duration_ms: 79.62485
+      type: 'test'
+      ...
+    # Subtest: ret iletileri gerçek sınırı ve nedeni söyler (dk-ud3 DÜŞÜK-1, dk-ud4 'breaks')
+    ok 5 - ret iletileri gerçek sınırı ve nedeni söyler (dk-ud3 DÜŞÜK-1, dk-ud4 'breaks')
+      ---
+      duration_ms: 0.655495
+      type: 'test'
+      ...
+    # Subtest: kayıtların durumu: kısmi zincir (A2 / A3) ve bağlı = şüpheli (A4) Değersiz Yazıldı, kalan 0
+    ok 6 - kayıtların durumu: kısmi zincir (A2 / A3) ve bağlı = şüpheli (A4) Değersiz Yazıldı, kalan 0
+      ---
+      duration_ms: 0.528904
+      type: 'test'
+      ...
+    1..6
+ok 12 - M2 — sınıflar (kâhin d62 elle beklenenleri; girdi §3 m.1–m.12)
+  ---
+  duration_ms: 12443.034804
+  type: 'suite'
+  ...
+# Subtest: M2 — liste 'writeOff' alanı, formun sınır ucu ve bildirim (S268 / S269 / Y30-6; girdi §2 m.5)
+    # Subtest: S269: kısmi Değersiz'den sonra kayıt 'Değersiz Yazıldı' (kalan 0) görünür ama yazılabilir — liste alanı 17.09 tarihiyle 2.000, bugün 0
+    ok 1 - S269: kısmi Değersiz'den sonra kayıt 'Değersiz Yazıldı' (kalan 0) görünür ama yazılabilir — liste alanı 17.09 tarihiyle 2.000, bugün 0
+      ---
+      duration_ms: 2.65797
+      type: 'test'
+      ...
+    # Subtest: formun ucu: seçilen tarihin sınırı + en çok yazdıran gün; kayıttan önce / ileri tarih yazılamaz
+    ok 2 - formun ucu: seçilen tarihin sınırı + en çok yazdıran gün; kayıttan önce / ileri tarih yazılamaz
+      ---
+      duration_ms: 7.417144
+      type: 'test'
+      ...
+    # Subtest: S-M2-1 = B: @17.09 3.000 (o günün bağlı payından önce), @18.09 123,55 (önceki günün payı düşülmüş); sonradan gelen bağsız (S270) @17.09 2.000
+    ok 3 - S-M2-1 = B: @17.09 3.000 (o günün bağlı payından önce), @18.09 123,55 (önceki günün payı düşülmüş); sonradan gelen bağsız (S270) @17.09 2.000
+      ---
+      duration_ms: 7.363136
+      type: 'test'
+      ...
+    # Subtest: Y30-6: S155 — sınır 3.000, önerilen 2.923,55 (öbür açık kayıt 500); önerilen tutar kabul, sınır reddedilir
+    ok 4 - Y30-6: S155 — sınır 3.000, önerilen 2.923,55 (öbür açık kayıt 500); önerilen tutar kabul, sınır reddedilir
+      ---
+      duration_ms: 58.314219
+      type: 'test'
+      ...
+    # Subtest: bildirim verisi: bu yazımın tutarı, yazımdan sonraki gerçek kalan ve aynı tarihle daha yazılabilecek tutar
+    ok 5 - bildirim verisi: bu yazımın tutarı, yazımdan sonraki gerçek kalan ve aynı tarihle daha yazılabilecek tutar
+      ---
+      duration_ms: 26.698097
+      type: 'test'
+      ...
+    # Subtest: Değersiz'den SONRA Şüpheliden Çıkar kabul; değişmez çıkarılmış kaydı Değersiz anının dünyasında açık sayar (ihlal yok)
+    ok 6 - Değersiz'den SONRA Şüpheliden Çıkar kabul; değişmez çıkarılmış kaydı Değersiz anının dünyasında açık sayar (ihlal yok)
+      ---
+      duration_ms: 5.170667
+      type: 'test'
+      ...
+# (node:14446) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: m.12 Dönem Kilidi 17.09: liste en çok yazdıran gün 18.09 (123,55), formun ucu 17.09'u kilitli söyler
+    ok 7 - m.12 Dönem Kilidi 17.09: liste en çok yazdıran gün 18.09 (123,55), formun ucu 17.09'u kilitli söyler
+      ---
+      duration_ms: 255.404009
+      type: 'test'
+      ...
+    1..7
+ok 13 - M2 — liste 'writeOff' alanı, formun sınır ucu ve bildirim (S268 / S269 / Y30-6; girdi §2 m.5)
+  ---
+  duration_ms: 1473.373733
+  type: 'suite'
+  ...
+# Subtest: M2 — S270 değişmezi: geri alınan uygulamanın bozuk durumu (Değersiz 3.000, bakiye −576,45) Mutabakat Testi'nde ve kapıda YAKALANIR
+    # Subtest: meşru sıra temiz; bağsız tahsilat Değersiz'den ÖNCE yazılmış ve Değersiz 3.000 yapılınca (geri alınan uygulamanın durumu, bakiye −576,45) iki koşul da kırmızı, kapı sonraki yazımı reddeder
+    ok 1 - meşru sıra temiz; bağsız tahsilat Değersiz'den ÖNCE yazılmış ve Değersiz 3.000 yapılınca (geri alınan uygulamanın durumu, bakiye −576,45) iki koşul da kırmızı, kapı sonraki yazımı reddeder
+      ---
+      duration_ms: 45.76895
+      type: 'test'
+      ...
+    1..1
+ok 14 - M2 — S270 değişmezi: geri alınan uygulamanın bozuk durumu (Değersiz 3.000, bakiye −576,45) Mutabakat Testi'nde ve kapıda YAKALANIR
+  ---
+  duration_ms: 492.917293
+  type: 'suite'
+  ...
+# Subtest: M2 — iki şirket ve yedekten geri yükleme (ders 17)
+    # Subtest: 002'de aynı sınıflar aynı sonucu verir (sınır işlevi şirketler arasında bellek paylaşmaz); 001'in yedeği geri yüklenince sınır ve öneri aynı
+    ok 1 - 002'de aynı sınıflar aynı sonucu verir (sınır işlevi şirketler arasında bellek paylaşmaz); 001'in yedeği geri yüklenince sınır ve öneri aynı
+      ---
+      duration_ms: 2753.725922
+      type: 'test'
+      ...
+    1..1
+ok 15 - M2 — iki şirket ve yedekten geri yükleme (ders 17)
+  ---
+  duration_ms: 2793.607759
+  type: 'suite'
+  ...
+# \# M2 rastgele tohum 1: {"written":12,"refusedOver":34,"restored":1}
+# Subtest: M2 — rastgele sıra, tohum 1 (girdi §3 m.13)
+    # Subtest: her Değersiz adımında: önerilen tutar KABUL, sınır + 0,01 RET, bakiye ≥ 0; her adımda değişmez boş; sonda Mutabakat Testi tamam
+    ok 1 - her Değersiz adımında: önerilen tutar KABUL, sınır + 0,01 RET, bakiye ≥ 0; her adımda değişmez boş; sonda Mutabakat Testi tamam
+      ---
+      duration_ms: 3297.866275
+      type: 'test'
+      ...
+    1..1
+ok 16 - M2 — rastgele sıra, tohum 1 (girdi §3 m.13)
+  ---
+  duration_ms: 3645.887405
+  type: 'suite'
+  ...
+# \# M2 rastgele tohum 2: {"written":5,"refusedOver":21,"restored":0}
+# Subtest: M2 — rastgele sıra, tohum 2 (girdi §3 m.13)
+    # Subtest: her Değersiz adımında: önerilen tutar KABUL, sınır + 0,01 RET, bakiye ≥ 0; her adımda değişmez boş; sonda Mutabakat Testi tamam
+    ok 1 - her Değersiz adımında: önerilen tutar KABUL, sınır + 0,01 RET, bakiye ≥ 0; her adımda değişmez boş; sonda Mutabakat Testi tamam
+      ---
+      duration_ms: 3092.30771
+      type: 'test'
+      ...
+    1..1
+ok 17 - M2 — rastgele sıra, tohum 2 (girdi §3 m.13)
+  ---
+  duration_ms: 3491.3438
+  type: 'suite'
+  ...
+# \# M2 rastgele tohum 3: {"written":12,"refusedOver":31,"restored":1}
+# Subtest: M2 — rastgele sıra, tohum 3 (girdi §3 m.13)
+    # Subtest: her Değersiz adımında: önerilen tutar KABUL, sınır + 0,01 RET, bakiye ≥ 0; her adımda değişmez boş; sonda Mutabakat Testi tamam
+    ok 1 - her Değersiz adımında: önerilen tutar KABUL, sınır + 0,01 RET, bakiye ≥ 0; her adımda değişmez boş; sonda Mutabakat Testi tamam
+      ---
+      duration_ms: 3055.679678
+      type: 'test'
+      ...
+    1..1
+ok 18 - M2 — rastgele sıra, tohum 3 (girdi §3 m.13)
+  ---
+  duration_ms: 3412.464679
+  type: 'suite'
+  ...
+1..18
+# tests 45
+# suites 18
+# pass 45
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 44001.003528

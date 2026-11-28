@@ -1,0 +1,21 @@
+Ocak fişi [ 0, 0, 100000 ]
+Şubat fişi [ 100000, 50000, 0 ]
+Mart fişi [ 0, 70000, 0 ]
+etkin fişler [["2026-01",0,0,100000,false],["2026-02",100000,50000,0,true],["2026-03",0,70000,0,false]]
+ön izleme 2026-02 [100000,20000,0]
+ön izleme 2026-03 [0,90000,0]
+ön izleme 2026-04 [0,50000,0]
+Ocak–Nisan: Önceki/Ödenecek/Sonraki = 0 / 160000 / 0 · 391 350000 − 191 190000 = 160000 · Ödenecek−Sonraki+Önceki = 160000 EŞİT
+   satır Ocak 2026:Sonraki Döneme Devreden KDV=100000
+   satır Şubat 2026:Önceki Dönemden Devreden KDV=100000
+   satır Şubat 2026:Ödenecek KDV=20000
+   satır Mart 2026:Ödenecek KDV=90000
+   satır Nisan 2026:Ödenecek KDV=50000
+   not [KDV Mahsup Fişi] Ocak 2026, Şubat 2026, Mart 2026
+   not [Mahsuptan Sonra Değişen Ay] Şubat 2026 (mahsubu geri alıp yeniden yapın)
+2026-02: Önceki/Ödenecek/Sonraki = 100000 / 20000 / 0 · 391 200000 − 191 80000 = 120000 · Ödenecek−Sonraki+Önceki = 120000 EŞİT
+   not [KDV Mahsup Fişi] Şubat 2026
+   not [Mahsuptan Sonra Değişen Ay] Şubat 2026 (mahsubu geri alıp yeniden yapın)
+2026-03: Önceki/Ödenecek/Sonraki = 0 / 90000 / 0 · 391 100000 − 191 10000 = 90000 · Ödenecek−Sonraki+Önceki = 90000 EŞİT
+   not [KDV Mahsup Fişi] Mart 2026
+2026-04: Önceki/Ödenecek/Sonraki = 0 / 50000 / 0 · 391 50000 − 191 0 = 50000 · Ödenecek−Sonraki+Önceki = 50000 EŞİT

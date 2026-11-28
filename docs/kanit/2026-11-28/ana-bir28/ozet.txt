@@ -1,0 +1,13 @@
+birim cikis=0 04:19
+[kanit] bir28-birim: GEÇTİ · çıkış 0 · 315/315 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit b5bfc1b +3 değişmiş dosya · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+e2e-iptal cikis=0 04:19
+[kanit] bir28-e2e-iptal: GEÇTİ · çıkış 0 · 26/26 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit f065a6a · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+e2e-siniri cikis=0 04:20
+[kanit] bir28-e2e-siniri: GEÇTİ · çıkış 0 · 24/24 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit f065a6a · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+e2e-mi2 cikis=0 04:21
+[kanit] bir28-e2e-mi2: GEÇTİ · çıkış 0 · 42/42 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit f065a6a · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+kahin-cari cikis=0 04:30
+[kanit] bir28-kahin-cari: GEÇTİ · çıkış 0 · 25957/25957 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit f065a6a · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+kahin-defter cikis=0 04:30
+[kanit] bir28-kahin-defter: GEÇTİ · çıkış 0 · 187/187 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit f065a6a · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+BITTI 04:30 4.98 3.80 2.62 5/179 24117
