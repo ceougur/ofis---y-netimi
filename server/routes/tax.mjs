@@ -334,8 +334,8 @@ export function registerTaxRoutes(router, { store, auth, audit, events, bank, pe
    * KDV ayından önceki devreden = defterdeki 190'ın o andaki bakiyesi (190'a yalnız KDV Mahsup Fişi yazar — fiş defteri alt defter hesabını reddeder — yani bugün 0). Her ayın
    * farkı monthPosition ile (TEK formül), kullanılan devreden zincirin getirdiği. Mahsupsuz ay, o an sırayla mahsup edilseydi yazılacak sayıdır: devreden yöndeki sonuç sonraki
    * aya taşınır, ödenecek yöndeki taşınmaz; S4 için bu ay mahsup edilmiş sayılır (saklı İ = hesaplanan İ — ön izlemenin yazacağı). Mahsup fişi olan ay: fişin kullandığı
-   * devreden zincirinkine EŞİTSE fiş zincirdedir — sonraki aya FİŞİN devredeni taşınır, S4 fişin saklı İ'siyle (bütün aylar sırayla mahsupluysa zincir = defter = ön izleme,
-   * S4 / "Güncel Değil" aylarında da); FARKLIYSA (önceki bir ay atlanıp bu ay mahsup edilmiş) ay zincirle hesaplanır, mismatches'e girer (fişin kullandığı / zincire göre).
+   * devreden zincirinkine EŞİTSE fiş zincirdedir — sonraki aya FİŞİN devredeni taşınır, S4 fişin saklı İ'siyle (bütün aylar sırayla mahsupluysa zincir = defter = ön izleme;
+   * "Güncel Değil" ayının devredeni ve S4'ü küçük tur 3–5'te değişti — aşağıda); FARKLIYSA (önceki bir ay atlanıp bu ay mahsup edilmiş) ay zincirle hesaplanır, mismatches'e girer (fişin kullandığı / zincire göre).
    * Hareketsiz ay devredeni aynen taşır (adımı yok).
    *
    * 2.5.1 M1 küçük tur — S-DKM1-1 = A (kullanıcı 27.11 14:18 "önerilerini uygula açık sorulara"): zincirdeki fişin ayının kayıtları fişten SONRA İndirilecek KDV'yi AZALTTIYSA
@@ -357,7 +357,15 @@ export function registerTaxRoutes(router, { store, auth, audit, events, bank, pe
    *
    * 2.5.1 M1 küçük tur 4 — S-M1K3-1 = A (27.11 20:59 UTC; kullanıcının 20:26 yetkisiyle öneri uygulandı): yukarıdaki iki sınır KALKTI — HER "güncel değil" ayında (ödenecek
    * yönde kesilmiş fişte de, İndirilecek KDV'si artan ayda da) sonraki aya BU AYIN bugünkü devredeni taşınır; aralık toplamı her durumda 391 − 191. Ödenecek yönde kalan ayda
-   * bugünkü devreden 0 = fişinki (sayılar değişmez). İ artışı S4 taşımasına girmez (min(0, …)) — artış bir kez, devredenle sayılır.
+   * bugünkü devreden 0 = fişinki (sayılar değişmez).
+   *
+   * 2.5.1 M1 küçük tur 5 — S-DKM1K-1 = A (28.11 03:55 UTC; kullanıcının 20:26 yetkisiyle öneri uygulandı): "güncel değil" ay S4 birikimine fişin saklı İndirilecek KDV'siyle
+   * DEĞİL, mahsupsuz ay gibi bu hesabın (bugünkü) İndirilecek KDV'siyle girer. Küçük tur 4'e kadar saklı İ'yle giriyordu: İ'si ARTMIŞ ayın artışı (bugünkü − saklı > 0) birikime
+   * de girip sonraki ayların AZALMASINI götürüyordu — artış hem o ayın sonucunda hem birikimde, azalma hiçbir ayda sayılmıyordu (örnek: Şubat'a fişten sonra alış KDV +300, Mart'ın
+   * 200'lük alışı İptal Et → Mart'ın azalması Nisan'da düşülmüyordu; Ocak–Nisan Ödenecek 1.400, 391 − 191 = 1.600). Artık artış bir kez (o ayın bugünkü sonucunda), azalma sonraki
+   * ayda (S-DKM1-1 = A): Nisan 700, Ocak–Nisan 1.600. Yalnız 391'i değişen "güncel değil" ayda bugünkü İ = saklı İ (sayılar değişmez). Defter / ön izleme / fiş DEĞİŞMEZ —
+   * ön izleme S4'ü etkin fişlerin saklı İ'siyle hesaplar; bu yüzden böyle bir aydan sonraki ayın raporu ön izlemesinden ayrılabilir (karar metni: "Nisan raporu Nisan ön izlemesinden
+   * (500) ayrılır"); o ön izlemeyle kesilen fiş zincirle uyuşmaz (S4 emilimi farklı), not söyler.
    */
   function vatView() {
     const entries = ledger()?.build ? ledger().build() : [];
@@ -416,7 +424,9 @@ export function registerTaxRoutes(router, { store, auth, audit, events, bank, pe
         if (offset && !kept) {
           mismatches.push({ month, label: monthLabel(month), usedMinor: Number(offset.carryInMinor), chainMinor: carry, offsetPayableMinor: Number(offset.payableMinor), offsetCarryOutMinor: Number(offset.carryOutMinor), payableMinor: step.payable, carryOutMinor: step.carryOut });
         }
-        done.push({ month, inMinor: kept ? Number(offset.inMinor) : step.input });
+        // S4 birikimi: zincirdeki fişin saklı İ'si ("kept" / "reduced" / "mixed" — azalma sonraki mahsupta); "güncel değil" ay ve zincir dışı ay bugünkü hesabın İ'siyle
+        // (S-DKM1K-1 = A — İ artışı birikime girip sonraki azalmayı götürmez; her değişiklik bir kez).
+        done.push({ month, inMinor: kept && settled.offsetState !== "stale" ? Number(offset.inMinor) : step.input });
         carry = next;
       }
     }
