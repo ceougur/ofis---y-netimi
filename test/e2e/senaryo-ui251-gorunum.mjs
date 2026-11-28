@@ -80,6 +80,7 @@ const errors = [];
 page.on("pageerror", error => errors.push(error.message));
 let passed = 0;
 let failed = 0;
+let borcText = "";
 const ok = (cond, what) => {
   if (cond) passed += 1;
   else failed += 1;
@@ -158,7 +159,7 @@ try {
   await page.waitForSelector("#hof-sidecard", { timeout: 60000 });
 
   console.log("A) UI-1 — cari kartında Ödeme × → Sil: Değersiz Alacak ret iletisi geniş, düğmeleri örtmüyor, yalnız × ile kapanıyor");
-  for (const [vw, vh] of [[1440, 900], [1366, 768], [1280, 720], [390, 844]]) {
+  for (const [vw, vh] of [[1440, 900], [1366, 768], [1280, 720], [390, 844], [360, 640]]) {
     await page.setViewportSize({ width: vw, height: vh });
     await clearToasts();
     await openCard(D.id);
@@ -217,13 +218,18 @@ try {
       console.log(`    [yığın] ${JSON.stringify(stack)}`);
       ok(stack.length === 2 && stack.every(item => item.top >= 0 && item.bottom <= vh), `${tag}: üç retten sonra 2 ileti görünür, hepsi ekranın içinde (${JSON.stringify(stack.map(item => [item.top, item.bottom]))})`);
       ok(stack.some(item => /^Borç hareketi silinemez/.test(item.text)), `${tag}: en yeni ret (Borç) görünür`);
+      borcText = await page.$$eval(".hof-toast-error .hof-toast-text", nodes => nodes.map(node => node.textContent).find(text => /^Borç hareketi silinemez/.test(text)) || "");
       // Yalnız × ile kapanır.
       for (let i = 0; i < 3 && (await page.$(".hof-toast-error .hof-toast-close")); i += 1) await page.click(".hof-toast-error .hof-toast-close");
       ok((await page.$$(".hof-toast")).length === 0, `${tag}: × ile kapandılar`);
     }
     if (vw <= 600) {
-      // Telefonda iki uzun ret üst üste: ikisi de ekranın içinde (metin kutusu ekranın yarısını geçmez, sığmayan metin kendi içinde kayar).
-      await deleteEntry(debt1.entryId);
+      // Telefonda iki uzun ret üst üste: ikisi de ekranın içinde (metin kutusu ekranın yarısını geçmez, sığmayan metin kendi içinde kayar). Küçük telefonda
+      // Borç satırı ilk iletinin altında kalabildiği için (kayan metin dokunmayı alır) ikinci ileti, 1440×900'de ekrandan alınan Borç reddinin AYNI metniyle
+      // programın kendi hata bildirimiyle gösterilir.
+      ok(borcText.length > 300, `${tag}: ikinci ileti 1440×900'deki Borç reddi (${borcText.length} harf)`);
+      await page.evaluate(message => window.HOF.toastError(new Error(message)), borcText);
+      await page.waitForTimeout(400);
       const pair = await page.$$eval(".hof-toast-long", nodes => nodes.map(node => { const r = node.getBoundingClientRect(); return [Math.round(r.top), Math.round(r.bottom)]; }));
       await shot(`ui251-a-iki-ret-${vw}x${vh}`);
       ok(pair.length === 2 && pair.every(([top, bottom]) => top >= 0 && bottom <= vh), `${tag}: iki uzun ret ekranın içinde (${JSON.stringify(pair)})`);
@@ -302,7 +308,7 @@ try {
   ok(other.wrap === "nowrap", `1366×768: Satış Faturaları özet kartları eskisi gibi tek satır (flex-wrap ${other.wrap})`);
 
   console.log("D) UI-3 — KDV Mahsup Fişi → Mahsup Edilen Aylar: Geri Al yana kaydırmadan görünür");
-  for (const [vw, vh] of [[1366, 768], [1440, 900], [1920, 1080], [834, 1112]]) {
+  for (const [vw, vh] of [[1366, 768], [1440, 900], [1920, 1080], [834, 1112], [768, 1024]]) {
     await page.setViewportSize({ width: vw, height: vh });
     await openReport("kdv-ozeti");
     await page.click(`${MODAL} [data-rc-action="vat-offset"]`);
