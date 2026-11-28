@@ -9,7 +9,7 @@ import { methodInput } from "../lib/pay-method.mjs";
 import { doubtfulKeepOf, doubtfulSkipOf } from "../lib/doubtful-gl.mjs";
 import { negativeConfirmed } from "../lib/bank/module-ref.mjs";
 import { posMetaOf } from "../lib/bank/pos.mjs";
-import { doubtfulState } from "../lib/bank/doubtful.mjs";
+import { doubtfulState, writeOffBalanceGuard } from "../lib/bank/doubtful.mjs";
 import { ACCOUNT_TYPES, TYPE_DEFAULT, accountLedger, accountTypeKey, balanceSide, classifyAccountType, closeDaySql, isAccountType, mapAccountHeaders, waivedOf, waivesSql } from "../lib/accounts.mjs";
 import { createAccountLines } from "../lib/account-lines.mjs";
 import { itemNumbers, numberedLines, numbersOfPlans, planItemNumbers, withNo } from "../lib/plan-item-no.mjs";
@@ -1352,12 +1352,17 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
       write: () => {
         const { previous, input, finRef, k7, normalAfter } = step;
         k7.capture();
+        // 2.5.1 M2 tur 4 — S-DKM2T3-1 = A (28.11 04:49 UTC — KULLANICI KARARIYLA ÖNERİ UYGULANDI, 20:26 yetkisi; AYNEN: "Borç Yaz silme / düzeltmesi de aynı kuralla reddedilsin — bakiye 423,55
+        // kalır, ileti aynı dört alanlı düzende"): Değersiz Alacak satırı olan caride Borç Yaz satırının düzeltmesi (tutar düşürme, Alacak'a çevirme, başka cariye taşıma) cariyi eksiye götürüyorsa
+        // fatura iptaliyle AYNI denetim (lib/bank/doubtful.mjs writeOffBalanceGuard; işlem bakiyeyi DÜŞÜRDÜ ve sonuç EKSİ). Denetlenen eski cari (taşımada borç onun kartından çıkar).
+        const writeOffGuard = previous.kind === "debt" ? writeOffBalanceGuard(store, account.id, { action: "entry-edit" }) : null;
         const meta = finRef && !corporateOf(input, body, previous) ? posMetaOf(body) : null;
         const eventId = bank.eventFor("account_entries", { kind: input.kind, source: previous.source, date: input.date, method: input.method, event_id: previous.eventId, fin_ref: finRef, ...(meta ? { pos: meta } : {}) });
         store.run("UPDATE account_entries SET kind = ?, amount = ?, date = ?, note = ?, method = ?, invoice_id = ?, fin_ref = ?, event_id = ?, doubtful_skip = ?, due_date = ?, expected_date = ?, refund_of = ?, updated_by = ?, updated_at = ? WHERE id = ?", input.kind, input.amount, input.date, input.note, input.method, input.invoiceId, finRef, eventId, input.doubtfulSkip ? 1 : 0, previous.source ? "" : input.dueDate, previous.source ? "" : input.expectedDate, previous.source ? "" : input.refundOf, user.id, now(), previous.id);
         // Ç5-B: cari değişimi aynı satırda (kimlik, Kasa / banka hareketi ve iz aynı); defterde cari boyutu yeni cariye geçer.
         if (cariChange) store.run("UPDATE account_entries SET account_id = ? WHERE id = ?", targetId, previous.id);
         normalAfter?.(previous.id); // Ç5-A tur 3c: bağlı tahsilatın 120 payı yazımdan sonra (aşarsa 409, işlem geri alınır)
+        writeOffGuard?.check();
         audit(user, "account.entry.updated", previous.id, { accountId: cariChange ? targetId : account.id, ...(cariChange ? { previousAccountId: account.id } : {}), previous, ...input, finRef });
         return { id: previous.id };
       },
@@ -1394,7 +1399,10 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
         k7.capture();
         // 2.5.0 Ç5-A tur 1e (S51 = A; dar kontrol G-2): yük KG-16 durumunu taşır (geri alma silinmeden önceki durumla döner — restoredOpeningReview).
         const review = openingReviewOf(previous.id);
+        // 2.5.1 M2 tur 4 — S-DKM2T3-1 = A (AYNEN yukarıda, PUT): Borç Yaz satırının SİLİNMESİ cariyi eksiye götürüyorsa fatura iptaliyle aynı ret (bakiye 423,55 kalır).
+        const writeOffGuard = previous.kind === "debt" ? writeOffBalanceGuard(store, account.id, { action: "entry-delete" }) : null;
         store.run("DELETE FROM account_entries WHERE id = ?", previous.id);
+        writeOffGuard?.check();
         trash?.add({ kind: "account-entry", ref: previous.id, title: account.name, detail: previous.note || KIND_TEXT[previous.kind], payload: { ...previous, ...review, accountId: account.id, accountName: account.name }, user });
         audit(user, "account.entry.deleted", previous.id, { accountId: account.id, ...previous });
         return { id: previous.id };

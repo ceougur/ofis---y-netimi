@@ -8,6 +8,7 @@ import { matrixText, parseAmount, roundMoney } from "../lib/money.mjs";
 import { toMinor } from "../lib/minor.mjs";
 import { bankForm } from "../lib/bank/module-ref.mjs";
 import { posMetaOf } from "../lib/bank/pos.mjs";
+import { writeOffBalanceGuard } from "../lib/bank/doubtful.mjs";
 import { canUser } from "../lib/permissions.mjs";
 import { allocate, dayText, daysUntil, distribute, isoDay, mapHeaders, parseDay } from "../lib/plans.mjs";
 import { createAccountLines } from "../lib/account-lines.mjs";
@@ -979,6 +980,8 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
         const paid = roundMoney(entriesOf(previous.id).reduce((sum, e) => sum + (e.kind === "in" ? Number(e.amount) || 0 : -(Number(e.amount) || 0)), 0));
         assertCoverable(accountId, roundMoney(input.total - paid), user, previous.id);
       }
+      // 2.5.1 M2 tur 4 — S-DKM2T3-1 = A (aynı sınıf: kartın tutarının düşürülmesi / başka cariye taşınması Borç Yaz'ın tutar düşürmesiyle aynı sayıları verir): eski cari eksiye düşerse ret.
+      const writeOffGuard = moneyChange && previous.accountId ? writeOffBalanceGuard(store, previous.accountId, { action: "plan-edit" }) : null;
       store.run(
         `UPDATE plans SET ${FREEZE_CLOSE}, account_id = ?, ref_no = ?, registered_on = ?, case_key = ?, case_source = ?, case_title = ?, group_id = ?, subgroup_id = ?, name = ?, note = ?, phone = ?, total = ?, status = ?, updated_by = ?, updated_at = ? WHERE id = ?`,
         accountId, input.refNo, input.registeredOn, input.caseKey, input.caseSource, input.caseTitle, input.groupId, input.subgroupId, input.name, input.note, input.phone, input.total, status, user.id, now(), previous.id,
@@ -993,6 +996,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
         const eventIds = store.all("SELECT DISTINCT event_id AS id FROM plan_entries WHERE plan_id = ? AND event_id <> ''", previous.id).map(row => row.id);
         if (eventIds.length) bank.post({ user, module: "plans", op: "assign", prev: { accountId: previous.accountId }, write: ctx => ctx.affected(eventIds) });
       }
+      writeOffGuard?.check();
       audit(user, "plan.updated", previous.id, { previous: { name: previous.name, total: previous.total, status: previous.status, accountId: previous.accountId }, ...input, accountId, status });
       return detail(previous.id, user);
     });
@@ -1023,8 +1027,12 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     cash?.guardRemove?.(store.all("SELECT kind, amount, method, date FROM plan_entries WHERE plan_id = ? AND opening = 0 AND cheque_id = ''", plan.id), url.searchParams.get("cashForce") === "1", "Bu kart silinince tahsilat ve iadeleriyle birlikte");
     // Kart silme de merkezi para yazımından geçer (K6; bank.post op 'delete'): kartın nakit hareketleri Kasa'dan düşer.
     const remove = () => {
+      // 2.5.1 M2 tur 4 — S-DKM2T3-1 = A ("taksit kartı silme de aynı sınıf — ölçülür, aynı kuralla ele alınır"; ölçüm: kart silinince Borç Yaz silmesiyle aynı sayılar): Değersiz Alacak satırı olan
+      // caride kartın silinmesi cariyi eksiye götürüyorsa fatura iptaliyle aynı ret (lib/bank/doubtful.mjs writeOffBalanceGuard).
+      const writeOffGuard = plan.accountId ? writeOffBalanceGuard(store, plan.accountId, { action: "plan-delete" }) : null;
       // Yumuşak silme: taksitler ve hareketler yerinde durur; yönetim panelinden geri yüklenir. Kasa'dan düşer.
       store.run("UPDATE plans SET deleted_by = ?, deleted_at = ? WHERE id = ?", user.id, now(), plan.id);
+      writeOffGuard?.check();
       audit(user, "plan.deleted", plan.id, { name: plan.name, total: plan.total });
     };
     // Birleşik tur 8 (DK-B7 ORTA-1; BAŞ MİMAR KARARI 13.11 09:54): silinirken görünürlüğü kalkan nakit satırlarının özeti Silinenler için yazılır (lib/cash-opening.mjs recordingHidden).
