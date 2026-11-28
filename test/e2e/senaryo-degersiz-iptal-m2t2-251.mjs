@@ -12,6 +12,8 @@
 //   5 Mutabakat Testi tamam; sayfa hatası yok.
 //   6 (tur 4 — S-DKM2T3-1 = A) T → cari kartında Borç 3.400 satırının × düğmesi → "Hareketi Sil" Sil: bildirim "Borç hareketi silinemez: … silmeden sonra cari 2.976,45 TL alacaklı …";
 //     borç satırı yerinde, bakiye 423,55.
+//   7 (tur 5 — SK-64 = A, kararın örneği) T + Ödeme 500 (01.10) + Tahsilat 1.000 (05.10, avans) → bakiye −76,45 → cari kartında Ödeme 500 satırının × düğmesi → "Hareketi Sil" Sil:
+//     bildirim "Ödeme hareketi silinemez: … silmeden sonra cari 576,45 TL alacaklı …" ('Borç hareketi' DEĞİL); ödeme satırı yerinde, bakiye −76,45.
 // Çıkış: "N geçti, M kaldı" (kalan > 0 → çıkış 1). Ekran görüntüleri EKRAN_DIR (yoksa geçici klasör).
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -67,6 +69,10 @@ await must("avans", admin.post(`${ACC}/${A.c.id}/entries`, { kind: "in", amount:
 const D = await baseT("M2T3 Ekran Düzenle Müşterisi");
 const B = await baseT("M2T4 Ekran Borç Silme Müşterisi");
 const debtB = server.app.store.get("SELECT id FROM account_entries WHERE account_id = ? AND kind = 'debt' AND source = ''", B.c.id).id;
+const O = await baseT("M2T5 Ekran Ödeme Silme Müşterisi");
+await must("Ödeme 500", admin.post(`${ACC}/${O.c.id}/entries`, { kind: "out", amount: "500", date: "2026-10-01", method: "cash", cashForce: true, similarOk: true, note: "Ödeme" }));
+await must("avans 1.000", admin.post(`${ACC}/${O.c.id}/entries`, { kind: "in", amount: "1000", date: "2026-10-05", method: "cash", cashForce: true, similarOk: true, note: "Avans" }));
+const outO = server.app.store.get("SELECT id FROM account_entries WHERE account_id = ? AND kind = 'out' AND source = ''", O.c.id).id;
 
 let passed = 0;
 let failed = 0;
@@ -210,6 +216,27 @@ try {
   ok(Boolean(db().get("SELECT 1 AS found FROM account_entries WHERE id = ?", debtB)), "veri tabanı: borç satırı silinmedi");
   ok((await balance(B.c.id)) === 423.55, `bakiye ${await balance(B.c.id)} (423,55)`);
   await shot(page, "m2t4-6-borc-silme-reddi");
+  await closeAll(page);
+
+  console.log("\n■ 7 (tur 5) Değersiz'li caride Ödeme satırının silinmesi cariyi eksiye götürüyorsa reddedilir (SK-64 = A)");
+  ok((await balance(O.c.id)) === -76.45, `bakiye ${await balance(O.c.id)} (−76,45)`);
+  await page.evaluate(accountId => window.HOF.accounts.open(accountId), O.c.id);
+  await page.waitForSelector(`${card} [data-delete-entry="${outO}"]`, { timeout: 10000 });
+  await page.click(`${card} [data-delete-entry="${outO}"]`);
+  // Beklenen soru: VAR — ürünün "Hareketi Sil" onayı (Kasa sorusu çıkarsa o da ürünündür; burada Kasa artıya gider). Kullanıcı gibi Sil denir (ders 34).
+  await page.waitForSelector(`${top} [data-answer="yes"]`, { timeout: 8000 });
+  const ask7 = await textOf(page, top);
+  ok(ask7.includes("Hareketi Sil"), `beklenen onay sorusu: "${ask7.slice(0, 120)}"`);
+  await page.click(`${top} [data-answer="yes"]`);
+  await page.waitForTimeout(1200);
+  ok(!(await page.$(`${top} [data-answer="yes"]`)), "başka soru çıkmadı");
+  const toast7 = await lastToast(page);
+  ok(/^Ödeme hareketi silinemez: bu caride 17\.09\.2026 tarihli 3\.000,00 TL Değersiz Alacak satırı var; silmeden sonra cari 576,45 TL alacaklı \(eksi bakiye\) olurdu/.test(toast7), `bildirim ne oldu: "${toast7.slice(0, 160)}"`);
+  ok(!toast7.includes("Borç hareketi"), "bildirim 'Borç hareketi' demiyor");
+  ok(toast7.includes(`Ne yapmalı: önce Değersiz Alacak satırını silin (${WHERE}), sonra ödeme hareketini silin`), "bildirim ne yapmalı + nereye");
+  ok(Boolean(db().get("SELECT 1 AS found FROM account_entries WHERE id = ?", outO)), "veri tabanı: ödeme satırı silinmedi");
+  ok((await balance(O.c.id)) === -76.45, `bakiye ${await balance(O.c.id)} (−76,45)`);
+  await shot(page, "m2t5-7-odeme-silme-reddi");
   await closeAll(page);
 
   console.log("\n■ 5 Mutabakat Testi ve sayfa hataları");

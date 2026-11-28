@@ -1235,6 +1235,10 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
   // Kart yolunun anlamı (plan §4.6 "alan belge türüne göre"): çıkış = kartla ödeme (309) — "POS İadesi" değilse; giriş = POS — "Kredi Kartına İade" değilse.
   const corporateOf = (input, body, previous = null) => (input.kind === "out" ? !posRefundOf(body, previous) : input.kind === "in" && input.method === "card" && cardRefundOf(body, previous));
   const negativeOf = (refs, date, force) => banking()?.negative({ refs, date, force }) || { capture() {}, guard: null, prime() {} };
+  // 2.5.1 M2 tur 5 — SK-64 = A: Değersiz Alacak bakiye denetiminin (lib/bank/doubtful.mjs writeOffBalanceGuard) kurulduğu hareket türleri. Silme: Borç ve Ödeme (silinince bakiye düşer);
+  // düzeltme: Borç, Ödeme ve Alacak (tutar / tür / cari değişince bakiye düşebilir). Tahsilat yok (BM-M2T4-3: tahsilat artışı avans — kabul). Denetim yalnız bakiye DÜŞÜP EKSİYE giderse reddeder.
+  const WRITE_OFF_GUARDED = { delete: new Set(["debt", "out"]), edit: new Set(["debt", "out", "credit"]) };
+  const guardKindOf = previous => (previous.kind === "out" && posRefundOf(null, previous) ? "pos-refund" : previous.kind);
   // 2.5.0 BİRLEŞİK TUR 1 (YB-1): hareket düzeltmesinde iyimser kilit (lib/row-version.mjs; gövdede updatedAt varsa).
   const ENTRY_STALE = { code: "account-entry-stale", message: "Bu cari hareketi siz açtıktan sonra başka biri tarafından değiştirildi; düzeltmeniz kaydedilmedi. Listeyi yenileyip yeniden deneyin." };
   // Hakem K5: onay cashForce (plan §3.9) ya da eşanlamlı negativeOk (module-ref.mjs negativeConfirmed).
@@ -1355,7 +1359,11 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
         // 2.5.1 M2 tur 4 — S-DKM2T3-1 = A (28.11 04:49 UTC — KULLANICI KARARIYLA ÖNERİ UYGULANDI, 20:26 yetkisi; AYNEN: "Borç Yaz silme / düzeltmesi de aynı kuralla reddedilsin — bakiye 423,55
         // kalır, ileti aynı dört alanlı düzende"): Değersiz Alacak satırı olan caride Borç Yaz satırının düzeltmesi (tutar düşürme, Alacak'a çevirme, başka cariye taşıma) cariyi eksiye götürüyorsa
         // fatura iptaliyle AYNI denetim (lib/bank/doubtful.mjs writeOffBalanceGuard; işlem bakiyeyi DÜŞÜRDÜ ve sonuç EKSİ). Denetlenen eski cari (taşımada borç onun kartından çıkar).
-        const writeOffGuard = previous.kind === "debt" ? writeOffBalanceGuard(store, account.id, { action: "entry-edit" }) : null;
+        // 2.5.1 M2 tur 5 — SK-64 = A (28.11 06:13 UTC — KULLANICI KARARIYLA ÖNERİ UYGULANDI, 20:26 yetkisi; AYNEN: "Değersiz Alacak satırı olan caride Ödeme satırının silinmesi ya da Alacak Yaz
+        // tutarının artırılması cariyi eksiye götürüyorsa … reddedilsin (S-M2T2-1 / S-DKM2T3-1 ile aynı kural) … Öneri A: Değersiz'li caride eksiye götüren her kayıt değişikliği tek kural."): Ödeme
+        // (POS İadesi dahil) ve Alacak satırının düzeltmesi de aynı denetimden geçer (Ödeme tutarını düşürme, Alacak tutarını artırma, başka cariye taşıma). Tahsilat düzeltmesi DENETLENMEZ —
+        // BAŞ MİMAR KARARI 28.11 07:14 (4) BM-M2T4-3: "tahsilat artışı ve YENİ Alacak Yaz avans — KABUL".
+        const writeOffGuard = WRITE_OFF_GUARDED.edit.has(previous.kind) ? writeOffBalanceGuard(store, account.id, { action: "entry-edit", kind: guardKindOf(previous) }) : null;
         const meta = finRef && !corporateOf(input, body, previous) ? posMetaOf(body) : null;
         const eventId = bank.eventFor("account_entries", { kind: input.kind, source: previous.source, date: input.date, method: input.method, event_id: previous.eventId, fin_ref: finRef, ...(meta ? { pos: meta } : {}) });
         store.run("UPDATE account_entries SET kind = ?, amount = ?, date = ?, note = ?, method = ?, invoice_id = ?, fin_ref = ?, event_id = ?, doubtful_skip = ?, due_date = ?, expected_date = ?, refund_of = ?, updated_by = ?, updated_at = ? WHERE id = ?", input.kind, input.amount, input.date, input.note, input.method, input.invoiceId, finRef, eventId, input.doubtfulSkip ? 1 : 0, previous.source ? "" : input.dueDate, previous.source ? "" : input.expectedDate, previous.source ? "" : input.refundOf, user.id, now(), previous.id);
@@ -1400,7 +1408,8 @@ export function registerAccountRoutes(router, { store, bank, auth, audit, events
         // 2.5.0 Ç5-A tur 1e (S51 = A; dar kontrol G-2): yük KG-16 durumunu taşır (geri alma silinmeden önceki durumla döner — restoredOpeningReview).
         const review = openingReviewOf(previous.id);
         // 2.5.1 M2 tur 4 — S-DKM2T3-1 = A (AYNEN yukarıda, PUT): Borç Yaz satırının SİLİNMESİ cariyi eksiye götürüyorsa fatura iptaliyle aynı ret (bakiye 423,55 kalır).
-        const writeOffGuard = previous.kind === "debt" ? writeOffBalanceGuard(store, account.id, { action: "entry-delete" }) : null;
+        // 2.5.1 M2 tur 5 — SK-64 = A (AYNEN yukarıda, PUT): Ödeme satırının (POS İadesi dahil) SİLİNMESİ de aynı ret (örnek: bakiye −76,45 iken 500'lük Ödeme silinirse −576,45 → ret, −76,45 kalır).
+        const writeOffGuard = WRITE_OFF_GUARDED.delete.has(previous.kind) ? writeOffBalanceGuard(store, account.id, { action: "entry-delete", kind: guardKindOf(previous) }) : null;
         store.run("DELETE FROM account_entries WHERE id = ?", previous.id);
         writeOffGuard?.check();
         trash?.add({ kind: "account-entry", ref: previous.id, title: account.name, detail: previous.note || KIND_TEXT[previous.kind], payload: { ...previous, ...review, accountId: account.id, accountName: account.name }, user });

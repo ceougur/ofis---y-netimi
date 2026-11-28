@@ -371,6 +371,9 @@ describe("2.5.1 M2 tur 4 — ORTA-1: değişmez (i)'nin Silinenler taraması diz
       // (ii) kolu: Değersiz satırından ÖNCE yazılmış (eski veri gibi) alacak satırı cariyi eksiye çeker → bakiye denetimi satırdan sonraki işlemleri (Silinenler dahil) sorar.
       const line = store.get("SELECT created_at AS at FROM account_entries WHERE account_id = ? AND source = 'doubtful'", b.a.id);
       db.prepare("INSERT INTO account_entries (id, account_id, kind, amount, date, note, created_by, created_at) VALUES ('m2t4-eski-alacak', ?, 'credit', 1000, '2026-09-11', 'eski', 'eski', ?)").run(b.a.id, "2026-01-01T00:00:00.000Z");
+      // 2.5.1 M2 tur 5 (ORTA-B, DEĞİŞEN kurulum — beklenti aynı): tur 5'ten beri (i) kolu yalnız taramanın sonucunu okuyabilecek bir satır varsa koşar (Değersiz satırının gününde ya da
+      // sonrasında, satırdan ÖNCE yazılmış bağsız tahsilat — lib/bank/doubtful.mjs writeOffUnbondSince). (i) kolunun dizinli olduğunu görmek için böyle bir satır eklenir (eski veri gibi).
+      db.prepare("INSERT INTO account_entries (id, account_id, kind, amount, date, note, created_by, created_at) VALUES ('m2t4-eski-tahsilat', ?, 'in', 1, '2026-09-17', 'eski', 'eski', ?)").run(b.a.id, "2026-01-01T00:00:00.000Z");
       assert.ok(line.at > "2026-01-01T00:00:00.000Z");
       const seen = [];
       const spy = method => {

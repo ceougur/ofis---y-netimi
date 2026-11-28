@@ -1169,7 +1169,12 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
         ? writeOffBalanceGuard(store, existing.accountId, { action: "return" })
         : INVOICE_KINDS[existing.kind]?.party === "debt" && decrease > 0.005
           ? writeOffBalanceGuard(store, existing.accountId, { action: "edit" })
-          : null;
+          // 2.5.1 M2 tur 5 — SK-64 = A (28.11 06:13 UTC — KULLANICI KARARIYLA ÖNERİ UYGULANDI, 20:26 yetkisi; AYNEN: "… Alacak Yaz tutarının artırılması cariyi eksiye götürüyorsa … reddedilsin …
+          // Öneri A: Değersiz'li caride eksiye götüren her kayıt değişikliği tek kural."): alacak yönlü belgenin (Alış Faturası) Düzenle'si AYNI caride tutarı ARTIRIYORSA aynı denetim (S-M2T2-2'nin
+          // ayna yolu — Satıştan İade yukarıda). Cari değişimi eski cariden alacağı çıkarır (yükseltir) — denetlenmez.
+          : existing.kind === "purchase" && decrease < -0.005
+            ? writeOffBalanceGuard(store, existing.accountId, { action: "edit", kind: "purchase" })
+            : null;
       // BULGU-2 (§19.6): faturanın KENDİ kartı açık, tahsilatsız ve yeni ödeme planı kayıtlıyla aynıysa kart kaldırılıp yeniden kurulmaz (writeIssued karar verir).
       const keepPlan = ownPlanToKeep(existing);
       reverseEffects(user, existing, touched, { force, edit: true, keepPlanId: keepPlan?.id || "" });

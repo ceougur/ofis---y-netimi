@@ -1,0 +1,32 @@
+{
+  "ad": "m2t5-esdeger-EuropeIstanbul",
+  "komut": "node --test --test-name-pattern tohum test/supheli-degersiz-m2t5-251.test.mjs test/supheli-degersiz-m2t4-251.test.mjs",
+  "commit": "090aab8574946df7e1ddfb6659f227eddcb94d50",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-28T08:53:48.710Z",
+  "sure_sn": 91.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 80,
+    "gecen": 80,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/m2t5/kanit/2026-11-28/m2t5-esdeger-EuropeIstanbul.log",
+  "klasor": "/dev/shm/m2t5-kom/kom",
+  "ham_cikti_sha256": "e28e992d6afda35969df4c6c4b9e703a97e0f30478981066613f85fcf0571eb4",
+  "ham_cikti_bayt": 26944
+}

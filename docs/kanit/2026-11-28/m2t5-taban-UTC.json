@@ -1,0 +1,73 @@
+{
+  "ad": "m2t5-taban-UTC",
+  "komut": "node --test test/supheli-degersiz-m2t5-251.test.mjs",
+  "commit": "9a2b5113957d5bff3d579ace28ab00a71391c41b",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-28T08:39:36.950Z",
+  "sure_sn": 14.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 13,
+    "gecen": 5,
+    "basarisiz": 8,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 8 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.1 M2 tur 5 — SK-64 = A: Değersiz'li caride Ödeme silme / Alacak Yaz artırma cariyi eksiye götürüyorsa ret (S-M2T2-1 / S-DKM2T3-1 ile aynı kural) › kararın örneği AYNEN: bakiye −76,45 iken Ödeme 500 silinir → 409 'Ödeme hareketi silinemez', bakiye −76,45 kalır (kabul olsaydı −576,45); ileti yolu silmeyi kabul ettirir (2.423,55)",
+      "konum": "test/supheli-degersiz-m2t5-251.test.mjs:89:3",
+      "hata": "200 undefined · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "2.5.1 M2 tur 5 — SK-64 = A: Değersiz'li caride Ödeme silme / Alacak Yaz artırma cariyi eksiye götürüyorsa ret (S-M2T2-1 / S-DKM2T3-1 ile aynı kural) › Ödeme tutarını düşürme (500 → 100: −476,45) ve başka cariye taşıma (eski cari −576,45) → 409 'Ödeme hareketi düzeltilemez'; tutar artırma (600: 23,55) ve tarih değişikliği kabul",
+      "konum": "test/supheli-degersiz-m2t5-251.test.mjs:110:3",
+      "hata": "200 undefined · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "2.5.1 M2 tur 5 — SK-64 = A: Değersiz'li caride Ödeme silme / Alacak Yaz artırma cariyi eksiye götürüyorsa ret (S-M2T2-1 / S-DKM2T3-1 ile aynı kural) › Alacak Yaz: yeni 400 kabul (avans; BM-M2T4-3) → 23,55; 500'e artırma → 409 'Alacak hareketi düzeltilemez' (23,55 kalır); 423,55 (tam 0) kabul; 423,56 (−0,01) ret; Borç'a çevirme kabul",
+      "konum": "test/supheli-degersiz-m2t5-251.test.mjs:139:3",
+      "hata": "200 undefined · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "2.5.1 M2 tur 5 — SK-64 = A: Değersiz'li caride Ödeme silme / Alacak Yaz artırma cariyi eksiye götürüyorsa ret (S-M2T2-1 / S-DKM2T3-1 ile aynı kural) › POS İadesi silme → 409 'POS İadesi silinemez' (−76,45 kalır); ileti yolu silmeyi kabul ettirir",
+      "konum": "test/supheli-degersiz-m2t5-251.test.mjs:175:3",
+      "hata": "200 undefined · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "2.5.1 M2 tur 5 — SK-64 = A: Değersiz'li caride Ödeme silme / Alacak Yaz artırma cariyi eksiye götürüyorsa ret (S-M2T2-1 / S-DKM2T3-1 ile aynı kural) › taksit kartının ödeme / iade hareketi: silme ve tutar düşürme → 409; kart ve bakiye değişmez",
+      "konum": "test/supheli-degersiz-m2t5-251.test.mjs:196:3",
+      "hata": "200 undefined · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "2.5.1 M2 tur 5 — ORTA-A: Otomatik Dağıt kartın toplamını düşürüp Değersiz'li cariyi eksiye götürüyorsa kart düzenlemesiyle aynı ret (atomik) › dar kontrolün vakası AYNEN: taban T kart 3.400 → Otomatik Dağıt 100 → 409; kart toplamı 3.400, taksitler, cari satırları ve bakiye 423,55 değişmez",
+      "konum": "test/supheli-degersiz-m2t5-251.test.mjs:239:3",
+      "hata": "1 taksit: 200 undefined · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "2.5.1 M2 tur 5 — ORTA-B: Silinenler taraması Silinenler'deki fatura sayısıyla ve Değersiz satırlı cari sayısıyla çoğalmaz; sonuç tam taramayla BİREBİR › 10 Değersiz satırlı cari, Değersiz'den SONRA silinmiş 200 başka cari faturası: taramanın sonucunu okuyabilecek satır yoksa Silinenler gövdesi HİÇ okunmaz; sonuç tam taramayla aynı",
+      "konum": "test/supheli-degersiz-m2t5-251.test.mjs:313:3",
+      "hata": "Silinenler fatura gövdesi okundu · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.1 M2 tur 5 — ORTA-B: Silinenler taraması Silinenler'deki fatura sayısıyla ve Değersiz satırlı cari sayısıyla çoğalmaz; sonuç tam taramayla BİREBİR › 4 carinin taraması gerekiyor (aynı gün, Değersiz'den önce bağsız tahsilat + faturası Değersiz'den sonra silinmiş): Mutabakat'ta TEK Silinenler sorgusu; sonuç tam taramayla aynı",
+      "konum": "test/supheli-degersiz-m2t5-251.test.mjs:339:3",
+      "hata": "Silinenler sorgusu sayısı 4 (cari başına ayrı tarama — tur 4 hâli) · 4 !== 1 (beklenen 1, gelen 4)"
+    }
+  ],
+  "ham_cikti": "../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/m2t5/kanit/2026-11-28/m2t5-taban-UTC.log",
+  "klasor": "/dev/shm/m2t5-eski/eski",
+  "ham_cikti_sha256": "eb68057504ca6fd8e37cdcea22dc72eb0c04455befe5ccd672598c30bfce7fba",
+  "ham_cikti_bayt": 15668
+}

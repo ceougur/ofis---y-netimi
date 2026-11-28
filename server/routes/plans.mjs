@@ -1047,6 +1047,7 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
     const plan = planRow(params.id);
     const body = await readJson(req);
     const result = store.tx(() => {
+      let writeOffGuard = null;
       const total = body.total === undefined || body.total === "" ? plan.total : amountOf(body.total, "Toplam tutar");
       if (roundMoney(total) !== roundMoney(Number(plan.total) || 0)) {
         // v2.0.23 (2. gözden geçirme): Otomatik Dağıt da kartın toplamını değiştirir; Düzenle'deki denetimler burada da geçerli
@@ -1055,10 +1056,15 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
         if (!plan.coversBalance) period?.assertOpen(plan.registeredOn, "Bu kartın Kayıt Tarihi");
         else if (total > roundMoney(Number(plan.total) || 0) + 0.005) throw new HttpError(409, GROW_COVER, { code: "cover-grow" });
         assertCloseOpen(plan.id, "Kartın tutarı değiştirilemez.");
+        // 2.5.1 M2 tur 5 — ORTA-A (dar kontrol DK-M2T4; BAŞ MİMAR KARARI 28.11 08:22: "Kararın metni kart toplamını düşüren her yolu kapsıyor"): S-DKM2T3-1 = A (28.11 04:49 UTC — KULLANICI
+        // KARARIYLA ÖNERİ UYGULANDI, 20:26 yetkisi; AYNEN: "taksit kartı silme de aynı sınıf — ölçülür, aynı kuralla ele alınır") — Otomatik Dağıt kartın toplamını değiştiriyorsa kart
+        // düzenlemesiyle AYNI denetim: yazımdan ÖNCE kurulur, kart ve taksitler yazıldıktan SONRA denetlenir; ret işlemin içinde (store.tx) — hiçbir şey yazılmaz. Dönem kilidi önce (yukarıda).
+        writeOffGuard = plan.accountId ? writeOffBalanceGuard(store, plan.accountId, { action: "plan-distribute" }) : null;
         store.run(`UPDATE plans SET ${FREEZE_CLOSE}, total = ?, updated_by = ?, updated_at = ? WHERE id = ?`, total, user.id, now(), plan.id);
       }
       const items = distributionInput(body, total, plan.registeredOn);
       replaceItems(plan.id, items);
+      writeOffGuard?.check();
       audit(user, "plan.distributed", plan.id, { total, count: items.length, firstDue: items[0].dueDate });
       return detail(plan.id, user);
     });
@@ -1325,11 +1331,16 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       write: () => {
         const { previous, input, finRef, k7 } = step;
         k7.capture();
+        // 2.5.1 M2 tur 5 — SK-64 = A (28.11 06:13 UTC — KULLANICI KARARIYLA ÖNERİ UYGULANDI, 20:26 yetkisi; AYNEN: "Değersiz Alacak satırı olan caride Ödeme satırının silinmesi … cariyi eksiye
+        // götürüyorsa … reddedilsin … Öneri A: Değersiz'li caride eksiye götüren her kayıt değişikliği tek kural."): kartın ödeme / iade hareketinin (out) tutarı düşürülünce cari kartındaki Ödeme
+        // satırıyla aynı denetim. Tahsilat (in) düzeltmesi DENETLENMEZ (BM-M2T4-3: tahsilat artışı avans — kabul).
+        const writeOffGuard = previous.kind === "out" && plan.accountId ? writeOffBalanceGuard(store, plan.accountId, { action: "plan-entry-edit" }) : null;
         // Açılış (opening) satırı para satırı değildir: olay almaz; eski (olaysız) tahsilat düzeltilince olay alır.
         const eventId = bank.eventFor("plan_entries", { kind: previous.kind, date: input.date, method: input.method, opening: previous.opening ? 1 : 0, cheque_id: previous.chequeId || "", fin_ref: finRef, event_id: previous.eventId, pos: finRef ? posMetaOf(body) : null });
         store.run("UPDATE plan_entries SET item_id = ?, amount = ?, date = ?, note = ?, method = ?, fin_ref = ?, event_id = ?, updated_by = ?, updated_at = ? WHERE id = ?", input.itemId, input.amount, input.date, input.note, input.method, finRef, eventId, user.id, now(), previous.id);
         audit(user, "plan.entry.updated", previous.id, { planId: plan.id, previous, ...input, finRef });
         syncInvoiceCard(user, plan.id);
+        writeOffGuard?.check();
         return { id: previous.id };
       },
       guard: (outcome, ctx) => step?.k7.guard?.(outcome, ctx),
@@ -1358,10 +1369,13 @@ export function registerPlanRoutes(router, { store, bank, auth, audit, events, t
       guard: k7.guard,
       write: () => {
         k7.capture();
+        // 2.5.1 M2 tur 5 — SK-64 = A (AYNEN yukarıda, PUT): kartın ödeme / iade hareketinin SİLİNMESİ cariyi eksiye götürüyorsa ret.
+        const writeOffGuard = previous.kind === "out" && plan.accountId ? writeOffBalanceGuard(store, plan.accountId, { action: "plan-entry-delete" }) : null;
         store.run("DELETE FROM plan_entries WHERE id = ?", previous.id);
         trash?.add({ kind: "plan-entry", ref: previous.id, title: plan.name, detail: previous.note || (previous.opening ? "Açılış (devir)" : previous.kind === "in" ? "Taksit Tahsilatı" : "Taksit Ödemesi / İadesi"), payload: { ...previous, opening: previous.opening ? 1 : 0, planId: plan.id, planName: plan.name }, user });
         audit(user, "plan.entry.deleted", previous.id, { planId: plan.id, ...previous });
         syncInvoiceCard(user, plan.id);
+        writeOffGuard?.check();
         return { id: previous.id };
       },
     });

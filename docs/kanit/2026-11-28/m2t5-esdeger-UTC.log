@@ -1,0 +1,588 @@
+TAP version 13
+# (node:22707) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# \# M2T4 tohum 1: {"steps":100,"writes":5,"over":1,"compared":77,"leakOnly":0,"trashInvoices":3,"invDeleted":3,"invRestored":0,"debtDeleted":1,"debtRefused":0,"negativeChecks":1}
+# Subtest: 2.5.1 M2 tur 4 — rastgele: önerinin yazımı kabul, Silinenler taraması eşdeğer, Borç Yaz silmesi eksiye götürmez
+    # Subtest: tohum 1 (5 cari × 20 adım)
+    ok 1 - tohum 1 (5 cari × 20 adım)
+      ---
+      duration_ms: 2959.743304
+      type: 'test'
+      ...
+# \# M2T4 tohum 2: {"steps":100,"writes":5,"over":3,"compared":80,"leakOnly":0,"trashInvoices":7,"invDeleted":7,"invRestored":0,"debtDeleted":1,"debtRefused":0,"negativeChecks":0}
+    # Subtest: tohum 2 (5 cari × 20 adım)
+    ok 2 - tohum 2 (5 cari × 20 adım)
+      ---
+      duration_ms: 2259.663072
+      type: 'test'
+      ...
+# \# M2T4 tohum 3: {"steps":100,"writes":7,"over":0,"compared":74,"leakOnly":0,"trashInvoices":9,"invDeleted":9,"invRestored":0,"debtDeleted":0,"debtRefused":1,"negativeChecks":0}
+    # Subtest: tohum 3 (5 cari × 20 adım)
+    ok 3 - tohum 3 (5 cari × 20 adım)
+      ---
+      duration_ms: 2788.33434
+      type: 'test'
+      ...
+# \# M2T4 tohum 4: {"steps":100,"writes":9,"over":2,"compared":82,"leakOnly":0,"trashInvoices":4,"invDeleted":4,"invRestored":0,"debtDeleted":0,"debtRefused":1,"negativeChecks":0}
+    # Subtest: tohum 4 (5 cari × 20 adım)
+    ok 4 - tohum 4 (5 cari × 20 adım)
+      ---
+      duration_ms: 3038.95319
+      type: 'test'
+      ...
+# \# M2T4 tohum 5: {"steps":100,"writes":2,"over":1,"compared":84,"leakOnly":0,"trashInvoices":6,"invDeleted":6,"invRestored":1,"debtDeleted":0,"debtRefused":0,"negativeChecks":0}
+    # Subtest: tohum 5 (5 cari × 20 adım)
+    ok 5 - tohum 5 (5 cari × 20 adım)
+      ---
+      duration_ms: 2693.483101
+      type: 'test'
+      ...
+# \# M2T4 tohum 6: {"steps":100,"writes":3,"over":1,"compared":74,"leakOnly":0,"trashInvoices":4,"invDeleted":4,"invRestored":0,"debtDeleted":1,"debtRefused":2,"negativeChecks":1}
+    # Subtest: tohum 6 (5 cari × 20 adım)
+    ok 6 - tohum 6 (5 cari × 20 adım)
+      ---
+      duration_ms: 2085.859568
+      type: 'test'
+      ...
+# \# M2T4 tohum 7: {"steps":100,"writes":5,"over":0,"compared":76,"leakOnly":0,"trashInvoices":4,"invDeleted":4,"invRestored":0,"debtDeleted":1,"debtRefused":0,"negativeChecks":0}
+    # Subtest: tohum 7 (5 cari × 20 adım)
+    ok 7 - tohum 7 (5 cari × 20 adım)
+      ---
+      duration_ms: 2653.320612
+      type: 'test'
+      ...
+# \# M2T4 tohum 8: {"steps":100,"writes":1,"over":0,"compared":68,"leakOnly":0,"trashInvoices":5,"invDeleted":5,"invRestored":0,"debtDeleted":1,"debtRefused":0,"negativeChecks":0}
+    # Subtest: tohum 8 (5 cari × 20 adım)
+    ok 8 - tohum 8 (5 cari × 20 adım)
+      ---
+      duration_ms: 2269.794285
+      type: 'test'
+      ...
+# \# M2T4 tohum 9: {"steps":100,"writes":6,"over":4,"compared":86,"leakOnly":0,"trashInvoices":0,"invDeleted":0,"invRestored":0,"debtDeleted":0,"debtRefused":0,"negativeChecks":0}
+    # Subtest: tohum 9 (5 cari × 20 adım)
+    ok 9 - tohum 9 (5 cari × 20 adım)
+      ---
+      duration_ms: 1897.015634
+      type: 'test'
+      ...
+# \# M2T4 tohum 10: {"steps":100,"writes":3,"over":4,"compared":76,"leakOnly":0,"trashInvoices":8,"invDeleted":8,"invRestored":0,"debtDeleted":1,"debtRefused":1,"negativeChecks":0}
+    # Subtest: tohum 10 (5 cari × 20 adım)
+    ok 10 - tohum 10 (5 cari × 20 adım)
+      ---
+      duration_ms: 2521.024901
+      type: 'test'
+      ...
+# \# M2T4 tohum 11: {"steps":100,"writes":4,"over":1,"compared":71,"leakOnly":0,"trashInvoices":4,"invDeleted":4,"invRestored":0,"debtDeleted":1,"debtRefused":0,"negativeChecks":0}
+    # Subtest: tohum 11 (5 cari × 20 adım)
+    ok 11 - tohum 11 (5 cari × 20 adım)
+      ---
+      duration_ms: 2155.953695
+      type: 'test'
+      ...
+# \# M2T4 tohum 12: {"steps":100,"writes":3,"over":2,"compared":81,"leakOnly":0,"trashInvoices":4,"invDeleted":4,"invRestored":0,"debtDeleted":0,"debtRefused":0,"negativeChecks":0}
+    # Subtest: tohum 12 (5 cari × 20 adım)
+    ok 12 - tohum 12 (5 cari × 20 adım)
+      ---
+      duration_ms: 2036.76458
+      type: 'test'
+      ...
+# \# M2T4 tohum 13: {"steps":100,"writes":3,"over":4,"compared":72,"leakOnly":0,"trashInvoices":0,"invDeleted":0,"invRestored":0,"debtDeleted":2,"debtRefused":0,"negativeChecks":0}
+    # Subtest: tohum 13 (5 cari × 20 adım)
+    ok 13 - tohum 13 (5 cari × 20 adım)
+      ---
+      duration_ms: 2075.00699
+      type: 'test'
+      ...
+# \# M2T4 tohum 14: {"steps":100,"writes":6,"over":1,"compared":76,"leakOnly":0,"trashInvoices":4,"invDeleted":4,"invRestored":0,"debtDeleted":1,"debtRefused":1,"negativeChecks":0}
+    # Subtest: tohum 14 (5 cari × 20 adım)
+    ok 14 - tohum 14 (5 cari × 20 adım)
+      ---
+      duration_ms: 2257.434527
+      type: 'test'
+      ...
+# \# M2T4 tohum 15: {"steps":100,"writes":8,"over":2,"compared":84,"leakOnly":0,"trashInvoices":6,"invDeleted":6,"invRestored":0,"debtDeleted":1,"debtRefused":0,"negativeChecks":1}
+    # Subtest: tohum 15 (5 cari × 20 adım)
+    ok 15 - tohum 15 (5 cari × 20 adım)
+      ---
+      duration_ms: 2714.224781
+      type: 'test'
+      ...
+# \# M2T4 tohum 16: {"steps":100,"writes":4,"over":1,"compared":89,"leakOnly":0,"trashInvoices":4,"invDeleted":4,"invRestored":0,"debtDeleted":1,"debtRefused":2,"negativeChecks":0}
+    # Subtest: tohum 16 (5 cari × 20 adım)
+    ok 16 - tohum 16 (5 cari × 20 adım)
+      ---
+      duration_ms: 1899.343671
+      type: 'test'
+      ...
+# \# M2T4 tohum 17: {"steps":100,"writes":5,"over":0,"compared":81,"leakOnly":0,"trashInvoices":5,"invDeleted":5,"invRestored":0,"debtDeleted":1,"debtRefused":0,"negativeChecks":0}
+    # Subtest: tohum 17 (5 cari × 20 adım)
+    ok 17 - tohum 17 (5 cari × 20 adım)
+      ---
+      duration_ms: 2236.546789
+      type: 'test'
+      ...
+# \# M2T4 tohum 18: {"steps":100,"writes":8,"over":7,"compared":74,"leakOnly":0,"trashInvoices":3,"invDeleted":3,"invRestored":0,"debtDeleted":1,"debtRefused":0,"negativeChecks":1}
+    # Subtest: tohum 18 (5 cari × 20 adım)
+    ok 18 - tohum 18 (5 cari × 20 adım)
+      ---
+      duration_ms: 2090.859317
+      type: 'test'
+      ...
+# \# M2T4 tohum 19: {"steps":100,"writes":6,"over":0,"compared":73,"leakOnly":0,"trashInvoices":3,"invDeleted":3,"invRestored":0,"debtDeleted":1,"debtRefused":0,"negativeChecks":0}
+    # Subtest: tohum 19 (5 cari × 20 adım)
+    ok 19 - tohum 19 (5 cari × 20 adım)
+      ---
+      duration_ms: 1910.266892
+      type: 'test'
+      ...
+# \# M2T4 tohum 20: {"steps":100,"writes":5,"over":1,"compared":72,"leakOnly":0,"trashInvoices":4,"invDeleted":4,"invRestored":0,"debtDeleted":2,"debtRefused":0,"negativeChecks":0}
+    # Subtest: tohum 20 (5 cari × 20 adım)
+    ok 20 - tohum 20 (5 cari × 20 adım)
+      ---
+      duration_ms: 2300.870856
+      type: 'test'
+      ...
+# \# M2T4 tohum 21: {"steps":100,"writes":5,"over":1,"compared":82,"leakOnly":0,"trashInvoices":3,"invDeleted":3,"invRestored":0,"debtDeleted":1,"debtRefused":0,"negativeChecks":0}
+    # Subtest: tohum 21 (5 cari × 20 adım)
+    ok 21 - tohum 21 (5 cari × 20 adım)
+      ---
+      duration_ms: 2519.338582
+      type: 'test'
+      ...
+# \# M2T4 tohum 22: {"steps":100,"writes":4,"over":4,"compared":70,"leakOnly":0,"trashInvoices":10,"invDeleted":10,"invRestored":0,"debtDeleted":1,"debtRefused":0,"negativeChecks":0}
+    # Subtest: tohum 22 (5 cari × 20 adım)
+    ok 22 - tohum 22 (5 cari × 20 adım)
+      ---
+      duration_ms: 1841.138916
+      type: 'test'
+      ...
+# \# M2T4 tohum 23: {"steps":100,"writes":5,"over":2,"compared":80,"leakOnly":0,"trashInvoices":5,"invDeleted":5,"invRestored":0,"debtDeleted":1,"debtRefused":2,"negativeChecks":0}
+    # Subtest: tohum 23 (5 cari × 20 adım)
+    ok 23 - tohum 23 (5 cari × 20 adım)
+      ---
+      duration_ms: 2610.915955
+      type: 'test'
+      ...
+# \# M2T4 tohum 24: {"steps":100,"writes":5,"over":4,"compared":77,"leakOnly":0,"trashInvoices":8,"invDeleted":8,"invRestored":0,"debtDeleted":2,"debtRefused":0,"negativeChecks":0}
+    # Subtest: tohum 24 (5 cari × 20 adım)
+    ok 24 - tohum 24 (5 cari × 20 adım)
+      ---
+      duration_ms: 2600.398402
+      type: 'test'
+      ...
+# \# M2T4 tohum 25: {"steps":100,"writes":3,"over":0,"compared":77,"leakOnly":0,"trashInvoices":7,"invDeleted":7,"invRestored":0,"debtDeleted":1,"debtRefused":1,"negativeChecks":0}
+    # Subtest: tohum 25 (5 cari × 20 adım)
+    ok 25 - tohum 25 (5 cari × 20 adım)
+      ---
+      duration_ms: 2803.738882
+      type: 'test'
+      ...
+# \# M2T4 tohum 26: {"steps":100,"writes":4,"over":3,"compared":75,"leakOnly":0,"trashInvoices":4,"invDeleted":4,"invRestored":0,"debtDeleted":0,"debtRefused":0,"negativeChecks":0}
+    # Subtest: tohum 26 (5 cari × 20 adım)
+    ok 26 - tohum 26 (5 cari × 20 adım)
+      ---
+      duration_ms: 1993.737657
+      type: 'test'
+      ...
+# \# M2T4 tohum 27: {"steps":100,"writes":5,"over":3,"compared":88,"leakOnly":0,"trashInvoices":6,"invDeleted":6,"invRestored":0,"debtDeleted":0,"debtRefused":2,"negativeChecks":0}
+    # Subtest: tohum 27 (5 cari × 20 adım)
+    ok 27 - tohum 27 (5 cari × 20 adım)
+      ---
+      duration_ms: 2847.515217
+      type: 'test'
+      ...
+# \# M2T4 tohum 28: {"steps":100,"writes":3,"over":4,"compared":72,"leakOnly":0,"trashInvoices":4,"invDeleted":4,"invRestored":0,"debtDeleted":2,"debtRefused":0,"negativeChecks":0}
+    # Subtest: tohum 28 (5 cari × 20 adım)
+    ok 28 - tohum 28 (5 cari × 20 adım)
+      ---
+      duration_ms: 2568.236901
+      type: 'test'
+      ...
+# \# M2T4 tohum 29: {"steps":100,"writes":8,"over":3,"compared":79,"leakOnly":0,"trashInvoices":8,"invDeleted":8,"invRestored":1,"debtDeleted":3,"debtRefused":0,"negativeChecks":2}
+    # Subtest: tohum 29 (5 cari × 20 adım)
+    ok 29 - tohum 29 (5 cari × 20 adım)
+      ---
+      duration_ms: 2688.64182
+      type: 'test'
+      ...
+# \# M2T4 tohum 30: {"steps":100,"writes":4,"over":2,"compared":67,"leakOnly":0,"trashInvoices":7,"invDeleted":7,"invRestored":1,"debtDeleted":1,"debtRefused":0,"negativeChecks":0}
+    # Subtest: tohum 30 (5 cari × 20 adım)
+    ok 30 - tohum 30 (5 cari × 20 adım)
+      ---
+      duration_ms: 1898.716921
+      type: 'test'
+      ...
+# \# M2T4 tohum 31: {"steps":100,"writes":6,"over":2,"compared":76,"leakOnly":0,"trashInvoices":5,"invDeleted":5,"invRestored":0,"debtDeleted":0,"debtRefused":0,"negativeChecks":0}
+    # Subtest: tohum 31 (5 cari × 20 adım)
+    ok 31 - tohum 31 (5 cari × 20 adım)
+      ---
+      duration_ms: 1951.343991
+      type: 'test'
+      ...
+# \# M2T4 tohum 32: {"steps":100,"writes":5,"over":1,"compared":78,"leakOnly":0,"trashInvoices":6,"invDeleted":6,"invRestored":0,"debtDeleted":2,"debtRefused":0,"negativeChecks":0}
+    # Subtest: tohum 32 (5 cari × 20 adım)
+    ok 32 - tohum 32 (5 cari × 20 adım)
+      ---
+      duration_ms: 2055.028157
+      type: 'test'
+      ...
+# \# M2T4 tohum 33: {"steps":100,"writes":5,"over":4,"compared":76,"leakOnly":0,"trashInvoices":3,"invDeleted":3,"invRestored":0,"debtDeleted":3,"debtRefused":0,"negativeChecks":0}
+    # Subtest: tohum 33 (5 cari × 20 adım)
+    ok 33 - tohum 33 (5 cari × 20 adım)
+      ---
+      duration_ms: 2850.517535
+      type: 'test'
+      ...
+# \# M2T4 tohum 34: {"steps":100,"writes":3,"over":1,"compared":72,"leakOnly":0,"trashInvoices":4,"invDeleted":4,"invRestored":0,"debtDeleted":1,"debtRefused":0,"negativeChecks":1}
+    # Subtest: tohum 34 (5 cari × 20 adım)
+    ok 34 - tohum 34 (5 cari × 20 adım)
+      ---
+      duration_ms: 2072.388895
+      type: 'test'
+      ...
+# \# M2T4 tohum 35: {"steps":100,"writes":9,"over":0,"compared":67,"leakOnly":0,"trashInvoices":4,"invDeleted":4,"invRestored":0,"debtDeleted":0,"debtRefused":1,"negativeChecks":0}
+    # Subtest: tohum 35 (5 cari × 20 adım)
+    ok 35 - tohum 35 (5 cari × 20 adım)
+      ---
+      duration_ms: 2769.575248
+      type: 'test'
+      ...
+# \# M2T4 tohum 36: {"steps":100,"writes":4,"over":0,"compared":69,"leakOnly":0,"trashInvoices":5,"invDeleted":5,"invRestored":0,"debtDeleted":1,"debtRefused":0,"negativeChecks":1}
+    # Subtest: tohum 36 (5 cari × 20 adım)
+    ok 36 - tohum 36 (5 cari × 20 adım)
+      ---
+      duration_ms: 2166.106728
+      type: 'test'
+      ...
+# \# M2T4 tohum 37: {"steps":100,"writes":6,"over":1,"compared":75,"leakOnly":0,"trashInvoices":9,"invDeleted":9,"invRestored":0,"debtDeleted":1,"debtRefused":2,"negativeChecks":0}
+    # Subtest: tohum 37 (5 cari × 20 adım)
+    ok 37 - tohum 37 (5 cari × 20 adım)
+      ---
+      duration_ms: 2323.334031
+      type: 'test'
+      ...
+# \# M2T4 tohum 38: {"steps":100,"writes":6,"over":2,"compared":81,"leakOnly":0,"trashInvoices":4,"invDeleted":4,"invRestored":1,"debtDeleted":2,"debtRefused":2,"negativeChecks":0}
+    # Subtest: tohum 38 (5 cari × 20 adım)
+    ok 38 - tohum 38 (5 cari × 20 adım)
+      ---
+      duration_ms: 2537.319567
+      type: 'test'
+      ...
+# \# M2T4 tohum 39: {"steps":100,"writes":4,"over":1,"compared":79,"leakOnly":0,"trashInvoices":2,"invDeleted":2,"invRestored":0,"debtDeleted":0,"debtRefused":0,"negativeChecks":0}
+    # Subtest: tohum 39 (5 cari × 20 adım)
+    ok 39 - tohum 39 (5 cari × 20 adım)
+      ---
+      duration_ms: 2371.449225
+      type: 'test'
+      ...
+# \# M2T4 tohum 40: {"steps":100,"writes":5,"over":4,"compared":81,"leakOnly":0,"trashInvoices":2,"invDeleted":2,"invRestored":0,"debtDeleted":1,"debtRefused":2,"negativeChecks":0}
+    # Subtest: tohum 40 (5 cari × 20 adım)
+    ok 40 - tohum 40 (5 cari × 20 adım)
+      ---
+      duration_ms: 2372.769481
+      type: 'test'
+      ...
+    1..40
+ok 1 - 2.5.1 M2 tur 4 — rastgele: önerinin yazımı kabul, Silinenler taraması eşdeğer, Borç Yaz silmesi eksiye götürmez
+  ---
+  duration_ms: 94690.358782
+  type: 'suite'
+  ...
+# (node:22708) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# \# M2T5 tohum 1: {"steps":72,"compared":72,"scanned":0,"guarded":10,"refused":0,"accepted":7,"invDeleted":3,"otherDeleted":0,"restored":1,"writes":1}
+# Subtest: 2.5.1 M2 tur 5 — rastgele: Silinenler taraması eşdeğer, denetimli işlem Değersiz'li cariyi eksiye götürmez
+    # Subtest: tohum 1 (4 cari × 18 adım)
+    ok 1 - tohum 1 (4 cari × 18 adım)
+      ---
+      duration_ms: 2467.262059
+      type: 'test'
+      ...
+# \# M2T5 tohum 2: {"steps":72,"compared":72,"scanned":0,"guarded":10,"refused":1,"accepted":9,"invDeleted":0,"otherDeleted":1,"restored":0,"writes":2}
+    # Subtest: tohum 2 (4 cari × 18 adım)
+    ok 2 - tohum 2 (4 cari × 18 adım)
+      ---
+      duration_ms: 2539.712547
+      type: 'test'
+      ...
+# \# M2T5 tohum 3: {"steps":72,"compared":72,"scanned":0,"guarded":11,"refused":0,"accepted":10,"invDeleted":2,"otherDeleted":3,"restored":0,"writes":3}
+    # Subtest: tohum 3 (4 cari × 18 adım)
+    ok 3 - tohum 3 (4 cari × 18 adım)
+      ---
+      duration_ms: 2919.521624
+      type: 'test'
+      ...
+# \# M2T5 tohum 4: {"steps":72,"compared":72,"scanned":0,"guarded":4,"refused":2,"accepted":2,"invDeleted":1,"otherDeleted":0,"restored":0,"writes":4}
+    # Subtest: tohum 4 (4 cari × 18 adım)
+    ok 4 - tohum 4 (4 cari × 18 adım)
+      ---
+      duration_ms: 3191.07302
+      type: 'test'
+      ...
+# \# M2T5 tohum 5: {"steps":72,"compared":72,"scanned":51,"guarded":6,"refused":0,"accepted":6,"invDeleted":1,"otherDeleted":3,"restored":0,"writes":2}
+    # Subtest: tohum 5 (4 cari × 18 adım)
+    ok 5 - tohum 5 (4 cari × 18 adım)
+      ---
+      duration_ms: 2179.55679
+      type: 'test'
+      ...
+# \# M2T5 tohum 6: {"steps":72,"compared":72,"scanned":13,"guarded":3,"refused":0,"accepted":3,"invDeleted":0,"otherDeleted":3,"restored":0,"writes":3}
+    # Subtest: tohum 6 (4 cari × 18 adım)
+    ok 6 - tohum 6 (4 cari × 18 adım)
+      ---
+      duration_ms: 2452.091375
+      type: 'test'
+      ...
+# \# M2T5 tohum 7: {"steps":72,"compared":72,"scanned":15,"guarded":14,"refused":2,"accepted":12,"invDeleted":1,"otherDeleted":1,"restored":0,"writes":5}
+    # Subtest: tohum 7 (4 cari × 18 adım)
+    ok 7 - tohum 7 (4 cari × 18 adım)
+      ---
+      duration_ms: 2616.796293
+      type: 'test'
+      ...
+# \# M2T5 tohum 8: {"steps":72,"compared":72,"scanned":0,"guarded":8,"refused":0,"accepted":8,"invDeleted":0,"otherDeleted":3,"restored":0,"writes":3}
+    # Subtest: tohum 8 (4 cari × 18 adım)
+    ok 8 - tohum 8 (4 cari × 18 adım)
+      ---
+      duration_ms: 1999.090805
+      type: 'test'
+      ...
+# \# M2T5 tohum 9: {"steps":72,"compared":72,"scanned":0,"guarded":14,"refused":2,"accepted":12,"invDeleted":2,"otherDeleted":1,"restored":0,"writes":3}
+    # Subtest: tohum 9 (4 cari × 18 adım)
+    ok 9 - tohum 9 (4 cari × 18 adım)
+      ---
+      duration_ms: 2377.260335
+      type: 'test'
+      ...
+# \# M2T5 tohum 10: {"steps":72,"compared":72,"scanned":31,"guarded":3,"refused":0,"accepted":3,"invDeleted":0,"otherDeleted":3,"restored":0,"writes":2}
+    # Subtest: tohum 10 (4 cari × 18 adım)
+    ok 10 - tohum 10 (4 cari × 18 adım)
+      ---
+      duration_ms: 1908.180934
+      type: 'test'
+      ...
+# \# M2T5 tohum 11: {"steps":72,"compared":72,"scanned":0,"guarded":9,"refused":0,"accepted":9,"invDeleted":0,"otherDeleted":2,"restored":0,"writes":4}
+    # Subtest: tohum 11 (4 cari × 18 adım)
+    ok 11 - tohum 11 (4 cari × 18 adım)
+      ---
+      duration_ms: 2579.151249
+      type: 'test'
+      ...
+# \# M2T5 tohum 12: {"steps":72,"compared":72,"scanned":0,"guarded":5,"refused":0,"accepted":5,"invDeleted":0,"otherDeleted":1,"restored":0,"writes":5}
+    # Subtest: tohum 12 (4 cari × 18 adım)
+    ok 12 - tohum 12 (4 cari × 18 adım)
+      ---
+      duration_ms: 2419.689208
+      type: 'test'
+      ...
+# \# M2T5 tohum 13: {"steps":72,"compared":72,"scanned":0,"guarded":6,"refused":0,"accepted":6,"invDeleted":0,"otherDeleted":0,"restored":0,"writes":4}
+    # Subtest: tohum 13 (4 cari × 18 adım)
+    ok 13 - tohum 13 (4 cari × 18 adım)
+      ---
+      duration_ms: 2700.553133
+      type: 'test'
+      ...
+# \# M2T5 tohum 14: {"steps":72,"compared":72,"scanned":20,"guarded":3,"refused":0,"accepted":2,"invDeleted":1,"otherDeleted":2,"restored":0,"writes":2}
+    # Subtest: tohum 14 (4 cari × 18 adım)
+    ok 14 - tohum 14 (4 cari × 18 adım)
+      ---
+      duration_ms: 1888.480819
+      type: 'test'
+      ...
+# \# M2T5 tohum 15: {"steps":72,"compared":72,"scanned":0,"guarded":8,"refused":0,"accepted":5,"invDeleted":2,"otherDeleted":3,"restored":1,"writes":2}
+    # Subtest: tohum 15 (4 cari × 18 adım)
+    ok 15 - tohum 15 (4 cari × 18 adım)
+      ---
+      duration_ms: 1936.74603
+      type: 'test'
+      ...
+# \# M2T5 tohum 16: {"steps":72,"compared":72,"scanned":0,"guarded":6,"refused":0,"accepted":6,"invDeleted":1,"otherDeleted":3,"restored":1,"writes":2}
+    # Subtest: tohum 16 (4 cari × 18 adım)
+    ok 16 - tohum 16 (4 cari × 18 adım)
+      ---
+      duration_ms: 1743.040689
+      type: 'test'
+      ...
+# \# M2T5 tohum 17: {"steps":72,"compared":72,"scanned":0,"guarded":10,"refused":0,"accepted":10,"invDeleted":0,"otherDeleted":2,"restored":0,"writes":3}
+    # Subtest: tohum 17 (4 cari × 18 adım)
+    ok 17 - tohum 17 (4 cari × 18 adım)
+      ---
+      duration_ms: 2475.6531
+      type: 'test'
+      ...
+# \# M2T5 tohum 18: {"steps":72,"compared":72,"scanned":0,"guarded":8,"refused":0,"accepted":8,"invDeleted":2,"otherDeleted":2,"restored":1,"writes":3}
+    # Subtest: tohum 18 (4 cari × 18 adım)
+    ok 18 - tohum 18 (4 cari × 18 adım)
+      ---
+      duration_ms: 2401.809421
+      type: 'test'
+      ...
+# \# M2T5 tohum 19: {"steps":72,"compared":72,"scanned":0,"guarded":8,"refused":0,"accepted":7,"invDeleted":2,"otherDeleted":2,"restored":0,"writes":5}
+    # Subtest: tohum 19 (4 cari × 18 adım)
+    ok 19 - tohum 19 (4 cari × 18 adım)
+      ---
+      duration_ms: 2606.55501
+      type: 'test'
+      ...
+# \# M2T5 tohum 20: {"steps":72,"compared":72,"scanned":0,"guarded":3,"refused":0,"accepted":3,"invDeleted":0,"otherDeleted":3,"restored":0,"writes":4}
+    # Subtest: tohum 20 (4 cari × 18 adım)
+    ok 20 - tohum 20 (4 cari × 18 adım)
+      ---
+      duration_ms: 2259.180234
+      type: 'test'
+      ...
+# \# M2T5 tohum 21: {"steps":72,"compared":72,"scanned":0,"guarded":4,"refused":0,"accepted":4,"invDeleted":2,"otherDeleted":3,"restored":0,"writes":2}
+    # Subtest: tohum 21 (4 cari × 18 adım)
+    ok 21 - tohum 21 (4 cari × 18 adım)
+      ---
+      duration_ms: 2249.625934
+      type: 'test'
+      ...
+# \# M2T5 tohum 22: {"steps":72,"compared":72,"scanned":0,"guarded":4,"refused":0,"accepted":4,"invDeleted":2,"otherDeleted":3,"restored":1,"writes":4}
+    # Subtest: tohum 22 (4 cari × 18 adım)
+    ok 22 - tohum 22 (4 cari × 18 adım)
+      ---
+      duration_ms: 2183.184934
+      type: 'test'
+      ...
+# \# M2T5 tohum 23: {"steps":72,"compared":72,"scanned":0,"guarded":9,"refused":0,"accepted":6,"invDeleted":2,"otherDeleted":3,"restored":2,"writes":0}
+    # Subtest: tohum 23 (4 cari × 18 adım)
+    ok 23 - tohum 23 (4 cari × 18 adım)
+      ---
+      duration_ms: 1889.305817
+      type: 'test'
+      ...
+# \# M2T5 tohum 24: {"steps":72,"compared":72,"scanned":0,"guarded":8,"refused":0,"accepted":6,"invDeleted":0,"otherDeleted":2,"restored":0,"writes":4}
+    # Subtest: tohum 24 (4 cari × 18 adım)
+    ok 24 - tohum 24 (4 cari × 18 adım)
+      ---
+      duration_ms: 2346.833468
+      type: 'test'
+      ...
+# \# M2T5 tohum 25: {"steps":72,"compared":72,"scanned":15,"guarded":4,"refused":0,"accepted":4,"invDeleted":1,"otherDeleted":3,"restored":1,"writes":4}
+    # Subtest: tohum 25 (4 cari × 18 adım)
+    ok 25 - tohum 25 (4 cari × 18 adım)
+      ---
+      duration_ms: 2686.755932
+      type: 'test'
+      ...
+# \# M2T5 tohum 26: {"steps":72,"compared":72,"scanned":0,"guarded":5,"refused":2,"accepted":3,"invDeleted":2,"otherDeleted":3,"restored":0,"writes":3}
+    # Subtest: tohum 26 (4 cari × 18 adım)
+    ok 26 - tohum 26 (4 cari × 18 adım)
+      ---
+      duration_ms: 1791.18398
+      type: 'test'
+      ...
+# \# M2T5 tohum 27: {"steps":72,"compared":72,"scanned":39,"guarded":9,"refused":1,"accepted":6,"invDeleted":0,"otherDeleted":3,"restored":0,"writes":2}
+    # Subtest: tohum 27 (4 cari × 18 adım)
+    ok 27 - tohum 27 (4 cari × 18 adım)
+      ---
+      duration_ms: 2565.843711
+      type: 'test'
+      ...
+# \# M2T5 tohum 28: {"steps":72,"compared":72,"scanned":0,"guarded":8,"refused":0,"accepted":5,"invDeleted":1,"otherDeleted":3,"restored":0,"writes":2}
+    # Subtest: tohum 28 (4 cari × 18 adım)
+    ok 28 - tohum 28 (4 cari × 18 adım)
+      ---
+      duration_ms: 2236.654876
+      type: 'test'
+      ...
+# \# M2T5 tohum 29: {"steps":72,"compared":72,"scanned":4,"guarded":4,"refused":0,"accepted":4,"invDeleted":1,"otherDeleted":2,"restored":1,"writes":4}
+    # Subtest: tohum 29 (4 cari × 18 adım)
+    ok 29 - tohum 29 (4 cari × 18 adım)
+      ---
+      duration_ms: 2465.493811
+      type: 'test'
+      ...
+# \# M2T5 tohum 30: {"steps":72,"compared":72,"scanned":0,"guarded":5,"refused":0,"accepted":5,"invDeleted":2,"otherDeleted":0,"restored":1,"writes":1}
+    # Subtest: tohum 30 (4 cari × 18 adım)
+    ok 30 - tohum 30 (4 cari × 18 adım)
+      ---
+      duration_ms: 2133.897429
+      type: 'test'
+      ...
+# \# M2T5 tohum 31: {"steps":72,"compared":72,"scanned":46,"guarded":6,"refused":0,"accepted":6,"invDeleted":0,"otherDeleted":3,"restored":0,"writes":6}
+    # Subtest: tohum 31 (4 cari × 18 adım)
+    ok 31 - tohum 31 (4 cari × 18 adım)
+      ---
+      duration_ms: 2617.764571
+      type: 'test'
+      ...
+# \# M2T5 tohum 32: {"steps":72,"compared":72,"scanned":55,"guarded":7,"refused":0,"accepted":6,"invDeleted":0,"otherDeleted":3,"restored":0,"writes":7}
+    # Subtest: tohum 32 (4 cari × 18 adım)
+    ok 32 - tohum 32 (4 cari × 18 adım)
+      ---
+      duration_ms: 2683.972466
+      type: 'test'
+      ...
+# \# M2T5 tohum 33: {"steps":72,"compared":72,"scanned":24,"guarded":8,"refused":0,"accepted":8,"invDeleted":1,"otherDeleted":3,"restored":0,"writes":3}
+    # Subtest: tohum 33 (4 cari × 18 adım)
+    ok 33 - tohum 33 (4 cari × 18 adım)
+      ---
+      duration_ms: 2088.935548
+      type: 'test'
+      ...
+# \# M2T5 tohum 34: {"steps":72,"compared":72,"scanned":0,"guarded":9,"refused":0,"accepted":9,"invDeleted":1,"otherDeleted":3,"restored":0,"writes":2}
+    # Subtest: tohum 34 (4 cari × 18 adım)
+    ok 34 - tohum 34 (4 cari × 18 adım)
+      ---
+      duration_ms: 2152.616229
+      type: 'test'
+      ...
+# \# M2T5 tohum 35: {"steps":72,"compared":72,"scanned":0,"guarded":12,"refused":0,"accepted":12,"invDeleted":1,"otherDeleted":1,"restored":1,"writes":3}
+    # Subtest: tohum 35 (4 cari × 18 adım)
+    ok 35 - tohum 35 (4 cari × 18 adım)
+      ---
+      duration_ms: 2604.66863
+      type: 'test'
+      ...
+# \# M2T5 tohum 36: {"steps":72,"compared":72,"scanned":0,"guarded":7,"refused":0,"accepted":6,"invDeleted":0,"otherDeleted":2,"restored":0,"writes":3}
+    # Subtest: tohum 36 (4 cari × 18 adım)
+    ok 36 - tohum 36 (4 cari × 18 adım)
+      ---
+      duration_ms: 2380.962058
+      type: 'test'
+      ...
+# \# M2T5 tohum 37: {"steps":72,"compared":72,"scanned":1,"guarded":4,"refused":0,"accepted":4,"invDeleted":0,"otherDeleted":3,"restored":0,"writes":6}
+    # Subtest: tohum 37 (4 cari × 18 adım)
+    ok 37 - tohum 37 (4 cari × 18 adım)
+      ---
+      duration_ms: 2324.039478
+      type: 'test'
+      ...
+# \# M2T5 tohum 38: {"steps":72,"compared":72,"scanned":0,"guarded":6,"refused":0,"accepted":6,"invDeleted":0,"otherDeleted":3,"restored":0,"writes":6}
+    # Subtest: tohum 38 (4 cari × 18 adım)
+    ok 38 - tohum 38 (4 cari × 18 adım)
+      ---
+      duration_ms: 2414.994868
+      type: 'test'
+      ...
+# \# M2T5 tohum 39: {"steps":72,"compared":72,"scanned":1,"guarded":5,"refused":0,"accepted":5,"invDeleted":1,"otherDeleted":3,"restored":1,"writes":5}
+    # Subtest: tohum 39 (4 cari × 18 adım)
+    ok 39 - tohum 39 (4 cari × 18 adım)
+      ---
+      duration_ms: 2194.243448
+      type: 'test'
+      ...
+# \# M2T5 tohum 40: {"steps":72,"compared":72,"scanned":0,"guarded":3,"refused":0,"accepted":2,"invDeleted":0,"otherDeleted":2,"restored":0,"writes":4}
+    # Subtest: tohum 40 (4 cari × 18 adım)
+    ok 40 - tohum 40 (4 cari × 18 adım)
+      ---
+      duration_ms: 2342.950054
+      type: 'test'
+      ...
+    1..40
+ok 2 - 2.5.1 M2 tur 5 — rastgele: Silinenler taraması eşdeğer, denetimli işlem Değersiz'li cariyi eksiye götürmez
+  ---
+  duration_ms: 94019.147466
+  type: 'suite'
+  ...
+1..2
+# tests 80
+# suites 2
+# pass 80
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 95231.369101

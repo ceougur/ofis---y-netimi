@@ -1,0 +1,318 @@
+TAP version 13
+# (node:13374) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.1 M2 tur 4 — ORTA-2: formun önerdiği Değersiz tutarı kapıda reddedilmez (S270 'hiçbir sırada'; öneri her zaman kabul)
+    # Subtest: dar kontrolün vakası (S1'in Değersiz satırı Silinenler'den geri yüklenmiş): S2 için öneri 1.500 @19.09 → yazım 200, bakiye 779,85, Mutabakat tamam; 1.500,01 → ret
+    ok 1 - dar kontrolün vakası (S1'in Değersiz satırı Silinenler'den geri yüklenmiş): S2 için öneri 1.500 @19.09 → yazım 200, bakiye 779,85, Mutabakat tamam; 1.500,01 → ret
+      ---
+      duration_ms: 814.582271
+      type: 'test'
+      ...
+    # Subtest: dar kontrolün vakası (doğrudan yazılmış): S2 için öneri 1.500 @19.09 → yazım 200, bakiye 779,85, Mutabakat tamam; 1.500,01 → ret
+    ok 2 - dar kontrolün vakası (doğrudan yazılmış): S2 için öneri 1.500 @19.09 → yazım 200, bakiye 779,85, Mutabakat tamam; 1.500,01 → ret
+      ---
+      duration_ms: 666.033429
+      type: 'test'
+      ...
+    # Subtest: değişmez (i)'nin dünyası: S1'in Değersiz satırı, SONRA yazılan Değersiz satırını kuyruktan da okumaz (tur 3 hâli = leakLater → aynı yazım kapıda 409)
+    ok 3 - değişmez (i)'nin dünyası: S1'in Değersiz satırı, SONRA yazılan Değersiz satırını kuyruktan da okumaz (tur 3 hâli = leakLater → aynı yazım kapıda 409)
+      ---
+      duration_ms: 628.242157
+      type: 'test'
+      ...
+    1..3
+ok 1 - 2.5.1 M2 tur 4 — ORTA-2: formun önerdiği Değersiz tutarı kapıda reddedilmez (S270 'hiçbir sırada'; öneri her zaman kabul)
+  ---
+  duration_ms: 2110.098723
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M2 tur 4 — S-DKM2T3-1 = A: Değersiz satırı olan caride Borç Yaz / taksit kartı silme ya da düşürme cariyi eksiye götürüyorsa fatura iptaliyle aynı ret
+    # Subtest: Borç Yaz 3.400 silme → 409 'Borç hareketi silinemez', bakiye 423,55 kalır; ileti S155'i de bilir ve izlenen yol silmeyi kabul ettirir (23,55)
+    ok 1 - Borç Yaz 3.400 silme → 409 'Borç hareketi silinemez', bakiye 423,55 kalır; ileti S155'i de bilir ve izlenen yol silmeyi kabul ettirir (23,55)
+      ---
+      duration_ms: 554.319041
+      type: 'test'
+      ...
+    # Subtest: iletinin öbür yolu: Değersiz satırını sil → Şüpheliden Çıkar → Borç Yaz'ı sil → kabul (23,55)
+    ok 2 - iletinin öbür yolu: Değersiz satırını sil → Şüpheliden Çıkar → Borç Yaz'ı sil → kabul (23,55)
+      ---
+      duration_ms: 566.81607
+      type: 'test'
+      ...
+    # Subtest: Borç Yaz 3.400 → 100 düzeltme → 409 'Borç hareketi düzeltilemez' (yalnız Değersiz yüzünden; ileti eski yol); izlenen yol: Değersiz satırını sil → 100 → kabul (123,55), form 123,55 önerir
+    ok 3 - Borç Yaz 3.400 → 100 düzeltme → 409 'Borç hareketi düzeltilemez' (yalnız Değersiz yüzünden; ileti eski yol); izlenen yol: Değersiz satırını sil → 100 → kabul (123,55), form 123,55 önerir
+      ---
+      duration_ms: 532.728807
+      type: 'test'
+      ...
+    # Subtest: Borç Yaz'ı Alacak'a çevirme (−6.376,45) ve başka cariye taşıma (eski cari −2.976,45) → 409; satır değişmez
+    ok 4 - Borç Yaz'ı Alacak'a çevirme (−6.376,45) ve başka cariye taşıma (eski cari −2.976,45) → 409; satır değişmez
+      ---
+      duration_ms: 498.682725
+      type: 'test'
+      ...
+    # Subtest: bakiyeyi düşürmeyen ya da eksiye götürmeyen düzeltme kabul: 3.500 (523,55), tarih 13.09 (aynı), 3.000 (23,55); Değersiz'siz caride silme bugünkü kural (S155)
+    ok 5 - bakiyeyi düşürmeyen ya da eksiye götürmeyen düzeltme kabul: 3.500 (523,55), tarih 13.09 (aynı), 3.000 (23,55); Değersiz'siz caride silme bugünkü kural (S155)
+      ---
+      duration_ms: 629.4356
+      type: 'test'
+      ...
+    # Subtest: taksit kartı (aynı sınıf): 3.400'lük kartı silme → 409 'Taksit kartı silinemez'; tutarı 100'e düşürme → 409 'Taksit kartı düzenlenemez'; kart değişmez, bakiye 423,55
+    ok 6 - taksit kartı (aynı sınıf): 3.400'lük kartı silme → 409 'Taksit kartı silinemez'; tutarı 100'e düşürme → 409 'Taksit kartı düzenlenemez'; kart değişmez, bakiye 423,55
+      ---
+      duration_ms: 535.423974
+      type: 'test'
+      ...
+    1..6
+ok 2 - 2.5.1 M2 tur 4 — S-DKM2T3-1 = A: Değersiz satırı olan caride Borç Yaz / taksit kartı silme ya da düşürme cariyi eksiye götürüyorsa fatura iptaliyle aynı ret
+  ---
+  duration_ms: 3318.4533
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M2 tur 4 — DÜŞÜK-1: 'ne yapmalı' S155'i de bilir; izlenen yol işlemi gerçekten kabul ettirir
+    # Subtest: Düzenle 2.900 → 100: ileti şüpheli kaydı da söyler; Değersiz satırı sil → şüpheli kaydı sil → Düzenle → kabul (623,55)
+    ok 1 - Düzenle 2.900 → 100: ileti şüpheli kaydı da söyler; Değersiz satırı sil → şüpheli kaydı sil → Düzenle → kabul (623,55)
+      ---
+      duration_ms: 517.235983
+      type: 'test'
+      ...
+    # Subtest: Değersiz silinince geçen ret (iptal, 123,55): ileti AYNEN eski yol ve yol işe yarar
+    ok 2 - Değersiz silinince geçen ret (iptal, 123,55): ileti AYNEN eski yol ve yol işe yarar
+      ---
+      duration_ms: 599.590492
+      type: 'test'
+      ...
+    1..2
+ok 3 - 2.5.1 M2 tur 4 — DÜŞÜK-1: 'ne yapmalı' S155'i de bilir; izlenen yol işlemi gerçekten kabul ettirir
+  ---
+  duration_ms: 1117.151528
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M2 tur 4 — DÜŞÜK-2: M8 sınıfı (aynı gün, kayıttan SONRA yazılmış bağlı tahsilat + S155) — öneri o günün kesitinden
+    # Subtest: Borç 1.000 + Fatura 2.900, S 3.000 @17.09, sonra aynı gün bağlı 2876,45: @17.09 sınır 1023,55, öneri 1023,55 → yazım 200, bakiye 0
+    ok 1 - Borç 1.000 + Fatura 2.900, S 3.000 @17.09, sonra aynı gün bağlı 2876,45: @17.09 sınır 1023,55, öneri 1023,55 → yazım 200, bakiye 0
+      ---
+      duration_ms: 499.662876
+      type: 'test'
+      ...
+    # Subtest: Borç 1.000 + Fatura 2.900, S 3.000 @17.09, sonra aynı gün bağlı 1000 + 20.09 bağlı 200: @17.09 sınır 2700,00, öneri 2700,00 → yazım 200, bakiye 0
+    ok 2 - Borç 1.000 + Fatura 2.900, S 3.000 @17.09, sonra aynı gün bağlı 1000 + 20.09 bağlı 200: @17.09 sınır 2700,00, öneri 2700,00 → yazım 200, bakiye 0
+      ---
+      duration_ms: 605.721055
+      type: 'test'
+      ...
+    1..2
+ok 4 - 2.5.1 M2 tur 4 — DÜŞÜK-2: M8 sınıfı (aynı gün, kayıttan SONRA yazılmış bağlı tahsilat + S155) — öneri o günün kesitinden
+  ---
+  duration_ms: 1105.631085
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M2 tur 4 — ORTA-1: değişmez (i)'nin Silinenler taraması dizinli ve tam taramayla aynı sonuç
+    # Subtest: sorgu planı: iki Silinenler sorgusunda tablo baştan sona okunmaz (SCAN trash yok)
+    ok 1 - sorgu planı: iki Silinenler sorgusunda tablo baştan sona okunmaz (SCAN trash yok)
+      ---
+      duration_ms: 345.137501
+      type: 'test'
+      ...
+    # Subtest: değişmezin GERÇEKTE koştuğu Silinenler sorguları (iki kol: (i) fatura silme anı, (ii) satırdan sonraki silme) dizinli; 200 silinmiş fatura varken sonuç tam taramayla aynı
+    ok 2 - değişmezin GERÇEKTE koştuğu Silinenler sorguları (iki kol: (i) fatura silme anı, (ii) satırdan sonraki silme) dizinli; 200 silinmiş fatura varken sonuç tam taramayla aynı
+      ---
+      duration_ms: 533.778849
+      type: 'test'
+      ...
+    # Subtest: iki Değersiz satırı arasında silinen fatura: daraltılmış tarama tam taramayla aynı, ihlal yok, Mutabakat tamam
+    ok 3 - iki Değersiz satırı arasında silinen fatura: daraltılmış tarama tam taramayla aynı, ihlal yok, Mutabakat tamam
+      ---
+      duration_ms: 546.556064
+      type: 'test'
+      ...
+    1..3
+ok 5 - 2.5.1 M2 tur 4 — ORTA-1: değişmez (i)'nin Silinenler taraması dizinli ve tam taramayla aynı sonuç
+  ---
+  duration_ms: 1425.998194
+  type: 'suite'
+  ...
+# \# M2T4 tohum 37: {"steps":100,"writes":6,"over":1,"compared":75,"leakOnly":0,"trashInvoices":9,"invDeleted":9,"invRestored":0,"debtDeleted":1,"debtRefused":2,"negativeChecks":0}
+# Subtest: 2.5.1 M2 tur 4 — rastgele: önerinin yazımı kabul, Silinenler taraması eşdeğer, Borç Yaz silmesi eksiye götürmez
+    # Subtest: tohum 37 (5 cari × 20 adım)
+    ok 1 - tohum 37 (5 cari × 20 adım)
+      ---
+      duration_ms: 2291.055943
+      type: 'test'
+      ...
+# \# M2T4 tohum 3: {"steps":100,"writes":7,"over":0,"compared":74,"leakOnly":0,"trashInvoices":9,"invDeleted":9,"invRestored":0,"debtDeleted":0,"debtRefused":1,"negativeChecks":0}
+    # Subtest: tohum 3 (5 cari × 20 adım)
+    ok 2 - tohum 3 (5 cari × 20 adım)
+      ---
+      duration_ms: 2171.114448
+      type: 'test'
+      ...
+# \# M2T4 tohum 11: {"steps":100,"writes":4,"over":1,"compared":71,"leakOnly":0,"trashInvoices":4,"invDeleted":4,"invRestored":0,"debtDeleted":1,"debtRefused":0,"negativeChecks":0}
+    # Subtest: tohum 11 (5 cari × 20 adım)
+    ok 3 - tohum 11 (5 cari × 20 adım)
+      ---
+      duration_ms: 1967.569356
+      type: 'test'
+      ...
+    1..3
+ok 6 - 2.5.1 M2 tur 4 — rastgele: önerinin yazımı kabul, Silinenler taraması eşdeğer, Borç Yaz silmesi eksiye götürmez
+  ---
+  duration_ms: 6430.165194
+  type: 'suite'
+  ...
+# (node:13375) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.1 M2 tur 5 — SK-64 = A: Değersiz'li caride Ödeme silme / Alacak Yaz artırma cariyi eksiye götürüyorsa ret (S-M2T2-1 / S-DKM2T3-1 ile aynı kural)
+    # Subtest: kararın örneği AYNEN: bakiye −76,45 iken Ödeme 500 silinir → 409 'Ödeme hareketi silinemez', bakiye −76,45 kalır (kabul olsaydı −576,45); ileti yolu silmeyi kabul ettirir (2.423,55)
+    ok 1 - kararın örneği AYNEN: bakiye −76,45 iken Ödeme 500 silinir → 409 'Ödeme hareketi silinemez', bakiye −76,45 kalır (kabul olsaydı −576,45); ileti yolu silmeyi kabul ettirir (2.423,55)
+      ---
+      duration_ms: 806.400704
+      type: 'test'
+      ...
+    # Subtest: Ödeme tutarını düşürme (500 → 100: −476,45) ve başka cariye taşıma (eski cari −576,45) → 409 'Ödeme hareketi düzeltilemez'; tutar artırma (600: 23,55) ve tarih değişikliği kabul
+    ok 2 - Ödeme tutarını düşürme (500 → 100: −476,45) ve başka cariye taşıma (eski cari −576,45) → 409 'Ödeme hareketi düzeltilemez'; tutar artırma (600: 23,55) ve tarih değişikliği kabul
+      ---
+      duration_ms: 653.478682
+      type: 'test'
+      ...
+    # Subtest: Alacak Yaz: yeni 400 kabul (avans; BM-M2T4-3) → 23,55; 500'e artırma → 409 'Alacak hareketi düzeltilemez' (23,55 kalır); 423,55 (tam 0) kabul; 423,56 (−0,01) ret; Borç'a çevirme kabul
+    ok 3 - Alacak Yaz: yeni 400 kabul (avans; BM-M2T4-3) → 23,55; 500'e artırma → 409 'Alacak hareketi düzeltilemez' (23,55 kalır); 423,55 (tam 0) kabul; 423,56 (−0,01) ret; Borç'a çevirme kabul
+      ---
+      duration_ms: 662.350487
+      type: 'test'
+      ...
+    # Subtest: Alış Faturası Düzenle'si tutarı artırıp eksiye götürüyorsa → 409 'Alış faturası düzenlenemez'; tam 0'a götüren artış kabul; ileti yolu işe yarar
+    ok 4 - Alış Faturası Düzenle'si tutarı artırıp eksiye götürüyorsa → 409 'Alış faturası düzenlenemez'; tam 0'a götüren artış kabul; ileti yolu işe yarar
+      ---
+      duration_ms: 619.42695
+      type: 'test'
+      ...
+    # Subtest: POS İadesi silme → 409 'POS İadesi silinemez' (−76,45 kalır); ileti yolu silmeyi kabul ettirir
+    ok 5 - POS İadesi silme → 409 'POS İadesi silinemez' (−76,45 kalır); ileti yolu silmeyi kabul ettirir
+      ---
+      duration_ms: 631.568669
+      type: 'test'
+      ...
+    # Subtest: taksit kartının ödeme / iade hareketi: silme ve tutar düşürme → 409; kart ve bakiye değişmez
+    ok 6 - taksit kartının ödeme / iade hareketi: silme ve tutar düşürme → 409; kart ve bakiye değişmez
+      ---
+      duration_ms: 612.21216
+      type: 'test'
+      ...
+    # Subtest: ETKİLENMEZ: Değersiz'siz caride ve Değersiz satırı silinmiş caride Ödeme silme eksiye götürse de kabul (yeni denetim çalışmaz)
+    ok 7 - ETKİLENMEZ: Değersiz'siz caride ve Değersiz satırı silinmiş caride Ödeme silme eksiye götürse de kabul (yeni denetim çalışmaz)
+      ---
+      duration_ms: 790.554006
+      type: 'test'
+      ...
+    1..7
+ok 7 - 2.5.1 M2 tur 5 — SK-64 = A: Değersiz'li caride Ödeme silme / Alacak Yaz artırma cariyi eksiye götürüyorsa ret (S-M2T2-1 / S-DKM2T3-1 ile aynı kural)
+  ---
+  duration_ms: 4777.586186
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M2 tur 5 — ORTA-A: Otomatik Dağıt kartın toplamını düşürüp Değersiz'li cariyi eksiye götürüyorsa kart düzenlemesiyle aynı ret (atomik)
+    # Subtest: dar kontrolün vakası AYNEN: taban T kart 3.400 → Otomatik Dağıt 100 → 409; kart toplamı 3.400, taksitler, cari satırları ve bakiye 423,55 değişmez
+    ok 1 - dar kontrolün vakası AYNEN: taban T kart 3.400 → Otomatik Dağıt 100 → 409; kart toplamı 3.400, taksitler, cari satırları ve bakiye 423,55 değişmez
+      ---
+      duration_ms: 759.714264
+      type: 'test'
+      ...
+# (node:13375) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:13375) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: dönem kilidi Kayıt Tarihi'ni kapsıyorsa kilit iletisi Değersiz iletisinden ÖNCE gelir
+    ok 2 - dönem kilidi Kayıt Tarihi'ni kapsıyorsa kilit iletisi Değersiz iletisinden ÖNCE gelir
+      ---
+      duration_ms: 770.735478
+      type: 'test'
+      ...
+    1..2
+ok 8 - 2.5.1 M2 tur 5 — ORTA-A: Otomatik Dağıt kartın toplamını düşürüp Değersiz'li cariyi eksiye götürüyorsa kart düzenlemesiyle aynı ret (atomik)
+  ---
+  duration_ms: 1531.002764
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M2 tur 5 — ORTA-B: Silinenler taraması Silinenler'deki fatura sayısıyla ve Değersiz satırlı cari sayısıyla çoğalmaz; sonuç tam taramayla BİREBİR
+    # Subtest: 10 Değersiz satırlı cari, Değersiz'den SONRA silinmiş 200 başka cari faturası: taramanın sonucunu okuyabilecek satır yoksa Silinenler gövdesi HİÇ okunmaz; sonuç tam taramayla aynı
+    ok 1 - 10 Değersiz satırlı cari, Değersiz'den SONRA silinmiş 200 başka cari faturası: taramanın sonucunu okuyabilecek satır yoksa Silinenler gövdesi HİÇ okunmaz; sonuç tam taramayla aynı
+      ---
+      duration_ms: 1777.120133
+      type: 'test'
+      ...
+    # Subtest: 4 carinin taraması gerekiyor (aynı gün, Değersiz'den önce bağsız tahsilat + faturası Değersiz'den sonra silinmiş): Mutabakat'ta TEK Silinenler sorgusu; sonuç tam taramayla aynı
+    ok 2 - 4 carinin taraması gerekiyor (aynı gün, Değersiz'den önce bağsız tahsilat + faturası Değersiz'den sonra silinmiş): Mutabakat'ta TEK Silinenler sorgusu; sonuç tam taramayla aynı
+      ---
+      duration_ms: 1084.570032
+      type: 'test'
+      ...
+    1..2
+ok 9 - 2.5.1 M2 tur 5 — ORTA-B: Silinenler taraması Silinenler'deki fatura sayısıyla ve Değersiz satırlı cari sayısıyla çoğalmaz; sonuç tam taramayla BİREBİR
+  ---
+  duration_ms: 2861.958034
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M2 tur 5 — ORTA-B: tek geçişte başka carinin silinen faturası bu cariye sayılmaz (sınırı aşan eski Değersiz satırı görünür kalır)
+    # Subtest: iki caride sınırı aşan Değersiz satırı + başka carinin Değersiz'den sonra silinen faturası → iki ihlal, tam taramayla aynı
+    ok 1 - iki caride sınırı aşan Değersiz satırı + başka carinin Değersiz'den sonra silinen faturası → iki ihlal, tam taramayla aynı
+      ---
+      duration_ms: 766.884561
+      type: 'test'
+      ...
+    1..1
+ok 10 - 2.5.1 M2 tur 5 — ORTA-B: tek geçişte başka carinin silinen faturası bu cariye sayılmaz (sınırı aşan eski Değersiz satırı görünür kalır)
+  ---
+  duration_ms: 767.202291
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M2 tur 5 — ORTA-B: daraltma taramayı gerektiren EN ESKİ satırdan
+    # Subtest: iki satır da taramayı gerektiriyor, fatura aralarında silindi → ihlal yok, tam taramayla aynı, Mutabakat tamam
+    ok 1 - iki satır da taramayı gerektiriyor, fatura aralarında silindi → ihlal yok, tam taramayla aynı, Mutabakat tamam
+      ---
+      duration_ms: 683.006705
+      type: 'test'
+      ...
+    1..1
+ok 11 - 2.5.1 M2 tur 5 — ORTA-B: daraltma taramayı gerektiren EN ESKİ satırdan
+  ---
+  duration_ms: 683.227285
+  type: 'suite'
+  ...
+# \# M2T5 tohum 5: {"steps":72,"compared":72,"scanned":51,"guarded":6,"refused":0,"accepted":6,"invDeleted":1,"otherDeleted":3,"restored":0,"writes":2}
+# Subtest: 2.5.1 M2 tur 5 — rastgele: Silinenler taraması eşdeğer, denetimli işlem Değersiz'li cariyi eksiye götürmez
+    # Subtest: tohum 5 (4 cari × 18 adım)
+    ok 1 - tohum 5 (4 cari × 18 adım)
+      ---
+      duration_ms: 1974.641279
+      type: 'test'
+      ...
+# \# M2T5 tohum 17: {"steps":72,"compared":72,"scanned":0,"guarded":10,"refused":0,"accepted":10,"invDeleted":0,"otherDeleted":2,"restored":0,"writes":3}
+    # Subtest: tohum 17 (4 cari × 18 adım)
+    ok 2 - tohum 17 (4 cari × 18 adım)
+      ---
+      duration_ms: 1971.269031
+      type: 'test'
+      ...
+# \# M2T5 tohum 29: {"steps":72,"compared":72,"scanned":4,"guarded":4,"refused":0,"accepted":4,"invDeleted":1,"otherDeleted":2,"restored":1,"writes":4}
+    # Subtest: tohum 29 (4 cari × 18 adım)
+    ok 3 - tohum 29 (4 cari × 18 adım)
+      ---
+      duration_ms: 2119.34181
+      type: 'test'
+      ...
+    1..3
+ok 12 - 2.5.1 M2 tur 5 — rastgele: Silinenler taraması eşdeğer, denetimli işlem Değersiz'li cariyi eksiye götürmez
+  ---
+  duration_ms: 6065.57017
+  type: 'suite'
+  ...
+1..12
+# tests 35
+# suites 12
+# pass 35
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 17103.177132

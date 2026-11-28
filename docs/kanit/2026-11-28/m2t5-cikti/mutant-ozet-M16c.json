@@ -1,0 +1,12 @@
+[
+ {
+  "mutant": "M16c-t5-daraltma-en-son-satirdan",
+  "cikis": 1,
+  "fail": "# fail 1",
+  "kirilan": [
+   "not ok 1 - iki satır da taramayı gerektiriyor, fatura aralarında silindi → ihlal yok, tam taramayla aynı, Mutabakat tamam",
+   "not ok 22 - 2.5.1 M2 tur 5 — ORTA-B: daraltma taramayı gerektiren EN ESKİ satırdan"
+  ],
+  "sonuc": "YAKALANDI"
+ }
+]
