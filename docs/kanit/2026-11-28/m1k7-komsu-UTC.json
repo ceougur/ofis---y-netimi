@@ -1,0 +1,32 @@
+{
+  "ad": "m1k7-komsu-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/banka-210-fis.test.mjs test/banka-220-pos-kdv.test.mjs test/c7b-degismez-250.test.mjs test/c7b-eski-surum-sinif-250.test.mjs test/c7b-gecis-gunu-250.test.mjs test/c7b-goc52-kilit-izi-250.test.mjs test/c7b-kart-kapat-onay-250.test.mjs test/c7b-kdv-donemi-250.test.mjs test/c7b-kdv-ozeti-donem-250.test.mjs test/c7b-kdv-s4-250.test.mjs test/c7b-kilit-izi-250.test.mjs test/c7b-kitap-turetme-250.test.mjs test/c7b-sifirla-kdv-mahsup-250.test.mjs test/c7b-tur3-eski-surum-250.test.mjs test/c7b-tur3-hiz-250.test.mjs test/c7b-tur3-kart-250.test.mjs test/c7b-tur3b-borcta-kalsin-250.test.mjs test/c7b-tur3b-eski-surum-250.test.mjs test/defter-243-ux24-toplam.test.mjs test/defter-243-vergi.test.mjs test/defter-hiz-esdegerlik-250.test.mjs test/defter-kaynak-iz-250.test.mjs test/devir-d3-damga-kaynak.test.mjs test/ekstre-ayrinti-245.test.mjs test/fis-defteri-250.test.mjs test/kdv-ozeti-devreden-251.test.mjs test/kdv-ozeti-karma-251.test.mjs test/kdv-ozeti-mahsup-sonrasi-251.test.mjs test/kdv-ozeti-s4-guncel-degil-251.test.mjs test/kdv-ozeti-uyusmazlik-yonu-251.test.mjs test/kdv-ozeti-yalniz391-251.test.mjs test/kdv-ozeti-zincir-251.test.mjs test/license.test.mjs test/mobil-247.test.mjs test/raporlar-210-banka.test.mjs test/raporlar-224.test.mjs test/stopaj-tevkifat-iade-244.test.mjs test/yazim-duzeni.test.mjs test/kdv-ozeti-devreden-onarim-251.test.mjs",
+  "commit": "1c97b8e2a90883d03f9ddc6118f6d8781a13fff1",
+  "dal": "worktree-agent-aa8f377d8c9dd1229",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-28T09:05:15.555Z",
+  "sure_sn": 163.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 367,
+    "gecen": 367,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/m1k7/kanit/2026-11-28/m1k7-komsu-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa8f377d8c9dd1229",
+  "ham_cikti_sha256": "be0dd8940c74adf355a692ff282765c0e0e48f451a4154a0951ecca47641495e",
+  "ham_cikti_bayt": 145455
+}

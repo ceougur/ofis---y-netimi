@@ -1,0 +1,6 @@
+yük 3.82 (başlangıç)
+ay-utc çıkış=0 süre=408 yük=6.27
+yil-utc çıkış=0 süre=223 yük=6.17
+ay-ist çıkış=0 süre=205 yük=5.58
+yil-ist çıkış=0 süre=190 yük=5.52
+BITTI

@@ -1,0 +1,944 @@
+TAP version 13
+# Subtest: 2.5.1 M1 küçük tur 7 — devreden farkı kolu: önceki 'güncel değil' Şubat (devreden yönde) + eski devredenle kesilmiş Mart (tur 6 s5 vakası AYNEN) / önceki güncel olmayan fiş YOK (cümle AYNEN) + zincirleme uyuşmazlık
+    # Subtest: 001 D0: Ocak–Mayıs 2.400 = 391 4.500 − 191 2.100 (DEĞİŞMEDİ); Mart notu onarımı Şubat'tan söyler (Ocak–Mayıs, Mart tek ay, Nisan tek ay); ekran = PDF = Excel
+    not ok 1 - 001 D0: Ocak–Mayıs 2.400 = 391 4.500 − 191 2.100 (DEĞİŞMEDİ); Mart notu onarımı Şubat'tan söyler (Ocak–Mayıs, Mart tek ay, Nisan tek ay); ekran = PDF = Excel
+      ---
+      duration_ms: 10.392415
+      type: 'test'
+      location: '/dev/shm/m1k7-eski/eski/test/kdv-ozeti-devreden-onarim-251.test.mjs:155:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Mart uyuşmazlık notu (tam cümle) [["Hesaplanan KDV (391) (İadeler Düşülmüş)","4.500,00 TL"],["İndirilecek KDV (191) (İadeler Düşülmüş)","2.100,00 TL"],["Alıcı Olarak Kesilen Tevkifat (2 No.lu)","0,00 TL"],["Önceki Dönemden Devreden KDV","0,00 TL"],["Ödenecek KDV","2.400,00 TL"],["Sonraki Döneme Devreden KDV","0,00 TL"],["KDV Mahsup Fişi","Ocak 2026, Şubat 2026, Mart 2026, Nisan 2026"],["Mahsuptan Sonra Değişen Ay","Şubat 2026 (mahsup fişi güncel değil — mahsubu geri alıp yeniden mahsup edin); Nisan 2026 (bu ayın kayıtları fişten sonra değişti; ayın sonucu kesilmiş mahsup fişinden, İndirilecek KDV'deki azalma sonraki mahsupta düşülür)"],["Zincirle Uyuşmayan Mahsup Fişi","Mart 2026 fişi 500,00 TL devredenle kesilmiş, sırayla mahsupta 800,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)"]]
+        + actual - expected
+        
+        + 'Mart 2026 fişi 500,00 TL devredenle kesilmiş, sırayla mahsupta 800,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)'
+        - 'Mart 2026 fişi 500,00 TL devredenle kesilmiş, sırayla mahsupta 800,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Şubat 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'Mart 2026 fişi 500,00 TL devredenle kesilmiş, sırayla mahsupta 800,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Şubat 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)'
+      actual: 'Mart 2026 fişi 500,00 TL devredenle kesilmiş, sırayla mahsupta 800,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m1k7-eski/eski/test/kdv-ozeti-devreden-onarim-251.test.mjs:161:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: 001 tabanın önerdiği onarım (yalnız Mart ve sonrası) notu kaldırmaz; notun YENİ cümlesinin adımları (Şubat'tan) kaldırır: fişler Şubat 1.000 / 0 / 800, Mart 800 / 1.000 / 0, Nisan 0 / 900 / 0; Ocak–Mayıs 2.400 = 391 − 191
+    not ok 2 - 001 tabanın önerdiği onarım (yalnız Mart ve sonrası) notu kaldırmaz; notun YENİ cümlesinin adımları (Şubat'tan) kaldırır: fişler Şubat 1.000 / 0 / 800, Mart 800 / 1.000 / 0, Nisan 0 / 900 / 0; Ocak–Mayıs 2.400 = 391 − 191
+      ---
+      duration_ms: 33.716801
+      type: 'test'
+      location: '/dev/shm/m1k7-eski/eski/test/kdv-ozeti-devreden-onarim-251.test.mjs:173:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        D1: not kalır, yine Şubat'ı söyler [["Hesaplanan KDV (391) (İadeler Düşülmüş)","4.500,00 TL"],["İndirilecek KDV (191) (İadeler Düşülmüş)","2.100,00 TL"],["Alıcı Olarak Kesilen Tevkifat (2 No.lu)","0,00 TL"],["Önceki Dönemden Devreden KDV","0,00 TL"],["Ödenecek KDV","2.400,00 TL"],["Sonraki Döneme Devreden KDV","0,00 TL"],["KDV Mahsup Fişi","Ocak 2026, Şubat 2026, Mart 2026, Nisan 2026"],["Mahsuptan Sonra Değişen Ay","Şubat 2026 (mahsup fişi güncel değil — mahsubu geri alıp yeniden mahsup edin)"],["Zincirle Uyuşmayan Mahsup Fişi","Mart 2026 fişi 500,00 TL devredenle kesilmiş, sırayla mahsupta 800,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)"]]
+        + actual - expected
+        
+        + 'Mart 2026 fişi 500,00 TL devredenle kesilmiş, sırayla mahsupta 800,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)'
+        - 'Mart 2026 fişi 500,00 TL devredenle kesilmiş, sırayla mahsupta 800,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Şubat 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'Mart 2026 fişi 500,00 TL devredenle kesilmiş, sırayla mahsupta 800,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Şubat 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)'
+      actual: 'Mart 2026 fişi 500,00 TL devredenle kesilmiş, sırayla mahsupta 800,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m1k7-eski/eski/test/kdv-ozeti-devreden-onarim-251.test.mjs:176:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 002 önceki güncel olmayan fiş YOK (yalnız mahsupsuz Şubat): Mart cümlesi AYNEN 'bu ayın ve sonraki …'; zincirleme Nisan (Mart'ın uyuşmayan fişinden) → onarım Mart'tan; adımlarla notlar kalkar
+    not ok 3 - 002 önceki güncel olmayan fiş YOK (yalnız mahsupsuz Şubat): Mart cümlesi AYNEN 'bu ayın ve sonraki …'; zincirleme Nisan (Mart'ın uyuşmayan fişinden) → onarım Mart'tan; adımlarla notlar kalkar
+      ---
+      duration_ms: 84.87403
+      type: 'test'
+      location: '/dev/shm/m1k7-eski/eski/test/kdv-ozeti-devreden-onarim-251.test.mjs:192:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        zincirleme: onarım ilk uyuşmayan fişten (Mart 2026) [["Hesaplanan KDV (391) (İadeler Düşülmüş)","400,00 TL"],["İndirilecek KDV (191) (İadeler Düşülmüş)","0,00 TL"],["Alıcı Olarak Kesilen Tevkifat (2 No.lu)","0,00 TL"],["Önceki Dönemden Devreden KDV","600,00 TL"],["Ödenecek KDV","0,00 TL"],["Sonraki Döneme Devreden KDV","200,00 TL"],["KDV Mahsup Fişi","Mart 2026, Nisan 2026"],["Mahsup Edilmemiş Ay","Şubat 2026 (devreden ve ödenecek KDV bu aylar sırayla mahsup edilmiş gibi hesaplandı; KDV Mahsup Fişi ön izlemesi defterdeki devredeni gösterir, ayları sırayla mahsup edin)"],["Zincirle Uyuşmayan Mahsup Fişi","Mart 2026 fişi 1.000,00 TL devredenle kesilmiş, sırayla mahsupta 600,00 TL olmalıydı; Nisan 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 400,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)"]]
+        + actual - expected
+        
+        + 'Mart 2026 fişi 1.000,00 TL devredenle kesilmiş, sırayla mahsupta 600,00 TL olmalıydı; Nisan 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 400,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)'
+        - 'Mart 2026 fişi 1.000,00 TL devredenle kesilmiş, sırayla mahsupta 600,00 TL olmalıydı; Nisan 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 400,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Mart 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'Mart 2026 fişi 1.000,00 TL devredenle kesilmiş, sırayla mahsupta 600,00 TL olmalıydı; Nisan 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 400,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Mart 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)'
+      actual: 'Mart 2026 fişi 1.000,00 TL devredenle kesilmiş, sırayla mahsupta 600,00 TL olmalıydı; Nisan 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 400,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m1k7-eski/eski/test/kdv-ozeti-devreden-onarim-251.test.mjs:203:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 1 - 2.5.1 M1 küçük tur 7 — devreden farkı kolu: önceki 'güncel değil' Şubat (devreden yönde) + eski devredenle kesilmiş Mart (tur 6 s5 vakası AYNEN) / önceki güncel olmayan fiş YOK (cümle AYNEN) + zincirleme uyuşmazlık
+  ---
+  duration_ms: 1257.368485
+  type: 'suite'
+  location: '/dev/shm/m1k7-eski/eski/test/kdv-ozeti-devreden-onarim-251.test.mjs:124:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.1 M1 küçük tur 7 — iki 'güncel değil' ay (onarım İLKİNDEN), yıl dönümü (Aralık 2026 → Ocak 2027, fiş değişiklikten SONRA)
+    # Subtest: 001 iki 'güncel değil' (Ocak ödenecek yönde, Şubat devreden yönde): Mart notu onarımı İLK aydan (Ocak 2026); notun adımlarıyla kalkar; Ocak–Mart 700 = 391 2.200 − 191 1.500
+    not ok 1 - 001 iki 'güncel değil' (Ocak ödenecek yönde, Şubat devreden yönde): Mart notu onarımı İLK aydan (Ocak 2026); notun adımlarıyla kalkar; Ocak–Mart 700 = 391 2.200 − 191 1.500
+      ---
+      duration_ms: 8.384429
+      type: 'test'
+      location: '/dev/shm/m1k7-eski/eski/test/kdv-ozeti-devreden-onarim-251.test.mjs:255:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        onarım İLK 'güncel değil' aydan [["Hesaplanan KDV (391) (İadeler Düşülmüş)","2.200,00 TL"],["İndirilecek KDV (191) (İadeler Düşülmüş)","1.500,00 TL"],["Alıcı Olarak Kesilen Tevkifat (2 No.lu)","0,00 TL"],["Önceki Dönemden Devreden KDV","0,00 TL"],["Ödenecek KDV","700,00 TL"],["Sonraki Döneme Devreden KDV","0,00 TL"],["KDV Mahsup Fişi","Ocak 2026, Şubat 2026, Mart 2026"],["Mahsuptan Sonra Değişen Ay","Ocak 2026, Şubat 2026 (mahsup fişi güncel değil — mahsubu geri alıp yeniden mahsup edin)"],["Zincirle Uyuşmayan Mahsup Fişi","Mart 2026 fişi 700,00 TL devredenle kesilmiş, sırayla mahsupta 800,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)"]]
+        + actual - expected
+        
+        + 'Mart 2026 fişi 700,00 TL devredenle kesilmiş, sırayla mahsupta 800,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)'
+        - 'Mart 2026 fişi 700,00 TL devredenle kesilmiş, sırayla mahsupta 800,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Ocak 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'Mart 2026 fişi 700,00 TL devredenle kesilmiş, sırayla mahsupta 800,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Ocak 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)'
+      actual: 'Mart 2026 fişi 700,00 TL devredenle kesilmiş, sırayla mahsupta 800,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m1k7-eski/eski/test/kdv-ozeti-devreden-onarim-251.test.mjs:261:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 002 yıl dönümü: Bu Yıl (2027) ve Ocak 2027 notu onarımı '(Aralık 2026)' yılıyla söyler; notun adımlarıyla kalkar; Bu Yıl Ödenecek 800 = 391 1.000 − önceki devreden 200
+    not ok 2 - 002 yıl dönümü: Bu Yıl (2027) ve Ocak 2027 notu onarımı '(Aralık 2026)' yılıyla söyler; notun adımlarıyla kalkar; Bu Yıl Ödenecek 800 = 391 1.000 − önceki devreden 200
+      ---
+      duration_ms: 5.652586
+      type: 'test'
+      location: '/dev/shm/m1k7-eski/eski/test/kdv-ozeti-devreden-onarim-251.test.mjs:270:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        yıl dönümü notu [["Hesaplanan KDV (391) (İadeler Düşülmüş)","1.000,00 TL"],["İndirilecek KDV (191) (İadeler Düşülmüş)","0,00 TL"],["Alıcı Olarak Kesilen Tevkifat (2 No.lu)","0,00 TL"],["Önceki Dönemden Devreden KDV","200,00 TL"],["Ödenecek KDV","800,00 TL"],["Sonraki Döneme Devreden KDV","0,00 TL"],["KDV Mahsup Fişi","Ocak 2027"],["Güncel Olmayan Önceki Fiş","Önceki aylarda güncel olmayan mahsup fişi var (Aralık 2026); bu aralığın sayıları mahsup ön izlemesinden ayrılır"],["Zincirle Uyuşmayan Mahsup Fişi","Ocak 2027 fişi 500,00 TL devredenle kesilmiş, sırayla mahsupta 200,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)"]]
+        + actual - expected
+        
+        + 'Ocak 2027 fişi 500,00 TL devredenle kesilmiş, sırayla mahsupta 200,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)'
+        - 'Ocak 2027 fişi 500,00 TL devredenle kesilmiş, sırayla mahsupta 200,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Aralık 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'Ocak 2027 fişi 500,00 TL devredenle kesilmiş, sırayla mahsupta 200,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Aralık 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)'
+      actual: 'Ocak 2027 fişi 500,00 TL devredenle kesilmiş, sırayla mahsupta 200,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m1k7-eski/eski/test/kdv-ozeti-devreden-onarim-251.test.mjs:275:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 2 - 2.5.1 M1 küçük tur 7 — iki 'güncel değil' ay (onarım İLKİNDEN), yıl dönümü (Aralık 2026 → Ocak 2027, fiş değişiklikten SONRA)
+  ---
+  duration_ms: 996.514266
+  type: 'suite'
+  location: '/dev/shm/m1k7-eski/eski/test/kdv-ozeti-devreden-onarim-251.test.mjs:223:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.1 M1 küçük tur 2 — KDV Özeti karma ay (S-M1K-1 = A): kararın örneği AYNEN, satış silinmesi + alış iptali, iki şirket
+    # Subtest: 001 kararın örneği: Ocak 600 (İ fişten 500, 391 bugünkü 1.100), Şubat 700, Ocak–Şubat 1.300 = 391; karma notu; fişler, ön izleme ve defter değişmez; ekran = PDF = Excel
+    ok 1 - 001 kararın örneği: Ocak 600 (İ fişten 500, 391 bugünkü 1.100), Şubat 700, Ocak–Şubat 1.300 = 391; karma notu; fişler, ön izleme ve defter değişmez; ekran = PDF = Excel
+      ---
+      duration_ms: 133.920739
+      type: 'test'
+      ...
+    # Subtest: 001 aralıklar: Mart fişi 400 → Ocak–Mart 1.700, Şubat–Mart 1.100 (notsuz), Bu Yıl ve Tüm Zamanlar 1.700 — hepsi 391 − 191
+    ok 2 - 001 aralıklar: Mart fişi 400 → Ocak–Mart 1.700, Şubat–Mart 1.100 (notsuz), Bu Yıl ve Tüm Zamanlar 1.700 — hepsi 391 − 191
+      ---
+      duration_ms: 39.395895
+      type: 'test'
+      ...
+    # Subtest: 002 satış silinmesi + alış iptali (391 azaldı, İ azaldı): Ocak 400 (900 − 500 fişten), Şubat 700, Ocak–Şubat 1.100 = 391; karma notu; 001 etkilenmez
+    ok 3 - 002 satış silinmesi + alış iptali (391 azaldı, İ azaldı): Ocak 400 (900 − 500 fişten), Şubat 700, Ocak–Şubat 1.100 = 391; karma notu; 001 etkilenmez
+      ---
+      duration_ms: 115.264396
+      type: 'test'
+      ...
+    1..3
+ok 3 - 2.5.1 M1 küçük tur 2 — KDV Özeti karma ay (S-M1K-1 = A): kararın örneği AYNEN, satış silinmesi + alış iptali, iki şirket
+  ---
+  duration_ms: 1539.826407
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M1 küçük tur 2 — KDV Özeti karma ay: devreden yönde, yön dönmesi ve yıl dönümü
+    # Subtest: 001 devreden yönde karma: Mart 300 − 1.000 → sonraki 700 (taban 300); Nisan zincirde 700 devredenle 700 + 'Zincirle Uyuşmayan' (fiş 800'le); Mart–Nisan 700 = 391 − 191; onarımda aynı
+    not ok 1 - 001 devreden yönde karma: Mart 300 − 1.000 → sonraki 700 (taban 300); Nisan zincirde 700 devredenle 700 + 'Zincirle Uyuşmayan' (fiş 800'le); Mart–Nisan 700 = 391 − 191; onarımda aynı
+      ---
+      duration_ms: 11.577084
+      type: 'test'
+      location: '/dev/shm/m1k7-eski/eski/test/m1k7-karma-yeni-beklenti.test.mjs:242:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Nisan uyuşmazlık notu
+        + actual - expected
+        
+        + 'Nisan 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 700,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)'
+        - 'Nisan 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 700,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Mart 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'Nisan 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 700,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Mart 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)'
+      actual: 'Nisan 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 700,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m1k7-eski/eski/test/m1k7-karma-yeni-beklenti.test.mjs:248:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 002 yön dönmesi + yıl dönümü: Aralık 200 − 500 → sonraki 300 (taban: ödenecek 200); Ocak 2027 mahsupsuz 300 devredenle 400; Aralık–Ocak 400 = 391; Bu Yıl önceki 300; Ocak fişi sonra kesilirse uyuşmazlık; onarım
+    not ok 2 - 002 yön dönmesi + yıl dönümü: Aralık 200 − 500 → sonraki 300 (taban: ödenecek 200); Ocak 2027 mahsupsuz 300 devredenle 400; Aralık–Ocak 400 = 391; Bu Yıl önceki 300; Ocak fişi sonra kesilirse uyuşmazlık; onarım
+      ---
+      duration_ms: 70.900047
+      type: 'test'
+      location: '/dev/shm/m1k7-eski/eski/test/m1k7-karma-yeni-beklenti.test.mjs:268:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Ocak 2027 uyuşmazlık notu
+        + actual - expected
+        
+        + 'Ocak 2027 fişi 0,00 TL devredenle kesilmiş, sırayla mahsupta 300,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)'
+        - 'Ocak 2027 fişi 0,00 TL devredenle kesilmiş, sırayla mahsupta 300,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Aralık 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'Ocak 2027 fişi 0,00 TL devredenle kesilmiş, sırayla mahsupta 300,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Aralık 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)'
+      actual: 'Ocak 2027 fişi 0,00 TL devredenle kesilmiş, sırayla mahsupta 300,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m1k7-eski/eski/test/m1k7-karma-yeni-beklenti.test.mjs:286:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 4 - 2.5.1 M1 küçük tur 2 — KDV Özeti karma ay: devreden yönde, yön dönmesi ve yıl dönümü
+  ---
+  duration_ms: 1219.38907
+  type: 'suite'
+  location: '/dev/shm/m1k7-eski/eski/test/m1k7-karma-yeni-beklenti.test.mjs:216:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.1 M1 küçük tur 2 — KDV Özeti tutarlılık tablosu: yalnız azalma / yalnız 391 / ikisi birden / hiçbiri / İ arttı (her biri ayrı şirkette)
+    # Subtest: hiçbiri + yalnız İ azaldı (S-DKM1-1 = A)
+        # Subtest: 001 hiçbiri: Ocak 500, Ocak–Şubat 700 = 391 − 191; not; onarımda fişler 500 / 200 (toplam = rapor)
+        ok 1 - 001 hiçbiri: Ocak 500, Ocak–Şubat 700 = 391 − 191; not; onarımda fişler 500 / 200 (toplam = rapor)
+          ---
+          duration_ms: 38.165418
+          type: 'test'
+          ...
+        # Subtest: 002 yalnız İ azaldı (S-DKM1-1 = A): Ocak 500, Ocak–Şubat 900 = 391 − 191; not; onarımda fişler 700 / 200 (toplam = rapor)
+        ok 2 - 002 yalnız İ azaldı (S-DKM1-1 = A): Ocak 500, Ocak–Şubat 900 = 391 − 191; not; onarımda fişler 700 / 200 (toplam = rapor)
+          ---
+          duration_ms: 48.694854
+          type: 'test'
+          ...
+        1..2
+    ok 1 - hiçbiri + yalnız İ azaldı (S-DKM1-1 = A)
+      ---
+      duration_ms: 1167.56562
+      type: 'suite'
+      ...
+    # Subtest: yalnız 391 değişti (S-M1-3 = C) + ikisi birden (S-M1K-1 = A)
+        # Subtest: 001 yalnız 391 değişti (S-M1-3 = C): Ocak 600, Ocak–Şubat 800 = 391 − 191; not; onarımda fişler 600 / 200 (toplam = rapor)
+        ok 1 - 001 yalnız 391 değişti (S-M1-3 = C): Ocak 600, Ocak–Şubat 800 = 391 − 191; not; onarımda fişler 600 / 200 (toplam = rapor)
+          ---
+          duration_ms: 40.728771
+          type: 'test'
+          ...
+        # Subtest: 002 ikisi birden (S-M1K-1 = A): Ocak 600, Ocak–Şubat 1000 = 391 − 191; not; onarımda fişler 800 / 200 (toplam = rapor)
+        ok 2 - 002 ikisi birden (S-M1K-1 = A): Ocak 600, Ocak–Şubat 1000 = 391 − 191; not; onarımda fişler 800 / 200 (toplam = rapor)
+          ---
+          duration_ms: 65.954555
+          type: 'test'
+          ...
+        1..2
+    ok 2 - yalnız 391 değişti (S-M1-3 = C) + ikisi birden (S-M1K-1 = A)
+      ---
+      duration_ms: 1244.603378
+      type: 'suite'
+      ...
+    # Subtest: İ arttı + 391 değişti (S-M1-3 = C)
+        # Subtest: 001 İ arttı + 391 değişti (S-M1-3 = C): Ocak 500, Ocak–Şubat 700 = 391 − 191; not; onarımda fişler 500 / 200 (toplam = rapor)
+        ok 1 - 001 İ arttı + 391 değişti (S-M1-3 = C): Ocak 500, Ocak–Şubat 700 = 391 − 191; not; onarımda fişler 500 / 200 (toplam = rapor)
+          ---
+          duration_ms: 44.142124
+          type: 'test'
+          ...
+        1..1
+    ok 3 - İ arttı + 391 değişti (S-M1-3 = C)
+      ---
+      duration_ms: 1017.017689
+      type: 'suite'
+      ...
+    1..3
+ok 5 - 2.5.1 M1 küçük tur 2 — KDV Özeti tutarlılık tablosu: yalnız azalma / yalnız 391 / ikisi birden / hiçbiri / İ arttı (her biri ayrı şirkette)
+  ---
+  duration_ms: 3429.861523
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M1 küçük tur 5 — S-DKM1K-1 = A: 'güncel değil' (İ artmış) aydan sonra azalan ay — kararın örneği AYNEN, yan etki (Nisan mahsubu), onarım, yıl dönümü
+    # Subtest: 001 kararın örneği: Nisan 700, Ocak–Nisan 1.600 = 391 3.500 − 191 1.900; Şubat 'güncel değil' notu durur; fiş / ön izleme / defter değişmez; ekran = PDF = Excel
+    ok 1 - 001 kararın örneği: Nisan 700, Ocak–Nisan 1.600 = 391 3.500 − 191 1.900; Şubat 'güncel değil' notu durur; fiş / ön izleme / defter değişmez; ekran = PDF = Excel
+      ---
+      duration_ms: 152.491581
+      type: 'test'
+      ...
+    # Subtest: 002 yıl dönümü: Bu Yıl (2027) 1.400 = 391 − 191 (Şubat 2027 700); 2026 yılı 200; Kasım–Şubat 1.600; 001 etkilenmez
+    ok 2 - 002 yıl dönümü: Bu Yıl (2027) 1.400 = 391 − 191 (Şubat 2027 700); 2026 yılı 200; Kasım–Şubat 1.600; 001 etkilenmez
+      ---
+      duration_ms: 64.235285
+      type: 'test'
+      ...
+    # Subtest: 001 yan etki: Nisan ön izlemeyle (500) mahsup edilirse fiş zincirle uyuşmaz, rapor 700 ve 1.600 kalır; onarımda (geri al + sırayla) rapor = fişler = 391 − 191
+    ok 3 - 001 yan etki: Nisan ön izlemeyle (500) mahsup edilirse fiş zincirle uyuşmaz, rapor 700 ve 1.600 kalır; onarımda (geri al + sırayla) rapor = fişler = 391 − 191
+      ---
+      duration_ms: 118.703707
+      type: 'test'
+      ...
+    1..3
+ok 6 - 2.5.1 M1 küçük tur 5 — S-DKM1K-1 = A: 'güncel değil' (İ artmış) aydan sonra azalan ay — kararın örneği AYNEN, yan etki (Nisan mahsubu), onarım, yıl dönümü
+  ---
+  duration_ms: 1588.675504
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M1 küçük tur 5 — S-DKM1K-1 = A: iki ardışık 'güncel değil' ay; devreden yönlü 'güncel değil' ay + araya zincirle uyuşmayan ay
+    # Subtest: 001 iki ardışık 'güncel değil': Mayıs 700, Ocak–Mayıs 2.300 = 391 4.500 − 191 2.200 (taban 2.100); notlar; Mayıs ön izlemesi 500 (DEĞİŞMEDİ)
+    ok 1 - 001 iki ardışık 'güncel değil': Mayıs 700, Ocak–Mayıs 2.300 = 391 4.500 − 191 2.200 (taban 2.100); notlar; Mayıs ön izlemesi 500 (DEĞİŞMEDİ)
+      ---
+      duration_ms: 40.529586
+      type: 'test'
+      ...
+    # Subtest: 002 devreden yönlü 'güncel değil' + uyuşmayan Mart: Mayıs 700, Ocak–Mayıs 2.400 = 391 4.500 − 191 2.100 (taban 2.200); Mart uyuşmazlık notu
+    not ok 2 - 002 devreden yönlü 'güncel değil' + uyuşmayan Mart: Mayıs 700, Ocak–Mayıs 2.400 = 391 4.500 − 191 2.100 (taban 2.200); Mart uyuşmazlık notu
+      ---
+      duration_ms: 7.815764
+      type: 'test'
+      location: '/dev/shm/m1k7-eski/eski/test/m1k7-s4-yeni-beklenti.test.mjs:304:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Mart uyuşmazlık notu
+        + actual - expected
+        
+        + 'Mart 2026 fişi 500,00 TL devredenle kesilmiş, sırayla mahsupta 800,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)'
+        - 'Mart 2026 fişi 500,00 TL devredenle kesilmiş, sırayla mahsupta 800,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Şubat 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'Mart 2026 fişi 500,00 TL devredenle kesilmiş, sırayla mahsupta 800,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Şubat 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)'
+      actual: 'Mart 2026 fişi 500,00 TL devredenle kesilmiş, sırayla mahsupta 800,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m1k7-eski/eski/test/m1k7-s4-yeni-beklenti.test.mjs:322:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 7 - 2.5.1 M1 küçük tur 5 — S-DKM1K-1 = A: iki ardışık 'güncel değil' ay; devreden yönlü 'güncel değil' ay + araya zincirle uyuşmayan ay
+  ---
+  duration_ms: 1375.460617
+  type: 'suite'
+  location: '/dev/shm/m1k7-eski/eski/test/m1k7-s4-yeni-beklenti.test.mjs:251:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.1 M1 küçük tur 5 — DEĞİŞMEYENLER (tabanda da yeşil): yalnız İ artışı (azalma yok); azalan ay ÖNCE, 'güncel değil' ay SONRA
+    # Subtest: 001 yalnız İ artışı: Nisan 500, Ocak–Nisan 1.400 = 391 3.500 − 191 2.100 (artış bir kez)
+    ok 1 - 001 yalnız İ artışı: Nisan 500, Ocak–Nisan 1.400 = 391 3.500 − 191 2.100 (artış bir kez)
+      ---
+      duration_ms: 13.34308
+      type: 'test'
+      ...
+    # Subtest: 002 azalan ay önce, 'güncel değil' sonra: Mart azalmayı kendisi düşer (700), Nisan 500; Ocak–Nisan 1.700 = 391 3.500 − 191 1.800
+    ok 2 - 002 azalan ay önce, 'güncel değil' sonra: Mart azalmayı kendisi düşer (700), Nisan 500; Ocak–Nisan 1.700 = 391 3.500 − 191 1.800
+      ---
+      duration_ms: 12.315953
+      type: 'test'
+      ...
+    1..2
+ok 8 - 2.5.1 M1 küçük tur 5 — DEĞİŞMEYENLER (tabanda da yeşil): yalnız İ artışı (azalma yok); azalan ay ÖNCE, 'güncel değil' ay SONRA
+  ---
+  duration_ms: 1196.815648
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M1 küçük tur 3 — yalnız 391 devreden yönde (S-M1K2-1 = A): kararın örneği AYNEN, yıl dönümü, iki şirket
+    # Subtest: 001 kararın örneği: Mart sonraki 700, Nisan önceki 700 + ödenecek 300 + uyuşmazlık notu, Mart–Nisan 300 = 391 − 191; fiş / ön izleme / defter değişmez; ekran = PDF = Excel; onarımda aynı
+    not ok 1 - 001 kararın örneği: Mart sonraki 700, Nisan önceki 700 + ödenecek 300 + uyuşmazlık notu, Mart–Nisan 300 = 391 − 191; fiş / ön izleme / defter değişmez; ekran = PDF = Excel; onarımda aynı
+      ---
+      duration_ms: 23.30068
+      type: 'test'
+      location: '/dev/shm/m1k7-eski/eski/test/m1k7-yalniz391-yeni-beklenti.test.mjs:153:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Nisan uyuşmazlık notu
+        + actual - expected
+        
+        + 'Nisan 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 700,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)'
+        - 'Nisan 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 700,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Mart 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'Nisan 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 700,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Mart 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)'
+      actual: 'Nisan 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 700,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m1k7-eski/eski/test/m1k7-yalniz391-yeni-beklenti.test.mjs:161:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: 002 yıl dönümü: Aralık 2026 sonraki 700; Bu Yıl (2027) önceki 700, ödenecek 300 + uyuşmazlık; 2026 yılı sonraki 700; Aralık–Ocak 300; 001 etkilenmez
+    not ok 2 - 002 yıl dönümü: Aralık 2026 sonraki 700; Bu Yıl (2027) önceki 700, ödenecek 300 + uyuşmazlık; 2026 yılı sonraki 700; Aralık–Ocak 300; 001 etkilenmez
+      ---
+      duration_ms: 13.993416
+      type: 'test'
+      location: '/dev/shm/m1k7-eski/eski/test/m1k7-yalniz391-yeni-beklenti.test.mjs:193:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Ocak 2027 uyuşmazlık notu
+        + actual - expected
+        
+        + 'Ocak 2027 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 700,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)'
+        - 'Ocak 2027 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 700,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Aralık 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'Ocak 2027 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 700,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Aralık 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)'
+      actual: 'Ocak 2027 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 700,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m1k7-eski/eski/test/m1k7-yalniz391-yeni-beklenti.test.mjs:199:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 9 - 2.5.1 M1 küçük tur 3 — yalnız 391 devreden yönde (S-M1K2-1 = A): kararın örneği AYNEN, yıl dönümü, iki şirket
+  ---
+  duration_ms: 1161.754242
+  type: 'suite'
+  location: '/dev/shm/m1k7-eski/eski/test/m1k7-yalniz391-yeni-beklenti.test.mjs:131:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.1 M1 küçük tur 3 — tutarlılık tablosu: hiçbiri / yalnız azalma / yalnız 391 (iki yönde, yön dönmesi) / ikisi birden / İ arttı (her biri ayrı şirkette)
+    # Subtest: devreden · hiçbiri + devreden · yalnız İ azaldı (S-DKM1-1 = A)
+        # Subtest: 001 devreden · hiçbiri: Mart [0,0,80000], Nisan [80000,20000,0], Mart–Nisan [0,20000,0] = 391 − 191; onarım
+        ok 1 - 001 devreden · hiçbiri: Mart [0,0,80000], Nisan [80000,20000,0], Mart–Nisan [0,20000,0] = 391 − 191; onarım
+          ---
+          duration_ms: 58.280577
+          type: 'test'
+          ...
+        # Subtest: 002 devreden · yalnız İ azaldı (S-DKM1-1 = A): Mart [0,0,80000], Nisan [80000,60000,0], Mart–Nisan [0,60000,0] = 391 − 191; onarım
+        ok 2 - 002 devreden · yalnız İ azaldı (S-DKM1-1 = A): Mart [0,0,80000], Nisan [80000,60000,0], Mart–Nisan [0,60000,0] = 391 − 191; onarım
+          ---
+          duration_ms: 53.223545
+          type: 'test'
+          ...
+        1..2
+    ok 1 - devreden · hiçbiri + devreden · yalnız İ azaldı (S-DKM1-1 = A)
+      ---
+      duration_ms: 979.380108
+      type: 'suite'
+      ...
+    # Subtest: devreden · yalnız 391 arttı (S-M1K2-1 = A) + devreden · yalnız 391 azaldı (S-M1K2-1 = A)
+        # Subtest: 001 devreden · yalnız 391 arttı (S-M1K2-1 = A): Mart [0,0,70000], Nisan [70000,30000,0], Mart–Nisan [0,30000,0] = 391 − 191; onarım
+        not ok 1 - 001 devreden · yalnız 391 arttı (S-M1K2-1 = A): Mart [0,0,70000], Nisan [70000,30000,0], Mart–Nisan [0,30000,0] = 391 − 191; onarım
+          ---
+          duration_ms: 13.01365
+          type: 'test'
+          location: '/dev/shm/m1k7-eski/eski/test/m1k7-yalniz391-yeni-beklenti.test.mjs:294:9'
+          failureType: 'testCodeFailure'
+          error: |-
+            devreden · yalnız 391 arttı (S-M1K2-1 = A): Nisan uyuşmazlık notu
+            + actual - expected
+            
+            + 'Nisan 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 700,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)'
+            - 'Nisan 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 700,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Mart 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)'
+            
+          code: 'ERR_ASSERTION'
+          name: 'AssertionError'
+          expected: 'Nisan 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 700,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Mart 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)'
+          actual: 'Nisan 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 700,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)'
+          operator: 'strictEqual'
+          stack: |-
+            TestContext.<anonymous> (file:///dev/shm/m1k7-eski/eski/test/m1k7-yalniz391-yeni-beklenti.test.mjs:301:36)
+            process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+            async Test.run (node:internal/test_runner/test:1054:7)
+            async Promise.all (index 0)
+            async Suite.run (node:internal/test_runner/test:1442:7)
+            async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+          ...
+        # Subtest: 002 devreden · yalnız 391 azaldı (S-M1K2-1 = A): Mart [0,0,100000], Nisan [100000,0,0], Mart–Nisan [0,0,0] = 391 − 191; onarım
+        not ok 2 - 002 devreden · yalnız 391 azaldı (S-M1K2-1 = A): Mart [0,0,100000], Nisan [100000,0,0], Mart–Nisan [0,0,0] = 391 − 191; onarım
+          ---
+          duration_ms: 14.756874
+          type: 'test'
+          location: '/dev/shm/m1k7-eski/eski/test/m1k7-yalniz391-yeni-beklenti.test.mjs:294:9'
+          failureType: 'testCodeFailure'
+          error: |-
+            devreden · yalnız 391 azaldı (S-M1K2-1 = A): Nisan uyuşmazlık notu
+            + actual - expected
+            
+            + 'Nisan 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 1.000,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)'
+            - 'Nisan 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 1.000,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Mart 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)'
+            
+          code: 'ERR_ASSERTION'
+          name: 'AssertionError'
+          expected: 'Nisan 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 1.000,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Mart 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)'
+          actual: 'Nisan 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 1.000,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)'
+          operator: 'strictEqual'
+          stack: |-
+            TestContext.<anonymous> (file:///dev/shm/m1k7-eski/eski/test/m1k7-yalniz391-yeni-beklenti.test.mjs:301:36)
+            process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+            async Test.run (node:internal/test_runner/test:1054:7)
+            async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+          ...
+        1..2
+    not ok 2 - devreden · yalnız 391 arttı (S-M1K2-1 = A) + devreden · yalnız 391 azaldı (S-M1K2-1 = A)
+      ---
+      duration_ms: 1181.647988
+      type: 'suite'
+      location: '/dev/shm/m1k7-eski/eski/test/m1k7-yalniz391-yeni-beklenti.test.mjs:278:5'
+      failureType: 'subtestsFailed'
+      error: '2 subtests failed'
+      code: 'ERR_TEST_FAILURE'
+      ...
+    # Subtest: devreden → ödenecek · yalnız 391 arttı, yön döndü (S-M1K2-1 = A) + devreden · ikisi birden (S-M1K-1 = A, karma)
+        # Subtest: 001 devreden → ödenecek · yalnız 391 arttı, yön döndü (S-M1K2-1 = A): Mart [0,20000,0], Nisan [0,100000,0], Mart–Nisan [0,120000,0] = 391 − 191; onarım
+        not ok 1 - 001 devreden → ödenecek · yalnız 391 arttı, yön döndü (S-M1K2-1 = A): Mart [0,20000,0], Nisan [0,100000,0], Mart–Nisan [0,120000,0] = 391 − 191; onarım
+          ---
+          duration_ms: 13.590386
+          type: 'test'
+          location: '/dev/shm/m1k7-eski/eski/test/m1k7-yalniz391-yeni-beklenti.test.mjs:294:9'
+          failureType: 'testCodeFailure'
+          error: |-
+            devreden → ödenecek · yalnız 391 arttı, yön döndü (S-M1K2-1 = A): Nisan uyuşmazlık notu
+            + actual - expected
+            
+            + 'Nisan 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 0,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)'
+            - 'Nisan 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 0,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Mart 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)'
+            
+          code: 'ERR_ASSERTION'
+          name: 'AssertionError'
+          expected: 'Nisan 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 0,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Mart 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)'
+          actual: 'Nisan 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 0,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)'
+          operator: 'strictEqual'
+          stack: |-
+            TestContext.<anonymous> (file:///dev/shm/m1k7-eski/eski/test/m1k7-yalniz391-yeni-beklenti.test.mjs:301:36)
+            process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+            async Test.run (node:internal/test_runner/test:1054:7)
+            async Promise.all (index 0)
+            async Suite.run (node:internal/test_runner/test:1442:7)
+            async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+          ...
+        # Subtest: 002 devreden · ikisi birden (S-M1K-1 = A, karma): Mart [0,0,70000], Nisan [70000,70000,0], Mart–Nisan [0,70000,0] = 391 − 191; onarım
+        not ok 2 - 002 devreden · ikisi birden (S-M1K-1 = A, karma): Mart [0,0,70000], Nisan [70000,70000,0], Mart–Nisan [0,70000,0] = 391 − 191; onarım
+          ---
+          duration_ms: 9.114673
+          type: 'test'
+          location: '/dev/shm/m1k7-eski/eski/test/m1k7-yalniz391-yeni-beklenti.test.mjs:294:9'
+          failureType: 'testCodeFailure'
+          error: |-
+            devreden · ikisi birden (S-M1K-1 = A, karma): Nisan uyuşmazlık notu
+            + actual - expected
+            
+            + 'Nisan 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 700,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)'
+            - 'Nisan 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 700,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Mart 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)'
+            
+          code: 'ERR_ASSERTION'
+          name: 'AssertionError'
+          expected: 'Nisan 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 700,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Mart 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)'
+          actual: 'Nisan 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 700,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)'
+          operator: 'strictEqual'
+          stack: |-
+            TestContext.<anonymous> (file:///dev/shm/m1k7-eski/eski/test/m1k7-yalniz391-yeni-beklenti.test.mjs:301:36)
+            process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+            async Test.run (node:internal/test_runner/test:1054:7)
+            async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+          ...
+        1..2
+    not ok 3 - devreden → ödenecek · yalnız 391 arttı, yön döndü (S-M1K2-1 = A) + devreden · ikisi birden (S-M1K-1 = A, karma)
+      ---
+      duration_ms: 1233.529516
+      type: 'suite'
+      location: '/dev/shm/m1k7-eski/eski/test/m1k7-yalniz391-yeni-beklenti.test.mjs:278:5'
+      failureType: 'subtestsFailed'
+      error: '2 subtests failed'
+      code: 'ERR_TEST_FAILURE'
+      ...
+    # Subtest: devreden · İ arttı (S-M1K3-1 = A) + ödenecek · hiçbiri
+        # Subtest: 001 devreden · İ arttı (S-M1K3-1 = A): Mart [0,0,90000], Nisan [90000,10000,0], Mart–Nisan [0,10000,0] = 391 − 191; onarım
+        not ok 1 - 001 devreden · İ arttı (S-M1K3-1 = A): Mart [0,0,90000], Nisan [90000,10000,0], Mart–Nisan [0,10000,0] = 391 − 191; onarım
+          ---
+          duration_ms: 11.177351
+          type: 'test'
+          location: '/dev/shm/m1k7-eski/eski/test/m1k7-yalniz391-yeni-beklenti.test.mjs:294:9'
+          failureType: 'testCodeFailure'
+          error: |-
+            devreden · İ arttı (S-M1K3-1 = A): Nisan uyuşmazlık notu
+            + actual - expected
+            
+            + 'Nisan 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 900,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)'
+            - 'Nisan 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 900,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Mart 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)'
+            
+          code: 'ERR_ASSERTION'
+          name: 'AssertionError'
+          expected: 'Nisan 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 900,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Mart 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)'
+          actual: 'Nisan 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 900,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)'
+          operator: 'strictEqual'
+          stack: |-
+            TestContext.<anonymous> (file:///dev/shm/m1k7-eski/eski/test/m1k7-yalniz391-yeni-beklenti.test.mjs:301:36)
+            process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+            async Test.run (node:internal/test_runner/test:1054:7)
+            async Promise.all (index 0)
+            async Suite.run (node:internal/test_runner/test:1442:7)
+            async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+          ...
+        # Subtest: 002 ödenecek · hiçbiri: Mart [0,50000,0], Nisan [0,20000,0], Mart–Nisan [0,70000,0] = 391 − 191; onarım
+        ok 2 - 002 ödenecek · hiçbiri: Mart [0,50000,0], Nisan [0,20000,0], Mart–Nisan [0,70000,0] = 391 − 191; onarım
+          ---
+          duration_ms: 49.375255
+          type: 'test'
+          ...
+        1..2
+    not ok 4 - devreden · İ arttı (S-M1K3-1 = A) + ödenecek · hiçbiri
+      ---
+      duration_ms: 1630.714302
+      type: 'suite'
+      location: '/dev/shm/m1k7-eski/eski/test/m1k7-yalniz391-yeni-beklenti.test.mjs:278:5'
+      failureType: 'subtestsFailed'
+      error: '1 subtest failed'
+      code: 'ERR_TEST_FAILURE'
+      ...
+    # Subtest: ödenecek · yalnız 391 arttı (DEĞİŞMEZ) + ödenecek → devreden · yalnız 391 azaldı, yön döndü (S-M1K3-1 = A)
+        # Subtest: 001 ödenecek · yalnız 391 arttı (DEĞİŞMEZ): Mart [0,60000,0], Nisan [0,20000,0], Mart–Nisan [0,80000,0] = 391 − 191; onarım
+        ok 1 - 001 ödenecek · yalnız 391 arttı (DEĞİŞMEZ): Mart [0,60000,0], Nisan [0,20000,0], Mart–Nisan [0,80000,0] = 391 − 191; onarım
+          ---
+          duration_ms: 72.079758
+          type: 'test'
+          ...
+        # Subtest: 002 ödenecek → devreden · yalnız 391 azaldı, yön döndü (S-M1K3-1 = A): Mart [0,0,30000], Nisan [30000,0,10000], Mart–Nisan [0,0,10000] = 391 − 191; onarım
+        not ok 2 - 002 ödenecek → devreden · yalnız 391 azaldı, yön döndü (S-M1K3-1 = A): Mart [0,0,30000], Nisan [30000,0,10000], Mart–Nisan [0,0,10000] = 391 − 191; onarım
+          ---
+          duration_ms: 8.020051
+          type: 'test'
+          location: '/dev/shm/m1k7-eski/eski/test/m1k7-yalniz391-yeni-beklenti.test.mjs:294:9'
+          failureType: 'testCodeFailure'
+          error: |-
+            ödenecek → devreden · yalnız 391 azaldı, yön döndü (S-M1K3-1 = A): Nisan uyuşmazlık notu
+            + actual - expected
+            
+            + 'Nisan 2026 fişi 0,00 TL devredenle kesilmiş, sırayla mahsupta 300,00 TL olmalıydı; fiş ödenecek KDV 200,00 TL yazmış, sırayla mahsupta sonraki döneme devreden KDV 100,00 TL çıkar (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)'
+            - 'Nisan 2026 fişi 0,00 TL devredenle kesilmiş, sırayla mahsupta 300,00 TL olmalıydı; fiş ödenecek KDV 200,00 TL yazmış, sırayla mahsupta sonraki döneme devreden KDV 100,00 TL çıkar (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Mart 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)'
+            
+          code: 'ERR_ASSERTION'
+          name: 'AssertionError'
+          expected: 'Nisan 2026 fişi 0,00 TL devredenle kesilmiş, sırayla mahsupta 300,00 TL olmalıydı; fiş ödenecek KDV 200,00 TL yazmış, sırayla mahsupta sonraki döneme devreden KDV 100,00 TL çıkar (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Mart 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)'
+          actual: 'Nisan 2026 fişi 0,00 TL devredenle kesilmiş, sırayla mahsupta 300,00 TL olmalıydı; fiş ödenecek KDV 200,00 TL yazmış, sırayla mahsupta sonraki döneme devreden KDV 100,00 TL çıkar (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)'
+          operator: 'strictEqual'
+          stack: |-
+            TestContext.<anonymous> (file:///dev/shm/m1k7-eski/eski/test/m1k7-yalniz391-yeni-beklenti.test.mjs:301:36)
+            process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+            async Test.run (node:internal/test_runner/test:1054:7)
+            async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+          ...
+        1..2
+    not ok 5 - ödenecek · yalnız 391 arttı (DEĞİŞMEZ) + ödenecek → devreden · yalnız 391 azaldı, yön döndü (S-M1K3-1 = A)
+      ---
+      duration_ms: 1100.470172
+      type: 'suite'
+      location: '/dev/shm/m1k7-eski/eski/test/m1k7-yalniz391-yeni-beklenti.test.mjs:278:5'
+      failureType: 'subtestsFailed'
+      error: '1 subtest failed'
+      code: 'ERR_TEST_FAILURE'
+      ...
+    1..5
+not ok 10 - 2.5.1 M1 küçük tur 3 — tutarlılık tablosu: hiçbiri / yalnız azalma / yalnız 391 (iki yönde, yön dönmesi) / ikisi birden / İ arttı (her biri ayrı şirkette)
+  ---
+  duration_ms: 6127.087859
+  type: 'suite'
+  location: '/dev/shm/m1k7-eski/eski/test/m1k7-yalniz391-yeni-beklenti.test.mjs:274:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.1 M1 küçük tur 3 — zincirde: arada mahsupsuz ay; karma ay + sonraki ayda yalnız 391 (iki şirket)
+    # Subtest: 001 arada mahsupsuz ay: Mart sonraki 700 → Nisan 700 devredenle sonraki 400 → Mayıs 400 devredenle 600 + uyuşmazlık; Mart–Mayıs 600 = 391 − 191; 'Mahsup Edilmemiş Ay' Nisan
+    not ok 1 - 001 arada mahsupsuz ay: Mart sonraki 700 → Nisan 700 devredenle sonraki 400 → Mayıs 400 devredenle 600 + uyuşmazlık; Mart–Mayıs 600 = 391 − 191; 'Mahsup Edilmemiş Ay' Nisan
+      ---
+      duration_ms: 8.783178
+      type: 'test'
+      location: '/dev/shm/m1k7-eski/eski/test/m1k7-yalniz391-yeni-beklenti.test.mjs:354:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Mayıs uyuşmazlık notu
+        + actual - expected
+        
+        + 'Mayıs 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 400,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)'
+        - 'Mayıs 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 400,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Mart 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'Mayıs 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 400,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Mart 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)'
+      actual: 'Mayıs 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 400,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m1k7-eski/eski/test/m1k7-yalniz391-yeni-beklenti.test.mjs:359:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 002 karma ay + sonraki ayda yalnız 391: Ocak 500 (karma), Şubat sonraki 600 (bugünkü), Mart 600 devredenle 400 + uyuşmazlık; Ocak–Mart 900 = 391 − 191; onarımda aynı
+    not ok 2 - 002 karma ay + sonraki ayda yalnız 391: Ocak 500 (karma), Şubat sonraki 600 (bugünkü), Mart 600 devredenle 400 + uyuşmazlık; Ocak–Mart 900 = 391 − 191; onarımda aynı
+      ---
+      duration_ms: 9.028945
+      type: 'test'
+      location: '/dev/shm/m1k7-eski/eski/test/m1k7-yalniz391-yeni-beklenti.test.mjs:375:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Mart uyuşmazlık notu
+        + actual - expected
+        
+        + 'Mart 2026 fişi 500,00 TL devredenle kesilmiş, sırayla mahsupta 600,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)'
+        - 'Mart 2026 fişi 500,00 TL devredenle kesilmiş, sırayla mahsupta 600,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Ocak 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'Mart 2026 fişi 500,00 TL devredenle kesilmiş, sırayla mahsupta 600,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Ocak 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)'
+      actual: 'Mart 2026 fişi 500,00 TL devredenle kesilmiş, sırayla mahsupta 600,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m1k7-eski/eski/test/m1k7-yalniz391-yeni-beklenti.test.mjs:383:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 11 - 2.5.1 M1 küçük tur 3 — zincirde: arada mahsupsuz ay; karma ay + sonraki ayda yalnız 391 (iki şirket)
+  ---
+  duration_ms: 1274.435891
+  type: 'suite'
+  location: '/dev/shm/m1k7-eski/eski/test/m1k7-yalniz391-yeni-beklenti.test.mjs:322:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.1 M1 küçük tur 3 — S4 taşımalı karma (baş mimar kararı: önceki fişli ayın azalması bu aya taşınmış + bu ayın 391'i değişmiş) — elle hesap, tek okuma
+    # Subtest: Ocak 500 (fişten, azalan ay notu), Şubat 400 (karma), Mart 600 (S4 −200); Ocak–Şubat 900, Ocak–Mart 1.500 = 391 − 191; Mart fişi = rapor; onarımda toplam aynı
+    ok 1 - Ocak 500 (fişten, azalan ay notu), Şubat 400 (karma), Mart 600 (S4 −200); Ocak–Şubat 900, Ocak–Mart 1.500 = 391 − 191; Mart fişi = rapor; onarımda toplam aynı
+      ---
+      duration_ms: 212.98244
+      type: 'test'
+      ...
+    1..1
+ok 12 - 2.5.1 M1 küçük tur 3 — S4 taşımalı karma (baş mimar kararı: önceki fişli ayın azalması bu aya taşınmış + bu ayın 391'i değişmiş) — elle hesap, tek okuma
+  ---
+  duration_ms: 1512.335517
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M1 küçük tur 4 — devreden fişte İ ve 391 birlikte artar (tabanda kırmızı) + ödenecek fişte İ artar, ödenecek kalır (DEĞİŞMEZ)
+    # Subtest: 001 İ + 391 artar (devreden fiş): Mart sonraki 600, Nisan 600 / 400 + uyuşmazlık, Mart–Nisan 400 = 391 − 191 (taban: Nisan 800 / 200, Mart–Nisan 200); onarım
+    not ok 1 - 001 İ + 391 artar (devreden fiş): Mart sonraki 600, Nisan 600 / 400 + uyuşmazlık, Mart–Nisan 400 = 391 − 191 (taban: Nisan 800 / 200, Mart–Nisan 200); onarım
+      ---
+      duration_ms: 8.749166
+      type: 'test'
+      location: '/dev/shm/m1k7-eski/eski/test/m1k7-yalniz391-yeni-beklenti.test.mjs:490:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Nisan uyuşmazlık notu
+        + actual - expected
+        
+        + 'Nisan 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 600,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)'
+        - 'Nisan 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 600,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Mart 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'Nisan 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 600,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Mart 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)'
+      actual: 'Nisan 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 600,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m1k7-eski/eski/test/m1k7-yalniz391-yeni-beklenti.test.mjs:496:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 002 İ artar, ödenecek kalır (DEĞİŞMEZ): Mart 400, Nisan 0 / 200 (fiş zincirde, not yok), Mart–Nisan 600 = 391 − 191; onarım
+    ok 2 - 002 İ artar, ödenecek kalır (DEĞİŞMEZ): Mart 400, Nisan 0 / 200 (fiş zincirde, not yok), Mart–Nisan 600 = 391 − 191; onarım
+      ---
+      duration_ms: 73.029058
+      type: 'test'
+      ...
+    1..2
+not ok 13 - 2.5.1 M1 küçük tur 4 — devreden fişte İ ve 391 birlikte artar (tabanda kırmızı) + ödenecek fişte İ artar, ödenecek kalır (DEĞİŞMEZ)
+  ---
+  duration_ms: 1511.838413
+  type: 'suite'
+  location: '/dev/shm/m1k7-eski/eski/test/m1k7-yalniz391-yeni-beklenti.test.mjs:471:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.1 M1 küçük tur 4 — ödenecek fişli ay İ artışıyla devredene döner + iki ardışık 'güncel değil' ay (ikisi de tabanda kırmızı)
+    # Subtest: 001 ödenecek → devreden (İ arttı): Mart sonraki 200, Nisan 200 / 0 / 0 + uyuşmazlık, Mart–Nisan 0 = 391 − 191 (taban: Nisan 0 / 200, Mart–Nisan 200); onarım
+    not ok 1 - 001 ödenecek → devreden (İ arttı): Mart sonraki 200, Nisan 200 / 0 / 0 + uyuşmazlık, Mart–Nisan 0 = 391 − 191 (taban: Nisan 0 / 200, Mart–Nisan 200); onarım
+      ---
+      duration_ms: 10.576022
+      type: 'test'
+      location: '/dev/shm/m1k7-eski/eski/test/m1k7-yalniz391-yeni-beklenti.test.mjs:545:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Nisan uyuşmazlık notu (iki sonuç da ödenecek yönde — yön cümlesi yok)
+        + actual - expected
+        
+        + 'Nisan 2026 fişi 0,00 TL devredenle kesilmiş, sırayla mahsupta 200,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)'
+        - 'Nisan 2026 fişi 0,00 TL devredenle kesilmiş, sırayla mahsupta 200,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Mart 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'Nisan 2026 fişi 0,00 TL devredenle kesilmiş, sırayla mahsupta 200,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Mart 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)'
+      actual: 'Nisan 2026 fişi 0,00 TL devredenle kesilmiş, sırayla mahsupta 200,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m1k7-eski/eski/test/m1k7-yalniz391-yeni-beklenti.test.mjs:550:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 002 iki ardışık 'güncel değil' ay: Mart 800 (İ arttı), Nisan 800 / 0 / 300 (yalnız 391 azaldı, ödenecek fiş), Mayıs 300 / 100 + uyuşmazlık; Mart–Mayıs 100 = 391 − 191 (taban: Mayıs 0 / 400, 400); onarım
+    not ok 2 - 002 iki ardışık 'güncel değil' ay: Mart 800 (İ arttı), Nisan 800 / 0 / 300 (yalnız 391 azaldı, ödenecek fiş), Mayıs 300 / 100 + uyuşmazlık; Mart–Mayıs 100 = 391 − 191 (taban: Mayıs 0 / 400, 400); onarım
+      ---
+      duration_ms: 9.522972
+      type: 'test'
+      location: '/dev/shm/m1k7-eski/eski/test/m1k7-yalniz391-yeni-beklenti.test.mjs:559:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Mayıs uyuşmazlık notu
+        + actual - expected
+        
+        + 'Mayıs 2026 fişi 0,00 TL devredenle kesilmiş, sırayla mahsupta 300,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)'
+        - 'Mayıs 2026 fişi 0,00 TL devredenle kesilmiş, sırayla mahsupta 300,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Mart 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'Mayıs 2026 fişi 0,00 TL devredenle kesilmiş, sırayla mahsupta 300,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Mart 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)'
+      actual: 'Mayıs 2026 fişi 0,00 TL devredenle kesilmiş, sırayla mahsupta 300,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m1k7-eski/eski/test/m1k7-yalniz391-yeni-beklenti.test.mjs:565:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 14 - 2.5.1 M1 küçük tur 4 — ödenecek fişli ay İ artışıyla devredene döner + iki ardışık 'güncel değil' ay (ikisi de tabanda kırmızı)
+  ---
+  duration_ms: 1279.392629
+  type: 'suite'
+  location: '/dev/shm/m1k7-eski/eski/test/m1k7-yalniz391-yeni-beklenti.test.mjs:520:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.1 M1 küçük tur 4 — yıl dönümü: (a) ödenecek Aralık fişi → devreden, (b) devreden Aralık fişinde İ artar (ikisi de tabanda kırmızı; iki şirket)
+    # Subtest: 001 (a) Bu Yıl (2027) 300 / 0 / 100 + uyuşmazlık (yön cümlesiyle); 2026 yılı sonraki 300; Aralık–Ocak 0 / 100 = 391 − 191; ekran = PDF = Excel; onarım
+    not ok 1 - 001 (a) Bu Yıl (2027) 300 / 0 / 100 + uyuşmazlık (yön cümlesiyle); 2026 yılı sonraki 300; Aralık–Ocak 0 / 100 = 391 − 191; ekran = PDF = Excel; onarım
+      ---
+      duration_ms: 5.826576
+      type: 'test'
+      location: '/dev/shm/m1k7-eski/eski/test/m1k7-yalniz391-yeni-beklenti.test.mjs:606:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Ocak 2027 uyuşmazlık notu
+        + actual - expected
+        
+        + 'Ocak 2027 fişi 0,00 TL devredenle kesilmiş, sırayla mahsupta 300,00 TL olmalıydı; fiş ödenecek KDV 200,00 TL yazmış, sırayla mahsupta sonraki döneme devreden KDV 100,00 TL çıkar (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)'
+        - 'Ocak 2027 fişi 0,00 TL devredenle kesilmiş, sırayla mahsupta 300,00 TL olmalıydı; fiş ödenecek KDV 200,00 TL yazmış, sırayla mahsupta sonraki döneme devreden KDV 100,00 TL çıkar (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Aralık 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'Ocak 2027 fişi 0,00 TL devredenle kesilmiş, sırayla mahsupta 300,00 TL olmalıydı; fiş ödenecek KDV 200,00 TL yazmış, sırayla mahsupta sonraki döneme devreden KDV 100,00 TL çıkar (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Aralık 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)'
+      actual: 'Ocak 2027 fişi 0,00 TL devredenle kesilmiş, sırayla mahsupta 300,00 TL olmalıydı; fiş ödenecek KDV 200,00 TL yazmış, sırayla mahsupta sonraki döneme devreden KDV 100,00 TL çıkar (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m1k7-eski/eski/test/m1k7-yalniz391-yeni-beklenti.test.mjs:609:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 002 (b) Bu Yıl (2027) 900 / 100 + uyuşmazlık; 2026 yılı sonraki 900; Aralık–Ocak 100 = 391 − 191; onarım
+    not ok 2 - 002 (b) Bu Yıl (2027) 900 / 100 + uyuşmazlık; 2026 yılı sonraki 900; Aralık–Ocak 100 = 391 − 191; onarım
+      ---
+      duration_ms: 6.616942
+      type: 'test'
+      location: '/dev/shm/m1k7-eski/eski/test/m1k7-yalniz391-yeni-beklenti.test.mjs:620:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Ocak 2027 uyuşmazlık notu
+        + actual - expected
+        
+        + 'Ocak 2027 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 900,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)'
+        - 'Ocak 2027 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 900,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Aralık 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 'Ocak 2027 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 900,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Aralık 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)'
+      actual: 'Ocak 2027 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 900,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)'
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m1k7-eski/eski/test/m1k7-yalniz391-yeni-beklenti.test.mjs:623:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 15 - 2.5.1 M1 küçük tur 4 — yıl dönümü: (a) ödenecek Aralık fişi → devreden, (b) devreden Aralık fişinde İ artar (ikisi de tabanda kırmızı; iki şirket)
+  ---
+  duration_ms: 1134.954444
+  type: 'suite'
+  location: '/dev/shm/m1k7-eski/eski/test/m1k7-yalniz391-yeni-beklenti.test.mjs:582:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..15
+# tests 43
+# suites 23
+# pass 20
+# fail 23
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 28455.110649

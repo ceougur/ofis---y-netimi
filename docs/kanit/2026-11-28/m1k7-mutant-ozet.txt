@@ -1,0 +1,116 @@
+M1-yon-ayrimi-yok:
+  UTC: çıkış 1 · tests 59 pass 54 fail 5 · 34 sn · YAKALANDI
+      not ok 3 - 001 yan etki: Nisan ön izlemeyle (500) mahsup edilirse fiş zincirle uyuşmaz, rapor 700 ve 1.600 kalır; onarımda (geri al + sırayla) rapor = fişler = 
+      not ok 2 - 001 (a) Nisan ön izlemeyle (500) mahsup edilir: uyuşmazlık notu eksi yönde — 'azalmayı düşmemiş' + Şubat'tan onarım; yalnız Nisan'ı geri alıp yeniden
+      not ok 3 - 002 B — Nisan fişi değişikliklerden ÖNCE sırayla kesilmiş: aynı eksi yönlü not (Şubat); Mayıs tek ayda kısa not YOK (araya Nisan fişi girer); notun a
+      not ok 1 - 001 iki 'güncel değil' ay: Mayıs tek ay kısa not (Şubat 2026, Mart 2026); Mayıs fişi ön izlemeyle → not İLK aydan (Şubat 2026); notun adımlarıyla kal
+  Europe/Istanbul: çıkış 1 · tests 59 pass 54 fail 5 · 32 sn · YAKALANDI
+      not ok 3 - 001 yan etki: Nisan ön izlemeyle (500) mahsup edilirse fiş zincirle uyuşmaz, rapor 700 ve 1.600 kalır; onarımda (geri al + sırayla) rapor = fişler = 
+      not ok 2 - 001 (a) Nisan ön izlemeyle (500) mahsup edilir: uyuşmazlık notu eksi yönde — 'azalmayı düşmemiş' + Şubat'tan onarım; yalnız Nisan'ı geri alıp yeniden
+      not ok 3 - 002 B — Nisan fişi değişikliklerden ÖNCE sırayla kesilmiş: aynı eksi yönlü not (Şubat); Mayıs tek ayda kısa not YOK (araya Nisan fişi girer); notun a
+      not ok 1 - 001 iki 'güncel değil' ay: Mayıs tek ay kısa not (Şubat 2026, Mart 2026); Mayıs fişi ön izlemeyle → not İLK aydan (Şubat 2026); notun adımlarıyla kal
+M1b-yon-hep-eksi:
+  UTC: çıkış 1 · tests 59 pass 58 fail 1 · 34 sn · YAKALANDI
+      not ok 4 - 002 dar kontrol L: Şubat atlanıp Mart fişi defter sırasıyla (azalmayı yeniden düşerek) 900 kesilir → rapor zinciri gösterir (Mart 400, Ocak–Mart 1.60
+  Europe/Istanbul: çıkış 1 · tests 59 pass 58 fail 1 · 38 sn · YAKALANDI
+      not ok 4 - 002 dar kontrol L: Şubat atlanıp Mart fişi defter sırasıyla (azalmayı yeniden düşerek) 900 kesilir → rapor zinciri gösterir (Mart 400, Ocak–Mart 1.60
+M2-onarim-son-guncel-degil:
+  UTC: çıkış 1 · tests 59 pass 55 fail 4 · 34 sn · YAKALANDI
+      not ok 1 - 001 iki 'güncel değil' (Ocak ödenecek yönde, Şubat devreden yönde): Mart notu onarımı İLK aydan (Ocak 2026); notun adımlarıyla kalkar; Ocak–Mart 700 
+      not ok 1 - 001 iki 'güncel değil' ay: Mayıs tek ay kısa not (Şubat 2026, Mart 2026); Mayıs fişi ön izlemeyle → not İLK aydan (Şubat 2026); notun adımlarıyla kal
+      not ok 2 - 002 karma ay + sonraki ayda yalnız 391: Ocak 500 (karma), Şubat sonraki 600 (bugünkü), Mart 600 devredenle 400 + uyuşmazlık; Ocak–Mart 900 = 391 − 19
+      not ok 2 - 002 iki ardışık 'güncel değil' ay: Mart 800 (İ arttı), Nisan 800 / 0 / 300 (yalnız 391 azaldı, ödenecek fiş), Mayıs 300 / 100 + uyuşmazlık; Mart–Mayı
+  Europe/Istanbul: çıkış 1 · tests 59 pass 55 fail 4 · 30 sn · YAKALANDI
+      not ok 1 - 001 iki 'güncel değil' (Ocak ödenecek yönde, Şubat devreden yönde): Mart notu onarımı İLK aydan (Ocak 2026); notun adımlarıyla kalkar; Ocak–Mart 700 
+      not ok 1 - 001 iki 'güncel değil' ay: Mayıs tek ay kısa not (Şubat 2026, Mart 2026); Mayıs fişi ön izlemeyle → not İLK aydan (Şubat 2026); notun adımlarıyla kal
+      not ok 2 - 002 karma ay + sonraki ayda yalnız 391: Ocak 500 (karma), Şubat sonraki 600 (bugünkü), Mart 600 devredenle 400 + uyuşmazlık; Ocak–Mart 900 = 391 − 19
+      not ok 2 - 002 iki ardışık 'güncel değil' ay: Mart 800 (İ arttı), Nisan 800 / 0 / 300 (yalnız 391 azaldı, ödenecek fiş), Mayıs 300 / 100 + uyuşmazlık; Mart–Mayı
+M2b-onarim-bu-ay:
+  UTC: çıkış 1 · tests 59 pass 54 fail 5 · 30 sn · YAKALANDI
+      not ok 3 - 001 yan etki: Nisan ön izlemeyle (500) mahsup edilirse fiş zincirle uyuşmaz, rapor 700 ve 1.600 kalır; onarımda (geri al + sırayla) rapor = fişler = 
+      not ok 2 - 001 (a) Nisan ön izlemeyle (500) mahsup edilir: uyuşmazlık notu eksi yönde — 'azalmayı düşmemiş' + Şubat'tan onarım; yalnız Nisan'ı geri alıp yeniden
+      not ok 3 - 002 B — Nisan fişi değişikliklerden ÖNCE sırayla kesilmiş: aynı eksi yönlü not (Şubat); Mayıs tek ayda kısa not YOK (araya Nisan fişi girer); notun a
+      not ok 1 - 001 iki 'güncel değil' ay: Mayıs tek ay kısa not (Şubat 2026, Mart 2026); Mayıs fişi ön izlemeyle → not İLK aydan (Şubat 2026); notun adımlarıyla kal
+  Europe/Istanbul: çıkış 1 · tests 59 pass 54 fail 5 · 31 sn · YAKALANDI
+      not ok 3 - 001 yan etki: Nisan ön izlemeyle (500) mahsup edilirse fiş zincirle uyuşmaz, rapor 700 ve 1.600 kalır; onarımda (geri al + sırayla) rapor = fişler = 
+      not ok 2 - 001 (a) Nisan ön izlemeyle (500) mahsup edilir: uyuşmazlık notu eksi yönde — 'azalmayı düşmemiş' + Şubat'tan onarım; yalnız Nisan'ı geri alıp yeniden
+      not ok 3 - 002 B — Nisan fişi değişikliklerden ÖNCE sırayla kesilmiş: aynı eksi yönlü not (Şubat); Mayıs tek ayda kısa not YOK (araya Nisan fişi girer); notun a
+      not ok 1 - 001 iki 'güncel değil' ay: Mayıs tek ay kısa not (Şubat 2026, Mart 2026); Mayıs fişi ön izlemeyle → not İLK aydan (Şubat 2026); notun adımlarıyla kal
+M3-kisa-not-hep:
+  UTC: çıkış 1 · tests 59 pass 55 fail 4 · 31 sn · YAKALANDI
+      not ok 1 - 001 (b) Nisan fişsiz: Nisan tek ay 700 + kısa not (Şubat 2026); Mart–Nisan 'bu aralığın'; Şubat'ı içeren aralıkta, Mart tek ayda ve Tüm Zamanlar'da k
+      not ok 3 - 002 B — Nisan fişi değişikliklerden ÖNCE sırayla kesilmiş: aynı eksi yönlü not (Şubat); Mayıs tek ayda kısa not YOK (araya Nisan fişi girer); notun a
+      not ok 1 - 001 iki 'güncel değil' ay: Mayıs tek ay kısa not (Şubat 2026, Mart 2026); Mayıs fişi ön izlemeyle → not İLK aydan (Şubat 2026); notun adımlarıyla kal
+      not ok 2 - 002 ödenecek yönde 'güncel değil' Şubat (yalnız 391, sonra İ artışı da): Mart tek ay 1.000 = ön izleme → kısa not YOK
+  Europe/Istanbul: çıkış 1 · tests 59 pass 55 fail 4 · 31 sn · YAKALANDI
+      not ok 1 - 001 (b) Nisan fişsiz: Nisan tek ay 700 + kısa not (Şubat 2026); Mart–Nisan 'bu aralığın'; Şubat'ı içeren aralıkta, Mart tek ayda ve Tüm Zamanlar'da k
+      not ok 3 - 002 B — Nisan fişi değişikliklerden ÖNCE sırayla kesilmiş: aynı eksi yönlü not (Şubat); Mayıs tek ayda kısa not YOK (araya Nisan fişi girer); notun a
+      not ok 1 - 001 iki 'güncel değil' ay: Mayıs tek ay kısa not (Şubat 2026, Mart 2026); Mayıs fişi ön izlemeyle → not İLK aydan (Şubat 2026); notun adımlarıyla kal
+      not ok 2 - 002 ödenecek yönde 'güncel değil' Şubat (yalnız 391, sonra İ artışı da): Mart tek ay 1.000 = ön izleme → kısa not YOK
+M4-kisa-not-hic:
+  UTC: çıkış 1 · tests 59 pass 54 fail 5 · 29 sn · YAKALANDI
+      not ok 1 - 001 (b) Nisan fişsiz: Nisan tek ay 700 + kısa not (Şubat 2026); Mart–Nisan 'bu aralığın'; Şubat'ı içeren aralıkta, Mart tek ayda ve Tüm Zamanlar'da k
+      not ok 2 - 001 (a) Nisan ön izlemeyle (500) mahsup edilir: uyuşmazlık notu eksi yönde — 'azalmayı düşmemiş' + Şubat'tan onarım; yalnız Nisan'ı geri alıp yeniden
+      not ok 1 - 001 iki 'güncel değil' ay: Mayıs tek ay kısa not (Şubat 2026, Mart 2026); Mayıs fişi ön izlemeyle → not İLK aydan (Şubat 2026); notun adımlarıyla kal
+      not ok 2 - 002 yıl dönümü: Bu Yıl (2027) kısa not (Aralık 2026); 2026 yılında YOK; Şubat 2027 fişi ön izlemeyle → onarım Aralık 2026'dan; notun adımlarıyla kalk
+  Europe/Istanbul: çıkış 1 · tests 59 pass 54 fail 5 · 31 sn · YAKALANDI
+      not ok 1 - 001 (b) Nisan fişsiz: Nisan tek ay 700 + kısa not (Şubat 2026); Mart–Nisan 'bu aralığın'; Şubat'ı içeren aralıkta, Mart tek ayda ve Tüm Zamanlar'da k
+      not ok 2 - 001 (a) Nisan ön izlemeyle (500) mahsup edilir: uyuşmazlık notu eksi yönde — 'azalmayı düşmemiş' + Şubat'tan onarım; yalnız Nisan'ı geri alıp yeniden
+      not ok 1 - 001 iki 'güncel değil' ay: Mayıs tek ay kısa not (Şubat 2026, Mart 2026); Mayıs fişi ön izlemeyle → not İLK aydan (Şubat 2026); notun adımlarıyla kal
+      not ok 2 - 002 yıl dönümü: Bu Yıl (2027) kısa not (Aralık 2026); 2026 yılında YOK; Şubat 2027 fişi ön izlemeyle → onarım Aralık 2026'dan; notun adımlarıyla kalk
+M7a-devreden-bu-aydan:
+  UTC: çıkış 1 · tests 59 pass 34 fail 25 · 29 sn · YAKALANDI
+      not ok 1 - 001 D0: Ocak–Mayıs 2.400 = 391 4.500 − 191 2.100 (DEĞİŞMEDİ); Mart notu onarımı Şubat'tan söyler (Ocak–Mayıs, Mart tek ay, Nisan tek ay); ekran = PDF
+      not ok 2 - 001 tabanın önerdiği onarım (yalnız Mart ve sonrası) notu kaldırmaz; notun YENİ cümlesinin adımları (Şubat'tan) kaldırır: fişler Şubat 1.000 / 0 / 80
+      not ok 3 - 002 önceki güncel olmayan fiş YOK (yalnız mahsupsuz Şubat): Mart cümlesi AYNEN 'bu ayın ve sonraki …'; zincirleme Nisan (Mart'ın uyuşmayan fişinden) 
+      not ok 1 - 001 iki 'güncel değil' (Ocak ödenecek yönde, Şubat devreden yönde): Mart notu onarımı İLK aydan (Ocak 2026); notun adımlarıyla kalkar; Ocak–Mart 700 
+  Europe/Istanbul: çıkış 1 · tests 59 pass 34 fail 25 · 30 sn · YAKALANDI
+      not ok 1 - 001 D0: Ocak–Mayıs 2.400 = 391 4.500 − 191 2.100 (DEĞİŞMEDİ); Mart notu onarımı Şubat'tan söyler (Ocak–Mayıs, Mart tek ay, Nisan tek ay); ekran = PDF
+      not ok 2 - 001 tabanın önerdiği onarım (yalnız Mart ve sonrası) notu kaldırmaz; notun YENİ cümlesinin adımları (Şubat'tan) kaldırır: fişler Şubat 1.000 / 0 / 80
+      not ok 3 - 002 önceki güncel olmayan fiş YOK (yalnız mahsupsuz Şubat): Mart cümlesi AYNEN 'bu ayın ve sonraki …'; zincirleme Nisan (Mart'ın uyuşmayan fişinden) 
+      not ok 1 - 001 iki 'güncel değil' (Ocak ödenecek yönde, Şubat devreden yönde): Mart notu onarımı İLK aydan (Ocak 2026); notun adımlarıyla kalkar; Ocak–Mart 700 
+M7b-devreden-eski-cumle:
+  UTC: çıkış 1 · tests 59 pass 36 fail 23 · 30 sn · YAKALANDI
+      not ok 1 - 001 D0: Ocak–Mayıs 2.400 = 391 4.500 − 191 2.100 (DEĞİŞMEDİ); Mart notu onarımı Şubat'tan söyler (Ocak–Mayıs, Mart tek ay, Nisan tek ay); ekran = PDF
+      not ok 2 - 001 tabanın önerdiği onarım (yalnız Mart ve sonrası) notu kaldırmaz; notun YENİ cümlesinin adımları (Şubat'tan) kaldırır: fişler Şubat 1.000 / 0 / 80
+      not ok 3 - 002 önceki güncel olmayan fiş YOK (yalnız mahsupsuz Şubat): Mart cümlesi AYNEN 'bu ayın ve sonraki …'; zincirleme Nisan (Mart'ın uyuşmayan fişinden) 
+      not ok 1 - 001 iki 'güncel değil' (Ocak ödenecek yönde, Şubat devreden yönde): Mart notu onarımı İLK aydan (Ocak 2026); notun adımlarıyla kalkar; Ocak–Mart 700 
+  Europe/Istanbul: çıkış 1 · tests 59 pass 36 fail 23 · 31 sn · YAKALANDI
+      not ok 1 - 001 D0: Ocak–Mayıs 2.400 = 391 4.500 − 191 2.100 (DEĞİŞMEDİ); Mart notu onarımı Şubat'tan söyler (Ocak–Mayıs, Mart tek ay, Nisan tek ay); ekran = PDF
+      not ok 2 - 001 tabanın önerdiği onarım (yalnız Mart ve sonrası) notu kaldırmaz; notun YENİ cümlesinin adımları (Şubat'tan) kaldırır: fişler Şubat 1.000 / 0 / 80
+      not ok 3 - 002 önceki güncel olmayan fiş YOK (yalnız mahsupsuz Şubat): Mart cümlesi AYNEN 'bu ayın ve sonraki …'; zincirleme Nisan (Mart'ın uyuşmayan fişinden) 
+      not ok 1 - 001 iki 'güncel değil' (Ocak ödenecek yönde, Şubat devreden yönde): Mart notu onarımı İLK aydan (Ocak 2026); notun adımlarıyla kalkar; Ocak–Mart 700 
+M7c-rapor-yalniz-eksi-yon:
+  UTC: çıkış 1 · tests 59 pass 36 fail 23 · 28 sn · YAKALANDI
+      not ok 1 - 001 D0: Ocak–Mayıs 2.400 = 391 4.500 − 191 2.100 (DEĞİŞMEDİ); Mart notu onarımı Şubat'tan söyler (Ocak–Mayıs, Mart tek ay, Nisan tek ay); ekran = PDF
+      not ok 2 - 001 tabanın önerdiği onarım (yalnız Mart ve sonrası) notu kaldırmaz; notun YENİ cümlesinin adımları (Şubat'tan) kaldırır: fişler Şubat 1.000 / 0 / 80
+      not ok 3 - 002 önceki güncel olmayan fiş YOK (yalnız mahsupsuz Şubat): Mart cümlesi AYNEN 'bu ayın ve sonraki …'; zincirleme Nisan (Mart'ın uyuşmayan fişinden) 
+      not ok 1 - 001 iki 'güncel değil' (Ocak ödenecek yönde, Şubat devreden yönde): Mart notu onarımı İLK aydan (Ocak 2026); notun adımlarıyla kalkar; Ocak–Mart 700 
+  Europe/Istanbul: çıkış 1 · tests 59 pass 36 fail 23 · 30 sn · YAKALANDI
+      not ok 1 - 001 D0: Ocak–Mayıs 2.400 = 391 4.500 − 191 2.100 (DEĞİŞMEDİ); Mart notu onarımı Şubat'tan söyler (Ocak–Mayıs, Mart tek ay, Nisan tek ay); ekran = PDF
+      not ok 2 - 001 tabanın önerdiği onarım (yalnız Mart ve sonrası) notu kaldırmaz; notun YENİ cümlesinin adımları (Şubat'tan) kaldırır: fişler Şubat 1.000 / 0 / 80
+      not ok 3 - 002 önceki güncel olmayan fiş YOK (yalnız mahsupsuz Şubat): Mart cümlesi AYNEN 'bu ayın ve sonraki …'; zincirleme Nisan (Mart'ın uyuşmayan fişinden) 
+      not ok 1 - 001 iki 'güncel değil' (Ocak ödenecek yönde, Şubat devreden yönde): Mart notu onarımı İLK aydan (Ocak 2026); notun adımlarıyla kalkar; Ocak–Mart 700 
+M8-devreden-son-guncel-degil:
+  UTC: çıkış 1 · tests 59 pass 56 fail 3 · 31 sn · YAKALANDI
+      not ok 1 - 001 iki 'güncel değil' (Ocak ödenecek yönde, Şubat devreden yönde): Mart notu onarımı İLK aydan (Ocak 2026); notun adımlarıyla kalkar; Ocak–Mart 700 
+      not ok 2 - 002 karma ay + sonraki ayda yalnız 391: Ocak 500 (karma), Şubat sonraki 600 (bugünkü), Mart 600 devredenle 400 + uyuşmazlık; Ocak–Mart 900 = 391 − 19
+      not ok 2 - 002 iki ardışık 'güncel değil' ay: Mart 800 (İ arttı), Nisan 800 / 0 / 300 (yalnız 391 azaldı, ödenecek fiş), Mayıs 300 / 100 + uyuşmazlık; Mart–Mayı
+  Europe/Istanbul: çıkış 1 · tests 59 pass 56 fail 3 · 33 sn · YAKALANDI
+      not ok 1 - 001 iki 'güncel değil' (Ocak ödenecek yönde, Şubat devreden yönde): Mart notu onarımı İLK aydan (Ocak 2026); notun adımlarıyla kalkar; Ocak–Mart 700 
+      not ok 2 - 002 karma ay + sonraki ayda yalnız 391: Ocak 500 (karma), Şubat sonraki 600 (bugünkü), Mart 600 devredenle 400 + uyuşmazlık; Ocak–Mart 900 = 391 − 19
+      not ok 2 - 002 iki ardışık 'güncel değil' ay: Mart 800 (İ arttı), Nisan 800 / 0 / 300 (yalnız 391 azaldı, ödenecek fiş), Mayıs 300 / 100 + uyuşmazlık; Mart–Mayı
+M9-oncesizde-de-bu-ay:
+  UTC: çıkış 1 · tests 59 pass 56 fail 3 · 30 sn · YAKALANDI
+      not ok 3 - 002 önceki güncel olmayan fiş YOK (yalnız mahsupsuz Şubat): Mart cümlesi AYNEN 'bu ayın ve sonraki …'; zincirleme Nisan (Mart'ın uyuşmayan fişinden) 
+      not ok 1 - 001 S-M1-2: fiş 'sonraki döneme devreden 1.000', zincir 'ödenecek 800' → rapor zinciri (200 / 800 / 0) gösterir, not yön farkını da yazar; ön izleme 
+      not ok 2 - 001 yıl dönümü: Aralık 2026 fişi (ödenecek 400), Aralık alışı Ocak'ta iptal → Aralık 400 (fişten) + not; Ocak 2027 200 + 200 = 400; Bu Yıl 400; 2026 
+  Europe/Istanbul: çıkış 1 · tests 59 pass 56 fail 3 · 29 sn · YAKALANDI
+      not ok 3 - 002 önceki güncel olmayan fiş YOK (yalnız mahsupsuz Şubat): Mart cümlesi AYNEN 'bu ayın ve sonraki …'; zincirleme Nisan (Mart'ın uyuşmayan fişinden) 
+      not ok 1 - 001 S-M1-2: fiş 'sonraki döneme devreden 1.000', zincir 'ödenecek 800' → rapor zinciri (200 / 800 / 0) gösterir, not yön farkını da yazar; ön izleme 
+      not ok 2 - 001 yıl dönümü: Aralık 2026 fişi (ödenecek 400), Aralık alışı Ocak'ta iptal → Aralık 400 (fişten) + not; Ocak 2027 200 + 200 = 400; Bu Yıl 400; 2026 
+M9b-yalniz-mismatch-sayilmaz:
+  UTC: çıkış 1 · tests 59 pass 58 fail 1 · 30 sn · YAKALANDI
+      not ok 3 - 002 önceki güncel olmayan fiş YOK (yalnız mahsupsuz Şubat): Mart cümlesi AYNEN 'bu ayın ve sonraki …'; zincirleme Nisan (Mart'ın uyuşmayan fişinden) 
+  Europe/Istanbul: çıkış 1 · tests 59 pass 58 fail 1 · 30 sn · YAKALANDI
+      not ok 3 - 002 önceki güncel olmayan fiş YOK (yalnız mahsupsuz Şubat): Mart cümlesi AYNEN 'bu ayın ve sonraki …'; zincirleme Nisan (Mart'ın uyuşmayan fişinden) 

@@ -1,0 +1,26 @@
+yük 3.52 (başlangıç)
+m1k7-yeni-test-UTC çıkış=0 süre=31 yük=3.88
+m1k7-taban-kirmizi-UTC çıkış=1 süre=29 yük=4.27
+m1k7-komsu-UTC çıkış=0 süre=163 yük=3.31
+m1k7-kahin-defter-UTC çıkış=0 süre=6 yük=3.36
+m1k7-e2e-senaryo-kdv-mahsup-sonrasi-251-UTC çıkış=0 süre=35 yük=4.21
+m1k7-e2e-senaryo-kdv-zincir-251-UTC çıkış=0 süre=8 yük=4.25
+m1k7-e2e-senaryo-kdv-devreden-251-UTC çıkış=0 süre=8 yük=4.67
+m1k7-e2e-senaryo-kdv-donemi-250-UTC çıkış=0 süre=22 yük=4.67
+m1k7-e2e-senaryo-c7b-kabul-250-UTC çıkış=0 süre=26 yük=4.80
+m1k7-e2e-senaryo-defter-243-UTC çıkış=0 süre=34 yük=4.34
+m1k7-taban-e2e-kirmizi-UTC çıkış=1
+m1k7-rastgele-UTC çıkış=0 süre=368 yük=2.77
+m1k7-yeni-test-Europe-Istanbul çıkış=0 süre=25 yük=3.05
+m1k7-taban-kirmizi-Europe-Istanbul çıkış=1 süre=21 yük=2.82
+m1k7-komsu-Europe-Istanbul çıkış=0 süre=177 yük=4.23
+m1k7-kahin-defter-Europe-Istanbul çıkış=0 süre=6 yük=4.52
+m1k7-e2e-senaryo-kdv-mahsup-sonrasi-251-Europe-Istanbul çıkış=0 süre=40 yük=5.13
+m1k7-e2e-senaryo-kdv-zincir-251-Europe-Istanbul çıkış=0 süre=9 yük=4.96
+m1k7-e2e-senaryo-kdv-devreden-251-Europe-Istanbul çıkış=0 süre=8 yük=4.88
+m1k7-e2e-senaryo-kdv-donemi-250-Europe-Istanbul çıkış=0 süre=23 yük=5.14
+m1k7-e2e-senaryo-c7b-kabul-250-Europe-Istanbul çıkış=0 süre=27 yük=5.63
+m1k7-e2e-senaryo-defter-243-Europe-Istanbul çıkış=0 süre=35 yük=5.65
+m1k7-taban-e2e-kirmizi-Europe-Istanbul çıkış=1
+m1k7-rastgele-Europe-Istanbul çıkış=0 süre=400 yük=4.60
+BITTI

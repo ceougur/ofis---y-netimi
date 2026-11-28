@@ -1,0 +1,58 @@
+{
+  "ad": "m1k7-taban-e2e-kirmizi-UTC",
+  "komut": "node test/e2e/senaryo-kdv-mahsup-sonrasi-251.mjs",
+  "commit": "1c97b8e2a90883d03f9ddc6118f6d8781a13fff1",
+  "dal": "worktree-agent-aa8f377d8c9dd1229",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-28T09:10:17.406Z",
+  "sure_sn": 35.8,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 57,
+    "gecen": 53,
+    "basarisiz": 4,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 4 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "karma: Şubat fişi zincirle uyuşmuyor: Şubat 2026 fişi ₺0,00 devredenle kesilmiş, sırayla mahsupta ₺500,00 olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "yalnız 391: Nisan fişi zincirle uyuşmuyor: Nisan 2026 fişi ₺800,00 devredenle kesilmiş, sırayla mahsupta ₺700,00 olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "güncel değil (a): Nisan notu (ekranda): Nisan 2026 fişi ₺0,00 devredenle kesilmiş, sırayla mahsupta ₺300,00 olmalıydı; fiş ödenecek KDV ₺200,00 yazmış, sırayla mahsupta sonraki döneme devreden KDV ₺100,00 çıkar (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla ",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "güncel değil (a): Mart–Nisan'da da Nisan notu: Nisan 2026 fişi ₺0,00 devredenle kesilmiş, sırayla mahsupta ₺300,00 olmalıydı; fiş ödenecek KDV ₺200,00 yazmış, sırayla mahsupta sonraki döneme devreden KDV ₺100,00 çıkar (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları s",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "senaryo-kdv-mahsup-sonrasi-251: 53 geçti, 4 kaldı",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/m1k7/kanit/2026-11-28/m1k7-taban-e2e-kirmizi-UTC.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-aa8f377d8c9dd1229",
+  "ham_cikti_sha256": "1e7f47f582585adcc28f7d9c4170ca1b8a793263ffd5bf30384d678d87056f0d",
+  "ham_cikti_bayt": 14906
+}

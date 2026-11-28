@@ -1,0 +1,13 @@
+yük 3.05 (başlangıç)
+yeni-ay-utc çıkış=0 süre=385 yük=6.04
+eski-ay-utc çıkış=0 süre=376 yük=4.52
+yeni-yil-utc çıkış=0 süre=164 yük=3.81
+eski-yil-utc çıkış=0 süre=202 yük=5.84
+yeni-ay-ist çıkış=0 süre=196 yük=6.17
+eski-ay-ist çıkış=0 süre=219 yük=5.64
+yeni-yil-ist çıkış=0 süre=206 yük=6.01
+--- B2 (iş B 30 dk araç sınırında kesildi; eski-yil-ist BELİRSİZ, yeniden)
+yük 3.88 (B2 başlangıç)
+eski-yil-ist çıkış=0 süre=192 yük=4.80
+mutant çıkış=0 süre=744
+BITTI
