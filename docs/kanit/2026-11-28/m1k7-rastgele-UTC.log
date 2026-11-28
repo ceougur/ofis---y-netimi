@@ -1,0 +1,29 @@
+TAP version 13
+# Subtest: 2.5.1 M1 küçük tur 5 — KDV Özeti rastgele sıra: aralık toplamı 391 − 191 (S-DKM1K-1 = A)
+    # Subtest: Ocak–Temmuz 2026, 300 tohum: sapma 0 (taban t251-m1k4: 11)
+    ok 1 - Ocak–Temmuz 2026, 300 tohum: sapma 0 (taban t251-m1k4: 11)
+      ---
+      duration_ms: 247247.891266
+      type: 'test'
+      ...
+    # Subtest: yıl dönümü Eylül 2026 – Mart 2027, 150 tohum: sapma 0 (taban t251-m1k4: 2)
+    ok 2 - yıl dönümü Eylül 2026 – Mart 2027, 150 tohum: sapma 0 (taban t251-m1k4: 2)
+      ---
+      duration_ms: 120792.77102
+      type: 'test'
+      ...
+    1..2
+ok 1 - 2.5.1 M1 küçük tur 5 — KDV Özeti rastgele sıra: aralık toplamı 391 − 191 (S-DKM1K-1 = A)
+  ---
+  duration_ms: 368042.484807
+  type: 'suite'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 368539.973648

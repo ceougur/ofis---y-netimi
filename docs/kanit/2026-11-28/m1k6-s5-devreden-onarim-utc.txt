@@ -1,0 +1,24 @@
+Ocak [ 0, 0, 100000 ]
+Şubat [ 100000, 0, 50000 ]
+Mart [ 50000, 130000, 0 ]
+Nisan [ 0, 70000, 0 ]
+--- D0 değişiklikten sonra: Ocak–Mayıs 0/2400/0 · 391−191 2400
+  [Mahsuptan Sonra Değişen Ay] Şubat 2026 (mahsup fişi güncel değil — mahsubu geri alıp yeniden mahsup edin); Nisan 2026 (bu ayın kayıtları fişten sonra değişti; ayın sonucu kesilmiş mahsup fişinden, İndirilecek KDV'deki azalma sonraki mahsupta düşülür)
+  [Zincirle Uyuşmayan Mahsup Fişi] Mart 2026 fişi 500,00 TL devredenle kesilmiş, sırayla mahsupta 800,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)
+  fişler 01:0/0/1000 02:1000/0/500(güncel değil) 03:500/1300/0 04:0/700/0
+  2026-04 geri al: geri alındı
+  2026-03 geri al: geri alındı
+  2026-03 yeniden [ 50000, 130000, 0 ]
+  2026-04 yeniden [ 0, 90000, 0 ]
+--- D1 notun önerdiği onarım (Mart ve sonrası geri al + sırayla): Ocak–Mayıs 0/2400/0 · 391−191 2400
+  [Mahsuptan Sonra Değişen Ay] Şubat 2026 (mahsup fişi güncel değil — mahsubu geri alıp yeniden mahsup edin)
+  [Zincirle Uyuşmayan Mahsup Fişi] Mart 2026 fişi 500,00 TL devredenle kesilmiş, sırayla mahsupta 800,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)
+  fişler 01:0/0/1000 02:1000/0/500(güncel değil) 03:500/1300/0 04:0/900/0
+  2026-04 geri al: geri alındı
+  2026-03 geri al: geri alındı
+  2026-02 geri al: geri alındı
+  2026-02 yeniden [ 100000, 0, 80000 ]
+  2026-03 yeniden [ 80000, 100000, 0 ]
+  2026-04 yeniden [ 0, 90000, 0 ]
+--- D2 Şubat'tan başlayarak geri al + sırayla: Ocak–Mayıs 0/2400/0 · 391−191 2400
+  fişler 01:0/0/1000 02:1000/0/800 03:800/1000/0 04:0/900/0

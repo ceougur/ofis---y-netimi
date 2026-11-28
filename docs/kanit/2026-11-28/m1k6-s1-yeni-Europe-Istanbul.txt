@@ -1,0 +1,76 @@
+===== A: kararın örneği (Nisan fişsiz)
+(node:10845) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Ocak fişi [0,0,100000]
+Şubat fişi [100000,50000,0]
+Mart fişi [0,70000,0]
+--- A0 değişiklikten sonra
+  aralık 0/1600/0  391−191 1600  SAPMA 0
+  aylar  01 0/0/1000 | 02 1000/200/0 | 03 0/700/0 | 04 0/700/0
+  [KDV Mahsup Fişi] Ocak 2026, Şubat 2026, Mart 2026
+  [Mahsuptan Sonra Değişen Ay] Şubat 2026 (mahsup fişi güncel değil — mahsubu geri alıp yeniden mahsup edin); Mart 2026 (bu ayın kayıtları fişten sonra değişti; ayın sonucu kesilmiş mahsup fişinden, İndirilecek KDV'deki azalma sonraki mahsupta düşülür)
+  fişler 01:0/0/1000 02:1000/500/0(güncel değil) 03:0/700/0
+  Nisan ön izlemesi [0,50000,0]
+  Nisan fişi (ön izlemeyle) [0,50000,0]
+--- A1 Nisan ön izlemeyle mahsup edildi
+  aralık 0/1600/0  391−191 1600  SAPMA 0
+  aylar  01 0/0/1000 | 02 1000/200/0 | 03 0/700/0 | 04 0/700/0
+  [KDV Mahsup Fişi] Ocak 2026, Şubat 2026, Mart 2026, Nisan 2026
+  [Mahsuptan Sonra Değişen Ay] Şubat 2026 (mahsup fişi güncel değil — mahsubu geri alıp yeniden mahsup edin); Mart 2026 (bu ayın kayıtları fişten sonra değişti; ayın sonucu kesilmiş mahsup fişinden, İndirilecek KDV'deki azalma sonraki mahsupta düşülür)
+  [Zincirle Uyuşmayan Mahsup Fişi] Nisan 2026 fişi ödenecek KDV 500,00 TL yazmış, sırayla mahsupta ödenecek KDV 700,00 TL olmalıydı — fiş İndirilecek KDV'deki azalmayı düşmemiş (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Şubat 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)
+  fişler 01:0/0/1000 02:1000/500/0(güncel değil) 03:0/700/0 04:0/500/0
+  Nisan geri al: geri alındı
+  Nisan ön izlemesi (yeniden) [0,50000,0]
+  Nisan fişi (yeniden) [0,50000,0]
+--- A2 notun önerdiği onarımdan sonra (yalnız Nisan geri al + yeniden)
+  aralık 0/1600/0  391−191 1600  SAPMA 0
+  aylar  01 0/0/1000 | 02 1000/200/0 | 03 0/700/0 | 04 0/700/0
+  [KDV Mahsup Fişi] Ocak 2026, Şubat 2026, Mart 2026, Nisan 2026
+  [Mahsuptan Sonra Değişen Ay] Şubat 2026 (mahsup fişi güncel değil — mahsubu geri alıp yeniden mahsup edin); Mart 2026 (bu ayın kayıtları fişten sonra değişti; ayın sonucu kesilmiş mahsup fişinden, İndirilecek KDV'deki azalma sonraki mahsupta düşülür)
+  [Zincirle Uyuşmayan Mahsup Fişi] Nisan 2026 fişi ödenecek KDV 500,00 TL yazmış, sırayla mahsupta ödenecek KDV 700,00 TL olmalıydı — fiş İndirilecek KDV'deki azalmayı düşmemiş (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Şubat 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)
+  fişler 01:0/0/1000 02:1000/500/0(güncel değil) 03:0/700/0 04:0/500/0
+  2026-04 geri al: geri alındı
+  2026-03 geri al: geri alındı
+  2026-02 geri al: geri alındı
+  2026-02 yeniden fiş [100000,20000,0]
+  2026-03 yeniden fiş [0,90000,0]
+  2026-04 yeniden fiş [0,50000,0]
+--- A3 Şubat'tan başlayarak geri al + sırayla mahsup
+  aralık 0/1600/0  391−191 1600  SAPMA 0
+  aylar  01 0/0/1000 | 02 1000/200/0 | 03 0/900/0 | 04 0/500/0
+  [KDV Mahsup Fişi] Ocak 2026, Şubat 2026, Mart 2026, Nisan 2026
+  fişler 01:0/0/1000 02:1000/200/0 03:0/900/0 04:0/500/0
+===== B: Nisan fişi değişiklikten ÖNCE sırayla kesilmiş (Mayıs fişsiz satış 500)
+Ocak fişi [0,0,100000]
+Şubat fişi [100000,50000,0]
+Mart fişi [0,70000,0]
+Nisan fişi (değişiklikten ÖNCE) [0,50000,0]
+--- B0 değişiklikten sonra
+  aralık 0/2100/0  391−191 2100  SAPMA 0
+  aylar  01 0/0/1000 | 02 1000/200/0 | 03 0/700/0 | 04 0/700/0 | 05 0/500/0
+  [KDV Mahsup Fişi] Ocak 2026, Şubat 2026, Mart 2026, Nisan 2026
+  [Mahsuptan Sonra Değişen Ay] Şubat 2026 (mahsup fişi güncel değil — mahsubu geri alıp yeniden mahsup edin); Mart 2026 (bu ayın kayıtları fişten sonra değişti; ayın sonucu kesilmiş mahsup fişinden, İndirilecek KDV'deki azalma sonraki mahsupta düşülür)
+  [Zincirle Uyuşmayan Mahsup Fişi] Nisan 2026 fişi ödenecek KDV 500,00 TL yazmış, sırayla mahsupta ödenecek KDV 700,00 TL olmalıydı — fiş İndirilecek KDV'deki azalmayı düşmemiş (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Şubat 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)
+  fişler 01:0/0/1000 02:1000/500/0(güncel değil) 03:0/700/0 04:0/500/0
+  Mayıs ön izlemesi [0,50000,0]
+  Nisan geri al: geri alındı
+  Nisan ön izlemesi [0,50000,0]
+  Nisan fişi (yeniden) [0,50000,0]
+--- B1 yalnız Nisan geri al + yeniden
+  aralık 0/2100/0  391−191 2100  SAPMA 0
+  aylar  01 0/0/1000 | 02 1000/200/0 | 03 0/700/0 | 04 0/700/0 | 05 0/500/0
+  [KDV Mahsup Fişi] Ocak 2026, Şubat 2026, Mart 2026, Nisan 2026
+  [Mahsuptan Sonra Değişen Ay] Şubat 2026 (mahsup fişi güncel değil — mahsubu geri alıp yeniden mahsup edin); Mart 2026 (bu ayın kayıtları fişten sonra değişti; ayın sonucu kesilmiş mahsup fişinden, İndirilecek KDV'deki azalma sonraki mahsupta düşülür)
+  [Zincirle Uyuşmayan Mahsup Fişi] Nisan 2026 fişi ödenecek KDV 500,00 TL yazmış, sırayla mahsupta ödenecek KDV 700,00 TL olmalıydı — fiş İndirilecek KDV'deki azalmayı düşmemiş (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Şubat 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)
+  fişler 01:0/0/1000 02:1000/500/0(güncel değil) 03:0/700/0 04:0/500/0
+  2026-04 geri al: geri alındı
+  2026-03 geri al: geri alındı
+  2026-02 geri al: geri alındı
+  2026-02 yeniden fiş [100000,20000,0]
+  2026-03 yeniden fiş [0,90000,0]
+  2026-04 yeniden fiş [0,50000,0]
+--- B2 Şubat'tan başlayarak geri al + sırayla
+  aralık 0/2100/0  391−191 2100  SAPMA 0
+  aylar  01 0/0/1000 | 02 1000/200/0 | 03 0/900/0 | 04 0/500/0 | 05 0/500/0
+  [KDV Mahsup Fişi] Ocak 2026, Şubat 2026, Mart 2026, Nisan 2026
+  fişler 01:0/0/1000 02:1000/200/0 03:0/900/0 04:0/500/0

@@ -1,0 +1,62 @@
+=== ay-utc: yeni (1c97b8e2) ↔ taban (t251-m1k6)
+tohum yeni 400 eski 400 · ortak 400 · hata 0 []
+SAYI FARKI (aylar / aralık / fişler) yeni ≠ eski: 0 []
+kural bozulan: yeni 0 eski 0
+not farkı 99: devreden kolunun onarım cümlesi 99 · beklenmeyen biçim 0 [] · uyuşmazlık notu DIŞINDA 0 []
+yeni kodda: eski cümleyi AYNEN taşıyan uyuşmazlık notu 18 · eksi yönlü ('düşmemiş') 2
+onarım ayları (tohum, ay): [(1, 'Ocak 2026'), (2, 'Ocak 2026'), (12, 'Ocak 2026'), (13, 'Ocak 2026'), (14, 'Mart 2026'), (17, 'Ocak 2026'), (24, 'Şubat 2026'), (25, 'Ocak 2026'), (26, 'Ocak 2026'), (28, 'Şubat 2026'), (35, 'Ocak 2026'), (39, 'Ocak 2026'), (41, 'Şubat 2026'), (42, 'Şubat 2026'), (48, 'Şubat 2026'), (50, 'Nisan 2026'), (67, 'Ocak 2026'), (70, 'Ocak 2026'), (72, 'Şubat 2026'), (75, 'Ocak 2026'), (76, 'Ocak 2026'), (77, 'Mart 2026'), (84, 'Şubat 2026'), (92, 'Ocak 2026'), (93, 'Ocak 2026'), (95, 'Şubat 2026'), (97, 'Mart 2026'), (101, 'Şubat 2026'), (109, 'Mart 2026'), (110, 'Ocak 2026')]
+  tohum 1
+    eski Şubat 2026 fişi 0,00 TL devredenle kesilmiş, sırayla mahsupta 800,00 TL olmalıydı; Mart 2026 fişi 600,00 TL devredenle kesilmiş, sırayla mahsupta 1.400,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)
+    yeni Şubat 2026 fişi 0,00 TL devredenle kesilmiş, sırayla mahsupta 800,00 TL olmalıydı; Mart 2026 fişi 600,00 TL devredenle kesilmiş, sırayla mahsupta 1.400,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Ocak 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)
+  tohum 2
+    eski Şubat 2026 fişi 100,00 TL devredenle kesilmiş, sırayla mahsupta 300,00 TL olmalıydı; fiş sonraki döneme devreden KDV 100,00 TL yazmış, sırayla mahsupta ödenecek KDV 400,00 TL çıkar; Nisan 2026 fişi 100,00 TL devredenle kesilmiş, sırayla mahsupta 0,00 TL olmalıydı; Mayıs 2026 fişi ödenecek KDV 300,00 TL yazmış, sırayla mahsupta ödenecek KDV 300,00 TL olmalıydı — İndirilecek KDV'deki azalma sırayla mahsupta daha önceki bir ayda düşülür; Haziran 2026 fişi ödenecek KDV 1.800,00 TL yazmış, sırayla ma
+    yeni Şubat 2026 fişi 100,00 TL devredenle kesilmiş, sırayla mahsupta 300,00 TL olmalıydı; fiş sonraki döneme devreden KDV 100,00 TL yazmış, sırayla mahsupta ödenecek KDV 400,00 TL çıkar; Nisan 2026 fişi 100,00 TL devredenle kesilmiş, sırayla mahsupta 0,00 TL olmalıydı; Mayıs 2026 fişi ödenecek KDV 300,00 TL yazmış, sırayla mahsupta ödenecek KDV 300,00 TL olmalıydı — İndirilecek KDV'deki azalma sırayla mahsupta daha önceki bir ayda düşülür; Haziran 2026 fişi ödenecek KDV 1.800,00 TL yazmış, sırayla ma
+=== yil-utc: yeni (1c97b8e2) ↔ taban (t251-m1k6)
+tohum yeni 200 eski 200 · ortak 200 · hata 0 []
+SAYI FARKI (aylar / aralık / fişler) yeni ≠ eski: 0 []
+kural bozulan: yeni 0 eski 0
+not farkı 57: devreden kolunun onarım cümlesi 57 · beklenmeyen biçim 0 [] · uyuşmazlık notu DIŞINDA 0 []
+yeni kodda: eski cümleyi AYNEN taşıyan uyuşmazlık notu 8 · eksi yönlü ('düşmemiş') 1
+onarım ayları (tohum, ay): [(1, 'Eylül 2026'), (2, 'Eylül 2026'), (12, 'Eylül 2026'), (13, 'Eylül 2026'), (14, 'Kasım 2026'), (17, 'Eylül 2026'), (24, 'Ekim 2026'), (25, 'Eylül 2026'), (26, 'Eylül 2026'), (28, 'Ekim 2026'), (35, 'Eylül 2026'), (39, 'Eylül 2026'), (41, 'Ekim 2026'), (42, 'Ekim 2026'), (48, 'Ekim 2026'), (50, 'Aralık 2026'), (67, 'Eylül 2026'), (70, 'Eylül 2026'), (72, 'Ekim 2026'), (75, 'Eylül 2026'), (76, 'Eylül 2026'), (77, 'Kasım 2026'), (84, 'Ekim 2026'), (92, 'Eylül 2026'), (93, 'Eylül 2026'), (95, 'Ekim 2026'), (97, 'Kasım 2026'), (101, 'Ekim 2026'), (109, 'Kasım 2026'), (110, 'Eylül 2026')]
+  tohum 1
+    eski Ekim 2026 fişi 0,00 TL devredenle kesilmiş, sırayla mahsupta 800,00 TL olmalıydı; Kasım 2026 fişi 600,00 TL devredenle kesilmiş, sırayla mahsupta 1.400,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)
+    yeni Ekim 2026 fişi 0,00 TL devredenle kesilmiş, sırayla mahsupta 800,00 TL olmalıydı; Kasım 2026 fişi 600,00 TL devredenle kesilmiş, sırayla mahsupta 1.400,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Eylül 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)
+  tohum 2
+    eski Ekim 2026 fişi 100,00 TL devredenle kesilmiş, sırayla mahsupta 300,00 TL olmalıydı; fiş sonraki döneme devreden KDV 100,00 TL yazmış, sırayla mahsupta ödenecek KDV 400,00 TL çıkar; Aralık 2026 fişi 100,00 TL devredenle kesilmiş, sırayla mahsupta 0,00 TL olmalıydı; Ocak 2027 fişi ödenecek KDV 300,00 TL yazmış, sırayla mahsupta ödenecek KDV 300,00 TL olmalıydı — İndirilecek KDV'deki azalma sırayla mahsupta daha önceki bir ayda düşülür; Şubat 2027 fişi ödenecek KDV 1.800,00 TL yazmış, sırayla mahsu
+    yeni Ekim 2026 fişi 100,00 TL devredenle kesilmiş, sırayla mahsupta 300,00 TL olmalıydı; fiş sonraki döneme devreden KDV 100,00 TL yazmış, sırayla mahsupta ödenecek KDV 400,00 TL çıkar; Aralık 2026 fişi 100,00 TL devredenle kesilmiş, sırayla mahsupta 0,00 TL olmalıydı; Ocak 2027 fişi ödenecek KDV 300,00 TL yazmış, sırayla mahsupta ödenecek KDV 300,00 TL olmalıydı — İndirilecek KDV'deki azalma sırayla mahsupta daha önceki bir ayda düşülür; Şubat 2027 fişi ödenecek KDV 1.800,00 TL yazmış, sırayla mahsu
+=== ay-ist: yeni (1c97b8e2) ↔ taban (t251-m1k6)
+tohum yeni 200 eski 200 · ortak 200 · hata 0 []
+SAYI FARKI (aylar / aralık / fişler) yeni ≠ eski: 0 []
+kural bozulan: yeni 0 eski 0
+not farkı 57: devreden kolunun onarım cümlesi 57 · beklenmeyen biçim 0 [] · uyuşmazlık notu DIŞINDA 0 []
+yeni kodda: eski cümleyi AYNEN taşıyan uyuşmazlık notu 8 · eksi yönlü ('düşmemiş') 1
+onarım ayları (tohum, ay): [(1, 'Ocak 2026'), (2, 'Ocak 2026'), (12, 'Ocak 2026'), (13, 'Ocak 2026'), (14, 'Mart 2026'), (17, 'Ocak 2026'), (24, 'Şubat 2026'), (25, 'Ocak 2026'), (26, 'Ocak 2026'), (28, 'Şubat 2026'), (35, 'Ocak 2026'), (39, 'Ocak 2026'), (41, 'Şubat 2026'), (42, 'Şubat 2026'), (48, 'Şubat 2026'), (50, 'Nisan 2026'), (67, 'Ocak 2026'), (70, 'Ocak 2026'), (72, 'Şubat 2026'), (75, 'Ocak 2026'), (76, 'Ocak 2026'), (77, 'Mart 2026'), (84, 'Şubat 2026'), (92, 'Ocak 2026'), (93, 'Ocak 2026'), (95, 'Şubat 2026'), (97, 'Mart 2026'), (101, 'Şubat 2026'), (109, 'Mart 2026'), (110, 'Ocak 2026')]
+  tohum 1
+    eski Şubat 2026 fişi 0,00 TL devredenle kesilmiş, sırayla mahsupta 800,00 TL olmalıydı; Mart 2026 fişi 600,00 TL devredenle kesilmiş, sırayla mahsupta 1.400,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)
+    yeni Şubat 2026 fişi 0,00 TL devredenle kesilmiş, sırayla mahsupta 800,00 TL olmalıydı; Mart 2026 fişi 600,00 TL devredenle kesilmiş, sırayla mahsupta 1.400,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Ocak 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)
+  tohum 2
+    eski Şubat 2026 fişi 100,00 TL devredenle kesilmiş, sırayla mahsupta 300,00 TL olmalıydı; fiş sonraki döneme devreden KDV 100,00 TL yazmış, sırayla mahsupta ödenecek KDV 400,00 TL çıkar; Nisan 2026 fişi 100,00 TL devredenle kesilmiş, sırayla mahsupta 0,00 TL olmalıydı; Mayıs 2026 fişi ödenecek KDV 300,00 TL yazmış, sırayla mahsupta ödenecek KDV 300,00 TL olmalıydı — İndirilecek KDV'deki azalma sırayla mahsupta daha önceki bir ayda düşülür; Haziran 2026 fişi ödenecek KDV 1.800,00 TL yazmış, sırayla ma
+    yeni Şubat 2026 fişi 100,00 TL devredenle kesilmiş, sırayla mahsupta 300,00 TL olmalıydı; fiş sonraki döneme devreden KDV 100,00 TL yazmış, sırayla mahsupta ödenecek KDV 400,00 TL çıkar; Nisan 2026 fişi 100,00 TL devredenle kesilmiş, sırayla mahsupta 0,00 TL olmalıydı; Mayıs 2026 fişi ödenecek KDV 300,00 TL yazmış, sırayla mahsupta ödenecek KDV 300,00 TL olmalıydı — İndirilecek KDV'deki azalma sırayla mahsupta daha önceki bir ayda düşülür; Haziran 2026 fişi ödenecek KDV 1.800,00 TL yazmış, sırayla ma
+=== yil-ist: yeni (1c97b8e2) ↔ taban (t251-m1k6)
+tohum yeni 200 eski 200 · ortak 200 · hata 0 []
+SAYI FARKI (aylar / aralık / fişler) yeni ≠ eski: 0 []
+kural bozulan: yeni 0 eski 0
+not farkı 57: devreden kolunun onarım cümlesi 57 · beklenmeyen biçim 0 [] · uyuşmazlık notu DIŞINDA 0 []
+yeni kodda: eski cümleyi AYNEN taşıyan uyuşmazlık notu 8 · eksi yönlü ('düşmemiş') 1
+onarım ayları (tohum, ay): [(1, 'Eylül 2026'), (2, 'Eylül 2026'), (12, 'Eylül 2026'), (13, 'Eylül 2026'), (14, 'Kasım 2026'), (17, 'Eylül 2026'), (24, 'Ekim 2026'), (25, 'Eylül 2026'), (26, 'Eylül 2026'), (28, 'Ekim 2026'), (35, 'Eylül 2026'), (39, 'Eylül 2026'), (41, 'Ekim 2026'), (42, 'Ekim 2026'), (48, 'Ekim 2026'), (50, 'Aralık 2026'), (67, 'Eylül 2026'), (70, 'Eylül 2026'), (72, 'Ekim 2026'), (75, 'Eylül 2026'), (76, 'Eylül 2026'), (77, 'Kasım 2026'), (84, 'Ekim 2026'), (92, 'Eylül 2026'), (93, 'Eylül 2026'), (95, 'Ekim 2026'), (97, 'Kasım 2026'), (101, 'Ekim 2026'), (109, 'Kasım 2026'), (110, 'Eylül 2026')]
+  tohum 1
+    eski Ekim 2026 fişi 0,00 TL devredenle kesilmiş, sırayla mahsupta 800,00 TL olmalıydı; Kasım 2026 fişi 600,00 TL devredenle kesilmiş, sırayla mahsupta 1.400,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)
+    yeni Ekim 2026 fişi 0,00 TL devredenle kesilmiş, sırayla mahsupta 800,00 TL olmalıydı; Kasım 2026 fişi 600,00 TL devredenle kesilmiş, sırayla mahsupta 1.400,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Eylül 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)
+  tohum 2
+    eski Ekim 2026 fişi 100,00 TL devredenle kesilmiş, sırayla mahsupta 300,00 TL olmalıydı; fiş sonraki döneme devreden KDV 100,00 TL yazmış, sırayla mahsupta ödenecek KDV 400,00 TL çıkar; Aralık 2026 fişi 100,00 TL devredenle kesilmiş, sırayla mahsupta 0,00 TL olmalıydı; Ocak 2027 fişi ödenecek KDV 300,00 TL yazmış, sırayla mahsupta ödenecek KDV 300,00 TL olmalıydı — İndirilecek KDV'deki azalma sırayla mahsupta daha önceki bir ayda düşülür; Şubat 2027 fişi ödenecek KDV 1.800,00 TL yazmış, sırayla mahsu
+    yeni Ekim 2026 fişi 100,00 TL devredenle kesilmiş, sırayla mahsupta 300,00 TL olmalıydı; fiş sonraki döneme devreden KDV 100,00 TL yazmış, sırayla mahsupta ödenecek KDV 400,00 TL çıkar; Aralık 2026 fişi 100,00 TL devredenle kesilmiş, sırayla mahsupta 0,00 TL olmalıydı; Ocak 2027 fişi ödenecek KDV 300,00 TL yazmış, sırayla mahsupta ödenecek KDV 300,00 TL olmalıydı — İndirilecek KDV'deki azalma sırayla mahsupta daha önceki bir ayda düşülür; Şubat 2027 fişi ödenecek KDV 1.800,00 TL yazmış, sırayla mahsu
+=== yeni kod UTC ↔ İstanbul (ay)
+tohum yeni 200 eski 400 · ortak 200 · hata 0 []
+SAYI FARKI (aylar / aralık / fişler) yeni ≠ eski: 0 []
+kural bozulan: yeni 0 eski 0
+not farkı 0: devreden kolunun onarım cümlesi 0 · beklenmeyen biçim 0 [] · uyuşmazlık notu DIŞINDA 0 []
+=== yeni kod UTC ↔ İstanbul (yıl)
+tohum yeni 200 eski 200 · ortak 200 · hata 0 []
+SAYI FARKI (aylar / aralık / fişler) yeni ≠ eski: 0 []
+kural bozulan: yeni 0 eski 0
+not farkı 0: devreden kolunun onarım cümlesi 0 · beklenmeyen biçim 0 [] · uyuşmazlık notu DIŞINDA 0 []

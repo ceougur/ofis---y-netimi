@@ -1,0 +1,9 @@
+yeni-ay-utc exit=0 sure=298
+eski-ay-utc exit=0 sure=286
+yeni-yil-utc exit=0 sure=152
+eski-yil-utc exit=0 sure=147
+yeni-ay-ist exit=0 sure=152
+eski-ay-ist exit=0 sure=146
+yeni-yil-ist exit=0 sure=151
+eski-yil-ist exit=0 sure=151
+BITTI

@@ -403,37 +403,63 @@ export function registerTaxRoutes(router, { store, auth, audit, events, bank, pe
       };
     };
     const chain = VAT_CARRY_MODE === "chain";
-    const steps = new Map();
-    const mismatches = [];
     const openingMinor = chain && busy.length ? table.of(busy[0]).carry : 0;
     const fis = new Map(active.map(item => [item.month, item]));
-    if (chain) {
+    /**
+     * Zincir (B kipi). freeze (2.5.1 M1 küçük tur 6 — yalnız rapor notu için): verilen aylardaki fiş OLDUĞU GİBİ alınır (sayıları, devredeni ve saklı İ'si — mahsup ön izlemesinin
+     * okuduğu); "Güncel Olmayan Önceki Fiş" notu aralığın sayısının bu karşı hesaptan ayrılıp ayrılmadığına bakar. freeze'siz zincir raporun sayılarıdır (DEĞİŞMEDİ).
+     */
+    const runChain = (freeze = null) => {
+      const steps = new Map();
+      const mismatches = [];
       const done = [];
       let carry = openingMinor;
       for (const month of busy) {
         const step = monthPosition(table, done, month, carry);
         const offset = fis.get(month);
+        if (offset && freeze?.has(month)) {
+          const outMinor = Number(offset.outMinor);
+          steps.set(month, { month, label: monthLabel(month), outMinor, inMinor: Number(offset.inMinor), carryInMinor: Number(offset.carryInMinor), carriedInMinor: step.carried, payableMinor: Number(offset.payableMinor), carryOutMinor: Number(offset.carryOutMinor), offsetState: "kept", carryAfterMinor: Number(offset.carryOutMinor) });
+          done.push({ month, inMinor: Number(offset.inMinor) });
+          carry = Number(offset.carryOutMinor);
+          continue;
+        }
         // Fiş zincirde: devredeni zincirinkine eşit VE S4 emilimi (fişin kesildiği defter sırasıyla = etkin fişlere göre) zincirinkine eşit.
-        const kept = Boolean(offset) && Number(offset.carryInMinor) === carry && Math.min(0, carriedBefore(table, active, month)) === step.carried;
+        const offsetCarried = offset ? Math.min(0, carriedBefore(table, active, month)) : 0;
+        const kept = Boolean(offset) && Number(offset.carryInMinor) === carry && offsetCarried === step.carried;
         const settled = kept ? settle(month, step, offset) : shape(month, step);
         // Zincirdeki fişin devredeni taşınır ("kept" / "reduced" — S-DKM1-1 = A); karma ayda (S-M1K-1 = A) ve HER "güncel değil" ayında (S-M1K2-1 = A, S-M1K3-1 = A) bu ayın
         // hesabının (bugünkü) devredeni — her değişiklik bir kez.
         const recount = kept && (settled.offsetState === "mixed" || settled.offsetState === "stale");
         const next = !kept ? step.carryOut : recount ? settled.carryOutMinor : Number(offset.carryOutMinor);
-        steps.set(month, { ...settled, carryAfterMinor: next });
         if (offset && !kept) {
-          mismatches.push({ month, label: monthLabel(month), usedMinor: Number(offset.carryInMinor), chainMinor: carry, offsetPayableMinor: Number(offset.payableMinor), offsetCarryOutMinor: Number(offset.carryOutMinor), payableMinor: step.payable, carryOutMinor: step.carryOut });
+          // 2.5.1 M1 küçük tur 6 (KDV tur 5 dar kontrolü ORTA-1; baş mimar kararı 28.11 07:40 (1)(a)): uyuşmazlığın YÖNÜ. Devredeni aynı ve zincirin S4 emilimi fişinkinden EKSİYSE
+          // (önceki "güncel değil" ay zincire bugünkü İ'siyle girdi — S-DKM1K-1 = A) fiş İndirilecek KDV'deki azalmayı düşmemiştir; onarım mahsup fişi güncel olmayan İLK aydan
+          // ("güncel değil" / karma / zincirle uyuşmayan fiş; hiçbiri yoksa bu ay) başlar. Öbür yön (araya giren mahsupsuz ay azalmayı zincirde zaten düştü) AYNEN; devreden farkı aşağıda.
+          // 2.5.1 M1 küçük tur 7 (tur 6 raporunun BAŞ MİMAR KARARI (1), 28.11 08:49): DEVREDEN FARKI kolunda da (fiş başka devredenle kesilmiş) önceki aylarda mahsup fişi güncel
+          // olmayan ay varsa onarım o İLK aydan başlar — önceki ay devreden yönde güncel değilken yalnız bu ayı ve sonrakileri yeniden kesmek ön izlemeyi yine defterdeki eski
+          // devredenle bırakır, not kalır. Önceki güncel olmayan fiş yoksa devreden farkında onarım ayı boş (notun cümlesi AYNEN). Öbür yön (dar kontrol L) AYNEN.
+          const absorbShort = Number(offset.carryInMinor) === carry && step.carried < offsetCarried;
+          const carryGap = Number(offset.carryInMinor) !== carry;
+          const firstStale = [...steps.values()].find(item => item.offsetState === "stale" || item.offsetState === "mixed" || mismatches.some(other => other.month === item.month))?.month || "";
+          const restart = absorbShort ? firstStale || month : carryGap ? firstStale : "";
+          mismatches.push({ month, label: monthLabel(month), usedMinor: Number(offset.carryInMinor), chainMinor: carry, offsetPayableMinor: Number(offset.payableMinor), offsetCarryOutMinor: Number(offset.carryOutMinor), payableMinor: step.payable, carryOutMinor: step.carryOut, absorbShort, restartMonth: restart, restartLabel: restart ? monthLabel(restart) : "" });
         }
+        steps.set(month, { ...settled, carryAfterMinor: next });
         // S4 birikimi: zincirdeki fişin saklı İ'si ("kept" / "reduced" / "mixed" — azalma sonraki mahsupta); "güncel değil" ay ve zincir dışı ay bugünkü hesabın İ'siyle
         // (S-DKM1K-1 = A — İ artışı birikime girip sonraki azalmayı götürmez; her değişiklik bir kez).
         done.push({ month, inMinor: kept && settled.offsetState !== "stale" ? Number(offset.inMinor) : step.input });
         carry = next;
       }
-    }
-    /** Zincirde ayın başındaki devreden (hareketsiz ay / aralık başı): önceki KDV'li ayın taşıdığı; ilk KDV ayından önce defterdeki 190. */
-    const carryAt = month => {
+      return { steps, mismatches };
+    };
+    const { steps, mismatches } = chain ? runChain() : { steps: new Map(), mismatches: [] };
+    /** Zincirde ayın sonucu; hareketsiz ay / aralık başı: önceki KDV'li ayın taşıdığı devreden, ilk KDV ayından önce defterdeki 190. */
+    const positionIn = (map, month) => {
+      if (map.has(month)) return map.get(month);
       const before = busy.filter(item => item < month);
-      return before.length ? steps.get(before[before.length - 1]).carryAfterMinor : table.of(month).carry;
+      const carry = before.length ? map.get(before[before.length - 1]).carryAfterMinor : table.of(month).carry;
+      return { month, label: monthLabel(month), outMinor: 0, inMinor: 0, carryInMinor: carry, carriedInMinor: 0, payableMinor: 0, carryOutMinor: carry, carryAfterMinor: carry };
     };
     return {
       mode: chain ? "chain" : "ledger",
@@ -444,9 +470,7 @@ export function registerTaxRoutes(router, { store, auth, audit, events, bank, pe
           const offset = fis.get(month);
           return offset && Number(offset.carryInMinor) === step.carry ? settle(month, step, offset) : shape(month, step);
         }
-        if (steps.has(month)) return steps.get(month);
-        const carry = carryAt(month);
-        return { month, label: monthLabel(month), outMinor: 0, inMinor: 0, carryInMinor: carry, carriedInMinor: 0, payableMinor: 0, carryOutMinor: carry, carryAfterMinor: carry };
+        return positionIn(steps, month);
       },
       /** Başı olmayan aralığın (Tüm Zamanlar) Önceki Dönemden Devreden'i: B'de ilk KDV ayından önceki 190 (açılış devredeni), A'da 0 (tur 1). */
       openingMinor,
@@ -465,6 +489,23 @@ export function registerTaxRoutes(router, { store, auth, audit, events, bank, pe
       },
       /** B: zincirle uyuşmayan mahsup fişleri, aralığın sonuna kadar (aralığın sayılarını etkileyenler). A'da boş. */
       mismatchesUntil: last => mismatches.filter(item => !last || item.month <= last),
+      /**
+       * 2.5.1 M1 küçük tur 6 (baş mimar kararı 28.11 07:40 (1)(b)): aralığın BAŞINDAN önceki "güncel değil" / karma fişler (aralıkta değiller, kendi notları raporda görünmez)
+       * aralığın sayısını ETKİLİYORSA o ayların listesi. Karşı hesap: o fişler olduğu gibi alınsaydı (ön izlemenin okuduğu) aralığın başındaki devreden ve aralıktaki ayların Ödenecek /
+       * Sonraki'si aynı mı; aynıysa boş (gereksiz not yok). Başı olmayan aralıkta (Tüm Zamanlar) ve A kipinde boş. Bellekte ikinci zincir; yeni sorgu yok (ders 47).
+       */
+      staleBefore(first, last) {
+        if (!chain || !first) return [];
+        const before = busy.filter(month => month < first && (steps.get(month).offsetState === "stale" || steps.get(month).offsetState === "mixed"));
+        if (!before.length) return [];
+        const alt = runChain(new Set(before)).steps;
+        const same = [first, ...busy.filter(month => month >= first && (!last || month <= last))].every(month => {
+          const now = positionIn(steps, month);
+          const asIs = positionIn(alt, month);
+          return now.carryInMinor === asIs.carryInMinor && now.payableMinor === asIs.payableMinor && now.carryOutMinor === asIs.carryOutMinor;
+        });
+        return same ? [] : before;
+      },
       months,
       mahsup,
       offsets: listOf(table, rows),

@@ -1,0 +1,6 @@
+M1-yon-ayrimi-yok: çıkış 1 · tests 23 pass 18 fail 5 · 4 sn · YAKALANDI
+M1b-yon-hep-eksi: çıkış 1 · tests 23 pass 22 fail 1 · 4 sn · YAKALANDI
+M2-onarim-son-guncel-degil: çıkış 1 · tests 23 pass 22 fail 1 · 4 sn · YAKALANDI
+M2b-onarim-bu-ay: çıkış 1 · tests 23 pass 18 fail 5 · 4 sn · YAKALANDI
+M3-kisa-not-hep: çıkış 1 · tests 23 pass 19 fail 4 · 4 sn · YAKALANDI
+M4-kisa-not-hic: çıkış 1 · tests 23 pass 18 fail 5 · 4 sn · YAKALANDI

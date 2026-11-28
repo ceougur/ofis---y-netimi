@@ -1,0 +1,2762 @@
+TAP version 13
+# Subtest: Aşama 4 — Banka Fişi: çalışıyor mu (masraf, faiz, diğer, kart, kredi; bağımsız modelle)
+    # Subtest: 1–4: masraf BSMV Dahil / Hariç / Yok ve POS komisyonu; hesap masraf türüne göre (770 / 653)
+    ok 1 - 1–4: masraf BSMV Dahil / Hariç / Yok ve POS komisyonu; hesap masraf türüne göre (770 / 653)
+      ---
+      duration_ms: 145.37036
+      type: 'test'
+      ...
+    # Subtest: 5–6: KDV'li masraf tek işlemde gider faturası + havale; cari 0; fatura Ödendi; KDV raporu 191 = 20
+    ok 2 - 5–6: KDV'li masraf tek işlemde gider faturası + havale; cari 0; fatura Ödendi; KDV raporu 191 = 20
+      ---
+      duration_ms: 173.372688
+      type: 'test'
+      ...
+    # Subtest: 7–9: faiz geliri (stopaj 193), faiz gideri (780), diğer gelir (649) ve gider (659)
+    ok 3 - 7–9: faiz geliri (stopaj 193), faiz gideri (780), diğer gelir (649) ve gider (659)
+      ---
+      duration_ms: 114.640497
+      type: 'test'
+      ...
+    # Subtest: 10–11: kart borcu ödemesi (309) ve kredi kullanımı / geri ödemesi (300); iç hareket
+    ok 4 - 10–11: kart borcu ödemesi (309) ve kredi kullanımı / geri ödemesi (300); iç hareket
+      ---
+      duration_ms: 98.909126
+      type: 'test'
+      ...
+    # Subtest: İşlem Kartı: İşlem No ya da kimlikle; satırların adları; bağlar; işlem geçmişi
+    ok 5 - İşlem Kartı: İşlem No ya da kimlikle; satırların adları; bağlar; işlem geçmişi
+      ---
+      duration_ms: 7.265384
+      type: 'test'
+      ...
+    1..5
+ok 1 - Aşama 4 — Banka Fişi: çalışıyor mu (masraf, faiz, diğer, kart, kredi; bağımsız modelle)
+  ---
+  duration_ms: 1112.998771
+  type: 'suite'
+  ...
+# Subtest: Aşama 4 — Banka Fişi: nasıl bozarım
+    # Subtest: tutar: eksi, sıfır, 1e13, 3 ondalık, 0,005, boş, metin → 400; stopaj oranı / tutarı sınır dışı → 400; hiçbir satır yazılmaz
+    ok 1 - tutar: eksi, sıfır, 1e13, 3 ondalık, 0,005, boş, metin → 400; stopaj oranı / tutarı sınır dışı → 400; hiçbir satır yazılmaz
+      ---
+      duration_ms: 36.210585
+      type: 'test'
+      ...
+    # Subtest: tarih: ileri 400, kilitli 409, hesabın açılışından önce 409
+    ok 2 - tarih: ileri 400, kilitli 409, hesabın açılışından önce 409
+      ---
+      duration_ms: 352.525841
+      type: 'test'
+      ...
+    # Subtest: hesap: yok, pasif, döviz, kredi hesabından ödeme, kart/vadeli hesaba masraf, yanlış karşı hesap, aynı hesap → 404/400
+    ok 3 - hesap: yok, pasif, döviz, kredi hesabından ödeme, kart/vadeli hesaba masraf, yanlış karşı hesap, aynı hesap → 404/400
+      ---
+      duration_ms: 128.223661
+      type: 'test'
+      ...
+    # Subtest: tür ve vergi: tanınmayan / bu uçtan girilmeyen tür, tanınmayan vergi kipi ve masraf türü, KDV'de cari ve fatura no zorunlu → 400
+    ok 4 - tür ve vergi: tanınmayan / bu uçtan girilmeyen tür, tanınmayan vergi kipi ve masraf türü, KDV'de cari ve fatura no zorunlu → 400
+      ---
+      duration_ms: 35.874632
+      type: 'test'
+      ...
+    # Subtest: beyaz liste: diğer gelire 770, diğer gidere 642, yasak hesaplar → 400; elle fiş kapalıyken 409, açıkken fx_gain'e 656 / 320 / dengesiz → 400
+    ok 5 - beyaz liste: diğer gelire 770, diğer gidere 642, yasak hesaplar → 400; elle fiş kapalıyken 409, açıkken fx_gain'e 656 / 320 / dengesiz → 400
+      ---
+      duration_ms: 68.703406
+      type: 'test'
+      ...
+    # Subtest: yetki: personel 403; bank.move kaldırılan 403; kredi bank.transfer, KDV'li masraf invoices.manage ister; avukat masraf girer
+    ok 6 - yetki: personel 403; bank.move kaldırılan 403; kredi bank.transfer, KDV'li masraf invoices.manage ister; avukat masraf girer
+      ---
+      duration_ms: 470.261602
+      type: 'test'
+      ...
+    # Subtest: başka şirketin hesabı (?hofCompany=) 404; şirketler ayrı
+    ok 7 - başka şirketin hesabı (?hofCompany=) 404; şirketler ayrı
+      ---
+      duration_ms: 265.842357
+      type: 'test'
+      ...
+    1..7
+ok 2 - Aşama 4 — Banka Fişi: nasıl bozarım
+  ---
+  duration_ms: 1860.938741
+  type: 'suite'
+  ...
+# Subtest: Aşama 4 — Banka Fişi: salt okunur lisans
+    # Subtest: salt okunur lisans: fiş yazımı 403 LICENSE_READ_ONLY
+    ok 1 - salt okunur lisans: fiş yazımı 403 LICENSE_READ_ONLY
+      ---
+      duration_ms: 494.831164
+      type: 'test'
+      ...
+    # Subtest: boş şirket: hareketler, plan listesi, masraf raporu, fiş meta 200 ve boş
+    ok 2 - boş şirket: hareketler, plan listesi, masraf raporu, fiş meta 200 ve boş
+      ---
+      duration_ms: 450.979141
+      type: 'test'
+      ...
+    1..2
+ok 3 - Aşama 4 — Banka Fişi: salt okunur lisans
+  ---
+  duration_ms: 946.329377
+  type: 'suite'
+  ...
+# Subtest: Kabul 24 KDV kipi: net 9.700; Ekim taslağı 300 (KDV Dahil 250 + 50); kayıttan sonra 191 = 50 = KDV raporu; taslak Ödendi
+    # Subtest: POS: Ödeme Kuruluşu, KDV Hariç; KDV kipinde Sağlayıcı Carisi zorunlu (400 pos-provider-account)
+    ok 1 - POS: Ödeme Kuruluşu, KDV Hariç; KDV kipinde Sağlayıcı Carisi zorunlu (400 pos-provider-account)
+      ---
+      duration_ms: 23.86931
+      type: 'test'
+      ...
+    # Subtest: satış 10.000 (08.10) → 12.10 valör: Ziraat +9.700; kesinti satırı 300 sağlayıcıya (B 320 / A 108.01); 108.01 = 0; 653 yok
+    ok 2 - satış 10.000 (08.10) → 12.10 valör: Ziraat +9.700; kesinti satırı 300 sağlayıcıya (B 320 / A 108.01); 108.01 = 0; 653 yok
+      ---
+      duration_ms: 151.666718
+      type: 'test'
+      ...
+    # Subtest: Ekim taslağı (Şimdi Oluştur) = 300, KDV Dahil: matrah 250, KDV 50; kayıttan sonra 191 = 50 = KDV raporu; taslak fatura Ödendi; 653 = 250
+    ok 3 - Ekim taslağı (Şimdi Oluştur) = 300, KDV Dahil: matrah 250, KDV 50; kayıttan sonra 191 = 50 = KDV raporu; taslak fatura Ödendi; 653 = 250
+      ---
+      duration_ms: 131.020331
+      type: 'test'
+      ...
+    1..3
+ok 4 - Kabul 24 KDV kipi: net 9.700; Ekim taslağı 300 (KDV Dahil 250 + 50); kayıttan sonra 191 = 50 = KDV raporu; taslak Ödendi
+  ---
+  duration_ms: 1225.772624
+  type: 'suite'
+  ...
+# Subtest: §4.3 ek testi: sağlayıcıda ilgisiz açık alış 1.000 + kesintiler 300 + 300 → taslak 600 Ödendi, ilgisiz Açık 1.000; 610 ile Kısmen Ödendi · Açık 10
+    # Subtest: komisyon faturası 600
+    ok 1 - komisyon faturası 600
+      ---
+      duration_ms: 633.953559
+      type: 'test'
+      ...
+    # Subtest: komisyon faturası 610
+    ok 2 - komisyon faturası 610
+      ---
+      duration_ms: 603.960115
+      type: 'test'
+      ...
+    1..2
+ok 5 - §4.3 ek testi: sağlayıcıda ilgisiz açık alış 1.000 + kesintiler 300 + 300 → taslak 600 Ödendi, ilgisiz Açık 1.000; 610 ile Kısmen Ödendi · Açık 10
+  ---
+  duration_ms: 1238.466429
+  type: 'suite'
+  ...
+# Subtest: Komisyon iadesi > kesinti olan ay → taslak açılmaz, "İade Alacağı" (Aşama 11 Nasıl Bozarım)
+    # Subtest: Eylül satışı + kesinti 300 (faturalandı); Ekim'de tam iade (İadede Komisyon: Tam) → Ekim neti −300: taslak yok, İade Alacağı
+    ok 1 - Eylül satışı + kesinti 300 (faturalandı); Ekim'de tam iade (İadede Komisyon: Tam) → Ekim neti −300: taslak yok, İade Alacağı
+      ---
+      duration_ms: 583.047486
+      type: 'test'
+      ...
+    1..1
+ok 6 - Komisyon iadesi > kesinti olan ay → taslak açılmaz, "İade Alacağı" (Aşama 11 Nasıl Bozarım)
+  ---
+  duration_ms: 583.526472
+  type: 'suite'
+  ...
+# Subtest: Yargıç Y6: kilitli ayın komisyon taslağı ilk açık günle açılır ve olduğu gibi kaydedilir
+    # Subtest: Eylül satışı 10.000 (%2,5 KDV Hariç) → kesinti 300; Eylül kilitli → taslak 01.10, 300 = 250 + 50; Kaydet 200; 191 = 50; sağlayıcı 0
+    ok 1 - Eylül satışı 10.000 (%2,5 KDV Hariç) → kesinti 300; Eylül kilitli → taslak 01.10, 300 = 250 + 50; Kaydet 200; 191 = 50; sağlayıcı 0
+      ---
+      duration_ms: 877.297205
+      type: 'test'
+      ...
+    1..1
+ok 7 - Yargıç Y6: kilitli ayın komisyon taslağı ilk açık günle açılır ve olduğu gibi kaydedilir
+  ---
+  duration_ms: 878.023947
+  type: 'suite'
+  ...
+# Subtest: Ç7b tur 2f — kabul F: değişmezler (tohum 11)
+    # Subtest: her işlemde Σ B = Σ A, 336.90 / 600.90 / 610.90 = dizinin toplamları, Defter Mutabakatı + Mutabakat Testi temiz; ay sonları 191 / 391
+    ok 1 - her işlemde Σ B = Σ A, 336.90 / 600.90 / 610.90 = dizinin toplamları, Defter Mutabakatı + Mutabakat Testi temiz; ay sonları 191 / 391
+      ---
+      duration_ms: 2714.569304
+      type: 'test'
+      ...
+    1..1
+ok 8 - Ç7b tur 2f — kabul F: değişmezler (tohum 11)
+  ---
+  duration_ms: 2715.497109
+  type: 'suite'
+  ...
+# Subtest: Ç7b tur 2f — kabul F: değişmezler (tohum 23)
+    # Subtest: her işlemde Σ B = Σ A, 336.90 / 600.90 / 610.90 = dizinin toplamları, Defter Mutabakatı + Mutabakat Testi temiz; ay sonları 191 / 391
+    ok 1 - her işlemde Σ B = Σ A, 336.90 / 600.90 / 610.90 = dizinin toplamları, Defter Mutabakatı + Mutabakat Testi temiz; ay sonları 191 / 391
+      ---
+      duration_ms: 2820.35972
+      type: 'test'
+      ...
+    1..1
+ok 9 - Ç7b tur 2f — kabul F: değişmezler (tohum 23)
+  ---
+  duration_ms: 2820.747456
+  type: 'suite'
+  ...
+# Subtest: Ç7b tur 2f — kabul D: v2.4.9 gerçek verisinde sınıf sınıf (kilitli / açık × iade / iptal / düzeltme; B-6, B-8, KG-7)
+    # Subtest: 1. ön koşullar: v2.4.9 mahsupları elle (Eylül H 1.800 / İ 500 / 1.300; Ekim H 400 / İ 200 / 200); geçiş günü = kilit; iki eski mahsup '2.4.9' işaretli
+    ok 1 - 1. ön koşullar: v2.4.9 mahsupları elle (Eylül H 1.800 / İ 500 / 1.300; Ekim H 400 / İ 200 / 200); geçiş günü = kilit; iki eski mahsup '2.4.9' işaretli
+      ---
+      duration_ms: 2.850027
+      type: 'test'
+      ...
+    # Subtest: 2. güncelle → donmuş defter DEĞİŞMEDİ: kilitli dönemin her maddesi v2.4.9'un kendi türettiğiyle birebir
+    ok 2 - 2. güncelle → donmuş defter DEĞİŞMEDİ: kilitli dönemin her maddesi v2.4.9'un kendi türettiğiyle birebir
+      ---
+      duration_ms: 1.601354
+      type: 'test'
+      ...
+    # Subtest: 3. kural farkı TAM: 11 madde (Kasa ±, Borç / Alacak Yaz, stok ×4, Yeni Borç, iki ihracat); B-8'in üç kuralı (kayıt tahsilatı, iki iade KDV'si) ve M14 farksız; hesap farkları elle
+    ok 3 - 3. kural farkı TAM: 11 madde (Kasa ±, Borç / Alacak Yaz, stok ×4, Yeni Borç, iki ihracat); B-8'in üç kuralı (kayıt tahsilatı, iki iade KDV'si) ve M14 farksız; hesap farkları elle
+      ---
+      duration_ms: 52.90214
+      type: 'test'
+      ...
+    # Subtest: 4. Kural Farkı Düzeltme Fişi (01.10.2026; aynı yıl → eski hesabın tersi) → 'Düzeltildi'; donmuş defter yine aynı
+    ok 4 - 4. Kural Farkı Düzeltme Fişi (01.10.2026; aynı yıl → eski hesabın tersi) → 'Düzeltildi'; donmuş defter yine aynı
+      ---
+      duration_ms: 78.837026
+      type: 'test'
+      ...
+    # Subtest: 5. açık dönem (v2.4.9'un Ekim verisi) YENİ kuralla; B-6: Ekim mahsuplu → iade KDV'si ESKİ yön, ters kayıt → YENİ yön, yeniden mahsup H 700 / İ 500 / 200
+    ok 5 - 5. açık dönem (v2.4.9'un Ekim verisi) YENİ kuralla; B-6: Ekim mahsuplu → iade KDV'si ESKİ yön, ters kayıt → YENİ yön, yeniden mahsup H 700 / İ 500 / 200
+      ---
+      duration_ms: 72.130261
+      type: 'test'
+      ...
+    # Subtest: 6. Kasım (güncel kod): yeni kayıtlar yeni kuralla; iptal maddesiz; açık düzeltme (E3 2.000 → 2.500, 601); KG-7 kilitli Düzenle 409, açık Düzenle ile dönem; Kasım H 300 / İ 200 / 100
+    ok 6 - 6. Kasım (güncel kod): yeni kayıtlar yeni kuralla; iptal maddesiz; açık düzeltme (E3 2.000 → 2.500, 601); KG-7 kilitli Düzenle 409, açık Düzenle ile dönem; Kasım H 300 / İ 200 / 100
+      ---
+      duration_ms: 470.845498
+      type: 'test'
+      ...
+    # Subtest: 7. sonda karma defter (elle): .90 alt hesapları, 601, 336.90 = geçiş sonrası kayıt tahsilatları, 600.90 / 610.90 = belgesiz satış / iade; ay sonu 191 / 391
+    ok 7 - 7. sonda karma defter (elle): .90 alt hesapları, 601, 336.90 = geçiş sonrası kayıt tahsilatları, 600.90 / 610.90 = belgesiz satış / iade; ay sonu 191 / 391
+      ---
+      duration_ms: 5.25357
+      type: 'test'
+      ...
+    1..7
+ok 10 - Ç7b tur 2f — kabul D: v2.4.9 gerçek verisinde sınıf sınıf (kilitli / açık × iade / iptal / düzeltme; B-6, B-8, KG-7)
+  ---
+  duration_ms: 2422.691679
+  type: 'suite'
+  ...
+# Subtest: Ç7b tur 2c — kural geçiş günü (B-8 = A + B-6; v2.4.9 gerçek kodunun verisi)
+    # Subtest: kilitli eski dosya: geçiş günü = güncellemedeki kilit; gün sınırı (29.09 / 30.09 / 01.10); eski mahsup ayı; ters kayıt → yeni yön; kilit ileri / geri / açık; göç yeniden; geri yükleme
+    ok 1 - kilitli eski dosya: geçiş günü = güncellemedeki kilit; gün sınırı (29.09 / 30.09 / 01.10); eski mahsup ayı; ters kayıt → yeni yön; kilit ileri / geri / açık; göç yeniden; geri yükleme
+      ---
+      duration_ms: 2899.53236
+      type: 'test'
+      ...
+    # Subtest: kilitsiz eski dosya: geçiş yok (bütün tahsilatlar 336.90); güncellemeden önce mahsup edilmiş ay yine eski yönde (B-6)
+    ok 2 - kilitsiz eski dosya: geçiş yok (bütün tahsilatlar 336.90); güncellemeden önce mahsup edilmiş ay yine eski yönde (B-6)
+      ---
+      duration_ms: 811.801588
+      type: 'test'
+      ...
+    1..2
+ok 11 - Ç7b tur 2c — kural geçiş günü (B-8 = A + B-6; v2.4.9 gerçek kodunun verisi)
+  ---
+  duration_ms: 3712.73474
+  type: 'suite'
+  ...
+# Subtest: Ç7b tur 2d — göç 52, kilit izi eki, Sıfırla eki (v2.4.9 gerçek verisi)
+    # Subtest: (a) göç 52 değer yazmaz ('' = belge ayı), NOT NULL DEFAULT '', eşgüçlü; saklı mahsuplar aynen; Kasım ön izlemesi elle
+    ok 1 - (a) göç 52 değer yazmaz ('' = belge ayı), NOT NULL DEFAULT '', eşgüçlü; saklı mahsuplar aynen; Kasım ön izlemesi elle
+      ---
+      duration_ms: 17.431448
+      type: 'test'
+      ...
+    # Subtest: (b) kilit izi 2.5.2 geçiş gününü ve kilitli mahsubun kural sürümünü izler, 2.5.1 tanımı izlemez; güncellemede yanlış alarm yok; kapı dışı değişiklik görünür
+    ok 2 - (b) kilit izi 2.5.2 geçiş gününü ve kilitli mahsubun kural sürümünü izler, 2.5.1 tanımı izlemez; güncellemede yanlış alarm yok; kapı dışı değişiklik görünür
+      ---
+      duration_ms: 82.610184
+      type: 'test'
+      ...
+    # Subtest: (c) Tüm Hareketleri Sil kural geçiş gününü siler
+    ok 3 - (c) Tüm Hareketleri Sil kural geçiş gününü siler
+      ---
+      duration_ms: 113.871077
+      type: 'test'
+      ...
+    1..3
+ok 12 - Ç7b tur 2d — göç 52, kilit izi eki, Sıfırla eki (v2.4.9 gerçek verisi)
+  ---
+  duration_ms: 1557.913071
+  type: 'suite'
+  ...
+# Subtest: Ç7b YB-1 — eskimiş 'Kalan X' onayıyla Kartı Kapat reddedilir
+    # Subtest: tahsilat silinince eski onay (Kalan 2.000) 409, güncel kalanla (3.000) kapanır
+    ok 1 - tahsilat silinince eski onay (Kalan 2.000) 409, güncel kalanla (3.000) kapanır
+      ---
+      duration_ms: 172.346397
+      type: 'test'
+      ...
+    # Subtest: kalansız kart: onay 'kalan 0' iken tutar büyüdü → 409; eski istemci (alan yok) bugünkü gibi kapatır
+    ok 2 - kalansız kart: onay 'kalan 0' iken tutar büyüdü → 409; eski istemci (alan yok) bugünkü gibi kapatır
+      ---
+      duration_ms: 84.305838
+      type: 'test'
+      ...
+    1..2
+ok 13 - Ç7b YB-1 — eskimiş 'Kalan X' onayıyla Kartı Kapat reddedilir
+  ---
+  duration_ms: 822.021649
+  type: 'suite'
+  ...
+# Subtest: Ç7b KG-7 — alış faturasında KDV İndirim Dönemi
+    # Subtest: (1) sınırlar: belge ayı (boş saklanır) … izleyen yılın Aralık'ı; dışı 400 ve ileti; satışta / iadede / biçim dışı 400
+    ok 1 - (1) sınırlar: belge ayı (boş saklanır) … izleyen yılın Aralık'ı; dışı 400 ve ileti; satışta / iadede / biçim dışı 400
+      ---
+      duration_ms: 80.615704
+      type: 'test'
+      ...
+    # Subtest: (2) Aralık faturası Ocak dönemine: Aralık mahsubunda YOK, Ocak'ta VAR; defter maddesi belge tarihinde (191 Aralık sonunda 400)
+    ok 2 - (2) Aralık faturası Ocak dönemine: Aralık mahsubunda YOK, Ocak'ta VAR; defter maddesi belge tarihinde (191 Aralık sonunda 400)
+      ---
+      duration_ms: 266.863926
+      type: 'test'
+      ...
+    # Subtest: (3) Düzenle: dönemi mahsubu yapılmış aya almak ARTIRAN fark (Güncel Değil); geri almak temizler; aralık dışı tarih 400; kilit / mahsup engeli YOK (M8 (6))
+    ok 3 - (3) Düzenle: dönemi mahsubu yapılmış aya almak ARTIRAN fark (Güncel Değil); geri almak temizler; aralık dışı tarih 400; kilit / mahsup engeli YOK (M8 (6))
+      ---
+      duration_ms: 94.501723
+      type: 'test'
+      ...
+    # Subtest: (4) mahsubu yapılmış aydan sonraki aya alınan KDV iki kez indirilmez (S4); İptal Et dönem ayından düşer
+    ok 4 - (4) mahsubu yapılmış aydan sonraki aya alınan KDV iki kez indirilmez (S4); İptal Et dönem ayından düşer
+      ---
+      duration_ms: 64.705419
+      type: 'test'
+      ...
+    # Subtest: (5) alıştan iade faturasında alan yok (400); iade kendi ayında
+    ok 5 - (5) alıştan iade faturasında alan yok (400); iade kendi ayında
+      ---
+      duration_ms: 11.110654
+      type: 'test'
+      ...
+    1..5
+ok 14 - Ç7b KG-7 — alış faturasında KDV İndirim Dönemi
+  ---
+  duration_ms: 1073.5352
+  type: 'suite'
+  ...
+# Subtest: Ç7b B-11 — KDV Özeti (Beyanname Hazırlığı) alış KDV'si KDV İndirim Dönemi'nin ayında
+    # Subtest: ay grupları: Aralık'ta P2 / P4 YOK, Ocak'ta P2 VAR, Mart'ta P4; alıştan iade kendi ayında (kâhin)
+    ok 1 - ay grupları: Aralık'ta P2 / P4 YOK, Ocak'ta P2 VAR, Mart'ta P4; alıştan iade kendi ayında (kâhin)
+      ---
+      duration_ms: 263.3462
+      type: 'test'
+      ...
+    # Subtest: bölünmüş aralık: iki bitişik aralığın alış KDV'si birleşik aralığa eşit (dönemi ileri alınan fatura YALNIZ bir aralıkta)
+    ok 2 - bölünmüş aralık: iki bitişik aralığın alış KDV'si birleşik aralığa eşit (dönemi ileri alınan fatura YALNIZ bir aralıkta)
+      ---
+      duration_ms: 78.633009
+      type: 'test'
+      ...
+    # Subtest: KDV Mahsup Fişi ile ay ay aynı İndirilecek KDV (ön izleme İ = raporun TOPLAM Alış'ı; F-08: alıştan iade 391'de)
+    ok 3 - KDV Mahsup Fişi ile ay ay aynı İndirilecek KDV (ön izleme İ = raporun TOPLAM Alış'ı; F-08: alıştan iade 391'de)
+      ---
+      duration_ms: 100.18589
+      type: 'test'
+      ...
+    # Subtest: Düzenle: P2'nin dönemi Şubat'a alınınca rapor Ocak'tan Şubat'a taşır (kâhin: Ocak 100, Şubat 440)
+    ok 4 - Düzenle: P2'nin dönemi Şubat'a alınınca rapor Ocak'tan Şubat'a taşır (kâhin: Ocak 100, Şubat 440)
+      ---
+      duration_ms: 77.993469
+      type: 'test'
+      ...
+    1..4
+ok 15 - Ç7b B-11 — KDV Özeti (Beyanname Hazırlığı) alış KDV'si KDV İndirim Dönemi'nin ayında
+  ---
+  duration_ms: 1345.965936
+  type: 'suite'
+  ...
+# Subtest: Ç7b S4 = A — mahsuptan sonra girilen, indirilecek KDV'yi azaltan kayıt girildiği ayın mahsubunda
+    # Subtest: (a) azaltan kalıntı sonraki ayın mahsubuna girer; geçmiş ay Güncel Değil sayılmaz; 191 = 391 = 0
+    ok 1 - (a) azaltan kalıntı sonraki ayın mahsubuna girer; geçmiş ay Güncel Değil sayılmaz; 191 = 391 = 0
+      ---
+      duration_ms: 74.856903
+      type: 'test'
+      ...
+    # Subtest: (b) mahsuptan sonra ikinci azaltan kayıt: birikim çift sayılmaz
+    ok 2 - (b) mahsuptan sonra ikinci azaltan kayıt: birikim çift sayılmaz
+      ---
+      duration_ms: 48.770676
+      type: 'test'
+      ...
+    # Subtest: (c) Kasım mahsubu Geri Al → kalıntı yeniden ön izlemede; 191 alacak bakiyesi taşınmayı bekler
+    ok 3 - (c) Kasım mahsubu Geri Al → kalıntı yeniden ön izlemede; 191 alacak bakiyesi taşınmayı bekler
+      ---
+      duration_ms: 31.251688
+      type: 'test'
+      ...
+    1..3
+ok 16 - Ç7b S4 = A — mahsuptan sonra girilen, indirilecek KDV'yi azaltan kayıt girildiği ayın mahsubunda
+  ---
+  duration_ms: 902.128078
+  type: 'suite'
+  ...
+# Subtest: Ç7b S4 — ARTIRAN geç kayıt taşınmaz (bugünkü gibi Güncel Değil)
+    # Subtest: (d) Eylül mahsubundan sonra Eylül tarihli geç alış: Eylül Güncel Değil, Ekim ön izlemesi yalnız kendi 191'i
+    ok 1 - (d) Eylül mahsubundan sonra Eylül tarihli geç alış: Eylül Güncel Değil, Ekim ön izlemesi yalnız kendi 191'i
+      ---
+      duration_ms: 40.235711
+      type: 'test'
+      ...
+    1..1
+ok 17 - Ç7b S4 — ARTIRAN geç kayıt taşınmaz (bugünkü gibi Güncel Değil)
+  ---
+  duration_ms: 489.111225
+  type: 'suite'
+  ...
+# Subtest: Ç7b B-7 — kalem istisna kodu kilit izinde; var olan kilitte yanlış alarm yok
+    # Subtest: kilit izi tanımı 2.5.1: ihracat kaleminin hesabı / istisna kodu / neti izde; 2.5.0 tanımının izi bu alanlarla DEĞİŞMEZ (önceki koşular kendi tanımıyla)
+    ok 1 - kilit izi tanımı 2.5.1: ihracat kaleminin hesabı / istisna kodu / neti izde; 2.5.0 tanımının izi bu alanlarla DEĞİŞMEZ (önceki koşular kendi tanımıyla)
+      ---
+      duration_ms: 1248.279249
+      type: 'test'
+      ...
+    1..1
+ok 18 - Ç7b B-7 — kalem istisna kodu kilit izinde; var olan kilitte yanlış alarm yok
+  ---
+  duration_ms: 1249.417695
+  type: 'suite'
+  ...
+# Subtest: Ç7b — fatura / KDV / taksit / kayıt türetme kuralları (KG-2, KG-3, KG-4, KG-8, KG-24, F-06, F-08, K-01 / K-02)
+    # Subtest: 1. K-01 / K-02 / C-01 / C-02: carisiz Kasa 649.90 / 770.90, Borç Yaz 602.90, Alacak Yaz 770.90; Kasa açılışı 519'da kalır
+    ok 1 - 1. K-01 / K-02 / C-01 / C-02: carisiz Kasa 649.90 / 770.90, Borç Yaz 602.90, Alacak Yaz 770.90; Kasa açılışı 519'da kalır
+      ---
+      duration_ms: 13.464322
+      type: 'test'
+      ...
+    # Subtest: 2. KG-2 = A: stok satışı / iadesi ve taksit Yeni Borç belgesiz alt hesapta, tutarın TAMAMI (KDV ayrılmaz); Mevcut Borç kartı maddesiz
+    ok 2 - 2. KG-2 = A: stok satışı / iadesi ve taksit Yeni Borç belgesiz alt hesapta, tutarın TAMAMI (KDV ayrılmaz); Mevcut Borç kartı maddesiz
+      ---
+      duration_ms: 13.685855
+      type: 'test'
+      ...
+    # Subtest: 3. KG-3 = A: kayıt tahsilatı B 100 / A 336.90 — gelir değil, cari satırı değil
+    ok 3 - 3. KG-3 = A: kayıt tahsilatı B 100 / A 336.90 — gelir değil, cari satırı değil
+      ---
+      duration_ms: 2.557646
+      type: 'test'
+      ...
+    # Subtest: 4. KG-24 = A: ihracat kalemi 601; karma faturada yalnız istisna kodlu kalem
+    ok 4 - 4. KG-24 = A: ihracat kalemi 601; karma faturada yalnız istisna kodlu kalem
+      ---
+      duration_ms: 5.33663
+      type: 'test'
+      ...
+    # Subtest: 5. KG-8 = A / F-08: satıştan iade KDV'si B 191, alıştan iade KDV'si A 391; F-06 / M14 gider türü hesapları
+    ok 5 - 5. KG-8 = A / F-08: satıştan iade KDV'si B 191, alıştan iade KDV'si A 391; F-06 / M14 gider türü hesapları
+      ---
+      duration_ms: 5.807373
+      type: 'test'
+      ...
+    # Subtest: 6. mizan, alt hesap mizanı ve Defter Mutabakatı (336 / 191 / 391 beklenenleri) temiz
+    ok 6 - 6. mizan, alt hesap mizanı ve Defter Mutabakatı (336 / 191 / 391 beklenenleri) temiz
+      ---
+      duration_ms: 47.148057
+      type: 'test'
+      ...
+    # Subtest: 7. KDV Mahsup (Eylül): H 2.800, İ 920, ödenecek 1.880 (eski kuralla da 1.880); mahsuptan sonra 191 = 391 = 0
+    ok 7 - 7. KDV Mahsup (Eylül): H 2.800, İ 920, ödenecek 1.880 (eski kuralla da 1.880); mahsuptan sonra 191 = 391 = 0
+      ---
+      duration_ms: 41.893365
+      type: 'test'
+      ...
+    1..7
+ok 19 - Ç7b — fatura / KDV / taksit / kayıt türetme kuralları (KG-2, KG-3, KG-4, KG-8, KG-24, F-06, F-08, K-01 / K-02)
+  ---
+  duration_ms: 1130.099857
+  type: 'suite'
+  ...
+# Subtest: Ç7b tur 2e — Şirket Verisini Sıfırla KDV Mahsup Fişlerini de siler
+    # Subtest: Tüm Hareketleri Sil: mahsuplar silinir, KDV hesapları 0, Mutabakat yeşil, yeni mahsup sıfırdan; cari kartları kalır
+    ok 1 - Tüm Hareketleri Sil: mahsuplar silinir, KDV hesapları 0, Mutabakat yeşil, yeni mahsup sıfırdan; cari kartları kalır
+      ---
+      duration_ms: 816.659485
+      type: 'test'
+      ...
+    # Subtest: Tümünü Sıfırla: mahsuplar silinir, KDV hesapları 0, Mutabakat yeşil, yeni mahsup sıfırdan
+    ok 2 - Tümünü Sıfırla: mahsuplar silinir, KDV hesapları 0, Mutabakat yeşil, yeni mahsup sıfırdan
+      ---
+      duration_ms: 689.556491
+      type: 'test'
+      ...
+    1..2
+ok 20 - Ç7b tur 2e — Şirket Verisini Sıfırla KDV Mahsup Fişlerini de siler
+  ---
+  duration_ms: 1507.5858
+  type: 'suite'
+  ...
+# Subtest: Ç7b tur 3 — kabul D: v2.4.9 verisindeki kartlar güncellemeden sonra aynen
+    # Subtest: v2.4.9'un kendi değerleri elle beklenenle aynı (üreticinin doğruluğu)
+    ok 1 - v2.4.9'un kendi değerleri elle beklenenle aynı (üreticinin doğruluğu)
+      ---
+      duration_ms: 2.087483
+      type: 'test'
+      ...
+    # Subtest: güncellemeden sonra kartlar, bakiyeler ve 689 aynen; Mutabakat Testi temiz
+    ok 2 - güncellemeden sonra kartlar, bakiyeler ve 689 aynen; Mutabakat Testi temiz
+      ---
+      duration_ms: 66.61295
+      type: 'test'
+      ...
+    # Subtest: eski verideki tahsilatlı kartın faturası güncel kodda İptal Et ile kapanır (S15); eski kapalı kart eski kuralda kalır
+    ok 3 - eski verideki tahsilatlı kartın faturası güncel kodda İptal Et ile kapanır (S15); eski kapalı kart eski kuralda kalır
+      ---
+      duration_ms: 117.443671
+      type: 'test'
+      ...
+    # Subtest: S210 = A eski veride: v2.4.9'da açılmış çok kalemli Mevcut Borç kartının faturası güncel kodda İptal Et ile — kart kapanır, elle borç kendi vadesiyle
+    ok 4 - S210 = A eski veride: v2.4.9'da açılmış çok kalemli Mevcut Borç kartının faturası güncel kodda İptal Et ile — kart kapanır, elle borç kendi vadesiyle
+      ---
+      duration_ms: 93.158135
+      type: 'test'
+      ...
+    # Subtest: S217 = A eski veride: v2.4.9'da Kartı Kapat'la kapatılmış tahsilatlı faturanın İptal Et'i 409 'Önce kartı Yeniden Aç ile açın.'; Yeniden Aç → İptal Et → kalan bir kez düşülür
+    ok 5 - S217 = A eski veride: v2.4.9'da Kartı Kapat'la kapatılmış tahsilatlı faturanın İptal Et'i 409 'Önce kartı Yeniden Aç ile açın.'; Yeniden Aç → İptal Et → kalan bir kez düşülür
+      ---
+      duration_ms: 160.230799
+      type: 'test'
+      ...
+    1..5
+ok 21 - Ç7b tur 3 — kabul D: v2.4.9 verisindeki kartlar güncellemeden sonra aynen
+  ---
+  duration_ms: 1690.341711
+  type: 'suite'
+  ...
+# Subtest: Ç7b tur 3 devam 3 — iptal / fatura kartının kapsam okuması ve trimCovers (hız düzeltmesinin eşdeğerliği)
+    # Subtest: kapsam kuralı: karttan ÖNCE kesilen fatura kartın kapsamında, SONRA kesilen hiçbir etkin kartın kapsamında değil (her durumda)
+    ok 1 - kapsam kuralı: karttan ÖNCE kesilen fatura kartın kapsamında, SONRA kesilen hiçbir etkin kartın kapsamında değil (her durumda)
+      ---
+      duration_ms: 237.245036
+      type: 'test'
+      ...
+    # Subtest: dişi: fatura kartı ve iptal — carinin defteri en çok bir kez ve kuyruksuz okunur (kapsamda olmayan fatura, açık Mevcut Borç kartlı cari)
+    ok 2 - dişi: fatura kartı ve iptal — carinin defteri en çok bir kez ve kuyruksuz okunur (kapsamda olmayan fatura, açık Mevcut Borç kartlı cari)
+      ---
+      duration_ms: 111.680774
+      type: 'test'
+      ...
+    # Subtest: eşdeğerlik: trimCovers'ın okuduğu alanlar withRemaining: false ile AYNI (her cari; kartlı, kartsız, tahsilatlı, iadeli, iptalli)
+    ok 3 - eşdeğerlik: trimCovers'ın okuduğu alanlar withRemaining: false ile AYNI (her cari; kartlı, kartsız, tahsilatlı, iadeli, iptalli)
+      ---
+      duration_ms: 209.389791
+      type: 'test'
+      ...
+    1..3
+ok 22 - Ç7b tur 3 devam 3 — iptal / fatura kartının kapsam okuması ve trimCovers (hız düzeltmesinin eşdeğerliği)
+  ---
+  duration_ms: 1041.971831
+  type: 'suite'
+  ...
+# Subtest: Ç7b tur 3 — kart küçülmesi (karar (4)), S15, S206 / S210 / S211, S217
+    # Subtest: (4) iade kartı vadesi EN ÖNCE gelen AÇIK taksitten küçültür; ödenmiş kısma dokunmaz
+    ok 1 - (4) iade kartı vadesi EN ÖNCE gelen AÇIK taksitten küçültür; ödenmiş kısma dokunmaz
+      ---
+      duration_ms: 391.249583
+      type: 'test'
+      ...
+    # Subtest: (4) faturasız stok iadesi: satış kartı kuyrukta AÇIK kalan en önce gelen taksitten küçülür (iadenin kapattığı taksit kesilmez; S140 = A / S151 = B)
+    ok 2 - (4) faturasız stok iadesi: satış kartı kuyrukta AÇIK kalan en önce gelen taksitten küçülür (iadenin kapattığı taksit kesilmez; S140 = A / S151 = B)
+      ---
+      duration_ms: 115.446231
+      type: 'test'
+      ...
+    # Subtest: S238 = A (önceden S216 = C): iade iptal edilince kart iadenin kestiği AYNI taksitte büyür (takvim ilk hâline döner); bakiye ve kart toplamı geri gelir
+    ok 3 - S238 = A (önceden S216 = C): iade iptal edilince kart iadenin kestiği AYNI taksitte büyür (takvim ilk hâline döner); bakiye ve kart toplamı geri gelir
+      ---
+      duration_ms: 135.524157
+      type: 'test'
+      ...
+    # Subtest: (4) iade kalanı aşarsa fazlası avans; parası geri verilen iade kartı küçültmez
+    ok 4 - (4) iade kalanı aşarsa fazlası avans; parası geri verilen iade kartı küçültmez
+      ---
+      duration_ms: 201.390873
+      type: 'test'
+      ...
+    # Subtest: S15 = A: kendi kartında tahsilatı olan faturanın İptal Et'i kabul; kart kapanır, tahsilat avans; Sil bugünkü gibi 409
+    ok 5 - S15 = A: kendi kartında tahsilatı olan faturanın İptal Et'i kabul; kart kapanır, tahsilat avans; Sil bugünkü gibi 409
+      ---
+      duration_ms: 179.989693
+      type: 'test'
+      ...
+    # Subtest: S206 = A / S211 = A: faturayı içine almış Mevcut Borç kartı faturanın iptalinde kapanır
+    ok 6 - S206 = A / S211 = A: faturayı içine almış Mevcut Borç kartı faturanın iptalinde kapanır
+      ---
+      duration_ms: 203.47746
+      type: 'test'
+      ...
+    # Subtest: Kartı Kapat'la önceden kapatılmış tahsilatlı kendi kartın faturası iptal edilmez (kalan iki kez düşülmesin)
+    ok 7 - Kartı Kapat'la önceden kapatılmış tahsilatlı kendi kartın faturası iptal edilmez (kalan iki kez düşülmesin)
+      ---
+      duration_ms: 84.719254
+      type: 'test'
+      ...
+    # Subtest: S206 / S211 ailesi: faturayı içine ALMAMIŞ Mevcut Borç kartı iptalde borçtan büyük kalırsa küçülür; kalanı 0'a inen kart kapanır (borçsuz açık kart kalmaz)
+    ok 8 - S206 / S211 ailesi: faturayı içine ALMAMIŞ Mevcut Borç kartı iptalde borçtan büyük kalırsa küçülür; kalanı 0'a inen kart kapanır (borçsuz açık kart kalmaz)
+      ---
+      duration_ms: 121.880335
+      type: 'test'
+      ...
+    # Subtest: S210 = A: kartta başka borç da varsa faturanın iptalinde kart yine KAPANIR; elle borç kendi vadesiyle carinin borcuna döner
+    ok 9 - S210 = A: kartta başka borç da varsa faturanın iptalinde kart yine KAPANIR; elle borç kendi vadesiyle carinin borcuna döner
+      ---
+      duration_ms: 129.320408
+      type: 'test'
+      ...
+    1..9
+ok 23 - Ç7b tur 3 — kart küçülmesi (karar (4)), S15, S206 / S210 / S211, S217
+  ---
+  duration_ms: 2023.336813
+  type: 'suite'
+  ...
+# Subtest: Ç7b tur 3b — Kartı Kapat 'Borçta Kalsın' (karar (6), S205)
+    # Subtest: T1 (6): kalan carinin borcunda kalır, madde yok; S205 kapanışın ertesi gününden gecikmiş; zil / Vade Takip; vazgeçme Alacak Yaz ile
+    ok 1 - T1 (6): kalan carinin borcunda kalır, madde yok; S205 kapanışın ertesi gününden gecikmiş; zil / Vade Takip; vazgeçme Alacak Yaz ile
+      ---
+      duration_ms: 725.614563
+      type: 'test'
+      ...
+    # Subtest: T2 S205: vadesi kapanıştan önce geçmiş kalem kendi vadesiyle gecikmiş kalır; gelmemiş kalem kapanışın ertesinden
+    ok 2 - T2 S205: vadesi kapanıştan önce geçmiş kalem kendi vadesiyle gecikmiş kalır; gelmemiş kalem kapanışın ertesinden
+      ---
+      duration_ms: 451.184486
+      type: 'test'
+      ...
+    # Subtest: T3 eski kurallı kapalı kart + yeni Borçta Kalsın kartı aynı caride; Yeniden Aç → yeniden Kapat yeni kuralla
+    ok 3 - T3 eski kurallı kapalı kart + yeni Borçta Kalsın kartı aynı caride; Yeniden Aç → yeniden Kapat yeni kuralla
+      ---
+      duration_ms: 596.368602
+      type: 'test'
+      ...
+    # Subtest: T4 kilit: Borçta Kalsın kartı kilitli kapanışta Yeniden Aç / tahsilat serbest; eski kurallı kart 409; işaret kilit izinde
+    ok 4 - T4 kilit: Borçta Kalsın kartı kilitli kapanışta Yeniden Aç / tahsilat serbest; eski kurallı kart 409; işaret kilit izinde
+      ---
+      duration_ms: 722.858417
+      type: 'test'
+      ...
+    1..4
+ok 24 - Ç7b tur 3b — Kartı Kapat 'Borçta Kalsın' (karar (6), S205)
+  ---
+  duration_ms: 2497.220626
+  type: 'suite'
+  ...
+# Subtest: Ç7b tur 3b — şüpheli alacaklı caride Kartı Kapat (şüpheli ayırıcısı = defter; lib/bank/doubtful.mjs)
+    # Subtest: T6 Yeni Borç kartı 900 → Şüpheliye al 900 (01.10) → 08.10 Kartı Kapat: 128 900 KALIR (eski kuralda 689 ile 0), 120 0; şüpheli kaydının kalanı 900; Mutabakat Testi temiz
+    ok 1 - T6 Yeni Borç kartı 900 → Şüpheliye al 900 (01.10) → 08.10 Kartı Kapat: 128 900 KALIR (eski kuralda 689 ile 0), 120 0; şüpheli kaydının kalanı 900; Mutabakat Testi temiz
+      ---
+      duration_ms: 454.026135
+      type: 'test'
+      ...
+    1..1
+ok 25 - Ç7b tur 3b — şüpheli alacaklı caride Kartı Kapat (şüpheli ayırıcısı = defter; lib/bank/doubtful.mjs)
+  ---
+  duration_ms: 454.372722
+  type: 'suite'
+  ...
+# Subtest: Ç7b tur 3b — göç 53 (kart başına kural işareti)
+    # Subtest: T5 göç öncesi (52) dosyada kapalı kart '2.4.9' (kalan düşülmüş — eski kural), açık kart ''; eşgüçlü
+    ok 1 - T5 göç öncesi (52) dosyada kapalı kart '2.4.9' (kalan düşülmüş — eski kural), açık kart ''; eşgüçlü
+      ---
+      duration_ms: 662.190988
+      type: 'test'
+      ...
+    1..1
+ok 26 - Ç7b tur 3b — göç 53 (kart başına kural işareti)
+  ---
+  duration_ms: 662.698822
+  type: 'suite'
+  ...
+# Subtest: Ç7b tur 3b — kabul D: v2.4.9'un kilitli verisinde kapatılmış kart eski kuralda, yeni Kartı Kapat 'Borçta Kalsın'
+    # Subtest: v2.4.9'un kendi değerleri elle beklenenle aynı (üreticinin doğruluğu)
+    ok 1 - v2.4.9'un kendi değerleri elle beklenenle aynı (üreticinin doğruluğu)
+      ---
+      duration_ms: 1.972513
+      type: 'test'
+      ...
+    # Subtest: güncellemeden sonra: işaretler, bakiyeler ve 689 aynen; donmuş 689 maddesi güncel türetmeyle birebir, kural farkında yok
+    ok 2 - güncellemeden sonra: işaretler, bakiyeler ve 689 aynen; donmuş 689 maddesi güncel türetmeyle birebir, kural farkında yok
+      ---
+      duration_ms: 46.622599
+      type: 'test'
+      ...
+    # Subtest: eski kurallı K1 Yeniden Aç 409 (kapanış günü kilitli); K2 güncel kodda Kartı Kapat → Borçta Kalsın (bakiye 900, 689 aynı, ertesi gün gecikmiş 900)
+    ok 3 - eski kurallı K1 Yeniden Aç 409 (kapanış günü kilitli); K2 güncel kodda Kartı Kapat → Borçta Kalsın (bakiye 900, 689 aynı, ertesi gün gecikmiş 900)
+      ---
+      duration_ms: 61.163935
+      type: 'test'
+      ...
+    1..3
+ok 27 - Ç7b tur 3b — kabul D: v2.4.9'un kilitli verisinde kapatılmış kart eski kuralda, yeni Kartı Kapat 'Borçta Kalsın'
+  ---
+  duration_ms: 1418.573847
+  type: 'suite'
+  ...
+# Subtest: 2.4.3 UX24 — yönü karışık raporlarda ayrı TOPLAM satırları
+    # Subtest: KDV Özeti: TOPLAM Satış / Satıştan İade / Alış ve Net KDV = özetteki Ödenecek KDV (kâhin)
+    ok 1 - KDV Özeti: TOPLAM Satış / Satıştan İade / Alış ve Net KDV = özetteki Ödenecek KDV (kâhin)
+      ---
+      duration_ms: 58.014286
+      type: 'test'
+      ...
+    # Subtest: KDV Özeti süzgeçleri: Geçen Ay (boş) TOPLAM yok; Tüm Zamanlar = Bu Yıl
+    ok 2 - KDV Özeti süzgeçleri: Geçen Ay (boş) TOPLAM yok; Tüm Zamanlar = Bu Yıl
+      ---
+      duration_ms: 53.113895
+      type: 'test'
+      ...
+    # Subtest: Açık Faturalar: TOPLAM Alacak / TOPLAM Borç = özetteki Açık Alacak / Açık Borç; Net = fark
+    ok 3 - Açık Faturalar: TOPLAM Alacak / TOPLAM Borç = özetteki Açık Alacak / Açık Borç; Net = fark
+      ---
+      duration_ms: 18.615219
+      type: 'test'
+      ...
+    # Subtest: Açık Faturalar Cari süzgeci: tedarikçide tek yön → tek TOPLAM satırı = satırlar
+    ok 4 - Açık Faturalar Cari süzgeci: tedarikçide tek yön → tek TOPLAM satırı = satırlar
+      ---
+      duration_ms: 34.104413
+      type: 'test'
+      ...
+    1..4
+ok 28 - 2.4.3 UX24 — yönü karışık raporlarda ayrı TOPLAM satırları
+  ---
+  duration_ms: 912.542749
+  type: 'suite'
+  ...
+# Subtest: 2.4.3 MM3 — Vergi Ödemesi ve KDV Mahsup Fişi
+    # Subtest: başlangıç (kâhin): 391 = −3.400, 191 = 2.200, 360 = −2.360
+    ok 1 - başlangıç (kâhin): 391 = −3.400, 191 = 2.200, 360 = −2.360
+      ---
+      duration_ms: 7.390914
+      type: 'test'
+      ...
+    # Subtest: KDV Mahsup Fişi Eylül: ön izleme B 391 2.000 / A 191 1.200 / A 360 800; oluşturulunca Eylül sonu 391 = 191 = 0; aynı ay ikinci kez 409
+    ok 2 - KDV Mahsup Fişi Eylül: ön izleme B 391 2.000 / A 191 1.200 / A 360 800; oluşturulunca Eylül sonu 391 = 191 = 0; aynı ay ikinci kez 409
+      ---
+      duration_ms: 44.612535
+      type: 'test'
+      ...
+    # Subtest: Ekim: indirilecek fazla → B 391 400 / A 191 1.000 / B 190 600 (devreden); Kasım: devreden kullanılır → B 391 1.000 / A 190 600 / A 360 400
+    ok 3 - Ekim: indirilecek fazla → B 391 400 / A 191 1.000 / B 190 600 (devreden); Kasım: devreden kullanılır → B 391 1.000 / A 190 600 / A 360 400
+      ---
+      duration_ms: 49.550637
+      type: 'test'
+      ...
+    # Subtest: sıra: Aralık bitmeden mahsup yok; önceki aya yeni mahsup ve sondan olmayan geri alma 409
+    ok 4 - sıra: Aralık bitmeden mahsup yok; önceki aya yeni mahsup ve sondan olmayan geri alma 409
+      ---
+      duration_ms: 12.117625
+      type: 'test'
+      ...
+    # Subtest: Vergi Ödemesi bankadan (KDV 800) ve Kasa'dan (Muhtasar 2.000 + gecikme 50): 360 düşer, 689 = 50, 100 / 102 azalır; Banka Fişi tax_payment
+    ok 5 - Vergi Ödemesi bankadan (KDV 800) ve Kasa'dan (Muhtasar 2.000 + gecikme 50): 360 düşer, 689 = 50, 100 / 102 azalır; Banka Fişi tax_payment
+      ---
+      duration_ms: 70.959863
+      type: 'test'
+      ...
+    # Subtest: 360 bakiyesini aşan ödeme uyarı verir (409 tax-exceeds); Yine de Kaydet (exceedOk) geçer; Ters Kaydet 360'ı geri getirir; Düzelt 409
+    ok 6 - 360 bakiyesini aşan ödeme uyarı verir (409 tax-exceeds); Yine de Kaydet (exceedOk) geçer; Ters Kaydet 360'ı geri getirir; Düzelt 409
+      ---
+      duration_ms: 80.906017
+      type: 'test'
+      ...
+    # Subtest: plan §3.11 aynen: Diğer Gider satırına 360 yazılamaz (400 bank-gl-forbidden); Kasa'daki vergi satırı Kasa'dan düzeltilmez (409); silinir ve geri gelir
+    ok 7 - plan §3.11 aynen: Diğer Gider satırına 360 yazılamaz (400 bank-gl-forbidden); Kasa'daki vergi satırı Kasa'dan düzeltilmez (409); silinir ve geri gelir
+      ---
+      duration_ms: 84.142721
+      type: 'test'
+      ...
+    # Subtest: mahsuptan sonra o aya KDV'li kayıt gelince uyarı (liste ve KDV Özeti); geri al + yeniden yap düzeltir; geri alma ters kayıttır
+    ok 8 - mahsuptan sonra o aya KDV'li kayıt gelince uyarı (liste ve KDV Özeti); geri al + yeniden yap düzeltir; geri alma ters kayıttır
+      ---
+      duration_ms: 72.25529
+      type: 'test'
+      ...
+    # Subtest: dönem kilidi: Eylül kilitliyken Eylül mahsubu geri alınamaz ve Eylül'e yeni mahsup yazılamaz; kilit açılınca geri alınır
+    ok 9 - dönem kilidi: Eylül kilitliyken Eylül mahsubu geri alınamaz ve Eylül'e yeni mahsup yazılamaz; kilit açılınca geri alınır
+      ---
+      duration_ms: 555.807657
+      type: 'test'
+      ...
+    # Subtest: yetki: personel 403 (vergi, ödeme, mahsup); muhasebe yapar; Rapor Merkezi KDV Özeti'nde düğme yalnız yetkiliye
+    ok 10 - yetki: personel 403 (vergi, ödeme, mahsup); muhasebe yapar; Rapor Merkezi KDV Özeti'nde düğme yalnız yetkiliye
+      ---
+      duration_ms: 392.813798
+      type: 'test'
+      ...
+    1..10
+ok 29 - 2.4.3 MM3 — Vergi Ödemesi ve KDV Mahsup Fişi
+  ---
+  duration_ms: 2198.236499
+  type: 'suite'
+  ...
+# Subtest: H1 — cari satırının açılış işareti (ayrı sorgu) ↔ veri tabanının kolonları
+    # Subtest: 2.0.26 verisi (göç 48 adayları + Açılış Olabilir kararları): karşı hesap 519 / 602 / 770 kolonlardan beklenenle aynı; süzgeçli = süzgeçsiz
+    ok 1 - 2.0.26 verisi (göç 48 adayları + Açılış Olabilir kararları): karşı hesap 519 / 602 / 770 kolonlardan beklenenle aynı; süzgeçli = süzgeçsiz
+      ---
+      duration_ms: 1293.105266
+      type: 'test'
+      ...
+    1..1
+ok 30 - H1 — cari satırının açılış işareti (ayrı sorgu) ↔ veri tabanının kolonları
+  ---
+  duration_ms: 1294.028209
+  type: 'suite'
+  ...
+# Subtest: H2 — yüklenen kartın alanları (ayrı sorgu) ↔ veri tabanı
+    # Subtest: surum-2.4.9-s127-kilitsiz: KG-5 tek madde T − P / A 519, açılış satırı maddesiz (S127'ye bağlı kart eski yapıda); süzgeçli (kart, taksit satırı) = süzgeçsiz
+    ok 1 - surum-2.4.9-s127-kilitsiz: KG-5 tek madde T − P / A 519, açılış satırı maddesiz (S127'ye bağlı kart eski yapıda); süzgeçli (kart, taksit satırı) = süzgeçsiz
+      ---
+      duration_ms: 124.470068
+      type: 'test'
+      ...
+    # Subtest: surum-2.4.9-s127: KG-5 tek madde T − P / A 519, açılış satırı maddesiz (S127'ye bağlı kart eski yapıda); süzgeçli (kart, taksit satırı) = süzgeçsiz
+    ok 2 - surum-2.4.9-s127: KG-5 tek madde T − P / A 519, açılış satırı maddesiz (S127'ye bağlı kart eski yapıda); süzgeçli (kart, taksit satırı) = süzgeçsiz
+      ---
+      duration_ms: 421.572911
+      type: 'test'
+      ...
+    1..2
+ok 31 - H2 — yüklenen kartın alanları (ayrı sorgu) ↔ veri tabanı
+  ---
+  duration_ms: 546.394698
+  type: 'suite'
+  ...
+# Subtest: H3 — journalSort ≡ sort(journalOrder)
+    # Subtest: gerçek maddeler (2.4.9 S127 kilitli fikstürü + 2.0.26) karıştırılmış girdiyle; eşit anahtarlar, yazım sırası olmayan, açılış sınıflı ve bilinmeyen önekli maddeler
+    ok 1 - gerçek maddeler (2.4.9 S127 kilitli fikstürü + 2.0.26) karıştırılmış girdiyle; eşit anahtarlar, yazım sırası olmayan, açılış sınıflı ve bilinmeyen önekli maddeler
+      ---
+      duration_ms: 18.448177
+      type: 'test'
+      ...
+    1..1
+ok 32 - H3 — journalSort ≡ sort(journalOrder)
+  ---
+  duration_ms: 18.602391
+  type: 'suite'
+  ...
+# \# kaynak tarama: 44 sorgu, 227 sütun okunuyor; izde 145; istisna 48; istisna tablosu 19; rowid 17
+# Subtest: Ç5-A tur 1f — Ana Defter türetmesinin okuduğu her sütun kilit izinde ya da gerekçeli açık istisnada (kalıcı kaynak tarama; §16)
+    # Subtest: türetmenin okuduğu her sütun: kilitli satırda değişince iz değişir ya da açık istisnada; istisnalar güncel (hepsi türetmede okunuyor)
+    ok 1 - türetmenin okuduğu her sütun: kilitli satırda değişince iz değişir ya da açık istisnada; istisnalar güncel (hepsi türetmede okunuyor)
+      ---
+      duration_ms: 3119.911518
+      type: 'test'
+      ...
+    # Subtest: kilit izinin önbelleği: aynı durumda aynı iz; bu bağlantının yazımı, başka bağlantının yazımı ve geri alınan işlem sonrası baştan hesaplanan izle aynı
+    ok 2 - kilit izinin önbelleği: aynı durumda aynı iz; bu bağlantının yazımı, başka bağlantının yazımı ve geri alınan işlem sonrası baştan hesaplanan izle aynı
+      ---
+      duration_ms: 39.325673
+      type: 'test'
+      ...
+    1..2
+ok 33 - Ç5-A tur 1f — Ana Defter türetmesinin okuduğu her sütun kilit izinde ya da gerekçeli açık istisnada (kalıcı kaynak tarama; §16)
+  ---
+  duration_ms: 5084.349861
+  type: 'suite'
+  ...
+# Subtest: D3 tur 5 — veri damgasının iz türü listesi (kaynak taraması)
+    # Subtest: tarama boş değil (ders 4): bilinen iz türleri bulunur (fatura, cari hareketi, kilit, defter dondurması, banka)
+    ok 1 - tarama boş değil (ders 4): bilinen iz türleri bulunur (fatura, cari hareketi, kilit, defter dondurması, banka)
+      ---
+      duration_ms: 175.715303
+      type: 'test'
+      ...
+    # Subtest: her iz türü sınıflandırılmış: ya veri damgasında ya gerekçeli VERİ DIŞI listede (yeni para yazıcısı listeye girmeden eklenemez)
+    ok 2 - her iz türü sınıflandırılmış: ya veri damgasında ya gerekçeli VERİ DIŞI listede (yeni para yazıcısı listeye girmeden eklenemez)
+      ---
+      duration_ms: 176.240509
+      type: 'test'
+      ...
+    # Subtest: çakışma yok: veri damgasındaki bir tür VERİ DIŞI listede değil; dışlananlar (görüntüleme / dışa aktarma) veri ad alanında ve gerçekten var
+    ok 3 - çakışma yok: veri damgasındaki bir tür VERİ DIŞI listede değil; dışlananlar (görüntüleme / dışa aktarma) veri ad alanında ve gerçekten var
+      ---
+      duration_ms: 150.378873
+      type: 'test'
+      ...
+    # Subtest: v-5: devirde budanan / kalan (B / A) her tablo ya damganın saydığı tablolarda ya yazımı iz türüyle / gerekçeyle karşılanmış
+    ok 4 - v-5: devirde budanan / kalan (B / A) her tablo ya damganın saydığı tablolarda ya yazımı iz türüyle / gerekçeyle karşılanmış
+      ---
+      duration_ms: 0.403237
+      type: 'test'
+      ...
+    # Subtest: ders 27: tarama CRLF'li kaynakta da aynı türleri bulur
+    ok 5 - ders 27: tarama CRLF'li kaynakta da aynı türleri bulur
+      ---
+      duration_ms: 0.373641
+      type: 'test'
+      ...
+    1..5
+ok 34 - D3 tur 5 — veri damgasının iz türü listesi (kaynak taraması)
+  ---
+  duration_ms: 504.286624
+  type: 'suite'
+  ...
+# \# 6d K çeviri: yapılan 79; beklenen ret ["KG0: 409 Nakit kasada 0,00 TL var; 100,00 TL çıkış bakiyeyi -100,00 TL eksiye düşürür."]; atlanan ["AE1: uç adı henüz verilmedi (kos.mjs UCLAR.acilis_evrak)","AE2: uç adı henüz verilmedi (kos.mjs UCLAR.acilis_evrak)","AE3: uç adı henüz verilmedi (kos.mjs UCLAR.acilis_evrak)","AE1K: evrakı programa gönderilmedi (atlanan / reddedilen)","AE2K: evrakı programa gönderilmedi (atlanan / reddedilen)","EX1: uç adı henüz verilmedi (kos.mjs UCLAR.excel_taksit_karti)","KDZ1: uç adı henüz verilmedi (kos.mjs UCLAR.kasa_duzelt)","KDZ2: uç adı henüz verilmedi (kos.mjs UCLAR.kasa_duzelt)"]
+# Subtest: 6d K — kâhin senaryosu: Genel Toplam = kâhinin cari bakiyesi, kalem toplamı = defter
+    # Subtest: K1 ret yok; her carinin Ayrıntılı Ekstre Genel Toplam bakiyesi = kâhin; kalem toplamı = defter
+    ok 1 - K1 ret yok; her carinin Ayrıntılı Ekstre Genel Toplam bakiyesi = kâhin; kalem toplamı = defter
+      ---
+      duration_ms: 156.306178
+      type: 'test'
+      ...
+    # Subtest: K2 dönem sınırı: devir (dönem öncesi) + dönem = kâhin; dönem öncesi faturanın kalemi görünmez
+    ok 2 - K2 dönem sınırı: devir (dönem öncesi) + dönem = kâhin; dönem öncesi faturanın kalemi görünmez
+      ---
+      duration_ms: 130.559065
+      type: 'test'
+      ...
+    # Subtest: K3 yol ve belge no: tahsilat Nakit / Havale / EFT / POS, ödeme Kredi Kartı, çek / senet evrak no, fatura numarası
+    ok 3 - K3 yol ve belge no: tahsilat Nakit / Havale / EFT / POS, ödeme Kredi Kartı, çek / senet evrak no, fatura numarası
+      ---
+      duration_ms: 27.610945
+      type: 'test'
+      ...
+    1..3
+ok 35 - 6d K — kâhin senaryosu: Genel Toplam = kâhinin cari bakiyesi, kalem toplamı = defter
+  ---
+  duration_ms: 2921.404872
+  type: 'suite'
+  ...
+# Subtest: 6d B/E/Y/G — genel iskonto, SMM, taslak, iptal, Düzenle, aynı ad, 002, PDF/Excel, yetki, seçenek kapalı
+    # Subtest: B1 genel iskonto, KDV dahil, SMM stopajı: kalem toplamı = defter; taslak / iptal / eski kalem / öbür cari görünmez
+    ok 1 - B1 genel iskonto, KDV dahil, SMM stopajı: kalem toplamı = defter; taslak / iptal / eski kalem / öbür cari görünmez
+      ---
+      duration_ms: 12.95763
+      type: 'test'
+      ...
+    # Subtest: E1 ekran = PDF = Excel: aynı satırlar, aynı Dönem Toplamı / Genel Toplam
+    ok 2 - E1 ekran = PDF = Excel: aynı satırlar, aynı Dönem Toplamı / Genel Toplam
+      ---
+      duration_ms: 56.271396
+      type: 'test'
+      ...
+    # Subtest: Y1 Finans Raporları yetkisi olmayan: seçenek açık da kapalı da 403
+    ok 3 - Y1 Finans Raporları yetkisi olmayan: seçenek açık da kapalı da 403
+      ---
+      duration_ms: 101.94229
+      type: 'test'
+      ...
+    # Subtest: G1 seçenek kapalı: bugünkü ekstre (6 kolon, rowMarks yok, tek TOPLAM, aynı özet)
+    ok 4 - G1 seçenek kapalı: bugünkü ekstre (6 kolon, rowMarks yok, tek TOPLAM, aynı özet)
+      ---
+      duration_ms: 8.163829
+      type: 'test'
+      ...
+    # Subtest: B2 002 şirketi: kalemler o şirketin faturasından
+    ok 5 - B2 002 şirketi: kalemler o şirketin faturasından
+      ---
+      duration_ms: 388.297037
+      type: 'test'
+      ...
+    1..5
+ok 36 - 6d B/E/Y/G — genel iskonto, SMM, taslak, iptal, Düzenle, aynı ad, 002, PDF/Excel, yetki, seçenek kapalı
+  ---
+  duration_ms: 1269.471989
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 Ç2 — saklanan fiş defteri
+    # Subtest: N12 (tohum): fiş yokken Defter Mutabakatı'nda Fiş Defteri denetimi görünmez, yevmiyede fiş maddesi yok
+    ok 1 - N12 (tohum): fiş yokken Defter Mutabakatı'nda Fiş Defteri denetimi görünmez, yevmiyede fiş maddesi yok
+      ---
+      duration_ms: 31.045224
+      type: 'test'
+      ...
+    # Subtest: N1–N3: dengesiz, sıfır, iki taraflı, eksi, kesirli satır; planda olmayan hesap, yabancı alt hesap, kontrol dışı cari → 400, hiçbir satır yazılmaz
+    ok 2 - N1–N3: dengesiz, sıfır, iki taraflı, eksi, kesirli satır; planda olmayan hesap, yabancı alt hesap, kontrol dışı cari → 400, hiçbir satır yazılmaz
+      ---
+      duration_ms: 3.429039
+      type: 'test'
+      ...
+    # Subtest: N4: aynı istek kimliği — aynı içerik aynı fişi döndürür (yeni fiş yok), farklı içerik 409; numara tüketilmez
+    ok 3 - N4: aynı istek kimliği — aynı içerik aynı fişi döndürür (yeni fiş yok), farklı içerik 409; numara tüketilmez
+      ---
+      duration_ms: 34.327014
+      type: 'test'
+      ...
+    # Subtest: N7 ileri tarih 400; N6 kilitli tarihe fiş 409 period-locked, hiçbir satır yazılmaz
+    ok 4 - N7 ileri tarih 400; N6 kilitli tarihe fiş 409 period-locked, hiçbir satır yazılmaz
+      ---
+      duration_ms: 299.12301
+      type: 'test'
+      ...
+    # Subtest: N8: fiş ve satırı UPDATE / DELETE / INSERT OR REPLACE / UPSERT ile değişmez; kapanmış fişe satır eklenmez; fişsiz satır eklenmez
+    ok 5 - N8: fiş ve satırı UPDATE / DELETE / INSERT OR REPLACE / UPSERT ile değişmez; kapanmış fişe satır eklenmez; fişsiz satır eklenmez
+      ---
+      duration_ms: 11.110131
+      type: 'test'
+      ...
+    # Subtest: N9–N10: ters kayıt aynalar, mizan sıfırlanır, iki madde de yevmiyede; ikinci ters kayıt, ters kaydın tersi ve asıldan önce tarih reddedilir; kilitli asıl tarihe ters kayıt 409
+    ok 6 - N9–N10: ters kayıt aynalar, mizan sıfırlanır, iki madde de yevmiyede; ikinci ters kayıt, ters kaydın tersi ve asıldan önce tarih reddedilir; kilitli asıl tarihe ters kayıt 409
+      ---
+      duration_ms: 317.878368
+      type: 'test'
+      ...
+    # Subtest: N9 (HTTP): aynı istek kimliğiyle eşzamanlı iki ters kayıt → tek fiş (biri yinelenen); farklı kimlikle eşzamanlı iki ters kayıt → biri 200, biri 409
+    ok 7 - N9 (HTTP): aynı istek kimliğiyle eşzamanlı iki ters kayıt → tek fiş (biri yinelenen); farklı kimlikle eşzamanlı iki ters kayıt → biri 200, biri 409
+      ---
+      duration_ms: 71.055194
+      type: 'test'
+      ...
+    # Subtest: N13: aynı gün sırası — açılış fişi günün en başında, olağan fiş Banka Fişi'nden sonra, dönem sonu KDV mahsubundan sonra, kapanış günün en sonunda; sınıf içinde yazım sırası
+    ok 8 - N13: aynı gün sırası — açılış fişi günün en başında, olağan fiş Banka Fişi'nden sonra, dönem sonu KDV mahsubundan sonra, kapanış günün en sonunda; sınıf içinde yazım sırası
+      ---
+      duration_ms: 1.682623
+      type: 'test'
+      ...
+    # Subtest: N14: kapanış fişleri ve kilit AYNI işlemde (lockThrough); biri düşerse fiş de kilit de yazılmaz; yalnız kapanış türleri, fiş ≤ kilit
+    ok 9 - N14: kapanış fişleri ve kilit AYNI işlemde (lockThrough); biri düşerse fiş de kilit de yazılmaz; yalnız kapanış türleri, fiş ≤ kilit
+      ---
+      duration_ms: 38.691702
+      type: 'test'
+      ...
+    # Subtest: N20: 31.12 ve 01.01 — numara yılı ayrı, 31.12 kapanışı yılın son maddesi, 01.01 açılışı yeni yılın ilk maddesi, mizan devri
+    ok 10 - N20: 31.12 ve 01.01 — numara yılı ayrı, 31.12 kapanışı yılın son maddesi, 01.01 açılışı yeni yılın ilk maddesi, mizan devri
+      ---
+      duration_ms: 86.75174
+      type: 'test'
+      ...
+    # Subtest: N21: kontrol (alt defter) hesabına yazan fiş reddedilir — fiş denetiminde 400 (Ç2 tur 1, K6 yeni kuralı); kapı ikinci katman (korumasız kurulan modülde 409); numara tüketilmez
+    ok 11 - N21: kontrol (alt defter) hesabına yazan fiş reddedilir — fiş denetiminde 400 (Ç2 tur 1, K6 yeni kuralı); kapı ikinci katman (korumasız kurulan modülde 409); numara tüketilmez
+      ---
+      duration_ms: 23.763881
+      type: 'test'
+      ...
+    # Subtest: N23: uçlar yalnız system.manage — Muhasebe ve Personel 403
+    ok 12 - N23: uçlar yalnız system.manage — Muhasebe ve Personel 403
+      ---
+      duration_ms: 242.732707
+      type: 'test'
+      ...
+    # Subtest: Fiş Defteri denetimi: fiş varken Defter Mutabakatı'nda tutarlı satır; yapısı bozulan fişi (store dışı) tam tarama yakalar
+    ok 13 - Fiş Defteri denetimi: fiş varken Defter Mutabakatı'nda tutarlı satır; yapısı bozulan fişi (store dışı) tam tarama yakalar
+      ---
+      duration_ms: 59.412352
+      type: 'test'
+      ...
+    1..13
+ok 37 - 2.5.0 Ç2 — saklanan fiş defteri
+  ---
+  duration_ms: 1728.212943
+  type: 'suite'
+  ...
+# Subtest: 2.5.0 Ç2 — N22: kilitli dönemdeki fiş store dışından silinirse tam tarama "Kapanmış dönem" der
+    # Subtest: kilit izi fiş satırlarını içerir
+    ok 1 - kilit izi fiş satırlarını içerir
+      ---
+      duration_ms: 436.183494
+      type: 'test'
+      ...
+    1..1
+ok 38 - 2.5.0 Ç2 — N22: kilitli dönemdeki fiş store dışından silinirse tam tarama "Kapanmış dönem" der
+  ---
+  duration_ms: 786.154154
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M1 — KDV Özeti: Önceki Dönemden Devreden KDV ve mahsup formülüyle Ödenecek / Sonraki Döneme Devreden
+    # Subtest: S261 (002): Şubat KDV Özeti — Önceki Dönemden Devreden 2.000, Ödenecek 0, Sonraki Döneme Devreden 800; mahsup ön izlemesiyle aynı; ekran = PDF = Excel
+    ok 1 - S261 (002): Şubat KDV Özeti — Önceki Dönemden Devreden 2.000, Ödenecek 0, Sonraki Döneme Devreden 800; mahsup ön izlemesiyle aynı; ekran = PDF = Excel
+      ---
+      duration_ms: 73.131593
+      type: 'test'
+      ...
+    # Subtest: MA (001): Mayıs ödenecek 60 (1.200 − 1.140); Mart / Nisan devreden 1.140 taşınır; Eylül ödenecek 0, sonraki 1.960 (kâhin: mali müşavir)
+    ok 2 - MA (001): Mayıs ödenecek 60 (1.200 − 1.140); Mart / Nisan devreden 1.140 taşınır; Eylül ödenecek 0, sonraki 1.960 (kâhin: mali müşavir)
+      ---
+      duration_ms: 62.015982
+      type: 'test'
+      ...
+    # Subtest: MA (001) yıllık 2026: Önceki 0, Ödenecek 60, Sonraki 1.960 = defterdeki 190; ay ay satırlar kendi devreden / ödenecek değeriyle; ekran = PDF = Excel
+    ok 3 - MA (001) yıllık 2026: Önceki 0, Ödenecek 60, Sonraki 1.960 = defterdeki 190; ay ay satırlar kendi devreden / ödenecek değeriyle; ekran = PDF = Excel
+      ---
+      duration_ms: 40.643538
+      type: 'test'
+      ...
+    # Subtest: boş ve gelecek dönem; iki şirket karışmaz; aralık yalnız mahsupsuz hareketsiz aylarsa devreden aynen
+    ok 4 - boş ve gelecek dönem; iki şirket karışmaz; aralık yalnız mahsupsuz hareketsiz aylarsa devreden aynen
+      ---
+      duration_ms: 26.242043
+      type: 'test'
+      ...
+    # Subtest: mahsup fişi kesilmemiş ay (S-M1-1 = B): rapor ZİNCİRLİ + 'Mahsup Edilmemiş Ay' notu, ön izleme defterden; mahsup kesilince / geri alınınca / yeniden kesilince rapor sayısı aynı
+    ok 5 - mahsup fişi kesilmemiş ay (S-M1-1 = B): rapor ZİNCİRLİ + 'Mahsup Edilmemiş Ay' notu, ön izleme defterden; mahsup kesilince / geri alınınca / yeniden kesilince rapor sayısı aynı
+      ---
+      duration_ms: 141.360241
+      type: 'test'
+      ...
+    # Subtest: ödenecek aydan sonra yeniden devreden; aralık yıl başını aşar (Aralık 2026 → Ocak 2027)
+    ok 6 - ödenecek aydan sonra yeniden devreden; aralık yıl başını aşar (Aralık 2026 → Ocak 2027)
+      ---
+      duration_ms: 163.282695
+      type: 'test'
+      ...
+    # Subtest: iadeler, alıcı olarak kesilen tevkifat, KDV İndirim Dönemi başka aya atılmış alış (002): rapor = mahsup ön izlemesi ay ay; 391 / 191 iadeler düşülmüş
+    ok 7 - iadeler, alıcı olarak kesilen tevkifat, KDV İndirim Dönemi başka aya atılmış alış (002): rapor = mahsup ön izlemesi ay ay; 391 / 191 iadeler düşülmüş
+      ---
+      duration_ms: 172.196486
+      type: 'test'
+      ...
+    # Subtest: S4 (002): Mart mahsubundan sonra Mart'ın tevkifatlı alışı İptal Et (191 −400) → Nisan: rapor = ön izleme (azaltan fark Nisan'a taşınır): önceki 1.000, sonraki 800
+    ok 8 - S4 (002): Mart mahsubundan sonra Mart'ın tevkifatlı alışı İptal Et (191 −400) → Nisan: rapor = ön izleme (azaltan fark Nisan'a taşınır): önceki 1.000, sonraki 800
+      ---
+      duration_ms: 67.628933
+      type: 'test'
+      ...
+    # Subtest: kilitli dönem ve Defter Türü (işletme): rapor sayıları değişmez; ay ortasında biten aralıkta not
+    ok 9 - kilitli dönem ve Defter Türü (işletme): rapor sayıları değişmez; ay ortasında biten aralıkta not
+      ---
+      duration_ms: 343.323008
+      type: 'test'
+      ...
+    # Subtest: yetki: finans raporu yetkisi olmayan 403; muhasebe aynı sayıları görür
+    ok 10 - yetki: finans raporu yetkisi olmayan 403; muhasebe aynı sayıları görür
+      ---
+      duration_ms: 220.508925
+      type: 'test'
+      ...
+    1..10
+ok 39 - 2.5.1 M1 — KDV Özeti: Önceki Dönemden Devreden KDV ve mahsup formülüyle Ödenecek / Sonraki Döneme Devreden
+  ---
+  duration_ms: 2505.125168
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M1 küçük tur 7 — devreden farkı kolu: önceki 'güncel değil' Şubat (devreden yönde) + eski devredenle kesilmiş Mart (tur 6 s5 vakası AYNEN) / önceki güncel olmayan fiş YOK (cümle AYNEN) + zincirleme uyuşmazlık
+    # Subtest: 001 D0: Ocak–Mayıs 2.400 = 391 4.500 − 191 2.100 (DEĞİŞMEDİ); Mart notu onarımı Şubat'tan söyler (Ocak–Mayıs, Mart tek ay, Nisan tek ay); ekran = PDF = Excel
+    ok 1 - 001 D0: Ocak–Mayıs 2.400 = 391 4.500 − 191 2.100 (DEĞİŞMEDİ); Mart notu onarımı Şubat'tan söyler (Ocak–Mayıs, Mart tek ay, Nisan tek ay); ekran = PDF = Excel
+      ---
+      duration_ms: 120.752618
+      type: 'test'
+      ...
+    # Subtest: 001 tabanın önerdiği onarım (yalnız Mart ve sonrası) notu kaldırmaz; notun YENİ cümlesinin adımları (Şubat'tan) kaldırır: fişler Şubat 1.000 / 0 / 800, Mart 800 / 1.000 / 0, Nisan 0 / 900 / 0; Ocak–Mayıs 2.400 = 391 − 191
+    ok 2 - 001 tabanın önerdiği onarım (yalnız Mart ve sonrası) notu kaldırmaz; notun YENİ cümlesinin adımları (Şubat'tan) kaldırır: fişler Şubat 1.000 / 0 / 800, Mart 800 / 1.000 / 0, Nisan 0 / 900 / 0; Ocak–Mayıs 2.400 = 391 − 191
+      ---
+      duration_ms: 150.740392
+      type: 'test'
+      ...
+    # Subtest: 002 önceki güncel olmayan fiş YOK (yalnız mahsupsuz Şubat): Mart cümlesi AYNEN 'bu ayın ve sonraki …'; zincirleme Nisan (Mart'ın uyuşmayan fişinden) → onarım Mart'tan; adımlarla notlar kalkar
+    ok 3 - 002 önceki güncel olmayan fiş YOK (yalnız mahsupsuz Şubat): Mart cümlesi AYNEN 'bu ayın ve sonraki …'; zincirleme Nisan (Mart'ın uyuşmayan fişinden) → onarım Mart'tan; adımlarla notlar kalkar
+      ---
+      duration_ms: 138.375704
+      type: 'test'
+      ...
+    1..3
+ok 40 - 2.5.1 M1 küçük tur 7 — devreden farkı kolu: önceki 'güncel değil' Şubat (devreden yönde) + eski devredenle kesilmiş Mart (tur 6 s5 vakası AYNEN) / önceki güncel olmayan fiş YOK (cümle AYNEN) + zincirleme uyuşmazlık
+  ---
+  duration_ms: 1543.218541
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M1 küçük tur 7 — iki 'güncel değil' ay (onarım İLKİNDEN), yıl dönümü (Aralık 2026 → Ocak 2027, fiş değişiklikten SONRA)
+    # Subtest: 001 iki 'güncel değil' (Ocak ödenecek yönde, Şubat devreden yönde): Mart notu onarımı İLK aydan (Ocak 2026); notun adımlarıyla kalkar; Ocak–Mart 700 = 391 2.200 − 191 1.500
+    ok 1 - 001 iki 'güncel değil' (Ocak ödenecek yönde, Şubat devreden yönde): Mart notu onarımı İLK aydan (Ocak 2026); notun adımlarıyla kalkar; Ocak–Mart 700 = 391 2.200 − 191 1.500
+      ---
+      duration_ms: 72.845546
+      type: 'test'
+      ...
+    # Subtest: 002 yıl dönümü: Bu Yıl (2027) ve Ocak 2027 notu onarımı '(Aralık 2026)' yılıyla söyler; notun adımlarıyla kalkar; Bu Yıl Ödenecek 800 = 391 1.000 − önceki devreden 200
+    ok 2 - 002 yıl dönümü: Bu Yıl (2027) ve Ocak 2027 notu onarımı '(Aralık 2026)' yılıyla söyler; notun adımlarıyla kalkar; Bu Yıl Ödenecek 800 = 391 1.000 − önceki devreden 200
+      ---
+      duration_ms: 89.322395
+      type: 'test'
+      ...
+    1..2
+ok 41 - 2.5.1 M1 küçük tur 7 — iki 'güncel değil' ay (onarım İLKİNDEN), yıl dönümü (Aralık 2026 → Ocak 2027, fiş değişiklikten SONRA)
+  ---
+  duration_ms: 1267.74134
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M1 küçük tur 2 — KDV Özeti karma ay (S-M1K-1 = A): kararın örneği AYNEN, satış silinmesi + alış iptali, iki şirket
+    # Subtest: 001 kararın örneği: Ocak 600 (İ fişten 500, 391 bugünkü 1.100), Şubat 700, Ocak–Şubat 1.300 = 391; karma notu; fişler, ön izleme ve defter değişmez; ekran = PDF = Excel
+    ok 1 - 001 kararın örneği: Ocak 600 (İ fişten 500, 391 bugünkü 1.100), Şubat 700, Ocak–Şubat 1.300 = 391; karma notu; fişler, ön izleme ve defter değişmez; ekran = PDF = Excel
+      ---
+      duration_ms: 121.692676
+      type: 'test'
+      ...
+    # Subtest: 001 aralıklar: Mart fişi 400 → Ocak–Mart 1.700, Şubat–Mart 1.100 (notsuz), Bu Yıl ve Tüm Zamanlar 1.700 — hepsi 391 − 191
+    ok 2 - 001 aralıklar: Mart fişi 400 → Ocak–Mart 1.700, Şubat–Mart 1.100 (notsuz), Bu Yıl ve Tüm Zamanlar 1.700 — hepsi 391 − 191
+      ---
+      duration_ms: 42.570184
+      type: 'test'
+      ...
+    # Subtest: 002 satış silinmesi + alış iptali (391 azaldı, İ azaldı): Ocak 400 (900 − 500 fişten), Şubat 700, Ocak–Şubat 1.100 = 391; karma notu; 001 etkilenmez
+    ok 3 - 002 satış silinmesi + alış iptali (391 azaldı, İ azaldı): Ocak 400 (900 − 500 fişten), Şubat 700, Ocak–Şubat 1.100 = 391; karma notu; 001 etkilenmez
+      ---
+      duration_ms: 104.182669
+      type: 'test'
+      ...
+    1..3
+ok 42 - 2.5.1 M1 küçük tur 2 — KDV Özeti karma ay (S-M1K-1 = A): kararın örneği AYNEN, satış silinmesi + alış iptali, iki şirket
+  ---
+  duration_ms: 1382.711829
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M1 küçük tur 2 — KDV Özeti karma ay: devreden yönde, yön dönmesi ve yıl dönümü
+    # Subtest: 001 devreden yönde karma: Mart 300 − 1.000 → sonraki 700 (taban 300); Nisan zincirde 700 devredenle 700 + 'Zincirle Uyuşmayan' (fiş 800'le); Mart–Nisan 700 = 391 − 191; onarımda aynı
+    ok 1 - 001 devreden yönde karma: Mart 300 − 1.000 → sonraki 700 (taban 300); Nisan zincirde 700 devredenle 700 + 'Zincirle Uyuşmayan' (fiş 800'le); Mart–Nisan 700 = 391 − 191; onarımda aynı
+      ---
+      duration_ms: 105.511904
+      type: 'test'
+      ...
+    # Subtest: 002 yön dönmesi + yıl dönümü: Aralık 200 − 500 → sonraki 300 (taban: ödenecek 200); Ocak 2027 mahsupsuz 300 devredenle 400; Aralık–Ocak 400 = 391; Bu Yıl önceki 300; Ocak fişi sonra kesilirse uyuşmazlık; onarım
+    ok 2 - 002 yön dönmesi + yıl dönümü: Aralık 200 − 500 → sonraki 300 (taban: ödenecek 200); Ocak 2027 mahsupsuz 300 devredenle 400; Aralık–Ocak 400 = 391; Bu Yıl önceki 300; Ocak fişi sonra kesilirse uyuşmazlık; onarım
+      ---
+      duration_ms: 111.624135
+      type: 'test'
+      ...
+    1..2
+ok 43 - 2.5.1 M1 küçük tur 2 — KDV Özeti karma ay: devreden yönde, yön dönmesi ve yıl dönümü
+  ---
+  duration_ms: 1139.926807
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M1 küçük tur 2 — KDV Özeti tutarlılık tablosu: yalnız azalma / yalnız 391 / ikisi birden / hiçbiri / İ arttı (her biri ayrı şirkette)
+    # Subtest: hiçbiri + yalnız İ azaldı (S-DKM1-1 = A)
+        # Subtest: 001 hiçbiri: Ocak 500, Ocak–Şubat 700 = 391 − 191; not; onarımda fişler 500 / 200 (toplam = rapor)
+        ok 1 - 001 hiçbiri: Ocak 500, Ocak–Şubat 700 = 391 − 191; not; onarımda fişler 500 / 200 (toplam = rapor)
+          ---
+          duration_ms: 40.535802
+          type: 'test'
+          ...
+        # Subtest: 002 yalnız İ azaldı (S-DKM1-1 = A): Ocak 500, Ocak–Şubat 900 = 391 − 191; not; onarımda fişler 700 / 200 (toplam = rapor)
+        ok 2 - 002 yalnız İ azaldı (S-DKM1-1 = A): Ocak 500, Ocak–Şubat 900 = 391 − 191; not; onarımda fişler 700 / 200 (toplam = rapor)
+          ---
+          duration_ms: 55.545068
+          type: 'test'
+          ...
+        1..2
+    ok 1 - hiçbiri + yalnız İ azaldı (S-DKM1-1 = A)
+      ---
+      duration_ms: 1185.650762
+      type: 'suite'
+      ...
+    # Subtest: yalnız 391 değişti (S-M1-3 = C) + ikisi birden (S-M1K-1 = A)
+        # Subtest: 001 yalnız 391 değişti (S-M1-3 = C): Ocak 600, Ocak–Şubat 800 = 391 − 191; not; onarımda fişler 600 / 200 (toplam = rapor)
+        ok 1 - 001 yalnız 391 değişti (S-M1-3 = C): Ocak 600, Ocak–Şubat 800 = 391 − 191; not; onarımda fişler 600 / 200 (toplam = rapor)
+          ---
+          duration_ms: 47.507228
+          type: 'test'
+          ...
+        # Subtest: 002 ikisi birden (S-M1K-1 = A): Ocak 600, Ocak–Şubat 1000 = 391 − 191; not; onarımda fişler 800 / 200 (toplam = rapor)
+        ok 2 - 002 ikisi birden (S-M1K-1 = A): Ocak 600, Ocak–Şubat 1000 = 391 − 191; not; onarımda fişler 800 / 200 (toplam = rapor)
+          ---
+          duration_ms: 44.077693
+          type: 'test'
+          ...
+        1..2
+    ok 2 - yalnız 391 değişti (S-M1-3 = C) + ikisi birden (S-M1K-1 = A)
+      ---
+      duration_ms: 1175.992079
+      type: 'suite'
+      ...
+    # Subtest: İ arttı + 391 değişti (S-M1-3 = C)
+        # Subtest: 001 İ arttı + 391 değişti (S-M1-3 = C): Ocak 500, Ocak–Şubat 700 = 391 − 191; not; onarımda fişler 500 / 200 (toplam = rapor)
+        ok 1 - 001 İ arttı + 391 değişti (S-M1-3 = C): Ocak 500, Ocak–Şubat 700 = 391 − 191; not; onarımda fişler 500 / 200 (toplam = rapor)
+          ---
+          duration_ms: 37.021045
+          type: 'test'
+          ...
+        1..1
+    ok 3 - İ arttı + 391 değişti (S-M1-3 = C)
+      ---
+      duration_ms: 820.606625
+      type: 'suite'
+      ...
+    1..3
+ok 44 - 2.5.1 M1 küçük tur 2 — KDV Özeti tutarlılık tablosu: yalnız azalma / yalnız 391 / ikisi birden / hiçbiri / İ arttı (her biri ayrı şirkette)
+  ---
+  duration_ms: 3182.878491
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M1 küçük tur — KDV Özeti: fişten sonra azalan İndirilecek KDV (S-DKM1-1 = A) ve S4 emilimiyle kopuk fiş (dar kontrol L)
+    # Subtest: 001 kararın örneği: Ocak 500 / Şubat 700 / Mart 400 (fişten), Ocak–Mart Ödenecek 1.600 = fişler = 391; Ocak'ta not; ön izleme ve defter değişmez; ekran = PDF = Excel
+    ok 1 - 001 kararın örneği: Ocak 500 / Şubat 700 / Mart 400 (fişten), Ocak–Mart Ödenecek 1.600 = fişler = 391; Ocak'ta not; ön izleme ve defter değişmez; ekran = PDF = Excel
+      ---
+      duration_ms: 128.612254
+      type: 'test'
+      ...
+    # Subtest: 001 aralığın kenarları: Ocak–Şubat 1.200, Şubat–Mart 1.100 (notsuz), Tüm Zamanlar 1.600, Mart–Nisan önceki 0; gelecek ay devreden 0
+    ok 2 - 001 aralığın kenarları: Ocak–Şubat 1.200, Şubat–Mart 1.100 (notsuz), Tüm Zamanlar 1.600, Mart–Nisan önceki 0; gelecek ay devreden 0
+      ---
+      duration_ms: 22.207664
+      type: 'test'
+      ...
+    # Subtest: 002 mahsupsuz Şubat İndirilecek KDV'deki azalmayı zincirde düşer (S4 emilimi): Şubat 700, Mart 400, Şubat–Mart 1.100 — Mart ikinci kez düşmez
+    ok 3 - 002 mahsupsuz Şubat İndirilecek KDV'deki azalmayı zincirde düşer (S4 emilimi): Şubat 700, Mart 400, Şubat–Mart 1.100 — Mart ikinci kez düşmez
+      ---
+      duration_ms: 12.281608
+      type: 'test'
+      ...
+    # Subtest: 002 dar kontrol L: Şubat atlanıp Mart fişi defter sırasıyla (azalmayı yeniden düşerek) 900 kesilir → rapor zinciri gösterir (Mart 400, Ocak–Mart 1.600) + 'Zincirle Uyuşmayan Mahsup Fişi'; onarım
+    ok 4 - 002 dar kontrol L: Şubat atlanıp Mart fişi defter sırasıyla (azalmayı yeniden düşerek) 900 kesilir → rapor zinciri gösterir (Mart 400, Ocak–Mart 1.600) + 'Zincirle Uyuşmayan Mahsup Fişi'; onarım
+      ---
+      duration_ms: 102.576172
+      type: 'test'
+      ...
+    # Subtest: 001 mahsubu geri alınan ay: Mart, Şubat, Ocak sırayla geri alınır — toplam her adımda 1.600; Ocak geri alınınca Ocak 1.000 / Şubat 200 (bugünkü kayıtlar), not kalkar; yeniden kesilince 1.000 / 200 / 400
+    ok 5 - 001 mahsubu geri alınan ay: Mart, Şubat, Ocak sırayla geri alınır — toplam her adımda 1.600; Ocak geri alınınca Ocak 1.000 / Şubat 200 (bugünkü kayıtlar), not kalkar; yeniden kesilince 1.000 / 200 / 400
+      ---
+      duration_ms: 86.881066
+      type: 'test'
+      ...
+    1..5
+ok 45 - 2.5.1 M1 küçük tur — KDV Özeti: fişten sonra azalan İndirilecek KDV (S-DKM1-1 = A) ve S4 emilimiyle kopuk fiş (dar kontrol L)
+  ---
+  duration_ms: 1507.390817
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M1 küçük tur — KDV Özeti: yön notu (S-M1-2), yıl dönümünde azalan ay, sonraki fişten sonra gelen azalma, 'Mahsup Edilmemiş Ay' 6 ay sınırı
+    # Subtest: 001 S-M1-2: fiş 'sonraki döneme devreden 1.000', zincir 'ödenecek 800' → rapor zinciri (200 / 800 / 0) gösterir, not yön farkını da yazar; ön izleme değişmez
+    ok 1 - 001 S-M1-2: fiş 'sonraki döneme devreden 1.000', zincir 'ödenecek 800' → rapor zinciri (200 / 800 / 0) gösterir, not yön farkını da yazar; ön izleme değişmez
+      ---
+      duration_ms: 59.24153
+      type: 'test'
+      ...
+    # Subtest: 001 yıl dönümü: Aralık 2026 fişi (ödenecek 400), Aralık alışı Ocak'ta iptal → Aralık 400 (fişten) + not; Ocak 2027 200 + 200 = 400; Bu Yıl 400; 2026 yılı 1.200; Aralık–Ocak 800 = 391
+    ok 2 - 001 yıl dönümü: Aralık 2026 fişi (ödenecek 400), Aralık alışı Ocak'ta iptal → Aralık 400 (fişten) + not; Ocak 2027 200 + 200 = 400; Bu Yıl 400; 2026 yılı 1.200; Aralık–Ocak 800 = 391
+      ---
+      duration_ms: 156.097914
+      type: 'test'
+      ...
+    # Subtest: 002 azalma sonraki ayın fişinden SONRA: Ocak 500 (fişten, not), Şubat 200 (fişten, NOT YOK — Şubat'ın kaydı değişmedi), Mart 900 (zincirde, azalmayı düşer); Ocak–Mart 1.600
+    ok 3 - 002 azalma sonraki ayın fişinden SONRA: Ocak 500 (fişten, not), Şubat 200 (fişten, NOT YOK — Şubat'ın kaydı değişmedi), Mart 900 (zincirde, azalmayı düşer); Ocak–Mart 1.600
+      ---
+      duration_ms: 23.445331
+      type: 'test'
+      ...
+    # Subtest: 002 'Mahsup Edilmemiş Ay' en çok 6 ay: Ekim (6 ay: Nisan–Eylül, eksiksiz) ve Kasım (7 ay: 6 ay + 've 1 ay daha')
+    ok 4 - 002 'Mahsup Edilmemiş Ay' en çok 6 ay: Ekim (6 ay: Nisan–Eylül, eksiksiz) ve Kasım (7 ay: 6 ay + 've 1 ay daha')
+      ---
+      duration_ms: 10.235977
+      type: 'test'
+      ...
+    1..4
+ok 46 - 2.5.1 M1 küçük tur — KDV Özeti: yön notu (S-M1-2), yıl dönümünde azalan ay, sonraki fişten sonra gelen azalma, 'Mahsup Edilmemiş Ay' 6 ay sınırı
+  ---
+  duration_ms: 1404.348363
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M1 küçük tur 5 — S-DKM1K-1 = A: 'güncel değil' (İ artmış) aydan sonra azalan ay — kararın örneği AYNEN, yan etki (Nisan mahsubu), onarım, yıl dönümü
+    # Subtest: 001 kararın örneği: Nisan 700, Ocak–Nisan 1.600 = 391 3.500 − 191 1.900; Şubat 'güncel değil' notu durur; fiş / ön izleme / defter değişmez; ekran = PDF = Excel
+    ok 1 - 001 kararın örneği: Nisan 700, Ocak–Nisan 1.600 = 391 3.500 − 191 1.900; Şubat 'güncel değil' notu durur; fiş / ön izleme / defter değişmez; ekran = PDF = Excel
+      ---
+      duration_ms: 155.461683
+      type: 'test'
+      ...
+    # Subtest: 002 yıl dönümü: Bu Yıl (2027) 1.400 = 391 − 191 (Şubat 2027 700); 2026 yılı 200; Kasım–Şubat 1.600; 001 etkilenmez
+    ok 2 - 002 yıl dönümü: Bu Yıl (2027) 1.400 = 391 − 191 (Şubat 2027 700); 2026 yılı 200; Kasım–Şubat 1.600; 001 etkilenmez
+      ---
+      duration_ms: 66.158936
+      type: 'test'
+      ...
+    # Subtest: 001 yan etki: Nisan ön izlemeyle (500) mahsup edilirse fiş zincirle uyuşmaz, rapor 700 ve 1.600 kalır; onarımda (geri al + sırayla) rapor = fişler = 391 − 191
+    ok 3 - 001 yan etki: Nisan ön izlemeyle (500) mahsup edilirse fiş zincirle uyuşmaz, rapor 700 ve 1.600 kalır; onarımda (geri al + sırayla) rapor = fişler = 391 − 191
+      ---
+      duration_ms: 109.390912
+      type: 'test'
+      ...
+    1..3
+ok 47 - 2.5.1 M1 küçük tur 5 — S-DKM1K-1 = A: 'güncel değil' (İ artmış) aydan sonra azalan ay — kararın örneği AYNEN, yan etki (Nisan mahsubu), onarım, yıl dönümü
+  ---
+  duration_ms: 2208.520788
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M1 küçük tur 5 — S-DKM1K-1 = A: iki ardışık 'güncel değil' ay; devreden yönlü 'güncel değil' ay + araya zincirle uyuşmayan ay
+    # Subtest: 001 iki ardışık 'güncel değil': Mayıs 700, Ocak–Mayıs 2.300 = 391 4.500 − 191 2.200 (taban 2.100); notlar; Mayıs ön izlemesi 500 (DEĞİŞMEDİ)
+    ok 1 - 001 iki ardışık 'güncel değil': Mayıs 700, Ocak–Mayıs 2.300 = 391 4.500 − 191 2.200 (taban 2.100); notlar; Mayıs ön izlemesi 500 (DEĞİŞMEDİ)
+      ---
+      duration_ms: 52.01194
+      type: 'test'
+      ...
+    # Subtest: 002 devreden yönlü 'güncel değil' + uyuşmayan Mart: Mayıs 700, Ocak–Mayıs 2.400 = 391 4.500 − 191 2.100 (taban 2.200); Mart uyuşmazlık notu
+    ok 2 - 002 devreden yönlü 'güncel değil' + uyuşmayan Mart: Mayıs 700, Ocak–Mayıs 2.400 = 391 4.500 − 191 2.100 (taban 2.200); Mart uyuşmazlık notu
+      ---
+      duration_ms: 43.440286
+      type: 'test'
+      ...
+    1..2
+ok 48 - 2.5.1 M1 küçük tur 5 — S-DKM1K-1 = A: iki ardışık 'güncel değil' ay; devreden yönlü 'güncel değil' ay + araya zincirle uyuşmayan ay
+  ---
+  duration_ms: 1286.180307
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M1 küçük tur 5 — DEĞİŞMEYENLER (tabanda da yeşil): yalnız İ artışı (azalma yok); azalan ay ÖNCE, 'güncel değil' ay SONRA
+    # Subtest: 001 yalnız İ artışı: Nisan 500, Ocak–Nisan 1.400 = 391 3.500 − 191 2.100 (artış bir kez)
+    ok 1 - 001 yalnız İ artışı: Nisan 500, Ocak–Nisan 1.400 = 391 3.500 − 191 2.100 (artış bir kez)
+      ---
+      duration_ms: 9.803933
+      type: 'test'
+      ...
+    # Subtest: 002 azalan ay önce, 'güncel değil' sonra: Mart azalmayı kendisi düşer (700), Nisan 500; Ocak–Nisan 1.700 = 391 3.500 − 191 1.800
+    ok 2 - 002 azalan ay önce, 'güncel değil' sonra: Mart azalmayı kendisi düşer (700), Nisan 500; Ocak–Nisan 1.700 = 391 3.500 − 191 1.800
+      ---
+      duration_ms: 11.781844
+      type: 'test'
+      ...
+    1..2
+ok 49 - 2.5.1 M1 küçük tur 5 — DEĞİŞMEYENLER (tabanda da yeşil): yalnız İ artışı (azalma yok); azalan ay ÖNCE, 'güncel değil' ay SONRA
+  ---
+  duration_ms: 1058.743756
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M1 küçük tur 6 — (a) uyuşmazlığın yönü + onarım, (b) aralık dışındaki 'güncel değil' fiş için kısa not: kararın örneği (A) ve 'Nisan fişi önce' (B)
+    # Subtest: 001 (b) Nisan fişsiz: Nisan tek ay 700 + kısa not (Şubat 2026); Mart–Nisan 'bu aralığın'; Şubat'ı içeren aralıkta, Mart tek ayda ve Tüm Zamanlar'da kısa not YOK; ekran = PDF = Excel
+    ok 1 - 001 (b) Nisan fişsiz: Nisan tek ay 700 + kısa not (Şubat 2026); Mart–Nisan 'bu aralığın'; Şubat'ı içeren aralıkta, Mart tek ayda ve Tüm Zamanlar'da kısa not YOK; ekran = PDF = Excel
+      ---
+      duration_ms: 130.247182
+      type: 'test'
+      ...
+    # Subtest: 001 (a) Nisan ön izlemeyle (500) mahsup edilir: uyuşmazlık notu eksi yönde — 'azalmayı düşmemiş' + Şubat'tan onarım; yalnız Nisan'ı geri alıp yeniden kesmek notu kaldırmaz; notun adımlarıyla not kalkar, rapor = fişler = 391 − 191
+    ok 2 - 001 (a) Nisan ön izlemeyle (500) mahsup edilir: uyuşmazlık notu eksi yönde — 'azalmayı düşmemiş' + Şubat'tan onarım; yalnız Nisan'ı geri alıp yeniden kesmek notu kaldırmaz; notun adımlarıyla not kalkar, rapor = fişler = 391 − 191
+      ---
+      duration_ms: 155.075236
+      type: 'test'
+      ...
+    # Subtest: 002 B — Nisan fişi değişikliklerden ÖNCE sırayla kesilmiş: aynı eksi yönlü not (Şubat); Mayıs tek ayda kısa not YOK (araya Nisan fişi girer); notun adımlarıyla not kalkar, Ocak–Mayıs 2.100
+    ok 3 - 002 B — Nisan fişi değişikliklerden ÖNCE sırayla kesilmiş: aynı eksi yönlü not (Şubat); Mayıs tek ayda kısa not YOK (araya Nisan fişi girer); notun adımlarıyla not kalkar, Ocak–Mayıs 2.100
+      ---
+      duration_ms: 90.382693
+      type: 'test'
+      ...
+    1..3
+ok 50 - 2.5.1 M1 küçük tur 6 — (a) uyuşmazlığın yönü + onarım, (b) aralık dışındaki 'güncel değil' fiş için kısa not: kararın örneği (A) ve 'Nisan fişi önce' (B)
+  ---
+  duration_ms: 1668.625852
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M1 küçük tur 6 — iki ardışık 'güncel değil' ay (onarım İLK aydan) ve yıl dönümü (Aralık 2026 → Bu Yıl 2027)
+    # Subtest: 001 iki 'güncel değil' ay: Mayıs tek ay kısa not (Şubat 2026, Mart 2026); Mayıs fişi ön izlemeyle → not İLK aydan (Şubat 2026); notun adımlarıyla kalkar, Ocak–Mayıs 2.300
+    ok 1 - 001 iki 'güncel değil' ay: Mayıs tek ay kısa not (Şubat 2026, Mart 2026); Mayıs fişi ön izlemeyle → not İLK aydan (Şubat 2026); notun adımlarıyla kalkar, Ocak–Mayıs 2.300
+      ---
+      duration_ms: 93.180042
+      type: 'test'
+      ...
+    # Subtest: 002 yıl dönümü: Bu Yıl (2027) kısa not (Aralık 2026); 2026 yılında YOK; Şubat 2027 fişi ön izlemeyle → onarım Aralık 2026'dan; notun adımlarıyla kalkar
+    ok 2 - 002 yıl dönümü: Bu Yıl (2027) kısa not (Aralık 2026); 2026 yılında YOK; Şubat 2027 fişi ön izlemeyle → onarım Aralık 2026'dan; notun adımlarıyla kalkar
+      ---
+      duration_ms: 106.757131
+      type: 'test'
+      ...
+    1..2
+ok 51 - 2.5.1 M1 küçük tur 6 — iki ardışık 'güncel değil' ay (onarım İLK aydan) ve yıl dönümü (Aralık 2026 → Bu Yıl 2027)
+  ---
+  duration_ms: 1394.168542
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M1 küçük tur 6 — (b) kısa not yalnız ETKİLİYORSA: devreden yönde yalnız satış KDV'si değişen ay (etkiler) / ödenecek yönde yalnız 391 ya da yalnız İ artışı (etkilemez)
+    # Subtest: 001 devreden yönde 'güncel değil' Şubat: Mart tek ay Önceki 300 · Ödenecek 700 (ön izleme 500 devredenle 500) → kısa not (Şubat 2026)
+    ok 1 - 001 devreden yönde 'güncel değil' Şubat: Mart tek ay Önceki 300 · Ödenecek 700 (ön izleme 500 devredenle 500) → kısa not (Şubat 2026)
+      ---
+      duration_ms: 41.749336
+      type: 'test'
+      ...
+    # Subtest: 002 ödenecek yönde 'güncel değil' Şubat (yalnız 391, sonra İ artışı da): Mart tek ay 1.000 = ön izleme → kısa not YOK
+    ok 2 - 002 ödenecek yönde 'güncel değil' Şubat (yalnız 391, sonra İ artışı da): Mart tek ay 1.000 = ön izleme → kısa not YOK
+      ---
+      duration_ms: 41.90699
+      type: 'test'
+      ...
+    1..2
+ok 52 - 2.5.1 M1 küçük tur 6 — (b) kısa not yalnız ETKİLİYORSA: devreden yönde yalnız satış KDV'si değişen ay (etkiler) / ödenecek yönde yalnız 391 ya da yalnız İ artışı (etkilemez)
+  ---
+  duration_ms: 1002.459107
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M1 küçük tur 3 — yalnız 391 devreden yönde (S-M1K2-1 = A): kararın örneği AYNEN, yıl dönümü, iki şirket
+    # Subtest: 001 kararın örneği: Mart sonraki 700, Nisan önceki 700 + ödenecek 300 + uyuşmazlık notu, Mart–Nisan 300 = 391 − 191; fiş / ön izleme / defter değişmez; ekran = PDF = Excel; onarımda aynı
+    ok 1 - 001 kararın örneği: Mart sonraki 700, Nisan önceki 700 + ödenecek 300 + uyuşmazlık notu, Mart–Nisan 300 = 391 − 191; fiş / ön izleme / defter değişmez; ekran = PDF = Excel; onarımda aynı
+      ---
+      duration_ms: 195.57801
+      type: 'test'
+      ...
+    # Subtest: 002 yıl dönümü: Aralık 2026 sonraki 700; Bu Yıl (2027) önceki 700, ödenecek 300 + uyuşmazlık; 2026 yılı sonraki 700; Aralık–Ocak 300; 001 etkilenmez
+    ok 2 - 002 yıl dönümü: Aralık 2026 sonraki 700; Bu Yıl (2027) önceki 700, ödenecek 300 + uyuşmazlık; 2026 yılı sonraki 700; Aralık–Ocak 300; 001 etkilenmez
+      ---
+      duration_ms: 52.054817
+      type: 'test'
+      ...
+    1..2
+ok 53 - 2.5.1 M1 küçük tur 3 — yalnız 391 devreden yönde (S-M1K2-1 = A): kararın örneği AYNEN, yıl dönümü, iki şirket
+  ---
+  duration_ms: 1298.21201
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M1 küçük tur 3 — tutarlılık tablosu: hiçbiri / yalnız azalma / yalnız 391 (iki yönde, yön dönmesi) / ikisi birden / İ arttı (her biri ayrı şirkette)
+    # Subtest: devreden · hiçbiri + devreden · yalnız İ azaldı (S-DKM1-1 = A)
+        # Subtest: 001 devreden · hiçbiri: Mart [0,0,80000], Nisan [80000,20000,0], Mart–Nisan [0,20000,0] = 391 − 191; onarım
+        ok 1 - 001 devreden · hiçbiri: Mart [0,0,80000], Nisan [80000,20000,0], Mart–Nisan [0,20000,0] = 391 − 191; onarım
+          ---
+          duration_ms: 45.710526
+          type: 'test'
+          ...
+        # Subtest: 002 devreden · yalnız İ azaldı (S-DKM1-1 = A): Mart [0,0,80000], Nisan [80000,60000,0], Mart–Nisan [0,60000,0] = 391 − 191; onarım
+        ok 2 - 002 devreden · yalnız İ azaldı (S-DKM1-1 = A): Mart [0,0,80000], Nisan [80000,60000,0], Mart–Nisan [0,60000,0] = 391 − 191; onarım
+          ---
+          duration_ms: 48.850622
+          type: 'test'
+          ...
+        1..2
+    ok 1 - devreden · hiçbiri + devreden · yalnız İ azaldı (S-DKM1-1 = A)
+      ---
+      duration_ms: 1042.881307
+      type: 'suite'
+      ...
+    # Subtest: devreden · yalnız 391 arttı (S-M1K2-1 = A) + devreden · yalnız 391 azaldı (S-M1K2-1 = A)
+        # Subtest: 001 devreden · yalnız 391 arttı (S-M1K2-1 = A): Mart [0,0,70000], Nisan [70000,30000,0], Mart–Nisan [0,30000,0] = 391 − 191; onarım
+        ok 1 - 001 devreden · yalnız 391 arttı (S-M1K2-1 = A): Mart [0,0,70000], Nisan [70000,30000,0], Mart–Nisan [0,30000,0] = 391 − 191; onarım
+          ---
+          duration_ms: 56.801839
+          type: 'test'
+          ...
+        # Subtest: 002 devreden · yalnız 391 azaldı (S-M1K2-1 = A): Mart [0,0,100000], Nisan [100000,0,0], Mart–Nisan [0,0,0] = 391 − 191; onarım
+        ok 2 - 002 devreden · yalnız 391 azaldı (S-M1K2-1 = A): Mart [0,0,100000], Nisan [100000,0,0], Mart–Nisan [0,0,0] = 391 − 191; onarım
+          ---
+          duration_ms: 55.561784
+          type: 'test'
+          ...
+        1..2
+    ok 2 - devreden · yalnız 391 arttı (S-M1K2-1 = A) + devreden · yalnız 391 azaldı (S-M1K2-1 = A)
+      ---
+      duration_ms: 1076.100634
+      type: 'suite'
+      ...
+    # Subtest: devreden → ödenecek · yalnız 391 arttı, yön döndü (S-M1K2-1 = A) + devreden · ikisi birden (S-M1K-1 = A, karma)
+        # Subtest: 001 devreden → ödenecek · yalnız 391 arttı, yön döndü (S-M1K2-1 = A): Mart [0,20000,0], Nisan [0,100000,0], Mart–Nisan [0,120000,0] = 391 − 191; onarım
+        ok 1 - 001 devreden → ödenecek · yalnız 391 arttı, yön döndü (S-M1K2-1 = A): Mart [0,20000,0], Nisan [0,100000,0], Mart–Nisan [0,120000,0] = 391 − 191; onarım
+          ---
+          duration_ms: 61.238915
+          type: 'test'
+          ...
+        # Subtest: 002 devreden · ikisi birden (S-M1K-1 = A, karma): Mart [0,0,70000], Nisan [70000,70000,0], Mart–Nisan [0,70000,0] = 391 − 191; onarım
+        ok 2 - 002 devreden · ikisi birden (S-M1K-1 = A, karma): Mart [0,0,70000], Nisan [70000,70000,0], Mart–Nisan [0,70000,0] = 391 − 191; onarım
+          ---
+          duration_ms: 48.883584
+          type: 'test'
+          ...
+        1..2
+    ok 3 - devreden → ödenecek · yalnız 391 arttı, yön döndü (S-M1K2-1 = A) + devreden · ikisi birden (S-M1K-1 = A, karma)
+      ---
+      duration_ms: 1200.368014
+      type: 'suite'
+      ...
+    # Subtest: devreden · İ arttı (S-M1K3-1 = A) + ödenecek · hiçbiri
+        # Subtest: 001 devreden · İ arttı (S-M1K3-1 = A): Mart [0,0,90000], Nisan [90000,10000,0], Mart–Nisan [0,10000,0] = 391 − 191; onarım
+        ok 1 - 001 devreden · İ arttı (S-M1K3-1 = A): Mart [0,0,90000], Nisan [90000,10000,0], Mart–Nisan [0,10000,0] = 391 − 191; onarım
+          ---
+          duration_ms: 48.211179
+          type: 'test'
+          ...
+        # Subtest: 002 ödenecek · hiçbiri: Mart [0,50000,0], Nisan [0,20000,0], Mart–Nisan [0,70000,0] = 391 − 191; onarım
+        ok 2 - 002 ödenecek · hiçbiri: Mart [0,50000,0], Nisan [0,20000,0], Mart–Nisan [0,70000,0] = 391 − 191; onarım
+          ---
+          duration_ms: 42.720152
+          type: 'test'
+          ...
+        1..2
+    ok 4 - devreden · İ arttı (S-M1K3-1 = A) + ödenecek · hiçbiri
+      ---
+      duration_ms: 977.05621
+      type: 'suite'
+      ...
+    # Subtest: ödenecek · yalnız 391 arttı (DEĞİŞMEZ) + ödenecek → devreden · yalnız 391 azaldı, yön döndü (S-M1K3-1 = A)
+        # Subtest: 001 ödenecek · yalnız 391 arttı (DEĞİŞMEZ): Mart [0,60000,0], Nisan [0,20000,0], Mart–Nisan [0,80000,0] = 391 − 191; onarım
+        ok 1 - 001 ödenecek · yalnız 391 arttı (DEĞİŞMEZ): Mart [0,60000,0], Nisan [0,20000,0], Mart–Nisan [0,80000,0] = 391 − 191; onarım
+          ---
+          duration_ms: 57.639971
+          type: 'test'
+          ...
+        # Subtest: 002 ödenecek → devreden · yalnız 391 azaldı, yön döndü (S-M1K3-1 = A): Mart [0,0,30000], Nisan [30000,0,10000], Mart–Nisan [0,0,10000] = 391 − 191; onarım
+        ok 2 - 002 ödenecek → devreden · yalnız 391 azaldı, yön döndü (S-M1K3-1 = A): Mart [0,0,30000], Nisan [30000,0,10000], Mart–Nisan [0,0,10000] = 391 − 191; onarım
+          ---
+          duration_ms: 50.543608
+          type: 'test'
+          ...
+        1..2
+    ok 5 - ödenecek · yalnız 391 arttı (DEĞİŞMEZ) + ödenecek → devreden · yalnız 391 azaldı, yön döndü (S-M1K3-1 = A)
+      ---
+      duration_ms: 949.690291
+      type: 'suite'
+      ...
+    1..5
+ok 54 - 2.5.1 M1 küçük tur 3 — tutarlılık tablosu: hiçbiri / yalnız azalma / yalnız 391 (iki yönde, yön dönmesi) / ikisi birden / İ arttı (her biri ayrı şirkette)
+  ---
+  duration_ms: 5247.297847
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M1 küçük tur 3 — zincirde: arada mahsupsuz ay; karma ay + sonraki ayda yalnız 391 (iki şirket)
+    # Subtest: 001 arada mahsupsuz ay: Mart sonraki 700 → Nisan 700 devredenle sonraki 400 → Mayıs 400 devredenle 600 + uyuşmazlık; Mart–Mayıs 600 = 391 − 191; 'Mahsup Edilmemiş Ay' Nisan
+    ok 1 - 001 arada mahsupsuz ay: Mart sonraki 700 → Nisan 700 devredenle sonraki 400 → Mayıs 400 devredenle 600 + uyuşmazlık; Mart–Mayıs 600 = 391 − 191; 'Mahsup Edilmemiş Ay' Nisan
+      ---
+      duration_ms: 49.302725
+      type: 'test'
+      ...
+    # Subtest: 002 karma ay + sonraki ayda yalnız 391: Ocak 500 (karma), Şubat sonraki 600 (bugünkü), Mart 600 devredenle 400 + uyuşmazlık; Ocak–Mart 900 = 391 − 191; onarımda aynı
+    ok 2 - 002 karma ay + sonraki ayda yalnız 391: Ocak 500 (karma), Şubat sonraki 600 (bugünkü), Mart 600 devredenle 400 + uyuşmazlık; Ocak–Mart 900 = 391 − 191; onarımda aynı
+      ---
+      duration_ms: 101.295645
+      type: 'test'
+      ...
+    1..2
+ok 55 - 2.5.1 M1 küçük tur 3 — zincirde: arada mahsupsuz ay; karma ay + sonraki ayda yalnız 391 (iki şirket)
+  ---
+  duration_ms: 1211.855395
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M1 küçük tur 3 — S4 taşımalı karma (baş mimar kararı: önceki fişli ayın azalması bu aya taşınmış + bu ayın 391'i değişmiş) — elle hesap, tek okuma
+    # Subtest: Ocak 500 (fişten, azalan ay notu), Şubat 400 (karma), Mart 600 (S4 −200); Ocak–Şubat 900, Ocak–Mart 1.500 = 391 − 191; Mart fişi = rapor; onarımda toplam aynı
+    ok 1 - Ocak 500 (fişten, azalan ay notu), Şubat 400 (karma), Mart 600 (S4 −200); Ocak–Şubat 900, Ocak–Mart 1.500 = 391 − 191; Mart fişi = rapor; onarımda toplam aynı
+      ---
+      duration_ms: 129.015649
+      type: 'test'
+      ...
+    1..1
+ok 56 - 2.5.1 M1 küçük tur 3 — S4 taşımalı karma (baş mimar kararı: önceki fişli ayın azalması bu aya taşınmış + bu ayın 391'i değişmiş) — elle hesap, tek okuma
+  ---
+  duration_ms: 1075.393873
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M1 küçük tur 4 — devreden fişte İ ve 391 birlikte artar (tabanda kırmızı) + ödenecek fişte İ artar, ödenecek kalır (DEĞİŞMEZ)
+    # Subtest: 001 İ + 391 artar (devreden fiş): Mart sonraki 600, Nisan 600 / 400 + uyuşmazlık, Mart–Nisan 400 = 391 − 191 (taban: Nisan 800 / 200, Mart–Nisan 200); onarım
+    ok 1 - 001 İ + 391 artar (devreden fiş): Mart sonraki 600, Nisan 600 / 400 + uyuşmazlık, Mart–Nisan 400 = 391 − 191 (taban: Nisan 800 / 200, Mart–Nisan 200); onarım
+      ---
+      duration_ms: 45.064213
+      type: 'test'
+      ...
+    # Subtest: 002 İ artar, ödenecek kalır (DEĞİŞMEZ): Mart 400, Nisan 0 / 200 (fiş zincirde, not yok), Mart–Nisan 600 = 391 − 191; onarım
+    ok 2 - 002 İ artar, ödenecek kalır (DEĞİŞMEZ): Mart 400, Nisan 0 / 200 (fiş zincirde, not yok), Mart–Nisan 600 = 391 − 191; onarım
+      ---
+      duration_ms: 48.199913
+      type: 'test'
+      ...
+    1..2
+ok 57 - 2.5.1 M1 küçük tur 4 — devreden fişte İ ve 391 birlikte artar (tabanda kırmızı) + ödenecek fişte İ artar, ödenecek kalır (DEĞİŞMEZ)
+  ---
+  duration_ms: 993.479422
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M1 küçük tur 4 — ödenecek fişli ay İ artışıyla devredene döner + iki ardışık 'güncel değil' ay (ikisi de tabanda kırmızı)
+    # Subtest: 001 ödenecek → devreden (İ arttı): Mart sonraki 200, Nisan 200 / 0 / 0 + uyuşmazlık, Mart–Nisan 0 = 391 − 191 (taban: Nisan 0 / 200, Mart–Nisan 200); onarım
+    ok 1 - 001 ödenecek → devreden (İ arttı): Mart sonraki 200, Nisan 200 / 0 / 0 + uyuşmazlık, Mart–Nisan 0 = 391 − 191 (taban: Nisan 0 / 200, Mart–Nisan 200); onarım
+      ---
+      duration_ms: 51.091104
+      type: 'test'
+      ...
+    # Subtest: 002 iki ardışık 'güncel değil' ay: Mart 800 (İ arttı), Nisan 800 / 0 / 300 (yalnız 391 azaldı, ödenecek fiş), Mayıs 300 / 100 + uyuşmazlık; Mart–Mayıs 100 = 391 − 191 (taban: Mayıs 0 / 400, 400); onarım
+    ok 2 - 002 iki ardışık 'güncel değil' ay: Mart 800 (İ arttı), Nisan 800 / 0 / 300 (yalnız 391 azaldı, ödenecek fiş), Mayıs 300 / 100 + uyuşmazlık; Mart–Mayıs 100 = 391 − 191 (taban: Mayıs 0 / 400, 400); onarım
+      ---
+      duration_ms: 86.193749
+      type: 'test'
+      ...
+    1..2
+ok 58 - 2.5.1 M1 küçük tur 4 — ödenecek fişli ay İ artışıyla devredene döner + iki ardışık 'güncel değil' ay (ikisi de tabanda kırmızı)
+  ---
+  duration_ms: 1064.351899
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M1 küçük tur 4 — yıl dönümü: (a) ödenecek Aralık fişi → devreden, (b) devreden Aralık fişinde İ artar (ikisi de tabanda kırmızı; iki şirket)
+    # Subtest: 001 (a) Bu Yıl (2027) 300 / 0 / 100 + uyuşmazlık (yön cümlesiyle); 2026 yılı sonraki 300; Aralık–Ocak 0 / 100 = 391 − 191; ekran = PDF = Excel; onarım
+    ok 1 - 001 (a) Bu Yıl (2027) 300 / 0 / 100 + uyuşmazlık (yön cümlesiyle); 2026 yılı sonraki 300; Aralık–Ocak 0 / 100 = 391 − 191; ekran = PDF = Excel; onarım
+      ---
+      duration_ms: 55.335358
+      type: 'test'
+      ...
+    # Subtest: 002 (b) Bu Yıl (2027) 900 / 100 + uyuşmazlık; 2026 yılı sonraki 900; Aralık–Ocak 100 = 391 − 191; onarım
+    ok 2 - 002 (b) Bu Yıl (2027) 900 / 100 + uyuşmazlık; 2026 yılı sonraki 900; Aralık–Ocak 100 = 391 − 191; onarım
+      ---
+      duration_ms: 38.915269
+      type: 'test'
+      ...
+    1..2
+ok 59 - 2.5.1 M1 küçük tur 4 — yıl dönümü: (a) ödenecek Aralık fişi → devreden, (b) devreden Aralık fişinde İ artar (ikisi de tabanda kırmızı; iki şirket)
+  ---
+  duration_ms: 993.848591
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M1 tur 2 — KDV Özeti: zincirli devreden KDV (S-M1-1 = B)
+    # Subtest: 001 hiç mahsup fişi yok: ay ay zincir (elle), yıl 0 / 500 / 200, Mart–Mayıs 1.000 / 500 / 400; ön izleme defterden (değişmedi); not bütün mahsupsuz ayları söyler
+    ok 1 - 001 hiç mahsup fişi yok: ay ay zincir (elle), yıl 0 / 500 / 200, Mart–Mayıs 1.000 / 500 / 400; ön izleme defterden (değişmedi); not bütün mahsupsuz ayları söyler
+      ---
+      duration_ms: 124.078719
+      type: 'test'
+      ...
+    # Subtest: 001 aylar SIRAYLA mahsup edilir: her adımda rapor aynı (zincir mahsuptan bağımsız); sonunda rapor = ön izleme = fiş = 190 (A = B)
+    ok 2 - 001 aylar SIRAYLA mahsup edilir: her adımda rapor aynı (zincir mahsuptan bağımsız); sonunda rapor = ön izleme = fiş = 190 (A = B)
+      ---
+      duration_ms: 136.980882
+      type: 'test'
+      ...
+    # Subtest: 002 kopuk zincir: Şubat atlanıp Mart mahsup edilmiş → rapor zinciri gösterir (Mart 1.600 / 0 / 600) + 'Zincirle Uyuşmayan Mahsup Fişi' notu; ön izleme ve defter değişmez
+    ok 3 - 002 kopuk zincir: Şubat atlanıp Mart mahsup edilmiş → rapor zinciri gösterir (Mart 1.600 / 0 / 600) + 'Zincirle Uyuşmayan Mahsup Fişi' notu; ön izleme ve defter değişmez
+      ---
+      duration_ms: 129.196511
+      type: 'test'
+      ...
+    # Subtest: iki şirket karışmaz: 001'in mahsupları 002'nin zincirine, 002'ninki 001'e girmez
+    ok 4 - iki şirket karışmaz: 001'in mahsupları 002'nin zincirine, 002'ninki 001'e girmez
+      ---
+      duration_ms: 8.466914
+      type: 'test'
+      ...
+    # Subtest: 001 mahsuptan sonra artıran kayıt (Haziran 'Güncel Değil'): ay ay rapor = ön izleme (A = B, karar (3)); aralığın sonraki devredeni son KDV'li ayın sonucu
+    ok 5 - 001 mahsuptan sonra artıran kayıt (Haziran 'Güncel Değil'): ay ay rapor = ön izleme (A = B, karar (3)); aralığın sonraki devredeni son KDV'li ayın sonucu
+      ---
+      duration_ms: 37.732862
+      type: 'test'
+      ...
+    1..5
+ok 60 - 2.5.1 M1 tur 2 — KDV Özeti: zincirli devreden KDV (S-M1-1 = B)
+  ---
+  duration_ms: 1447.762713
+  type: 'suite'
+  ...
+# Subtest: lisans belirteci
+    # Subtest: imzalı belirteci doğrular, değiştirilmiş veya tanınmayan anahtarla imzalanmışı reddeder
+    ok 1 - imzalı belirteci doğrular, değiştirilmiş veya tanınmayan anahtarla imzalanmışı reddeder
+      ---
+      duration_ms: 5.210434
+      type: 'test'
+      ...
+    # Subtest: biçim denetimi: deneme belirtecinin bitişi zorunlu, bilinmeyen tür ve durum reddedilir
+    ok 2 - biçim denetimi: deneme belirtecinin bitişi zorunlu, bilinmeyen tür ve durum reddedilir
+      ---
+      duration_ms: 0.737211
+      type: 'test'
+      ...
+    # Subtest: internetsiz etkinleştirme kodu zarfı taşır; bozuk kod anlaşılır hata verir
+    ok 3 - internetsiz etkinleştirme kodu zarfı taşır; bozuk kod anlaşılır hata verir
+      ---
+      duration_ms: 1.215159
+      type: 'test'
+      ...
+    # Subtest: kurulum kodu ve lisans anahtarı biçimleri
+    ok 4 - kurulum kodu ve lisans anahtarı biçimleri
+      ---
+      duration_ms: 0.511902
+      type: 'test'
+      ...
+    # Subtest: bilgisayar kimliği kalıcıdır; ham değer dışarı verilmez
+    ok 5 - bilgisayar kimliği kalıcıdır; ham değer dışarı verilmez
+      ---
+      duration_ms: 2.111465
+      type: 'test'
+      ...
+    1..5
+ok 61 - lisans belirteci
+  ---
+  duration_ms: 10.761465
+  type: 'suite'
+  ...
+# Subtest: lisans durumu (saf değerlendirme)
+    # Subtest: etkinleştirilmemiş kurulum salt okunurdur
+    ok 1 - etkinleştirilmemiş kurulum salt okunurdur
+      ---
+      duration_ms: 0.684883
+      type: 'test'
+      ...
+    # Subtest: deneme: kalan gün, son 7 günde uyarı, süre dolunca salt okunur
+    ok 2 - deneme: kalan gün, son 7 günde uyarı, süre dolunca salt okunur
+      ---
+      duration_ms: 4.167546
+      type: 'test'
+      ...
+    # Subtest: lisans: süresiz, bitişe yakın uyarı, engellenmiş lisans salt okunur
+    ok 3 - lisans: süresiz, bitişe yakın uyarı, engellenmiş lisans salt okunur
+      ---
+      duration_ms: 1.519034
+      type: 'test'
+      ...
+    # Subtest: 7 günden uzun internetsiz kalınca doğrulama ister; son 3 günde uyarır; internetsiz lisansta süre yok
+    ok 4 - 7 günden uzun internetsiz kalınca doğrulama ister; son 3 günde uyarır; internetsiz lisansta süre yok
+      ---
+      duration_ms: 1.165652
+      type: 'test'
+      ...
+    # Subtest: saat geri alınınca süre geri gelmez ve program salt okunur olur
+    ok 5 - saat geri alınınca süre geri gelmez ve program salt okunur olur
+      ---
+      duration_ms: 0.94412
+      type: 'test'
+      ...
+    # Subtest: geçiş dönemi 30 gün yazılabilir, sonra salt okunur; başka bilgisayarın lisansı sayılmaz
+    ok 6 - geçiş dönemi 30 gün yazılabilir, sonra salt okunur; başka bilgisayarın lisansı sayılmaz
+      ---
+      duration_ms: 0.325358
+      type: 'test'
+      ...
+    1..6
+ok 62 - lisans durumu (saf değerlendirme)
+  ---
+  duration_ms: 9.196145
+  type: 'suite'
+  ...
+# Subtest: lisans motoru — sunucu
+    # Subtest: yeni kurulum etkinleştirilmeden salt okunurdur; yönetim, yedek ve giriş çalışır
+    ok 1 - yeni kurulum etkinleştirilmeden salt okunurdur; yönetim, yedek ve giriş çalışır
+      ---
+      duration_ms: 604.942083
+      type: 'test'
+      ...
+    # Subtest: ücretsiz deneme 30 gün açar; süre dolunca durur, okuma ve yedek sürer
+    ok 2 - ücretsiz deneme 30 gün açar; süre dolunca durur, okuma ve yedek sürer
+      ---
+      duration_ms: 63.943477
+      type: 'test'
+      ...
+    # Subtest: aynı bilgisayara ikinci deneme verilmez (yeniden kurulum dahil)
+    ok 3 - aynı bilgisayara ikinci deneme verilmez (yeniden kurulum dahil)
+      ---
+      duration_ms: 392.880565
+      type: 'test'
+      ...
+    # Subtest: lisans anahtarı bilgisayara bağlanır; başka bilgisayarda reddedilir; engellenince salt okunur
+    ok 4 - lisans anahtarı bilgisayara bağlanır; başka bilgisayarda reddedilir; engellenince salt okunur
+      ---
+      duration_ms: 419.17745
+      type: 'test'
+      ...
+    # Subtest: internetsiz 7 gün tolerans: servis yoksa uyarır, 7 gün sonra durur, bağlantı gelince açılır
+    ok 5 - internetsiz 7 gün tolerans: servis yoksa uyarır, 7 gün sonra durur, bağlantı gelince açılır
+      ---
+      duration_ms: 23.232569
+      type: 'test'
+      ...
+    # Subtest: saat geri alınırsa durur; servisin saati güvenilir zamandır
+    ok 6 - saat geri alınırsa durur; servisin saati güvenilir zamandır
+      ---
+      duration_ms: 8.154941
+      type: 'test'
+      ...
+    # Subtest: internetsiz etkinleştirme kodu: yalnızca kendi bilgisayarında, doğrulama gerektirmez
+    ok 7 - internetsiz etkinleştirme kodu: yalnızca kendi bilgisayarında, doğrulama gerektirmez
+      ---
+      duration_ms: 380.080307
+      type: 'test'
+      ...
+    # Subtest: ileri alınıp düzeltilen saat takılı kalmaz: daha yeni imzalı kod zamanı düzeltir, eski kod geri alamaz
+    ok 8 - ileri alınıp düzeltilen saat takılı kalmaz: daha yeni imzalı kod zamanı düzeltir, eski kod geri alamaz
+      ---
+      duration_ms: 379.518292
+      type: 'test'
+      ...
+    # Subtest: 2.0 öncesinden gelen kullanılmış kurulum 30 günlük geçiş döneminde yazılabilir
+    ok 9 - 2.0 öncesinden gelen kullanılmış kurulum 30 günlük geçiş döneminde yazılabilir
+      ---
+      duration_ms: 418.929107
+      type: 'test'
+      ...
+    # Subtest: yerel kayıt elle değiştirilirse en sıkı varsayım kullanılır
+    ok 10 - yerel kayıt elle değiştirilirse en sıkı varsayım kullanılır
+      ---
+      duration_ms: 499.230804
+      type: 'test'
+      ...
+    # Subtest: demo program açılınca kendiliğinden başlar; internet yoksa kendiliğinden yeniden dener
+    ok 11 - demo program açılınca kendiliğinden başlar; internet yoksa kendiliğinden yeniden dener
+      ---
+      duration_ms: 424.123183
+      type: 'test'
+      ...
+    # Subtest: geçiş dönemindeki (2.0 öncesi) kuruluma deneme kendiliğinden başlatılmaz
+    ok 12 - geçiş dönemindeki (2.0 öncesi) kuruluma deneme kendiliğinden başlatılmaz
+      ---
+      duration_ms: 574.886963
+      type: 'test'
+      ...
+    # Subtest: denemenin 3. gününde yöneticiden firma bilgisi istenir; gönderilince bir daha sorulmaz
+    ok 13 - denemenin 3. gününde yöneticiden firma bilgisi istenir; gönderilince bir daha sorulmaz
+      ---
+      duration_ms: 500.596763
+      type: 'test'
+      ...
+    # Subtest: deneme süresi güncellemede (aynı data klasörüyle yeniden açılış) ve yeniden kurulumda sıfırlanmaz; süre dolunca öyle kalır
+    ok 14 - deneme süresi güncellemede (aynı data klasörüyle yeniden açılış) ve yeniden kurulumda sıfırlanmaz; süre dolunca öyle kalır
+      ---
+      duration_ms: 915.504655
+      type: 'test'
+      ...
+    # Subtest: geçiş dönemi (2.0 öncesi kurulum) güncellemede sıfırlanmaz; bütünlük özeti bozulsa da başlangıç ileri alınmaz
+    ok 15 - geçiş dönemi (2.0 öncesi kurulum) güncellemede sıfırlanmaz; bütünlük özeti bozulsa da başlangıç ileri alınmaz
+      ---
+      duration_ms: 567.026961
+      type: 'test'
+      ...
+    # Subtest: lisans durumu bilgisayar kimliğinin kaynağını söyler (Windows/Linux kimliği ya da veri klasöründeki dosya)
+    ok 16 - lisans durumu bilgisayar kimliğinin kaynağını söyler (Windows/Linux kimliği ya da veri klasöründeki dosya)
+      ---
+      duration_ms: 351.772676
+      type: 'test'
+      ...
+    # Subtest: salt okunur modda yazma yetkileri gizlenir, okuma yetkileri kalır
+    ok 17 - salt okunur modda yazma yetkileri gizlenir, okuma yetkileri kalır
+      ---
+      duration_ms: 0.215395
+      type: 'test'
+      ...
+    # Subtest: katalogdaki her yazma yetkisi salt okunurda gizlenir (okuma/yönetim yetkileri açık listeyle hariç)
+    ok 18 - katalogdaki her yazma yetkisi salt okunurda gizlenir (okuma/yönetim yetkileri açık listeyle hariç)
+      ---
+      duration_ms: 0.254081
+      type: 'test'
+      ...
+    # Subtest: salt okunur lisansta Vergi Ödemesi / KDV Mahsubu yetkisi ekrana gitmez, yazım reddedilir, veri değişmez
+    ok 19 - salt okunur lisansta Vergi Ödemesi / KDV Mahsubu yetkisi ekrana gitmez, yazım reddedilir, veri değişmez
+      ---
+      duration_ms: 338.540371
+      type: 'test'
+      ...
+    1..19
+ok 63 - lisans motoru — sunucu
+  ---
+  duration_ms: 7118.595937
+  type: 'suite'
+  ...
+# Subtest: mobil görünüm: beyaz liste (lib/mobile.mjs)
+    # Subtest: her mobil yol programın mevcut ucuna, şirket hofCompany ile gider
+    ok 1 - her mobil yol programın mevcut ucuna, şirket hofCompany ile gider
+      ---
+      duration_ms: 3.050951
+      type: 'test'
+      ...
+    # Subtest: Raporlar: yalnız izinli 10 rapor ve raporun izinli süzgeçleri; değerler doğrulanır
+    ok 2 - Raporlar: yalnız izinli 10 rapor ve raporun izinli süzgeçleri; değerler doğrulanır
+      ---
+      duration_ms: 1.37567
+      type: 'test'
+      ...
+    # Subtest: salt okunur: giriş/çıkış dışındaki her yazma isteği 405, listede olmayan yol 404
+    ok 3 - salt okunur: giriş/çıkış dışındaki her yazma isteği 405, listede olmayan yol 404
+      ---
+      duration_ms: 0.546061
+      type: 'test'
+      ...
+    # Subtest: telefon imzası: iPhone ve Android telefon evet; Android tablet ve bilgisayar hayır
+    ok 4 - telefon imzası: iPhone ve Android telefon evet; Android tablet ve bilgisayar hayır
+      ---
+      duration_ms: 0.375633
+      type: 'test'
+      ...
+    1..4
+ok 64 - mobil görünüm: beyaz liste (lib/mobile.mjs)
+  ---
+  duration_ms: 6.290579
+  type: 'suite'
+  ...
+# Subtest: mobil görünüm: programın içinde, gerçek sunucu
+    # Subtest: /mobil/ sayfası ve dosyaları programın sunucusundan; /mobil → /mobil/
+    ok 1 - /mobil/ sayfası ve dosyaları programın sunucusundan; /mobil → /mobil/
+      ---
+      duration_ms: 22.234592
+      type: 'test'
+      ...
+    # Subtest: telefon ana adreste mobil görünüme yönlenir; bilgisayar, tablet ve ?masaustu=1 masaüstünü görür
+    ok 2 - telefon ana adreste mobil görünüme yönlenir; bilgisayar, tablet ve ?masaustu=1 masaüstünü görür
+      ---
+      duration_ms: 10.986438
+      type: 'test'
+      ...
+    # Subtest: oturumsuz istek 401 (veri dönmez)
+    ok 3 - oturumsuz istek 401 (veri dönmez)
+      ---
+      duration_ms: 57.938608
+      type: 'test'
+      ...
+    # Subtest: başka siteden giriş isteği reddedilir (programın istek kaynağı denetimi mobil yolda da)
+    ok 4 - başka siteden giriş isteği reddedilir (programın istek kaynağı denetimi mobil yolda da)
+      ---
+      duration_ms: 3.24373
+      type: 'test'
+      ...
+    # Subtest: oturum özeti: kullanıcı, şirketler, seçili şirket; mobil yazma hakları (2.4.7 M5: yönetici tahsilat / ödeme / stok girişi)
+    ok 5 - oturum özeti: kullanıcı, şirketler, seçili şirket; mobil yazma hakları (2.4.7 M5: yönetici tahsilat / ödeme / stok girişi)
+      ---
+      duration_ms: 4.682171
+      type: 'test'
+      ...
+    # Subtest: sayılar masaüstü ucunun döndürdüğüyle aynı (Kasa, banka, cari bakiyesi, stok miktarı)
+    ok 6 - sayılar masaüstü ucunun döndürdüğüyle aynı (Kasa, banka, cari bakiyesi, stok miktarı)
+      ---
+      duration_ms: 47.938446
+      type: 'test'
+      ...
+    # Subtest: Raporlar: katalogda yalnız izinli raporlar; ön izleme, PDF ve Excel programın rapor motorundan
+    ok 7 - Raporlar: katalogda yalnız izinli raporlar; ön izleme, PDF ve Excel programın rapor motorundan
+      ---
+      duration_ms: 75.73081
+      type: 'test'
+      ...
+    # Subtest: salt okunur: mobil yoldan yazma 405, veri tabanı değişmez
+    ok 8 - salt okunur: mobil yoldan yazma 405, veri tabanı değişmez
+      ---
+      duration_ms: 9.650272
+      type: 'test'
+      ...
+    # Subtest: yetki ve şirket
+        # Subtest: Personel: cari ve stok görür; Kasa, banka ve raporlar 403
+        ok 1 - Personel: cari ve stok görür; Kasa, banka ve raporlar 403
+          ---
+          duration_ms: 15.855637
+          type: 'test'
+          ...
+        # Subtest: Finans Raporları kaldırılmış Muhasebe: Kasa görür, raporlar 403
+        ok 2 - Finans Raporları kaldırılmış Muhasebe: Kasa görür, raporlar 403
+          ---
+          duration_ms: 9.583154
+          type: 'test'
+          ...
+        # Subtest: yetkisi olmadığı şirketin kimliği 403, olmayan şirket 409; oturum özetinde yalnız kendi şirketleri
+        ok 3 - yetkisi olmadığı şirketin kimliği 403, olmayan şirket 409; oturum özetinde yalnız kendi şirketleri
+          ---
+          duration_ms: 5.630364
+          type: 'test'
+          ...
+        # Subtest: iki şirket: ikinci şirket boş başlar, verisi birinciye karışmaz; şirket geçişi istek başına
+        ok 4 - iki şirket: ikinci şirket boş başlar, verisi birinciye karışmaz; şirket geçişi istek başına
+          ---
+          duration_ms: 34.496959
+          type: 'test'
+          ...
+        # Subtest: çıkıştan sonra oturum kapanır
+        ok 5 - çıkıştan sonra oturum kapanır
+          ---
+          duration_ms: 52.586724
+          type: 'test'
+          ...
+        1..5
+    ok 9 - yetki ve şirket
+      ---
+      duration_ms: 505.780167
+      type: 'suite'
+      ...
+    1..9
+ok 65 - mobil görünüm: programın içinde, gerçek sunucu
+  ---
+  duration_ms: 1468.966028
+  type: 'suite'
+  ...
+# Subtest: 2.1.0 Rapor Merkezi BANKALI veriyle: bütün para raporları × bütün süzgeçler × ekran/PDF/Excel, bağımsız beklenenle
+    # Subtest: katalog: denenen her rapor katalogda ve süzgeç seçenekleri tanımlı (yeni banka raporları ayrı testte)
+    ok 1 - katalog: denenen her rapor katalogda ve süzgeç seçenekleri tanımlı (yeni banka raporları ayrı testte)
+      ---
+      duration_ms: 2.18521
+      type: 'test'
+      ...
+    # Subtest: kasa-hareketleri: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 2 - kasa-hareketleri: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 259.403061
+      type: 'test'
+      ...
+    # Subtest: kasa-gunluk: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 3 - kasa-gunluk: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 170.563624
+      type: 'test'
+      ...
+    # Subtest: kasa-kaynak: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 4 - kasa-kaynak: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 154.573122
+      type: 'test'
+      ...
+    # Subtest: kasa-aylik: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 5 - kasa-aylik: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 156.751473
+      type: 'test'
+      ...
+    # Subtest: hesap-mizani: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 6 - hesap-mizani: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 285.365866
+      type: 'test'
+      ...
+    # Subtest: yevmiye: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 7 - yevmiye: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 268.091163
+      type: 'test'
+      ...
+    # Subtest: defter-mutabakati: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 8 - defter-mutabakati: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 69.604108
+      type: 'test'
+      ...
+    # Subtest: mutabakat-gunlugu: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 9 - mutabakat-gunlugu: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 11.626856
+      type: 'test'
+      ...
+    # Subtest: banka-pos-hareketleri: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 10 - banka-pos-hareketleri: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 540.779103
+      type: 'test'
+      ...
+    # Subtest: mizan: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 11 - mizan: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 3602.916186
+      type: 'test'
+      ...
+    # Subtest: cari-listesi: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 12 - cari-listesi: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 300.920674
+      type: 'test'
+      ...
+    # Subtest: cari-ekstre: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 13 - cari-ekstre: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 1958.102758
+      type: 'test'
+      ...
+    # Subtest: cari-hareketleri: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 14 - cari-hareketleri: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 629.471065
+      type: 'test'
+      ...
+    # Subtest: cari-tahsilat: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 15 - cari-tahsilat: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 519.874563
+      type: 'test'
+      ...
+    # Subtest: alacak-yaslandirma: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 16 - alacak-yaslandirma: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 37.242738
+      type: 'test'
+      ...
+    # Subtest: fatura-satis: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 17 - fatura-satis: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 935.334492
+      type: 'test'
+      ...
+    # Subtest: fatura-alis: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 18 - fatura-alis: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 963.383179
+      type: 'test'
+      ...
+    # Subtest: fatura-iade: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 19 - fatura-iade: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 896.025258
+      type: 'test'
+      ...
+    # Subtest: kdv-ozeti: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 20 - kdv-ozeti: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 251.628965
+      type: 'test'
+      ...
+    # Subtest: ba-bs: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 21 - ba-bs: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 95.837631
+      type: 'test'
+      ...
+    # Subtest: urun-satis-karlilik: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 22 - urun-satis-karlilik: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 107.462542
+      type: 'test'
+      ...
+    # Subtest: cari-satis-alis: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 23 - cari-satis-alis: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 117.418337
+      type: 'test'
+      ...
+    # Subtest: gider-raporu: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 24 - gider-raporu: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 97.933999
+      type: 'test'
+      ...
+    # Subtest: stopaj-tevkifat: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 25 - stopaj-tevkifat: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 119.181342
+      type: 'test'
+      ...
+    # Subtest: acik-faturalar: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 26 - acik-faturalar: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 123.945701
+      type: 'test'
+      ...
+    # Subtest: taksit-kartlari: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 27 - taksit-kartlari: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 39.806641
+      type: 'test'
+      ...
+    # Subtest: taksit-vadeleri: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 28 - taksit-vadeleri: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 156.204822
+      type: 'test'
+      ...
+    # Subtest: geciken-taksitler: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 29 - geciken-taksitler: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 11.257616
+      type: 'test'
+      ...
+    # Subtest: taksit-performans: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 30 - taksit-performans: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 196.792944
+      type: 'test'
+      ...
+    # Subtest: taksit-tahsilatlari: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 31 - taksit-tahsilatlari: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 143.559682
+      type: 'test'
+      ...
+    # Subtest: cek-portfoy: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 32 - cek-portfoy: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 3132.265968
+      type: 'test'
+      ...
+    # Subtest: cek-hareketleri: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 33 - cek-hareketleri: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 103.753333
+      type: 'test'
+      ...
+    # Subtest: cek-vade-dagilimi: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 34 - cek-vade-dagilimi: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 9.854078
+      type: 'test'
+      ...
+    # Subtest: stok-durumu: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 35 - stok-durumu: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 111.651354
+      type: 'test'
+      ...
+    # Subtest: stok-hareketleri: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 36 - stok-hareketleri: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 116.094063
+      type: 'test'
+      ...
+    # Subtest: stok-ozet: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 37 - stok-ozet: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 257.371825
+      type: 'test'
+      ...
+    # Subtest: stok-kategori: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 38 - stok-kategori: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 14.095681
+      type: 'test'
+      ...
+    # Subtest: kayit-tahsilatlari: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+    ok 39 - kayit-tahsilatlari: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle (bankalı veri)
+      ---
+      duration_ms: 97.756557
+      type: 'test'
+      ...
+    # Subtest: anahtar toplamlar bağımsız defterle (tüm zamanlar): Kasa, Gerçek Banka (hesap hesap), KDV, cari bakiyeleri, stok
+    ok 40 - anahtar toplamlar bağımsız defterle (tüm zamanlar): Kasa, Gerçek Banka (hesap hesap), KDV, cari bakiyeleri, stok
+      ---
+      duration_ms: 40.711572
+      type: 'test'
+      ...
+    # Subtest: Kasa Dökümü PDF: yalnız nakit satırları ve Güncel Kasa; banka bağlı hareketler (havale, Kasa ↔ Banka banka bacağı) girmez
+    ok 41 - Kasa Dökümü PDF: yalnız nakit satırları ve Güncel Kasa; banka bağlı hareketler (havale, Kasa ↔ Banka banka bacağı) girmez
+      ---
+      duration_ms: 9.646576
+      type: 'test'
+      ...
+    # Subtest: Nakit Akış: başlangıç = Nakit + Gerçek Banka (K10: Hesabı Atanmamış POS 900 hariç)
+    ok 42 - Nakit Akış: başlangıç = Nakit + Gerçek Banka (K10: Hesabı Atanmamış POS 900 hariç)
+      ---
+      duration_ms: 80.284916
+      type: 'test'
+      ...
+    # Subtest: Nakit Akış (90 gün): beklenen giriş/çıkış bağımsız (taksit, portföydeki senet, verilen çek); başlangıç Kasa + Gerçek Banka (K10)
+    ok 43 - Nakit Akış (90 gün): beklenen giriş/çıkış bağımsız (taksit, portföydeki senet, verilen çek); başlangıç Kasa + Gerçek Banka (K10)
+      ---
+      duration_ms: 14.651034
+      type: 'test'
+      ...
+    # Subtest: Vade Takip (tüm açık kalemler) ve zil/takvim: tahsil edilecek / ödenecek bağımsız; banka bağlı ödenmiş evrak ve faturalar listede yok
+    ok 44 - Vade Takip (tüm açık kalemler) ve zil/takvim: tahsil edilecek / ödenecek bağımsız; banka bağlı ödenmiş evrak ve faturalar listede yok
+      ---
+      duration_ms: 20.228056
+      type: 'test'
+      ...
+    # Subtest: ileri tarihli banka hareketi denemesi 400; raporlar değişmez (ileri tarih aralığında hareket raporları boş)
+    ok 45 - ileri tarihli banka hareketi denemesi 400; raporlar değişmez (ileri tarih aralığında hareket raporları boş)
+      ---
+      duration_ms: 19.572682
+      type: 'test'
+      ...
+    # Subtest: tek kayıt + şirket ayrımı: 002'de tek havale tahsilatı → 002 raporlarında tek satır; 001'in raporları değişmez; ?hofCompany= yetkisiz 403
+    ok 46 - tek kayıt + şirket ayrımı: 002'de tek havale tahsilatı → 002 raporlarında tek satır; 001'in raporları değişmez; ?hofCompany= yetkisiz 403
+      ---
+      duration_ms: 365.96093
+      type: 'test'
+      ...
+    # Subtest: yetki: rapor yetkisi olmayan personel bütün bankalı raporlarda 403 (ekran, PDF, Excel); dosya sızmaz
+    ok 47 - yetki: rapor yetkisi olmayan personel bütün bankalı raporlarda 403 (ekran, PDF, Excel); dosya sızmaz
+      ---
+      duration_ms: 242.645532
+      type: 'test'
+      ...
+# [raporlar-210-banka] rapor 38, birleşim 1350, istek 4050, denetlenen TOPLAM kolonu 1563
+    # Subtest: Mutabakat Testi tutarlı; özet sayılar
+    ok 48 - Mutabakat Testi tutarlı; özet sayılar
+      ---
+      duration_ms: 31.236875
+      type: 'test'
+      ...
+    1..48
+ok 66 - 2.1.0 Rapor Merkezi BANKALI veriyle: bütün para raporları × bütün süzgeçler × ekran/PDF/Excel, bağımsız beklenenle
+  ---
+  duration_ms: 19494.905543
+  type: 'suite'
+  ...
+# Subtest: 2.0.24 Rapor Merkezi: bütün raporlar, bütün süzgeçler, ekran/PDF/Excel, yetki
+    # Subtest: katalog: 43+ rapor listelenir, her rapora süzgeç seçeneği tanımlı
+    ok 1 - katalog: 43+ rapor listelenir, her rapora süzgeç seçeneği tanımlı
+      ---
+      duration_ms: 1.380301
+      type: 'test'
+      ...
+    # Subtest: katalog = testteki rapor listesi (yeni rapor eklenirse test de genişler)
+    ok 2 - katalog = testteki rapor listesi (yeni rapor eklenirse test de genişler)
+      ---
+      duration_ms: 1.413396
+      type: 'test'
+      ...
+    # Subtest: kasa-hareketleri: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+    ok 3 - kasa-hareketleri: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+      ---
+      duration_ms: 212.266204
+      type: 'test'
+      ...
+    # Subtest: kasa-gunluk: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+    ok 4 - kasa-gunluk: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+      ---
+      duration_ms: 160.886617
+      type: 'test'
+      ...
+    # Subtest: kasa-kaynak: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+    ok 5 - kasa-kaynak: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+      ---
+      duration_ms: 201.294592
+      type: 'test'
+      ...
+    # Subtest: kasa-aylik: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+    ok 6 - kasa-aylik: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+      ---
+      duration_ms: 151.311741
+      type: 'test'
+      ...
+    # Subtest: hesap-mizani: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+    ok 7 - hesap-mizani: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+      ---
+      duration_ms: 262.519964
+      type: 'test'
+      ...
+    # Subtest: yevmiye: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+    ok 8 - yevmiye: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+      ---
+      duration_ms: 223.261581
+      type: 'test'
+      ...
+    # Subtest: defter-mutabakati: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+    ok 9 - defter-mutabakati: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+      ---
+      duration_ms: 68.811202
+      type: 'test'
+      ...
+    # Subtest: mutabakat-gunlugu: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+    ok 10 - mutabakat-gunlugu: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+      ---
+      duration_ms: 13.271941
+      type: 'test'
+      ...
+    # Subtest: banka-pos-hareketleri: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+    ok 11 - banka-pos-hareketleri: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+      ---
+      duration_ms: 517.823871
+      type: 'test'
+      ...
+    # Subtest: mizan: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+    ok 12 - mizan: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+      ---
+      duration_ms: 2714.699146
+      type: 'test'
+      ...
+    # Subtest: cari-listesi: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+    ok 13 - cari-listesi: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+      ---
+      duration_ms: 308.448097
+      type: 'test'
+      ...
+    # Subtest: cari-ekstre: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+    ok 14 - cari-ekstre: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+      ---
+      duration_ms: 1579.134766
+      type: 'test'
+      ...
+    # Subtest: cari-hareketleri: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+    ok 15 - cari-hareketleri: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+      ---
+      duration_ms: 612.279482
+      type: 'test'
+      ...
+    # Subtest: cari-tahsilat: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+    ok 16 - cari-tahsilat: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+      ---
+      duration_ms: 504.526472
+      type: 'test'
+      ...
+    # Subtest: alacak-yaslandirma: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+    ok 17 - alacak-yaslandirma: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+      ---
+      duration_ms: 31.011591
+      type: 'test'
+      ...
+    # Subtest: fatura-satis: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+    ok 18 - fatura-satis: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+      ---
+      duration_ms: 777.071615
+      type: 'test'
+      ...
+    # Subtest: fatura-alis: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+    ok 19 - fatura-alis: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+      ---
+      duration_ms: 774.831501
+      type: 'test'
+      ...
+    # Subtest: fatura-iade: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+    ok 20 - fatura-iade: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+      ---
+      duration_ms: 661.87464
+      type: 'test'
+      ...
+    # Subtest: kdv-ozeti: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+    ok 21 - kdv-ozeti: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+      ---
+      duration_ms: 248.445997
+      type: 'test'
+      ...
+    # Subtest: ba-bs: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+    ok 22 - ba-bs: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+      ---
+      duration_ms: 107.293397
+      type: 'test'
+      ...
+    # Subtest: urun-satis-karlilik: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+    ok 23 - urun-satis-karlilik: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+      ---
+      duration_ms: 135.426022
+      type: 'test'
+      ...
+    # Subtest: cari-satis-alis: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+    ok 24 - cari-satis-alis: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+      ---
+      duration_ms: 116.361446
+      type: 'test'
+      ...
+    # Subtest: gider-raporu: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+    ok 25 - gider-raporu: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+      ---
+      duration_ms: 131.68914
+      type: 'test'
+      ...
+    # Subtest: stopaj-tevkifat: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+    ok 26 - stopaj-tevkifat: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+      ---
+      duration_ms: 146.767572
+      type: 'test'
+      ...
+    # Subtest: acik-faturalar: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+    ok 27 - acik-faturalar: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+      ---
+      duration_ms: 111.294457
+      type: 'test'
+      ...
+    # Subtest: taksit-kartlari: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+    ok 28 - taksit-kartlari: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+      ---
+      duration_ms: 50.480716
+      type: 'test'
+      ...
+    # Subtest: taksit-vadeleri: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+    ok 29 - taksit-vadeleri: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+      ---
+      duration_ms: 154.183131
+      type: 'test'
+      ...
+    # Subtest: geciken-taksitler: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+    ok 30 - geciken-taksitler: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+      ---
+      duration_ms: 10.789133
+      type: 'test'
+      ...
+    # Subtest: taksit-performans: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+    ok 31 - taksit-performans: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+      ---
+      duration_ms: 146.437471
+      type: 'test'
+      ...
+    # Subtest: taksit-tahsilatlari: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+    ok 32 - taksit-tahsilatlari: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+      ---
+      duration_ms: 154.38085
+      type: 'test'
+      ...
+    # Subtest: cek-portfoy: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+    ok 33 - cek-portfoy: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+      ---
+      duration_ms: 3599.867374
+      type: 'test'
+      ...
+    # Subtest: cek-hareketleri: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+    ok 34 - cek-hareketleri: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+      ---
+      duration_ms: 110.104252
+      type: 'test'
+      ...
+    # Subtest: cek-vade-dagilimi: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+    ok 35 - cek-vade-dagilimi: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+      ---
+      duration_ms: 15.55551
+      type: 'test'
+      ...
+    # Subtest: stok-durumu: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+    ok 36 - stok-durumu: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+      ---
+      duration_ms: 123.678319
+      type: 'test'
+      ...
+    # Subtest: stok-hareketleri: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+    ok 37 - stok-hareketleri: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+      ---
+      duration_ms: 128.521908
+      type: 'test'
+      ...
+    # Subtest: stok-ozet: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+    ok 38 - stok-ozet: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+      ---
+      duration_ms: 256.054641
+      type: 'test'
+      ...
+    # Subtest: stok-kategori: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+    ok 39 - stok-kategori: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+      ---
+      duration_ms: 11.289924
+      type: 'test'
+      ...
+    # Subtest: kayit-tahsilatlari: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+    ok 40 - kayit-tahsilatlari: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+      ---
+      duration_ms: 114.4273
+      type: 'test'
+      ...
+    # Subtest: notlar: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+    ok 41 - notlar: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+      ---
+      duration_ms: 148.087237
+      type: 'test'
+      ...
+    # Subtest: gorevler: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+    ok 42 - gorevler: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+      ---
+      duration_ms: 34.915642
+      type: 'test'
+      ...
+    # Subtest: belgeler: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+    ok 43 - belgeler: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+      ---
+      duration_ms: 101.818903
+      type: 'test'
+      ...
+    # Subtest: tablo-verisi: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+    ok 44 - tablo-verisi: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+      ---
+      duration_ms: 11.970493
+      type: 'test'
+      ...
+    # Subtest: islem-gecmisi: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+    ok 45 - islem-gecmisi: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+      ---
+      duration_ms: 2385.764759
+      type: 'test'
+      ...
+    # Subtest: supheli-alacaklar: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+    ok 46 - supheli-alacaklar: bütün süzgeçler × ekran/PDF/Excel, TOPLAM = satırlar, bağımsız beklenenle
+      ---
+      duration_ms: 2300.567077
+      type: 'test'
+      ...
+    # Subtest: ileri tarihli vade yalnız dönemi kapsayınca görünür (senet, verilen çek, taksit)
+    ok 47 - ileri tarihli vade yalnız dönemi kapsayınca görünür (senet, verilen çek, taksit)
+      ---
+      duration_ms: 10.73415
+      type: 'test'
+      ...
+    # Subtest: anahtar toplamlar bağımsız defterle (tüm zamanlar)
+    ok 48 - anahtar toplamlar bağımsız defterle (tüm zamanlar)
+      ---
+      duration_ms: 28.620052
+      type: 'test'
+      ...
+    # Subtest: Cari Mizanı 'Geciken Taksiti Olan' süzgeci yalnız gecikeni listeler (2.0.23'te bütün cariler)
+    ok 49 - Cari Mizanı 'Geciken Taksiti Olan' süzgeci yalnız gecikeni listeler (2.0.23'te bütün cariler)
+      ---
+      duration_ms: 3.76843
+      type: 'test'
+      ...
+    # Subtest: Ürün Satış Kârlılığı — özet Brüt Kâr TOPLAM satırıyla aynı (2.0.23'te çelişiyordu)
+    ok 50 - Ürün Satış Kârlılığı — özet Brüt Kâr TOPLAM satırıyla aynı (2.0.23'te çelişiyordu)
+      ---
+      duration_ms: 2.409558
+      type: 'test'
+      ...
+# [raporlar-224] rapor 44, birleşim 1429, istek 4287, denetlenen TOPLAM kolonu 1235
+    # Subtest: yetki: rapor yetkisi olmayan personel bütün raporlarda 403 (ekran, PDF, Excel); işlem geçmişi ayrı yetki
+    ok 51 - yetki: rapor yetkisi olmayan personel bütün raporlarda 403 (ekran, PDF, Excel); işlem geçmişi ayrı yetki
+      ---
+      duration_ms: 1543.176242
+      type: 'test'
+      ...
+    # Subtest: özet: denenen rapor × süzgeç birleşimi sayısı
+    ok 52 - özet: denenen rapor × süzgeç birleşimi sayısı
+      ---
+      duration_ms: 0.49285
+      type: 'test'
+      ...
+    1..52
+ok 67 - 2.0.24 Rapor Merkezi: bütün raporlar, bütün süzgeçler, ekran/PDF/Excel, yetki
+  ---
+  duration_ms: 23310.436797
+  type: 'suite'
+  ...
+# Subtest: 2.4.4 MM3 — Stopaj ve Tevkifat Özeti: iade asıl belgenin tarafında eksi; defter ve KDV Özeti ile aynı
+    # Subtest: Eylül (yalnız asıl belgeler): taraflar ve özet
+    ok 1 - Eylül (yalnız asıl belgeler): taraflar ve özet
+      ---
+      duration_ms: 8.719924
+      type: 'test'
+      ...
+    # Subtest: Ekim: satıştan iade karşı tarafın kestiğinde (193) EKSİ, alıştan iade bizim kestiğimizde (360) EKSİ; tevkifatsız ve iptal edilen iade yok
+    ok 2 - Ekim: satıştan iade karşı tarafın kestiğinde (193) EKSİ, alıştan iade bizim kestiğimizde (360) EKSİ; tevkifatsız ve iptal edilen iade yok
+      ---
+      duration_ms: 4.009235
+      type: 'test'
+      ...
+    # Subtest: Bu Yıl: özet ve her tarafın TOPLAM satırı (elle hesap)
+    ok 3 - Bu Yıl: özet ve her tarafın TOPLAM satırı (elle hesap)
+      ---
+      duration_ms: 3.042117
+      type: 'test'
+      ...
+    # Subtest: defter (193 / 360 hareketi) ve KDV Özeti ile aynı sayı: Eylül, Ekim, Bu Yıl
+    ok 4 - defter (193 / 360 hareketi) ve KDV Özeti ile aynı sayı: Eylül, Ekim, Bu Yıl
+      ---
+      duration_ms: 37.625557
+      type: 'test'
+      ...
+    # Subtest: her süzgeç (Bu Yıl, Bu Ay, Geçen Ay, Son 30 Gün, Tüm Zamanlar, özel aralık) × ekran/PDF/Excel: TOPLAM = satırlar
+    ok 5 - her süzgeç (Bu Yıl, Bu Ay, Geçen Ay, Son 30 Gün, Tüm Zamanlar, özel aralık) × ekran/PDF/Excel: TOPLAM = satırlar
+      ---
+      duration_ms: 152.771902
+      type: 'test'
+      ...
+    # Subtest: 002 şirketi: tevkifatlı satış ve tam iadesi 193 tarafında +1.800 / −1.800; 001 raporuna karışmaz
+    ok 6 - 002 şirketi: tevkifatlı satış ve tam iadesi 193 tarafında +1.800 / −1.800; 001 raporuna karışmaz
+      ---
+      duration_ms: 8.807422
+      type: 'test'
+      ...
+    # Subtest: yetkisiz kullanıcı (personel): rapor 403
+    ok 7 - yetkisiz kullanıcı (personel): rapor 403
+      ---
+      duration_ms: 117.929732
+      type: 'test'
+      ...
+    1..7
+ok 68 - 2.4.4 MM3 — Stopaj ve Tevkifat Özeti: iade asıl belgenin tarafında eksi; defter ve KDV Özeti ile aynı
+  ---
+  duration_ms: 1457.856335
+  type: 'suite'
+  ...
+# Subtest: yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+    # Subtest: arayüz dosyalarında kurala uymayan ad yok
+    ok 1 - arayüz dosyalarında kurala uymayan ad yok
+      ---
+      duration_ms: 70.850151
+      type: 'test'
+      ...
+    # Subtest: hareket türü adları ve programın varsayılan adları kurala uyuyor
+    ok 2 - hareket türü adları ve programın varsayılan adları kurala uyuyor
+      ---
+      duration_ms: 6.46435
+      type: 'test'
+      ...
+    # Subtest: derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+    ok 3 - derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+      ---
+      duration_ms: 2.552824
+      type: 'test'
+      ...
+    # Subtest: Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+    ok 4 - Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+      ---
+      duration_ms: 3.562142
+      type: 'test'
+      ...
+    # Subtest: mobil görünümde (client/mobil) kurala uymayan ad yok
+    ok 5 - mobil görünümde (client/mobil) kurala uymayan ad yok
+      ---
+      duration_ms: 3.952523
+      type: 'test'
+      ...
+    # Subtest: rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+    ok 6 - rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+      ---
+      duration_ms: 40.549626
+      type: 'test'
+      ...
+    1..6
+ok 69 - yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+  ---
+  duration_ms: 129.156592
+  type: 'suite'
+  ...
+1..69
+# tests 367
+# suites 78
+# pass 367
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 163263.053054

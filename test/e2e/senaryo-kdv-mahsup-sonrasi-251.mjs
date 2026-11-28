@@ -7,7 +7,8 @@
 //   Değişen Ay: Ocak 2026 (bu ayın kayıtları fişten sonra değişti; …)".
 //   C adımı (küçük tur 2): karma ay (S-M1K-1 = A). D adımı (küçük tur 3): devreden yönde yalnız satış KDV'si (S-M1K2-1 = A) — ikinci kurulumda (saat 15.05.2026).
 //   E adımı (küçük tur 4): ödenecek yönde kesilmiş fişte yalnız satış KDV'si azalır (S-M1K3-1 = A) — üçüncü kurulumda (saat 15.05.2026).
-//   F adımı (küçük tur 5): 'güncel değil' (İ artmış) aydan sonra azalan ay (S-DKM1K-1 = A) + Nisan mahsubunun yan etkisi — dördüncü kurulumda (saat 15.05.2026).
+//   F adımı (küçük tur 5): 'güncel değil' (İ artmış) aydan sonra azalan ay (S-DKM1K-1 = A) + Nisan mahsubunun yan etkisi — dördüncü kurulumda (saat 15.05.2026). Küçük tur 6:
+//   Nisan tek ay kısa notu ve uyuşmazlık notunun TAM cümlesi (yön + onarım ayı), notun söylediği onarımdan sonra notlar kalkar (baş mimar kararı 28.11 07:40 (1)(a)–(c)).
 // Çıkış: "N geçti, M kaldı". Ekran görüntüleri EKRAN_DIR'e.
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -86,6 +87,45 @@ async function range(from, to) {
   await page.focus(`${MODAL} [data-rc-main] [data-rc-run]`);
   await page.keyboard.press("Enter");
   await page.waitForTimeout(400);
+  await ready();
+}
+const TOP = `${MODAL}:nth-last-child(1 of ${MODAL})`;
+const AYLAR = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
+const monthName = month => `${AYLAR[Number(month.slice(5)) - 1]} ${month.slice(0, 4)}`;
+/**
+ * 2.5.1 M1 küçük tur 7: notun söylediği onarım EKRANDAN — KDV Özeti → KDV Mahsup Fişi Oluştur; "Mahsup Edilen Aylar"da en yeni fişten geriye "Geri Al" (onay), sonra aylar sırayla
+ * "Mahsup Fişini Oluştur" (onay); pencere kapanınca rapor yeniden çalışır. Her adımda satırın durumu (Geri Alındı / Etkin) ekrandan beklenir.
+ */
+async function screenRedo(months) {
+  const rowsOf = () => page.$$eval("[data-vat-root] h3 + .hof-rep-table tbody tr", rows => rows.map(row => [row.cells[0]?.textContent.trim(), row.cells[6]?.textContent.trim()]));
+  const count = async (label, state) => (await rowsOf()).filter(row => row[0] === label && state.test(row[1] || "")).length;
+  await page.click(`${MODAL} [data-rc-action="vat-offset"]`);
+  await page.waitForSelector("[data-vat-root] [data-vat-month]");
+  await page.waitForFunction(() => document.querySelector("[data-vat-root] h3 + .hof-rep-table, [data-vat-root] .hof-empty"));
+  for (const month of [...months].reverse()) {
+    const label = monthName(month);
+    await page.waitForFunction(name => [...document.querySelectorAll("[data-vat-root] [data-vat-reverse]")].some(button => button.closest("tr")?.cells[0]?.textContent.trim() === name), label, { timeout: 10000 });
+    const undone = await count(label, /Geri Alındı/);
+    await page.click("[data-vat-root] [data-vat-reverse]");
+    await page.waitForSelector(`${TOP} [data-answer="yes"]`);
+    console.log(`    [soru] "Mahsubu Geri Al" (${label}) → Geri Al (notun söylediği onarım)`);
+    await page.click(`${TOP} [data-answer="yes"]`);
+    await page.waitForFunction(([name, n]) => [...document.querySelectorAll("[data-vat-root] h3 + .hof-rep-table tbody tr")].filter(row => row.cells[0]?.textContent.trim() === name && /Geri Alındı/.test(row.cells[6]?.textContent || "")).length > n, [label, undone], { timeout: 10000 });
+  }
+  for (const month of months) {
+    const label = monthName(month);
+    await page.selectOption("[data-vat-root] [data-vat-month]", month);
+    await page.waitForFunction(name => (document.querySelector("[data-vat-root]")?.innerText || "").includes(`${name} · fiş tarihi`), label, { timeout: 10000 });
+    await page.click("[data-vat-root] [data-vat-create]");
+    await page.waitForSelector(`${TOP} [data-answer="yes"]`);
+    console.log(`    [soru] "KDV Mahsup Fişi" (${label}) → Mahsup Fişini Oluştur (sırayla yeniden mahsup)`);
+    await page.click(`${TOP} [data-answer="yes"]`);
+    await page.waitForFunction(name => [...document.querySelectorAll("[data-vat-root] h3 + .hof-rep-table tbody tr")].some(row => row.cells[0]?.textContent.trim() === name && /^Etkin$/.test(row.cells[6]?.textContent.trim() || "")), label, { timeout: 10000 });
+  }
+  for (let index = 0; index < 3 && (await page.$("[data-vat-root]")); index += 1) {
+    await page.keyboard.press("Escape");
+    await page.waitForTimeout(400);
+  }
   await ready();
 }
 /** Tablo altı: her satır kutunun görünen alanında mı, satırlar üst üste biniyor mu (kutu en üste kaydırılmışken — kullanıcının ilk gördüğü). */
@@ -203,7 +243,7 @@ try {
   );
   ok(
     // Ekran tutarı "₺0,00" yazar (API / PDF "0,00 TL"); karşılaştırma tek yazıma çevrilerek.
-    String(summary["Zincirle Uyuşmayan Mahsup Fişi"] || "").replace(/₺([\d.,]+)/g, "$1 TL") === "Şubat 2026 fişi 0,00 TL devredenle kesilmiş, sırayla mahsupta 500,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)",
+    String(summary["Zincirle Uyuşmayan Mahsup Fişi"] || "").replace(/₺([\d.,]+)/g, "$1 TL") === "Şubat 2026 fişi 0,00 TL devredenle kesilmiş, sırayla mahsupta 500,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Ocak 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)",
     `karma: Şubat fişi zincirle uyuşmuyor: ${summary["Zincirle Uyuşmayan Mahsup Fişi"]}`,
   );
   await shot("m1k2-kdv-ozeti-karma-bu-yil");
@@ -263,7 +303,7 @@ try {
   );
   ok(summary["Mahsuptan Sonra Değişen Ay"] === "Mart 2026 (mahsup fişi güncel değil — mahsubu geri alıp yeniden mahsup edin)", `yalnız 391: Mart 'güncel değil' notu kalır: ${summary["Mahsuptan Sonra Değişen Ay"]}`);
   ok(
-    String(summary["Zincirle Uyuşmayan Mahsup Fişi"] || "").replace(/₺([\d.,]+)/g, "$1 TL") === "Nisan 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 700,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)",
+    String(summary["Zincirle Uyuşmayan Mahsup Fişi"] || "").replace(/₺([\d.,]+)/g, "$1 TL") === "Nisan 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 700,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Mart 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)",
     `yalnız 391: Nisan fişi zincirle uyuşmuyor: ${summary["Zincirle Uyuşmayan Mahsup Fişi"]}`,
   );
   await shot("m1k3-kdv-ozeti-yalniz391-mart-nisan");
@@ -275,6 +315,18 @@ try {
   r = results(summary, t.foot);
   ok(JSON.stringify(r.summary) === JSON.stringify(["0,00", "300,00", "0,00"]) && JSON.stringify(r.foot) === JSON.stringify(r.summary), `yalnız 391: Bu Yıl 0 / 300 / 0 (${JSON.stringify(r)})`);
   await shot("m1k3-kdv-ozeti-yalniz391-bu-yil");
+  // 2.5.1 M1 küçük tur 7 (tur 6 raporunun BAŞ MİMAR KARARI (1)): notun söylediği onarım EKRANDAN — Mart'tan (güncel olmayan ilk ay) geri al, sırayla yeniden mahsup → fişler
+  // Mart 0 / 0 / 700, Nisan 700 / 300 / 0 (veri tabanından); Mart–Nisan 0 / 300 / 0, notlar kalkar (taban: not 'bu ayın ve sonraki …' diyordu).
+  await screenRedo(["2026-03", "2026-04"]);
+  const redo2 = (await must("mahsup listesi (2)", api2.get("/api/workspace/tax/vat-offset"))).offsets.filter(item => item.status === "active").map(item => [item.month, item.carryInMinor, item.payableMinor, item.carryOutMinor, item.stale]);
+  ok(JSON.stringify(redo2) === JSON.stringify([["2026-03", 0, 0, 70000, false], ["2026-04", 70000, 30000, 0, false]]), `yalnız 391 onarım (ekrandan): fişler Mart 0 / 0 / 700, Nisan 700 / 300 / 0 (${JSON.stringify(redo2)})`);
+  await range("2026-03-01", "2026-04-30");
+  summary = await summaryOf();
+  t = await table();
+  r = results(summary, t.foot);
+  ok(JSON.stringify(r.summary) === JSON.stringify(["0,00", "300,00", "0,00"]) && JSON.stringify(r.foot) === JSON.stringify(r.summary), `yalnız 391 onarım: Mart–Nisan 0 / 300 / 0 (${JSON.stringify(r)})`);
+  ok(!("Zincirle Uyuşmayan Mahsup Fişi" in summary) && !("Mahsuptan Sonra Değişen Ay" in summary) && !("Güncel Olmayan Önceki Fiş" in summary), `yalnız 391 onarım: notlar kalkar (${JSON.stringify(Object.keys(summary))})`);
+  await shot("m1k7-kdv-ozeti-yalniz391-onarim");
 
   // 2.5.1 M1 küçük tur 4 — S-M1K3-1 = A (27.11 20:59 UTC; kullanıcının 20:26 yetkisiyle öneri uygulandı): HER 'güncel değil' ayında sonraki aya BU AYIN bugünkü devredeni
   // taşınır. ÜÇÜNCÜ KURULUM (saat 15.05.2026; D'nin kurulumunda Mart–Nisan mahsupludur), veri API'den, rapor ekrandan. KÂHİN (sorunun (a) örneği AYNEN): Mart satış KDV 800 +
@@ -324,7 +376,7 @@ try {
   t = await table();
   r = results(summary, t.foot);
   ok(JSON.stringify(r.summary) === JSON.stringify(["300,00", "0,00", "100,00"]) && JSON.stringify(r.foot) === JSON.stringify(r.summary), `güncel değil (a): Nisan 300 / 0 / 100 (taban 0 / 200 / 0), tablo altı = özet (${JSON.stringify(r)})`);
-  const MISMATCH_A = "Nisan 2026 fişi 0,00 TL devredenle kesilmiş, sırayla mahsupta 300,00 TL olmalıydı; fiş ödenecek KDV 200,00 TL yazmış, sırayla mahsupta sonraki döneme devreden KDV 100,00 TL çıkar (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)";
+  const MISMATCH_A = "Nisan 2026 fişi 0,00 TL devredenle kesilmiş, sırayla mahsupta 300,00 TL olmalıydı; fiş ödenecek KDV 200,00 TL yazmış, sırayla mahsupta sonraki döneme devreden KDV 100,00 TL çıkar (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Mart 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)";
   ok(String(summary["Zincirle Uyuşmayan Mahsup Fişi"] || "").replace(/₺([\d.,]+)/g, "$1 TL") === MISMATCH_A, `güncel değil (a): Nisan notu (ekranda): ${summary["Zincirle Uyuşmayan Mahsup Fişi"]}`);
   await shot("m1k4-kdv-ozeti-guncel-degil-nisan");
   await range("2026-03-01", "2026-04-30");
@@ -341,6 +393,17 @@ try {
   ok(summary["Mahsuptan Sonra Değişen Ay"] === "Mart 2026 (mahsup fişi güncel değil — mahsubu geri alıp yeniden mahsup edin)", `güncel değil (a): Mart 'güncel değil' notu kalır: ${summary["Mahsuptan Sonra Değişen Ay"]}`);
   ok(String(summary["Zincirle Uyuşmayan Mahsup Fişi"] || "").replace(/₺([\d.,]+)/g, "$1 TL") === MISMATCH_A, `güncel değil (a): Mart–Nisan'da da Nisan notu: ${summary["Zincirle Uyuşmayan Mahsup Fişi"]}`);
   await shot("m1k4-kdv-ozeti-guncel-degil-mart-nisan");
+  // 2.5.1 M1 küçük tur 7: notun söylediği onarım EKRANDAN — Mart'tan geri al, sırayla yeniden mahsup → fişler Mart 0 / 0 / 300, Nisan 300 / 0 / 100; Mart–Nisan 0 / 0 / 100, notlar kalkar.
+  await screenRedo(["2026-03", "2026-04"]);
+  const redo3 = (await must("mahsup listesi (3)", api3.get("/api/workspace/tax/vat-offset"))).offsets.filter(item => item.status === "active").map(item => [item.month, item.carryInMinor, item.payableMinor, item.carryOutMinor, item.stale]);
+  ok(JSON.stringify(redo3) === JSON.stringify([["2026-03", 0, 0, 30000, false], ["2026-04", 30000, 0, 10000, false]]), `güncel değil (a) onarım (ekrandan): fişler Mart 0 / 0 / 300, Nisan 300 / 0 / 100 (${JSON.stringify(redo3)})`);
+  await range("2026-03-01", "2026-04-30");
+  summary = await summaryOf();
+  t = await table();
+  r = results(summary, t.foot);
+  ok(JSON.stringify(r.summary) === JSON.stringify(["0,00", "0,00", "100,00"]) && JSON.stringify(r.foot) === JSON.stringify(r.summary), `güncel değil (a) onarım: Mart–Nisan 0 / 0 / 100 (${JSON.stringify(r)})`);
+  ok(!("Zincirle Uyuşmayan Mahsup Fişi" in summary) && !("Mahsuptan Sonra Değişen Ay" in summary) && !("Güncel Olmayan Önceki Fiş" in summary), `güncel değil (a) onarım: notlar kalkar (${JSON.stringify(Object.keys(summary))})`);
+  await shot("m1k7-kdv-ozeti-guncel-degil-onarim");
 
   // 2.5.1 M1 küçük tur 5 — S-DKM1K-1 = A (28.11 03:55 UTC; kullanıcının 20:26 yetkisiyle öneri uygulandı): 'güncel değil' (İndirilecek KDV'si ARTMIŞ) aydan sonra fişi zincirde
   // kalan ve İ'si AZALAN ay — azalma sonraki ayda bir kez. DÖRDÜNCÜ KURULUM (saat 15.05.2026), veri API'den, rapor ekrandan. KÂHİN (kararın örneği AYNEN): Ocak alış KDV 1.000
@@ -416,6 +479,11 @@ try {
   t = await table();
   r = results(summary, t.foot);
   ok(JSON.stringify(r.summary) === JSON.stringify(["0,00", "700,00", "0,00"]) && JSON.stringify(r.foot) === JSON.stringify(r.summary), `S-DKM1K-1: Nisan 0 / 700 / 0 (taban 500; ön izleme 500), tablo altı = özet (${JSON.stringify(r)})`);
+  // 2.5.1 M1 küçük tur 6 (baş mimar kararı 28.11 07:40 (1)(b)–(c)): Nisan TEK AY — sayısını aralık dışındaki 'güncel değil' Şubat etkiliyor → kısa not, TAM cümlesiyle (taban: not yok).
+  ok(
+    summary["Güncel Olmayan Önceki Fiş"] === "Önceki aylarda güncel olmayan mahsup fişi var (Şubat 2026); bu ayın sayıları mahsup ön izlemesinden ayrılır",
+    `tur 6 (b): Nisan tek ay kısa not (ekranda): ${summary["Güncel Olmayan Önceki Fiş"]}`,
+  );
   await shot("m1k5-kdv-ozeti-nisan");
   // Yan etki: Nisan ön izlemeyle (defterin saklı İ'leri) mahsup edilir → fiş 500; rapor 700 kalır, uyuşmazlık notu.
   ok((await fis4("2026-04")) === "[0,50000,0]", "Nisan fişi ön izlemeyle 0 / 500 / 0 (defter DEĞİŞMEDİ)");
@@ -425,15 +493,33 @@ try {
   t = await table();
   r = results(summary, t.foot);
   ok(JSON.stringify(r.summary) === JSON.stringify(["0,00", "700,00", "0,00"]) && JSON.stringify(r.foot) === JSON.stringify(r.summary), `yan etki: Nisan fişliyken rapor 0 / 700 / 0 (${JSON.stringify(r)})`);
-  ok(
-    String(summary["Zincirle Uyuşmayan Mahsup Fişi"] || "").replace(/₺([\d.,]+)/g, "$1 TL").startsWith("Nisan 2026 fişi ödenecek KDV 500,00 TL yazmış, sırayla mahsupta ödenecek KDV 700,00 TL olmalıydı"),
-    `yan etki: Nisan uyuşmazlık notu (ekranda): ${summary["Zincirle Uyuşmayan Mahsup Fişi"]}`,
-  );
+  // 2.5.1 M1 küçük tur 6 (baş mimar kararı 28.11 07:40 (1)(a), (c)): notun TAM cümlesi — neden 'fiş azalmayı düşmemiş', onarım güncel olmayan ilk aydan (Şubat 2026); taban: 'azalma
+  // … daha önceki bir ayda düşülür' + 'bu ayın ve sonraki mahsupları geri alıp …' (ters neden, sonuç vermeyen onarım).
+  const MISMATCH_F =
+    "Nisan 2026 fişi ödenecek KDV 500,00 TL yazmış, sırayla mahsupta ödenecek KDV 700,00 TL olmalıydı — fiş İndirilecek KDV'deki azalmayı düşmemiş (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Şubat 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)";
+  ok(String(summary["Zincirle Uyuşmayan Mahsup Fişi"] || "").replace(/₺([\d.,]+)/g, "$1 TL") === MISMATCH_F, `yan etki: Nisan uyuşmazlık notu (ekranda, tam cümle): ${summary["Zincirle Uyuşmayan Mahsup Fişi"]}`);
   await shot("m1k5-kdv-ozeti-nisan-fisli");
   await range("2026-01-01", "2026-04-30");
   summary = await summaryOf();
   r = results(summary, (await table()).foot);
   ok(JSON.stringify(r.summary) === JSON.stringify(["0,00", "1600,00", "0,00"]), `yan etki: Ocak–Nisan yine 1.600 (${JSON.stringify(r)})`);
+  ok(String(summary["Zincirle Uyuşmayan Mahsup Fişi"] || "").replace(/₺([\d.,]+)/g, "$1 TL") === MISMATCH_F, `yan etki: Ocak–Nisan'da da aynı not: ${summary["Zincirle Uyuşmayan Mahsup Fişi"]}`);
+  // Notun söylediği onarım (veri API'den): Şubat'tan başlayarak geri al (Nisan → Mart → Şubat), ayları sırayla yeniden mahsup et → ekranda notlar kalkar, rapor = fişler.
+  const list4 = (await must("mahsup listesi (4)", api4.get("/api/workspace/tax/vat-offset"))).offsets.filter(item => item.status === "active");
+  for (const month of ["2026-04", "2026-03", "2026-02"]) await must(`${month} geri al (4)`, api4.post(`/api/workspace/tax/vat-offset/${list4.find(item => item.month === month).id}/reverse`, {}));
+  const g4 = [];
+  for (const month of ["2026-02", "2026-03", "2026-04"]) g4.push(await fis4(month));
+  ok(JSON.stringify(g4) === JSON.stringify(["[100000,20000,0]", "[0,90000,0]", "[0,50000,0]"]), `onarım: yeniden fişler Şubat 200 / Mart 900 / Nisan 500 (${JSON.stringify(g4)})`);
+  await range("2026-01-01", "2026-03-31");
+  await range("2026-01-01", "2026-04-30");
+  summary = await summaryOf();
+  t = await table();
+  r = results(summary, t.foot);
+  ok(JSON.stringify(r.summary) === JSON.stringify(["0,00", "1600,00", "0,00"]), `onarım: Ocak–Nisan 1.600 (${JSON.stringify(r)})`);
+  const fixedLines = t.body.filter(item => item[1] === "Ödenecek KDV").map(item => digits(item[5]));
+  ok(JSON.stringify(fixedLines) === JSON.stringify(["200,00", "900,00", "500,00"]), `onarım: ay satırları = fişler (${JSON.stringify(fixedLines)})`);
+  ok(!("Zincirle Uyuşmayan Mahsup Fişi" in summary) && !("Mahsuptan Sonra Değişen Ay" in summary) && !("Güncel Olmayan Önceki Fiş" in summary), `onarım: notlar kalkar (${JSON.stringify(Object.keys(summary))})`);
+  await shot("m1k6-kdv-ozeti-onarim");
 } catch (error) {
   failed += 1;
   console.log(`✗ beklenmeyen hata: ${error.stack || error.message}`);
