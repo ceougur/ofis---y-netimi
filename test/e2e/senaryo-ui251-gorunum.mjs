@@ -110,6 +110,8 @@ const openCard = async id => {
 const deleteEntry = async entryId => {
   // Ekrandaki bildirimler işaretlenir; yeni (işaretsiz) hata bildirimi beklenir (en çok iki uzun bildirim kuralı eskisini kapatabilir — sayı artmayabilir).
   await page.$$eval(".hof-toast", nodes => nodes.forEach(node => node.setAttribute("data-seen", "")));
+  // Telefonda kendi içinde kayan uzun bildirim metni dokunmayı alır (kaydırılabilsin diye): kullanıcı gibi satır ekranın ortasına kaydırılıp basılır.
+  await page.$eval(`${CARD} [data-delete-entry="${entryId}"]`, button => button.scrollIntoView({ block: "center" }));
   await page.click(`${CARD} [data-delete-entry="${entryId}"]`);
   await page.waitForSelector(`${TOP} [data-answer="yes"]`);
   await page.click(`${TOP} [data-answer="yes"]`);
@@ -219,6 +221,13 @@ try {
       for (let i = 0; i < 3 && (await page.$(".hof-toast-error .hof-toast-close")); i += 1) await page.click(".hof-toast-error .hof-toast-close");
       ok((await page.$$(".hof-toast")).length === 0, `${tag}: × ile kapandılar`);
     }
+    if (vw <= 600) {
+      // Telefonda iki uzun ret üst üste: ikisi de ekranın içinde (metin kutusu ekranın yarısını geçmez, sığmayan metin kendi içinde kayar).
+      await deleteEntry(debt1.entryId);
+      const pair = await page.$$eval(".hof-toast-long", nodes => nodes.map(node => { const r = node.getBoundingClientRect(); return [Math.round(r.top), Math.round(r.bottom)]; }));
+      await shot(`ui251-a-iki-ret-${vw}x${vh}`);
+      ok(pair.length === 2 && pair.every(([top, bottom]) => top >= 0 && bottom <= vh), `${tag}: iki uzun ret ekranın içinde (${JSON.stringify(pair)})`);
+    }
   }
   const after = await cardD();
   ok(JSON.stringify(after.totals) === JSON.stringify(before.totals), `ret: kart toplamları değişmedi (${JSON.stringify(after.totals?.balance ?? after.totals)})`);
@@ -293,7 +302,7 @@ try {
   ok(other.wrap === "nowrap", `1366×768: Satış Faturaları özet kartları eskisi gibi tek satır (flex-wrap ${other.wrap})`);
 
   console.log("D) UI-3 — KDV Mahsup Fişi → Mahsup Edilen Aylar: Geri Al yana kaydırmadan görünür");
-  for (const [vw, vh] of [[1366, 768], [1440, 900], [1920, 1080]]) {
+  for (const [vw, vh] of [[1366, 768], [1440, 900], [1920, 1080], [834, 1112]]) {
     await page.setViewportSize({ width: vw, height: vh });
     await openReport("kdv-ozeti");
     await page.click(`${MODAL} [data-rc-action="vat-offset"]`);
