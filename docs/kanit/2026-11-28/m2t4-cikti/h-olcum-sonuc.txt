@@ -1,0 +1,16 @@
+kök eski · 10 Değersiz satırlı cari · Silinenler 5000 fatura
+  önce:  Mutabakat orta 15.5 ms · tahsilat yazımı (kapı) orta 34.9 ms
+  sonra: Mutabakat orta 226.3 ms · tahsilat yazımı (kapı) orta 264.2 ms
+  yük 2.70 2.71 3.18 1/127 30992
+kök eski · 1 Değersiz satırlı cari · Silinenler 20000 fatura
+  önce:  Mutabakat orta 13.7 ms · tahsilat yazımı (kapı) orta 29.4 ms
+  sonra: Mutabakat orta 102.7 ms · tahsilat yazımı (kapı) orta 200.2 ms
+  yük 2.44 2.65 3.16 1/125 31085
+kök agent-a75255d57a32bede8 · 10 Değersiz satırlı cari · Silinenler 5000 fatura
+  önce:  Mutabakat orta 17.9 ms · tahsilat yazımı (kapı) orta 35.2 ms
+  sonra: Mutabakat orta 17.6 ms · tahsilat yazımı (kapı) orta 34.1 ms
+  yük 2.44 2.65 3.16 2/124 31095
+kök agent-a75255d57a32bede8 · 1 Değersiz satırlı cari · Silinenler 20000 fatura
+  önce:  Mutabakat orta 13.1 ms · tahsilat yazımı (kapı) orta 24.7 ms
+  sonra: Mutabakat orta 13.0 ms · tahsilat yazımı (kapı) orta 24.7 ms
+  yük 2.40 2.64 3.15 2/128 31110

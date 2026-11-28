@@ -1,0 +1,48 @@
+# tohum 1 Mutabakat yeni ok=true eski ok=true
+# tohum 2 Mutabakat yeni ok=true eski ok=true
+# tohum 3 Mutabakat yeni ok=true eski ok=true
+# tohum 4 Mutabakat yeni ok=true eski ok=true
+# tohum 5 Mutabakat yeni ok=true eski ok=true
+# tohum 6 Mutabakat yeni ok=true eski ok=true
+# tohum 7 Mutabakat yeni ok=true eski ok=true
+# tohum 8 Mutabakat yeni ok=true eski ok=true
+# tohum 9 Mutabakat yeni ok=true eski ok=true
+# tohum 10 Mutabakat yeni ok=true eski ok=true
+# tohum 11 Mutabakat yeni ok=true eski ok=true
+# tohum 12 Mutabakat yeni ok=true eski ok=true
+# tohum 13 Mutabakat yeni ok=true eski ok=true
+# tohum 14 Mutabakat yeni ok=true eski ok=true
+# tohum 15 Mutabakat yeni ok=true eski ok=true
+# tohum 16 Mutabakat yeni ok=true eski ok=true
+# tohum 17 Mutabakat yeni ok=true eski ok=true
+# tohum 18 Mutabakat yeni ok=true eski ok=true
+# tohum 19 Mutabakat yeni ok=true eski ok=true
+# tohum 20 Mutabakat yeni ok=true eski ok=true
+# tohum 21 Mutabakat yeni ok=true eski ok=true
+# tohum 22 Mutabakat yeni ok=true eski ok=true
+# tohum 23 Mutabakat yeni ok=true eski ok=true
+# tohum 24 Mutabakat yeni ok=true eski ok=true
+# tohum 25 Mutabakat yeni ok=true eski ok=true
+# tohum 26 Mutabakat yeni ok=true eski ok=true
+# tohum 27 Mutabakat yeni ok=true eski ok=true
+# tohum 28 Mutabakat yeni ok=true eski ok=true
+# tohum 29 Mutabakat yeni ok=true eski ok=true
+# tohum 30 Mutabakat yeni ok=true eski ok=true
+# tohum 31 Mutabakat yeni ok=true eski ok=true
+# tohum 32 Mutabakat yeni ok=true eski ok=true
+# tohum 33 Mutabakat yeni ok=true eski ok=true
+# tohum 34 Mutabakat yeni ok=true eski ok=true
+# tohum 35 Mutabakat yeni ok=true eski ok=true
+# tohum 36 Mutabakat yeni ok=true eski ok=true
+# tohum 37 Mutabakat yeni ok=true eski ok=true
+# tohum 38 Mutabakat yeni ok=true eski ok=true
+# tohum 39 Mutabakat yeni ok=true eski ok=true
+# tohum 40 Mutabakat yeni ok=true eski ok=true
+# TZ=UTC {"steps":4000,"snapshots":3302,"quotes":22211,"diffs":42,"writes":171,"over":47,"statusDiff":1,"restored":16,"released":23,"recDel":37,"s155":2,"later":0,"mid":0}
+{"label":"t37 c2 s17 write 1500,00 @2026-09-25","kind":"durum","n":[200,null,null],"o":[409,"ledger-integrity","Bu kayıtla carinin 15.10.2026 tarihli 500,00 TL Değersiz Alacak satırı şüpheli kaydın kalanını aşar: Değersiz Alacak, kayda düşen tahsilatlar çıkınca kalanı (en çok 400,00 TL) aşamaz. Ne yapmalı: önce Değersiz Alacak satırını silin (cari kartı → Şüpheli Alacak → kaydın Değersiz satırındaki × düğmesi), sonra bu kaydı yeniden girin; gerekirse Değersiz Alacak'ı yeniden yazın (form yazılabilecek tutarı gösterir). Hiçbir değişiklik yazılmadı."]}
+{"label":"t37 c2 s17 write","kind":"liste","n":[{"remaining":0,"status":"open","writeOff":{"anyMinor":0,"best":{"date":"2026-09-19","limitMinor":0,"offerMinor":0,"s155":false,"s155Text":"","why":"remaining","whyText":"kayıtta kalan şüpheli tutar"},"today":{"date":"2026-10-15","limitMinor":0,"offerMinor":0,"s155":false,"s155Text":"","why":"remaining","whyText":"kayıtta kalan şüpheli tutar"}}},{"remaining":0,"status":"open","writeOff":{"anyMinor":0,"best":{"date":"2026-10-01","limitMinor":0,"offerMinor":0,"s155":false,"s155Text":"","why":"remaining","whyText":"kayıtta kalan şüpheli tutar"},"today":{"date":"2026-10-15","limitMinor":0,"offerMinor":0,"s155":false,"s155Text":"","why":"remaining","whyText":"kayıtta kalan şüpheli tutar"}}}],"o":[{"remaining":150000,"status":"open","writeOff":{"anyMinor":150000,"best":{"date":"2026-09-19","limitMinor":150000,"offerMinor":150000,"s155":false,"s155
+{"label":"t37 c2 s17 write uç 2026-10-01","kind":"uç","n":[200,{"anyMinor":0,"balanceMinor":77985,"best":{"date":"2026-10-01","limitMinor":0,"offerMinor":0,"s155":false,"s155Text":"","why":"remaining","whyText":"kayıtta kalan şüpheli tutar"},"blocked":"","blockedText":"","date":"2026-10-01","limitMinor":0,"offerMinor":0,"s155":false,"s155Text":"","today":{"date":"2026-10-15","limitMinor":0,"offerMinor":0,"s155":false,"s155Text":"","why":"remaining","whyText":"kayıtta kalan şüpheli tutar"},"why":"remaining","whyText":"kayıtta kalan şüpheli tutar"}],"o":[200,{"anyMinor":0,"balanceMinor":227985,"best":{"date":"2026-10-01","limitMinor":0,"offerMinor":0,"s155":false,"s155Text":"","why":"remaining","whyText":"kayıtta kalan şüpheli tutar"},"blocked":"","blockedText":"","date":"2026-10-01","limitMinor":0,"offerMinor":0,"s155":false,"s155Text":"","today":{"date":"2026-10-15","limitMinor":0,"offer
+{"label":"t37 c2 s17 write uç 2026-10-03","kind":"uç","n":[200,{"anyMinor":0,"balanceMinor":77985,"best":{"date":"2026-10-01","limitMinor":0,"offerMinor":0,"s155":false,"s155Text":"","why":"remaining","whyText":"kayıtta kalan şüpheli tutar"},"blocked":"","blockedText":"","date":"2026-10-03","limitMinor":0,"offerMinor":0,"s155":false,"s155Text":"","today":{"date":"2026-10-15","limitMinor":0,"offerMinor":0,"s155":false,"s155Text":"","why":"remaining","whyText":"kayıtta kalan şüpheli tutar"},"why":"remaining","whyText":"kayıtta kalan şüpheli tutar"}],"o":[200,{"anyMinor":0,"balanceMinor":227985,"best":{"date":"2026-10-01","limitMinor":0,"offerMinor":0,"s155":false,"s155Text":"","why":"remaining","whyText":"kayıtta kalan şüpheli tutar"},"blocked":"","blockedText":"","date":"2026-10-03","limitMinor":0,"offerMinor":0,"s155":false,"s155Text":"","today":{"date":"2026-10-15","limitMinor":0,"offer
+{"label":"t37 c2 s17 write uç 2026-10-05","kind":"uç","n":[200,{"anyMinor":0,"balanceMinor":77985,"best":{"date":"2026-10-01","limitMinor":0,"offerMinor":0,"s155":false,"s155Text":"","why":"remaining","whyText":"kayıtta kalan şüpheli tutar"},"blocked":"","blockedText":"","date":"2026-10-05","limitMinor":0,"offerMinor":0,"s155":false,"s155Text":"","today":{"date":"2026-10-15","limitMinor":0,"offerMinor":0,"s155":false,"s155Text":"","why":"remaining","whyText":"kayıtta kalan şüpheli tutar"},"why":"remaining","whyText":"kayıtta kalan şüpheli tutar"}],"o":[200,{"anyMinor":0,"balanceMinor":227985,"best":{"date":"2026-10-01","limitMinor":0,"offerMinor":0,"s155":false,"s155Text":"","why":"remaining","whyText":"kayıtta kalan şüpheli tutar"},"blocked":"","blockedText":"","date":"2026-10-05","limitMinor":0,"offerMinor":0,"s155":false,"s155Text":"","today":{"date":"2026-10-15","limitMinor":0,"offer
+{"label":"t37 c2 s17 write uç 2026-10-08","kind":"uç","n":[200,{"anyMinor":0,"balanceMinor":77985,"best":{"date":"2026-10-01","limitMinor":0,"offerMinor":0,"s155":false,"s155Text":"","why":"remaining","whyText":"kayıtta kalan şüpheli tutar"},"blocked":"","blockedText":"","date":"2026-10-08","limitMinor":0,"offerMinor":0,"s155":false,"s155Text":"","today":{"date":"2026-10-15","limitMinor":0,"offerMinor":0,"s155":false,"s155Text":"","why":"remaining","whyText":"kayıtta kalan şüpheli tutar"},"why":"remaining","whyText":"kayıtta kalan şüpheli tutar"}],"o":[200,{"anyMinor":0,"balanceMinor":227985,"best":{"date":"2026-10-01","limitMinor":0,"offerMinor":0,"s155":false,"s155Text":"","why":"remaining","whyText":"kayıtta kalan şüpheli tutar"},"blocked":"","blockedText":"","date":"2026-10-08","limitMinor":0,"offerMinor":0,"s155":false,"s155Text":"","today":{"date":"2026-10-15","limitMinor":0,"offer
+# fark 43

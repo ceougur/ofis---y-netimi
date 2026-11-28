@@ -162,7 +162,12 @@ describe("2.5.1 M2 tur 3 — S-M2T2-2 = A: Değersiz'den sonra fatura TUTARININ 
       assert.equal(r.code, "doubtful-writeoff-balance", r.error);
       assert.match(r.error, /^Fatura düzenlenemez: bu caride 17\.09\.2026 tarihli 3\.000,00 TL Değersiz Alacak satırı var; düzenlemeden sonra cari 2\.376,45 TL alacaklı \(eksi bakiye\) olurdu\. /, r.error);
       assert.ok(r.error.includes("Değersiz Alacak yazımı cariyi alacaklıya düşüremez — bu düzenlemeyle o kayda Değersiz Alacak yazılamazdı."), r.error);
-      tail(r.error, "faturayı düzenleyin");
+      // Tur 4 (DÜŞÜK-1; DEĞİŞEN beklenti): Değersiz satırı silinse de kapının S155 kuralı (borç 623,55 < açık şüpheli 2.900) düzenlemeyi reddederdi — 'ne yapmalı' şüpheli kaydın düzeltilmesini de
+      // söyler (izlenen yol test/supheli-degersiz-m2t4-251.test.mjs'te kabul ettirilir).
+      assert.ok(r.error.includes("Ne yapmalı: Değersiz Alacak satırını silmek yetmez — düzenlemeden sonra carinin borcu (623,55 TL) şüpheli kaydın kalanını (2.900,00 TL) karşılamaz. "), r.error);
+      assert.ok(r.error.includes("sonra şüpheli alacak kaydını silin (cari kartı → Şüpheli Alacak → kaydın satırındaki × düğmesi) ya da Şüpheliden Çıkar ile çıkarın, sonra faturayı düzenleyin;"), r.error);
+      assert.ok(r.error.endsWith("Hiçbir şey kaydedilmedi."), r.error);
+      assert.equal(r.data.recordFirst, true);
       assert.equal(r.data.balanceMinor, -237645);
       assert.equal(payableOf(store, b.inv.id), 2900);
       assert.equal(await balanceOf(api, b.a.id), 423.55);

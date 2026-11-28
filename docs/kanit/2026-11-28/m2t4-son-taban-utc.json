@@ -1,0 +1,98 @@
+{
+  "ad": "m2t4-son-taban-utc",
+  "komut": "node --test --test-reporter=tap test/supheli-degersiz-m2t4-251.test.mjs test/supheli-degersiz-m2t3-251.test.mjs",
+  "commit": "74ba2a84c8c799992798ea4e58b35084263a65ea",
+  "dal": "HEAD",
+  "kirli": 2,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-28T06:53:09.270Z",
+  "sure_sn": 18.4,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 30,
+    "gecen": 17,
+    "basarisiz": 13,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 13 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.1 M2 tur 3 — S-M2T2-2 = A: Değersiz'den sonra fatura TUTARININ Düzenle ile düşürülmesi iade gibi reddedilir › 2.900 → 100 → 409 'Fatura düzenlenemez' (düzenlemeden sonra 2.376,45 alacaklı); fatura 2.900 kalır, bakiye 423,55",
+      "konum": "test/supheli-degersiz-m2t3-251.test.mjs:155:3",
+      "hata": "Fatura düzenlenemez: bu caride 17.09.2026 tarihli 3.000,00 TL Değersiz Alacak satırı var; düzenlemeden sonra cari 2.376,45 TL alacaklı (eksi bakiye) olurdu. Değersiz Alacak yazımı cariyi alacaklıya düşüremez — bu düzenlemeyle o kayda Değersiz Alacak yazılamazdı. Ne yapmalı: önce Değersiz Alacak satırını silin (cari kartı → Şüpheli Alacak → kaydın Değersiz satırındaki × düğmesi), sonra faturayı düzenleyin; gerekirse Değersiz Alacak'ı yeniden yazın (form yazılabilecek tutarı gösterir). Hiçbir şey kaydedilmedi. (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.5.1 M2 tur 4 — ORTA-2: formun önerdiği Değersiz tutarı kapıda reddedilmez (S270 'hiçbir sırada'; öneri her zaman kabul) › dar kontrolün vakası (S1'in Değersiz satırı Silinenler'den geri yüklenmiş): S2 için öneri 1.500 @19.09 → yazım 200, bakiye 779,85, Mutabakat tamam; 1.500,01 → ret",
+      "konum": "test/supheli-degersiz-m2t4-251.test.mjs:100:5",
+      "hata": "önerilen tutar reddedildi: 409 Bu kayıtla carinin 15.10.2026 tarihli 500,00 TL Değersiz Alacak satırı şüpheli kaydın kalanını aşar: Değersiz Alacak, kayda düşen tahsilatlar çıkınca kalanı (en çok 400,00 TL) aşamaz. Ne yapmalı: önce Değersiz Alacak satırını silin (cari kartı → Şüpheli Alacak → kaydın Değersiz satırındaki × düğmesi), sonra bu kaydı yeniden girin; gerekirse Değersiz Alacak'ı yeniden yazın (form yazılabilecek tutarı gösterir). Hiçbir değişiklik yazılmadı. · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "2.5.1 M2 tur 4 — ORTA-2: formun önerdiği Değersiz tutarı kapıda reddedilmez (S270 'hiçbir sırada'; öneri her zaman kabul) › dar kontrolün vakası (doğrudan yazılmış): S2 için öneri 1.500 @19.09 → yazım 200, bakiye 779,85, Mutabakat tamam; 1.500,01 → ret",
+      "konum": "test/supheli-degersiz-m2t4-251.test.mjs:100:5",
+      "hata": "önerilen tutar reddedildi: 409 Bu kayıtla carinin 15.10.2026 tarihli 500,00 TL Değersiz Alacak satırı şüpheli kaydın kalanını aşar: Değersiz Alacak, kayda düşen tahsilatlar çıkınca kalanı (en çok 400,00 TL) aşamaz. Ne yapmalı: önce Değersiz Alacak satırını silin (cari kartı → Şüpheli Alacak → kaydın Değersiz satırındaki × düğmesi), sonra bu kaydı yeniden girin; gerekirse Değersiz Alacak'ı yeniden yazın (form yazılabilecek tutarı gösterir). Hiçbir değişiklik yazılmadı. · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "2.5.1 M2 tur 4 — ORTA-2: formun önerdiği Değersiz tutarı kapıda reddedilmez (S270 'hiçbir sırada'; öneri her zaman kabul) › değişmez (i)'nin dünyası: S1'in Değersiz satırı, SONRA yazılan Değersiz satırını kuyruktan da okumaz (tur 3 hâli = leakLater → aynı yazım kapıda 409)",
+      "konum": "test/supheli-degersiz-m2t4-251.test.mjs:123:3",
+      "hata": "S2 Değersiz 1.500: 409 {\"ok\":false,\"error\":\"Bu kayıtla carinin 15.10.2026 tarihli 500,00 TL Değersiz Alacak satırı şüpheli kaydın kalanını aşar: Değersiz Alacak, kayda düşen tahsilatlar çıkınca kalanı (en çok 400,00 TL) aşamaz. Ne yapmalı: önce Değersiz Alacak satırını silin (cari kartı → Şüpheli Alacak → kaydın Değersiz satırındaki × düğmesi), sonra bu kaydı yeniden girin; gerekirse Değersiz Alacak'ı yeniden yazın (form yazılabilecek tutarı gösterir). Hiçbir değişiklik yazılmadı.\",\"code\":\"ledger-integrity\",\"failures\":[{\"code\":\"doubtful:records\",\"name\":\"Şüpheli Alacak Kayıtları (kayıt = başlık = karşılık = değersiz · 409 !== 200 (beklenen 200, gelen 409)"
+    },
+    {
+      "ad": "2.5.1 M2 tur 4 — S-DKM2T3-1 = A: Değersiz satırı olan caride Borç Yaz / taksit kartı silme ya da düşürme cariyi eksiye götürüyorsa fatura iptaliyle aynı ret › Borç Yaz 3.400 silme → 409 'Borç hareketi silinemez', bakiye 423,55 kalır; ileti S155'i de bilir ve izlenen yol silmeyi kabul ettirir (23,55)",
+      "konum": "test/supheli-degersiz-m2t4-251.test.mjs:144:3",
+      "hata": "{\"id\":\"account-60fc6253-8be0-40f3-a816-d51cde339b7a\",\"refNo\":\"1\",\"type\":\"customer\",\"name\":\"M2T4 Borç Sil\",\"phone\":\"0500 461 04 00\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2026-09-01\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\",\"mersisNo\":\"\",\"tradeRegistry\":\"\",\"partyKind\":\"\",\"firstName\":\"\",\"familyName\":\"\",\"city\": · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "2.5.1 M2 tur 4 — S-DKM2T3-1 = A: Değersiz satırı olan caride Borç Yaz / taksit kartı silme ya da düşürme cariyi eksiye götürüyorsa fatura iptaliyle aynı ret › Borç Yaz 3.400 → 100 düzeltme → 409 'Borç hareketi düzeltilemez' (yalnız Değersiz yüzünden; ileti eski yol); izlenen yol: Değersiz satırını sil → 100 → kabul (123,55), form 123,55 önerir",
+      "konum": "test/supheli-degersiz-m2t4-251.test.mjs:188:3",
+      "hata": "{\"id\":\"account-6a1e8461-8294-4773-a3f7-46efef6dd2f3\",\"refNo\":\"1\",\"type\":\"customer\",\"name\":\"M2T4 Borç Düşür\",\"phone\":\"0500 461 06 00\",\"email\":\"\",\"address\":\"\",\"registeredOn\":\"2026-09-01\",\"groupId\":null,\"subgroupId\":null,\"note\":\"\",\"caseKey\":\"\",\"caseSource\":\"\",\"caseTitle\":\"\",\"status\":\"active\",\"taxNo\":\"\",\"taxOffice\":\"\",\"mersisNo\":\"\",\"tradeRegistry\":\"\",\"partyKind\":\"\",\"firstName\":\"\",\"familyName\":\"\",\"city · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "2.5.1 M2 tur 4 — S-DKM2T3-1 = A: Değersiz satırı olan caride Borç Yaz / taksit kartı silme ya da düşürme cariyi eksiye götürüyorsa fatura iptaliyle aynı ret › Borç Yaz'ı Alacak'a çevirme (−6.376,45) ve başka cariye taşıma (eski cari −2.976,45) → 409; satır değişmez",
+      "konum": "test/supheli-degersiz-m2t4-251.test.mjs:214:3",
+      "hata": "Expected values to be strictly equal: · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "2.5.1 M2 tur 4 — S-DKM2T3-1 = A: Değersiz satırı olan caride Borç Yaz / taksit kartı silme ya da düşürme cariyi eksiye götürüyorsa fatura iptaliyle aynı ret › taksit kartı (aynı sınıf): 3.400'lük kartı silme → 409 'Taksit kartı silinemez'; tutarı 100'e düşürme → 409 'Taksit kartı düzenlenemez'; kart değişmez, bakiye 423,55",
+      "konum": "test/supheli-degersiz-m2t4-251.test.mjs:258:3",
+      "hata": "Expected values to be strictly equal: · 200 !== 409 (beklenen 409, gelen 200)"
+    },
+    {
+      "ad": "2.5.1 M2 tur 4 — DÜŞÜK-1: 'ne yapmalı' S155'i de bilir; izlenen yol işlemi gerçekten kabul ettirir › Düzenle 2.900 → 100: ileti şüpheli kaydı da söyler; Değersiz satırı sil → şüpheli kaydı sil → Düzenle → kabul (623,55)",
+      "konum": "test/supheli-degersiz-m2t4-251.test.mjs:286:3",
+      "hata": "Fatura düzenlenemez: bu caride 17.09.2026 tarihli 3.000,00 TL Değersiz Alacak satırı var; düzenlemeden sonra cari 2.376,45 TL alacaklı (eksi bakiye) olurdu. Değersiz Alacak yazımı cariyi alacaklıya düşüremez — bu düzenlemeyle o kayda Değersiz Alacak yazılamazdı. Ne yapmalı: önce Değersiz Alacak satırını silin (cari kartı → Şüpheli Alacak → kaydın Değersiz satırındaki × düğmesi), sonra faturayı düzenleyin; gerekirse Değersiz Alacak'ı yeniden yazın (form yazılabilecek tutarı gösterir). Hiçbir şey kaydedilmedi. (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.5.1 M2 tur 4 — ORTA-1: değişmez (i)'nin Silinenler taraması dizinli ve tam taramayla aynı sonuç › sorgu planı: iki Silinenler sorgusunda tablo baştan sona okunmaz (SCAN trash yok)",
+      "konum": "test/supheli-degersiz-m2t4-251.test.mjs:348:3",
+      "hata": "dizinli Silinenler sorguları yok (tur 4 öncesi kod — tam tarama)"
+    },
+    {
+      "ad": "2.5.1 M2 tur 4 — ORTA-1: değişmez (i)'nin Silinenler taraması dizinli ve tam taramayla aynı sonuç › değişmezin GERÇEKTE koştuğu Silinenler sorguları (iki kol: (i) fatura silme anı, (ii) satırdan sonraki silme) dizinli; 200 silinmiş fatura varken sonuç tam taramayla aynı",
+      "konum": "test/supheli-degersiz-m2t4-251.test.mjs:361:3",
+      "hata": "SELECT MAX(deleted_at) AS at FROM trash WHERE kind = 'invoice' AND instr(payload_json, ?) > 0 → SEARCH trash (beklenen true, gelen false)"
+    },
+    {
+      "ad": "2.5.1 M2 tur 4 — rastgele: önerinin yazımı kabul, Silinenler taraması eşdeğer, Borç Yaz silmesi eksiye götürmez › tohum 37 (5 cari × 20 adım)",
+      "konum": "test/supheli-degersiz-m2t4-251.test.mjs:472:5",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.1 M2 tur 4 — rastgele: önerinin yazımı kabul, Silinenler taraması eşdeğer, Borç Yaz silmesi eksiye götürmez › tohum 3 (5 cari × 20 adım)",
+      "konum": "test/supheli-degersiz-m2t4-251.test.mjs:472:5",
+      "hata": "Expected values to be strictly deep-equal: · + actual - expected · + [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/m2t4-ajan/kanit/2026-11-28/m2t4-son-taban-utc.log",
+  "klasor": "/dev/shm/m2t4-a752/eski",
+  "ham_cikti_sha256": "32404ff012d2602ff8aa299388ab9eeb0e7ea723d6f81950081a64f384479429",
+  "ham_cikti_bayt": 29010
+}

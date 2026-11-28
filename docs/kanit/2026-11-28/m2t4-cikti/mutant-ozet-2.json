@@ -1,0 +1,39 @@
+[
+ {
+  "mutant": "M16-silinenler-taramasi-eski-hali",
+  "cikis": 1,
+  "fail": "# fail 1",
+  "kirilan": [
+   "not ok 2 - değişmezin GERÇEKTE koştuğu Silinenler sorguları (iki kol: (i) fatura silme anı, (ii) satırdan sonraki silme) dizinli; 200 silinmiş fatura varken sonuç tam taramayla aynı",
+   "not ok 16 - 2.5.1 M2 tur 4 — ORTA-1: değişmez (i)'nin Silinenler taraması dizinli ve tam taramayla aynı sonuç"
+  ],
+  "sonuc": "YAKALANDI"
+ },
+ {
+  "mutant": "M16b-bakiye-kolu-silinenler-taramasi-eski-hali",
+  "cikis": 1,
+  "fail": "# fail 1",
+  "kirilan": [
+   "not ok 2 - değişmezin GERÇEKTE koştuğu Silinenler sorguları (iki kol: (i) fatura silme anı, (ii) satırdan sonraki silme) dizinli; 200 silinmiş fatura varken sonuç tam taramayla aynı",
+   "not ok 16 - 2.5.1 M2 tur 4 — ORTA-1: değişmez (i)'nin Silinenler taraması dizinli ve tam taramayla aynı sonuç"
+  ],
+  "sonuc": "YAKALANDI"
+ },
+ {
+  "mutant": "M16c-daraltma-en-son-satirdan",
+  "cikis": 1,
+  "fail": "# fail 1",
+  "kirilan": [
+   "not ok 3 - iki Değersiz satırı arasında silinen fatura: daraltılmış tarama tam taramayla aynı, ihlal yok, Mutabakat tamam",
+   "not ok 16 - 2.5.1 M2 tur 4 — ORTA-1: değişmez (i)'nin Silinenler taraması dizinli ve tam taramayla aynı sonuç"
+  ],
+  "sonuc": "YAKALANDI"
+ },
+ {
+  "mutant": "M17b-cikarma-kisa-yolu-ayni-gunu-de-alir",
+  "cikis": 0,
+  "fail": "# fail 0",
+  "kirilan": [],
+  "sonuc": "YASADI"
+ }
+]

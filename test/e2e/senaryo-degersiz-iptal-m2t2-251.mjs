@@ -8,8 +8,10 @@
 //   3 (tur 3 — S-M2T2-1 = A) T + 05.10 avans 3.000 (bakiye −2.576,45) → fatura İptal Et: ret, ileti "… iptalden sonra cari 5.476,45 TL alacaklı … Değersiz Alacak satırı olmasaydı da
 //     cari 2.476,45 TL alacaklı olurdu …"; fatura "issued", bakiye −2.576,45.
 //   4 (tur 3 — S-M2T2-2 = A) T → fatura Düzenle → Birim Fiyat 2.900 → 100 (klavye) → Değişiklikleri Kaydet → "Değişiklikler Kaydedilsin mi?" Evet: ret, ileti "Fatura düzenlenemez: … düzenlemeden sonra cari 2.376,45 TL alacaklı …";
-//     fatura 2.900, bakiye 423,55.
+//     fatura 2.900, bakiye 423,55. (Tur 4 — DÜŞÜK-1, DEĞİŞEN beklenti: Değersiz satırı silinse de S155 reddederdi → 'ne yapmalı' şüpheli kaydın da silinmesini / Şüpheliden Çıkarılmasını söyler.)
 //   5 Mutabakat Testi tamam; sayfa hatası yok.
+//   6 (tur 4 — S-DKM2T3-1 = A) T → cari kartında Borç 3.400 satırının × düğmesi → "Hareketi Sil" Sil: bildirim "Borç hareketi silinemez: … silmeden sonra cari 2.976,45 TL alacaklı …";
+//     borç satırı yerinde, bakiye 423,55.
 // Çıkış: "N geçti, M kaldı" (kalan > 0 → çıkış 1). Ekran görüntüleri EKRAN_DIR (yoksa geçici klasör).
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -63,6 +65,8 @@ const baseT = async name => {
 const A = await baseT("M2T3 Ekran Avanslı Müşteri");
 await must("avans", admin.post(`${ACC}/${A.c.id}/entries`, { kind: "in", amount: "3000", date: "2026-10-05", method: "cash", cashForce: true, similarOk: true, note: "Avans" }));
 const D = await baseT("M2T3 Ekran Düzenle Müşterisi");
+const B = await baseT("M2T4 Ekran Borç Silme Müşterisi");
+const debtB = server.app.store.get("SELECT id FROM account_entries WHERE account_id = ? AND kind = 'debt' AND source = ''", B.c.id).id;
 
 let passed = 0;
 let failed = 0;
@@ -181,11 +185,31 @@ try {
   ok(!(await page.$(`${top} [data-answer="yes"]`)), "başka soru çıkmadı");
   const error4 = await textOf(page, `${inv} [data-form-error]`);
   ok(/^Fatura düzenlenemez: bu caride 17\.09\.2026 tarihli 3\.000,00 TL Değersiz Alacak satırı var; düzenlemeden sonra cari 2\.376,45 TL alacaklı \(eksi bakiye\) olurdu/.test(error4), `ileti ne oldu: "${error4.slice(0, 160)}"`);
-  ok(error4.includes(`Ne yapmalı: önce Değersiz Alacak satırını silin (${WHERE}), sonra faturayı düzenleyin`), "ileti ne yapmalı + nereye");
+  ok(error4.includes("Ne yapmalı: Değersiz Alacak satırını silmek yetmez — düzenlemeden sonra carinin borcu (623,55 TL) şüpheli kaydın kalanını (2.900,00 TL) karşılamaz."), "ileti: Değersiz silmek yetmez (tur 4 DÜŞÜK-1)");
+  ok(error4.includes(`Önce Değersiz Alacak satırını silin (${WHERE}), sonra şüpheli alacak kaydını silin (cari kartı → Şüpheli Alacak → kaydın satırındaki × düğmesi) ya da Şüpheliden Çıkar ile çıkarın, sonra faturayı düzenleyin`), "ileti ne yapmalı + nereye (şüpheli kayıt da)");
   ok(Boolean(await page.$(price)), "form açık kalır");
   ok(Number(db().get("SELECT payable_total AS p FROM invoices WHERE id = ?", D.invoice.id).p) === 2900, "veri tabanı: fatura 2.900 kaldı");
   ok((await balance(D.c.id)) === 423.55, `bakiye ${await balance(D.c.id)} (423,55)`);
   await shot(page, "m2t3-4-duzenle-reddi");
+  await closeAll(page);
+
+  console.log("\n■ 6 (tur 4) Değersiz'den sonra Borç Yaz satırının silinmesi reddedilir (S-DKM2T3-1 = A)");
+  await page.evaluate(accountId => window.HOF.accounts.open(accountId), B.c.id);
+  await page.waitForSelector(`${card} [data-delete-entry="${debtB}"]`, { timeout: 10000 });
+  await page.click(`${card} [data-delete-entry="${debtB}"]`);
+  // Beklenen soru: VAR — ürünün "Hareketi Sil" onayı; kullanıcı gibi Sil denir (denenen sunucunun ret kararıdır — ders 34).
+  await page.waitForSelector(`${top} [data-answer="yes"]`, { timeout: 8000 });
+  const ask6 = await textOf(page, top);
+  ok(ask6.includes("Hareketi Sil"), `beklenen onay sorusu: "${ask6.slice(0, 120)}"`);
+  await page.click(`${top} [data-answer="yes"]`);
+  await page.waitForTimeout(1200);
+  ok(!(await page.$(`${top} [data-answer="yes"]`)), "başka soru çıkmadı");
+  const toast6 = await lastToast(page);
+  ok(/^Borç hareketi silinemez: bu caride 17\.09\.2026 tarihli 3\.000,00 TL Değersiz Alacak satırı var; silmeden sonra cari 2\.976,45 TL alacaklı \(eksi bakiye\) olurdu/.test(toast6), `bildirim ne oldu: "${toast6.slice(0, 160)}"`);
+  ok(toast6.includes(`Önce Değersiz Alacak satırını silin (${WHERE}), sonra şüpheli alacak kaydını silin`), "bildirim ne yapmalı + nereye");
+  ok(Boolean(db().get("SELECT 1 AS found FROM account_entries WHERE id = ?", debtB)), "veri tabanı: borç satırı silinmedi");
+  ok((await balance(B.c.id)) === 423.55, `bakiye ${await balance(B.c.id)} (423,55)`);
+  await shot(page, "m2t4-6-borc-silme-reddi");
   await closeAll(page);
 
   console.log("\n■ 5 Mutabakat Testi ve sayfa hataları");

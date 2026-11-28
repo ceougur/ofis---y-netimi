@@ -218,7 +218,35 @@ export function linkedShares(store, parties) {
     memo?.derived?.set(`${party}|${key}`, out);
     return out;
   };
-  const make = extra => (credit, view) => {
+  // 2.5.1 M2 tur 4 (dar kontrol DK-M2T3 ORTA-2 — formun önerdiği tutar kapıda reddediliyordu): değişmez (i)'nin "W'nin yazıldığı andaki dünyası"nda W'den SONRA yazılmış Değersiz satırları YOKTUR
+  // (tanım; writeOffInvariantProblems'in notu) — ama kuyruk kesiti carinin BÜTÜN satırlarını okuyordu: sonradan yazılmış (W'den önceki tarihli) Değersiz satırı W'nin dünyasındaki bağlı tahsilatın
+  // kuyruk payını değiştiriyor, W'yi yazıldığı anda da bugün de sığarken "kalanı aşar" diye reddediyordu. drop = { party, ids }: bu satırlar kuyruktan da çıkarılır. Kurulum paylaşılır; türetilmiş
+  // girdi ve kesit belleği ayrı (extraOf gibi).
+  const withoutOf = (party, drop) => {
+    const plain = baseOf(party);
+    if (!drop || drop.party !== party || !drop.ids.size) return plain;
+    const key = `-${[...drop.ids].sort().join(",")}`;
+    if (derived.has(key)) return derived.get(key);
+    const memo = WRITE_OFF_TEST.exact ? null : linkedMemoOf(store);
+    const shared = memo?.derived?.get(`${party}|${key}`);
+    if (shared) {
+      derived.set(key, shared);
+      return shared;
+    }
+    const base = { ...plain.base, lines: (plain.base.lines || []).filter(item => !drop.ids.has(String(item.id))) };
+    const sameDay = new Map();
+    const dayOf = new Map();
+    for (const item of base.lines) {
+      if (!sameDay.has(item.date)) sameDay.set(item.date, []);
+      sameDay.get(item.date).push(item);
+      if (!dayOf.has(item.id)) dayOf.set(item.id, item.date);
+    }
+    const out = { base, dayOf, sameDay, cuts: new Map() };
+    derived.set(key, out);
+    memo?.derived?.set(`${party}|${key}`, out);
+    return out;
+  };
+  const make = (extra, drop = null) => (credit, view) => {
     const ref = String(credit.ref ?? credit.key ?? "");
     if (!ref.startsWith("account:") || !candidates.has(credit.party)) return null;
     // 2.5.1 M2 tur 2 (hız; dar kontrol DK-M2 YÜKSEK-1): varsayımsal satırın GÜNÜNDEN ÖNCEKİ günlerin kesiti varsayımsız kesitin AYNISIDIR — kesit yalnız kesit gününden önceki ve kesit
@@ -229,7 +257,18 @@ export function linkedShares(store, parties) {
       const day = plain.dayOf.get(ref.slice("account:".length));
       if (day && day < extra.entry.date) return linked(credit, view);
     }
+    // Tur 4: çıkarılan satırların hepsi kesit gününden SONRAKİ bir gündeyse kesit çıkarmasız kesitin aynısıdır (aynı gerekçe).
+    if (drop && drop.party === credit.party) {
+      const plain = baseOf(credit.party);
+      const day = plain.dayOf.get(ref.slice("account:".length));
+      if (day && day < drop.from) return linked(credit, view);
+      const entry = withoutOf(credit.party, drop);
+      return cutOf(entry, ref, view);
+    }
     const entry = extraOf(credit.party, extra);
+    return cutOf(entry, ref, view);
+  };
+  const cutOf = (entry, ref, view) => {
     const { base } = entry;
     const lineId = ref.slice("account:".length);
     const invoiceId = base.links.get(lineId);
@@ -252,6 +291,8 @@ export function linkedShares(store, parties) {
   const linked = make(null);
   // withExtra: aynı kurulumla, varsayımsal satırı kuyruğa da ekleyen geri çağrı (yalnız Değersiz sınırı — writeOffLimitOf).
   Object.defineProperty(linked, "withExtra", { value: extra => make(extra) });
+  // without (tur 4): aynı kurulumla, verilen cari satırlarını (W'den sonra yazılmış Değersiz satırları) kuyruktan ÇIKARAN geri çağrı — yalnız değişmez (i). ids: Set; from: en erken günleri.
+  Object.defineProperty(linked, "without", { value: drop => make(null, drop) });
   return linked;
 }
 
@@ -300,7 +341,9 @@ const WRITE_OFF_LAST_AT = "9999-12-31T23:59:59.999Z";
 //   (3) linkedShares.withExtra — varsayımsal satırın gününden önceki kesitler varsayımsız bellekten.
 // YALNIZ TEST: WRITE_OFF_TEST.exact = true üçünü kapatır (tur 1'in tam hesabı — eşdeğerlik hakemi; test/supheli-degersiz-hiz-m2t2-251.test.mjs).
 // count (YALNIZ TEST): { quotes, trials } — liste / uç başına hesap sayısı (hız gerilemesini süre yerine iş sayısıyla yakalayan dişli test; null iken sayılmaz).
-export const WRITE_OFF_TEST = { exact: false, count: null };
+// fullTrash / leakLater (YALNIZ TEST, tur 4): değişmez (i)'nin Silinenler taramasını tur 3'teki tam taramaya, W'nin kuyruğunu tur 3'teki (sonraki Değersiz satırlarını da okuyan) hâline döndürür
+// (eşdeğerlik hakemi ve kırmızı kanıtı — test/supheli-degersiz-m2t4-251.test.mjs).
+export const WRITE_OFF_TEST = { exact: false, count: null, fullTrash: false, leakLater: false };
 /** Carinin Değersiz sınırı bağlamı: okuma (SQL) BİR kez; tam ayırma; bağlı satır kümesi (`linked` dizi döndürdü); dışarı taşan Değersiz tutarları (taban). */
 export function writeOffContextOf(store, party) {
   const rows = doubtfulRows(store, { parties: [party] });
@@ -578,6 +621,16 @@ export function doubtfulProblems(store, { parties = null } = {}) {
  *   (ii) carinin bakiyesi eksi, son işlemi bir Değersiz satırı ve o satırdan sonra cari için başka yazım / değişiklik / silme / geri yükleme yok → Değersiz cariyi eksiye düşürmüş.
  * Eski sürümden gelen ihlal kapının taban kuralıyla (sayı büyümedikçe) yazımı engellemez; Mutabakat Testi'nde görünür.
  */
+// Tur 4 (ORTA-1) Silinenler sorguları — dizinli (test/supheli-degersiz-m2t4-251.test.mjs sorgu planını okur: "SCAN trash" olmamalı). ?1 cari, ?2 en eski Değersiz satırının yazım anı.
+export const WRITE_OFF_TRASH_SQL = `SELECT MAX(at) AS at FROM (
+   SELECT deleted_at AS at FROM trash WHERE restored_at IS NULL AND deleted_at >= ?2 AND kind = 'invoice' AND instr(payload_json, ?1) > 0
+   UNION ALL
+   SELECT deleted_at FROM trash WHERE restored_at >= '' AND deleted_at >= ?2 AND kind = 'invoice' AND instr(payload_json, ?1) > 0)`;
+// ?1 satırın yazım anı, ?2 cari.
+export const WRITE_OFF_ACTIVITY_TRASH_SQL = `SELECT 1 AS found FROM (
+   SELECT id FROM trash WHERE restored_at IS NULL AND deleted_at >= ?1 AND instr(payload_json, ?2) > 0
+   UNION ALL SELECT id FROM trash WHERE restored_at >= ?1 AND instr(payload_json, ?2) > 0
+   UNION ALL SELECT id FROM trash WHERE restored_at >= '' AND restored_at < ?1 AND deleted_at >= ?1 AND instr(payload_json, ?2) > 0) LIMIT 1`;
 export function writeOffInvariantProblems(store, { parties = null } = {}) {
   if (!hasTable(store, "account_entries")) return [];
   const list = parties ? JSON.stringify([...parties]) : null;
@@ -611,9 +664,21 @@ export function writeOffInvariantProblems(store, { parties = null } = {}) {
     // "sonradan değişmiş" sayılır. İptal bağı (invoice_id / evrak olayının bağı) satırın kendisine iz bırakmadan siler; hangi bağsız satırın o faturaya bağlı olduğu veride ayırt edilemez → carinin
     // satış faturasının son iptal / silinme anından ÖNCE yazılmış bugün bağsız her tahsilat o anda değişmiş sayılır. Gevşeme yalnız satır ÇIKARIR (W'nin dünyası küçülür, sınır büyür) —
     // yeni kırmızı üretmez; bedeli m2t2-rapor.md BİLİNEN SINIR (iptal edilen faturayla ilgisiz eski bağsız tahsilat da W'nin dünyasından çıkar).
+    // 2.5.1 M2 tur 4 (hız; dar kontrol DK-M2T3 ORTA-1 — Silinenler'deki BÜTÜN fatura gövdeleri Değersiz satırlı her cari için dizinsiz taranıyordu; 5.000 silinmiş fatura + 10 cari Mutabakat
+    // ~19 → ~227 ms): tarama carinin EN ESKİ Değersiz satırının yazım anından (since) SONRAKİ silmelere daralır, Silinenler'in açık / geri yüklenmiş dizini (idx_trash_open: restored_at,
+    // deleted_at) ile. SONUÇ AYNI: lastUnbond yalnız "changed ≥ W'nin yazım anı" karşılaştırmasında okunur ve her W'nin anı ≥ since; en büyük silme anı ≥ since ise daraltılmış taramada da
+    // odur, < since ise hiçbir W için koşulu sağlamaz (changed yalnız büyütülür: max(eski, x) ≥ W iff eski ≥ W) — "silme yok" ile aynı. Yazım anı boş satır varsa since '' (bütün satırlar).
+    // Geri yüklenmiş satırlar `restored_at >= ''` ile (metin her zaman ≥ '' — IS NOT NULL ile aynı küme; IS NOT NULL planlayıcıya dizini seçtirmiyor, tablo baştan sona okunuyordu).
+    // Geri yüklenmiş ya da taslak silinmiş faturanın sayılması AYNEN (gevşetme sonraki sürüme — dar kontrol B). YALNIZ TEST: WRITE_OFF_TEST.fullTrash eski taramayı koşar (eşdeğerlik hakemi).
+    const since = own[0].at;
+    const trashMax = () => {
+      if (!has("trash")) return "";
+      if (WRITE_OFF_TEST.fullTrash) return store.get("SELECT MAX(deleted_at) AS at FROM trash WHERE kind = 'invoice' AND instr(payload_json, ?) > 0", party)?.at || "";
+      return store.get(WRITE_OFF_TRASH_SQL, party, since)?.at || "";
+    };
     const lastUnbond = [
       has("invoices") ? store.get("SELECT MAX(cancelled_at) AS at FROM invoices WHERE account_id = ? AND status = 'cancelled' AND kind IN ('sale', 'smm') AND COALESCE(cancelled_at, '') <> ''", party)?.at || "" : "",
-      has("trash") ? store.get("SELECT MAX(deleted_at) AS at FROM trash WHERE kind = 'invoice' AND instr(payload_json, ?) > 0", party)?.at || "" : "",
+      trashMax(),
     ].sort().pop();
     if (lastUnbond) {
       for (const row of store.all("SELECT id FROM account_entries WHERE account_id = ? AND kind = 'in' AND invoice_id = '' AND source <> 'invoice' AND COALESCE(created_at, '') <= ?", party, lastUnbond)) {
@@ -623,10 +688,15 @@ export function writeOffInvariantProblems(store, { parties = null } = {}) {
     }
     const writtenAfter = (credit, line) => (credit.at > line.at) || (credit.at === line.at && String(credit.key).startsWith("account:") && Number(credit.seq) > Number(line.seq));
     // (i)
-    for (const line of own) {
+    for (const [index, line] of own.entries()) {
       const record = records.get(line.recordId);
       if (!record || record.status === "cancelled") continue;
       const key = `account:${line.id}`;
+      // Tur 4 (DK-M2T3 ORTA-2): W'den SONRA yazılmış Değersiz satırları (own yazım sırasıyla — created_at → rowid; writtenAfter ile aynı ölçü) W'nin dünyasının kuyruğunda da yok. Yalnız W'den
+      // önceki bir güne düşen sonraki satır kesiti değiştirebilir (W gününe ve sonrasına ait bağlı satırlar W'nin dünyasında zaten yok) — yoksa çıkarmasız kuyruk (aynı sonuç, ek iş yok).
+      const later = WRITE_OFF_TEST.leakLater ? [] : own.slice(index + 1);
+      const early = later.filter(other => other.date < line.date);
+      const linked = early.length && ctx.rows.linked?.without ? ctx.rows.linked.without({ party, ids: new Set(later.map(other => String(other.id))), from: early.reduce((min, other) => (other.date < min ? other.date : min), early[0].date) }) : ctx.rows.linked || null;
       const credits = ctx.credits.filter(credit => {
         if (credit.key === key) return false;
         if (credit.target) return !writtenAfter(credit, line);
@@ -635,7 +705,7 @@ export function writeOffInvariantProblems(store, { parties = null } = {}) {
         return !writtenAfter(credit, line) && !((changed.get(credit.key) || "") >= line.at);
       });
       // Şüpheliden Çıkar Değersiz'den SONRA gelir (çıkarılmış kayda Değersiz yazılmaz): W'nin yazıldığı andaki dünyada kayıtlar açıktır — çıkarma kalanı sıfırlamaz.
-      const { state } = allocateDoubtful({ records: openWorld, provisions: ctx.rows.provisions, credits, linked: ctx.rows.linked || null });
+      const { state } = allocateDoubtful({ records: openWorld, provisions: ctx.rows.provisions, credits, linked });
       const room = Math.max(0, state.get(record.id)?.remaining ?? 0);
       // figure: kapı reddinin anlaşılır iletisi için (lib/integrity.mjs doubtfulText — 2.5.1 M2 tur 2).
       if (line.minor > room) out.push({ key: `${line.id}:writeoff-limit`, sample: `Değersiz Alacak satırı ${dayText(line.date)} ${tl(line.minor)}: yazıldığı andaki sınırı (${tl(room)}) aşıyor — kaydın kalanından önce yararlanan bağsız tahsilat düşülmeden yazılmış (S270)`, figure: { kind: "writeoff-limit", date: line.date, minor: line.minor, roomMinor: room } });
@@ -687,6 +757,11 @@ export function writeOffBalanceGuard(store, party, { action = "cancel" } = {}) {
         cancel: { what: "Fatura iptal edilemez", act: "iptalden", by: "bu fatura olmasaydı", then: "faturayı iptal edin", op: "iptal" },
         return: { what: "İade faturası kaydedilemez", act: "iadeden", by: "bu iadeyle", then: "iadeyi kaydedin", op: "iade" },
         edit: { what: "Fatura düzenlenemez", act: "düzenlemeden", by: "bu düzenlemeyle", then: "faturayı düzenleyin", op: "düzenleme" },
+        // 2.5.1 M2 tur 4 — S-DKM2T3-1 = A (Borç Yaz satırı) ve aynı sınıftaki taksit kartı (ölçüm: kartın silinmesi / tutarının düşürülmesi Borç Yaz'la aynı sayıları verir).
+        "entry-delete": { what: "Borç hareketi silinemez", act: "silmeden", by: "bu silmeyle", then: "borç hareketini silin", op: "borç hareketinin silinmesi" },
+        "entry-edit": { what: "Borç hareketi düzeltilemez", act: "düzeltmeden", by: "bu düzeltmeyle", then: "borç hareketini düzeltin", op: "borç hareketinin düzeltilmesi" },
+        "plan-delete": { what: "Taksit kartı silinemez", act: "silmeden", by: "bu silmeyle", then: "taksit kartını silin", op: "taksit kartının silinmesi" },
+        "plan-edit": { what: "Taksit kartı düzenlenemez", act: "düzenlemeden", by: "bu düzenlemeyle", then: "taksit kartını düzenleyin", op: "taksit kartının düzenlenmesi" },
       }[action] || { what: "İşlem kaydedilemez", act: "işlemden", by: "bu işlemle", then: "işlemi yeniden deneyin", op: "işlem" };
       const many = lines.length > 1 ? ` (carinin ${lines.length} Değersiz Alacak satırı, toplam ${tl(total)})` : "";
       const could = room > 0 ? `${words.by} o kayda en çok ${tl(room)} Değersiz Alacak yazılabilirdi` : `${words.by} o kayda Değersiz Alacak yazılamazdı`;
@@ -694,15 +769,42 @@ export function writeOffBalanceGuard(store, party, { action = "cancel" } = {}) {
       const why = after + total >= 0
         ? `Değersiz Alacak yazımı cariyi alacaklıya düşüremez — ${could}`
         : `Değersiz Alacak satırı olan caride ${words.op} cariyi alacaklıya (eksi bakiyeye) götüremez; Değersiz Alacak satırı olmasaydı da cari ${tl(-(after + total))} alacaklı olurdu — ${could}`;
+      // 2.5.1 M2 tur 4 — DÜŞÜK-1 (dar kontrol DK-M2T3): Değersiz satırları silinse de işlem kapının S155 kuralına ("kayıttan sonra carinin borcu açık şüpheli tutarın altına düşemez") takılacaksa
+      // "önce Değersiz Alacak satırını silin" kullanıcıyı boşuna sildirir — ileti o durumda şüpheli kaydın da düzeltilmesini (silinmesi ya da Şüpheliden Çıkarılması) söyler. Ölçü kapının
+      // kuralıyla aynı: Değersiz satırları yokken (bakiye + Σ Değersiz) − açık şüpheli < 0.
+      const held = s155AfterWriteOffsRemoved(store, party, after + total);
+      const fix = held
+        ? `Ne yapmalı: Değersiz Alacak satırını silmek yetmez — ${words.act} sonra ${after + total >= 0 ? `carinin borcu (${tl(after + total)})` : `cari ${tl(-(after + total))} alacaklı olur ve borcu`} şüpheli kaydın kalanını (${tl(held.openMinor)}) karşılamaz. ` +
+          `Önce Değersiz Alacak satırını silin (${WRITEOFF_FIX_WHERE}), sonra şüpheli alacak kaydını silin (cari kartı → Şüpheli Alacak → kaydın satırındaki × düğmesi) ya da Şüpheliden Çıkar ile çıkarın, sonra ${words.then}; ` +
+          "alacak hâlâ şüpheliyse kalan borç için yeniden Şüpheliye Alın. Hiçbir şey kaydedilmedi."
+        : `Ne yapmalı: önce Değersiz Alacak satırını silin (${WRITEOFF_FIX_WHERE}), sonra ${words.then}; ` +
+          "gerekirse Değersiz Alacak'ı yeniden yazın (form yazılabilecek tutarı gösterir). Hiçbir şey kaydedilmedi.";
       throw new HttpError(
         409,
         `${words.what}: bu caride ${dayText(last.date)} tarihli ${tl(last.minor)} Değersiz Alacak satırı var${many}; ${words.act} sonra cari ${tl(-after)} alacaklı (eksi bakiye) olurdu. ` +
-          `${why}. Ne yapmalı: önce Değersiz Alacak satırını silin (cari kartı → Şüpheli Alacak → kaydın Değersiz satırındaki × düğmesi), sonra ${words.then}; ` +
-          "gerekirse Değersiz Alacak'ı yeniden yazın (form yazılabilecek tutarı gösterir). Hiçbir şey kaydedilmedi.",
-        { code: "doubtful-writeoff-balance", balanceMinor: after, writeOffMinor: total, limitMinor: room, entryId: last.id, date: last.date },
+          `${why}. ${fix}`,
+        { code: "doubtful-writeoff-balance", balanceMinor: after, writeOffMinor: total, limitMinor: room, entryId: last.id, date: last.date, ...(held ? { recordFirst: true } : {}) },
       );
     },
   };
+}
+const WRITEOFF_FIX_WHERE = "cari kartı → Şüpheli Alacak → kaydın Değersiz satırındaki × düğmesi";
+/**
+ * 2.5.1 M2 tur 4 — DÜŞÜK-1: işlemden sonraki hâlde carinin BÜTÜN Değersiz Alacak satırları silinirse kapının S155 kuralı (doubtful:balance — carinin borcu − açık şüpheli ≥ 0; lib/integrity.mjs)
+ * işlemi yine reddeder mi. Değersiz satırları yokken açık şüpheli: aynı ayırıcı, hedefli (Değersiz) satırlar alacaklardan ve kuyruktan çıkarılmış (değişmez (i)'deki çıkarmayla aynı yol).
+ * Döner: reddederse { openMinor } (Değersiz'siz açık şüpheli), etmezse null. balanceMinor: Değersiz satırları yokken carinin bakiyesi (işlemden sonraki bakiye + Σ Değersiz).
+ */
+function s155AfterWriteOffsRemoved(store, party, balanceMinor) {
+  const ctx = writeOffContextOf(store, party);
+  const targets = ctx.credits.filter(credit => credit.target);
+  const credits = ctx.credits.filter(credit => !credit.target);
+  const ids = new Set(targets.map(credit => String(credit.key).replace(/^account:/, "")));
+  const from = targets.reduce((min, credit) => (!min || credit.date < min ? credit.date : min), "");
+  const linked = ids.size && ctx.rows.linked?.without ? ctx.rows.linked.without({ party, ids, from }) : ctx.rows.linked || null;
+  const { state } = allocateDoubtful({ records: ctx.rows.records, provisions: ctx.rows.provisions, credits, linked });
+  let openMinor = 0;
+  for (const s of state.values()) openMinor += s.remaining;
+  return openMinor > 0 && balanceMinor - openMinor < 0 ? { openMinor } : null;
 }
 /** İşlemden sonraki hâlde `line`'ın kaydına, kaydın Değersiz satırları OLMASAYDI satırın gününde formun önereceği tutar (ret iletisi için; aynı sınır işlevi — writeOffLimitOf). */
 function writeOffRoomAfter(store, party, line) {
@@ -727,7 +829,10 @@ function activityAfter(store, party, line) {
   if (has("plans") && q("SELECT 1 AS found FROM plans p WHERE p.account_id = ?2 AND (COALESCE(p.created_at, '') >= ?1 OR COALESCE(p.updated_at, '') >= ?1 OR COALESCE(p.deleted_at, '') >= ?1 OR EXISTS (SELECT 1 FROM plan_entries pe WHERE pe.plan_id = p.id AND (COALESCE(pe.created_at, '') >= ?1 OR COALESCE(pe.updated_at, '') >= ?1))) LIMIT 1", line.at, party)) return true;
   if (has("cheques") && q("SELECT 1 AS found FROM cheques c WHERE (c.account_id = ?2 OR c.endorse_account_id = ?2) AND (COALESCE(c.created_at, '') >= ?1 OR COALESCE(c.updated_at, '') >= ?1 OR COALESCE(c.deleted_at, '') >= ?1) LIMIT 1", line.at, party)) return true;
   if (has("doubtful_receivables") && q("SELECT 1 AS found FROM doubtful_receivables WHERE account_id = ?2 AND (COALESCE(created_at, '') >= ?1 OR COALESCE(updated_at, '') >= ?1) LIMIT 1", line.at, party)) return true;
-  if (has("trash") && q("SELECT 1 AS found FROM trash WHERE (deleted_at >= ?1 OR COALESCE(restored_at, '') >= ?1) AND instr(payload_json, ?2) > 0 LIMIT 1", line.at, party)) return true;
+  // Tur 4 (hız; DK-M2T3 ORTA-1 komşusu): koşul AYNI — (deleted_at ≥ an ya da COALESCE(restored_at, '') ≥ an) — ama üç dizinli kol: açık satır (restored_at NULL; COALESCE '' ≥ an ancak an ''
+  // ise, o zaman deleted_at ≥ '' de doğrudur), sonra geri yüklenen, geri yüklenmiş ama önce silinmiş. Önceki tek OR'lu koşul Silinenler'in bütün satırlarını okuyordu. YALNIZ TEST: fullTrash eski sorgu.
+  if (has("trash") && WRITE_OFF_TEST.fullTrash && q("SELECT 1 AS found FROM trash WHERE (deleted_at >= ?1 OR COALESCE(restored_at, '') >= ?1) AND instr(payload_json, ?2) > 0 LIMIT 1", line.at, party)) return true;
+  if (has("trash") && !WRITE_OFF_TEST.fullTrash && q(WRITE_OFF_ACTIVITY_TRASH_SQL, line.at, party)) return true;
   return false;
 }
 

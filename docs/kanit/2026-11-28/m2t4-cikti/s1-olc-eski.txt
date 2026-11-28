@@ -1,0 +1,11 @@
+Borç Yaz sil: önce 423.55 · 200 · sonra -2976.45 · Mutabakat ok
+Borç Yaz 100: önce 423.55 · 200 · sonra -2876.45 · Mutabakat ok
+Borç Yaz 3.500 (artış): önce 423.55 · 200 · sonra 523.55 · Mutabakat ok
+Borç Yaz tarih 13.09: önce 423.55 · 200 · sonra 423.55 · Mutabakat ok
+Borç Yaz → Alacak: önce 423.55 · 200 · sonra -6376.45 · Mutabakat ok
+Borç Yaz 3.000 (eksiye götürmez): önce 423.55 · 200 · sonra 23.55 · Mutabakat ok
+Borç Yaz sil (Değersiz yok): önce 3423.55 · 409 ledger-integrity | Bu kayıt carinin borcunu açık şüpheli tutarın altına düşürür (borç 23,55 TL, açık şüpheli 123,55 TL); kaydı şüpheliye alma tarihinden sonraya girin ya da önce şüpheli kaydını düzeltin. · sonra 3423.55 · Mutabakat ok
+Ödeme 3.400 sil: önce 423.55 · 200 · sonra -2976.45 · Mutabakat ok
+Taksit kartı sil: önce 423.55 · 200 · sonra -2976.45 · Mutabakat ok
+Taksit kartı tutar 100: önce 423.55 · 200 · sonra -2876.45 · Mutabakat ok
+Taksit kartı sil (Değersiz yok): önce 3423.55 · 409 ledger-integrity | Bu kayıt carinin borcunu açık şüpheli tutarın altına düşürür (borç 23,55 TL, açık şüpheli 123,55 TL); kaydı şüpheliye alma tarihinden sonraya girin ya da önce şüpheli kaydını düzeltin. · sonra 3423.55 · Mutabakat ok

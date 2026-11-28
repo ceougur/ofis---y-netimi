@@ -1,0 +1,32 @@
+{
+  "ad": "m2t4-son-yeni-europeistanbul",
+  "komut": "node --test --test-reporter=tap test/supheli-degersiz-m2t4-251.test.mjs test/supheli-degersiz-m2t3-251.test.mjs test/supheli-degersiz-iptal-iade-m2t2-251.test.mjs test/supheli-degersiz-siniri-m2-251.test.mjs test/supheli-degersiz-hiz-m2t2-251.test.mjs",
+  "commit": "5f08e45d09544e706e05a55bb46cfc0c6c415fc1",
+  "dal": "worktree-agent-a75255d57a32bede8",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-28T06:51:14.870Z",
+  "sure_sn": 105.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 101,
+    "gecen": 101,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/m2t4-ajan/kanit/2026-11-28/m2t4-son-yeni-europeistanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a75255d57a32bede8",
+  "ham_cikti_sha256": "364547903eaeafd7612c3cb9a059474002ca11ccc05a9727a3680904c1abbff6",
+  "ham_cikti_bayt": 44516
+}

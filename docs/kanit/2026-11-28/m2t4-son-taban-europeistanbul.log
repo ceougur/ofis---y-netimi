@@ -1,0 +1,507 @@
+TAP version 13
+# (node:29549) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.1 M2 tur 3 — S-M2T2-1 = A: Değersiz satırı olan caride eksiye götüren iptal / iade her durumda ret
+    # Subtest: avanslı caride tam iade → 409 'İade faturası kaydedilemez' (Değersiz olmasaydı da 2.476,45 alacaklı); iade yazılmaz, bakiye −2.576,45
+    ok 1 - avanslı caride tam iade → 409 'İade faturası kaydedilemez' (Değersiz olmasaydı da 2.476,45 alacaklı); iade yazılmaz, bakiye −2.576,45
+      ---
+      duration_ms: 660.959705
+      type: 'test'
+      ...
+    # Subtest: iletideki 'ne yapmalı' işe yarar: Değersiz satırı silinince aynı iptal kabul, bakiye −2.476,45, Mutabakat tamam
+    ok 2 - iletideki 'ne yapmalı' işe yarar: Değersiz satırı silinince aynı iptal kabul, bakiye −2.476,45, Mutabakat tamam
+      ---
+      duration_ms: 720.404885
+      type: 'test'
+      ...
+    # Subtest: iki Değersiz satırı (1.000 + 2.000 @17.09): avanslı iptal 409, ileti son satırı ve toplamı anlatır
+    ok 3 - iki Değersiz satırı (1.000 + 2.000 @17.09): avanslı iptal 409, ileti son satırı ve toplamı anlatır
+      ---
+      duration_ms: 681.595719
+      type: 'test'
+      ...
+    # Subtest: Değersiz satırı OLMAYAN avanslı caride iptal kabul (denetim okumaz), bakiye −2.476,45
+    ok 4 - Değersiz satırı OLMAYAN avanslı caride iptal kabul (denetim okumaz), bakiye −2.476,45
+      ---
+      duration_ms: 618.293084
+      type: 'test'
+      ...
+    # Subtest: bakiyeyi DÜŞÜRMEYEN işlem eksi caride de kabul: iadenin Düzenle'si iadeyi küçültünce (eksi bakiye azalır)
+    ok 5 - bakiyeyi DÜŞÜRMEYEN işlem eksi caride de kabul: iadenin Düzenle'si iadeyi küçültünce (eksi bakiye azalır)
+      ---
+      duration_ms: 663.575005
+      type: 'test'
+      ...
+# (node:29549) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: kilitli dönemde dönem kilidi iletisi önce gelir (Değersiz denetimi değil)
+    ok 6 - kilitli dönemde dönem kilidi iletisi önce gelir (Değersiz denetimi değil)
+      ---
+      duration_ms: 990.730244
+      type: 'test'
+      ...
+    1..6
+ok 1 - 2.5.1 M2 tur 3 — S-M2T2-1 = A: Değersiz satırı olan caride eksiye götüren iptal / iade her durumda ret
+  ---
+  duration_ms: 4337.435757
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M2 tur 3 — S-M2T2-2 = A: Değersiz'den sonra fatura TUTARININ Düzenle ile düşürülmesi iade gibi reddedilir
+    # Subtest: 2.900 → 100 → 409 'Fatura düzenlenemez' (düzenlemeden sonra 2.376,45 alacaklı); fatura 2.900 kalır, bakiye 423,55
+    not ok 1 - 2.900 → 100 → 409 'Fatura düzenlenemez' (düzenlemeden sonra 2.376,45 alacaklı); fatura 2.900 kalır, bakiye 423,55
+      ---
+      duration_ms: 741.291995
+      type: 'test'
+      location: '/dev/shm/m2t4-a752/eski/test/supheli-degersiz-m2t3-251.test.mjs:155:3'
+      failureType: 'testCodeFailure'
+      error: "Fatura düzenlenemez: bu caride 17.09.2026 tarihli 3.000,00 TL Değersiz Alacak satırı var; düzenlemeden sonra cari 2.376,45 TL alacaklı (eksi bakiye) olurdu. Değersiz Alacak yazımı cariyi alacaklıya düşüremez — bu düzenlemeyle o kayda Değersiz Alacak yazılamazdı. Ne yapmalı: önce Değersiz Alacak satırını silin (cari kartı → Şüpheli Alacak → kaydın Değersiz satırındaki × düğmesi), sonra faturayı düzenleyin; gerekirse Değersiz Alacak'ı yeniden yazın (form yazılabilecek tutarı gösterir). Hiçbir şey kaydedilmedi."
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m2t4-a752/eski/test/supheli-degersiz-m2t3-251.test.mjs:167:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: avanslı caride 2.900 → 2.800 → 409 (eksiyi büyütür); bakiye −2.576,45
+    ok 2 - avanslı caride 2.900 → 2.800 → 409 (eksiyi büyütür); bakiye −2.576,45
+      ---
+      duration_ms: 627.063464
+      type: 'test'
+      ...
+    # Subtest: tutar artışı (2.900 → 3.000) ve eksiye düşürmeyen azalış (ek borçlu caride 2.900 → 2.000) kabul; Mutabakat tamam
+    ok 3 - tutar artışı (2.900 → 3.000) ve eksiye düşürmeyen azalış (ek borçlu caride 2.900 → 2.000) kabul; Mutabakat tamam
+      ---
+      duration_ms: 797.627709
+      type: 'test'
+      ...
+    # Subtest: Düzenle'de cari değişirse (borç bu cariden çıkar) eski cari denetlenir: 409, eski carinin bakiyesi 223,55 kalır
+    ok 4 - Düzenle'de cari değişirse (borç bu cariden çıkar) eski cari denetlenir: 409, eski carinin bakiyesi 223,55 kalır
+      ---
+      duration_ms: 663.786262
+      type: 'test'
+      ...
+    # Subtest: tutarı DEĞİŞMEYEN Düzenle'de peşin tahsilat eklenmesi denetlenmez (tahsilattır; tutar düşürmesi değil) — cari eksiye gitse de kabul
+    ok 5 - tutarı DEĞİŞMEYEN Düzenle'de peşin tahsilat eklenmesi denetlenmez (tahsilattır; tutar düşürmesi değil) — cari eksiye gitse de kabul
+      ---
+      duration_ms: 638.177363
+      type: 'test'
+      ...
+    1..5
+not ok 2 - 2.5.1 M2 tur 3 — S-M2T2-2 = A: Değersiz'den sonra fatura TUTARININ Düzenle ile düşürülmesi iade gibi reddedilir
+  ---
+  duration_ms: 3468.780324
+  type: 'suite'
+  location: '/dev/shm/m2t4-a752/eski/test/supheli-degersiz-m2t3-251.test.mjs:154:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:29550) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.1 M2 tur 4 — ORTA-2: formun önerdiği Değersiz tutarı kapıda reddedilmez (S270 'hiçbir sırada'; öneri her zaman kabul)
+    # Subtest: dar kontrolün vakası (S1'in Değersiz satırı Silinenler'den geri yüklenmiş): S2 için öneri 1.500 @19.09 → yazım 200, bakiye 779,85, Mutabakat tamam; 1.500,01 → ret
+    not ok 1 - dar kontrolün vakası (S1'in Değersiz satırı Silinenler'den geri yüklenmiş): S2 için öneri 1.500 @19.09 → yazım 200, bakiye 779,85, Mutabakat tamam; 1.500,01 → ret
+      ---
+      duration_ms: 967.329552
+      type: 'test'
+      location: '/dev/shm/m2t4-a752/eski/test/supheli-degersiz-m2t4-251.test.mjs:100:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        önerilen tutar reddedildi: 409 Bu kayıtla carinin 15.10.2026 tarihli 500,00 TL Değersiz Alacak satırı şüpheli kaydın kalanını aşar: Değersiz Alacak, kayda düşen tahsilatlar çıkınca kalanı (en çok 400,00 TL) aşamaz. Ne yapmalı: önce Değersiz Alacak satırını silin (cari kartı → Şüpheli Alacak → kaydın Değersiz satırındaki × düğmesi), sonra bu kaydı yeniden girin; gerekirse Değersiz Alacak'ı yeniden yazın (form yazılabilecek tutarı gösterir). Hiçbir değişiklik yazılmadı.
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m2t4-a752/eski/test/supheli-degersiz-m2t4-251.test.mjs:115:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: dar kontrolün vakası (doğrudan yazılmış): S2 için öneri 1.500 @19.09 → yazım 200, bakiye 779,85, Mutabakat tamam; 1.500,01 → ret
+    not ok 2 - dar kontrolün vakası (doğrudan yazılmış): S2 için öneri 1.500 @19.09 → yazım 200, bakiye 779,85, Mutabakat tamam; 1.500,01 → ret
+      ---
+      duration_ms: 735.709039
+      type: 'test'
+      location: '/dev/shm/m2t4-a752/eski/test/supheli-degersiz-m2t4-251.test.mjs:100:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        önerilen tutar reddedildi: 409 Bu kayıtla carinin 15.10.2026 tarihli 500,00 TL Değersiz Alacak satırı şüpheli kaydın kalanını aşar: Değersiz Alacak, kayda düşen tahsilatlar çıkınca kalanı (en çok 400,00 TL) aşamaz. Ne yapmalı: önce Değersiz Alacak satırını silin (cari kartı → Şüpheli Alacak → kaydın Değersiz satırındaki × düğmesi), sonra bu kaydı yeniden girin; gerekirse Değersiz Alacak'ı yeniden yazın (form yazılabilecek tutarı gösterir). Hiçbir değişiklik yazılmadı.
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m2t4-a752/eski/test/supheli-degersiz-m2t4-251.test.mjs:115:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: değişmez (i)'nin dünyası: S1'in Değersiz satırı, SONRA yazılan Değersiz satırını kuyruktan da okumaz (tur 3 hâli = leakLater → aynı yazım kapıda 409)
+    not ok 3 - değişmez (i)'nin dünyası: S1'in Değersiz satırı, SONRA yazılan Değersiz satırını kuyruktan da okumaz (tur 3 hâli = leakLater → aynı yazım kapıda 409)
+      ---
+      duration_ms: 769.758487
+      type: 'test'
+      location: '/dev/shm/m2t4-a752/eski/test/supheli-degersiz-m2t4-251.test.mjs:123:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        S2 Değersiz 1.500: 409 {"ok":false,"error":"Bu kayıtla carinin 15.10.2026 tarihli 500,00 TL Değersiz Alacak satırı şüpheli kaydın kalanını aşar: Değersiz Alacak, kayda düşen tahsilatlar çıkınca kalanı (en çok 400,00 TL) aşamaz. Ne yapmalı: önce Değersiz Alacak satırını silin (cari kartı → Şüpheli Alacak → kaydın Değersiz satırındaki × düğmesi), sonra bu kaydı yeniden girin; gerekirse Değersiz Alacak'ı yeniden yazın (form yazılabilecek tutarı gösterir). Hiçbir değişiklik yazılmadı.","code":"ledger-integrity","failures":[{"code":"doubtful:records","name":"Şüpheli Alacak Kayıtları (kayıt = başlık = karşılık = değersiz 
+        
+        409 !== 200
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 200
+      actual: 409
+      operator: 'strictEqual'
+      stack: |-
+        must (file:///dev/shm/m2t4-a752/eski/test/banka-210-ortak.mjs:30:10)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async TestContext.<anonymous> (file:///dev/shm/m2t4-a752/eski/test/supheli-degersiz-m2t4-251.test.mjs:127:7)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 3 - 2.5.1 M2 tur 4 — ORTA-2: formun önerdiği Değersiz tutarı kapıda reddedilmez (S270 'hiçbir sırada'; öneri her zaman kabul)
+  ---
+  duration_ms: 2474.207542
+  type: 'suite'
+  location: '/dev/shm/m2t4-a752/eski/test/supheli-degersiz-m2t4-251.test.mjs:78:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.1 M2 tur 4 — S-DKM2T3-1 = A: Değersiz satırı olan caride Borç Yaz / taksit kartı silme ya da düşürme cariyi eksiye götürüyorsa fatura iptaliyle aynı ret
+    # Subtest: Borç Yaz 3.400 silme → 409 'Borç hareketi silinemez', bakiye 423,55 kalır; ileti S155'i de bilir ve izlenen yol silmeyi kabul ettirir (23,55)
+    not ok 1 - Borç Yaz 3.400 silme → 409 'Borç hareketi silinemez', bakiye 423,55 kalır; ileti S155'i de bilir ve izlenen yol silmeyi kabul ettirir (23,55)
+      ---
+      duration_ms: 508.76342
+      type: 'test'
+      location: '/dev/shm/m2t4-a752/eski/test/supheli-degersiz-m2t4-251.test.mjs:144:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"id":"account-fc57c05c-60d2-4be0-a032-0f72a8d793c9","refNo":"1","type":"customer","name":"M2T4 Borç Sil","phone":"0500 461 04 00","email":"","address":"","registeredOn":"2026-09-01","groupId":null,"subgroupId":null,"note":"","caseKey":"","caseSource":"","caseTitle":"","status":"active","taxNo":"","taxOffice":"","mersisNo":"","tradeRegistry":"","partyKind":"","firstName":"","familyName":"","city":
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m2t4-a752/eski/test/supheli-degersiz-m2t4-251.test.mjs:151:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: iletinin öbür yolu: Değersiz satırını sil → Şüpheliden Çıkar → Borç Yaz'ı sil → kabul (23,55)
+    ok 2 - iletinin öbür yolu: Değersiz satırını sil → Şüpheliden Çıkar → Borç Yaz'ı sil → kabul (23,55)
+      ---
+      duration_ms: 601.07405
+      type: 'test'
+      ...
+    # Subtest: Borç Yaz 3.400 → 100 düzeltme → 409 'Borç hareketi düzeltilemez' (yalnız Değersiz yüzünden; ileti eski yol); izlenen yol: Değersiz satırını sil → 100 → kabul (123,55), form 123,55 önerir
+    not ok 3 - Borç Yaz 3.400 → 100 düzeltme → 409 'Borç hareketi düzeltilemez' (yalnız Değersiz yüzünden; ileti eski yol); izlenen yol: Değersiz satırını sil → 100 → kabul (123,55), form 123,55 önerir
+      ---
+      duration_ms: 617.522045
+      type: 'test'
+      location: '/dev/shm/m2t4-a752/eski/test/supheli-degersiz-m2t4-251.test.mjs:188:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        {"id":"account-3c428a39-e778-4c49-bdb8-de72a9410157","refNo":"1","type":"customer","name":"M2T4 Borç Düşür","phone":"0500 461 06 00","email":"","address":"","registeredOn":"2026-09-01","groupId":null,"subgroupId":null,"note":"","caseKey":"","caseSource":"","caseTitle":"","status":"active","taxNo":"","taxOffice":"","mersisNo":"","tradeRegistry":"","partyKind":"","firstName":"","familyName":"","city
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m2t4-a752/eski/test/supheli-degersiz-m2t4-251.test.mjs:194:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Borç Yaz'ı Alacak'a çevirme (−6.376,45) ve başka cariye taşıma (eski cari −2.976,45) → 409; satır değişmez
+    not ok 4 - Borç Yaz'ı Alacak'a çevirme (−6.376,45) ve başka cariye taşıma (eski cari −2.976,45) → 409; satır değişmez
+      ---
+      duration_ms: 572.050375
+      type: 'test'
+      location: '/dev/shm/m2t4-a752/eski/test/supheli-degersiz-m2t4-251.test.mjs:214:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m2t4-a752/eski/test/supheli-degersiz-m2t4-251.test.mjs:220:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: bakiyeyi düşürmeyen ya da eksiye götürmeyen düzeltme kabul: 3.500 (523,55), tarih 13.09 (aynı), 3.000 (23,55); Değersiz'siz caride silme bugünkü kural (S155)
+    ok 5 - bakiyeyi düşürmeyen ya da eksiye götürmeyen düzeltme kabul: 3.500 (523,55), tarih 13.09 (aynı), 3.000 (23,55); Değersiz'siz caride silme bugünkü kural (S155)
+      ---
+      duration_ms: 920.412482
+      type: 'test'
+      ...
+    # Subtest: taksit kartı (aynı sınıf): 3.400'lük kartı silme → 409 'Taksit kartı silinemez'; tutarı 100'e düşürme → 409 'Taksit kartı düzenlenemez'; kart değişmez, bakiye 423,55
+    not ok 6 - taksit kartı (aynı sınıf): 3.400'lük kartı silme → 409 'Taksit kartı silinemez'; tutarı 100'e düşürme → 409 'Taksit kartı düzenlenemez'; kart değişmez, bakiye 423,55
+      ---
+      duration_ms: 615.510729
+      type: 'test'
+      location: '/dev/shm/m2t4-a752/eski/test/supheli-degersiz-m2t4-251.test.mjs:258:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        
+        200 !== 409
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 409
+      actual: 200
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m2t4-a752/eski/test/supheli-degersiz-m2t4-251.test.mjs:264:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..6
+not ok 4 - 2.5.1 M2 tur 4 — S-DKM2T3-1 = A: Değersiz satırı olan caride Borç Yaz / taksit kartı silme ya da düşürme cariyi eksiye götürüyorsa fatura iptaliyle aynı ret
+  ---
+  duration_ms: 3836.639018
+  type: 'suite'
+  location: '/dev/shm/m2t4-a752/eski/test/supheli-degersiz-m2t4-251.test.mjs:143:1'
+  failureType: 'subtestsFailed'
+  error: '4 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.1 M2 tur 4 — DÜŞÜK-1: 'ne yapmalı' S155'i de bilir; izlenen yol işlemi gerçekten kabul ettirir
+    # Subtest: Düzenle 2.900 → 100: ileti şüpheli kaydı da söyler; Değersiz satırı sil → şüpheli kaydı sil → Düzenle → kabul (623,55)
+    not ok 1 - Düzenle 2.900 → 100: ileti şüpheli kaydı da söyler; Değersiz satırı sil → şüpheli kaydı sil → Düzenle → kabul (623,55)
+      ---
+      duration_ms: 625.754353
+      type: 'test'
+      location: '/dev/shm/m2t4-a752/eski/test/supheli-degersiz-m2t4-251.test.mjs:286:3'
+      failureType: 'testCodeFailure'
+      error: "Fatura düzenlenemez: bu caride 17.09.2026 tarihli 3.000,00 TL Değersiz Alacak satırı var; düzenlemeden sonra cari 2.376,45 TL alacaklı (eksi bakiye) olurdu. Değersiz Alacak yazımı cariyi alacaklıya düşüremez — bu düzenlemeyle o kayda Değersiz Alacak yazılamazdı. Ne yapmalı: önce Değersiz Alacak satırını silin (cari kartı → Şüpheli Alacak → kaydın Değersiz satırındaki × düğmesi), sonra faturayı düzenleyin; gerekirse Değersiz Alacak'ı yeniden yazın (form yazılabilecek tutarı gösterir). Hiçbir şey kaydedilmedi."
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        heldTail (file:///dev/shm/m2t4-a752/eski/test/supheli-degersiz-m2t4-251.test.mjs:70:10)
+        TestContext.<anonymous> (file:///dev/shm/m2t4-a752/eski/test/supheli-degersiz-m2t4-251.test.mjs:292:7)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: Değersiz silinince geçen ret (iptal, 123,55): ileti AYNEN eski yol ve yol işe yarar
+    ok 2 - Değersiz silinince geçen ret (iptal, 123,55): ileti AYNEN eski yol ve yol işe yarar
+      ---
+      duration_ms: 633.840227
+      type: 'test'
+      ...
+    1..2
+not ok 5 - 2.5.1 M2 tur 4 — DÜŞÜK-1: 'ne yapmalı' S155'i de bilir; izlenen yol işlemi gerçekten kabul ettirir
+  ---
+  duration_ms: 1259.915399
+  type: 'suite'
+  location: '/dev/shm/m2t4-a752/eski/test/supheli-degersiz-m2t4-251.test.mjs:285:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.1 M2 tur 4 — DÜŞÜK-2: M8 sınıfı (aynı gün, kayıttan SONRA yazılmış bağlı tahsilat + S155) — öneri o günün kesitinden
+    # Subtest: Borç 1.000 + Fatura 2.900, S 3.000 @17.09, sonra aynı gün bağlı 2876,45: @17.09 sınır 1023,55, öneri 1023,55 → yazım 200, bakiye 0
+    ok 1 - Borç 1.000 + Fatura 2.900, S 3.000 @17.09, sonra aynı gün bağlı 2876,45: @17.09 sınır 1023,55, öneri 1023,55 → yazım 200, bakiye 0
+      ---
+      duration_ms: 704.199414
+      type: 'test'
+      ...
+    # Subtest: Borç 1.000 + Fatura 2.900, S 3.000 @17.09, sonra aynı gün bağlı 1000 + 20.09 bağlı 200: @17.09 sınır 2700,00, öneri 2700,00 → yazım 200, bakiye 0
+    ok 2 - Borç 1.000 + Fatura 2.900, S 3.000 @17.09, sonra aynı gün bağlı 1000 + 20.09 bağlı 200: @17.09 sınır 2700,00, öneri 2700,00 → yazım 200, bakiye 0
+      ---
+      duration_ms: 669.200993
+      type: 'test'
+      ...
+    1..2
+ok 6 - 2.5.1 M2 tur 4 — DÜŞÜK-2: M8 sınıfı (aynı gün, kayıttan SONRA yazılmış bağlı tahsilat + S155) — öneri o günün kesitinden
+  ---
+  duration_ms: 1373.717952
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M2 tur 4 — ORTA-1: değişmez (i)'nin Silinenler taraması dizinli ve tam taramayla aynı sonuç
+    # Subtest: sorgu planı: iki Silinenler sorgusunda tablo baştan sona okunmaz (SCAN trash yok)
+    not ok 1 - sorgu planı: iki Silinenler sorgusunda tablo baştan sona okunmaz (SCAN trash yok)
+      ---
+      duration_ms: 394.642949
+      type: 'test'
+      location: '/dev/shm/m2t4-a752/eski/test/supheli-degersiz-m2t4-251.test.mjs:348:3'
+      failureType: 'testCodeFailure'
+      error: 'dizinli Silinenler sorguları yok (tur 4 öncesi kod — tam tarama)'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m2t4-a752/eski/test/supheli-degersiz-m2t4-251.test.mjs:351:14)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: değişmezin GERÇEKTE koştuğu Silinenler sorguları (iki kol: (i) fatura silme anı, (ii) satırdan sonraki silme) dizinli; 200 silinmiş fatura varken sonuç tam taramayla aynı
+    not ok 2 - değişmezin GERÇEKTE koştuğu Silinenler sorguları (iki kol: (i) fatura silme anı, (ii) satırdan sonraki silme) dizinli; 200 silinmiş fatura varken sonuç tam taramayla aynı
+      ---
+      duration_ms: 632.93715
+      type: 'test'
+      location: '/dev/shm/m2t4-a752/eski/test/supheli-degersiz-m2t4-251.test.mjs:361:3'
+      failureType: 'testCodeFailure'
+      error: "SELECT MAX(deleted_at) AS at FROM trash WHERE kind = 'invoice' AND instr(payload_json, ?) > 0 → SEARCH trash"
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m2t4-a752/eski/test/supheli-degersiz-m2t4-251.test.mjs:396:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: iki Değersiz satırı arasında silinen fatura: daraltılmış tarama tam taramayla aynı, ihlal yok, Mutabakat tamam
+    ok 3 - iki Değersiz satırı arasında silinen fatura: daraltılmış tarama tam taramayla aynı, ihlal yok, Mutabakat tamam
+      ---
+      duration_ms: 520.142649
+      type: 'test'
+      ...
+    1..3
+not ok 7 - 2.5.1 M2 tur 4 — ORTA-1: değişmez (i)'nin Silinenler taraması dizinli ve tam taramayla aynı sonuç
+  ---
+  duration_ms: 1548.059189
+  type: 'suite'
+  location: '/dev/shm/m2t4-a752/eski/test/supheli-degersiz-m2t4-251.test.mjs:347:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# \# M2T4 tohum 37: {"steps":100,"writes":5,"over":0,"compared":72,"leakOnly":0,"trashInvoices":9,"invDeleted":9,"invRestored":0,"debtDeleted":2,"debtRefused":0,"negativeChecks":1}
+# Subtest: 2.5.1 M2 tur 4 — rastgele: önerinin yazımı kabul, Silinenler taraması eşdeğer, Borç Yaz silmesi eksiye götürmez
+    # Subtest: tohum 37 (5 cari × 20 adım)
+    not ok 1 - tohum 37 (5 cari × 20 adım)
+      ---
+      duration_ms: 2566.340059
+      type: 'test'
+      location: '/dev/shm/m2t4-a752/eski/test/supheli-degersiz-m2t4-251.test.mjs:472:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   't37 c1 s6 debtdel: Değersiz satırı olan caride Borç Yaz silmesi cariyi eksiye götürdü (3209.2 → -190.8)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 't37 c1 s6 debtdel: Değersiz satırı olan caride Borç Yaz silmesi cariyi eksiye götürdü (3209.2 → -190.8)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m2t4-a752/eski/test/supheli-degersiz-m2t4-251.test.mjs:579:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+# \# M2T4 tohum 3: {"steps":100,"writes":7,"over":0,"compared":74,"leakOnly":0,"trashInvoices":9,"invDeleted":9,"invRestored":0,"debtDeleted":1,"debtRefused":0,"negativeChecks":1}
+    # Subtest: tohum 3 (5 cari × 20 adım)
+    not ok 2 - tohum 3 (5 cari × 20 adım)
+      ---
+      duration_ms: 2376.190878
+      type: 'test'
+      location: '/dev/shm/m2t4-a752/eski/test/supheli-degersiz-m2t4-251.test.mjs:472:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+        + [
+        +   't3 c4 s12 debtdel: Değersiz satırı olan caride Borç Yaz silmesi cariyi eksiye götürdü (1900 → -1500)'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 't3 c4 s12 debtdel: Değersiz satırı olan caride Borç Yaz silmesi cariyi eksiye götürdü (1900 → -1500)'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m2t4-a752/eski/test/supheli-degersiz-m2t4-251.test.mjs:579:16)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+# \# M2T4 tohum 11: {"steps":100,"writes":4,"over":1,"compared":71,"leakOnly":0,"trashInvoices":4,"invDeleted":4,"invRestored":0,"debtDeleted":1,"debtRefused":0,"negativeChecks":0}
+    # Subtest: tohum 11 (5 cari × 20 adım)
+    ok 3 - tohum 11 (5 cari × 20 adım)
+      ---
+      duration_ms: 2110.136709
+      type: 'test'
+      ...
+    1..3
+not ok 8 - 2.5.1 M2 tur 4 — rastgele: önerinin yazımı kabul, Silinenler taraması eşdeğer, Borç Yaz silmesi eksiye götürmez
+  ---
+  duration_ms: 7053.07137
+  type: 'suite'
+  location: '/dev/shm/m2t4-a752/eski/test/supheli-degersiz-m2t4-251.test.mjs:470:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..8
+# tests 30
+# suites 8
+# pass 17
+# fail 13
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 17960.791629
