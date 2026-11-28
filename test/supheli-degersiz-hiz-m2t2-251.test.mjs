@@ -102,8 +102,9 @@ describe("2.5.1 M2 tur 2 — S155 dalı ve aradaki bağlı tahsilat günü: kıs
       assert.equal(done.status, 200, `${done.code} ${done.error}`);
       assert.equal((await must("kart", api.get(`${ACC}/${acc.id}`))).totals.balance, 500);
     } finally {
-      exact(false);
+      // Önce sunucu kapanır (eski kodda bayrak yok — kapanmazsa koşu zaman aşımına kadar asılı kalır).
       server.close();
+      if (doubtfulLib.WRITE_OFF_TEST) Object.assign(doubtfulLib.WRITE_OFF_TEST, { exact: false, count: null });
     }
   });
 });
@@ -145,8 +146,9 @@ describe("2.5.1 M2 tur 2 — hız dişi: liste ve form ucunun iş sayısı bağl
       assert.ok(c.quotes === 2 && c.trials <= 2, `Değersiz satırından sonra liste iş sayısı ${JSON.stringify(c)}`);
       assert.equal(after.records[0].writeOff.best.offerMinor, 490000);
     } finally {
-      doubtfulLib.WRITE_OFF_TEST.count = null;
+      // Önce sunucu kapanır (eski kodda bayrak yok — kapanmazsa koşu zaman aşımına kadar asılı kalır).
       server.close();
+      if (doubtfulLib.WRITE_OFF_TEST) Object.assign(doubtfulLib.WRITE_OFF_TEST, { exact: false, count: null });
     }
   });
 });
@@ -248,8 +250,8 @@ describe("2.5.1 M2 tur 2 — Değersiz sınırı hız düzeltmesi: tur 1'in tam 
         const integrity = await integrityOf(api);
         assert.equal(integrity.ok, true, JSON.stringify(integrity.failures).slice(0, 900));
       } finally {
-        exact(false);
         server.close();
+        if (doubtfulLib.WRITE_OFF_TEST) Object.assign(doubtfulLib.WRITE_OFF_TEST, { exact: false, count: null });
       }
       console.log(`# M2T2 eşdeğerlik tohum ${seed}: ${JSON.stringify(counts)}`);
       assert.ok(counts.snapshots >= CARI * STEPS && counts.writes + counts.partial >= 3, JSON.stringify(counts));
