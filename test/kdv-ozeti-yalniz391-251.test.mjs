@@ -26,7 +26,8 @@ const PENDING = "Mahsup Edilmemiş Ay";
 const MIXED_TEXT = "(mahsup fişi güncel değil — Hesaplanan KDV bugünkü kayıtlardan, İndirilecek KDV kesilmiş mahsup fişinden alındı, azalma sonraki mahsupta düşülür; mahsubu geri alıp yeniden mahsup edin)";
 const REDUCED_TEXT = "(bu ayın kayıtları fişten sonra değişti; ayın sonucu kesilmiş mahsup fişinden, İndirilecek KDV'deki azalma sonraki mahsupta düşülür)";
 const STALE_TEXT = "(mahsup fişi güncel değil — mahsubu geri alıp yeniden mahsup edin)";
-const MISMATCH_TAIL = " (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)";
+// 2.5.1 M1 küçük tur 7 (tur 6 raporunun BAŞ MİMAR KARARI (1)): devreden farkı kolunda önceki aylarda güncel olmayan fiş varsa onarım o İLK aydan (bu dosyadaki uyuşmazlıkların hepsinde var).
+const mismatchTail = restart => ` (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (${restart}) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)`;
 const minor = text => {
   const raw = String(text ?? "").trim();
   if (!/TL$/.test(raw)) return null;
@@ -125,7 +126,7 @@ async function program(now, prefix) {
 
 /** Aralığın sonucu 391 − 191'e eşit mi (aralık, azalmanın düşüldüğü ayı da içeriyorsa — her değişiklik bir kez). */
 const balanced = (r, label) => assert.equal(r.three[1] - r.three[2] + r.three[0], r.h391 - r.h191, `${label}: Ödenecek − Sonraki + Önceki = 391 − 191 (${JSON.stringify(r.three)}, 391 ${r.h391}, 191 ${r.h191})`);
-const mismatchOf = (label, used, chain, turn) => `${label} fişi ${used} devredenle kesilmiş, sırayla mahsupta ${chain} olmalıydı${turn ? `; ${turn}` : ""}${MISMATCH_TAIL}`;
+const mismatchOf = (label, used, chain, turn, restart) => `${label} fişi ${used} devredenle kesilmiş, sırayla mahsupta ${chain} olmalıydı${turn ? `; ${turn}` : ""}${mismatchTail(restart)}`;
 
 describe("2.5.1 M1 küçük tur 3 — yalnız 391 devreden yönde (S-M1K2-1 = A): kararın örneği AYNEN, yıl dönümü, iki şirket", () => {
   let h;
@@ -157,7 +158,7 @@ describe("2.5.1 M1 küçük tur 3 — yalnız 391 devreden yönde (S-M1K2-1 = A)
     assert.deepEqual([mar.h391, mar.h191], [30000, 100000], "Mart 391 / 191 bugünkü kayıtlardan");
     const apr = await h.report("001", monthRange("2026-04"), "001 Nisan");
     assert.deepEqual(apr.three, [70000, 30000, 0], `Nisan: önceki 700, 1.000 − 700 = 300 (taban 800 / 200) ${JSON.stringify(apr.data.summary)}`);
-    assert.equal(apr.summary[MISMATCH], mismatchOf("Nisan 2026", "800,00 TL", "700,00 TL"), "Nisan uyuşmazlık notu");
+    assert.equal(apr.summary[MISMATCH], mismatchOf("Nisan 2026", "800,00 TL", "700,00 TL", "", "Mart 2026"), "Nisan uyuşmazlık notu");
     assert.ok(!(CHANGED in apr.summary), "Nisan'ın kendi kayıtları değişmedi");
     const both = await h.report("001", { from: "2026-03-01", to: "2026-04-30" }, "001 Mart–Nisan");
     assert.deepEqual(both.three, [0, 30000, 0], `Mart–Nisan Ödenecek 300 (taban 200) ${JSON.stringify(both.data.summary)}`);
@@ -165,7 +166,7 @@ describe("2.5.1 M1 küçük tur 3 — yalnız 391 devreden yönde (S-M1K2-1 = A)
     balanced(both, "001 Mart–Nisan");
     assert.deepEqual(both.lines, [["Mart 2026", "Sonraki Döneme Devreden KDV", 70000], ["Nisan 2026", "Önceki Dönemden Devreden KDV", 70000], ["Nisan 2026", "Ödenecek KDV", 30000]], "ay satırları");
     assert.equal(both.summary[CHANGED], `Mart 2026 ${STALE_TEXT}`, "Mart–Nisan: Mart notu");
-    assert.equal(both.summary[MISMATCH], mismatchOf("Nisan 2026", "800,00 TL", "700,00 TL"), "Mart–Nisan: Nisan uyuşmazlık notu");
+    assert.equal(both.summary[MISMATCH], mismatchOf("Nisan 2026", "800,00 TL", "700,00 TL", "", "Mart 2026"), "Mart–Nisan: Nisan uyuşmazlık notu");
     for (const query of [{ preset: "all" }, { from: "2026-01-01", to: "2026-12-31" }]) {
       const r = await h.report("001", query, `001 ${qs(query)}`);
       assert.deepEqual(r.three, [0, 30000, 0], `${qs(query)} 300`);
@@ -195,7 +196,7 @@ describe("2.5.1 M1 küçük tur 3 — yalnız 391 devreden yönde (S-M1K2-1 = A)
     assert.equal(dec.summary[CHANGED], `Aralık 2026 ${STALE_TEXT}`, "Aralık notu");
     const year = await h.report("002", { preset: "thisYear" }, "002 Bu Yıl");
     assert.deepEqual(year.three, [70000, 30000, 0], `Bu Yıl (2027): önceki 700, ödenecek 300 (taban 800 / 200) ${JSON.stringify(year.data.summary)}`);
-    assert.equal(year.summary[MISMATCH], mismatchOf("Ocak 2027", "800,00 TL", "700,00 TL"), "Ocak 2027 uyuşmazlık notu");
+    assert.equal(year.summary[MISMATCH], mismatchOf("Ocak 2027", "800,00 TL", "700,00 TL", "", "Aralık 2026"), "Ocak 2027 uyuşmazlık notu");
     balanced(year, "002 Bu Yıl");
     const last = await h.report("002", { from: "2026-01-01", to: "2026-12-31" }, "002 2026");
     assert.deepEqual(last.three, [0, 0, 70000], "2026 yılı sonraki döneme devreden 700");
@@ -297,7 +298,7 @@ describe("2.5.1 M1 küçük tur 3 — tutarlılık tablosu: hiçbiri / yalnız a
           else assert.ok(!(CHANGED in mar.summary), `${row.name}: Mart notsuz ${JSON.stringify(mar.data.summary)}`);
           const apr = await h.report(tag, monthRange("2026-04"), `${row.name} Nisan`);
           assert.deepEqual(apr.three, row.apr, `${row.name}: Nisan ${JSON.stringify(apr.data.summary)}`);
-          if (row.mismatch) assert.equal(apr.summary[MISMATCH], mismatchOf("Nisan 2026", ...row.mismatch), `${row.name}: Nisan uyuşmazlık notu`);
+          if (row.mismatch) assert.equal(apr.summary[MISMATCH], mismatchOf("Nisan 2026", row.mismatch[0], row.mismatch[1], row.mismatch[2], "Mart 2026"), `${row.name}: Nisan uyuşmazlık notu`);
           else assert.ok(!(MISMATCH in apr.summary), `${row.name}: Nisan fişi zincirde ${JSON.stringify(apr.data.summary)}`);
           const both = await h.report(tag, { from: "2026-03-01", to: "2026-04-30" }, `${row.name} Mart–Nisan`);
           assert.deepEqual(both.three, row.total, `${row.name}: Mart–Nisan ${JSON.stringify(both.data.summary)}`);
@@ -355,7 +356,7 @@ describe("2.5.1 M1 küçük tur 3 — zincirde: arada mahsupsuz ay; karma ay + s
     assert.deepEqual(apr.three, [70000, 0, 40000], `Nisan: 300 − 700 → sonraki 400 (taban 800 → 500) ${JSON.stringify(apr.data.summary)}`);
     const may = await h.report("001", monthRange("2026-05"), "001 Mayıs");
     assert.deepEqual(may.three, [40000, 60000, 0], `Mayıs: 1.000 − 400 = 600 (taban 500 / 500) ${JSON.stringify(may.data.summary)}`);
-    assert.equal(may.summary[MISMATCH], mismatchOf("Mayıs 2026", "800,00 TL", "400,00 TL"), "Mayıs uyuşmazlık notu");
+    assert.equal(may.summary[MISMATCH], mismatchOf("Mayıs 2026", "800,00 TL", "400,00 TL", "", "Mart 2026"), "Mayıs uyuşmazlık notu");
     const all = await h.report("001", { from: "2026-03-01", to: "2026-05-31" }, "001 Mart–Mayıs");
     assert.deepEqual(all.three, [0, 60000, 0], `Mart–Mayıs 600 (taban 500) ${JSON.stringify(all.data.summary)}`);
     assert.deepEqual([all.h391, all.h191], [160000, 100000], "391 1.600, 191 1.000");
@@ -379,7 +380,7 @@ describe("2.5.1 M1 küçük tur 3 — zincirde: arada mahsupsuz ay; karma ay + s
     balanced(all, "002 Ocak–Mart");
     assert.deepEqual(all.lines, [["Ocak 2026", "Ödenecek KDV", 50000], ["Şubat 2026", "Sonraki Döneme Devreden KDV", 60000], ["Mart 2026", "Önceki Dönemden Devreden KDV", 60000], ["Mart 2026", "Ödenecek KDV", 40000]], "ay satırları");
     assert.equal(all.summary[CHANGED], `Şubat 2026 ${STALE_TEXT}; Ocak 2026 ${MIXED_TEXT}`, "notlar: Şubat güncel değil, Ocak karma");
-    assert.equal(all.summary[MISMATCH], mismatchOf("Mart 2026", "500,00 TL", "600,00 TL"), "Mart uyuşmazlık notu");
+    assert.equal(all.summary[MISMATCH], mismatchOf("Mart 2026", "500,00 TL", "600,00 TL", "", "Ocak 2026"), "Mart uyuşmazlık notu");
     await h.sameFiles("002", { from: "2026-01-01", to: "2026-03-31" }, "002 Ocak–Mart");
     // Onarım: Mart, Şubat, Ocak geri alınır; sırayla → Ocak 700, Şubat devreden 800, Mart 800 devredenle 200 (toplam 900).
     await h.reverse("002", "2026-03");
@@ -492,7 +493,7 @@ describe("2.5.1 M1 küçük tur 4 — devreden fişte İ ve 391 birlikte artar (
     assert.equal(mar.summary[CHANGED], `Mart 2026 ${STALE_TEXT}`, "Mart 'güncel değil' notu");
     const apr = await h.report("001", monthRange("2026-04"), "001 Nisan");
     assert.deepEqual(apr.three, [60000, 40000, 0], `Nisan ${JSON.stringify(apr.data.summary)}`);
-    assert.equal(apr.summary[MISMATCH], mismatchOf("Nisan 2026", "800,00 TL", "600,00 TL"), "Nisan uyuşmazlık notu");
+    assert.equal(apr.summary[MISMATCH], mismatchOf("Nisan 2026", "800,00 TL", "600,00 TL", "", "Mart 2026"), "Nisan uyuşmazlık notu");
     const both = await h.report("001", { from: "2026-03-01", to: "2026-04-30" }, "001 Mart–Nisan");
     assert.deepEqual(both.three, [0, 40000, 0], `Mart–Nisan ${JSON.stringify(both.data.summary)}`);
     assert.deepEqual([both.h391, both.h191], [150000, 110000], "391 1.500, 191 1.100");
@@ -546,7 +547,7 @@ describe("2.5.1 M1 küçük tur 4 — ödenecek fişli ay İ artışıyla devred
     assert.deepEqual(mar.three, [0, 0, 20000], `Mart ${JSON.stringify(mar.data.summary)}`);
     const apr = await h.report("001", monthRange("2026-04"), "001 Nisan");
     assert.deepEqual(apr.three, [20000, 0, 0], `Nisan ${JSON.stringify(apr.data.summary)}`);
-    assert.equal(apr.summary[MISMATCH], mismatchOf("Nisan 2026", "0,00 TL", "200,00 TL"), "Nisan uyuşmazlık notu (iki sonuç da ödenecek yönde — yön cümlesi yok)");
+    assert.equal(apr.summary[MISMATCH], mismatchOf("Nisan 2026", "0,00 TL", "200,00 TL", "", "Mart 2026"), "Nisan uyuşmazlık notu (iki sonuç da ödenecek yönde — yön cümlesi yok)");
     const both = await h.report("001", { from: "2026-03-01", to: "2026-04-30" }, "001 Mart–Nisan");
     assert.deepEqual(both.three, [0, 0, 0], `Mart–Nisan ${JSON.stringify(both.data.summary)}`);
     assert.deepEqual([both.h391, both.h191], [120000, 120000], "391 1.200, 191 1.200");
@@ -561,7 +562,7 @@ describe("2.5.1 M1 küçük tur 4 — ödenecek fişli ay İ artışıyla devred
     assert.ok(!(MISMATCH in apr.summary), `Nisan fişi zincirde (Mart'ın bugünkü devredeni = fişin 800'ü) ${JSON.stringify(apr.data.summary)}`);
     const may = await h.report("002", monthRange("2026-05"), "002 Mayıs");
     assert.deepEqual(may.three, [30000, 10000, 0], `Mayıs ${JSON.stringify(may.data.summary)}`);
-    assert.equal(may.summary[MISMATCH], mismatchOf("Mayıs 2026", "0,00 TL", "300,00 TL"), "Mayıs uyuşmazlık notu");
+    assert.equal(may.summary[MISMATCH], mismatchOf("Mayıs 2026", "0,00 TL", "300,00 TL", "", "Mart 2026"), "Mayıs uyuşmazlık notu");
     const all = await h.report("002", { from: "2026-03-01", to: "2026-05-31" }, "002 Mart–Mayıs");
     assert.deepEqual(all.three, [0, 10000, 0], `Mart–Mayıs ${JSON.stringify(all.data.summary)}`);
     assert.deepEqual([all.h391, all.h191], [120000, 110000], "391 1.200, 191 1.100");
@@ -605,7 +606,7 @@ describe("2.5.1 M1 küçük tur 4 — yıl dönümü: (a) ödenecek Aralık fiş
   it("001 (a) Bu Yıl (2027) 300 / 0 / 100 + uyuşmazlık (yön cümlesiyle); 2026 yılı sonraki 300; Aralık–Ocak 0 / 100 = 391 − 191; ekran = PDF = Excel; onarım", async () => {
     const year = await h.report("001", { preset: "thisYear" }, "001 Bu Yıl");
     assert.deepEqual(year.three, [30000, 0, 10000], `Bu Yıl ${JSON.stringify(year.data.summary)}`);
-    assert.equal(year.summary[MISMATCH], mismatchOf("Ocak 2027", "0,00 TL", "300,00 TL", "fiş ödenecek KDV 200,00 TL yazmış, sırayla mahsupta sonraki döneme devreden KDV 100,00 TL çıkar"), "Ocak 2027 uyuşmazlık notu");
+    assert.equal(year.summary[MISMATCH], mismatchOf("Ocak 2027", "0,00 TL", "300,00 TL", "fiş ödenecek KDV 200,00 TL yazmış, sırayla mahsupta sonraki döneme devreden KDV 100,00 TL çıkar", "Aralık 2026"), "Ocak 2027 uyuşmazlık notu");
     balanced(year, "001 Bu Yıl");
     const last = await h.report("001", { from: "2026-01-01", to: "2026-12-31" }, "001 2026");
     assert.deepEqual(last.three, [0, 0, 30000], "2026 yılı sonraki döneme devreden 300");
@@ -619,7 +620,7 @@ describe("2.5.1 M1 küçük tur 4 — yıl dönümü: (a) ödenecek Aralık fiş
   it("002 (b) Bu Yıl (2027) 900 / 100 + uyuşmazlık; 2026 yılı sonraki 900; Aralık–Ocak 100 = 391 − 191; onarım", async () => {
     const year = await h.report("002", { preset: "thisYear" }, "002 Bu Yıl");
     assert.deepEqual(year.three, [90000, 10000, 0], `Bu Yıl ${JSON.stringify(year.data.summary)}`);
-    assert.equal(year.summary[MISMATCH], mismatchOf("Ocak 2027", "800,00 TL", "900,00 TL"), "Ocak 2027 uyuşmazlık notu");
+    assert.equal(year.summary[MISMATCH], mismatchOf("Ocak 2027", "800,00 TL", "900,00 TL", "", "Aralık 2026"), "Ocak 2027 uyuşmazlık notu");
     balanced(year, "002 Bu Yıl");
     assert.deepEqual((await h.report("002", { from: "2026-01-01", to: "2026-12-31" }, "002 2026")).three, [0, 0, 90000], "2026 yılı sonraki 900");
     const cross = await h.report("002", { from: "2026-12-01", to: "2027-01-31" }, "002 Aralık–Ocak");

@@ -2154,10 +2154,11 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
           if (item.absorbShort) return `${item.label} fişi ${offsetResult} yazmış, sırayla mahsupta ${chainResult} olmalıydı — fiş İndirilecek KDV'deki azalmayı düşmemiş`;
           return `${item.label} fişi ${offsetResult} yazmış, sırayla mahsupta ${chainResult} olmalıydı — İndirilecek KDV'deki azalma sırayla mahsupta daha önceki bir ayda düşülür`;
         };
-        // Uyuşmazlık notunun onarımı: eksi yönlü fiş varsa mahsup fişi güncel olmayan İLK aydan (ay adıyla) başlanır — o ay, notun öbür aylarından da önce ya da onlarla aynıdır
-        // (önceki zincirle uyuşmayan fiş de güncel olmayan fiş sayılır), onarım hepsini kapsar; eksi yönlü fiş yoksa metin AYNEN.
+        // Uyuşmazlık notunun onarımı: eksi yönlü fiş ya da (küçük tur 7) önceki aylarda güncel olmayan fişi olan devreden farkı varsa mahsup fişi güncel olmayan İLK aydan (ay
+        // adıyla) başlanır — o ay, notun öbür aylarından da önce ya da onlarla aynıdır (önceki zincirle uyuşmayan fiş de güncel olmayan fiş sayılır), onarım hepsini kapsar; onarım
+        // ayı olan kalem yoksa metin AYNEN.
         const mismatchRepair = list => {
-          const restart = list.filter(item => item.absorbShort).map(item => item.restartMonth).sort()[0];
+          const restart = list.map(item => item.restartMonth).filter(Boolean).sort()[0];
           return restart
             ? `mahsup fişi güncel olmayan ilk aydan (${monthLabel(restart)}) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin`
             : "bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin";

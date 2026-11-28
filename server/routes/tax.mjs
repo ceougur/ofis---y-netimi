@@ -435,9 +435,14 @@ export function registerTaxRoutes(router, { store, auth, audit, events, bank, pe
         if (offset && !kept) {
           // 2.5.1 M1 küçük tur 6 (KDV tur 5 dar kontrolü ORTA-1; baş mimar kararı 28.11 07:40 (1)(a)): uyuşmazlığın YÖNÜ. Devredeni aynı ve zincirin S4 emilimi fişinkinden EKSİYSE
           // (önceki "güncel değil" ay zincire bugünkü İ'siyle girdi — S-DKM1K-1 = A) fiş İndirilecek KDV'deki azalmayı düşmemiştir; onarım mahsup fişi güncel olmayan İLK aydan
-          // ("güncel değil" / karma / zincirle uyuşmayan fiş; hiçbiri yoksa bu ay) başlar. Öbür yön (araya giren mahsupsuz ay azalmayı zincirde zaten düştü) ve devreden farkı AYNEN.
+          // ("güncel değil" / karma / zincirle uyuşmayan fiş; hiçbiri yoksa bu ay) başlar. Öbür yön (araya giren mahsupsuz ay azalmayı zincirde zaten düştü) AYNEN; devreden farkı aşağıda.
+          // 2.5.1 M1 küçük tur 7 (tur 6 raporunun BAŞ MİMAR KARARI (1), 28.11 08:49): DEVREDEN FARKI kolunda da (fiş başka devredenle kesilmiş) önceki aylarda mahsup fişi güncel
+          // olmayan ay varsa onarım o İLK aydan başlar — önceki ay devreden yönde güncel değilken yalnız bu ayı ve sonrakileri yeniden kesmek ön izlemeyi yine defterdeki eski
+          // devredenle bırakır, not kalır. Önceki güncel olmayan fiş yoksa devreden farkında onarım ayı boş (notun cümlesi AYNEN). Öbür yön (dar kontrol L) AYNEN.
           const absorbShort = Number(offset.carryInMinor) === carry && step.carried < offsetCarried;
-          const restart = absorbShort ? [...steps.values()].find(item => item.offsetState === "stale" || item.offsetState === "mixed" || mismatches.some(other => other.month === item.month))?.month || month : "";
+          const carryGap = Number(offset.carryInMinor) !== carry;
+          const firstStale = [...steps.values()].find(item => item.offsetState === "stale" || item.offsetState === "mixed" || mismatches.some(other => other.month === item.month))?.month || "";
+          const restart = absorbShort ? firstStale || month : carryGap ? firstStale : "";
           mismatches.push({ month, label: monthLabel(month), usedMinor: Number(offset.carryInMinor), chainMinor: carry, offsetPayableMinor: Number(offset.payableMinor), offsetCarryOutMinor: Number(offset.carryOutMinor), payableMinor: step.payable, carryOutMinor: step.carryOut, absorbShort, restartMonth: restart, restartLabel: restart ? monthLabel(restart) : "" });
         }
         steps.set(month, { ...settled, carryAfterMinor: next });

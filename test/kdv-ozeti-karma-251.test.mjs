@@ -23,7 +23,8 @@ const PENDING = "Mahsup Edilmemiş Ay";
 const MIXED_TEXT = "(mahsup fişi güncel değil — Hesaplanan KDV bugünkü kayıtlardan, İndirilecek KDV kesilmiş mahsup fişinden alındı, azalma sonraki mahsupta düşülür; mahsubu geri alıp yeniden mahsup edin)";
 const REDUCED_TEXT = "(bu ayın kayıtları fişten sonra değişti; ayın sonucu kesilmiş mahsup fişinden, İndirilecek KDV'deki azalma sonraki mahsupta düşülür)";
 const STALE_TEXT = "(mahsup fişi güncel değil — mahsubu geri alıp yeniden mahsup edin)";
-const MISMATCH_TAIL = " (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)";
+// 2.5.1 M1 küçük tur 7 (tur 6 raporunun BAŞ MİMAR KARARI (1)): devreden farkı kolunda önceki aylarda güncel olmayan fiş varsa onarım o İLK aydan (bu dosyadaki uyuşmazlıkların hepsinde var).
+const mismatchTail = restart => ` (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (${restart}) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)`;
 const minor = text => {
   const raw = String(text ?? "").trim();
   if (!/TL$/.test(raw)) return null;
@@ -244,7 +245,7 @@ describe("2.5.1 M1 küçük tur 2 — KDV Özeti karma ay: devreden yönde, yön
     assert.equal(mar.summary[CHANGED], `Mart 2026 ${MIXED_TEXT}`, "Mart karma notu");
     const apr = await h.report("001", monthRange("2026-04"), "001 Nisan");
     assert.deepEqual(apr.three, [70000, 70000, 0], `Nisan: 1.000 + 400 (S4) − 700 = 700 (taban: 800 / 600) ${JSON.stringify(apr.data.summary)}`);
-    assert.equal(apr.summary[MISMATCH], `Nisan 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 700,00 TL olmalıydı${MISMATCH_TAIL}`, "Nisan uyuşmazlık notu");
+    assert.equal(apr.summary[MISMATCH], `Nisan 2026 fişi 800,00 TL devredenle kesilmiş, sırayla mahsupta 700,00 TL olmalıydı${mismatchTail("Mart 2026")}`, "Nisan uyuşmazlık notu");
     const both = await h.report("001", { from: "2026-03-01", to: "2026-04-30" }, "001 Mart–Nisan");
     assert.deepEqual(both.three, [0, 70000, 0], `Mart–Nisan 700 (taban 600) ${JSON.stringify(both.data.summary)}`);
     assert.deepEqual([both.h391, both.h191], [130000, 60000], "391 1.300, 191 600");
@@ -282,7 +283,7 @@ describe("2.5.1 M1 küçük tur 2 — KDV Özeti karma ay: devreden yönde, yön
     assert.deepEqual(await h.offset("002", "2027-01"), [0, 70000, 0], "Ocak 2027 fişi 700");
     const after1 = await h.report("002", { from: "2026-12-01", to: "2027-01-31" }, "002 Ocak fişli");
     assert.deepEqual(after1.three, [0, 40000, 0], "Ocak fişinden sonra da 400");
-    assert.equal(after1.summary[MISMATCH], `Ocak 2027 fişi 0,00 TL devredenle kesilmiş, sırayla mahsupta 300,00 TL olmalıydı${MISMATCH_TAIL}`, "Ocak 2027 uyuşmazlık notu");
+    assert.equal(after1.summary[MISMATCH], `Ocak 2027 fişi 0,00 TL devredenle kesilmiş, sırayla mahsupta 300,00 TL olmalıydı${mismatchTail("Aralık 2026")}`, "Ocak 2027 uyuşmazlık notu");
     // Onarım: Ocak ve Aralık geri alınır, sırayla → 200 / 200 (toplam 400).
     await h.reverse("002", "2027-01");
     await h.reverse("002", "2026-12");

@@ -23,7 +23,8 @@ const PENDING = "Mahsup Edilmemiş Ay";
 const MIXED_TEXT = "(mahsup fişi güncel değil — Hesaplanan KDV bugünkü kayıtlardan, İndirilecek KDV kesilmiş mahsup fişinden alındı, azalma sonraki mahsupta düşülür; mahsubu geri alıp yeniden mahsup edin)";
 const REDUCED_TEXT = "(bu ayın kayıtları fişten sonra değişti; ayın sonucu kesilmiş mahsup fişinden, İndirilecek KDV'deki azalma sonraki mahsupta düşülür)";
 const STALE_TEXT = "(mahsup fişi güncel değil — mahsubu geri alıp yeniden mahsup edin)";
-const MISMATCH_TAIL = " (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)";
+// 2.5.1 M1 küçük tur 7 (tur 6 raporunun BAŞ MİMAR KARARI (1)): devreden farkı kolunda önceki aylarda güncel olmayan fiş varsa onarım o İLK aydan (bu dosyadaki uyuşmazlıkların hepsinde var).
+const mismatchTail = restart => ` (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (${restart}) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)`;
 const minor = text => {
   const raw = String(text ?? "").trim();
   if (!/TL$/.test(raw)) return null;
@@ -318,7 +319,7 @@ describe("2.5.1 M1 küçük tur 5 — S-DKM1K-1 = A: iki ardışık 'güncel de�
       ],
       "ay satırları: Şubat bugünkü devreden 800 → Mart 1.000 (zincir), Nisan fişten 700, Mayıs 500 + 200",
     );
-    assert.equal(all.summary[MISMATCH], `Mart 2026 fişi 500,00 TL devredenle kesilmiş, sırayla mahsupta 800,00 TL olmalıydı${MISMATCH_TAIL}`, "Mart uyuşmazlık notu");
+    assert.equal(all.summary[MISMATCH], `Mart 2026 fişi 500,00 TL devredenle kesilmiş, sırayla mahsupta 800,00 TL olmalıydı${mismatchTail("Şubat 2026")}`, "Mart uyuşmazlık notu");
     assert.equal(all.summary[CHANGED], `Şubat 2026 ${STALE_TEXT}; Nisan 2026 ${REDUCED_TEXT}`, "notlar");
     assert.deepEqual(await h.preview("002", "2026-05"), [0, 50000, 0], "Mayıs ön izlemesi (DEĞİŞMEDİ)");
     await h.sameFiles("002", { from: "2026-01-01", to: "2026-05-31" }, "002 Ocak–Mayıs");
