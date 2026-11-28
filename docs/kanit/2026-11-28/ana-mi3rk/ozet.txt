@@ -1,0 +1,20 @@
+yeni-senaryo-UTC cikis=0 03:02
+[kanit] mi3rk-yeni-senaryo-UTC: GEÇTİ · çıkış 0 · 42/42 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9cc60ff +1 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+yeni-grup-UTC cikis=0 03:02
+[kanit] mi3rk-yeni-grup-UTC: GEÇTİ · çıkış 0 · 14/14 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9cc60ff +1 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+eski-senaryo-UTC cikis=1 03:04
+[kanit] mi3rk-eski-senaryo-UTC: BAŞARISIZ (çıkış 1; 9 başarısız, 0 iptal) · çıkış 1 · 34/43 geçti, 9 başarısız, 0 iptal, 0 atlanan · commit bb6be86 +2 değişmiş dosya +1 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+yeni-senaryo-Istanbul cikis=0 03:05
+[kanit] mi3rk-yeni-senaryo-Istanbul: GEÇTİ · çıkış 0 · 42/42 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9cc60ff +1 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+yeni-grup-Istanbul cikis=0 03:05
+[kanit] mi3rk-yeni-grup-Istanbul: GEÇTİ · çıkış 0 · 14/14 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9cc60ff +1 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+eski-senaryo-Istanbul cikis=1 03:07
+[kanit] mi3rk-eski-senaryo-Istanbul: BAŞARISIZ (çıkış 1; 9 başarısız, 0 iptal) · çıkış 1 · 34/43 geçti, 9 başarısız, 0 iptal, 0 atlanan · commit bb6be86 +2 değişmiş dosya +1 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+yeni-mi1-UTC cikis=0 03:07
+[kanit] mi3rk-yeni-mi1-UTC: GEÇTİ · çıkış 0 · 12/12 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 9cc60ff +1 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+{"mutant": "M1-kosul-eski", "cikis": 1, "sure_sn": 90, "kirmizi": ["✗ 'Tümüne WhatsApp' düğmesi yok (önce VAR idi: \"Süzgeçteki 2 cariye ekstre\")", "✗ 'Tümüne WhatsApp' tıklandı: istek {\"all\":true,\"q\":\"\",\"type\":\"\",\"group\":\"\",\"subgroup\":\"\",\"status\":\"active\",\"balance\":\"all\",\"kind\":\"statement\",\"preset\":\"thisMonth\"} · pencere \"× 2 Cari WhatsApp ile Ekstre Gönder 3Cari3Geçerli Numara0Numarası Yok / Hatalı3Gönderilecek Ekstre DönemiBu AyGeçen AySon 3 AyTüm Hareketler Yalnız Borçlu Caril\"", "✗ başlangıç > bitiş: \"Başlangıç tarihi bitiş tarihinden sonra olamaz. Seçim tamamlanana kadar ekran, PDF ve Excel: Bugün · 28.11.2026 · Bu Dönemde Ödeme Yapanlar.\" · ekran [\"Can Öğrenci\",\"Elif Öğrenci\"] · Tümüne WhatsApp yok"]}
+{"mutant": "M2-pdf-donemsiz", "cikis": 1, "sure_sn": 86, "kirmizi": ["✗ PDF bağlantısı ekranın dönemiyle: period=yok paid=yok (beklenen today / 1)", "✗ PDF'in satırları = ekran: [\"Can Öğrenci\",\"Deniz Grupsuz\",\"Elif Öğrenci\"]"]}
+{"mutant": "M3-diger-kapali", "cikis": 1, "sure_sn": 2, "kirmizi": ["not ok 14 - (d) 'Diğer': Kredi Kartına İade Diğer sütununda (POS'a karışmaz) — Liste, Grup Özeti, TOPLAM, PDF, Excel ve 'Cari Bazında Tahsilat' raporuyla aynı", "not ok 1 - Mİ-2 — dönemlik tahsilat ve Grup Özeti"]}
+{"mutant": "M4-bekleme-yok", "cikis": 1, "sure_sn": 89, "kirmizi": ["✗ Grup Özeti (bekleyen seçim): kart \"\", Excel range, PDF range", "✗ başlangıç > bitiş: \"Başlangıç tarihi bitiş tarihinden sonra olamaz. Seçim tamamlanana kadar ekran, PDF ve Excel dönemsiz.\" · ekran [] · Tümüne WhatsApp yok"]}
+{"mutant": "M5-bekleyen-yazi-yok", "cikis": 1, "sure_sn": 87, "kirmizi": ["✗ bekleyen seçim açıkça yazılı: \"Başlangıç ve bitiş günlerini seçin.\""]}
+BITTI 03:13 4.40 4.77 5.66 5/171 7630

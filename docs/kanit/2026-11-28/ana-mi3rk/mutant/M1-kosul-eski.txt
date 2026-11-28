@@ -1,0 +1,63 @@
+
+■ Kurulum: yönetici girer, başlangıç tablosu yüklenir
+
+■ 1. Grup aç + cari (ekrandan, + Yeni Cari formunda '+ Yeni Grup Yaz…')
+  ✓ Elif: grup "A Grubu" › "1. Sınıf" (veri tabanı)
+  ✓ Can: grup "B Grubu"
+  ✓ Deniz: grupsuz
+
+■ 2. Taksit (programın kendi ucu) + her yoldan tahsilat (Elif: ekrandan Nakit / POS / Havale; Can: çek + senet)
+  ✓ veri tabanı Elif bugün: nakit 100 (taksite 100), POS 200, havale 300 (beklenen 100 taksite / 200 / 300)
+  ✓ veri tabanı Can bugün: çek 400, senet 500 (beklenen 400 / 500)
+
+■ 3. Grup Özeti (gerçek tıklama): dönem kendiliğinden Bugün; satırlar ve TOPLAM
+  ✓ dönem "today" (beklenen today = Bugün)
+  ✓ Grup Özeti'nde (dönem Bugün) etiket görünür: {"text":"Tahsilat Dönemi:","visible":true,"selected":"Bugün"}
+  ✓ A Grubu: {"Grup":"A Grubu","Cari":"1","Bakiye":"₺2.400,00Borçlu","Taksitlerden Kalan":"₺2.400,00","Gecikmiş Borç":"₺1.400,00","Geciken Taksit":"2","Tahsilat":"₺600,00","Nakit":"₺100,00","POS":"₺200,00","Havale / EFT":"₺300,00","Çek":"₺0,00","Senet":"₺0,00"} (beklenen Cari 1, Tahsilat 600 = 100 + 200 + 300)
+  ✓ B Grubu: {"Grup":"B Grubu","Cari":"1","Bakiye":"₺900,00Alacaklı","Taksitlerden Kalan":"₺0,00","Gecikmiş Borç":"₺0,00","Geciken Taksit":"0","Tahsilat":"₺900,00","Nakit":"₺0,00","POS":"₺0,00","Havale / EFT":"₺0,00","Çek":"₺400,00","Senet":"₺500,00"} (beklenen 900 = çek 400 + senet 500)
+  ✓ Grupsuz: {"Grup":"Grupsuz","Cari":"1","Bakiye":"₺0,00","Taksitlerden Kalan":"₺0,00","Gecikmiş Borç":"₺0,00","Geciken Taksit":"0","Tahsilat":"₺0,00","Nakit":"₺0,00","POS":"₺0,00","Havale / EFT":"₺0,00","Çek":"₺0,00","Senet":"₺0,00"} (beklenen 1 cari, 0)
+  ✓ TOPLAM Tahsilat ₺1.500,00 = veri tabanı 1500 = 1.500
+  ✓ TOPLAM Gecikmiş Borç ₺1.400,00, Geciken Taksit 2 (Elif'in taksiti gecikti)
+  ✓ Tahsilat kartı: "₺1.500,00Tahsilat · Bugün · 28.11.2026 · 2 cari"
+
+■ 4. ▸ alt grupları aç; B Grubu satırına odaklan + Enter → Liste B Grubu'na süzülür
+  ✓ alt grup "1. Sınıf" görünür: {"Grup":"› 1. Sınıf","Cari":"1","Bakiye":"₺2.400,00Borçlu","Taksitlerden Kalan":"₺2.400,00","Gecikmiş Borç":"₺1.400,00","Geciken Taksit":"2","Tahsilat":"₺600,00","Nakit":"₺100,00","POS":"₺200,00","Havale / EFT":"₺300,00","Çek":"₺0,00","Senet":"₺0,00"}
+  ✓ Liste yalnız B Grubu: ["Can Öğrenci"]
+  ✓ grup süzgeci "B Grubu (1)"
+  ✓ Liste Tahsilat kartı: "₺900,00Tahsilat · Bugün · 28.11.2026 · 1 cari" (beklenen 900)
+  ✓ Can'ın Tahsilat hücresi: "₺900,00Çek ₺400,00 · Senet ₺500,00"
+
+■ 5. Tüm Gruplar + 'Bu Dönemde Ödeme Yapanlar' (tıklama): Deniz düşer
+  ✓ ödeme yapanlar: ["Can Öğrenci","Elif Öğrenci"]
+  ✓ Liste'de dönem seçiliyken etiket görünür: {"text":"Tahsilat Dönemi:","visible":true,"selected":"Bugün"}
+  ✓ bu süzgeçte 'Tümüne WhatsApp' düğmesi yok (yalnız işaretlenenlere)
+
+■ 5b. 'Ödeme Yapanlar' açıkken dönem 'Tarih Aralığı' (günler seçilmeden): ekran = PDF = Excel, 'Tümüne WhatsApp' yok
+  ✓ veri tabanı: aktif cari 3, bugün ödeme yapan ["Can Öğrenci","Elif Öğrenci"] (beklenen 3 / Can + Elif)
+  ✓ ekran (günler seçilmeden) son uygulanan dönemin ödeyenleri: ["Can Öğrenci","Elif Öğrenci"] (beklenen veri tabanı ["Can Öğrenci","Elif Öğrenci"])
+  ✓ Tahsilat kartı ekranın dönemini yazar: "₺1.500,00Tahsilat · Bugün · 28.11.2026 · 2 cari" (beklenen Bugün · 2 cari)
+  ✓ bekleyen seçim açıkça yazılı: "Başlangıç ve bitiş günlerini seçin. Seçim tamamlanana kadar ekran, PDF ve Excel: Bugün · 28.11.2026 · Bu Dönemde Ödeme Yapanlar."
+  ✗ 'Tümüne WhatsApp' düğmesi yok (önce VAR idi: "Süzgeçteki 2 cariye ekstre")
+  ✓ PDF bağlantısı ekranın dönemiyle: period=today paid=1 (beklenen today / 1)
+  ✓ Excel bağlantısı ekranın dönemiyle: period=today paid=1 (beklenen today / 1)
+  ✓ PDF'in satırları = ekran: ["Can Öğrenci","Elif Öğrenci"]
+  ✓ Excel'in satırları = ekran: ["Can Öğrenci","Elif Öğrenci"]
+  ✗ 'Tümüne WhatsApp' tıklandı: istek {"all":true,"q":"","type":"","group":"","subgroup":"","status":"active","balance":"all","kind":"statement","preset":"thisMonth"} · pencere "× 2 Cari WhatsApp ile Ekstre Gönder 3Cari3Geçerli Numara0Numarası Yok / Hatalı3Gönderilecek Ekstre DönemiBu AyGeçen AySon 3 AyTüm Hareketler Yalnız Borçlu Caril"
+  ✓ toplu ekstre isteği yalnız ekrandakiler: ["Can Öğrenci","Elif Öğrenci"] (all: false)
+  ✓ gönderim penceresi 2 cari, ödemesi olmayan yok: "× 2 Cari WhatsApp ile Ekstre Gönder 2Cari2Geçerli Numara0Numarası Yok / Hatalı2Gönderilecek Ekstre DönemiBu AyGeçen AySo"
+  ✓ Grup Özeti (bekleyen seçim): kart "₺1.500,00Tahsilat · Bugün · 28.11.2026 · 2 cari", Excel today, PDF today
+  ✗ başlangıç > bitiş: "Başlangıç tarihi bitiş tarihinden sonra olamaz. Seçim tamamlanana kadar ekran, PDF ve Excel: Bugün · 28.11.2026 · Bu Dönemde Ödeme Yapanlar." · ekran ["Can Öğrenci","Elif Öğrenci"] · Tümüne WhatsApp yok
+  ✓ geçerli aralık uygulandı: ekran ["Can Öğrenci","Elif Öğrenci"], Excel range 2026-11-28–2026-11-28 paid=1
+  ✓ 'Bu Dönemde Ödeme Yapanlar' açık kaldı (Bugün)
+
+■ 6. Grup Özeti → Excel (indirilen dosya): satırlar ve TOPLAM ekranla aynı
+  ✓ Excel TOPLAM Tahsilat 1500 (beklenen 1.500)
+  ✓ Excel A Grubu: ["A Grubu",1,2400,2400,1400,2,600,100,200,300,0,0]
+
+■ 7. Liste'de dönem 'Tarih Aralığı' ve 'Yok' (klavye): etiket her durumda görünür
+  ✓ Tarih Aralığı seçiliyken etiket görünür: {"text":"Tahsilat Dönemi:","visible":true,"selected":"Tarih Aralığı"}
+  ✓ dönem Yok iken etiket görünür, seçenek "Yok": {"text":"Tahsilat Dönemi:","visible":true,"selected":"Yok"}
+  ✓ Mutabakat Testi tutarlı
+  ✓ sayfada JavaScript hatası yok
+
+Senaryo Mİ-2 (cari grubuna göre görünümler): 40 geçti, 3 kaldı. Ekranlar: ../kanit/mutant/ekran-M1-kosul-eski

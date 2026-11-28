@@ -1,0 +1,78 @@
+{
+  "ad": "mi3rk-eski-senaryo-UTC",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-mi2-251.mjs",
+  "commit": "bb6be861989e750b39ebf98c27ddbe454fb08368",
+  "dal": "HEAD",
+  "kirli": 2,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-28T03:02:35.682Z",
+  "sure_sn": 89.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 43,
+    "gecen": 34,
+    "basarisiz": 9,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 9 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "bekleyen seçim açıkça yazılı: \"\"",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "'Tümüne WhatsApp' düğmesi yok (önce VAR idi: \"Süzgeçteki 2 cariye ekstre\")",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "PDF bağlantısı ekranın dönemiyle: period=yok paid=yok (beklenen today / 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Excel bağlantısı ekranın dönemiyle: period=yok paid=yok (beklenen today / 1)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "PDF'in satırları = ekran: [\"Can Öğrenci\",\"Deniz Grupsuz\",\"Elif Öğrenci\"]",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Excel'in satırları = ekran: [\"Can Öğrenci\",\"Deniz Grupsuz\",\"Elif Öğrenci\"]",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "'Tümüne WhatsApp' tıklandı: istek {\"all\":true,\"q\":\"\",\"type\":\"\",\"group\":\"\",\"subgroup\":\"\",\"status\":\"active\",\"balance\":\"all\",\"kind\":\"statement\",\"preset\":\"thisMonth\"} · pencere \"× 2 Cari WhatsApp ile Ekstre Gönder 3Cari3Geçerli Numara0Numarası Yok / Hatalı3Gönderilecek Ekstre DönemiBu AyGeçen AySon 3 Ay",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "Grup Özeti (bekleyen seçim): kart \"₺1.500,00Tahsilat · Bugün · 28.11.2026 · 2 cari\", Excel dönemsiz, PDF dönemsiz",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "başlangıç > bitiş: \"\" · ekran [\"Can Öğrenci\",\"Deniz Grupsuz\",\"Elif Öğrenci\"] · Tümüne WhatsApp yok",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../kanit/2026-11-28/mi3rk-eski-senaryo-UTC.log",
+  "klasor": "/tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/mi3rk/eski",
+  "ham_cikti_sha256": "998eec4fa68af7949e13b918e79a4f7adc30f6b6a091175c504fa98b20709db5",
+  "ham_cikti_bayt": 5777
+}
