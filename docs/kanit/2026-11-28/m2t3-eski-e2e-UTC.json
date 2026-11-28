@@ -1,0 +1,83 @@
+{
+  "ad": "m2t3-eski-e2e-UTC",
+  "komut": "node test/e2e/senaryo-degersiz-iptal-m2t2-251.mjs",
+  "commit": "bf7e7d2184ca46ac36542872f584acdc9b9b6d99",
+  "dal": "HEAD",
+  "kirli": 2,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-28T02:30:41.012Z",
+  "sure_sn": 31.3,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 26,
+    "gecen": 16,
+    "basarisiz": 10,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 10 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "ileti ne oldu: \"\"",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "ileti neden (Değersiz olmadan da eksi)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "ileti ne yapmalı + nereye",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "veri tabanı: fatura iptal edilmedi",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "bakiye -5476.45 (−2.576,45)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "ileti ne oldu: \"\"",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "ileti ne yapmalı + nereye",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "form açık kalır",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "veri tabanı: fatura 2.900 kaldı",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "bakiye -2376.45 (423,55)",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/m2t3-ae39/kanit/2026-11-28/m2t3-eski-e2e-UTC.log",
+  "klasor": "/dev/shm/m2t3-ae39/eski",
+  "ham_cikti_sha256": "2ca47f7e57a295e2050386c45c26644027f5d87eb88140a04ff849e706d90804",
+  "ham_cikti_bayt": 1933
+}

@@ -1,0 +1,25 @@
+TAP version 13
+# (node:21796) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.1 M2 tur 3 — S-M2T2-1 = A: Değersiz satırı olan caride eksiye götüren iptal / iade her durumda ret
+    # Subtest: bakiyeyi DÜŞÜRMEYEN işlem eksi caride de kabul: iadenin Düzenle'si iadeyi küçültünce (eksi bakiye azalır)
+    ok 1 - bakiyeyi DÜŞÜRMEYEN işlem eksi caride de kabul: iadenin Düzenle'si iadeyi küçültünce (eksi bakiye azalır)
+      ---
+      duration_ms: 1116.401763
+      type: 'test'
+      ...
+    1..1
+ok 1 - 2.5.1 M2 tur 3 — S-M2T2-1 = A: Değersiz satırı olan caride eksiye götüren iptal / iade her durumda ret
+  ---
+  duration_ms: 1117.497155
+  type: 'suite'
+  ...
+1..1
+# tests 1
+# suites 1
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1638.01775

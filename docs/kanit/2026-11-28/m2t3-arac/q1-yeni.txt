@@ -1,0 +1,28 @@
+(node:17491) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Q1 avanslı iptal öncesi bakiye -2576.45
+Q1 avanslı iptal → 409 doubtful-writeoff-balance Fatura iptal edilemez: bu caride 17.09.2026 tarihli 3.000,00 TL Değersiz Alacak satırı var; iptalden sonra cari 5.476,45 TL alacaklı (eksi bakiye) olurdu. Değersiz Alacak satırı olan caride iptal cariyi alacaklıya (eksi bakiyeye) götüremez; Değersiz Alacak satırı olmasaydı da cari 2.476,45 TL alacaklı olurdu — bu fatura olmasaydı o kayda Değersiz Alacak yazılamazdı. Ne yapmalı: önce Değersiz Alacak satırını silin (cari kartı → Şüpheli Alacak → kaydın Değersiz satırındaki × düğmesi), sonra faturayı iptal edin; gerekirse Değersiz Alacak'ı yeniden yazın (form yazılabilecek tutarı gösterir). Hiçbir şey kaydedilmedi.
+Q1 avanslı iptal sonra bakiye -2576.45 fatura {"status":"issued","p":2900} değişmez []
+Q2 Düzenle 2900→100 öncesi bakiye 423.55
+Q2 Düzenle 2900→100 → 409 doubtful-writeoff-balance Fatura düzenlenemez: bu caride 17.09.2026 tarihli 3.000,00 TL Değersiz Alacak satırı var; düzenlemeden sonra cari 2.376,45 TL alacaklı (eksi bakiye) olurdu. Değersiz Alacak yazımı cariyi alacaklıya düşüremez — bu düzenlemeyle o kayda Değersiz Alacak yazılamazdı. Ne yapmalı: önce Değersiz Alacak satırını silin (cari kartı → Şüpheli Alacak → kaydın Değersiz satırındaki × düğmesi), sonra faturayı düzenleyin; gerekirse Değersiz Alacak'ı yeniden yazın (form yazılabilecek tutarı gösterir). Hiçbir şey kaydedilmedi.
+Q2 Düzenle 2900→100 sonra bakiye 423.55 fatura {"status":"issued","p":2900} değişmez []
+Q3 Düzenle 2900→3000 öncesi bakiye 423.55
+Q3 Düzenle 2900→3000 → 200  
+Q3 Düzenle 2900→3000 sonra bakiye 523.55 fatura {"status":"issued","p":3000} değişmez []
+Q4 Düzenle 2900→2000 ek borç 2000 öncesi bakiye 2423.55
+Q4 Düzenle 2900→2000 ek borç 2000 → 200  
+Q4 Düzenle 2900→2000 ek borç 2000 sonra bakiye 1523.55 fatura {"status":"issued","p":2000} değişmez []
+Q5 Düzenle avanslı 2900→2800 öncesi bakiye -2576.45
+Q5 Düzenle avanslı 2900→2800 → 409 doubtful-writeoff-balance Fatura düzenlenemez: bu caride 17.09.2026 tarihli 3.000,00 TL Değersiz Alacak satırı var; düzenlemeden sonra cari 2.676,45 TL alacaklı (eksi bakiye) olurdu. Değersiz Alacak yazımı cariyi alacaklıya düşüremez — bu düzenlemeyle o kayda Değersiz Alacak yazılamazdı. Ne yapmalı: önce Değersiz Alacak satırını silin (cari kartı → Şüpheli Alacak → kaydın Değersiz satırındaki × düğmesi), sonra faturayı düzenleyin; gerekirse Değersiz Alacak'ı yeniden yazın (form yazılabilecek tutarı gösterir). Hiçbir şey kaydedilmedi.
+Q5 Düzenle avanslı 2900→2800 sonra bakiye -2576.45 fatura {"status":"issued","p":2900} değişmez []
+Q6 Düzenle 2900→100 Değersizsiz öncesi bakiye 3423.55
+Q6 Düzenle 2900→100 Değersizsiz → 409 ledger-integrity Bu kayıt carinin borcunu açık şüpheli tutarın altına düşürür (borç 623,55 TL, açık şüpheli 2.900,00 TL); kaydı şüpheliye alma tarihinden sonraya girin ya da önce şüpheli kaydını düzeltin.
+Q6 Düzenle 2900→100 Değersizsiz sonra bakiye 3423.55 fatura {"status":"issued","p":2900} değişmez []
+Q7 avanslı iptal Değersizsiz öncesi bakiye 423.55
+Q7 avanslı iptal Değersizsiz → 200  
+Q7 avanslı iptal Değersizsiz sonra bakiye -2476.45 fatura {"status":"cancelled","p":2900} değişmez []
+Q8 Düzenle cari değişir → 400 invoice-bonded Bu faturaya cari kartından Kapatılacak Fatura olarak bağlanmış 1 tahsilat/ödeme var; cari değiştirilemez. Önce o kayıtlarda Kapatılacak Fatura'yı Otomatik yapın ya da faturayı iptal edip doğru cariye yeniden kaydedin.
+Q8 sonra bakiye 423.55 0
+Q9 tam iade → 409 doubtful-writeoff-balance İade faturası kaydedilemez: bu caride 17.09.2026 tarihli 3.000,00 TL Değersiz Alacak satırı var; iadeden sonra cari 5.476,45 TL alacaklı (eksi bakiye) olurdu. Değersiz Alacak satırı olan caride iade cariyi alacaklıya (eksi bakiyeye) götüremez; Değersiz Alacak satırı olmasaydı da cari 2.476,45 TL alacaklı olurdu — bu iadeyle o kayda Değersiz Alacak yazılamazdı. Ne yapmalı: önce Değersiz Alacak satırını silin (cari kartı → Şüpheli Alacak → kaydın Değersiz satırındaki × düğmesi), sonra iadeyi kaydedin; gerekirse Değersiz Alacak'ı yeniden yazın (form yazılabilecek tutarı gösterir). Hiçbir şey kaydedilmedi.
+Q9 sonra bakiye -2576.45
+Mutabakat true []
