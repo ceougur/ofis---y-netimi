@@ -885,6 +885,19 @@
   const LONG_TOAST_CHARS = 300;
   const LONG_TOAST_MAX = 2;
   HOF.isLongToast = (message, type = "info") => type === "error" && (String(message ?? "").length > LONG_TOAST_CHARS || String(message ?? "").includes("Ne yapmalı:"));
+  // Uzun bildirim kalıcı olduğu için SONRADAN açılan pencerenin (ör. iletinin söylediği × → "silinsin mi?" sorusu, Şüpheliden Çıkar formu) düğmelerini örtmemeli:
+  // bildirim, göründüğü andaki pencere derinliğini taşır; daha derin bir pencere açıkken gizlenir (is-behind), o pencere kapanınca yeniden görünür.
+  let modalDepth = () => 0;
+  const syncLongToasts = () => {
+    const host = document.getElementById("hof-toasts");
+    if (!host) return;
+    const depth = modalDepth();
+    for (const item of host.children) {
+      if (!item.classList.contains("hof-toast-long")) continue;
+      item.hofDepth = Math.min(item.hofDepth ?? depth, depth);
+      item.classList.toggle("is-behind", depth > item.hofDepth);
+    }
+  };
   HOF.toast = (message, { type = "info", action, timeout = 3600 } = {}) => {
     const host = toastHost();
     const long = HOF.isLongToast(message, type);
@@ -938,6 +951,7 @@
     node.appendChild(close);
     host.appendChild(node);
     if (long) {
+      node.hofDepth = modalDepth();
       const longs = [...host.children].filter(item => item.classList.contains("hof-toast-long"));
       while (longs.length > LONG_TOAST_MAX) longs.shift().remove();
     }
@@ -1021,6 +1035,7 @@
 
   // ---------- Pencereler ----------
   const openModals = [];
+  modalDepth = () => openModals.length;
   let lastPressed = null;
   document.addEventListener("pointerdown", event => { lastPressed = event.target?.closest?.("button, a, [tabindex]") || null; }, true);
   // 2.4.3 (form durumu izole): kullanıcının kendi değiştirdiği alan "dokunulmuş" sayılır ve penceresini "kaydedilmemiş" yapar.
@@ -1081,6 +1096,7 @@
       node.classList.remove("is-visible");
       document.removeEventListener("keydown", onKey, true);
       openModals.splice(openModals.indexOf(api), 1);
+      syncLongToasts();
       setTimeout(() => node.remove(), 160);
       focusBack();
       // A10: Kaydet'ten sonra açan pencere kendini yeniden çizer (açan düğme yenisiyle değişir); odak boşa (body) düştüyse aynı anahtarlı
@@ -1202,6 +1218,7 @@
       },
     };
     openModals.push(api);
+    syncLongToasts();
     document.addEventListener("keydown", onKey, true);
     if (dismissible) {
       node.querySelector(".hof-modal-close").onclick = () => userClose();

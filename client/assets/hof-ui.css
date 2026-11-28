@@ -564,12 +564,17 @@ body:has(.hof-modal-backdrop.is-visible) .hof-toasts {
    ret iletisi 22 satır / 426 px oluyor, pencere açıkken üst ortada iletinin söylediği düğmeyi (cari kartı → Şüpheli Alacak satırının ×'ı) örtüyordu.
    Geniş (en çok 720 px, ~9 satır), pencere açıkken ALTTA ortada; metin kutusu ekranın yarısını geçmez (sığmazsa kendi içinde kayar) → en çok iki uzun bildirim
    ekrana sığar. Kopyala alt satırda, × sağ üstte. Kısa bildirimler (uzun bildirim yokken) eskisi gibi. */
-.hof-toasts:has(.hof-toast-long) {
+.hof-toasts:has(.hof-toast-long:not(.is-behind)) {
   width: min(720px, calc(100vw - 36px));
 }
-body:has(.hof-modal-backdrop.is-visible) .hof-toasts:has(.hof-toast-long) {
+body:has(.hof-modal-backdrop.is-visible) .hof-toasts:has(.hof-toast-long:not(.is-behind)) {
   top: auto;
   bottom: 14px;
+}
+/* Bildirimden SONRA açılan pencere (ör. "silinsin mi?" sorusu) açıkken uzun bildirim gizlenir — o pencerenin düğmelerini örtmez; pencere kapanınca geri gelir
+   (hof-core.js syncLongToasts). */
+.hof-toast-long.is-behind {
+  display: none;
 }
 .hof-toast-long {
   flex-wrap: wrap;

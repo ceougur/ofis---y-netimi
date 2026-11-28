@@ -179,6 +179,26 @@ try {
       const shown = [...m.woDel, ...m.recDel].filter(item => item.shown).length;
       ok(covered(m).length === 0, `${tag} (${label}): iletinin söylediği × düğmeleri örtülmüyor (görünen ${shown}, örtülen ${covered(m).length}: ${JSON.stringify(covered(m))})`);
     }
+    if (vw === 1366) {
+      // İletinin söylediği düğmeye basılır (Değersiz satırının ×'ı) → "silinsin mi?" sorusu: uzun bildirim SONRADAN açılan bu pencerenin düğmelerini örtmez
+      // (gizlenir); Vazgeç'ten sonra yeniden görünür. Hiçbir şey silinmez.
+      await page.click(`${CARD} [data-dbt-wo-del]`);
+      await page.waitForSelector(`${TOP} [data-answer="no"]`);
+      await page.waitForTimeout(300);
+      const ask = await page.evaluate(sel => {
+        const shown = node => getComputedStyle(node).display !== "none" && node.getBoundingClientRect().height > 0;
+        const toasts = [...document.querySelectorAll(".hof-toast")].filter(shown).map(node => node.getBoundingClientRect());
+        const buttons = [...document.querySelectorAll(`${sel} [data-answer]`)].map(node => node.getBoundingClientRect());
+        const under = buttons.filter(b => toasts.some(t => b.right > t.left && b.left < t.right && b.bottom > t.top && b.top < t.bottom)).length;
+        return { longShown: [...document.querySelectorAll(".hof-toast-long")].filter(shown).length, buttons: buttons.length, under };
+      }, TOP);
+      await shot(`ui251-a-soru-${vw}x${vh}`);
+      ok(ask.longShown === 0 && ask.buttons === 2 && ask.under === 0, `${tag}: Değersiz × → soru penceresi açıkken uzun bildirim gizli, soru düğmeleri örtülmüyor (${JSON.stringify(ask)})`);
+      await page.click(`${TOP} [data-answer="no"]`);
+      await page.waitForTimeout(400);
+      ok((await page.$$eval(".hof-toast-long", nodes => nodes.filter(node => getComputedStyle(node).display !== "none").length)) === 1, `${tag}: Vazgeç'ten sonra uzun bildirim yeniden görünür`);
+      ok((await page.$$(`${CARD} [data-dbt-wo-del]`)).length === 1, `${tag}: Değersiz satırı yerinde (Vazgeç)`);
+    }
     if (vw === 1440) {
       await shot(`ui251-a-ret-${vw}x${vh}-bolum-ortada`);
       await page.clock.runFor(60000);
@@ -223,6 +243,14 @@ try {
   const shortPage = await page.$eval(".hof-toast", node => { const r = node.getBoundingClientRect(); return { right: Math.round(r.right), bottom: Math.round(r.bottom), w: Math.round(r.width) }; });
   ok(shortPage.w === 380 && shortPage.right === 1440 - 18 && shortPage.bottom <= 900 - 18, `pencere yokken kısa bildirim sağ altta, 380 px (${JSON.stringify(shortPage)})`);
   await clearToasts();
+  // Hangi bildirim "uzun": hata ve (300 harften uzun ya da "Ne yapmalı:" içeren). 250 harflik hata ve 400 harflik uyarı / bilgi eskisi gibi kısa.
+  const kinds = await page.evaluate(() => {
+    const make = (text, type) => window.HOF.toast(text, { type }).classList.contains("hof-toast-long");
+    const result = { error350: make(`Uzun hata ${"x".repeat(340)}`, "error"), error250: make(`Orta hata ${"y".repeat(240)}`, "error"), errorHint: make("Kısa ret. Ne yapmalı: önce kaydı silin.", "error"), warn400: make(`Uzun uyarı ${"z".repeat(390)}`, "warn"), info400: make(`Uzun bilgi ${"q".repeat(390)}`, "info") };
+    document.querySelectorAll(".hof-toast").forEach(node => node.remove());
+    return result;
+  });
+  ok(kinds.error350 && !kinds.error250 && kinds.errorHint && !kinds.warn400 && !kinds.info400, `uzun bildirim yalnız hata + (300 harf üstü ya da 'Ne yapmalı:') (${JSON.stringify(kinds)})`);
 
   console.log("C) UI-2 — Raporlar → KDV Özeti: tutar kartları alçak ekranda kesilmiyor / gizlenmiyor");
   const openReport = async id => {
