@@ -104,6 +104,7 @@
     "test:senaryo-mi1-251": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-mi1-251.mjs",
     "test:senaryo-mi2-251": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-mi2-251.mjs",
     "test:senaryo-degersiz-siniri-m2-251": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-degersiz-siniri-m2-251.mjs",
+    "test:senaryo-degersiz-iptal-m2t2-251": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-degersiz-iptal-m2t2-251.mjs",
     "test:defter-turu-c4-eski-surum": "node --disable-warning=ExperimentalWarning test/defter-turu-c4-eski-surum.mjs",
     "test:senaryo-kayit-bag-31e": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-kayit-bag-31e.mjs",
     "test:senaryo-pil-karti-245": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-pil-karti-245.mjs",
