@@ -136,18 +136,26 @@ describe("2.5.1 M2 tur 2 — S-DKM2-2 = A: Değersiz'den sonra iptal de iade de 
   });
 });
 
-// SINIR ("Değersiz yüzünden"): cari Değersiz olmadan da eksi kalacaksa (müşterinin avansı iptal edilen faturayı aşıyor) ret KODLANMADI — kararın iki okuması (m2t2-rapor.md KULLANICIYA
-// SORULMALI S-M2T2-1); yanıta kadar iptal kabul edilir. Yanıt A gelirse bu test ret bekleyecek biçimde değişir. Elle: Değersiz sonrası 423,55 − avans 3.000 = −2.576,45; iptal −2.900 →
-// −5.476,45; Değersiz olmasaydı −2.476,45 (yine eksi).
-describe("2.5.1 M2 tur 2 — S-DKM2-2 sınırı: Değersiz olmadan da eksi kalacak iptal (soru açık) bugünkü gibi kabul", () => {
-  it("avanslı caride iptal 200, bakiye −5.476,45, Mutabakat tamam", async () => {
-    const { server, api } = await boot();
+// 2.5.1 M2 tur 3 — S-M2T2-1 = A (28.11 01:54 UTC — KULLANICI KARARIYLA ÖNERİ UYGULANDI, 20:26 yetkisi; AYNEN: "Değersiz Alacak yazıldıktan sonra fatura iptali ya da iadesi, cari Değersiz
+// OLMADAN da eksi kalacaksa? Örnek: 05.10'da avans 3.000 var, fatura 2.900 iptal ediliyor. A (ÖNERİ): reddedilsin — bakiye −2.576,45 kalır."). Tur 2'de bu test B'yi belgeliyordu (iptal 200,
+// bakiye −5.476,45); A ile RET. Elle: Değersiz sonrası 423,55 − avans 3.000 = −2.576,45; iptal olsaydı −2.900 → −5.476,45; Değersiz olmasaydı −2.476,45 (yine eksi) → iletinin neden cümlesi
+// "Değersiz Alacak satırı olmasaydı da cari 2.476,45 TL alacaklı olurdu"; bakiye sınırı (−5.476,45 + 3.000 < 0) → "o kayda Değersiz Alacak yazılamazdı".
+describe("2.5.1 M2 tur 3 — S-M2T2-1 = A: Değersiz olmadan da eksi kalacak iptal de reddedilir", () => {
+  it("avanslı caride iptal 409, bakiye −2.576,45 kalır, fatura yerinde, Mutabakat tamam", async () => {
+    const { server, api, store } = await boot();
     try {
       const b = await base(api, "M2T2 Avanslı İptal");
       await must("avans", api.post(`${ACC}/${b.a.id}/entries`, { kind: "in", amount: "3000", date: "2026-10-05", method: "cash", cashForce: true, similarOk: true, note: "Avans" }));
       assert.equal(await balanceOf(api, b.a.id), -2576.45);
-      await must("iptal", api.post(`${INV}/${b.inv.id}/cancel`, { reason: "Hatalı" }));
-      assert.equal(await balanceOf(api, b.a.id), -5476.45);
+      const r = await api.post(`${INV}/${b.inv.id}/cancel`, { reason: "Hatalı" });
+      assert.equal(r.status, 409, JSON.stringify(r.data).slice(0, 400));
+      assert.equal(r.code, "doubtful-writeoff-balance", r.error);
+      assert.match(r.error, /^Fatura iptal edilemez: bu caride 17\.09\.2026 tarihli 3\.000,00 TL Değersiz Alacak satırı var; iptalden sonra cari 5\.476,45 TL alacaklı \(eksi bakiye\) olurdu\. /, r.error);
+      assert.ok(r.error.includes("Değersiz Alacak satırı olan caride iptal cariyi alacaklıya (eksi bakiyeye) götüremez; Değersiz Alacak satırı olmasaydı da cari 2.476,45 TL alacaklı olurdu — bu fatura olmasaydı o kayda Değersiz Alacak yazılamazdı."), r.error);
+      assert.ok(r.error.includes(`Ne yapmalı: önce Değersiz Alacak satırını silin (${WHERE}), sonra faturayı iptal edin`), r.error);
+      assert.ok(r.error.endsWith("Hiçbir şey kaydedilmedi."), r.error);
+      assert.equal(store.get("SELECT status FROM invoices WHERE id = ?", b.inv.id).status, "issued");
+      assert.equal(await balanceOf(api, b.a.id), -2576.45);
       assert.equal((await integrityOf(api)).ok, true);
     } finally {
       server.close();

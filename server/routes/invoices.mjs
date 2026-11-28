@@ -1154,8 +1154,6 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
     const result = bank.post({ user, module: "invoice", op: "update", prev: existing, similarOk: force.similar === true, guard: k7.guard, write: () => {
       k7.capture();
       period?.assertOpen(existing.issueDate, "Bu fatura");
-      // 2.5.1 M2 tur 2 — S-DKM2-2 = A: satıştan iadenin Düzenle'si (iade büyüdü) cariyi Değersiz Alacak yüzünden eksiye düşürüyorsa 409; öncesi Düzenle'den önceki bakiye.
-      const writeOffGuard = existing.kind === "sale_return" ? writeOffBalanceGuard(store, existing.accountId, { action: "return" }) : null;
       // v2.0.24: eski iadenin küçülttüğü kartlar önce geri büyür; yeni iade kaydedilirken yeniden hesaplanır.
       // (İade Düzenle'sinde kartların geri büyümesi eski etkiler geri alındıktan SONRA — undoReturnCuts, aşağıda.)
       // 2.5.0 İzleyen küçük tur — S234-c (S234 = A + karar (4); tasarım §19.5): taksitsiz satış faturasının Düzenle'si onu içine almış Mevcut Borç kartlarını iade gibi küçültür — kart payları
@@ -1163,6 +1161,15 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
       // Yalnız AZALTMADA (tutar düştü ya da cari değişti — borç bu cariden çıktı): Düzenle'de eklenen peşin ödeme kartı küçültmez (ödemedir, iade değil); tutarı düşmeyen Düzenle kapsam okumaz (ders 47).
       const decrease = doc.account?.id && doc.account.id !== existing.accountId ? Number(existing.tryPayable) || 0 : roundMoney((Number(existing.tryPayable) || 0) - c2(doc.money.payable));
       const coverPre = (existing.kind === "sale" || existing.kind === "smm") && !existing.planId && decrease > 0.005 && plans()?.hasShrinkableCover?.(existing.accountId) ? coverState(existing.id) : null;
+      // 2.5.1 M2 tur 2 — S-DKM2-2 = A: satıştan iadenin Düzenle'si (iade büyüdü) cariyi Değersiz Alacak satırı varken eksiye götürüyorsa 409; öncesi Düzenle'den önceki bakiye.
+      // 2.5.1 M2 tur 3 — S-M2T2-2 = A ("iade gibi reddedilsin (S241 = A ile tutarlı)"): borç yönlü belgenin (satış faturası, SMM, alıştan iade) Düzenle'si TUTARI düşürüyorsa ya da cari değişiyorsa
+      // (borç bu cariden çıkar) aynı denetim — eski cari için. Tutarı düşmeyen Düzenle denetlenmez: aynı Düzenle'de eklenen peşin tahsilat bir tahsilattır (sıradan tahsilat da reddedilmez).
+      // Kural ve ileti lib/bank/doubtful.mjs writeOffBalanceGuard. Hiçbir şey yazılmadan ÖNCE çağrılır (öncesi Düzenle'den önceki bakiye).
+      const writeOffGuard = existing.kind === "sale_return"
+        ? writeOffBalanceGuard(store, existing.accountId, { action: "return" })
+        : INVOICE_KINDS[existing.kind]?.party === "debt" && decrease > 0.005
+          ? writeOffBalanceGuard(store, existing.accountId, { action: "edit" })
+          : null;
       // BULGU-2 (§19.6): faturanın KENDİ kartı açık, tahsilatsız ve yeni ödeme planı kayıtlıyla aynıysa kart kaldırılıp yeniden kurulmaz (writeIssued karar verir).
       const keepPlan = ownPlanToKeep(existing);
       reverseEffects(user, existing, touched, { force, edit: true, keepPlanId: keepPlan?.id || "" });

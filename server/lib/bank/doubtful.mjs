@@ -659,8 +659,12 @@ export function ledgerBalanceMinor(store, party) {
  * 2.5.1 M2 tur 2 — S-DKM2-2 = A (dar kontrol DK-M2 ORTA-2; 27.11 23:47 UTC KULLANICI KARARIYLA ÖNERİ UYGULANDI — 20:26 yetkisi, AYNEN: "bir süre ekran başında olmayacağım. sorularına baş mimar
  * önerilerini uygula"): "Değersiz Alacak yazıldıktan sonra faturanın iptali ya da iadesi cariyi eksiye düşürüyorsa … A (ÖNERİ): iptal de iade de reddedilsin — ileti 'önce Değersiz Alacak satırını
  * silin (en çok … yazılabilirdi)'". Fatura iptali (silme, e-Belge iptali ve Banka'dan Ters Kaydet iptali çağırır) ve satıştan iade (yeni ya da düzenlenen) bu denetimi işlemin İÇİNDE çağırır:
- * başta guard = writeOffBalanceGuard(store, cari), yazımlardan sonra guard?.check(). Ret koşulu: işlem bakiyeyi DÜŞÜRDÜ, sonuç eksi ve carinin Değersiz Alacak satırları olmasaydı eksi olmazdı
- * (bakiye + Σ Değersiz ≥ 0 — "Değersiz yüzünden"). Değersiz olmadan da eksi kalacak durum (avans / iade borcu aşıyor) KODLANMADI — bugünkü gibi kabul; m2t2-rapor.md KULLANICIYA SORULMALI.
+ * başta guard = writeOffBalanceGuard(store, cari), yazımlardan sonra guard?.check(). Ret koşulu: işlem bakiyeyi DÜŞÜRDÜ ve sonuç EKSİ.
+ * 2.5.1 M2 tur 3 — S-M2T2-1 = A (28.11 01:54 UTC — KULLANICI KARARIYLA ÖNERİ UYGULANDI, 20:26 yetkisi; AYNEN: "Değersiz Alacak yazıldıktan sonra fatura iptali ya da iadesi, cari Değersiz OLMADAN
+ * da eksi kalacaksa? … A (ÖNERİ): reddedilsin — bakiye −2.576,45 kalır."): tur 2'nin "Değersiz olmasaydı eksi olmazdı" (bakiye + Σ Değersiz ≥ 0) koşulu KALKTI — Değersiz satırı olan caride
+ * eksiye götüren iptal / iade her durumda ret; ileti nedeni iki duruma göre anlatır.
+ * 2.5.1 M2 tur 3 — S-M2T2-2 = A (aynı karar anı; AYNEN: "Değersiz Alacak'tan sonra fatura TUTARI Düzenle ile düşürülürse (2.900 → 100)? A (ÖNERİ): iade gibi reddedilsin (S241 = A ile
+ * tutarlı) — bakiye 423,55 kalır."): borç yönlü belgenin (satış faturası, SMM, alıştan iade) Düzenle'si tutarı düşürüyorsa (ya da cari değişiyorsa) editInvoice aynı denetimi action "edit" ile çağırır.
  * Değersiz satırı olmayan caride hiçbir şey okunmaz (null).
  */
 export function writeOffBalanceGuard(store, party, { action = "cancel" } = {}) {
@@ -675,17 +679,25 @@ export function writeOffBalanceGuard(store, party, { action = "cancel" } = {}) {
       if (!lines.length) return;
       const after = ledgerBalanceMinor(store, party);
       const total = lines.reduce((sum, line) => sum + line.minor, 0);
-      if (!(after < before && after < 0 && after + total >= 0)) return;
+      // S-M2T2-1 = A: "Değersiz olmasaydı eksi olmazdı" koşulu yok — eksiye götüren her iptal / iade / tutar düşürme ret.
+      if (!(after < before && after < 0)) return;
       const last = lines[lines.length - 1];
       const room = writeOffRoomAfter(store, party, last);
-      const cancel = action === "cancel";
-      const what = cancel ? "Fatura iptal edilemez" : "İade faturası kaydedilemez";
+      const words = {
+        cancel: { what: "Fatura iptal edilemez", act: "iptalden", by: "bu fatura olmasaydı", then: "faturayı iptal edin", op: "iptal" },
+        return: { what: "İade faturası kaydedilemez", act: "iadeden", by: "bu iadeyle", then: "iadeyi kaydedin", op: "iade" },
+        edit: { what: "Fatura düzenlenemez", act: "düzenlemeden", by: "bu düzenlemeyle", then: "faturayı düzenleyin", op: "düzenleme" },
+      }[action] || { what: "İşlem kaydedilemez", act: "işlemden", by: "bu işlemle", then: "işlemi yeniden deneyin", op: "işlem" };
       const many = lines.length > 1 ? ` (carinin ${lines.length} Değersiz Alacak satırı, toplam ${tl(total)})` : "";
-      const could = room > 0 ? `${cancel ? "bu fatura olmasaydı" : "bu iadeyle"} o kayda en çok ${tl(room)} Değersiz Alacak yazılabilirdi` : `${cancel ? "bu fatura olmasaydı" : "bu iadeyle"} o kayda Değersiz Alacak yazılamazdı`;
+      const could = room > 0 ? `${words.by} o kayda en çok ${tl(room)} Değersiz Alacak yazılabilirdi` : `${words.by} o kayda Değersiz Alacak yazılamazdı`;
+      // Neden: Değersiz yüzünden eksi (tur 2 cümlesi AYNEN) ya da Değersiz olmadan da eksi (S-M2T2-1 = A — Değersiz satırı silinse de cari alacaklı kalırdı).
+      const why = after + total >= 0
+        ? `Değersiz Alacak yazımı cariyi alacaklıya düşüremez — ${could}`
+        : `Değersiz Alacak satırı olan caride ${words.op} cariyi alacaklıya (eksi bakiyeye) götüremez; Değersiz Alacak satırı olmasaydı da cari ${tl(-(after + total))} alacaklı olurdu — ${could}`;
       throw new HttpError(
         409,
-        `${what}: bu caride ${dayText(last.date)} tarihli ${tl(last.minor)} Değersiz Alacak satırı var${many}; ${cancel ? "iptalden" : "iadeden"} sonra cari ${tl(-after)} alacaklı (eksi bakiye) olurdu. ` +
-          `Değersiz Alacak yazımı cariyi alacaklıya düşüremez — ${could}. Ne yapmalı: önce Değersiz Alacak satırını silin (cari kartı → Şüpheli Alacak → kaydın Değersiz satırındaki × düğmesi), sonra ${cancel ? "faturayı iptal edin" : "iadeyi kaydedin"}; ` +
+        `${words.what}: bu caride ${dayText(last.date)} tarihli ${tl(last.minor)} Değersiz Alacak satırı var${many}; ${words.act} sonra cari ${tl(-after)} alacaklı (eksi bakiye) olurdu. ` +
+          `${why}. Ne yapmalı: önce Değersiz Alacak satırını silin (cari kartı → Şüpheli Alacak → kaydın Değersiz satırındaki × düğmesi), sonra ${words.then}; ` +
           "gerekirse Değersiz Alacak'ı yeniden yazın (form yazılabilecek tutarı gösterir). Hiçbir şey kaydedilmedi.",
         { code: "doubtful-writeoff-balance", balanceMinor: after, writeOffMinor: total, limitMinor: room, entryId: last.id, date: last.date },
       );
