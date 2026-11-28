@@ -299,7 +299,8 @@ const WRITE_OFF_LAST_AT = "9999-12-31T23:59:59.999Z";
 //   (2) writeOffDays — aday günler sırayla, F(S, D) günle ARTMADIĞINDAN sonucu değiştiremeyecek günler hesaplanmaz.
 //   (3) linkedShares.withExtra — varsayımsal satırın gününden önceki kesitler varsayımsız bellekten.
 // YALNIZ TEST: WRITE_OFF_TEST.exact = true üçünü kapatır (tur 1'in tam hesabı — eşdeğerlik hakemi; test/supheli-degersiz-hiz-m2t2-251.test.mjs).
-export const WRITE_OFF_TEST = { exact: false };
+// count (YALNIZ TEST): { quotes, trials } — liste / uç başına hesap sayısı (hız gerilemesini süre yerine iş sayısıyla yakalayan dişli test; null iken sayılmaz).
+export const WRITE_OFF_TEST = { exact: false, count: null };
 /** Carinin Değersiz sınırı bağlamı: okuma (SQL) BİR kez; tam ayırma; bağlı satır kümesi (`linked` dizi döndürdü); dışarı taşan Değersiz tutarları (taban). */
 export function writeOffContextOf(store, party) {
   const rows = doubtfulRows(store, { parties: [party] });
@@ -351,6 +352,7 @@ function writeOffOpenUpper(ctx, record, date, minor, at) {
 const targetAfter = (ctx, date, at) => ctx.credits.some(credit => credit.target && (credit.date > date || (credit.date === date && String(credit.at || "￿") >= String(at))));
 /** Varsayımsal Değersiz (kayıt, gün, tutar, yazım anı) eklenmiş ayırma: satır sığıyor mu, öbür Değersiz satırları taşıyor mu, açık şüphelinin yeni toplamı. */
 function writeOffTrial(ctx, record, date, minor, at) {
+  if (WRITE_OFF_TEST.count) WRITE_OFF_TEST.count.trials += 1;
   const key = `account:${WRITE_OFF_HYP}`;
   // Kuyruk satırının tutarı denemeye göre değişir → türetilmiş girdi tutar başına (linkedShares içinde kimlik · gün · tutar · anla anahtarlı; kurulum paylaşılır).
   const linked = ctx.rows.linked?.withExtra ? ctx.rows.linked.withExtra({ party: ctx.party, entry: { id: WRITE_OFF_HYP, kind: "credit", amount: fromMinor(minor), date, source: "doubtful", sourceId: record.id, createdAt: at } }) : null;
@@ -382,6 +384,7 @@ function largestPassing(hi, test) {
  * satırın kendi anı; yoksa en son).
  */
 export function writeOffLimitOf(ctx, record, date, { balanceMinor, at = WRITE_OFF_LAST_AT } = {}) {
+  if (WRITE_OFF_TEST.count) WRITE_OFF_TEST.count.quotes += 1;
   const state = ctx.full.state.get(record.id);
   if (record.status !== "open" || !state) return { date, limitMinor: 0, offerMinor: 0, why: "closed", remainingMinor: 0, roomMinor: 0 };
   const room = Math.max(0, writeOffRoomBefore(ctx, record.id, date));

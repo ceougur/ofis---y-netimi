@@ -12,6 +12,7 @@ import * as doubtfulLib from "../server/lib/bank/doubtful.mjs";
 
 const TODAY = "2026-10-15";
 const ACC = "/api/workspace/accounts";
+const INV_URL = "/api/workspace/invoices";
 const SEEDS = (process.env.M2T2_TOHUM || "1,2,3,4").split(",").map(Number);
 const CARI = Number(process.env.M2T2_CARI || 8);
 const STEPS = Number(process.env.M2T2_ADIM || 16);
@@ -102,6 +103,49 @@ describe("2.5.1 M2 tur 2 — S155 dalı ve aradaki bağlı tahsilat günü: kıs
       assert.equal((await must("kart", api.get(`${ACC}/${acc.id}`))).totals.balance, 500);
     } finally {
       exact(false);
+      server.close();
+    }
+  });
+});
+
+// HIZ DİŞİ (süre yerine İŞ SAYISI — yükten bağımsız, CI'de kararlı): dar kontrol DK-M2 YÜKSEK-1'in verisi (p6) küçültülmüş — Açılış borcu 6.000 (02.01) · 03.01 Şüpheliye Al 5.000 ·
+// 30 GÜNDE faturaya bağlı tahsilat (her gün fatura 1.000 + bağlı 999). Kayıt bağlı tahsilatlardan önce → aday gün 32 (ilk gün, 30 bağlı gün, bugün). Tur 1 her aday günü hesaplıyordu
+// (32 sınır hesabı + denemeler); kısa yol sonucu değiştiremeyecek günleri hesaplamaz: liste 2 sınır hesabı (ilk gün + bugün), deneme YOK (sonra Değersiz satırı yok; S155 üst sınırla).
+// Sonra bugünün tarihiyle 100 TL Değersiz yazılınca: ilk günün sınırı bir deneme ister (sonra gelen Değersiz satırı) — liste yine 2 sınır hesabı, en çok birkaç deneme.
+describe("2.5.1 M2 tur 2 — hız dişi: liste ve form ucunun iş sayısı bağlı tahsilat GÜNÜ sayısıyla büyümez", () => {
+  it("30 bağlı tahsilat günü: liste 2 sınır hesabı + 0 deneme; Değersiz satırından sonra 2 sınır hesabı + ≤ 2 deneme; form ucu ≤ 3 sınır hesabı", { timeout: 600_000 }, async () => {
+    const server = await startTestServer({ now: `${TODAY}T12:00:00+03:00`, env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" } });
+    const api = apiOf(await loginAdmin(server));
+    const count = () => {
+      doubtfulLib.WRITE_OFF_TEST.count = { quotes: 0, trials: 0 };
+      return doubtfulLib.WRITE_OFF_TEST.count;
+    };
+    try {
+      assert.ok(doubtfulLib.WRITE_OFF_TEST, "WRITE_OFF_TEST yok (tur 2 öncesi kod)");
+      await api.post("/api/workspace/bank/setup/dismiss", {});
+      const acc = await must("cari", api.post(ACC, { name: "M2T2 Hız Dişi", type: "customer", registeredOn: "2026-01-01", phone: "0500 252 99 02" }));
+      await must("borç", api.post(`${ACC}/${acc.id}/entries`, { kind: "debt", amount: "6000", date: "2026-01-02", note: "Açılış borcu" }));
+      const s = (await must("şüpheli", api.post(`${ACC}/${acc.id}/doubtful`, { amount: "5000", date: "2026-01-03", reason: "lawsuit" }))).record.id;
+      for (let i = 0; i < 30; i += 1) {
+        const day = new Date(Date.parse("2026-01-05T00:00:00Z") + i * 9 * 86_400_000).toISOString().slice(0, 10);
+        const inv = await must("fatura", api.post(INV_URL, { scenario: "service_sale", accountId: acc.id, issueDate: day, lines: [{ name: "Hizmet", qty: 1, unitPrice: "1000", vatRate: 0 }], payment: { rest: "open" } }));
+        await must("bağlı", api.post(`${ACC}/${acc.id}/entries`, { kind: "in", amount: "999", date: day, method: "cash", cashForce: true, similarOk: true, note: "Bağlı", invoiceId: inv.id }));
+      }
+      let c = count();
+      const list = await must("liste", api.get(`${ACC}/${acc.id}/doubtful`));
+      assert.deepEqual([c.quotes, c.trials], [2, 0], `liste iş sayısı ${JSON.stringify(c)}`);
+      assert.deepEqual([list.records[0].writeOff.anyMinor, list.records[0].writeOff.best.date, list.records[0].writeOff.best.offerMinor], [500000, "2026-01-03", 500000]);
+      c = count();
+      await must("uç", api.get(`${ACC}/${acc.id}/doubtful/${s}/write-off?date=2026-03-01`));
+      assert.ok(c.quotes <= 3 && c.trials === 0, `form ucu iş sayısı ${JSON.stringify(c)}`);
+      doubtfulLib.WRITE_OFF_TEST.count = null;
+      await must("Değersiz 100", api.post(`${ACC}/${acc.id}/doubtful/${s}/write-off`, { amount: "100", date: TODAY }));
+      c = count();
+      const after = await must("liste", api.get(`${ACC}/${acc.id}/doubtful`));
+      assert.ok(c.quotes === 2 && c.trials <= 2, `Değersiz satırından sonra liste iş sayısı ${JSON.stringify(c)}`);
+      assert.equal(after.records[0].writeOff.best.offerMinor, 490000);
+    } finally {
+      doubtfulLib.WRITE_OFF_TEST.count = null;
       server.close();
     }
   });
