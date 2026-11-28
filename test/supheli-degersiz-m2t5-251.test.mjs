@@ -445,6 +445,41 @@ describe("2.5.1 M2 tur 5 — ORTA-B: tek geçişte başka carinin silinen fatura
   });
 });
 
+// Daraltmanın sınırı taramayı GEREKTİREN satırların EN ESKİSİ (mutant M16c — en yenisi alınırsa iki satır arasındaki silme görülmez). Tur 4'ün "iki Değersiz satırı arasında silinen fatura"
+// vakası + ikinci satırı da tarama gerektiren hâle getiren bağsız 10 (15.10; ikinci Değersiz'den ÖNCE yazıldı). Elle: Fatura 2.900 + Borç 6.400; 17.09 bağlı 2.876,45; S1 3.000 @17.09;
+// Değersiz 1.000 @17.09 (W1) → 5.423,55; S2 1.000 @01.10; fatura SİLİNİR → 2.523,55 (bağlı 2.876,45 artık bağsız — W1'in dünyasından "sonradan değişmiş" diye çıkar); bağsız 10 @15.10 →
+// 2.513,55; Değersiz 100 @15.10 (S2, W2) → 2.413,55. İhlal YOK (W1'in odası 3.000 ≥ 1.000). Daraltma W2'nin anından yapılsaydı silme görülmez, 2.876,45 W1'in dünyasında kalır → oda 123,55 <
+// 1.000 → YANLIŞ kırmızı.
+describe("2.5.1 M2 tur 5 — ORTA-B: daraltma taramayı gerektiren EN ESKİ satırdan", () => {
+  it("iki satır da taramayı gerektiriyor, fatura aralarında silindi → ihlal yok, tam taramayla aynı, Mutabakat tamam", async () => {
+    const { server, api, store } = await boot();
+    try {
+      const a = await must("cari", api.post(ACC, { name: "M2T5 Ara Silme", type: "customer", registeredOn: "2026-09-01", phone: nextPhone("477") }));
+      const inv = await must("fatura", api.post(INV, saleBody(a.id, 2900)));
+      await must("borç", api.post(`${ACC}/${a.id}/entries`, { kind: "debt", amount: "6400", date: "2026-09-12", note: "Borç" }));
+      await must("bağlı", api.post(`${ACC}/${a.id}/entries`, pay("2876,45", "2026-09-17", inv.id)));
+      const s = (await must("şüpheli", api.post(`${ACC}/${a.id}/doubtful`, { amount: "3000", date: "2026-09-17", reason: "lawsuit" }))).record.id;
+      await must("Değersiz 1.000", api.post(`${ACC}/${a.id}/doubtful/${s}/write-off`, { amount: "1000", date: "2026-09-17" }));
+      const s2 = (await must("S2", api.post(`${ACC}/${a.id}/doubtful`, { amount: "1000", date: "2026-10-01", reason: "lawsuit" }))).record.id;
+      await must("faturayı sil", api.del(`${INV}/${inv.id}`));
+      await must("bağsız 10 @15.10", api.post(`${ACC}/${a.id}/entries`, pay("10", TODAY)));
+      await must("Değersiz 100", api.post(`${ACC}/${a.id}/doubtful/${s2}/write-off`, { amount: "100", date: TODAY }));
+      assert.equal(await balanceOf(api, a.id), 2413.55);
+      const fast = D.writeOffInvariantProblems(store, { parties: [a.id] });
+      assert.deepEqual(fast, []);
+      D.WRITE_OFF_TEST.fullTrash = true;
+      try {
+        assert.deepEqual(D.writeOffInvariantProblems(store, { parties: [a.id] }), fast);
+      } finally {
+        D.WRITE_OFF_TEST.fullTrash = false;
+      }
+      assert.equal((await integrityOf(api)).ok, true);
+    } finally {
+      server.close();
+    }
+  });
+});
+
 // Rastgele (dar kontrolün d-rastgele düzeni; düzeltme ajanından bağımsız üretilmiş vakalar ana oturumda): her adımdan sonra değişmez (i)'nin sayımı tam Silinenler taramasıyla
 // (WRITE_OFF_TEST.fullTrash) BİREBİR; denetimli bir işlem (Ödeme sil / düşür, Alacak artır, Borç sil / düşür, kart Otomatik Dağıt) KABUL edildiyse Değersiz'li cari eksiye düşmedi; Mutabakat
 // sonunda tamam. Silinenler'de başka carilerin faturaları (Değersiz'den önce ve SONRA silinmiş), taslak silme, Silinenler'den geri yükleme, aynı gün Değersiz'den önce bağsız tahsilat.
