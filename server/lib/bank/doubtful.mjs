@@ -196,6 +196,14 @@ export function linkedShares(store, parties) {
     if (!extra || extra.party !== party) return plain;
     const key = `${extra.entry.id}|${extra.entry.date}|${extra.entry.amount}|${extra.entry.createdAt}`;
     if (derived.has(key)) return derived.get(key);
+    // Tur 2 hız: türetilmiş kurulum da (kesit belleğiyle) işlem DIŞINDA aynı veri durumunda çağrılar arasında paylaşılır (linkedMemoOf) — cari kartının listesi ile hemen ardından açılan
+    // Değersiz Alacak Yaz formunun ucu aynı denemeleri yeniden kurmaz. Kesit SAF işlevdir (anahtar girdiyi taşır); işlem içinde bellek yok (bugünkü gibi).
+    const memo = WRITE_OFF_TEST.exact ? null : linkedMemoOf(store);
+    const shared = memo?.derived?.get(`${party}|${key}`);
+    if (shared) {
+      derived.set(key, shared);
+      return shared;
+    }
     const line = accountLedger([extra.entry]).lines[0];
     const base = { ...plain.base, lines: [...(plain.base.lines || []), line] };
     const sameDay = new Map();
@@ -207,11 +215,20 @@ export function linkedShares(store, parties) {
     }
     const out = { base, dayOf, sameDay, cuts: new Map() };
     derived.set(key, out);
+    memo?.derived?.set(`${party}|${key}`, out);
     return out;
   };
   const make = extra => (credit, view) => {
     const ref = String(credit.ref ?? credit.key ?? "");
     if (!ref.startsWith("account:") || !candidates.has(credit.party)) return null;
+    // 2.5.1 M2 tur 2 (hız; dar kontrol DK-M2 YÜKSEK-1): varsayımsal satırın GÜNÜNDEN ÖNCEKİ günlerin kesiti varsayımsız kesitin AYNISIDIR — kesit yalnız kesit gününden önceki ve kesit
+    // günündeki satırları alır (doubtfulBefore `kept`), varsayımsal satır sonraki bir gündedir; aynı gün sırası (rank) yalnız kesit gününün satırları arasında okunur. Bu günler varsayımsız
+    // kurulumun kesit belleğinden okunur (denemenin bütün satırları için kuyruk yeniden kurulmaz). Eşdeğerlik test/supheli-degersiz-hiz-m2t2-251.test.mjs (WRITE_OFF_TEST.exact).
+    if (extra && extra.party === credit.party && !WRITE_OFF_TEST.exact) {
+      const plain = baseOf(credit.party);
+      const day = plain.dayOf.get(ref.slice("account:".length));
+      if (day && day < extra.entry.date) return linked(credit, view);
+    }
     const entry = extraOf(credit.party, extra);
     const { base } = entry;
     const lineId = ref.slice("account:".length);
@@ -250,7 +267,7 @@ function linkedMemoOf(store) {
   const stamp = `${counters.total}|${counters.version}`;
   let memo = LINKED_MEMO.get(store);
   if (!memo || memo.stamp !== stamp) {
-    memo = { stamp, entries: new Map(), candidates: new Map() };
+    memo = { stamp, entries: new Map(), candidates: new Map(), derived: new Map() };
     LINKED_MEMO.set(store, memo);
   }
   return memo;
@@ -276,6 +293,13 @@ export function doubtfulState(store, { parties = null } = {}) {
 // Liste ('yazılabilir' alanı), Değersiz Yaz, Silinenler'den geri yükleme ve formun uç noktası BU işlevleri okur. Ayırıcı (lib/doubtful-gl.mjs allocateDoubtful) ve kuyruk kesiti DEĞİŞMEDİ.
 const WRITE_OFF_HYP = "m2-varsayimsal-degersiz";
 const WRITE_OFF_LAST_AT = "9999-12-31T23:59:59.999Z";
+// 2.5.1 M2 tur 2 (hız; dar kontrol DK-M2 YÜKSEK-1 — liste ve form ucu bağlı tahsilat GÜNÜ sayısıyla doğrusaldan hızlı büyüyordu): sınırın SONUCU değişmez, yalnız hesap kısalır. Üç kısaltma
+// (her birinin gerekçesi ilgili işlevin notunda; tasarım ve kanıt docs/devir/2.5.1-DEVAM/m2t2-rapor.md §1):
+//   (1) writeOffLimitOf — yeni satırdan SONRA sıralanan Değersiz satırı yoksa deneme gerekmez (sınır = üst uç); S155 denemesi önce bağlı satırsız üst sınırla.
+//   (2) writeOffDays — aday günler sırayla, F(S, D) günle ARTMADIĞINDAN sonucu değiştiremeyecek günler hesaplanmaz.
+//   (3) linkedShares.withExtra — varsayımsal satırın gününden önceki kesitler varsayımsız bellekten.
+// YALNIZ TEST: WRITE_OFF_TEST.exact = true üçünü kapatır (tur 1'in tam hesabı — eşdeğerlik hakemi; test/supheli-degersiz-hiz-m2t2-251.test.mjs).
+export const WRITE_OFF_TEST = { exact: false };
 /** Carinin Değersiz sınırı bağlamı: okuma (SQL) BİR kez; tam ayırma; bağlı satır kümesi (`linked` dizi döndürdü); dışarı taşan Değersiz tutarları (taban). */
 export function writeOffContextOf(store, party) {
   const rows = doubtfulRows(store, { parties: [party] });
@@ -291,15 +315,40 @@ export function writeOffContextOf(store, party) {
   const full = allocateDoubtful({ records: rows.records, provisions: rows.provisions, credits, linked });
   const outside = new Map();
   for (const [key, hit] of full.allocations) if ((hit.outsideMinor || 0) > 0) outside.set(key, hit.outsideMinor);
-  return { party, rows, credits, bound, full, outside };
+  // rooms: F(S, D) belleği (gün başına bir ayırma; aynı bağlamın liste / ileti / form okumaları paylaşır — tur 2 hız).
+  return { party, rows, credits, bound, full, outside, rooms: new Map() };
 }
+/** D gününe ve sonrasına ait bağlı satırlar çıkarılmış alacak satırları (F(S, D)'nin ve S155 üst sınırının dünyası). */
+const creditsBefore = (ctx, date) => ctx.credits.filter(credit => !(ctx.bound.has(credit.key) && credit.date >= date));
 /** F(S, D): D gününe ve sonrasına ait bağlı satırlar yokken kaydın sondaki kalanı (S264 + S-M2-1 = B + S270 "sonradan gelen bağsız" ve "sonraki Değersiz satırları"). */
 function writeOffRoomBefore(ctx, recordId, date) {
-  const credits = ctx.credits.filter(credit => !(ctx.bound.has(credit.key) && credit.date >= date));
+  const credits = creditsBefore(ctx, date);
   if (credits.length === ctx.credits.length) return ctx.full.state.get(recordId)?.remaining ?? 0;
-  const { state } = allocateDoubtful({ records: ctx.rows.records, provisions: ctx.rows.provisions, credits, linked: ctx.rows.linked || null });
+  // Gün başına ayırma bir kez (bütün kayıtların kalanı aynı ayırmadan — kayıt kimliği anahtarda değil).
+  const memo = ctx.rooms && !WRITE_OFF_TEST.exact ? ctx.rooms : null;
+  let state = memo?.get(date);
+  if (!state) {
+    ({ state } = allocateDoubtful({ records: ctx.rows.records, provisions: ctx.rows.provisions, credits, linked: ctx.rows.linked || null }));
+    memo?.set(date, state);
+  }
   return state.get(recordId)?.remaining ?? 0;
 }
+/**
+ * S155 denemesinin ÜST SINIRI (tur 2 hız): varsayımsal satırla, D gününe ve sonrasına ait bağlı satırlar ÇIKARILMIŞ dünyada açık şüpheli toplamı (A dünyası). Gerçek deneme (B) A'ya göre
+ * yalnız o bağlı satırları FAZLADAN taşır; ayırıcının her olayı kalanı yalnız küçültür ya da sıfırlar ve aynı başlangıçta küçük kalan küçük kalır (alacak satırı en eski açık kayıttan sırayla,
+ * bağlı satır payı kadar, Değersiz kalan kadar, çıkarma sıfırlar, karşılık kalana dokunmaz) — D'den önce iki dünya aynıdır (D'den önceki kesitler varsayımlı satırı görmez). Bu yüzden her
+ * kaydın B kalanı ≤ A kalanı: açık_B ≤ açık_A. A'da "kayıttan sonra borç ≥ açık şüpheli" sağlanıyorsa B'de de sağlanır (deneme gerekmez); D'den sonra bağlı satır yoksa A = B (kesin).
+ */
+function writeOffOpenUpper(ctx, record, date, minor, at) {
+  const key = `account:${WRITE_OFF_HYP}`;
+  const credits = [...creditsBefore(ctx, date), { key, ref: key, party: ctx.party, date, minor, target: record.id, openedOn: "", at, seq: Infinity }];
+  const { state } = allocateDoubtful({ records: ctx.rows.records, provisions: ctx.rows.provisions, credits, linked: ctx.rows.linked || null });
+  let openMinor = 0;
+  for (const s of state.values()) openMinor += Math.max(0, s.remaining);
+  return openMinor;
+}
+/** Varsayımsal satırdan (gün D, yazım anı at) SONRA sıralanan Değersiz satırı var mı (ayırıcının sırası: gün → sınıf → yazım anı; eşit anda koruyucu: VAR sayılır). */
+const targetAfter = (ctx, date, at) => ctx.credits.some(credit => credit.target && (credit.date > date || (credit.date === date && String(credit.at || "￿") >= String(at))));
 /** Varsayımsal Değersiz (kayıt, gün, tutar, yazım anı) eklenmiş ayırma: satır sığıyor mu, öbür Değersiz satırları taşıyor mu, açık şüphelinin yeni toplamı. */
 function writeOffTrial(ctx, record, date, minor, at) {
   const key = `account:${WRITE_OFF_HYP}`;
@@ -343,10 +392,20 @@ export function writeOffLimitOf(ctx, record, date, { balanceMinor, at = WRITE_OF
     if (!trials.has(minor)) trials.set(minor, writeOffTrial(ctx, record, date, minor, at));
     return trials.get(minor);
   };
-  const limitMinor = largestPassing(cap, minor => trial(minor).fits);
+  // Tur 2 hız (1a): yeni satırdan SONRA sıralanan Değersiz satırı yoksa her X ≤ üst uç sığar — üst uç ≤ F(S, D) ≤ kaydın D anındaki kalanı (D'den önceki olaylar üç dünyada aynı; sonraki
+  // olaylar kalanı yalnız küçültür), yeni satır o anda kalan kadar düşer (taşmaz); taşabilecek başka Değersiz satırı da yok ("grows" yalnız SONRA gelen hedefli satırda oluşur). Deneme gereksiz.
+  const quick = !WRITE_OFF_TEST.exact;
+  const fits = quick && !targetAfter(ctx, date, at) ? () => true : minor => trial(minor).fits;
+  const limitMinor = largestPassing(cap, fits);
+  // Tur 2 hız (1b): S155 — önce üst sınır (writeOffOpenUpper); sağlanıyorsa gerçek deneme de sağlar; D'den sonra bağlı satır yoksa üst sınır gerçeğin kendisidir.
+  const boundLater = ctx.credits.some(credit => ctx.bound.has(credit.key) && credit.date >= date);
+  const passes = (minor, openMinor) => openMinor <= 0 || balance - minor - openMinor >= 0;
   const offerMinor = largestPassing(limitMinor, minor => {
-    const { openMinor } = trial(minor);
-    return openMinor <= 0 || balance - minor - openMinor >= 0;
+    if (quick) {
+      const upper = writeOffOpenUpper(ctx, record, date, minor, at);
+      if (passes(minor, upper) || !boundLater) return passes(minor, upper);
+    }
+    return passes(minor, trial(minor).openMinor);
   });
   const why = limitMinor < cap ? "later" : cap < room ? "balance" : room > state.remaining ? "sameDay" : "remaining";
   return { date, limitMinor, offerMinor, why, s155: offerMinor < limitMinor, remainingMinor: state.remaining, roomMinor: room };
@@ -362,10 +421,35 @@ export function writeOffDays(ctx, record, { today, lockedUntil = "", balanceMino
   const days = new Set([first, today]);
   for (const credit of ctx.credits) if (ctx.bound.has(credit.key) && credit.date > first && credit.date < today) days.add(credit.date);
   const sorted = [...days].sort();
-  const quotes = sorted.map(day => writeOffLimitOf(ctx, record, day, { balanceMinor }));
-  let best = quotes[0];
-  for (const quote of quotes) if (quote.offerMinor > best.offerMinor || (quote.offerMinor === best.offerMinor && quote.limitMinor > best.limitMinor)) best = quote;
-  return { today: quotes[quotes.length - 1].date === today ? quotes[quotes.length - 1] : null, first: quotes[0], best, anyMinor: Math.max(...quotes.map(quote => quote.limitMinor)) };
+  // Seçim kuralı (tur 1 AYNEN): gün sırasıyla; öneri büyük olan, öneri eşitse sınırı büyük olan; tam eşitlikte en erken gün. anyMinor = en büyük sınır.
+  const choose = quotes => {
+    let best = quotes[0];
+    for (const quote of quotes) if (quote.offerMinor > best.offerMinor || (quote.offerMinor === best.offerMinor && quote.limitMinor > best.limitMinor)) best = quote;
+    return best;
+  };
+  const out = quotes => ({ today: quotes[quotes.length - 1].date === today ? quotes[quotes.length - 1] : null, first: quotes[0], best: choose(quotes), anyMinor: Math.max(...quotes.map(quote => quote.limitMinor)) });
+  const quoteOf = day => writeOffLimitOf(ctx, record, day, { balanceMinor });
+  if (WRITE_OFF_TEST.exact || sorted.length <= 2) return out(sorted.map(quoteOf));
+  // Tur 2 hız (2): ara günler YALNIZ sonucu değiştirebilirse hesaplanır. Gün d'nin sınırı ≤ üst ucu cap(d) = min(F(S, d), bakiye) ve öneri ≤ sınır. F(S, d) gün ilerledikçe ARTMAZ: d₂ > d₁
+  // dünyası d₁ dünyasına yalnız [d₁, d₂) günlerinin bağlı satırlarını EKLER; d₁'den önce iki dünya aynı, eklenen satırlar kalanı yalnız küçültür ve ayırıcının her olayı (sırayla alacak,
+  // bağlı pay, Değersiz, çıkarma, karşılık) küçük kalanı küçük bırakır → cap(d) sondan öncekilerin cap'inden büyük olamaz. Gün d şu durumda seçimi ve anyMinor'u DEĞİŞTİREMEZ: cap(d) < en
+  // iyinin önerisi; ya da cap(d) = en iyinin önerisi ve (en iyinin sınırı > cap(d) ya da en iyi d'den önceki gün). Bu koşul bir günde sağlanırsa sonraki her günde de sağlanır (cap artmaz,
+  // en iyi yalnız iyileşir, tarih ilerler) → tarama durur. Sonuç tam taramayla BİREBİR (eşdeğerlik testi WRITE_OFF_TEST.exact ile).
+  const quotes = new Map([[sorted[0], quoteOf(sorted[0])], [sorted[sorted.length - 1], quoteOf(sorted[sorted.length - 1])]]);
+  const known = () => sorted.filter(day => quotes.has(day)).map(day => quotes.get(day));
+  const capOf = quote => Math.max(0, Math.min(quote.roomMinor ?? 0, Number(balanceMinor) || 0));
+  const idle = (cap, day) => {
+    const best = choose(known());
+    return cap < best.offerMinor || (cap === best.offerMinor && (best.limitMinor > cap || best.date < day));
+  };
+  let upper = capOf(quotes.get(sorted[0]));
+  for (const day of sorted.slice(1, -1)) {
+    if (idle(upper, day)) break;
+    upper = Math.max(0, Math.min(Math.max(0, writeOffRoomBefore(ctx, record.id, day)), Number(balanceMinor) || 0));
+    if (idle(upper, day)) break;
+    quotes.set(day, quoteOf(day));
+  }
+  return out(known());
 }
 
 /** Ana Defter'in beklenenleri (routes/ledger.mjs expected): 128 = Σ kalan; 129 = −Σ karşılık; kontrol hesabı (120/320/336) başına düşülecek kalan. */
@@ -512,6 +596,20 @@ export function writeOffInvariantProblems(store, { parties = null } = {}) {
     }
     if (has("plans") && has("plan_entries")) for (const row of store.all("SELECT pe.id, COALESCE(pe.updated_at, '') AS u FROM plans p JOIN plan_entries pe ON pe.plan_id = p.id WHERE p.account_id = ? AND pe.updated_at IS NOT NULL", party)) if (row.u) changed.set(`plan-entry:${row.id}`, row.u);
     if (has("invoices")) for (const row of store.all("SELECT id, COALESCE(updated_at, '') AS u FROM invoices WHERE account_id = ? AND updated_at IS NOT NULL", party)) if (row.u) changed.set(`invoice:${row.id}`, row.u);
+    // 2.5.1 M2 tur 2 (S-DKM2-2 = A; dar kontrol DK-M2 ORTA-2 — v2.5.0 verisinde YANLIŞ kırmızı): BAĞLI OLDUĞU FATURA SONRADAN İPTAL EDİLEN (ya da silinen — silme iptal eder) tahsilat da
+    // "sonradan değişmiş" sayılır. İptal bağı (invoice_id / evrak olayının bağı) satırın kendisine iz bırakmadan siler; hangi bağsız satırın o faturaya bağlı olduğu veride ayırt edilemez → carinin
+    // satış faturasının son iptal / silinme anından ÖNCE yazılmış bugün bağsız her tahsilat o anda değişmiş sayılır. Gevşeme yalnız satır ÇIKARIR (W'nin dünyası küçülür, sınır büyür) —
+    // yeni kırmızı üretmez; bedeli m2t2-rapor.md BİLİNEN SINIR (iptal edilen faturayla ilgisiz eski bağsız tahsilat da W'nin dünyasından çıkar).
+    const lastUnbond = [
+      has("invoices") ? store.get("SELECT MAX(cancelled_at) AS at FROM invoices WHERE account_id = ? AND status = 'cancelled' AND kind IN ('sale', 'smm') AND COALESCE(cancelled_at, '') <> ''", party)?.at || "" : "",
+      has("trash") ? store.get("SELECT MAX(deleted_at) AS at FROM trash WHERE kind = 'invoice' AND instr(payload_json, ?) > 0", party)?.at || "" : "",
+    ].sort().pop();
+    if (lastUnbond) {
+      for (const row of store.all("SELECT id FROM account_entries WHERE account_id = ? AND kind = 'in' AND invoice_id = '' AND source <> 'invoice' AND COALESCE(created_at, '') <= ?", party, lastUnbond)) {
+        const key = `account:${row.id}`;
+        if (!((changed.get(key) || "") >= lastUnbond)) changed.set(key, lastUnbond);
+      }
+    }
     const writtenAfter = (credit, line) => (credit.at > line.at) || (credit.at === line.at && String(credit.key).startsWith("account:") && Number(credit.seq) > Number(line.seq));
     // (i)
     for (const line of own) {
@@ -528,12 +626,13 @@ export function writeOffInvariantProblems(store, { parties = null } = {}) {
       // Şüpheliden Çıkar Değersiz'den SONRA gelir (çıkarılmış kayda Değersiz yazılmaz): W'nin yazıldığı andaki dünyada kayıtlar açıktır — çıkarma kalanı sıfırlamaz.
       const { state } = allocateDoubtful({ records: openWorld, provisions: ctx.rows.provisions, credits, linked: ctx.rows.linked || null });
       const room = Math.max(0, state.get(record.id)?.remaining ?? 0);
-      if (line.minor > room) out.push({ key: `${line.id}:writeoff-limit`, sample: `Değersiz Alacak satırı ${dayText(line.date)} ${tl(line.minor)}: yazıldığı andaki sınırı (${tl(room)}) aşıyor — kaydın kalanından önce yararlanan bağsız tahsilat düşülmeden yazılmış (S270)` });
+      // figure: kapı reddinin anlaşılır iletisi için (lib/integrity.mjs doubtfulText — 2.5.1 M2 tur 2).
+      if (line.minor > room) out.push({ key: `${line.id}:writeoff-limit`, sample: `Değersiz Alacak satırı ${dayText(line.date)} ${tl(line.minor)}: yazıldığı andaki sınırı (${tl(room)}) aşıyor — kaydın kalanından önce yararlanan bağsız tahsilat düşülmeden yazılmış (S270)`, figure: { kind: "writeoff-limit", date: line.date, minor: line.minor, roomMinor: room } });
     }
     // (ii)
     const last = own[own.length - 1];
     const balance = ledgerBalanceMinor(store, party);
-    if (balance < 0 && !activityAfter(store, party, last)) out.push({ key: `${party}:writeoff-balance`, sample: `Değersiz Alacak satırı ${dayText(last.date)} ${tl(last.minor)} cariyi eksi bakiyeye (${tl(balance)}) düşürdü (S270)` });
+    if (balance < 0 && !activityAfter(store, party, last)) out.push({ key: `${party}:writeoff-balance`, sample: `Değersiz Alacak satırı ${dayText(last.date)} ${tl(last.minor)} cariyi eksi bakiyeye (${tl(balance)}) düşürdü (S270)`, figure: { kind: "writeoff-balance", date: last.date, minor: last.minor, balanceMinor: balance } });
   }
   return out;
 }
@@ -544,6 +643,56 @@ export function ledgerBalanceMinor(store, party) {
   let sum = 0;
   for (const line of ledger) sum += Math.round((Number(line.debit) || 0) * 100) - Math.round((Number(line.credit) || 0) * 100);
   return sum;
+}
+/**
+ * 2.5.1 M2 tur 2 — S-DKM2-2 = A (dar kontrol DK-M2 ORTA-2; 27.11 23:47 UTC KULLANICI KARARIYLA ÖNERİ UYGULANDI — 20:26 yetkisi, AYNEN: "bir süre ekran başında olmayacağım. sorularına baş mimar
+ * önerilerini uygula"): "Değersiz Alacak yazıldıktan sonra faturanın iptali ya da iadesi cariyi eksiye düşürüyorsa … A (ÖNERİ): iptal de iade de reddedilsin — ileti 'önce Değersiz Alacak satırını
+ * silin (en çok … yazılabilirdi)'". Fatura iptali (silme, e-Belge iptali ve Banka'dan Ters Kaydet iptali çağırır) ve satıştan iade (yeni ya da düzenlenen) bu denetimi işlemin İÇİNDE çağırır:
+ * başta guard = writeOffBalanceGuard(store, cari), yazımlardan sonra guard?.check(). Ret koşulu: işlem bakiyeyi DÜŞÜRDÜ, sonuç eksi ve carinin Değersiz Alacak satırları olmasaydı eksi olmazdı
+ * (bakiye + Σ Değersiz ≥ 0 — "Değersiz yüzünden"). Değersiz olmadan da eksi kalacak durum (avans / iade borcu aşıyor) KODLANMADI — bugünkü gibi kabul; m2t2-rapor.md KULLANICIYA SORULMALI.
+ * Değersiz satırı olmayan caride hiçbir şey okunmaz (null).
+ */
+export function writeOffBalanceGuard(store, party, { action = "cancel" } = {}) {
+  if (!party || !hasTable(store, "account_entries")) return null;
+  const ownLines = () => store.all("SELECT id, source_id AS recordId, date, CAST(ROUND(amount * 100) AS INTEGER) AS minor FROM account_entries WHERE account_id = ? AND source = 'doubtful' AND kind = 'credit' ORDER BY created_at, rowid", party);
+  if (!ownLines().length) return null;
+  const before = ledgerBalanceMinor(store, party);
+  return {
+    before,
+    check() {
+      const lines = ownLines();
+      if (!lines.length) return;
+      const after = ledgerBalanceMinor(store, party);
+      const total = lines.reduce((sum, line) => sum + line.minor, 0);
+      if (!(after < before && after < 0 && after + total >= 0)) return;
+      const last = lines[lines.length - 1];
+      const room = writeOffRoomAfter(store, party, last);
+      const cancel = action === "cancel";
+      const what = cancel ? "Fatura iptal edilemez" : "İade faturası kaydedilemez";
+      const many = lines.length > 1 ? ` (carinin ${lines.length} Değersiz Alacak satırı, toplam ${tl(total)})` : "";
+      const could = room > 0 ? `${cancel ? "bu fatura olmasaydı" : "bu iadeyle"} o kayda en çok ${tl(room)} Değersiz Alacak yazılabilirdi` : `${cancel ? "bu fatura olmasaydı" : "bu iadeyle"} o kayda Değersiz Alacak yazılamazdı`;
+      throw new HttpError(
+        409,
+        `${what}: bu caride ${dayText(last.date)} tarihli ${tl(last.minor)} Değersiz Alacak satırı var${many}; ${cancel ? "iptalden" : "iadeden"} sonra cari ${tl(-after)} alacaklı (eksi bakiye) olurdu. ` +
+          `Değersiz Alacak yazımı cariyi alacaklıya düşüremez — ${could}. Ne yapmalı: önce Değersiz Alacak satırını silin (cari kartı → Şüpheli Alacaklar → Değersiz Alacaklar → Sil), sonra ${cancel ? "faturayı iptal edin" : "iadeyi kaydedin"}; ` +
+          "gerekirse Değersiz Alacak'ı yeniden yazın (form yazılabilecek tutarı gösterir). Hiçbir şey kaydedilmedi.",
+        { code: "doubtful-writeoff-balance", balanceMinor: after, writeOffMinor: total, limitMinor: room, entryId: last.id, date: last.date },
+      );
+    },
+  };
+}
+/** İşlemden sonraki hâlde `line`'ın kaydına, kaydın Değersiz satırları OLMASAYDI satırın gününde formun önereceği tutar (ret iletisi için; aynı sınır işlevi — writeOffLimitOf). */
+function writeOffRoomAfter(store, party, line) {
+  const ctx = writeOffContextOf(store, party);
+  const record = ctx.rows.records.find(item => item.id === line.recordId);
+  if (!record || record.status !== "open") return 0;
+  const own = store.all("SELECT CAST(ROUND(amount * 100) AS INTEGER) AS minor FROM account_entries WHERE account_id = ? AND source = 'doubtful' AND kind = 'credit' AND source_id = ?", party, record.id).reduce((sum, row) => sum + Number(row.minor), 0);
+  const credits = ctx.credits.filter(credit => credit.target !== record.id);
+  const full = allocateDoubtful({ records: ctx.rows.records, provisions: ctx.rows.provisions, credits, linked: ctx.rows.linked || null });
+  const outside = new Map();
+  for (const [key, hit] of full.allocations) if ((hit.outsideMinor || 0) > 0) outside.set(key, hit.outsideMinor);
+  const quote = writeOffLimitOf({ ...ctx, credits, full, outside, rooms: new Map() }, record, line.date, { balanceMinor: ledgerBalanceMinor(store, party) + own });
+  return quote.offerMinor;
 }
 /** Değersiz satırı `line`'dan SONRA cari için başka bir işlem oldu mu (yazım, değişiklik, silme / geri yükleme). Belirsiz eşitlikte (aynı an) işlem VAR sayılır (denetim yanlış alarm vermez). */
 function activityAfter(store, party, line) {
@@ -908,18 +1057,25 @@ export function createDoubtful({ store, bank, period, now, accounts, trash = nul
    */
   // K5 (2.3.0 kontrol turu 2): kullanıcıya kapının iç örneği (ham kayıt kimliği) değil, kaydın tarihi ve tutarıyla neden + ne yapacağı yazılır;
   // kapı örnekleri yanıtın `problems` alanında kalır (destek için).
-  const conflictReason = key => {
+  // 2.5.1 M2 tur 2 — S-DKM2-3 = C (dar kontrol DK-M2 ORTA-3; 27.11 23:47 UTC KULLANICI KARARIYLA ÖNERİ UYGULANDI — 20:26 yetkisi): "uç durum böyle kalsın (BİLİNEN SINIR) — yalnız ileti düzelsin
+  // ('bu kayıt silinirse tahsilat Değersiz yazılan kayda düşer')". RET AYNEN; ileti ne olduğunu (hangi Değersiz satırı), nedenini (tahsilatın kayda düşmesi), ne yapılacağını ve nereye
+  // gidileceğini söyler (önceden "yazıldığı andaki sınırı aşardı" — yanlış anlatım). `verb` silme / geri yükleme yoluna göre cümleyi kurar.
+  const WRITEOFF_WHERE = "cari kartı → Şüpheli Alacaklar → Değersiz Alacaklar → Sil";
+  const entryText = id => {
+    const entry = store.get("SELECT date, amount FROM account_entries WHERE id = ?", id);
+    return entry ? `${dayText(entry.date)} tarihli ${tl(Math.round(Number(entry.amount) * 100))}` : "";
+  };
+  const conflictReason = (key, verb = "silinemez") => {
     const [id, kind] = [key.slice(0, key.lastIndexOf(":")), key.slice(key.lastIndexOf(":") + 1)];
-    // 2.5.1 M2 (S270 değişmezi): Değersiz Alacak satırının yazıldığı andaki sınırı / carinin bakiyesi.
-    if (kind === "writeoff-limit") {
-      const entry = store.get("SELECT date, amount FROM account_entries WHERE id = ?", id);
-      return entry ? { text: `${dayText(entry.date)} tarihli ${tl(Math.round(Number(entry.amount) * 100))} Değersiz Alacak satırı yazıldığı andaki sınırı aşardı`, fix: "Değersiz Alacak satırını" } : null;
+    const happen = verb === "geri yüklenemez" ? "geri yüklenirse" : "silinirse";
+    // 2.5.1 M2 (S270 değişmezi): Değersiz Alacak satırının sınırı (yazıldığı andaki dünya) / carinin bakiyesi.
+    if (kind === "writeoff-limit" || kind === "outside") {
+      const label = entryText(kind === "outside" ? id.replace(/^account:/, "") : id);
+      return label
+        ? { text: `bu kayıt ${happen} carinin bağsız tahsilatı Değersiz Alacak yazılan kayda düşer ve o kaydın ${label} Değersiz Alacak satırı, kayda düşen tahsilat çıkınca kalanı aşar (Değersiz Alacak bu kalanı aşamaz)`, fix: "o Değersiz Alacak satırını", writeOff: true }
+        : null;
     }
-    if (kind === "writeoff-balance") return { text: "Değersiz Alacak satırı cariyi eksi bakiyeye düşürürdü", fix: "Değersiz Alacak satırını" };
-    if (kind === "outside") {
-      const entry = store.get("SELECT date, amount FROM account_entries WHERE id = ?", id.replace(/^account:/, ""));
-      return entry ? { text: `${dayText(entry.date)} tarihli ${tl(Math.round(Number(entry.amount) * 100))} Değersiz Alacak satırı kaydın kalanını aşardı`, fix: "Değersiz Alacak satırını" } : null;
-    }
+    if (kind === "writeoff-balance") return { text: `bu kayıt ${happen} carinin Değersiz Alacak satırı cariyi alacaklıya (eksi bakiyeye) düşürür`, fix: "Değersiz Alacak satırını", writeOff: true };
     const record = store.get("SELECT date, amount_minor AS amountMinor FROM doubtful_receivables WHERE id = ?", id);
     if (!record) return null;
     const label = `${dayText(record.date)} tarihli ${tl(record.amountMinor)} şüpheli kaydının`;
@@ -930,10 +1086,14 @@ export function createDoubtful({ store, bank, period, now, accounts, trash = nul
   const assertNoConflict = (party, what, verb = "silinemez") => {
     const problems = doubtfulProblems(store, { parties: [party] });
     if (!problems.length) return;
-    const reasons = [...new Map(problems.map(item => conflictReason(item.key)).filter(Boolean).map(item => [item.text, item])).values()];
-    const message = reasons.length
-      ? `${what} ${verb}: carinin öbür şüpheli kayıtları bozulurdu (${reasons.map(item => item.text).join("; ")}). Önce ${reasons[0].fix} silin, sonra yeniden deneyin.`
-      : `${what} ${verb}: carinin öbür şüpheli kayıtları bozulurdu. Önce carinin sonraki şüpheli işlemlerini silin, sonra yeniden deneyin.`;
+    const reasons = [...new Map(problems.map(item => conflictReason(item.key, verb)).filter(Boolean).map(item => [item.text, item])).values()];
+    // Değersiz Alacak nedenli ret (S-DKM2-3 = C): dört parçalı ileti — ne oldu / neden / ne yapmalı / nereye; öbür nedenler eskisi gibi.
+    const writeOff = reasons.find(item => item.writeOff);
+    const message = writeOff
+      ? `${what} ${verb}: ${reasons.map(item => item.text).join("; ")}. Ne yapmalı: önce ${writeOff.fix} silin (${WRITEOFF_WHERE}), sonra bu işlemi yeniden deneyin; gerekirse Değersiz Alacak'ı yeniden yazın (form yazılabilecek tutarı gösterir). Hiçbir şey kaydedilmedi.`
+      : reasons.length
+        ? `${what} ${verb}: carinin öbür şüpheli kayıtları bozulurdu (${reasons.map(item => item.text).join("; ")}). Önce ${reasons[0].fix} silin, sonra yeniden deneyin.`
+        : `${what} ${verb}: carinin öbür şüpheli kayıtları bozulurdu. Önce carinin sonraki şüpheli işlemlerini silin, sonra yeniden deneyin.`;
     throw new HttpError(409, message, { code: "doubtful-delete-conflict", problems: problems.map(item => item.sample) });
   };
   /** Sil (kayıt hatası): kayıt + karşılıkları iptal (başlıklar cancelled), Silinenler'e. Değersiz satırı olan kayıt silinmez (önce satır). */
