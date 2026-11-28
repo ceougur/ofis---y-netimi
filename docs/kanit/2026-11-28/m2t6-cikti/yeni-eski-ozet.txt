@@ -1,0 +1,4 @@
+yeni UTC çıkış 0
+eski UTC çıkış 1
+yeni Europe/Istanbul çıkış 0
+eski Europe/Istanbul çıkış 1

@@ -1,0 +1,6 @@
+cari hareketi 102295, kesilmiş alış faturası 9540
+plan: SEARCH account_entries USING INDEX idx_account_entries_source (source=?) | USE TEMP B-TREE FOR ORDER BY
+cari 129 hareketli: ortanca 0.002 ms, en kötü 0.011 ms, satır 0
+cari 129 hareketli: ortanca 0.002 ms, en kötü 0.041 ms, satır 0
+cari 129 hareketli: ortanca 0.002 ms, en kötü 0.029 ms, satır 0
+loadavg 3.85 2.35 1.70 5/178 28837

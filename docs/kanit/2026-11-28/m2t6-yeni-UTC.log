@@ -1,0 +1,233 @@
+TAP version 13
+# (node:27799) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.1 M2 tur 5 — SK-64 = A: Değersiz'li caride Ödeme silme / Alacak Yaz artırma cariyi eksiye götürüyorsa ret (S-M2T2-1 / S-DKM2T3-1 ile aynı kural)
+    # Subtest: kararın örneği AYNEN: bakiye −76,45 iken Ödeme 500 silinir → 409 'Ödeme hareketi silinemez', bakiye −76,45 kalır (kabul olsaydı −576,45); ileti yolu silmeyi kabul ettirir (2.423,55)
+    ok 1 - kararın örneği AYNEN: bakiye −76,45 iken Ödeme 500 silinir → 409 'Ödeme hareketi silinemez', bakiye −76,45 kalır (kabul olsaydı −576,45); ileti yolu silmeyi kabul ettirir (2.423,55)
+      ---
+      duration_ms: 985.690544
+      type: 'test'
+      ...
+    # Subtest: Ödeme tutarını düşürme (500 → 100: −476,45) ve başka cariye taşıma (eski cari −576,45) → 409 'Ödeme hareketi düzeltilemez'; tutar artırma (600: 23,55) ve tarih değişikliği kabul
+    ok 2 - Ödeme tutarını düşürme (500 → 100: −476,45) ve başka cariye taşıma (eski cari −576,45) → 409 'Ödeme hareketi düzeltilemez'; tutar artırma (600: 23,55) ve tarih değişikliği kabul
+      ---
+      duration_ms: 818.769518
+      type: 'test'
+      ...
+    # Subtest: Alacak Yaz: yeni 400 kabul (avans; BM-M2T4-3) → 23,55; 500'e artırma → 409 'Alacak hareketi düzeltilemez' (23,55 kalır); 423,55 (tam 0) kabul; 423,56 (−0,01) ret; Borç'a çevirme kabul
+    ok 3 - Alacak Yaz: yeni 400 kabul (avans; BM-M2T4-3) → 23,55; 500'e artırma → 409 'Alacak hareketi düzeltilemez' (23,55 kalır); 423,55 (tam 0) kabul; 423,56 (−0,01) ret; Borç'a çevirme kabul
+      ---
+      duration_ms: 747.351565
+      type: 'test'
+      ...
+    # Subtest: Alış Faturası Düzenle'si tutarı artırıp eksiye götürüyorsa → 409 'Alış faturası düzenlenemez'; tam 0'a götüren artış kabul; ileti yolu işe yarar
+    ok 4 - Alış Faturası Düzenle'si tutarı artırıp eksiye götürüyorsa → 409 'Alış faturası düzenlenemez'; tam 0'a götüren artış kabul; ileti yolu işe yarar
+      ---
+      duration_ms: 778.043392
+      type: 'test'
+      ...
+    # Subtest: POS İadesi silme → 409 'POS İadesi silinemez' (−76,45 kalır); ileti yolu silmeyi kabul ettirir
+    ok 5 - POS İadesi silme → 409 'POS İadesi silinemez' (−76,45 kalır); ileti yolu silmeyi kabul ettirir
+      ---
+      duration_ms: 946.012659
+      type: 'test'
+      ...
+    # Subtest: taksit kartının ödeme / iade hareketi: silme ve tutar düşürme → 409; kart ve bakiye değişmez
+    ok 6 - taksit kartının ödeme / iade hareketi: silme ve tutar düşürme → 409; kart ve bakiye değişmez
+      ---
+      duration_ms: 730.365642
+      type: 'test'
+      ...
+    # Subtest: ETKİLENMEZ: Değersiz'siz caride ve Değersiz satırı silinmiş caride Ödeme silme eksiye götürse de kabul (yeni denetim çalışmaz)
+    ok 7 - ETKİLENMEZ: Değersiz'siz caride ve Değersiz satırı silinmiş caride Ödeme silme eksiye götürse de kabul (yeni denetim çalışmaz)
+      ---
+      duration_ms: 922.033446
+      type: 'test'
+      ...
+    1..7
+ok 1 - 2.5.1 M2 tur 5 — SK-64 = A: Değersiz'li caride Ödeme silme / Alacak Yaz artırma cariyi eksiye götürüyorsa ret (S-M2T2-1 / S-DKM2T3-1 ile aynı kural)
+  ---
+  duration_ms: 5930.583957
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M2 tur 5 — ORTA-A: Otomatik Dağıt kartın toplamını düşürüp Değersiz'li cariyi eksiye götürüyorsa kart düzenlemesiyle aynı ret (atomik)
+    # Subtest: dar kontrolün vakası AYNEN: taban T kart 3.400 → Otomatik Dağıt 100 → 409; kart toplamı 3.400, taksitler, cari satırları ve bakiye 423,55 değişmez
+    ok 1 - dar kontrolün vakası AYNEN: taban T kart 3.400 → Otomatik Dağıt 100 → 409; kart toplamı 3.400, taksitler, cari satırları ve bakiye 423,55 değişmez
+      ---
+      duration_ms: 706.355954
+      type: 'test'
+      ...
+# (node:27799) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: dönem kilidi Kayıt Tarihi'ni kapsıyorsa kilit iletisi Değersiz iletisinden ÖNCE gelir
+    ok 2 - dönem kilidi Kayıt Tarihi'ni kapsıyorsa kilit iletisi Değersiz iletisinden ÖNCE gelir
+      ---
+      duration_ms: 1178.129133
+      type: 'test'
+      ...
+    1..2
+ok 2 - 2.5.1 M2 tur 5 — ORTA-A: Otomatik Dağıt kartın toplamını düşürüp Değersiz'li cariyi eksiye götürüyorsa kart düzenlemesiyle aynı ret (atomik)
+  ---
+  duration_ms: 1885.66555
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M2 tur 5 — ORTA-B: Silinenler taraması Silinenler'deki fatura sayısıyla ve Değersiz satırlı cari sayısıyla çoğalmaz; sonuç tam taramayla BİREBİR
+    # Subtest: 10 Değersiz satırlı cari, Değersiz'den SONRA silinmiş 200 başka cari faturası: taramanın sonucunu okuyabilecek satır yoksa Silinenler gövdesi HİÇ okunmaz; sonuç tam taramayla aynı
+    ok 1 - 10 Değersiz satırlı cari, Değersiz'den SONRA silinmiş 200 başka cari faturası: taramanın sonucunu okuyabilecek satır yoksa Silinenler gövdesi HİÇ okunmaz; sonuç tam taramayla aynı
+      ---
+      duration_ms: 1931.742022
+      type: 'test'
+      ...
+    # Subtest: 4 carinin taraması gerekiyor (aynı gün, Değersiz'den önce bağsız tahsilat + faturası Değersiz'den sonra silinmiş): Mutabakat'ta TEK Silinenler sorgusu; sonuç tam taramayla aynı
+    ok 2 - 4 carinin taraması gerekiyor (aynı gün, Değersiz'den önce bağsız tahsilat + faturası Değersiz'den sonra silinmiş): Mutabakat'ta TEK Silinenler sorgusu; sonuç tam taramayla aynı
+      ---
+      duration_ms: 1021.11753
+      type: 'test'
+      ...
+    1..2
+ok 3 - 2.5.1 M2 tur 5 — ORTA-B: Silinenler taraması Silinenler'deki fatura sayısıyla ve Değersiz satırlı cari sayısıyla çoğalmaz; sonuç tam taramayla BİREBİR
+  ---
+  duration_ms: 2953.130682
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M2 tur 5 — ORTA-B: tek geçişte başka carinin silinen faturası bu cariye sayılmaz (sınırı aşan eski Değersiz satırı görünür kalır)
+    # Subtest: iki caride sınırı aşan Değersiz satırı + başka carinin Değersiz'den sonra silinen faturası → iki ihlal, tam taramayla aynı
+    ok 1 - iki caride sınırı aşan Değersiz satırı + başka carinin Değersiz'den sonra silinen faturası → iki ihlal, tam taramayla aynı
+      ---
+      duration_ms: 589.064761
+      type: 'test'
+      ...
+    1..1
+ok 4 - 2.5.1 M2 tur 5 — ORTA-B: tek geçişte başka carinin silinen faturası bu cariye sayılmaz (sınırı aşan eski Değersiz satırı görünür kalır)
+  ---
+  duration_ms: 589.299809
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M2 tur 5 — ORTA-B: daraltma taramayı gerektiren EN ESKİ satırdan
+    # Subtest: iki satır da taramayı gerektiriyor, fatura aralarında silindi → ihlal yok, tam taramayla aynı, Mutabakat tamam
+    ok 1 - iki satır da taramayı gerektiriyor, fatura aralarında silindi → ihlal yok, tam taramayla aynı, Mutabakat tamam
+      ---
+      duration_ms: 623.944529
+      type: 'test'
+      ...
+    1..1
+ok 5 - 2.5.1 M2 tur 5 — ORTA-B: daraltma taramayı gerektiren EN ESKİ satırdan
+  ---
+  duration_ms: 624.15829
+  type: 'suite'
+  ...
+# \# M2T5 tohum 5: {"steps":72,"compared":72,"scanned":51,"guarded":6,"refused":0,"accepted":6,"invDeleted":1,"otherDeleted":3,"restored":0,"writes":2}
+# Subtest: 2.5.1 M2 tur 5 — rastgele: Silinenler taraması eşdeğer, denetimli işlem Değersiz'li cariyi eksiye götürmez
+    # Subtest: tohum 5 (4 cari × 18 adım)
+    ok 1 - tohum 5 (4 cari × 18 adım)
+      ---
+      duration_ms: 1652.403107
+      type: 'test'
+      ...
+# \# M2T5 tohum 17: {"steps":72,"compared":72,"scanned":0,"guarded":10,"refused":0,"accepted":10,"invDeleted":0,"otherDeleted":2,"restored":0,"writes":3}
+    # Subtest: tohum 17 (4 cari × 18 adım)
+    ok 2 - tohum 17 (4 cari × 18 adım)
+      ---
+      duration_ms: 1809.357742
+      type: 'test'
+      ...
+# \# M2T5 tohum 29: {"steps":72,"compared":72,"scanned":4,"guarded":4,"refused":0,"accepted":4,"invDeleted":1,"otherDeleted":2,"restored":1,"writes":4}
+    # Subtest: tohum 29 (4 cari × 18 adım)
+    ok 3 - tohum 29 (4 cari × 18 adım)
+      ---
+      duration_ms: 2166.622763
+      type: 'test'
+      ...
+    1..3
+ok 6 - 2.5.1 M2 tur 5 — rastgele: Silinenler taraması eşdeğer, denetimli işlem Değersiz'li cariyi eksiye götürmez
+  ---
+  duration_ms: 5628.842902
+  type: 'suite'
+  ...
+# (node:27800) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.1 M2 tur 6 — ORTA-1: Alış Faturası Düzenle'de peşin ödeme düşürülür / kaldırılırsa Değersiz'li cari eksiye inmez (tutar koşulsuz denetim)
+    # Subtest: tutar aynı, peşin 500 → 100 ve peşin kaldırıldı → 409 'Alış faturası düzenlenemez', −576,45 kalır, ret atomik; ileti yolu izlenince kabul
+    ok 1 - tutar aynı, peşin 500 → 100 ve peşin kaldırıldı → 409 'Alış faturası düzenlenemez', −576,45 kalır, ret atomik; ileti yolu izlenince kabul
+      ---
+      duration_ms: 1031.586168
+      type: 'test'
+      ...
+    # Subtest: tutar 500 → 100 ve peşin kaldırıldı (bakiye yine düşer: −676,45) → 409; tutar 500 → 100 ve peşin 500 → 100 (net 0) kabul; peşin artışı (bakiye yükselir) kabul
+    ok 2 - tutar 500 → 100 ve peşin kaldırıldı (bakiye yine düşer: −676,45) → 409; tutar 500 → 100 ve peşin 500 → 100 (net 0) kabul; peşin artışı (bakiye yükselir) kabul
+      ---
+      duration_ms: 846.749298
+      type: 'test'
+      ...
+    # Subtest: avanssız: peşin 500 → 100 (23,55) ve → 76,45 (TAM 0) kabul; → 76,44 (−0,01) 409
+    ok 3 - avanssız: peşin 500 → 100 (23,55) ve → 76,45 (TAM 0) kabul; → 76,44 (−0,01) 409
+      ---
+      duration_ms: 613.113884
+      type: 'test'
+      ...
+    # Subtest: B4: tutar 100 → 1.100 + peşin 1.000 (net 0) kabul, 323,55 kalır
+    ok 4 - B4: tutar 100 → 1.100 + peşin 1.000 (net 0) kabul, 323,55 kalır
+      ---
+      duration_ms: 594.139654
+      type: 'test'
+      ...
+    # Subtest: ileti sözü 'alış faturasının düzenlenmesi' (Değersiz olmasaydı da eksi kalan durumda) — peşin kaldırma da tutar artışı da
+    ok 5 - ileti sözü 'alış faturasının düzenlenmesi' (Değersiz olmasaydı da eksi kalan durumda) — peşin kaldırma da tutar artışı da
+      ---
+      duration_ms: 858.999065
+      type: 'test'
+      ...
+    # Subtest: Stoğa Mal Alışı (aynı tür, aynı Düzenle yolu): peşin kaldırılırsa 409, stok ve cari değişmez
+    ok 6 - Stoğa Mal Alışı (aynı tür, aynı Düzenle yolu): peşin kaldırılırsa 409, stok ve cari değişmez
+      ---
+      duration_ms: 739.87031
+      type: 'test'
+      ...
+    1..6
+ok 7 - 2.5.1 M2 tur 6 — ORTA-1: Alış Faturası Düzenle'de peşin ödeme düşürülür / kaldırılırsa Değersiz'li cari eksiye inmez (tutar koşulsuz denetim)
+  ---
+  duration_ms: 4686.049586
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M2 tur 6 — yanlış yere düşmüyor: Değersiz'siz / Değersiz'i silinmiş cari, cari değişimi, iptal, dönem kilidi
+    # Subtest: Değersiz satırı HİÇ olmayan carinin (Şüpheli kayıt var) ve Değersiz satırı silinmiş carinin peşin kaldırması kabul
+    ok 1 - Değersiz satırı HİÇ olmayan carinin (Şüpheli kayıt var) ve Değersiz satırı silinmiş carinin peşin kaldırması kabul
+      ---
+      duration_ms: 1075.740916
+      type: 'test'
+      ...
+    # Subtest: cari değişimi (Değersiz'li A'dan B'ye) tur 5 davranışı AYNEN: kabul; A'nın bakiyesi yükselir
+    ok 2 - cari değişimi (Değersiz'li A'dan B'ye) tur 5 davranışı AYNEN: kabul; A'nın bakiyesi yükselir
+      ---
+      duration_ms: 649.104451
+      type: 'test'
+      ...
+    # Subtest: alış faturası iptali (peşinli ve peşinsiz) kabul — iptal bakiyeyi düşürmez
+    ok 3 - alış faturası iptali (peşinli ve peşinsiz) kabul — iptal bakiyeyi düşürmez
+      ---
+      duration_ms: 783.349089
+      type: 'test'
+      ...
+# (node:27800) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: dönem kilidi faturanın tarihini kapsıyorsa kilit iletisi Değersiz iletisinden ÖNCE gelir
+    ok 4 - dönem kilidi faturanın tarihini kapsıyorsa kilit iletisi Değersiz iletisinden ÖNCE gelir
+      ---
+      duration_ms: 969.396598
+      type: 'test'
+      ...
+    1..4
+ok 8 - 2.5.1 M2 tur 6 — yanlış yere düşmüyor: Değersiz'siz / Değersiz'i silinmiş cari, cari değişimi, iptal, dönem kilidi
+  ---
+  duration_ms: 3478.366399
+  type: 'suite'
+  ...
+1..8
+# tests 26
+# suites 8
+# pass 26
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 18199.914203
