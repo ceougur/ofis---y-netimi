@@ -1,0 +1,32 @@
+Ocak fişi [ 0, 0, 100000 ]
+Şubat fişi [ 100000, 50000, 0 ]
+Mart fişi [ 0, 70000, 0 ]
+== 1. Fişlerden sonra (Nisan fişsiz)
+1: fişler [["2026-01",0,0,100000,false],["2026-02",100000,50000,0,true],["2026-03",0,70000,0,false]]
+Nisan ön izlemesi {"önceki":0,"ödenecek":50000,"sonraki":0,"uyarılar":[]}
+Nisan: Önceki Dönemden Devreden KDV 0,00 TL · Ödenecek KDV 700,00 TL · Sonraki Döneme Devreden KDV 0,00 TL · 391 500,00 TL · 191 0,00 TL
+Ocak–Nisan: Önceki Dönemden Devreden KDV 0,00 TL · Ödenecek KDV 1.600,00 TL · Sonraki Döneme Devreden KDV 0,00 TL · 391 3.500,00 TL · 191 1.900,00 TL
+   not [KDV Mahsup Fişi] Ocak 2026, Şubat 2026, Mart 2026
+   not [Mahsuptan Sonra Değişen Ay] Şubat 2026 (mahsup fişi güncel değil — mahsubu geri alıp yeniden mahsup edin); Mart 2026 (bu ayın kayıtları fişten sonra değişti; ayın sonucu kesilmiş mahsup fişinden, İndirilecek KDV'deki azalma sonraki mahsupta düşülür)
+1: defter 360 -1200 · 190 0
+== 2. Nisan ön izlemeyle mahsup edildi
+Nisan fişi [ 0, 50000, 0 ]
+2: fişler [["2026-01",0,0,100000,false],["2026-02",100000,50000,0,true],["2026-03",0,70000,0,false],["2026-04",0,50000,0,false]]
+Nisan: Önceki Dönemden Devreden KDV 0,00 TL · Ödenecek KDV 700,00 TL · Sonraki Döneme Devreden KDV 0,00 TL · 391 500,00 TL · 191 0,00 TL
+   not [KDV Mahsup Fişi] Nisan 2026
+   not [Zincirle Uyuşmayan Mahsup Fişi] Nisan 2026 fişi ödenecek KDV 500,00 TL yazmış, sırayla mahsupta ödenecek KDV 700,00 TL olmalıydı — İndirilecek KDV'deki azalma sırayla mahsupta daha önceki bir ayda düşülür (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)
+Ocak–Nisan: Önceki Dönemden Devreden KDV 0,00 TL · Ödenecek KDV 1.600,00 TL · Sonraki Döneme Devreden KDV 0,00 TL · 391 3.500,00 TL · 191 1.900,00 TL
+   not [KDV Mahsup Fişi] Ocak 2026, Şubat 2026, Mart 2026, Nisan 2026
+   not [Mahsuptan Sonra Değişen Ay] Şubat 2026 (mahsup fişi güncel değil — mahsubu geri alıp yeniden mahsup edin); Mart 2026 (bu ayın kayıtları fişten sonra değişti; ayın sonucu kesilmiş mahsup fişinden, İndirilecek KDV'deki azalma sonraki mahsupta düşülür)
+   not [Zincirle Uyuşmayan Mahsup Fişi] Nisan 2026 fişi ödenecek KDV 500,00 TL yazmış, sırayla mahsupta ödenecek KDV 700,00 TL olmalıydı — İndirilecek KDV'deki azalma sırayla mahsupta daha önceki bir ayda düşülür (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)
+2: defter 360 -1700 · 190 0
+== 3. Onarım: Nisan, Mart, Şubat geri al; sırayla yeniden mahsup
+2026-02 fişi [ 100000, 20000, 0 ]
+2026-03 fişi [ 0, 90000, 0 ]
+2026-04 fişi [ 0, 50000, 0 ]
+3: fişler [["2026-01",0,0,100000,false],["2026-02",100000,20000,0,false],["2026-03",0,90000,0,false],["2026-04",0,50000,0,false]]
+Nisan: Önceki Dönemden Devreden KDV 0,00 TL · Ödenecek KDV 500,00 TL · Sonraki Döneme Devreden KDV 0,00 TL · 391 500,00 TL · 191 0,00 TL
+   not [KDV Mahsup Fişi] Nisan 2026
+Ocak–Nisan: Önceki Dönemden Devreden KDV 0,00 TL · Ödenecek KDV 1.600,00 TL · Sonraki Döneme Devreden KDV 0,00 TL · 391 3.500,00 TL · 191 1.900,00 TL
+   not [KDV Mahsup Fişi] Ocak 2026, Şubat 2026, Mart 2026, Nisan 2026
+3: defter 360 -1600 · 190 0

@@ -1,0 +1,68 @@
+{
+  "ad": "m1k5-yeni-test-taban-ist",
+  "komut": "node --test --test-reporter=tap test/kdv-ozeti-s4-guncel-degil-251.test.mjs test/kdv-ozeti-rastgele-251.test.mjs",
+  "commit": "4850ae2a82f89306f6064357f2979a3135405039",
+  "dal": "HEAD",
+  "kirli": 1,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-28T04:32:22.066Z",
+  "sure_sn": 323.7,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 9,
+    "gecen": 2,
+    "basarisiz": 7,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 7 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.1 M1 küçük tur 5 — KDV Özeti rastgele sıra: aralık toplamı 391 − 191 (S-DKM1K-1 = A) › Ocak–Temmuz 2026, 300 tohum: sapma 0 (taban t251-m1k4: 11)",
+      "konum": "test/kdv-ozeti-rastgele-251.test.mjs:122:3",
+      "hata": "300 tohumda 11 sapma: · tohum 115: Ödenecek − Sonraki + Önceki 550000 ≠ 391 − 191 570000 (fark -20000; aralık 0 / 620000 / 70000) | fiş 2026-01 [0,140000,0]; fiş 2026-02 [0,230000,0]; fiş 2026-03 [0,100000,0]; alış iptal 2026-05; alış ekle 2026-01; alış iptal 2026-02 · tohum 144: Ödenecek − Sonraki + Önceki 520000 ≠ 391 − 191 550000 (fark -30000; aralık 0 / 520000 / 0) | atla 2026-01; fiş 2026-02 [0,0,30000]; fiş 2026-03 [30000,150000,0]; fiş 2026-04 RED 409; fiş 2026-05 [0,20000,0]; fiş 2026-06 [0,180000,0]; alış iptal 2026-06; alış ekle 2026-03; satış iptal 2026-01 (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.1 M1 küçük tur 5 — KDV Özeti rastgele sıra: aralık toplamı 391 − 191 (S-DKM1K-1 = A) › yıl dönümü Eylül 2026 – Mart 2027, 150 tohum: sapma 0 (taban t251-m1k4: 2)",
+      "konum": "test/kdv-ozeti-rastgele-251.test.mjs:127:3",
+      "hata": "150 tohumda 2 sapma: · tohum 115: Ödenecek − Sonraki + Önceki 550000 ≠ 391 − 191 570000 (fark -20000; aralık 0 / 620000 / 70000) | fiş 2026-09 [0,140000,0]; fiş 2026-10 [0,230000,0]; fiş 2026-11 [0,100000,0]; alış iptal 2027-01; alış ekle 2026-09; alış iptal 2026-10 · tohum 144: Ödenecek − Sonraki + Önceki 520000 ≠ 391 − 191 550000 (fark -30000; aralık 0 / 520000 / 0) | atla 2026-09; fiş 2026-10 [0,0,30000]; fiş 2026-11 [30000,150000,0]; fiş 2026-12 RED 409; fiş 2027-01 [0,20000,0]; fiş 2027-02 [0,180000,0]; alış iptal 2027-02; alış ekle 2026-11; satış iptal 2026-09 (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.1 M1 küçük tur 5 — S-DKM1K-1 = A: 'güncel değil' (İ artmış) aydan sonra azalan ay — kararın örneği AYNEN, yan etki (Nisan mahsubu), onarım, yıl dönümü › 001 kararın örneği: Nisan 700, Ocak–Nisan 1.600 = 391 3.500 − 191 1.900; Şubat 'güncel değil' notu durur; fiş / ön izleme / defter değişmez; ekran = PDF = Excel",
+      "konum": "test/kdv-ozeti-s4-guncel-degil-251.test.mjs:160:3",
+      "hata": "Ocak–Nisan Ödenecek 1.600 (taban 1.400 — Mart'ın 200'lük azalması hiçbir ayda sayılmıyordu) [[\"Hesaplanan KDV (391) (İadeler Düşülmüş)\",\"3.500,00 TL\"],[\"İndirilecek KDV (191) (İadeler Düşülmüş)\",\"1.900,00 TL\"],[\"Alıcı Olarak Kesilen Tevkifat (2 No.lu)\",\"0,00 TL\"],[\"Önceki Dönemden Devreden KDV\",\"0,00 TL\"],[\"Ödenecek KDV\",\"1.400,00 TL\"],[\"Sonraki Döneme Devreden KDV\",\"0,00 TL\"],[\"KDV Mahsup Fişi\",\"Ocak 2026, Şubat 2026, Mart 2026\"],[\"Mahsuptan Sonra Değişen Ay\",\"Şubat 2026 (mahsup fişi güncel değil — mahsubu geri alıp yeniden mahsup edin); Mart 2026 (bu ayın kayıtları fişten sonra değişti; ayın sonucu kesilmiş mahsup fişinden, İndirilecek KDV'deki azalma sonraki mahsupta düşülür)\"]] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.1 M1 küçük tur 5 — S-DKM1K-1 = A: 'güncel değil' (İ artmış) aydan sonra azalan ay — kararın örneği AYNEN, yan etki (Nisan mahsubu), onarım, yıl dönümü › 002 yıl dönümü: Bu Yıl (2027) 1.400 = 391 − 191 (Şubat 2027 700); 2026 yılı 200; Kasım–Şubat 1.600; 001 etkilenmez",
+      "konum": "test/kdv-ozeti-s4-guncel-degil-251.test.mjs:197:3",
+      "hata": "Bu Yıl (2027): Ocak 700 (fiş) + Şubat 700 (taban 500) [[\"Hesaplanan KDV (391) (İadeler Düşülmüş)\",\"1.500,00 TL\"],[\"İndirilecek KDV (191) (İadeler Düşülmüş)\",\"100,00 TL\"],[\"Alıcı Olarak Kesilen Tevkifat (2 No.lu)\",\"0,00 TL\"],[\"Önceki Dönemden Devreden KDV\",\"0,00 TL\"],[\"Ödenecek KDV\",\"1.200,00 TL\"],[\"Sonraki Döneme Devreden KDV\",\"0,00 TL\"],[\"KDV Mahsup Fişi\",\"Ocak 2027\"],[\"Mahsuptan Sonra Değişen Ay\",\"Ocak 2027 (bu ayın kayıtları fişten sonra değişti; ayın sonucu kesilmiş mahsup fişinden, İndirilecek KDV'deki azalma sonraki mahsupta düşülür)\"]] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.1 M1 küçük tur 5 — S-DKM1K-1 = A: 'güncel değil' (İ artmış) aydan sonra azalan ay — kararın örneği AYNEN, yan etki (Nisan mahsubu), onarım, yıl dönümü › 001 yan etki: Nisan ön izlemeyle (500) mahsup edilirse fiş zincirle uyuşmaz, rapor 700 ve 1.600 kalır; onarımda (geri al + sırayla) rapor = fişler = 391 − 191",
+      "konum": "test/kdv-ozeti-s4-guncel-degil-251.test.mjs:217:3",
+      "hata": "Nisan raporu sırayla mahsup sayısı 700 (fiş 500) [[\"Hesaplanan KDV (391) (İadeler Düşülmüş)\",\"500,00 TL\"],[\"İndirilecek KDV (191) (İadeler Düşülmüş)\",\"0,00 TL\"],[\"Alıcı Olarak Kesilen Tevkifat (2 No.lu)\",\"0,00 TL\"],[\"Önceki Dönemden Devreden KDV\",\"0,00 TL\"],[\"Ödenecek KDV\",\"500,00 TL\"],[\"Sonraki Döneme Devreden KDV\",\"0,00 TL\"],[\"KDV Mahsup Fişi\",\"Nisan 2026\"]] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.1 M1 küçük tur 5 — S-DKM1K-1 = A: iki ardışık 'güncel değil' ay; devreden yönlü 'güncel değil' ay + araya zincirle uyuşmayan ay › 001 iki ardışık 'güncel değil': Mayıs 700, Ocak–Mayıs 2.300 = 391 4.500 − 191 2.200 (taban 2.100); notlar; Mayıs ön izlemesi 500 (DEĞİŞMEDİ)",
+      "konum": "test/kdv-ozeti-s4-guncel-degil-251.test.mjs:287:3",
+      "hata": "Ocak–Mayıs 2.300 [[\"Hesaplanan KDV (391) (İadeler Düşülmüş)\",\"4.500,00 TL\"],[\"İndirilecek KDV (191) (İadeler Düşülmüş)\",\"2.200,00 TL\"],[\"Alıcı Olarak Kesilen Tevkifat (2 No.lu)\",\"0,00 TL\"],[\"Önceki Dönemden Devreden KDV\",\"0,00 TL\"],[\"Ödenecek KDV\",\"2.100,00 TL\"],[\"Sonraki Döneme Devreden KDV\",\"0,00 TL\"],[\"KDV Mahsup Fişi\",\"Ocak 2026, Şubat 2026, Mart 2026, Nisan 2026\"],[\"Mahsuptan Sonra Değişen Ay\",\"Şubat 2026, Mart 2026 (mahsup fişi güncel değil — mahsubu geri alıp yeniden mahsup edin); Nisan 2026 (bu ayın kayıtları fişten sonra değişti; ayın sonucu kesilmiş mahsup fişinden, İndirilecek KDV'deki azalma sonraki mahsupta düşülür)\"]] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.1 M1 küçük tur 5 — S-DKM1K-1 = A: iki ardışık 'güncel değil' ay; devreden yönlü 'güncel değil' ay + araya zincirle uyuşmayan ay › 002 devreden yönlü 'güncel değil' + uyuşmayan Mart: Mayıs 700, Ocak–Mayıs 2.400 = 391 4.500 − 191 2.100 (taban 2.200); Mart uyuşmazlık notu",
+      "konum": "test/kdv-ozeti-s4-guncel-degil-251.test.mjs:299:3",
+      "hata": "Ocak–Mayıs 2.400 [[\"Hesaplanan KDV (391) (İadeler Düşülmüş)\",\"4.500,00 TL\"],[\"İndirilecek KDV (191) (İadeler Düşülmüş)\",\"2.100,00 TL\"],[\"Alıcı Olarak Kesilen Tevkifat (2 No.lu)\",\"0,00 TL\"],[\"Önceki Dönemden Devreden KDV\",\"0,00 TL\"],[\"Ödenecek KDV\",\"2.200,00 TL\"],[\"Sonraki Döneme Devreden KDV\",\"0,00 TL\"],[\"KDV Mahsup Fişi\",\"Ocak 2026, Şubat 2026, Mart 2026, Nisan 2026\"],[\"Mahsuptan Sonra Değişen Ay\",\"Şubat 2026 (mahsup fişi güncel değil — mahsubu geri alıp yeniden mahsup edin); Nisan 2026 (bu ayın kayıtları fişten sonra değişti; ayın sonucu kesilmiş mahsup fişinden, İndirilecek KDV'deki azalma sonraki mahsupta düşülür)\"],[\"Zincirle Uyuşmayan Mahsup Fişi\",\"Mart 2026 fişi 500,00 TL devredenle kesilmiş, sırayla mahsupta 800,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)\"]] · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/m1k5/kanit/2026-11-28/m1k5-yeni-test-taban-ist.log",
+  "klasor": "/dev/shm/m1k5-kdv/eski",
+  "ham_cikti_sha256": "3a5549a9ad9e6888b3aaca369a14cb95a31f81940e99d0062b59f93c56306887",
+  "ham_cikti_bayt": 27723
+}

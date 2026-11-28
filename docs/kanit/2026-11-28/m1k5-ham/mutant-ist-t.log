@@ -1,0 +1,6 @@
+T1 güncel değil ay S4 birikimine yine fişin saklı İ'siyle girer (taban davranışı) → ÖLDÜ (başarısız 7/76)
+T2 zincirde azalma birikimi min(0, …) yerine düz toplanır (artış da taşınır; ön izleme aynı) → YAŞADI (başarısız 0/76)
+T2b azalma birikimi her yerde düz toplanır (ön izleme dahil) → ÖLDÜ (başarısız 9/76)
+T3 güncel değil ay birikime kendi bugünkü İ'siyle (S4 taşıması düşülmeden) girer → ÖLDÜ (başarısız 4/76)
+T4 karma ay da birikime bugünkü İ'yle girer (S-M1K-1 azalması kaybolur) → ÖLDÜ (başarısız 11/76)
+T5 azalan ay (reduced) da birikime bugünkü İ'yle girer (S-DKM1-1 azalması kaybolur) → ÖLDÜ (başarısız 27/76)

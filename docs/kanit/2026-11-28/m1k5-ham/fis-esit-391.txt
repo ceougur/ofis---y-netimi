@@ -1,0 +1,6 @@
+taban UTC çıkış 0 · 5 satır
+yeni UTC çıkış 0 · 5 satır
+UTC yalnız 391: fiş satırı taban 2 · yeni 2 · BİREBİR EVET
+taban Europe/Istanbul çıkış 0 · 5 satır
+yeni Europe/Istanbul çıkış 0 · 5 satır
+Europe/Istanbul yalnız 391: fiş satırı taban 2 · yeni 2 · BİREBİR EVET

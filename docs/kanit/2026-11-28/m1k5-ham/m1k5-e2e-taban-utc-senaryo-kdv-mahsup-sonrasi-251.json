@@ -1,0 +1,68 @@
+{
+  "ad": "m1k5-e2e-taban-utc-senaryo-kdv-mahsup-sonrasi-251",
+  "komut": "node test/e2e/senaryo-kdv-mahsup-sonrasi-251.mjs",
+  "commit": "4850ae2a82f89306f6064357f2979a3135405039",
+  "dal": "HEAD",
+  "kirli": 1,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-28T04:32:26.431Z",
+  "sure_sn": 20.5,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 45,
+    "gecen": 39,
+    "basarisiz": 6,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 6 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "S-DKM1K-1: Ocak–Nisan 0 / 1.600 / 0 (taban 1.400), tablo altı = özet ({\"summary\":[\"0,00\",\"1400,00\",\"0,00\"],\"foot\":[\"0,00\",\"1400,00\",\"0,00\"]})",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "S-DKM1K-1: ay satırları Şubat 200 / Mart 700 (fişten) / Nisan 700 (taban 500) ([[\"Ocak 2026\",\"Sonraki Döneme Devreden KDV\",\"1000,00\"],[\"Şubat 2026\",\"Önceki Dönemden Devreden KDV\",\"1000,00\"],[\"Şubat 2026\",\"Ödenecek KDV\",\"200,00\"],[\"Mart 2026\",\"Ödenecek KDV\",\"700,00\"],[\"Nisan 2026\",\"Ödenecek KDV\",\"500",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "S-DKM1K-1: Nisan 0 / 700 / 0 (taban 500; ön izleme 500), tablo altı = özet ({\"summary\":[\"0,00\",\"500,00\",\"0,00\"],\"foot\":[\"0,00\",\"500,00\",\"0,00\"]})",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "yan etki: Nisan fişliyken rapor 0 / 700 / 0 ({\"summary\":[\"0,00\",\"500,00\",\"0,00\"],\"foot\":[\"0,00\",\"500,00\",\"0,00\"]})",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "yan etki: Nisan uyuşmazlık notu (ekranda): undefined",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "yan etki: Ocak–Nisan yine 1.600 ({\"summary\":[\"0,00\",\"1400,00\",\"0,00\"],\"foot\":[\"0,00\",\"1400,00\",\"0,00\"]})",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "senaryo-kdv-mahsup-sonrasi-251: 39 geçti, 6 kaldı",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/m1k5/kanit/2026-11-28/m1k5-e2e-taban-utc-senaryo-kdv-mahsup-sonrasi-251.log",
+  "klasor": "/dev/shm/m1k5-kdv/eski",
+  "ham_cikti_sha256": "a0a44b40f3153ab9331a3bd203fdadf4b1863513839b66c1bc4bc118d7ef81d0",
+  "ham_cikti_bayt": 11630
+}

@@ -1,0 +1,338 @@
+TAP version 13
+# (node:23197) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.1 M1 küçük tur 5 — KDV Özeti rastgele sıra: aralık toplamı 391 − 191 (S-DKM1K-1 = A)
+    # Subtest: Ocak–Temmuz 2026, 300 tohum: sapma 0 (taban t251-m1k4: 11)
+    not ok 1 - Ocak–Temmuz 2026, 300 tohum: sapma 0 (taban t251-m1k4: 11)
+      ---
+      duration_ms: 250873.146785
+      type: 'test'
+      location: '/dev/shm/m1k5-kdv/eski/test/kdv-ozeti-rastgele-251.test.mjs:122:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        300 tohumda 11 sapma:
+        tohum 115: Ödenecek − Sonraki + Önceki 550000 ≠ 391 − 191 570000 (fark -20000; aralık 0 / 620000 / 70000) | fiş 2026-01 [0,140000,0]; fiş 2026-02 [0,230000,0]; fiş 2026-03 [0,100000,0]; alış iptal 2026-05; alış ekle 2026-01; alış iptal 2026-02
+        tohum 144: Ödenecek − Sonraki + Önceki 520000 ≠ 391 − 191 550000 (fark -30000; aralık 0 / 520000 / 0) | atla 2026-01; fiş 2026-02 [0,0,30000]; fiş 2026-03 [30000,150000,0]; fiş 2026-04 RED 409; fiş 2026-05 [0,20000,0]; fiş 2026-06 [0,180000,0]; alış iptal 2026-06; alış ekle 2026-03; satış iptal 2026-01
+        tohum 154: Ödenecek − Sonraki + Önceki 1090000 ≠ 391 − 191 1100000 (fark -10000; aralık 0 / 1090000 / 0) | fiş 2026-01 [0,0,10000]; fiş 2026-02 [10000,290000,0]; fiş 2026-03 [0,240000,0]; fiş 2026-04 [0,320000,0]; fiş 2026-05 [0,270000,0]; alış ekle 2026-04; alış iptal 2026-05; alış iptal 2026-02; satış iptal 2026-03
+        tohum 158: Ödenecek − Sonraki + Önceki 350000 ≠ 391 − 191 390000 (fark -40000; aralık 0 / 350000 / 0) | fiş 2026-01 [0,40000,0]; fiş 2026-02 [0,30000,0]; fiş 2026-03 [0,80000,0]; fiş 2026-04 [0,80000,0]; alış ekle 2026-01; alış ekle 2026-05; satış iptal 2026-03; alış iptal 2026-02
+        tohum 162: Ödenecek − Sonraki + Önceki 350000 ≠ 391 − 191 410000 (fark -60000; aralık 0 / 350000 / 0) | fiş 2026-01 [0,40000,0]; fiş 2026-02 [0,0,0]; fiş 2026-03 [0,40000,0]; fiş 2026-04 [0,130000,0]; fiş 2026-05 [0,180000,0]; fiş 2026-06 [0,30000,0]; alış iptal 2026-05; alış ekle 2026-01; alış ekle 2026-03
+        tohum 165: Ödenecek − Sonraki + Önceki 1490000 ≠ 391 − 191 1500000 (fark -10000; aralık 0 / 1490000 / 0) | fiş 2026-01 [0,0,90000]; fiş 2026-02 [90000,350000,0]; fiş 2026-03 [0,230000,0]; atla 2026-04; alış iptal 2026-04; alış iptal 2026-03; alış ekle 2026-01
+        tohum 166: Ödenecek − Sonraki + Önceki 460000 ≠ 391 − 191 480000 (fark -20000; aralık 0 / 460000 / 0) | fiş 2026-01 [0,220000,0]; fiş 2026-02 [0,220000,0]; fiş 2026-03 [0,130000,0]; fiş 2026-04 [0,40000,0]; fiş 2026-05 [0,0,70000]; satış iptal 2026-06; alış iptal 2026-03; satış iptal 2026-01; alış ekle 2026-02
+        tohum 196: Ödenecek − Sonraki + Önceki 10000 ≠ 391 − 191 60000 (fark -50000; aralık 0 / 130000 / 120000) | fiş 2026-01 [0,0,90000]; fiş 2026-02 [90000,80000,0]; fiş 2026-03 [0,160000,0]; fiş 2026-04 [0,0,80000]; fiş 2026-05 [80000,0,140000]; fiş 2026-06 [140000,0,140000]; alış ekle 2026-03; satış iptal 2026-01; alış iptal 2026-05; alış iptal 2026-05
+        tohum 230: Ödenecek − Sonraki + Önceki 1020000 ≠ 391 − 191 1050000 (fark -30000; aralık 0 / 1020000 / 0) | fiş 2026-01 [0,130000,0]; fiş 2026-02 [0,160000,0]; fiş 2026-03 [0,100000,0]; fiş 2026-04 [0,290000,0]; alış iptal 2026-04; alış ekle 2026-01; alış iptal 2026-06
+        tohum 266: Ödenecek − Sonraki + Önceki 560000 ≠ 391 − 191 580000 (fark -20000; aralık 0 / 560000 / 0) | atla 2026-01; fiş 2026-02 [0,240000,0]; fiş 2026-03 [0,0,70000]; fiş 2026-04 [70000,0,0]; fiş 2026-05 [0,0,70000]; alış ekle 2026-02; satış iptal 2026-01; alış iptal 2026-03; alış ekle 2026-04
+        tohum 273: Ödenecek − Sonraki + Önceki 420000 ≠ 391 − 191 480000 (fark -60000; aralık 0 / 420000 / 0) | fiş 2026-01 [0,0,0]; fiş 2026-02 RED 409; fiş 2026-03 [0,140000,0]; fiş 2026-04 [0,90000,0]; atla 2026-05; fiş 2026-06 [0,0,10000]; alış iptal 2026-04; alış iptal 2026-03; alış ekle 2026-01; alış iptal 2026-06
+        + actual - expected
+        
+        + [
+        +   'tohum 115: Ödenecek − Sonraki + Önceki 550000 ≠ 391 − 191 570000 (fark -20000; aralık 0 / 620000 / 70000) | fiş 2026-01 [0,140000,0]; fiş 2026-02 [0,230000,0]; fiş 2026-03 [0,100000,0]; alış iptal 2026-05; alış ekle 2026-01; alış iptal 2026-02',
+        +   'tohum 144: Ödenecek − Sonraki + Önceki 520000 ≠ 391 − 191 550000 (fark -30000; aralık 0 / 520000 / 0) | atla 2026-01; fiş 2026-02 [0,0,30000]; fiş 2026-03 [30000,150000,0]; fiş 2026-04 RED 409; fiş 2026-05 [0,20000,0]; fiş 2026-06 [0,180000,0]; alış iptal 2026-06; alış ekle 2026-03; satış iptal 2026-01',
+        +   'tohum 154: Ödenecek − Sonraki + Önceki 1090000 ≠ 391 − 191 1100000 (fark -10000; aralık 0 / 1090000 / 0) | fiş 2026-01 [0,0,10000]; fiş 2026-02 [10000,290000,0]; fiş 2026-03 [0,240000,0]; fiş 2026-04 [0,320000,0]; fiş 2026-05 [0,270000,0]; alış ekle 2026-04; alış iptal 2026-05; alış iptal 2026-02; satış iptal 2026-03',
+        +   'tohum 158: Ödenecek − Sonraki + Önceki 350000 ≠ 391 − 191 390000 (fark -40000; aralık 0 / 350000 / 0) | fiş 2026-01 [0,40000,0]; fiş 2026-02 [0,30000,0]; fiş 2026-03 [0,80000,0]; fiş 2026-04 [0,80000,0]; alış ekle 2026-01; alış ekle 2026-05; satış iptal 2026-03; alış iptal 2026-02',
+        +   'tohum 162: Ödenecek − Sonraki + Önceki 350000 ≠ 391 − 191 410000 (fark -60000; aralık 0 / 350000 / 0) | fiş 2026-01 [0,40000,0]; fiş 2026-02 [0,0,0]; fiş 2026-03 [0,40000,0]; fiş 2026-04 [0,130000,0]; fiş 2026-05 [0,180000,0]; fiş 2026-06 [0,30000,0]; alış iptal 2026-05; alış ekle 2026-01; alış ekle 2026-03',
+        +   'tohum 165: Ödenecek − Sonraki + Önceki 1490000 ≠ 391 − 191 1500000 (fark -10000; aralık 0 / 1490000 / 0) | fiş 2026-01 [0,0,90000]; fiş 2026-02 [90000,350000,0]; fiş 2026-03 [0,230000,0]; atla 2026-04; alış iptal 2026-04; alış iptal 2026-03; alış ekle 2026-01',
+        +   'tohum 166: Ödenecek − Sonraki + Önceki 460000 ≠ 391 − 191 480000 (fark -20000; aralık 0 / 460000 / 0) | fiş 2026-01 [0,220000,0]; fiş 2026-02 [0,220000,0]; fiş 2026-03 [0,130000,0]; fiş 2026-04 [0,40000,0]; fiş 2026-05 [0,0,70000]; satış iptal 2026-06; alış iptal 2026-03; satış iptal 2026-01; alış ekle 2026-02',
+        +   'tohum 196: Ödenecek − Sonraki + Önceki 10000 ≠ 391 − 191 60000 (fark -50000; aralık 0 / 130000 / 120000) | fiş 2026-01 [0,0,90000]; fiş 2026-02 [90000,80000,0]; fiş 2026-03 [0,160000,0]; fiş 2026-04 [0,0,80000]; fiş 2026-05 [80000,0,140000]; fiş 2026-06 [140000,0,140000]; alış ekle 2026-03; satış iptal 2026-01; alış iptal 2026-05; alış iptal 2026-05',
+        +   'tohum 230: Ödenecek − Sonraki + Önceki 1020000 ≠ 391 − 191 1050000 (fark -30000; aralık 0 / 1020000 / 0) | fiş 2026-01 [0,130000,0]; fiş 2026-02 [0,160000,0]; fiş 2026-03 [0,100000,0]; fiş 2026-04 [0,290000,0]; alış iptal 2026-04; alış ekle 2026-01; alış iptal 2026-06',
+        +   'tohum 266: Ödenecek − Sonraki + Önceki 560000 ≠ 391 − 191 580000 (fark -20000; aralık 0 / 560000 / 0) | atla 2026-01; fiş 2026-02 [0,240000,0]; fiş 2026-03 [0,0,70000]; fiş 2026-04 [70000,0,0]; fiş 2026-05 [0,0,70000]; alış ekle 2026-02; satış iptal 2026-01; alış iptal 2026-03; alış ekle 2026-04',
+        +   'tohum 273: Ödenecek − Sonraki + Önceki 420000 ≠ 391 − 191 480000 (fark -60000; aralık 0 / 420000 / 0) | fiş 2026-01 [0,0,0]; fiş 2026-02 RED 409; fiş 2026-03 [0,140000,0]; fiş 2026-04 [0,90000,0]; atla 2026-05; fiş 2026-06 [0,0,10000]; alış iptal 2026-04; alış iptal 2026-03; alış ekle 2026-01; alış iptal 2026-06'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'tohum 115: Ödenecek − Sonraki + Önceki 550000 ≠ 391 − 191 570000 (fark -20000; aralık 0 / 620000 / 70000) | fiş 2026-01 [0,140000,0]; fiş 2026-02 [0,230000,0]; fiş 2026-03 [0,100000,0]; alış iptal 2026-05; alış ekle 2026-01; alış iptal 2026-02'
+        1: 'tohum 144: Ödenecek − Sonraki + Önceki 520000 ≠ 391 − 191 550000 (fark -30000; aralık 0 / 520000 / 0) | atla 2026-01; fiş 2026-02 [0,0,30000]; fiş 2026-03 [30000,150000,0]; fiş 2026-04 RED 409; fiş 2026-05 [0,20000,0]; fiş 2026-06 [0,180000,0]; alış iptal 2026-06; alış ekle 2026-03; satış iptal 2026-01'
+        2: 'tohum 154: Ödenecek − Sonraki + Önceki 1090000 ≠ 391 − 191 1100000 (fark -10000; aralık 0 / 1090000 / 0) | fiş 2026-01 [0,0,10000]; fiş 2026-02 [10000,290000,0]; fiş 2026-03 [0,240000,0]; fiş 2026-04 [0,320000,0]; fiş 2026-05 [0,270000,0]; alış ekle 2026-04; alış iptal 2026-05; alış iptal 2026-02; satış iptal 2026-03'
+        3: 'tohum 158: Ödenecek − Sonraki + Önceki 350000 ≠ 391 − 191 390000 (fark -40000; aralık 0 / 350000 / 0) | fiş 2026-01 [0,40000,0]; fiş 2026-02 [0,30000,0]; fiş 2026-03 [0,80000,0]; fiş 2026-04 [0,80000,0]; alış ekle 2026-01; alış ekle 2026-05; satış iptal 2026-03; alış iptal 2026-02'
+        4: 'tohum 162: Ödenecek − Sonraki + Önceki 350000 ≠ 391 − 191 410000 (fark -60000; aralık 0 / 350000 / 0) | fiş 2026-01 [0,40000,0]; fiş 2026-02 [0,0,0]; fiş 2026-03 [0,40000,0]; fiş 2026-04 [0,130000,0]; fiş 2026-05 [0,180000,0]; fiş 2026-06 [0,30000,0]; alış iptal 2026-05; alış ekle 2026-01; alış ekle 2026-03'
+        5: 'tohum 165: Ödenecek − Sonraki + Önceki 1490000 ≠ 391 − 191 1500000 (fark -10000; aralık 0 / 1490000 / 0) | fiş 2026-01 [0,0,90000]; fiş 2026-02 [90000,350000,0]; fiş 2026-03 [0,230000,0]; atla 2026-04; alış iptal 2026-04; alış iptal 2026-03; alış ekle 2026-01'
+        6: 'tohum 166: Ödenecek − Sonraki + Önceki 460000 ≠ 391 − 191 480000 (fark -20000; aralık 0 / 460000 / 0) | fiş 2026-01 [0,220000,0]; fiş 2026-02 [0,220000,0]; fiş 2026-03 [0,130000,0]; fiş 2026-04 [0,40000,0]; fiş 2026-05 [0,0,70000]; satış iptal 2026-06; alış iptal 2026-03; satış iptal 2026-01; alış ekle 2026-02'
+        7: 'tohum 196: Ödenecek − Sonraki + Önceki 10000 ≠ 391 − 191 60000 (fark -50000; aralık 0 / 130000 / 120000) | fiş 2026-01 [0,0,90000]; fiş 2026-02 [90000,80000,0]; fiş 2026-03 [0,160000,0]; fiş 2026-04 [0,0,80000]; fiş 2026-05 [80000,0,140000]; fiş 2026-06 [140000,0,140000]; alış ekle 2026-03; satış iptal 2026-01; alış iptal 2026-05; alış iptal 2026-05'
+        8: 'tohum 230: Ödenecek − Sonraki + Önceki 1020000 ≠ 391 − 191 1050000 (fark -30000; aralık 0 / 1020000 / 0) | fiş 2026-01 [0,130000,0]; fiş 2026-02 [0,160000,0]; fiş 2026-03 [0,100000,0]; fiş 2026-04 [0,290000,0]; alış iptal 2026-04; alış ekle 2026-01; alış iptal 2026-06'
+        9: 'tohum 266: Ödenecek − Sonraki + Önceki 560000 ≠ 391 − 191 580000 (fark -20000; aralık 0 / 560000 / 0) | atla 2026-01; fiş 2026-02 [0,240000,0]; fiş 2026-03 [0,0,70000]; fiş 2026-04 [70000,0,0]; fiş 2026-05 [0,0,70000]; alış ekle 2026-02; satış iptal 2026-01; alış iptal 2026-03; alış ekle 2026-04'
+        10: 'tohum 273: Ödenecek − Sonraki + Önceki 420000 ≠ 391 − 191 480000 (fark -60000; aralık 0 / 420000 / 0) | fiş 2026-01 [0,0,0]; fiş 2026-02 RED 409; fiş 2026-03 [0,140000,0]; fiş 2026-04 [0,90000,0]; atla 2026-05; fiş 2026-06 [0,0,10000]; alış iptal 2026-04; alış iptal 2026-03; alış ekle 2026-01; alış iptal 2026-06'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m1k5-kdv/eski/test/kdv-ozeti-rastgele-251.test.mjs:125:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: yıl dönümü Eylül 2026 – Mart 2027, 150 tohum: sapma 0 (taban t251-m1k4: 2)
+    not ok 2 - yıl dönümü Eylül 2026 – Mart 2027, 150 tohum: sapma 0 (taban t251-m1k4: 2)
+      ---
+      duration_ms: 100070.58125
+      type: 'test'
+      location: '/dev/shm/m1k5-kdv/eski/test/kdv-ozeti-rastgele-251.test.mjs:127:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        150 tohumda 2 sapma:
+        tohum 115: Ödenecek − Sonraki + Önceki 550000 ≠ 391 − 191 570000 (fark -20000; aralık 0 / 620000 / 70000) | fiş 2026-09 [0,140000,0]; fiş 2026-10 [0,230000,0]; fiş 2026-11 [0,100000,0]; alış iptal 2027-01; alış ekle 2026-09; alış iptal 2026-10
+        tohum 144: Ödenecek − Sonraki + Önceki 520000 ≠ 391 − 191 550000 (fark -30000; aralık 0 / 520000 / 0) | atla 2026-09; fiş 2026-10 [0,0,30000]; fiş 2026-11 [30000,150000,0]; fiş 2026-12 RED 409; fiş 2027-01 [0,20000,0]; fiş 2027-02 [0,180000,0]; alış iptal 2027-02; alış ekle 2026-11; satış iptal 2026-09
+        + actual - expected
+        
+        + [
+        +   'tohum 115: Ödenecek − Sonraki + Önceki 550000 ≠ 391 − 191 570000 (fark -20000; aralık 0 / 620000 / 70000) | fiş 2026-09 [0,140000,0]; fiş 2026-10 [0,230000,0]; fiş 2026-11 [0,100000,0]; alış iptal 2027-01; alış ekle 2026-09; alış iptal 2026-10',
+        +   'tohum 144: Ödenecek − Sonraki + Önceki 520000 ≠ 391 − 191 550000 (fark -30000; aralık 0 / 520000 / 0) | atla 2026-09; fiş 2026-10 [0,0,30000]; fiş 2026-11 [30000,150000,0]; fiş 2026-12 RED 409; fiş 2027-01 [0,20000,0]; fiş 2027-02 [0,180000,0]; alış iptal 2027-02; alış ekle 2026-11; satış iptal 2026-09'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'tohum 115: Ödenecek − Sonraki + Önceki 550000 ≠ 391 − 191 570000 (fark -20000; aralık 0 / 620000 / 70000) | fiş 2026-09 [0,140000,0]; fiş 2026-10 [0,230000,0]; fiş 2026-11 [0,100000,0]; alış iptal 2027-01; alış ekle 2026-09; alış iptal 2026-10'
+        1: 'tohum 144: Ödenecek − Sonraki + Önceki 520000 ≠ 391 − 191 550000 (fark -30000; aralık 0 / 520000 / 0) | atla 2026-09; fiş 2026-10 [0,0,30000]; fiş 2026-11 [30000,150000,0]; fiş 2026-12 RED 409; fiş 2027-01 [0,20000,0]; fiş 2027-02 [0,180000,0]; alış iptal 2027-02; alış ekle 2026-11; satış iptal 2026-09'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m1k5-kdv/eski/test/kdv-ozeti-rastgele-251.test.mjs:130:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 1 - 2.5.1 M1 küçük tur 5 — KDV Özeti rastgele sıra: aralık toplamı 391 − 191 (S-DKM1K-1 = A)
+  ---
+  duration_ms: 350945.407582
+  type: 'suite'
+  location: '/dev/shm/m1k5-kdv/eski/test/kdv-ozeti-rastgele-251.test.mjs:121:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:23199) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.1 M1 küçük tur 5 — S-DKM1K-1 = A: 'güncel değil' (İ artmış) aydan sonra azalan ay — kararın örneği AYNEN, yan etki (Nisan mahsubu), onarım, yıl dönümü
+    # Subtest: 001 kararın örneği: Nisan 700, Ocak–Nisan 1.600 = 391 3.500 − 191 1.900; Şubat 'güncel değil' notu durur; fiş / ön izleme / defter değişmez; ekran = PDF = Excel
+    not ok 1 - 001 kararın örneği: Nisan 700, Ocak–Nisan 1.600 = 391 3.500 − 191 1.900; Şubat 'güncel değil' notu durur; fiş / ön izleme / defter değişmez; ekran = PDF = Excel
+      ---
+      duration_ms: 44.776125
+      type: 'test'
+      location: '/dev/shm/m1k5-kdv/eski/test/kdv-ozeti-s4-guncel-degil-251.test.mjs:160:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Ocak–Nisan Ödenecek 1.600 (taban 1.400 — Mart'ın 200'lük azalması hiçbir ayda sayılmıyordu) [["Hesaplanan KDV (391) (İadeler Düşülmüş)","3.500,00 TL"],["İndirilecek KDV (191) (İadeler Düşülmüş)","1.900,00 TL"],["Alıcı Olarak Kesilen Tevkifat (2 No.lu)","0,00 TL"],["Önceki Dönemden Devreden KDV","0,00 TL"],["Ödenecek KDV","1.400,00 TL"],["Sonraki Döneme Devreden KDV","0,00 TL"],["KDV Mahsup Fişi","Ocak 2026, Şubat 2026, Mart 2026"],["Mahsuptan Sonra Değişen Ay","Şubat 2026 (mahsup fişi güncel değil — mahsubu geri alıp yeniden mahsup edin); Mart 2026 (bu ayın kayıtları fişten sonra değişti; ayın sonucu kesilmiş mahsup fişinden, İndirilecek KDV'deki azalma sonraki mahsupta düşülür)"]]
+        + actual - expected
+        
+          [
+            0,
+        +   140000,
+        -   160000,
+            0
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 0
+        1: 160000
+        2: 0
+      actual:
+        0: 0
+        1: 140000
+        2: 0
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m1k5-kdv/eski/test/kdv-ozeti-s4-guncel-degil-251.test.mjs:164:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: 002 yıl dönümü: Bu Yıl (2027) 1.400 = 391 − 191 (Şubat 2027 700); 2026 yılı 200; Kasım–Şubat 1.600; 001 etkilenmez
+    not ok 2 - 002 yıl dönümü: Bu Yıl (2027) 1.400 = 391 − 191 (Şubat 2027 700); 2026 yılı 200; Kasım–Şubat 1.600; 001 etkilenmez
+      ---
+      duration_ms: 11.750178
+      type: 'test'
+      location: '/dev/shm/m1k5-kdv/eski/test/kdv-ozeti-s4-guncel-degil-251.test.mjs:197:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Bu Yıl (2027): Ocak 700 (fiş) + Şubat 700 (taban 500) [["Hesaplanan KDV (391) (İadeler Düşülmüş)","1.500,00 TL"],["İndirilecek KDV (191) (İadeler Düşülmüş)","100,00 TL"],["Alıcı Olarak Kesilen Tevkifat (2 No.lu)","0,00 TL"],["Önceki Dönemden Devreden KDV","0,00 TL"],["Ödenecek KDV","1.200,00 TL"],["Sonraki Döneme Devreden KDV","0,00 TL"],["KDV Mahsup Fişi","Ocak 2027"],["Mahsuptan Sonra Değişen Ay","Ocak 2027 (bu ayın kayıtları fişten sonra değişti; ayın sonucu kesilmiş mahsup fişinden, İndirilecek KDV'deki azalma sonraki mahsupta düşülür)"]]
+        + actual - expected
+        
+          [
+            0,
+        +   120000,
+        -   140000,
+            0
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 0
+        1: 140000
+        2: 0
+      actual:
+        0: 0
+        1: 120000
+        2: 0
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m1k5-kdv/eski/test/kdv-ozeti-s4-guncel-degil-251.test.mjs:199:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 001 yan etki: Nisan ön izlemeyle (500) mahsup edilirse fiş zincirle uyuşmaz, rapor 700 ve 1.600 kalır; onarımda (geri al + sırayla) rapor = fişler = 391 − 191
+    not ok 3 - 001 yan etki: Nisan ön izlemeyle (500) mahsup edilirse fiş zincirle uyuşmaz, rapor 700 ve 1.600 kalır; onarımda (geri al + sırayla) rapor = fişler = 391 − 191
+      ---
+      duration_ms: 25.955891
+      type: 'test'
+      location: '/dev/shm/m1k5-kdv/eski/test/kdv-ozeti-s4-guncel-degil-251.test.mjs:217:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Nisan raporu sırayla mahsup sayısı 700 (fiş 500) [["Hesaplanan KDV (391) (İadeler Düşülmüş)","500,00 TL"],["İndirilecek KDV (191) (İadeler Düşülmüş)","0,00 TL"],["Alıcı Olarak Kesilen Tevkifat (2 No.lu)","0,00 TL"],["Önceki Dönemden Devreden KDV","0,00 TL"],["Ödenecek KDV","500,00 TL"],["Sonraki Döneme Devreden KDV","0,00 TL"],["KDV Mahsup Fişi","Nisan 2026"]]
+        + actual - expected
+        
+          [
+            0,
+        +   50000,
+        -   70000,
+            0
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 0
+        1: 70000
+        2: 0
+      actual:
+        0: 0
+        1: 50000
+        2: 0
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m1k5-kdv/eski/test/kdv-ozeti-s4-guncel-degil-251.test.mjs:221:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 2 - 2.5.1 M1 küçük tur 5 — S-DKM1K-1 = A: 'güncel değil' (İ artmış) aydan sonra azalan ay — kararın örneği AYNEN, yan etki (Nisan mahsubu), onarım, yıl dönümü
+  ---
+  duration_ms: 2799.986564
+  type: 'suite'
+  location: '/dev/shm/m1k5-kdv/eski/test/kdv-ozeti-s4-guncel-degil-251.test.mjs:124:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.1 M1 küçük tur 5 — S-DKM1K-1 = A: iki ardışık 'güncel değil' ay; devreden yönlü 'güncel değil' ay + araya zincirle uyuşmayan ay
+    # Subtest: 001 iki ardışık 'güncel değil': Mayıs 700, Ocak–Mayıs 2.300 = 391 4.500 − 191 2.200 (taban 2.100); notlar; Mayıs ön izlemesi 500 (DEĞİŞMEDİ)
+    not ok 1 - 001 iki ardışık 'güncel değil': Mayıs 700, Ocak–Mayıs 2.300 = 391 4.500 − 191 2.200 (taban 2.100); notlar; Mayıs ön izlemesi 500 (DEĞİŞMEDİ)
+      ---
+      duration_ms: 16.224738
+      type: 'test'
+      location: '/dev/shm/m1k5-kdv/eski/test/kdv-ozeti-s4-guncel-degil-251.test.mjs:287:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Ocak–Mayıs 2.300 [["Hesaplanan KDV (391) (İadeler Düşülmüş)","4.500,00 TL"],["İndirilecek KDV (191) (İadeler Düşülmüş)","2.200,00 TL"],["Alıcı Olarak Kesilen Tevkifat (2 No.lu)","0,00 TL"],["Önceki Dönemden Devreden KDV","0,00 TL"],["Ödenecek KDV","2.100,00 TL"],["Sonraki Döneme Devreden KDV","0,00 TL"],["KDV Mahsup Fişi","Ocak 2026, Şubat 2026, Mart 2026, Nisan 2026"],["Mahsuptan Sonra Değişen Ay","Şubat 2026, Mart 2026 (mahsup fişi güncel değil — mahsubu geri alıp yeniden mahsup edin); Nisan 2026 (bu ayın kayıtları fişten sonra değişti; ayın sonucu kesilmiş mahsup fişinden, İndirilecek KDV'deki azalma sonraki mahsupta düşülür)"]]
+        + actual - expected
+        
+          [
+            0,
+        +   210000,
+        -   230000,
+            0
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 0
+        1: 230000
+        2: 0
+      actual:
+        0: 0
+        1: 210000
+        2: 0
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m1k5-kdv/eski/test/kdv-ozeti-s4-guncel-degil-251.test.mjs:290:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 002 devreden yönlü 'güncel değil' + uyuşmayan Mart: Mayıs 700, Ocak–Mayıs 2.400 = 391 4.500 − 191 2.100 (taban 2.200); Mart uyuşmazlık notu
+    not ok 2 - 002 devreden yönlü 'güncel değil' + uyuşmayan Mart: Mayıs 700, Ocak–Mayıs 2.400 = 391 4.500 − 191 2.100 (taban 2.200); Mart uyuşmazlık notu
+      ---
+      duration_ms: 13.415727
+      type: 'test'
+      location: '/dev/shm/m1k5-kdv/eski/test/kdv-ozeti-s4-guncel-degil-251.test.mjs:299:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Ocak–Mayıs 2.400 [["Hesaplanan KDV (391) (İadeler Düşülmüş)","4.500,00 TL"],["İndirilecek KDV (191) (İadeler Düşülmüş)","2.100,00 TL"],["Alıcı Olarak Kesilen Tevkifat (2 No.lu)","0,00 TL"],["Önceki Dönemden Devreden KDV","0,00 TL"],["Ödenecek KDV","2.200,00 TL"],["Sonraki Döneme Devreden KDV","0,00 TL"],["KDV Mahsup Fişi","Ocak 2026, Şubat 2026, Mart 2026, Nisan 2026"],["Mahsuptan Sonra Değişen Ay","Şubat 2026 (mahsup fişi güncel değil — mahsubu geri alıp yeniden mahsup edin); Nisan 2026 (bu ayın kayıtları fişten sonra değişti; ayın sonucu kesilmiş mahsup fişinden, İndirilecek KDV'deki azalma sonraki mahsupta düşülür)"],["Zincirle Uyuşmayan Mahsup Fişi","Mart 2026 fişi 500,00 TL devredenle kesilmiş, sırayla mahsupta 800,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)"]]
+        + actual - expected
+        
+          [
+            0,
+        +   220000,
+        -   240000,
+            0
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 0
+        1: 240000
+        2: 0
+      actual:
+        0: 0
+        1: 220000
+        2: 0
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m1k5-kdv/eski/test/kdv-ozeti-s4-guncel-degil-251.test.mjs:302:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 3 - 2.5.1 M1 küçük tur 5 — S-DKM1K-1 = A: iki ardışık 'güncel değil' ay; devreden yönlü 'güncel değil' ay + araya zincirle uyuşmayan ay
+  ---
+  duration_ms: 1949.043363
+  type: 'suite'
+  location: '/dev/shm/m1k5-kdv/eski/test/kdv-ozeti-s4-guncel-degil-251.test.mjs:246:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.1 M1 küçük tur 5 — DEĞİŞMEYENLER (tabanda da yeşil): yalnız İ artışı (azalma yok); azalan ay ÖNCE, 'güncel değil' ay SONRA
+    # Subtest: 001 yalnız İ artışı: Nisan 500, Ocak–Nisan 1.400 = 391 3.500 − 191 2.100 (artış bir kez)
+    ok 1 - 001 yalnız İ artışı: Nisan 500, Ocak–Nisan 1.400 = 391 3.500 − 191 2.100 (artış bir kez)
+      ---
+      duration_ms: 27.05706
+      type: 'test'
+      ...
+    # Subtest: 002 azalan ay önce, 'güncel değil' sonra: Mart azalmayı kendisi düşer (700), Nisan 500; Ocak–Nisan 1.700 = 391 3.500 − 191 1.800
+    ok 2 - 002 azalan ay önce, 'güncel değil' sonra: Mart azalmayı kendisi düşer (700), Nisan 500; Ocak–Nisan 1.700 = 391 3.500 − 191 1.800
+      ---
+      duration_ms: 19.219936
+      type: 'test'
+      ...
+    1..2
+ok 4 - 2.5.1 M1 küçük tur 5 — DEĞİŞMEYENLER (tabanda da yeşil): yalnız İ artışı (azalma yok); azalan ay ÖNCE, 'güncel değil' ay SONRA
+  ---
+  duration_ms: 1943.168961
+  type: 'suite'
+  ...
+1..4
+# tests 9
+# suites 4
+# pass 2
+# fail 7
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 352236.890401
