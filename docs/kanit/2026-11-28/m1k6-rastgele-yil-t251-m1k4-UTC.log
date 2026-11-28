@@ -1,0 +1,64 @@
+TAP version 13
+# Subtest: 2.5.1 M1 küçük tur 5 — KDV Özeti rastgele sıra: aralık toplamı 391 − 191 (S-DKM1K-1 = A)
+    # Subtest: yıl dönümü Eylül 2026 – Mart 2027, 150 tohum: sapma 0 (taban t251-m1k4: 2)
+    not ok 1 - yıl dönümü Eylül 2026 – Mart 2027, 150 tohum: sapma 0 (taban t251-m1k4: 2)
+      ---
+      duration_ms: 109498.033954
+      type: 'test'
+      location: '/dev/shm/m1k6-eski/m1k4/test/m1k6-rastgele-yeni.test.mjs:130:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        150 tohumda 5 sapma:
+        tohum 24: Ödenecek − Sonraki + Önceki 360000 ≠ 391 − 191 370000 (fark -10000; aralık 0 / 360000 / 0) | fiş 2026-09 [0,310000,0]; fiş 2026-10 [0,40000,0]; atla 2026-11; fiş 2026-12 RED 409; fiş 2027-01 [0,0,130000]; satış iptal 2026-09; alış ekle 2026-09; alış iptal 2026-11; alış iptal 2027-01
+        tohum 40: Ödenecek − Sonraki + Önceki 430000 ≠ 391 − 191 460000 (fark -30000; aralık 0 / 430000 / 0) | fiş 2026-09 [0,0,80000]; fiş 2026-10 [80000,20000,0]; fiş 2026-11 RED 409; fiş 2026-12 [0,20000,0]; fiş 2027-01 [0,210000,0]; alış ekle 2026-09; satış iptal 2027-01; satış iptal 2027-02; alış iptal 2027-01
+        tohum 52: Ödenecek − Sonraki + Önceki 920000 ≠ 391 − 191 940000 (fark -20000; aralık 0 / 920000 / 0) | fiş 2026-09 [0,0,180000]; fiş 2026-10 [180000,0,20000]; atla 2026-11; fiş 2026-12 [20000,280000,0]; fiş 2027-01 [0,350000,0]; alış ekle 2026-10; alış iptal 2027-02; satış iptal 2026-11; alış iptal 2027-01
+        tohum 53: Ödenecek − Sonraki + Önceki 640000 ≠ 391 − 191 660000 (fark -20000; aralık 0 / 640000 / 0) | fiş 2026-09 [0,70000,0]; fiş 2026-10 [0,0,100000]; fiş 2026-11 [100000,0,230000]; fiş 2026-12 [230000,0,140000]; alış iptal 2026-11; alış ekle 2026-09
+        tohum 71: Ödenecek − Sonraki + Önceki 710000 ≠ 391 − 191 750000 (fark -40000; aralık 0 / 710000 / 0) | fiş 2026-09 RED 409; fiş 2026-10 [0,100000,0]; atla 2026-11; fiş 2026-12 [0,80000,0]; fiş 2027-01 [0,330000,0]; fiş 2027-02 [0,0,10000]; satış iptal 2026-11; alış ekle 2026-10; alış iptal 2027-01
+        + actual - expected
+        
+        + [
+        +   'tohum 24: Ödenecek − Sonraki + Önceki 360000 ≠ 391 − 191 370000 (fark -10000; aralık 0 / 360000 / 0) | fiş 2026-09 [0,310000,0]; fiş 2026-10 [0,40000,0]; atla 2026-11; fiş 2026-12 RED 409; fiş 2027-01 [0,0,130000]; satış iptal 2026-09; alış ekle 2026-09; alış iptal 2026-11; alış iptal 2027-01',
+        +   'tohum 40: Ödenecek − Sonraki + Önceki 430000 ≠ 391 − 191 460000 (fark -30000; aralık 0 / 430000 / 0) | fiş 2026-09 [0,0,80000]; fiş 2026-10 [80000,20000,0]; fiş 2026-11 RED 409; fiş 2026-12 [0,20000,0]; fiş 2027-01 [0,210000,0]; alış ekle 2026-09; satış iptal 2027-01; satış iptal 2027-02; alış iptal 2027-01',
+        +   'tohum 52: Ödenecek − Sonraki + Önceki 920000 ≠ 391 − 191 940000 (fark -20000; aralık 0 / 920000 / 0) | fiş 2026-09 [0,0,180000]; fiş 2026-10 [180000,0,20000]; atla 2026-11; fiş 2026-12 [20000,280000,0]; fiş 2027-01 [0,350000,0]; alış ekle 2026-10; alış iptal 2027-02; satış iptal 2026-11; alış iptal 2027-01',
+        +   'tohum 53: Ödenecek − Sonraki + Önceki 640000 ≠ 391 − 191 660000 (fark -20000; aralık 0 / 640000 / 0) | fiş 2026-09 [0,70000,0]; fiş 2026-10 [0,0,100000]; fiş 2026-11 [100000,0,230000]; fiş 2026-12 [230000,0,140000]; alış iptal 2026-11; alış ekle 2026-09',
+        +   'tohum 71: Ödenecek − Sonraki + Önceki 710000 ≠ 391 − 191 750000 (fark -40000; aralık 0 / 710000 / 0) | fiş 2026-09 RED 409; fiş 2026-10 [0,100000,0]; atla 2026-11; fiş 2026-12 [0,80000,0]; fiş 2027-01 [0,330000,0]; fiş 2027-02 [0,0,10000]; satış iptal 2026-11; alış ekle 2026-10; alış iptal 2027-01'
+        + ]
+        - []
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual:
+        0: 'tohum 24: Ödenecek − Sonraki + Önceki 360000 ≠ 391 − 191 370000 (fark -10000; aralık 0 / 360000 / 0) | fiş 2026-09 [0,310000,0]; fiş 2026-10 [0,40000,0]; atla 2026-11; fiş 2026-12 RED 409; fiş 2027-01 [0,0,130000]; satış iptal 2026-09; alış ekle 2026-09; alış iptal 2026-11; alış iptal 2027-01'
+        1: 'tohum 40: Ödenecek − Sonraki + Önceki 430000 ≠ 391 − 191 460000 (fark -30000; aralık 0 / 430000 / 0) | fiş 2026-09 [0,0,80000]; fiş 2026-10 [80000,20000,0]; fiş 2026-11 RED 409; fiş 2026-12 [0,20000,0]; fiş 2027-01 [0,210000,0]; alış ekle 2026-09; satış iptal 2027-01; satış iptal 2027-02; alış iptal 2027-01'
+        2: 'tohum 52: Ödenecek − Sonraki + Önceki 920000 ≠ 391 − 191 940000 (fark -20000; aralık 0 / 920000 / 0) | fiş 2026-09 [0,0,180000]; fiş 2026-10 [180000,0,20000]; atla 2026-11; fiş 2026-12 [20000,280000,0]; fiş 2027-01 [0,350000,0]; alış ekle 2026-10; alış iptal 2027-02; satış iptal 2026-11; alış iptal 2027-01'
+        3: 'tohum 53: Ödenecek − Sonraki + Önceki 640000 ≠ 391 − 191 660000 (fark -20000; aralık 0 / 640000 / 0) | fiş 2026-09 [0,70000,0]; fiş 2026-10 [0,0,100000]; fiş 2026-11 [100000,0,230000]; fiş 2026-12 [230000,0,140000]; alış iptal 2026-11; alış ekle 2026-09'
+        4: 'tohum 71: Ödenecek − Sonraki + Önceki 710000 ≠ 391 − 191 750000 (fark -40000; aralık 0 / 710000 / 0) | fiş 2026-09 RED 409; fiş 2026-10 [0,100000,0]; atla 2026-11; fiş 2026-12 [0,80000,0]; fiş 2027-01 [0,330000,0]; fiş 2027-02 [0,0,10000]; satış iptal 2026-11; alış ekle 2026-10; alış iptal 2027-01'
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m1k6-eski/m1k4/test/m1k6-rastgele-yeni.test.mjs:133:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 1)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..1
+not ok 1 - 2.5.1 M1 küçük tur 5 — KDV Özeti rastgele sıra: aralık toplamı 391 − 191 (S-DKM1K-1 = A)
+  ---
+  duration_ms: 109501.504325
+  type: 'suite'
+  location: '/dev/shm/m1k6-eski/m1k4/test/m1k6-rastgele-yeni.test.mjs:124:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 1
+# suites 1
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 109912.511246

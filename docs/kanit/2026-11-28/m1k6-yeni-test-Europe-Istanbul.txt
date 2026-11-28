@@ -1,0 +1,75 @@
+TAP version 13
+# (node:12028) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.1 M1 küçük tur 6 — (a) uyuşmazlığın yönü + onarım, (b) aralık dışındaki 'güncel değil' fiş için kısa not: kararın örneği (A) ve 'Nisan fişi önce' (B)
+    # Subtest: 001 (b) Nisan fişsiz: Nisan tek ay 700 + kısa not (Şubat 2026); Mart–Nisan 'bu aralığın'; Şubat'ı içeren aralıkta, Mart tek ayda ve Tüm Zamanlar'da kısa not YOK; ekran = PDF = Excel
+    ok 1 - 001 (b) Nisan fişsiz: Nisan tek ay 700 + kısa not (Şubat 2026); Mart–Nisan 'bu aralığın'; Şubat'ı içeren aralıkta, Mart tek ayda ve Tüm Zamanlar'da kısa not YOK; ekran = PDF = Excel
+      ---
+      duration_ms: 123.938239
+      type: 'test'
+      ...
+    # Subtest: 001 (a) Nisan ön izlemeyle (500) mahsup edilir: uyuşmazlık notu eksi yönde — 'azalmayı düşmemiş' + Şubat'tan onarım; yalnız Nisan'ı geri alıp yeniden kesmek notu kaldırmaz; notun adımlarıyla not kalkar, rapor = fişler = 391 − 191
+    ok 2 - 001 (a) Nisan ön izlemeyle (500) mahsup edilir: uyuşmazlık notu eksi yönde — 'azalmayı düşmemiş' + Şubat'tan onarım; yalnız Nisan'ı geri alıp yeniden kesmek notu kaldırmaz; notun adımlarıyla not kalkar, rapor = fişler = 391 − 191
+      ---
+      duration_ms: 141.89367
+      type: 'test'
+      ...
+    # Subtest: 002 B — Nisan fişi değişikliklerden ÖNCE sırayla kesilmiş: aynı eksi yönlü not (Şubat); Mayıs tek ayda kısa not YOK (araya Nisan fişi girer); notun adımlarıyla not kalkar, Ocak–Mayıs 2.100
+    ok 3 - 002 B — Nisan fişi değişikliklerden ÖNCE sırayla kesilmiş: aynı eksi yönlü not (Şubat); Mayıs tek ayda kısa not YOK (araya Nisan fişi girer); notun adımlarıyla not kalkar, Ocak–Mayıs 2.100
+      ---
+      duration_ms: 75.949072
+      type: 'test'
+      ...
+    1..3
+ok 1 - 2.5.1 M1 küçük tur 6 — (a) uyuşmazlığın yönü + onarım, (b) aralık dışındaki 'güncel değil' fiş için kısa not: kararın örneği (A) ve 'Nisan fişi önce' (B)
+  ---
+  duration_ms: 1444.135872
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M1 küçük tur 6 — iki ardışık 'güncel değil' ay (onarım İLK aydan) ve yıl dönümü (Aralık 2026 → Bu Yıl 2027)
+    # Subtest: 001 iki 'güncel değil' ay: Mayıs tek ay kısa not (Şubat 2026, Mart 2026); Mayıs fişi ön izlemeyle → not İLK aydan (Şubat 2026); notun adımlarıyla kalkar, Ocak–Mayıs 2.300
+    ok 1 - 001 iki 'güncel değil' ay: Mayıs tek ay kısa not (Şubat 2026, Mart 2026); Mayıs fişi ön izlemeyle → not İLK aydan (Şubat 2026); notun adımlarıyla kalkar, Ocak–Mayıs 2.300
+      ---
+      duration_ms: 69.425033
+      type: 'test'
+      ...
+    # Subtest: 002 yıl dönümü: Bu Yıl (2027) kısa not (Aralık 2026); 2026 yılında YOK; Şubat 2027 fişi ön izlemeyle → onarım Aralık 2026'dan; notun adımlarıyla kalkar
+    ok 2 - 002 yıl dönümü: Bu Yıl (2027) kısa not (Aralık 2026); 2026 yılında YOK; Şubat 2027 fişi ön izlemeyle → onarım Aralık 2026'dan; notun adımlarıyla kalkar
+      ---
+      duration_ms: 76.353745
+      type: 'test'
+      ...
+    1..2
+ok 2 - 2.5.1 M1 küçük tur 6 — iki ardışık 'güncel değil' ay (onarım İLK aydan) ve yıl dönümü (Aralık 2026 → Bu Yıl 2027)
+  ---
+  duration_ms: 1116.857045
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M1 küçük tur 6 — (b) kısa not yalnız ETKİLİYORSA: devreden yönde yalnız satış KDV'si değişen ay (etkiler) / ödenecek yönde yalnız 391 ya da yalnız İ artışı (etkilemez)
+    # Subtest: 001 devreden yönde 'güncel değil' Şubat: Mart tek ay Önceki 300 · Ödenecek 700 (ön izleme 500 devredenle 500) → kısa not (Şubat 2026)
+    ok 1 - 001 devreden yönde 'güncel değil' Şubat: Mart tek ay Önceki 300 · Ödenecek 700 (ön izleme 500 devredenle 500) → kısa not (Şubat 2026)
+      ---
+      duration_ms: 42.710184
+      type: 'test'
+      ...
+    # Subtest: 002 ödenecek yönde 'güncel değil' Şubat (yalnız 391, sonra İ artışı da): Mart tek ay 1.000 = ön izleme → kısa not YOK
+    ok 2 - 002 ödenecek yönde 'güncel değil' Şubat (yalnız 391, sonra İ artışı da): Mart tek ay 1.000 = ön izleme → kısa not YOK
+      ---
+      duration_ms: 43.857515
+      type: 'test'
+      ...
+    1..2
+ok 3 - 2.5.1 M1 küçük tur 6 — (b) kısa not yalnız ETKİLİYORSA: devreden yönde yalnız satış KDV'si değişen ay (etkiler) / ödenecek yönde yalnız 391 ya da yalnız İ artışı (etkilemez)
+  ---
+  duration_ms: 887.447143
+  type: 'suite'
+  ...
+1..3
+# tests 7
+# suites 3
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3787.310793

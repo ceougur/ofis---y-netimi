@@ -1,0 +1,39 @@
+=== ay-utc
+tohum yeni 400 eski 400 · ortak 400 · hata 0 []
+SAYI FARKI (aylar / aralık / fişler) yeni ≠ eski: 0 []
+kural bozulan: yeni 0 eski 0
+uyuşmazlık notu olan 119 · yeni 'azalmayı düşmemiş' 2 · 'daha önceki bir ayda': eski 13 yeni 11 · not metni farkı 2
+uyuşmazlık notu DIŞINDA not farkı: 0 []
+  tohum 22
+    eski Mayıs 2026 fişi sonraki döneme devreden KDV 100,00 TL yazmış, sırayla mahsupta ödenecek KDV 200,00 TL olmalıydı — İndirilecek KDV'deki azalma sırayla mahsupta daha önceki bir ayda düşülür; Haziran 2026 fişi 100,00 TL devredenle kesilmiş, sırayla mahsupta 0,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)
+    yeni Mayıs 2026 fişi sonraki döneme devreden KDV 100,00 TL yazmış, sırayla mahsupta ödenecek KDV 200,00 TL olmalıydı — fiş İndirilecek KDV'deki azalmayı düşmemiş; Haziran 2026 fişi 100,00 TL devredenle kesilmiş, sırayla mahsupta 0,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Şubat 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)
+  tohum 249
+    eski Mart 2026 fişi ödenecek KDV 400,00 TL yazmış, sırayla mahsupta ödenecek KDV 400,00 TL olmalıydı — İndirilecek KDV'deki azalma sırayla mahsupta daha önceki bir ayda düşülür (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)
+    yeni Mart 2026 fişi ödenecek KDV 400,00 TL yazmış, sırayla mahsupta ödenecek KDV 400,00 TL olmalıydı — fiş İndirilecek KDV'deki azalmayı düşmemiş (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Ocak 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)
+=== yil-utc
+tohum yeni 200 eski 200 · ortak 200 · hata 0 []
+SAYI FARKI (aylar / aralık / fişler) yeni ≠ eski: 0 []
+kural bozulan: yeni 0 eski 0
+uyuşmazlık notu olan 66 · yeni 'azalmayı düşmemiş' 1 · 'daha önceki bir ayda': eski 7 yeni 6 · not metni farkı 1
+uyuşmazlık notu DIŞINDA not farkı: 0 []
+  tohum 22
+    eski Ocak 2027 fişi sonraki döneme devreden KDV 100,00 TL yazmış, sırayla mahsupta ödenecek KDV 200,00 TL olmalıydı — İndirilecek KDV'deki azalma sırayla mahsupta daha önceki bir ayda düşülür; Şubat 2027 fişi 100,00 TL devredenle kesilmiş, sırayla mahsupta 0,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)
+    yeni Ocak 2027 fişi sonraki döneme devreden KDV 100,00 TL yazmış, sırayla mahsupta ödenecek KDV 200,00 TL olmalıydı — fiş İndirilecek KDV'deki azalmayı düşmemiş; Şubat 2027 fişi 100,00 TL devredenle kesilmiş, sırayla mahsupta 0,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Ekim 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)
+=== ay-ist
+tohum yeni 200 eski 200 · ortak 200 · hata 0 []
+SAYI FARKI (aylar / aralık / fişler) yeni ≠ eski: 0 []
+kural bozulan: yeni 0 eski 0
+uyuşmazlık notu olan 66 · yeni 'azalmayı düşmemiş' 1 · 'daha önceki bir ayda': eski 7 yeni 6 · not metni farkı 1
+uyuşmazlık notu DIŞINDA not farkı: 0 []
+  tohum 22
+    eski Mayıs 2026 fişi sonraki döneme devreden KDV 100,00 TL yazmış, sırayla mahsupta ödenecek KDV 200,00 TL olmalıydı — İndirilecek KDV'deki azalma sırayla mahsupta daha önceki bir ayda düşülür; Haziran 2026 fişi 100,00 TL devredenle kesilmiş, sırayla mahsupta 0,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)
+    yeni Mayıs 2026 fişi sonraki döneme devreden KDV 100,00 TL yazmış, sırayla mahsupta ödenecek KDV 200,00 TL olmalıydı — fiş İndirilecek KDV'deki azalmayı düşmemiş; Haziran 2026 fişi 100,00 TL devredenle kesilmiş, sırayla mahsupta 0,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Şubat 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)
+=== yil-ist
+tohum yeni 200 eski 200 · ortak 200 · hata 0 []
+SAYI FARKI (aylar / aralık / fişler) yeni ≠ eski: 0 []
+kural bozulan: yeni 0 eski 0
+uyuşmazlık notu olan 66 · yeni 'azalmayı düşmemiş' 1 · 'daha önceki bir ayda': eski 7 yeni 6 · not metni farkı 1
+uyuşmazlık notu DIŞINDA not farkı: 0 []
+  tohum 22
+    eski Ocak 2027 fişi sonraki döneme devreden KDV 100,00 TL yazmış, sırayla mahsupta ödenecek KDV 200,00 TL olmalıydı — İndirilecek KDV'deki azalma sırayla mahsupta daha önceki bir ayda düşülür; Şubat 2027 fişi 100,00 TL devredenle kesilmiş, sırayla mahsupta 0,00 TL olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)
+    yeni Ocak 2027 fişi sonraki döneme devreden KDV 100,00 TL yazmış, sırayla mahsupta ödenecek KDV 200,00 TL olmalıydı — fiş İndirilecek KDV'deki azalmayı düşmemiş; Şubat 2027 fişi 100,00 TL devredenle kesilmiş, sırayla mahsupta 0,00 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Ekim 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)

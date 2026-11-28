@@ -1,0 +1,5 @@
+--- kararın örneği (S-DKM1K-1), Nisan fişsiz: 2026-04 tek ay 0/700/0 · 391 500 · 191 0
+   [Güncel Olmayan Önceki Fiş] Önceki aylarda güncel olmayan mahsup fişi var (Şubat 2026); bu ayın sayıları mahsup ön izlemesinden ayrılır
+   Nisan ön izlemesi [0,50000,0]
+--- karşılaştırma (yalnız Mart azalması), Nisan fişsiz: 2026-04 tek ay 0/700/0 · 391 500 · 191 0
+   Nisan ön izlemesi [0,70000,0]
