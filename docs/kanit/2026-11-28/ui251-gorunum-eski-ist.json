@@ -1,0 +1,158 @@
+{
+  "ad": "ui251-gorunum-eski-ist",
+  "komut": "node test/e2e/senaryo-ui251-gorunum.mjs",
+  "commit": "4c94030ce2e19432c9d2de7aa8c70f8e85938daf",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-28T15:22:30.227Z",
+  "sure_sn": 46.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 72,
+    "gecen": 32,
+    "basarisiz": 40,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 40 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "1440×900: bildirim geniş (380 px; beklenen 720)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "1440×900: ileti en çok 10 satır, kesiksiz (22 satır)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "1440×900 (olduğu gibi): iletinin söylediği × düğmeleri örtülmüyor (görünen 2, örtülen 1: [{\"x\":601,\"y\":363,\"w\":26,\"h\":26,\"right\":627,\"bottom\":389,\"shown\":true,\"under\":true}])",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "1440×900 (Şüpheli bölümü üstte): iletinin söylediği × düğmeleri örtülmüyor (görünen 2, örtülen 1: [{\"x\":601,\"y\":363,\"w\":26,\"h\":26,\"right\":627,\"bottom\":389,\"shown\":true,\"under\":true}])",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "1440×900 (Şüpheli bölümü ortada): iletinin söylediği × düğmeleri örtülmüyor (görünen 2, örtülen 1: [{\"x\":601,\"y\":437,\"w\":26,\"h\":26,\"right\":627,\"bottom\":463,\"shown\":true,\"under\":true}])",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "1440×900: 60 sn sonra ileti yerinde (süreyle kapanmadı)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "1440×900: üç retten sonra 2 ileti görünür, hepsi ekranın içinde ([])",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "1440×900: en yeni ret (Borç) görünür",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "1366×768: bildirim geniş (380 px; beklenen 720)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "1366×768: ileti en çok 10 satır, kesiksiz (22 satır)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "1366×768 (olduğu gibi): iletinin söylediği × düğmeleri örtülmüyor (görünen 2, örtülen 1: [{\"x\":564,\"y\":231,\"w\":26,\"h\":26,\"right\":590,\"bottom\":257,\"shown\":true,\"under\":true}])",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "1366×768 (Şüpheli bölümü üstte): iletinin söylediği × düğmeleri örtülmüyor (görünen 2, örtülen 1: [{\"x\":564,\"y\":231,\"w\":26,\"h\":26,\"right\":590,\"bottom\":257,\"shown\":true,\"under\":true}])",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "1366×768 (Şüpheli bölümü ortada): iletinin söylediği × düğmeleri örtülmüyor (görünen 2, örtülen 1: [{\"x\":564,\"y\":371,\"w\":26,\"h\":26,\"right\":590,\"bottom\":397,\"shown\":true,\"under\":true}])",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "1366×768: Değersiz × → soru penceresi açıkken uzun bildirim gizli, soru düğmeleri örtülmüyor ({\"longShown\":0,\"buttons\":2,\"under\":2})",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "1366×768: Vazgeç'ten sonra uzun bildirim yeniden görünür",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "1280×720: bildirim geniş (380 px; beklenen 720)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "1280×720: ileti en çok 10 satır, kesiksiz (22 satır)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "1280×720 (olduğu gibi): iletinin söylediği × düğmeleri örtülmüyor (görünen 2, örtülen 1: [{\"x\":550,\"y\":183,\"w\":26,\"h\":26,\"right\":576,\"bottom\":209,\"shown\":true,\"under\":true}])",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "1280×720 (Şüpheli bölümü üstte): iletinin söylediği × düğmeleri örtülmüyor (görünen 2, örtülen 1: [{\"x\":550,\"y\":183,\"w\":26,\"h\":26,\"right\":576,\"bottom\":209,\"shown\":true,\"under\":true}])",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "1280×720 (Şüpheli bölümü ortada): iletinin söylediği × düğmeleri örtülmüyor (görünen 2, örtülen 1: [{\"x\":550,\"y\":347,\"w\":26,\"h\":26,\"right\":576,\"bottom\":373,\"shown\":true,\"under\":true}])",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "390×844: telefonda bildirim ekranın yarısını geçmiyor (481 px; metin tam)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "390×844 (Şüpheli bölümü üstte): iletinin söylediği × düğmeleri örtülmüyor (görünen 2, örtülen 1: [{\"x\":19,\"y\":236,\"w\":26,\"h\":26,\"right\":45,\"bottom\":262,\"shown\":true,\"under\":true}])",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "390×844 (Şüpheli bölümü ortada): iletinin söylediği × düğmeleri örtülmüyor (görünen 2, örtülen 1: [{\"x\":19,\"y\":409,\"w\":26,\"h\":26,\"right\":45,\"bottom\":435,\"shown\":true,\"under\":true}])",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "390×844: ikinci ileti 1440×900'deki Borç reddi (0 harf)",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "390×844: iki uzun ret ekranın içinde ([])",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ui251/kanit/2026-11-28/ui251-gorunum-eski-ist.log",
+  "klasor": "/dev/shm/ui251-gor/eski",
+  "ham_cikti_sha256": "5b82c638e261ec1fa415bfeff413aa5a1b472568da4720639d94aab35704965e",
+  "ham_cikti_bayt": 8868
+}

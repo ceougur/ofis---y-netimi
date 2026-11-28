@@ -1,0 +1,32 @@
+{
+  "ad": "ui251-e2e-senaryo-degersiz-iptal-m2t2-251-ist",
+  "komut": "node --disable-warning=ExperimentalWarning test/e2e/senaryo-degersiz-iptal-m2t2-251.mjs",
+  "commit": "3c601aa22211acf11d7e8fb01cfb8c172550c216",
+  "dal": "worktree-agent-ab5e336bece8bb299",
+  "kirli": 1,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-28T15:05:40.099Z",
+  "sure_sn": 21.7,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 41,
+    "gecen": 41,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ui251/kanit/2026-11-28/ui251-e2e-senaryo-degersiz-iptal-m2t2-251-ist.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ab5e336bece8bb299",
+  "ham_cikti_sha256": "e0f4097bbfa00f7b4a0ab0c9e48fefb673c2b6d173161745d03df9a949d4bc56",
+  "ham_cikti_bayt": 3446
+}

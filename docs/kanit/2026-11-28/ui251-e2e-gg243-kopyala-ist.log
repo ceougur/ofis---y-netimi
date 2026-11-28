@@ -1,0 +1,37 @@
+1) hata bildirimi iki kez (×2) → Kopyala (fare)
+  ✓ ön koşul: sunucu hata iletisi ("Faturanın carisini seçin.")
+  ✓ ön koşul: aynı bildirim ×2
+  ✓ hata bildiriminde Kopyala düğmesi var
+  ✓ aria-label Bildirimi Kopyala
+  ✓ düğme adı Kopyala
+  ✓ panodaki metin = bildirim metni ("Faturanın carisini seçin.")
+  ✓ geri bildirim Kopyalandı
+2) bildirim metni tıklamayı geçirmeye devam eder
+  ✓ metin alanı tıklamayı geçirir
+3) klavye: odak + Enter
+  ✓ düğme odak alabilir
+  ✓ Enter ile panoya yazıldı
+3b) e-Belge / e-Fatura / e-Arşiv / e-SMM / e-Posta kısa çizgiden satıra bölünmez
+  ✓ ön koşul: sunucu metni okundu (208 karakter)
+  ✓ sunucu metni: e- adları bulundu (e-Belge)
+  ✓ sunucu metni: ön koşul — metin dar genişlikte birden çok satır (156/156 genişlik)
+  ✓ sunucu metni: hiçbir genişlikte e- adı satıra bölünmedi (0 bölünme)
+  ✓ sunucu metni: bildirim metni (textContent) sunucu metniyle aynı
+  ✓ sunucu metni: görünmez karakter yok
+  ✓ sunucu metni: Kopyala panoya bayt bayt aynı metni yazdı
+  ✓ karma metin: e- adları bulundu (E-Fatura, e-Arşiv, e-SMM, e-Posta, e-Belge)
+  ✓ karma metin: ön koşul — metin dar genişlikte birden çok satır (156/156 genişlik)
+  ✓ karma metin: hiçbir genişlikte e- adı satıra bölünmedi (0 bölünme)
+  ✓ karma metin: bildirim metni (textContent) sunucu metniyle aynı
+  ✓ karma metin: görünmez karakter yok
+  ✓ karma metin: Kopyala panoya bayt bayt aynı metni yazdı
+4) navigator.clipboard yok (http://<ip> benzetimi) → yedek yol
+  ✓ yedek yol metni kopyaladı (olay: ["Faturanın carisini seçin."], pano: "Faturanın carisini seçin.")
+  ✓ yedek yolda da Kopyalandı
+5) execCommand da olmazsa metin seçili kutuda
+  ✓ metin seçili kutuda ({"value":"Faturanın carisini seçin.","selected":"Faturanın carisini seçin.","focused":true})
+6) başarı bildiriminde Kopyala yok
+  ✓ başarı bildiriminde düğme yok
+  ✓ sayfa hatası yok
+
+✓ gg243-kopyala: 28 geçti, 0 kaldı
