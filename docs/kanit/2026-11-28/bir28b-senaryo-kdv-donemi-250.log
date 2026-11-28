@@ -1,0 +1,35 @@
+(node:5639) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+A) Alış formu: KDV İndirim Dönemi (Tab, ok tuşu, kayıt, veri tabanı, belge kartı, mahsup ön izlemesi)
+  ✓ alış formunda 'KDV İndirim Dönemi' açılır listesi var
+  ✓ etiket yazım düzeninde (KDV İndirim Dönemi)
+  ✓ seçenekler fatura ayı … izleyen yılın Aralık'ı (13: Aralık 2026 (Fatura Ayı) … Aralık 2027)
+  ✓ varsayılan: fatura ayı
+  ✓ Tab ile KDV İndirim Dönemi'ne gelindi (odak: vatPeriod)
+  ✓ ok tuşuyla Ocak 2027 seçildi (2027-01)
+    [soru] "Faturayı Kaydet" → Evet (kayıt onayı (belge kaydedilsin) — beklenen soru)
+  ✓ kaydedildi; veri tabanı: tarih 2026-12-31, dönem 2027-01, KDV 400
+  ✓ belge kartında 'KDV İndirim Dönemi Ocak 2027'
+  ✓ mahsup ön izlemesi İ: Aralık 0, Ocak 400 (elle 0 / 400)
+  ✓ Düzenle formu dönemle dolu (2027-01)
+  ✓ Şubat 2027 seçildi (2027-02)
+    [soru] "Değişiklikler Kaydedilsin mi?" → Evet (düzenleme kayıt onayı — beklenen soru)
+  ✓ Düzenle kaydedildi: veri tabanında dönem 2027-02
+  ✓ mahsup ön izlemesi İ: Aralık 0, Ocak 0, Şubat 400 (elle 0 / 0 / 400)
+B) Tarih değişince seçenekler yeniden kurulur; aralık dışı dönem fatura ayına döner (görünür yazı)
+  ✓ Aralık 2027 seçildi
+  ✓ yeni aralık (Aralık 2025 (Fatura Ayı) … Aralık 2026)
+  ✓ seçili dönem fatura ayına döndü
+  ✓ görünür yazı: Seçili dönem (Aralık 2027) yeni fatura tarihinin aralığında değil; KDV İndirim Dönemi fatura ayına alındı.
+    [soru] "Kaydedilmemiş Değişiklik" → Evet (adım bitti; kaydedilmemiş deneme formu kapatılıyor (meşru soru))
+C) Satış formunda alan yok
+  ✓ satış formunda KDV İndirim Dönemi YOK
+    [soru] "Kaydedilmemiş Değişiklik" → Evet (adım bitti; kaydedilmemiş deneme formu kapatılıyor (meşru soru))
+D) KDV Özeti: dönemi ileri alınan alış faturası dönem ayında (ekranda)
+  ✓ KDV Özeti satırı Şubat 2027 · Alış · 2.000 / 400 ([["Şubat 2027","Alış","%20","1","₺2.000,00","₺400,00","₺0,00"],["Şubat 2027","Sonraki Döneme Devreden KDV","","","","₺400,00",""]])
+  ✓ ayın sonuç satırı ([["Şubat 2027","Alış","%20","1","₺2.000,00","₺400,00","₺0,00"],["Şubat 2027","Sonraki Döneme Devreden KDV","","","","₺400,00",""]])
+  ✓ Aralık 2026 satırı yok (belge ayı değil, dönem ayı)
+  ✓ TOPLAM satırı = satırlar; altında devreden / ödenecek ([["TOPLAM","","","1","₺2.000,00","₺400,00","₺0,00"],["","Önceki Dönemden Devreden KDV","","","","₺0,00",""],["","Ödenecek KDV","","","","₺0,00",""],["","Sonraki Döneme Devreden KDV","","","","₺400,00",""]])
+  ✓ sayfa hatası yok
+
+✓ senaryo-kdv-donemi-250: 23 geçti, 0 kaldı

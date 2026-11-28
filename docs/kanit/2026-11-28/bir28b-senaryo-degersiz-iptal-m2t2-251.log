@@ -1,0 +1,49 @@
+(node:6294) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+■ 1 Değersiz'den sonra fatura İptal Et → ret, pencere açık, dört parçalı ileti
+  ✓ ileti ne oldu: "Fatura iptal edilemez: bu caride 17.09.2026 tarihli 3.000,00 TL Değersiz Alacak satırı var; iptalden sonra cari 2.476,45"
+  ✓ ileti neden (−2.476,45)
+  ✓ ileti sınır (123,55)
+  ✓ ileti ne yapmalı + nereye
+  ✓ pencere açık kalır
+  ✓ veri tabanı: fatura iptal edilmedi
+  ✓ bakiye 423.55 (423,55)
+
+■ 2 Öbür şüpheli kaydın silinmesi reddi KALIR; ileti doğru anlatır (S-DKM2-3 = C)
+  ✓ bildirim: "Şüpheli alacak kaydı silinemez: bu kayıt silinirse carinin bağsız tahsilatı Değersiz Alacak yazılan kayda düşer ve o kaydın 20.09.2026 tarihli 3.000,00 TL Değersiz Alacak satırı, kayda düşen tahsilat "
+  ✓ bildirim ne yapmalı + nereye
+  ✓ eski (yanlış) anlatım yok
+  ✓ veri tabanı: S2 silinmedi
+  ✓ bakiye 2300 (2.300)
+
+■ 3 (tur 3) Değersiz olmadan da eksi kalacak iptal de reddedilir (S-M2T2-1 = A)
+  ✓ ileti ne oldu: "Fatura iptal edilemez: bu caride 17.09.2026 tarihli 3.000,00 TL Değersiz Alacak satırı var; iptalden sonra cari 5.476,45 TL alacaklı (eksi bakiye) olurdu. Değer"
+  ✓ ileti neden (Değersiz olmadan da eksi)
+  ✓ ileti ne yapmalı + nereye
+  ✓ veri tabanı: fatura iptal edilmedi
+  ✓ bakiye -2576.45 (−2.576,45)
+
+■ 4 (tur 3) Değersiz'den sonra fatura tutarının Düzenle ile düşürülmesi reddedilir (S-M2T2-2 = A)
+  ✓ beklenen onay sorusu: "× ONAY Değişiklikler Kaydedilsin mi? FIS2026000000004 numaralı satış faturası yeni haliyle kaydedilecek: ₺100,00 (M2T3 Ekran Düzenle Müşterisi). Eski stok, cari"
+  ✓ başka soru çıkmadı
+  ✓ ileti ne oldu: "Fatura düzenlenemez: bu caride 17.09.2026 tarihli 3.000,00 TL Değersiz Alacak satırı var; düzenlemeden sonra cari 2.376,45 TL alacaklı (eksi bakiye) olurdu. Değ"
+  ✓ ileti: Değersiz silmek yetmez (tur 4 DÜŞÜK-1)
+  ✓ ileti ne yapmalı + nereye (şüpheli kayıt da)
+  ✓ form açık kalır
+  ✓ veri tabanı: fatura 2.900 kaldı
+  ✓ bakiye 423.55 (423,55)
+
+■ 6 (tur 4) Değersiz'den sonra Borç Yaz satırının silinmesi reddedilir (S-DKM2T3-1 = A)
+  ✓ beklenen onay sorusu: "× ONAY Hareketi Sil ₺3.400,00 tutarındaki borç yaz silinecek; bakiye yeniden hesaplanır. Yönetim → Silinenler’den geri y"
+  ✓ başka soru çıkmadı
+  ✓ bildirim ne oldu: "Borç hareketi silinemez: bu caride 17.09.2026 tarihli 3.000,00 TL Değersiz Alacak satırı var; silmeden sonra cari 2.976,45 TL alacaklı (eksi bakiye) olurdu. Değ"
+  ✓ bildirim ne yapmalı + nereye
+  ✓ veri tabanı: borç satırı silinmedi
+  ✓ bakiye 423.55 (423,55)
+
+■ 5 Mutabakat Testi ve sayfa hataları
+  ✓ Mutabakat Testi tamam
+  ✓ sayfa hatası yok
+
+33 geçti, 0 kaldı

@@ -1,0 +1,32 @@
+{
+  "ad": "bir28b-senaryo-kdv-mahsup-sonrasi-251",
+  "komut": "node test/e2e/senaryo-kdv-mahsup-sonrasi-251.mjs",
+  "commit": "42f4acb5f64c9aacccc527081be40f134898fd04",
+  "dal": "claude/epic-thompson-w0lc2l",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-28T07:55:49.004Z",
+  "sure_sn": 19.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 45,
+    "gecen": 45,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "docs/kanit/2026-11-28/bir28b-senaryo-kdv-mahsup-sonrasi-251.log",
+  "klasor": "/home/user/ofis---y-netimi",
+  "ham_cikti_sha256": "9a75d96103a127fd58837a79288c70548d03d02a2432c393f42ca7aa294e0af6",
+  "ham_cikti_bayt": 11919
+}

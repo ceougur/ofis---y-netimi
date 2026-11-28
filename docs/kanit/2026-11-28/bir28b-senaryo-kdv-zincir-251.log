@@ -1,0 +1,20 @@
+(node:5309) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+A) Raporlar → Tüm Raporlar → KDV Özeti → 01.03.2026 – 31.03.2026 (Şubat mahsupsuz)
+  ✓ Mart özet kartları 1.600 / 0 / 600 — zincir ({"Hesaplanan KDV (391) (İadeler Düşülmüş)":"₺1.000,00","İndirilecek KDV (191) (İadeler Düşülmüş)":"₺0,00","Alıcı Olarak Kesilen Tevkifat (2 No.lu)":"₺0,00","Önceki Dönemden Devreden KDV":"₺1.600,00","Ödenecek KDV":"₺0,00","Sonraki Döneme Devreden KDV":"₺600,00","Mahsup Edilmemiş Ay":"Şubat 2026 (devreden ve ödenecek KDV bu aylar sırayla mahsup edilmiş gibi hesaplandı; KDV Mahsup Fişi ön izlemesi defterdeki devredeni gösterir, ayları sırayla mahsup edin)"})
+  ✓ tablo altı = özet ([["TOPLAM","","","1","₺5.000,00","₺1.000,00","₺0,00"],["","Önceki Dönemden Devreden KDV","","","","₺1.600,00",""],["","Ödenecek KDV","","","","₺0,00",""],["","Sonraki Döneme Devreden KDV","","","","₺600,00",""]])
+  ✓ not: Şubat 2026 (devreden ve ödenecek KDV bu aylar sırayla mahsup edilmiş gibi hesaplandı; KDV Mahsup Fişi ön izlemesi defterdeki devredeni gösterir, ayları sırayla mahsup edin)
+  ✓ Mart fişi yok: uyuşmazlık notu yok
+B) KDV Mahsup Fişi Oluştur → Mart: ön izleme DEĞİŞMEDİ (defterdeki 2.000); onay → kopuk zincir notu
+  ✓ ön izleme defterden (2.000 → 1.000): Sonraki Aya Devreden KDV (190): ₺1.000,00 · kullanılan devreden ₺2.000,00
+  ✓ ön izlemede 'Şubat 2026 mahsup edilmedi' uyarısı
+    [soru] "KDV Mahsup Fişi" → Evet (senaryo Şubat atlanmış Mart mahsubunu bilerek yazar)
+  ✓ veri tabanı: Mart fişi {"cin":200000,"cout":100000,"pay":0} (2.000 / 1.000 / 0 — fiş DEĞİŞMEDİ)
+  ✓ mahsuptan sonra rapor yine zincir 1.600 / 0 / 600 ({"summary":["1600,00","0,00","600,00"],"foot":["1600,00","0,00","600,00"]})
+  ✓ kopuk zincir notu: Mart 2026 fişi ₺2.000,00 devredenle kesilmiş, sırayla mahsupta ₺1.600,00 olmalıydı (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)
+C) Bu Yıl (2026): ay satırları zincirle
+  ✓ Bu Yıl: 0 / 0 / 600 ({"summary":["0,00","0,00","600,00"],"foot":["0,00","0,00","600,00"]})
+  ✓ ay satırları ([["Ocak 2026","Sonraki Döneme Devreden KDV","2000,00"],["Şubat 2026","Önceki Dönemden Devreden KDV","2000,00"],["Şubat 2026","Sonraki Döneme Devreden KDV","1600,00"],["Mart 2026","Önceki Dönemden Devreden KDV","1600,00"],["Mart 2026","Sonraki Döneme Devreden KDV","600,00"]])
+  ✓ sayfa hatası yok
+
+✓ senaryo-kdv-zincir-251: 12 geçti, 0 kaldı
