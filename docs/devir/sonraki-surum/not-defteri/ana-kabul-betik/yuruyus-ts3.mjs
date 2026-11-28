@@ -1,0 +1,178 @@
+// ANA OTURUM — Ç5-B EKRAN YÜRÜYÜŞÜ (öz denetim 2, 11.11.2026; anayasa "kalite çıtası"): günlük iş akışı kullanıcı gözüyle; her adımda ekran görüntüsü + ekrandaki sayılar.
+// Kurulum programın API'siyle, bakış ve iki işlem (kart tahsilatı, taksit ekleme) EKRANDAN. Kullanım: ROOT=<kod kökü> node yuruyus.mjs
+import fs, { mkdtempSync } from "node:fs";
+import { tmpdir } from "node:os";
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+process.env.HUKUK_LICENSE_URL = "http://127.0.0.1:9";
+const ROOT = process.env.ROOT;
+const imp = rel => import(pathToFileURL(path.join(ROOT, rel)).href);
+const { chromium } = await import(pathToFileURL(path.join(ROOT, "node_modules/playwright/index.mjs")).href);
+const { createApp } = await imp("server/app.mjs");
+const { createClient, installPageClock } = await imp("test/helpers.mjs");
+const { escClose } = await imp("test/e2e/esc-kapat.mjs");
+const OUT = process.env.OUT;
+const PASS = "Prova-Admin-2026!";
+const TODAY = "2026-10-20";
+const NOW = `${TODAY}T12:00:00+03:00`;
+const day = o => { const d = new Date(`${TODAY}T00:00:00Z`); d.setUTCDate(d.getUTCDate() + o); return d.toISOString().slice(0, 10); };
+const MODAL = ".hof-modal-backdrop.is-visible";
+const TOP = `${MODAL}:nth-last-child(1 of ${MODAL})`;
+const unwrap = r => (r.data && typeof r.data === "object" && "ok" in r.data ? (r.data.ok ? r.data.data : r.data) : r.data);
+const must = async (label, p) => { const r = await p; if (r.status !== 200) throw new Error(`${label}: ${r.status} ${JSON.stringify(r.data).slice(0, 300)}`); return unwrap(r); };
+const note = (...a) => console.log(...a);
+const root = mkdtempSync(path.join(tmpdir(), "yuruyus-c5b-"));
+const app = createApp({ dataDir: path.join(root, "data"), backupDir: path.join(root, "backups"), logLevel: "warn", scheduleBackups: false, now: NOW, env: { HUKUK_ADMIN_PASSWORD: PASS, HUKUK_DATASET_AUTOSYNC: "0", HUKUK_LICENSE_URL: "http://127.0.0.1:9" }, license: { enforce: false, machineId: "a1b2c3d4e5f60718293a4b5c6d7e8f51" } });
+const { port } = await app.listen(0, "127.0.0.1");
+const BASE = `http://127.0.0.1:${port}`;
+const api = createClient(BASE);
+const browser = await chromium.launch();
+let page = null; let n = 0;
+const shot = async name => { n += 1; const f = path.join(OUT, `${String(n).padStart(2, "0")}-${name}.png`); await page.screenshot({ path: f }).catch(() => null); return f; };
+const closeAll = async () => { for (let i = 0; i < 6 && (await page.$(MODAL)); i += 1) { await escClose(page); await page.waitForTimeout(250); } };
+const text = sel => page.$$eval(sel, ns => ns.map(x => x.textContent.replace(/\s+/g, " ").trim()));
+const step = async (title, fn) => { note(`\n■ ${title}`); try { await fn(); } catch (e) { note(`  ✗ ADIM YARIDA: ${String(e?.message || e).split("\n")[0]}`); await shot(`hata`); await closeAll().catch(() => null); } };
+try {
+  await api.login("admin", PASS);
+  await must("banka", api.post("/api/workspace/bank/setup/dismiss", {}));
+  const acc = (name, type = "customer") => must(name, api.post("/api/workspace/accounts", { name, type, registeredOn: day(-400), phone: `0500 260 ${String(10 + (acc.i = (acc.i || 0) + 1))} 01` }));
+  const entry = (a, body) => must("hareket", api.post(`/api/workspace/accounts/${a.id}/entries`, { method: "cash", cashForce: true, ...body }));
+  const goods = await must("ürün", api.post("/api/workspace/stock", { name: "Yürüyüş Ürün", code: "YRY-1", unit: "Adet", unitPrice: "10", salePrice: "100" }));
+  await must("alım", api.post(`/api/workspace/stock/${goods.id}/moves`, { kind: "in", qty: "500", unitPrice: "10", pay: "none", date: day(-300) }));
+  // M1: ayrı taksitli kart 1.200 = 3 × 400 (−40, −10, +20)
+  const m1 = await acc("Yürüyüş Taksitli Kart");
+  const p1 = await must("p1", api.post("/api/workspace/plans", { name: m1.name, registeredOn: day(-50), total: "1200", accountId: m1.id }));
+  for (const [d, a] of [[-40, "400"], [-10, "400"], [20, "400"]]) await must("taksit", api.post(`/api/workspace/plans/${p1.id}/items`, { dueDate: day(d), amount: a }));
+  // M2: Borç Yaz 1.000 (−30) → Carinin Mevcut Borcunu Taksitlendir, TAKSİTSİZ (taksitler ekrandan girilecek)
+  const m2 = await acc("Yürüyüş Mevcut Borç");
+  await entry(m2, { kind: "debt", amount: "1000", date: day(-30) });
+  const p2 = await must("p2", api.post("/api/workspace/plans", { name: m2.name, accountId: m2.id, registeredOn: day(-20), total: "1000", coversBalance: true }));
+  // M3: stoktan veresiye satış 1.000 + taksitlendir (2 taksit)
+  const m3 = await acc("Yürüyüş Stoktan Taksit");
+  await must("satış", api.post(`/api/workspace/stock/${goods.id}/moves`, { kind: "out", qty: "10", unitPrice: "100", pay: "account", method: "cash", accountId: m3.id, date: day(-20), installments: { count: 2, firstDue: day(-10) } }));
+  const p3 = (await must("m3", api.get(`/api/workspace/accounts/${m3.id}`))).plans[0].id;
+  // M4: Borç Yaz 600 (vade −5) + bağsız tahsilat 200 (−3)
+  const m4 = await acc("Yürüyüş Açık Hesap");
+  await entry(m4, { kind: "debt", amount: "600", date: day(-25), dueDate: day(-5) });
+  await entry(m4, { kind: "in", amount: "200", date: day(-3) });
+  // M5: taksitsiz AYRI kart 800
+  const m5 = await acc("Yürüyüş Taksitsiz Kart");
+  const p5 = await must("p5", api.post("/api/workspace/plans", { name: m5.name, registeredOn: day(-20), total: "800", accountId: m5.id }));
+  // M6 (TS-3): ayrı kart 900 = 3 × 300 (−40, −10, +20) + BAĞSIZ tahsilat 500 (−3)
+  const m6 = await acc("Yürüyüş Bağsız Tahsilat");
+  const p6 = await must("p6", api.post("/api/workspace/plans", { name: m6.name, registeredOn: day(-50), total: "900", accountId: m6.id }));
+  for (const [d, a] of [[-40, "300"], [-10, "300"], [20, "300"]]) await must("taksit", api.post(`/api/workspace/plans/${p6.id}/items`, { dueDate: day(d), amount: a }));
+  await entry(m6, { kind: "in", amount: "500", date: day(-3) });
+  // M7 (TS-3): ayrı kart 600 = 2 × 300 (−40, −10) + BAĞSIZ tahsilat 800 (−3) → kuyrukta kart biter, bakiye −200
+  const m7 = await acc("Yürüyüş Fazla Ödeyen");
+  const p7 = await must("p7", api.post("/api/workspace/plans", { name: m7.name, registeredOn: day(-50), total: "600", accountId: m7.id }));
+  for (const [d, a] of [[-40, "300"], [-10, "300"]]) await must("taksit", api.post(`/api/workspace/plans/${p7.id}/items`, { dueDate: day(d), amount: a }));
+  await entry(m7, { kind: "in", amount: "800", date: day(-3) });
+  // T1: tedarikçi — stoktan alış iadesi 300
+  const t1 = await acc("Yürüyüş Tedarikçi", "supplier");
+  await must("alış iadesi", api.post(`/api/workspace/stock/${goods.id}/moves`, { kind: "out", reason: "preturn", qty: "3", unitPrice: "100", pay: "account", method: "cash", accountId: t1.id, date: day(-20) }));
+  const ids = { m1, m2, m3, m4, m5, m6, m7, t1 }; const plans = { p1: p1.id, p2: p2.id, p3, p5: p5.id, p6: p6.id, p7: p7.id };
+
+  const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, locale: "tr-TR", deviceScaleFactor: 1 });
+  page = await context.newPage();
+  await installPageClock(page, app.config.now);
+  const errors = [];
+  page.on("pageerror", e => errors.push(`pageerror ${e.message}`));
+  await page.goto(`${BASE}/`);
+  await page.fill("#hof-auth input[name=username]", "admin");
+  await page.fill("#hof-auth input[name=password]", PASS);
+  await Promise.all([page.waitForEvent("load"), page.click('#hof-auth button[type="submit"]')]);
+  await page.waitForFunction(() => Boolean(window.HOF?.plans?.open && window.HOF?.accounts?.open && window.HOF?.dues), null, { timeout: 60000 });
+  await page.waitForTimeout(1000);
+  await closeAll();
+
+  await step("1 Taksitler listesi — her sekme", async () => {
+    await page.evaluate(() => window.HOF.plans.open());
+    await page.waitForSelector(`${TOP} [data-status]`, { timeout: 15000 });
+    const tabs = await page.$$eval(`${TOP} [data-status]`, ns => ns.map(x => [x.getAttribute("data-status"), x.textContent.replace(/\s+/g, " ").trim()]));
+    note("  sekmeler:", JSON.stringify(tabs));
+    for (const [id, label] of tabs) {
+      await page.click(`${TOP} [data-status="${id}"]`);
+      await page.waitForTimeout(700);
+      const rows = await page.$$eval(`${TOP} tr[data-plan]`, rs => rs.map(r => [...r.querySelectorAll("td")].map(td => td.textContent.replace(/\s+/g, " ").trim()).join(" | ")));
+      note(`  [${label}] ${rows.length} kart`); for (const r of rows) note(`     ${r}`);
+      await shot(`taksitler-${id}`);
+    }
+    await closeAll();
+  });
+  const openCard = async id => { await page.evaluate(x => window.HOF.plans.open(x), id); await page.waitForTimeout(1500); };
+  const cardDump = async label => {
+    const kpi = await text(`${TOP} .hof-kpi, ${TOP} [class*="kpi"]`);
+    const rows = await page.$$eval(`${TOP} tr[data-item]`, rs => rs.map(r => [...r.querySelectorAll("td")].map(td => td.textContent.replace(/\s+/g, " ").trim()).join(" | ")));
+    const btns = await page.$$eval(`${TOP} button[data-act]`, bs => bs.map(b => `${b.getAttribute("data-act")}${b.disabled ? "(pasif)" : ""}:${b.textContent.replace(/\s+/g, " ").trim()}`));
+    note(`  ${label} KPI: ${JSON.stringify(kpi.slice(0, 6))}`); note(`  taksit satırları (${rows.length}):`); for (const r of rows) note(`     ${r}`); note(`  düğmeler: ${JSON.stringify(btns)}`);
+  };
+  for (const [key, label] of [["p1", "taksitli-kart"], ["p2", "mevcut-borc-taksitsiz"], ["p3", "stoktan"], ["p5", "taksitsiz-ayri"], ["p6", "bagsiz-tahsilat"], ["p7", "fazla-odeyen"]]) {
+    await step(`2 Kart penceresi: ${label}`, async () => { await openCard(plans[key]); await cardDump(label); await shot(`kart-${label}`); await closeAll(); });
+  }
+  await step("3 EKRANDAN: taksitli karta Taksit Tahsilatı 500 (insan hızı)", async () => {
+    await openCard(plans.p1);
+    await page.click(`${TOP} [data-act="pay"]`);
+    await page.waitForSelector(`${TOP} input[name="amount"]`, { timeout: 10000 });
+    const suggested = await page.$eval(`${TOP} input[name="amount"]`, i => i.value);
+    note(`  formda önerilen tutar: “${suggested}”`);
+    await shot("tahsilat-formu");
+    await page.click(`${TOP} input[name="amount"]`); await page.keyboard.press("Control+A");
+    for (const ch of "500") await page.keyboard.type(ch, { delay: 60 });
+    await page.keyboard.press("Tab");
+    await page.click(`${TOP} button[type="submit"]`);
+    await page.waitForTimeout(1500);
+    const still = await page.$(`${TOP} input[name="amount"]`);
+    note(`  form ${still ? "AÇIK KALDI (soru / hata?)" : "kapandı"}`);
+    if (still) { note("  pencere metni:", JSON.stringify((await text(`${TOP}`)).map(t => t.slice(0, 400)))); await shot("tahsilat-sonrasi-soru"); await closeAll(); await openCard(plans.p1); }
+    await cardDump("tahsilattan sonra"); await shot("kart-taksitli-tahsilat-sonrasi"); await closeAll();
+  });
+  await step("4 EKRANDAN: taksitsiz Mevcut Borç kartına taksit girme yolu", async () => {
+    await page.evaluate(() => window.HOF.plans.open());
+    await page.waitForSelector(`${TOP} [data-status]`, { timeout: 15000 });
+    for (const id of ["active", "overdue", "done", "all"]) {
+      if (!(await page.$(`${TOP} [data-status="${id}"]`))) continue;
+      await page.click(`${TOP} [data-status="${id}"]`); await page.waitForTimeout(600);
+      const here = await page.$(`${TOP} tr[data-plan="${plans.p2}"]`);
+      note(`  Mevcut Borç kartı '${id}' sekmesinde: ${here ? "VAR" : "yok"}`);
+    }
+    await closeAll(); await openCard(plans.p2);
+    const all = await page.$$eval(`${TOP} button, ${TOP} a`, bs => bs.map(b => b.textContent.replace(/\s+/g, " ").trim()).filter(Boolean));
+    note("  kart penceresindeki düğmeler / bağlantılar:", JSON.stringify(all));
+    await shot("mevcut-borc-kart-dugmeler"); await closeAll();
+  });
+  for (const [key, label] of [["m1", "taksitli"], ["m2", "mevcut-borc"], ["m3", "stoktan"], ["m4", "acik-hesap"], ["m5", "taksitsiz"], ["m6", "bagsiz-tahsilat"], ["m7", "fazla-odeyen"], ["t1", "tedarikci"]]) {
+    await step(`5 Cari kartı: ${label}`, async () => {
+      await page.evaluate(id => window.HOF.accounts.open(id), ids[key].id);
+      await page.waitForSelector(`${MODAL} [data-acc-overdue]`, { timeout: 15000 }).catch(() => null);
+      await page.waitForTimeout(600);
+      const kpis = await text(`${MODAL} .hof-kpi, ${MODAL} [data-acc-overdue]`);
+      note(`  göstergeler: ${JSON.stringify(kpis.slice(0, 8))}`);
+      const c = await must("cari", api.get(`/api/workspace/accounts/${ids[key].id}`));
+      note(`  API: bakiye ${c.balance ?? c.totals?.balance} · gecikmiş ${c.totals?.overdueDebt} · kartlar ${JSON.stringify((c.plans || []).map(p => `${p.status ?? p.state}:${p.remaining}`))}`);
+      await shot(`cari-${label}`); await closeAll();
+    });
+  }
+  await step("6 Zil", async () => {
+    await page.click(".topbar .top-actions > .icon-button"); await page.waitForSelector(".hof-alert-list"); await page.waitForTimeout(400);
+    const items = await text(".hof-alert-list li"); for (const i of items.filter(t => t.includes("Yürüyüş"))) note(`     ${i.slice(0, 200)}`);
+    note(`  zilde 'Yürüyüş' kalemi: ${items.filter(t => t.includes("Yürüyüş")).length} / ${items.length}`);
+    await shot("zil"); await page.keyboard.press("Escape"); await page.waitForTimeout(300);
+  });
+  await step("7 Vade Takip (Raporlar)", async () => {
+    await page.evaluate(() => window.HOF.overview.openReports("vade")); await page.waitForTimeout(2000);
+    const rows = await page.$$eval(`${TOP} table tbody tr`, rs => rs.map(r => [...r.querySelectorAll("td")].map(td => td.textContent.replace(/\s+/g, " ").trim()).join(" | ")));
+    for (const r of rows.filter(t => t.includes("Yürüyüş") || /toplam/i.test(t))) note(`     ${r.slice(0, 220)}`);
+    note(`  satır: ${rows.length}`); await shot("vade-takip");
+    for (const p of ["late", "open"]) {
+      const v = await must("vade", api.get(`/api/workspace/overview/vade-takip?preset=${p}`));
+      const by = {}; for (const r of v.rows) by[r.party] = (by[r.party] || 0) + r.amount;
+      note(`  API preset=${p}: ${JSON.stringify(Object.fromEntries(Object.entries(by).filter(([k]) => k.includes("Yürüyüş"))))}`);
+    }
+    await closeAll();
+  });
+  note(`\nsayfa hatası: ${errors.length ? errors.slice(0, 5).join(" | ") : "yok"}`);
+  const mt = await api.get("/api/workspace/integrity").catch(() => null);
+  note(`Mutabakat ucu: ${mt?.status} ${JSON.stringify(unwrap(mt || {}) ?? "").slice(0, 200)}`);
+  await context.close();
+} catch (e) { console.error("HATA:", e); } finally { await browser.close(); await app.close(); fs.rmSync(root, { recursive: true, force: true }); }

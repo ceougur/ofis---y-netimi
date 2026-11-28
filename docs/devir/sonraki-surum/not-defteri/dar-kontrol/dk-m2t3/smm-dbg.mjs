@@ -1,0 +1,13 @@
+const ROOT = process.argv[2];
+const h = await import(`${ROOT}/test/helpers.mjs`);
+const o = await import(`${ROOT}/test/banka-210-ortak.mjs`);
+const server = await h.startTestServer({ now: `2026-10-15T12:00:00+03:00`, env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" } });
+const api = o.apiOf(await h.loginAdmin(server));
+await api.post("/api/workspace/bank/setup/dismiss", {});
+const a = (await api.post("/api/workspace/accounts", { name: "S", type: "customer", registeredOn: "2026-09-01", phone: "0500 111 22 33" })).data;
+const r = await api.post("/api/workspace/invoices", { scenario: "smm", accountId: a.id, issueDate: "2026-09-10", lines: [{ name: "Danışmanlık", qty: 1, unitPrice: "2900", vatRate: 0 }], payment: { rest: "open" } });
+console.log(r.status, r.code, String(r.error).slice(0, 300), r.data?.id);
+const r2 = await api.get(`/api/workspace/invoices/${r.data?.id}`);
+console.log(r2.status, r2.data?.kind, r2.data?.tryPayable, r2.data?.status, JSON.stringify(r2.data?.money || {}).slice(0, 300));
+server.close();
+process.exit(0);
