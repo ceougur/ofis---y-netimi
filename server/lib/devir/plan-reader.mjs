@@ -13,7 +13,7 @@ import { createStockValuation, loadValuationInput } from "../stock-valuation.mjs
 import { closingDayOf } from "../financial-statements.mjs";
 import { bookTypeOf } from "../book-type.mjs";
 import { LEDGER_RULE_VERSION, reconcile, trialBalance } from "../general-ledger.mjs";
-import { CLOSE_RULE_WAIVE } from "../accounts.mjs";
+import { CLOSE_RULE_WAIVE, closeDaySql } from "../accounts.mjs";
 import { postedRuleDiffCorrections, ruleDiffCorrectionPlan, ruleDiffCorrectionYear } from "../ledger-opening.mjs";
 import { INVOICE_KINDS } from "../invoice-math.mjs";
 import { voucherNoText } from "../ledger-vouchers.mjs";
@@ -178,13 +178,19 @@ function stockQtyAt(store, K) {
   return new Map(store.all("SELECT item_id AS id, SUM(CASE WHEN kind = 'out' THEN -qty ELSE qty END) AS q FROM stock_moves WHERE date <= ? GROUP BY item_id", K).map(row => [row.id, Math.round((Number(row.q) || 0) * 1000)]));
 }
 
-/** Taksit kartları (K'de var olan): ≤K net tahsilat (kart başına; tek toplu sorgu), K'de kapalı mı, kapanış kuralı. */
+/**
+ * Taksit kartları (K'de var olan): ≤K net tahsilat (kart başına; tek toplu sorgu), K'de kapalı mı, kapanış kuralı.
+ * D3 tur 6 (dar kontrol D3 tur 1–5 ORTA-1; BAŞ MİMAR KARARI 27.11 23:01): kapanış günü programın TANIMIYLA (lib/accounts.mjs closeDaySql — cari ekstresi, genel defter 689, kilit,
+ * mutabakat aynı ifade): closed_at; 2.0.13 öncesi kapatılmışta closed_at boş → son güncelleme günü; Kayıt Tarihi'nden önce değil. Önceden yalnız closed_at okunuyordu: eski sürümde
+ * kapatılmış kart K'de AÇIK sayılıyor, yeni yılda kalanıyla açılacaktı (devirli ≠ devirsiz); carisizse kalanı 127'ye karşılık yazılıp sebepsiz modül farkı durdurması doğuyordu.
+ */
 function cardsAt(store, K) {
   if (!has(store, "plans")) return [];
   const cols = columns(store, "plans");
   const closeRule = cols.has("close_rule") ? "p.close_rule" : `'${CLOSE_RULE_WAIVE}'`;
-  const closedAt = cols.has("closed_at") ? "COALESCE(p.closed_at, '')" : "''";
   const opened = cols.has("registered_on") ? "COALESCE(NULLIF(p.registered_on, ''), substr(p.created_at, 1, 10))" : "substr(p.created_at, 1, 10)";
+  // Sütunu eksik depo (2.0.13 öncesi şema; göçten geçmiş dosyada olmaz): aynı tanımın yedek kolu.
+  const closedAt = cols.has("closed_at") && cols.has("registered_on") ? closeDaySql("p") : `MAX(${cols.has("closed_at") ? "COALESCE(p.closed_at, substr(p.updated_at, 1, 10))" : "substr(p.updated_at, 1, 10)"}, ${opened})`;
   const paid = has(store, "plan_entries") ? "COALESCE((SELECT SUM(CAST(ROUND((CASE WHEN e.kind = 'in' THEN e.amount ELSE -e.amount END) * 100) AS INTEGER)) FROM plan_entries e WHERE e.plan_id = p.id AND e.date <= ?1), 0)" : "0";
   return store
     .all(
