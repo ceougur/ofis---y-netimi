@@ -18,7 +18,7 @@ def parca(anahtar, bas, son, metin=IS):
     b = s.find(son, a) if son else len(s); assert b > a, son
     return s[a:b].strip()
 
-YASAK = "düzeltme ajanlarının görev metinleri ve raporları (`docs/devir/2.5.1-DEVAM/*-istem.txt`, `*-rapor.md` — özellikle `m2-*`, `m2k-*`, `m2t2-*`, `m2t3-*`, `m2t4-*`), `docs/kanit/2026-11-28/m2t4-*` (düzeltme ajanının kanıtı), ana oturumun yeniden koşu not defterleri (`m2t4rk/`, `m2t4yk/`); kâhin klasörleri `test/bagimsiz/**` (yalnız `npm run test:kahin-*` komutuyla KOŞABİLİRSİN, kodunu okuma). İZİNLİ: önceki dar kontrolün betikleri `{SP}/dk-m2t3/` (kendi girdin olarak)."
+YASAK = f"düzeltme ajanlarının görev metinleri ve raporları (`docs/devir/2.5.1-DEVAM/*-istem.txt`, `*-rapor.md` — özellikle `m2-*`, `m2k-*`, `m2t2-*`, `m2t3-*`, `m2t4-*`), `docs/kanit/2026-11-28/m2t4-*` (düzeltme ajanının kanıtı), ana oturumun yeniden koşu not defterleri (`m2t4rk/`, `m2t4yk/`); kâhin klasörleri `test/bagimsiz/**` (yalnız `npm run test:kahin-*` komutuyla KOŞABİLİRSİN, kodunu okuma). İZİNLİ: önceki dar kontrolün betikleri `{SP}/dk-m2t3/` (kendi girdin olarak)."
 
 DK = dar("dk-m2t4", "DEĞERSİZ SINIRI TUR 4", "t251-m2t4-taban..t251-m2t4",
  "şüpheli alacak modülünde değişmez (i)'nin dünyası (W'den SONRA yazılmış Değersiz satırlarının kuyruk kesitinden de çıkarılması — formun önerdiği tutarın kapıda kabulü), Silinenler taramasının dizinli ve en eski Değersiz satırından sonraki silmelerle sınırlanması (hız), S155'e takılan retlerde 'Değersiz Alacak satırını silmek yetmez' iletisi; cari hareketi (Borç Yaz) düzeltme / silme ve taksit kartı düzenleme / silme yollarında eksiye götürme denetimi; testler (40 tohumlu rastgele dahil) ve ekran senaryosu senaryo-degersiz-iptal-m2t2-251'in adım 4 / 6'sı.",
