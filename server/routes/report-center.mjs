@@ -2085,7 +2085,8 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
         const inMonths = month => (!firstMonth || month >= firstMonth) && (!lastMonth || month <= lastMonth);
         const vat = view
           ? (() => {
-              const busy = [...new Set([...view.months, ...view.mahsup])].filter(inMonths).sort();
+              // 2.5.1 M1 küçük tur 8: sonucu olan aylar zincirden (KDV'li aylar + önceki fişlerden sonra girilen İndirilecek KDV azalışının düşüldüğü kayıtsız aylar).
+              const busy = (view.resultMonths || [...new Set([...view.months, ...view.mahsup])]).filter(inMonths).sort();
               const positions = busy.map(month => view.position(month));
               const startMinor = firstMonth ? view.position(firstMonth).carryInMinor : view.openingMinor;
               const payableMinor = positions.reduce((sum, item) => sum + item.payableMinor, 0);
@@ -2105,6 +2106,14 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
         // Çok aylı aralıkta ayın sonuç satırları (ayın belgelerinin hemen altında): kullanılan devreden (varsa) ve Ödenecek KDV ya da Sonraki Döneme Devreden KDV. Yalnız aralığın
         // TAMAMEN içindeki aylar (ay ortasında başlayan / biten aralıkta o ayın sonucu yalnız özette ve tablo altında — belgelerin bir kısmı dışarıda kalır).
         const several = !firstMonth || !lastMonth || firstMonth !== lastMonth;
+        // 2.5.1 M1 küçük tur 8: azalış satırının adı — azalışın geldiği ay(lar) parantez içinde (yazım düzeni: her sözcüğün ilk harfi büyük; ay adı olduğu gibi).
+        const reductionLabel = from => `Önceki Dönem İndirilecek KDV Azalışı${from?.length ? ` (${from.map(monthLabel).join(", ")})` : ""}`;
+        // Aralıkta azalış düşülen aylar; özetteki tutar satırı yalnız azalışı aralığın BAŞINDAN önceki aylardan gelenler (aralık içindeki azalış 191 toplamında zaten var — aynı
+        // tutar iki kez görünmez): böylece Ödenecek − Sonraki + Önceki = 391 − 191 + bu satır.
+        const reducedItems = (vat?.positions || []).filter(item => item.reducedMinor > 0);
+        const earlierParts = firstMonth ? reducedItems.flatMap(item => (item.reducedParts || []).filter(part => part.month < firstMonth)) : [];
+        const earlierFrom = [...new Set(earlierParts.map(part => part.month))].sort();
+        const earlierMinor = earlierParts.reduce((sum, part) => sum + part.minor, 0);
         const whole = month => (!range.from || range.from <= `${month}-01`) && (!range.to || range.to >= monthEndOf(`${month}-01`));
         const rows = [];
         if (vat && several) {
@@ -2117,6 +2126,8 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
             const item = byMonth.get(month);
             if (!item) continue;
             if (item.carryInMinor > 0) rows.push(vatLine(monthLabel(month), "Önceki Dönemden Devreden KDV", item.carryInMinor));
+            // 2.5.1 M1 küçük tur 8 (mali müşavir S ORTA-1): önceki ayların mahsubundan sonra girilen, İndirilecek KDV'yi azaltan kayıtların bu ayda düşülen tutarı (S4; ayın sonucu bununla).
+            if (item.reducedMinor > 0) rows.push(vatLine(monthLabel(month), reductionLabel(item.reducedFrom), item.reducedMinor));
             rows.push(item.payableMinor > 0 || item.carryOutMinor <= 0 ? vatLine(monthLabel(month), "Ödenecek KDV", item.payableMinor) : vatLine(monthLabel(month), "Sonraki Döneme Devreden KDV", item.carryOutMinor));
           }
         } else rows.push(...docRows);
@@ -2186,6 +2197,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
             ["Hesaplanan KDV (391) (İadeler Düşülmüş)", money(roundMoney(heads.output))],
             ["İndirilecek KDV (191) (İadeler Düşülmüş)", money(roundMoney(heads.input))],
             ["Alıcı Olarak Kesilen Tevkifat (2 No.lu)", money(roundMoney(heads.withheld2))],
+            ...(earlierMinor > 0 ? [[reductionLabel(earlierFrom), lira(earlierMinor)]] : []),
             ...results.map(([label, minor]) => [label, lira(minor)]),
             // 2.4.3 MM3: aralıktaki aylardan mahsup edilenler ve mahsuptan sonra KDV'li kaydı değişen aylar. 2.5.1 M1 küçük tur: S-M1-3 = C — artıran değişiklik ("Güncel Değil"):
             // sayılar bugünkü kayıtlardan, not geri alıp yeniden mahsubu söyler; S-DKM1-1 = A — ayın kendi İndirilecek KDV'si fişten sonra azaldı: ayın sonucu fişten, not söyler.
@@ -2209,6 +2221,18 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
             // etkilemiyorsa yok (vatView.staleBefore karşı hesapla bakar).
             ...(vat?.staleBefore?.length
               ? [["Güncel Olmayan Önceki Fiş", `Önceki aylarda güncel olmayan mahsup fişi var (${vat.staleBefore.slice(0, 6).map(monthLabel).join(", ")}${vat.staleBefore.length > 6 ? ` ve ${vat.staleBefore.length - 6} ay daha` : ""}); bu ${firstMonth === lastMonth ? "ayın" : "aralığın"} sayıları mahsup ön izlemesinden ayrılır`]]
+              : []),
+            // 2.5.1 M1 küçük tur 8: azalışın düşüldüğü ay(lar) — tutar ve azalışın geldiği ay; mahsup ön izlemesi de aynı ayda düşer.
+            ...(reducedItems.length
+              ? [
+                  [
+                    "İndirilecek KDV Azalışı Düşülen Ay",
+                    `${reducedItems
+                      .slice(0, 6)
+                      .map(item => `${monthLabel(item.month)}: ${lira(item.reducedMinor)}${item.reducedFrom?.length ? ` (${item.reducedFrom.map(monthLabel).join(", ")})` : ""}`)
+                      .join("; ")}${reducedItems.length > 6 ? ` ve ${reducedItems.length - 6} ay daha` : ""} (önceki ayların mahsubundan sonra girilen, İndirilecek KDV'yi azaltan kayıtlar ${reducedItems.length > 1 ? "bu ayların" : "bu ayın"} İndirilecek KDV'sinden düşüldü; ödenecek ya da devreden KDV bununla hesaplandı)`,
+                  ],
+                ]
               : []),
             ...(vat?.pending.length
               ? [
