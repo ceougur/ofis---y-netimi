@@ -84,7 +84,7 @@ export class GateEquivalenceError extends HttpError {
 // 2.5.1 M2 tur 2 (görev: "kapı reddinde writeoff-limit / writeoff-balance nedenlerinin anlaşılır Türkçe iletisi (S155 deseniyle)"; S270 = A değişmezi AYNEN: "hiçbir sırada bir şüpheli kaydın
 // Değersiz toplamı, o kayda şüpheliye alınan tutardan kayda düşmüş tahsilatlar çıkınca kalanı aşamaz; Değersiz yazımı cariyi alacaklıya (eksi bakiyeye) düşürmez"): ret YALNIZ bu nedenle
 // ise ne oldu / neden / ne yapmalı / nereye; KURAL, durum kodu ve öbür nedenlerdeki genel ileti AYNEN.
-const WRITEOFF_WHERE = "cari kartı → Şüpheli Alacaklar → Değersiz Alacaklar → Sil";
+const WRITEOFF_WHERE = "cari kartı → Şüpheli Alacak → kaydın Değersiz satırındaki × düğmesi";
 const writeOffText = failures => {
   if (!failures.length || !failures.every(item => item.code === "doubtful:records" && Array.isArray(item.writeOffs) && item.writeOffs.length)) return "";
   const first = failures[0].writeOffs[0];

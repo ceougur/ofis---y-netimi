@@ -24,7 +24,7 @@ import * as integrityLib from "../server/lib/integrity.mjs";
 const TODAY = "2026-10-15";
 const ACC = "/api/workspace/accounts";
 const INV = "/api/workspace/invoices";
-const WHERE = "cari kartı → Şüpheli Alacaklar → Değersiz Alacaklar → Sil";
+const WHERE = "cari kartı → Şüpheli Alacak → kaydın Değersiz satırındaki × düğmesi";
 
 async function boot() {
   const server = await startTestServer({ now: `${TODAY}T12:00:00+03:00`, env: { HUKUK_LICENSE_URL: "http://127.0.0.1:9" } });

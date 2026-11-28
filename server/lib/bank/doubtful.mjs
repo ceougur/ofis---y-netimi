@@ -677,7 +677,7 @@ export function writeOffBalanceGuard(store, party, { action = "cancel" } = {}) {
       throw new HttpError(
         409,
         `${what}: bu caride ${dayText(last.date)} tarihli ${tl(last.minor)} Değersiz Alacak satırı var${many}; ${cancel ? "iptalden" : "iadeden"} sonra cari ${tl(-after)} alacaklı (eksi bakiye) olurdu. ` +
-          `Değersiz Alacak yazımı cariyi alacaklıya düşüremez — ${could}. Ne yapmalı: önce Değersiz Alacak satırını silin (cari kartı → Şüpheli Alacaklar → Değersiz Alacaklar → Sil), sonra ${cancel ? "faturayı iptal edin" : "iadeyi kaydedin"}; ` +
+          `Değersiz Alacak yazımı cariyi alacaklıya düşüremez — ${could}. Ne yapmalı: önce Değersiz Alacak satırını silin (cari kartı → Şüpheli Alacak → kaydın Değersiz satırındaki × düğmesi), sonra ${cancel ? "faturayı iptal edin" : "iadeyi kaydedin"}; ` +
           "gerekirse Değersiz Alacak'ı yeniden yazın (form yazılabilecek tutarı gösterir). Hiçbir şey kaydedilmedi.",
         { code: "doubtful-writeoff-balance", balanceMinor: after, writeOffMinor: total, limitMinor: room, entryId: last.id, date: last.date },
       );
@@ -1063,7 +1063,7 @@ export function createDoubtful({ store, bank, period, now, accounts, trash = nul
   // 2.5.1 M2 tur 2 — S-DKM2-3 = C (dar kontrol DK-M2 ORTA-3; 27.11 23:47 UTC KULLANICI KARARIYLA ÖNERİ UYGULANDI — 20:26 yetkisi): "uç durum böyle kalsın (BİLİNEN SINIR) — yalnız ileti düzelsin
   // ('bu kayıt silinirse tahsilat Değersiz yazılan kayda düşer')". RET AYNEN; ileti ne olduğunu (hangi Değersiz satırı), nedenini (tahsilatın kayda düşmesi), ne yapılacağını ve nereye
   // gidileceğini söyler (önceden "yazıldığı andaki sınırı aşardı" — yanlış anlatım). `verb` silme / geri yükleme yoluna göre cümleyi kurar.
-  const WRITEOFF_WHERE = "cari kartı → Şüpheli Alacaklar → Değersiz Alacaklar → Sil";
+  const WRITEOFF_WHERE = "cari kartı → Şüpheli Alacak → kaydın Değersiz satırındaki × düğmesi";
   const entryText = id => {
     const entry = store.get("SELECT date, amount FROM account_entries WHERE id = ?", id);
     return entry ? `${dayText(entry.date)} tarihli ${tl(Math.round(Number(entry.amount) * 100))}` : "";
