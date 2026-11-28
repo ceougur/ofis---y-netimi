@@ -239,11 +239,13 @@ describe("2.5.1 M1 tur 2 — KDV Özeti: zincirli devreden KDV (S-M1-1 = B)", ()
     const jun = await report(monthRange("2026-06"), "", "001 Haziran (Güncel Değil)");
     assert.deepEqual(jun.three, [40000, 0, 30000], "Haziran bugünkü sayılarla (elle)");
     assert.deepEqual(await preview("2026-06"), [40000, 0, 30000], "Haziran ön izleme = rapor");
-    assert.match(jun.summary["Mahsuptan Sonra Değişen Ay"] || "", /^Haziran 2026 /, "Haziran mahsubu güncel değil");
-    // Temmuz hareketsiz: zincirin taşıdığı = Haziran fişinin devredeni 200 (defterdeki 190) = ön izleme; artıran fark yeniden mahsupla gelir (S4 yalnız azaltanı taşır).
+    assert.equal(jun.summary["Mahsuptan Sonra Değişen Ay"], "Haziran 2026 (mahsup fişi güncel değil — mahsubu geri alıp yeniden mahsup edin)", "Haziran mahsubu güncel değil (S-M1-3 = C: sayılar bugünkü kayıtlardan + not)");
+    // Temmuz hareketsiz. 2.5.1 M1 küçük tur 4 — S-M1K3-1 = A (27.11 20:59 UTC, kullanıcının 20:26 yetkisiyle öneri uygulandı): HER 'güncel değil' ayında sonraki aya BU AYIN
+    // bugünkü devredeni taşınır → zincir Temmuz'a Haziran'ın bugünkü 300'ünü taşır (tur 2–3: fişin 200'ü). Ön izleme DEĞİŞMEDİ: defterdeki 190 = 200 (karar (6): mahsupsuz ayda
+    // rapor ile ön izleme ayrışabilir); artış S4'e girmez (yalnız azaltan taşınır) — bir kez, devredenle sayılır.
     const jul = await report(monthRange("2026-07"), "", "001 Temmuz");
-    assert.deepEqual(jul.three, [20000, 0, 20000], "Temmuz = defterdeki 190");
-    assert.deepEqual(await preview("2026-07"), [20000, 0, 20000], "Temmuz ön izleme = rapor");
+    assert.deepEqual(jul.three, [30000, 0, 30000], "Temmuz = Haziran'ın bugünkü devredeni 300 (S-M1K3-1 = A; tur 2–3: 200)");
+    assert.deepEqual(await preview("2026-07"), [20000, 0, 20000], "Temmuz ön izleme = defterdeki 190 (DEĞİŞMEDİ)");
     // Haziran–Temmuz: önceki Mayıs sonu 400, ödenecek 0, sonraki = son KDV'li ayın (Haziran) sonucu 300 — tur 1 (A) ile aynı.
     const both = await report({ from: "2026-06-01", to: "2026-07-31" }, "", "001 Haziran–Temmuz");
     assert.deepEqual(both.three, [40000, 0, 30000], "Haziran–Temmuz");

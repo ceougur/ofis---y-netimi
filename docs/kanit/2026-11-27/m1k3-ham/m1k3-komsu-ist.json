@@ -1,0 +1,32 @@
+{
+  "ad": "m1k3-komsu-ist",
+  "komut": "node --test --test-concurrency=2 test/kdv-ozeti-yalniz391-251.test.mjs test/kdv-ozeti-karma-251.test.mjs test/kdv-ozeti-mahsup-sonrasi-251.test.mjs test/kdv-ozeti-zincir-251.test.mjs test/kdv-ozeti-devreden-251.test.mjs test/yazim-duzeni.test.mjs test/banka-210-altin.test.mjs test/banka-210-ertelenen.test.mjs test/banka-210-fis.test.mjs test/banka-210-kurumsal-kart.test.mjs test/banka-220-pos-kdv.test.mjs test/banka-220-tahsile-ver-dogrulama.test.mjs test/banka-220-tahsile-ver-tur2.test.mjs test/c7b-degismez-250.test.mjs test/c7b-eski-surum-sinif-250.test.mjs test/c7b-gecis-gunu-250.test.mjs test/c7b-goc52-kilit-izi-250.test.mjs test/c7b-kdv-donemi-250.test.mjs test/c7b-kdv-ozeti-donem-250.test.mjs test/c7b-kdv-s4-250.test.mjs test/c7b-kitap-turetme-250.test.mjs test/c7b-sifirla-kdv-mahsup-250.test.mjs test/cheques-overview.test.mjs test/defter-243-kapi.test.mjs test/defter-243-ux24-toplam.test.mjs test/defter-243-vergi.test.mjs test/defter-hiz-esdegerlik-250.test.mjs test/defter-kaynak-iz-250.test.mjs test/donmus-defter-250.test.mjs test/donmus-defter-tur3-250.test.mjs test/ekstre-ayrinti-245.test.mjs test/fis-defteri-250.test.mjs test/is-akisi.test.mjs test/kasa-acilis-iz-250.test.mjs test/kasa-acilis-once-250.test.mjs test/kasa-acilis-vergi-s94-250.test.mjs test/license.test.mjs test/mobil-247.test.mjs test/rapor-220.test.mjs test/raporlar-209.test.mjs test/raporlar-210-banka.test.mjs test/raporlar-224.test.mjs test/stopaj-tevkifat-iade-244.test.mjs test/tyk-kapanis-250.test.mjs test/banka-210-arayuz.test.mjs test/disa-aktarim-dugmeleri.test.mjs test/kapi-para-245.test.mjs test/personel-ozluk-244.test.mjs test/rapor-230-iz5.test.mjs test/tyk-api-250.test.mjs test/yetki-gorunurluk.test.mjs",
+  "commit": "f5dc0c6195574037cf0c6ebd853ea03b00157e19",
+  "dal": "worktree-agent-a4aaa7373bd6d8d91",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T20:33:50.351Z",
+  "sure_sn": 178,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 638,
+    "gecen": 638,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/m1k3/kanit/2026-11-27/m1k3-komsu-ist.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a4aaa7373bd6d8d91",
+  "ham_cikti_sha256": "c914e91f9f0d812b1da6f86218791578ad116008b8f50390f4a5b4cdf20924bc",
+  "ham_cikti_bayt": 271354
+}

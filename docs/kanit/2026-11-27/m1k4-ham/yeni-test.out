@@ -1,0 +1,56 @@
+== taban UTC 2.18 2.49 3.27 4/162 4294
+        not ok 1 - 001 devreden · İ arttı (S-M1K3-1 = A): Mart [0,0,90000], Nisan [90000,10000,0], Mart–Nisan [0,10000,0] = 391 − 191; onarım
+    not ok 4 - devreden · İ arttı (S-M1K3-1 = A) + ödenecek · hiçbiri
+        not ok 2 - 002 ödenecek → devreden · yalnız 391 azaldı, yön döndü (S-M1K3-1 = A): Mart [0,0,30000], Nisan [30000,0,10000], Mart–Nisan [0,0,10000] = 391 − 191; onarım
+    not ok 5 - ödenecek · yalnız 391 arttı (DEĞİŞMEZ) + ödenecek → devreden · yalnız 391 azaldı, yön döndü (S-M1K3-1 = A)
+not ok 8 - 2.5.1 M1 küçük tur 3 — tutarlılık tablosu: hiçbiri / yalnız azalma / yalnız 391 (iki yönde, yön dönmesi) / ikisi birden / İ arttı (her biri ayrı şirkette)
+    not ok 1 - 001 İ + 391 artar (devreden fiş): Mart sonraki 600, Nisan 600 / 400 + uyuşmazlık, Mart–Nisan 400 = 391 − 191 (taban: Nisan 800 / 200, Mart–Nisan 200); onarım
+not ok 11 - 2.5.1 M1 küçük tur 4 — devreden fişte İ ve 391 birlikte artar (tabanda kırmızı) + ödenecek fişte İ artar, ödenecek kalır (DEĞİŞMEZ)
+    not ok 1 - 001 ödenecek → devreden (İ arttı): Mart sonraki 200, Nisan 200 / 0 / 0 + uyuşmazlık, Mart–Nisan 0 = 391 − 191 (taban: Nisan 0 / 200, Mart–Nisan 200); onarım
+    not ok 2 - 002 iki ardışık 'güncel değil' ay: Mart 800 (İ arttı), Nisan 800 / 0 / 300 (yalnız 391 azaldı, ödenecek fiş), Mayıs 300 / 100 + uyuşmazlık; Mart–Mayıs 100 = 391 − 191 (taban: Mayıs 0 / 400, 400); onarım
+not ok 12 - 2.5.1 M1 küçük tur 4 — ödenecek fişli ay İ artışıyla devredene döner + iki ardışık 'güncel değil' ay (ikisi de tabanda kırmızı)
+    not ok 1 - 001 (a) Bu Yıl (2027) 300 / 0 / 100 + uyuşmazlık (yön cümlesiyle); 2026 yılı sonraki 300; Aralık–Ocak 0 / 100 = 391 − 191; ekran = PDF = Excel; onarım
+    not ok 2 - 002 (b) Bu Yıl (2027) 900 / 100 + uyuşmazlık; 2026 yılı sonraki 900; Aralık–Ocak 100 = 391 − 191; onarım
+not ok 13 - 2.5.1 M1 küçük tur 4 — yıl dönümü: (a) ödenecek Aralık fişi → devreden, (b) devreden Aralık fişinde İ artar (ikisi de tabanda kırmızı; iki şirket)
+    not ok 5 - 001 mahsuptan sonra artıran kayıt (Haziran 'Güncel Değil'): ay ay rapor = ön izleme (A = B, karar (3)); aralığın sonraki devredeni son KDV'li ayın sonucu
+not ok 14 - 2.5.1 M1 tur 2 — KDV Özeti: zincirli devreden KDV (S-M1-1 = B)
+# tests 55
+# pass 47
+# fail 8
+# cancelled 0
+[kanit] başarısız testler (8):
+[kanit] m1k4-yeni-test-taban-utc: BAŞARISIZ (çıkış 1; 8 başarısız, 0 iptal) · çıkış 1 · 47/55 geçti, 8 başarısız, 0 iptal, 0 atlanan · commit 36b77d4 +3 değişmiş dosya +1 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+== taban Europe/Istanbul 3.01 2.67 3.31 2/163 4469
+        not ok 1 - 001 devreden · İ arttı (S-M1K3-1 = A): Mart [0,0,90000], Nisan [90000,10000,0], Mart–Nisan [0,10000,0] = 391 − 191; onarım
+    not ok 4 - devreden · İ arttı (S-M1K3-1 = A) + ödenecek · hiçbiri
+        not ok 2 - 002 ödenecek → devreden · yalnız 391 azaldı, yön döndü (S-M1K3-1 = A): Mart [0,0,30000], Nisan [30000,0,10000], Mart–Nisan [0,0,10000] = 391 − 191; onarım
+    not ok 5 - ödenecek · yalnız 391 arttı (DEĞİŞMEZ) + ödenecek → devreden · yalnız 391 azaldı, yön döndü (S-M1K3-1 = A)
+not ok 8 - 2.5.1 M1 küçük tur 3 — tutarlılık tablosu: hiçbiri / yalnız azalma / yalnız 391 (iki yönde, yön dönmesi) / ikisi birden / İ arttı (her biri ayrı şirkette)
+    not ok 1 - 001 İ + 391 artar (devreden fiş): Mart sonraki 600, Nisan 600 / 400 + uyuşmazlık, Mart–Nisan 400 = 391 − 191 (taban: Nisan 800 / 200, Mart–Nisan 200); onarım
+not ok 11 - 2.5.1 M1 küçük tur 4 — devreden fişte İ ve 391 birlikte artar (tabanda kırmızı) + ödenecek fişte İ artar, ödenecek kalır (DEĞİŞMEZ)
+    not ok 1 - 001 ödenecek → devreden (İ arttı): Mart sonraki 200, Nisan 200 / 0 / 0 + uyuşmazlık, Mart–Nisan 0 = 391 − 191 (taban: Nisan 0 / 200, Mart–Nisan 200); onarım
+    not ok 2 - 002 iki ardışık 'güncel değil' ay: Mart 800 (İ arttı), Nisan 800 / 0 / 300 (yalnız 391 azaldı, ödenecek fiş), Mayıs 300 / 100 + uyuşmazlık; Mart–Mayıs 100 = 391 − 191 (taban: Mayıs 0 / 400, 400); onarım
+not ok 12 - 2.5.1 M1 küçük tur 4 — ödenecek fişli ay İ artışıyla devredene döner + iki ardışık 'güncel değil' ay (ikisi de tabanda kırmızı)
+    not ok 1 - 001 (a) Bu Yıl (2027) 300 / 0 / 100 + uyuşmazlık (yön cümlesiyle); 2026 yılı sonraki 300; Aralık–Ocak 0 / 100 = 391 − 191; ekran = PDF = Excel; onarım
+    not ok 2 - 002 (b) Bu Yıl (2027) 900 / 100 + uyuşmazlık; 2026 yılı sonraki 900; Aralık–Ocak 100 = 391 − 191; onarım
+not ok 13 - 2.5.1 M1 küçük tur 4 — yıl dönümü: (a) ödenecek Aralık fişi → devreden, (b) devreden Aralık fişinde İ artar (ikisi de tabanda kırmızı; iki şirket)
+    not ok 5 - 001 mahsuptan sonra artıran kayıt (Haziran 'Güncel Değil'): ay ay rapor = ön izleme (A = B, karar (3)); aralığın sonraki devredeni son KDV'li ayın sonucu
+not ok 14 - 2.5.1 M1 tur 2 — KDV Özeti: zincirli devreden KDV (S-M1-1 = B)
+# tests 55
+# pass 47
+# fail 8
+# cancelled 0
+[kanit] başarısız testler (8):
+[kanit] m1k4-yeni-test-taban-ist: BAŞARISIZ (çıkış 1; 8 başarısız, 0 iptal) · çıkış 1 · 47/55 geçti, 8 başarısız, 0 iptal, 0 atlanan · commit 36b77d4 +3 değişmiş dosya +1 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+== yeni UTC 3.79 2.86 3.36 3/163 4623
+# tests 55
+# pass 55
+# fail 0
+# cancelled 0
+[kanit] m1k4-yeni-test-yeni-utc: GEÇTİ · çıkış 0 · 55/55 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 19446c4 +1 değişmiş dosya +2 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+== yeni Europe/Istanbul 3.83 2.94 3.37 4/165 4805
+# tests 55
+# pass 55
+# fail 0
+# cancelled 0
+[kanit] m1k4-yeni-test-yeni-ist: GEÇTİ · çıkış 0 · 55/55 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 19446c4 +1 değişmiş dosya +2 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4

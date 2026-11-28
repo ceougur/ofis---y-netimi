@@ -293,6 +293,12 @@
     const top = box.getBoundingClientRect().top + frame.scrollTop;
     const room = bottom - top - (note ? note.offsetHeight + 12 : 0);
     box.style.maxHeight = room >= 160 ? `${Math.floor(room)}px` : "";
+    // 2.5.1 M1 küçük tur (KDV Özeti; baş mimarın ekran yürüyüşü): çok satırlı tablo altı bir bütün olarak altta sabit (satırlar üst üste binmez). Kutuda başlık ve en az iki
+    // belge satırına yer kalmıyorsa (çok alçak pencere) sabitlenmez — tablonun sonunda durur, belge satırlarını örtmez.
+    if (box.classList.contains("is-kdv")) {
+      const foot = box.querySelector("tfoot");
+      box.classList.toggle("is-foot-free", Boolean(foot) && foot.offsetHeight > box.clientHeight - 96);
+    }
   }
   let fitQueued = false;
   window.addEventListener("resize", () => {
@@ -369,9 +375,15 @@
     const totals = preview ? (Array.isArray(preview.footers) && preview.footers.length ? preview.footers : preview.footer ? [preview.footer] : []) : [];
     // 2.4.3 (C4): yer tutucu (rapor değişti) önceki sonucun yüksekliğini korur — pencere çöküp açılmaz (düzen kayması yok).
     const hold = !preview && ready && center.holdHeight ? ` style="min-height:${Math.round(center.holdHeight)}px"` : "";
+    // 2.5.1 M1 küçük tur (KDV Özeti): tutar olmayan özet satırları (notlar: "KDV Mahsup Fişi", "Mahsup Edilmemiş Ay", "Zincirle Uyuşmayan Mahsup Fişi" …) tutar kartlarının
+    // altında ayrı bir blokta, alt alta, tam genişlikte ve normal yazıyla; tutar kartları eskisi gibi (alçak ekranda tek satır).
+    const kdv = report.id === "kdv-ozeti";
+    const noteCard = ([, value]) => kdv && !/\d,\d{2} TL$/.test(String(value ?? "").trim());
+    const card = (item, note) => `<span${note ? ' class="is-note"' : ""}><small>${esc(item[0])}</small><b>${esc(screenMoney(item[1]))}</b></span>`;
+    const notes = preview ? (preview.summary || []).filter(noteCard) : [];
     const table = preview
-      ? `<div class="hof-rc-summary">${(preview.summary || []).map(([label, value]) => `<span><small>${esc(label)}</small><b>${esc(screenMoney(value))}</b></span>`).join("")}</div>
-        <div class="hof-rep-table hof-rc-table"><table class="hof-table${preview.rowMarks ? " is-dense" : ""}${preview.rowMarks && preview.headers.length >= 16 ? " is-wide" : ""}"><thead><tr>${preview.headers.map((header, index) => `<th class="${isNum(index) ? "num" : ""}">${esc(header)}</th>`).join("")}</tr></thead><tbody>${
+      ? `<div class="hof-rc-summary">${(preview.summary || []).filter(item => !noteCard(item)).map(item => card(item, false)).join("")}</div>${notes.length ? `<div class="hof-rc-summary is-kdv-notes">${notes.map(item => card(item, true)).join("")}</div>` : ""}
+        <div class="hof-rep-table hof-rc-table${kdv ? " is-kdv" : ""}"><table class="hof-table${preview.rowMarks ? " is-dense" : ""}${preview.rowMarks && preview.headers.length >= 16 ? " is-wide" : ""}"><thead><tr>${preview.headers.map((header, index) => `<th class="${isNum(index) ? "num" : ""}">${esc(header)}</th>`).join("")}</tr></thead><tbody>${
           preview.rows.length
             ? preview.rows.map((row, rowIndex) => `<tr${preview.rowMarks?.[rowIndex] ? ` class="is-${esc(preview.rowMarks[rowIndex])}"` : ""}>${row.map((cell, index) => `<td class="${cellClass(preview, index)}${index === indentAt ? " is-indent" : ""}${index === noteAt ? " is-note" : ""}">${cellHtml(cell, index)}</td>`).join("")}</tr>`).join("")
             : `<tr><td colspan="${preview.headers.length}" class="hof-empty">${emptyText(report)}</td></tr>`

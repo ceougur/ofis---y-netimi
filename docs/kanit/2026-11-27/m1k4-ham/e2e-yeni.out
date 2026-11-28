@@ -1,0 +1,23 @@
+== senaryo-kdv-mahsup-sonrasi-251 4.69 3.30 3.47 3/165 5292
+✓ senaryo-kdv-mahsup-sonrasi-251: 35 geçti, 0 kaldı
+[kanit] m1k4-e2e-yeni-senaryo-kdv-mahsup-sonrasi-251: GEÇTİ · çıkış 0 · 35/35 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 19446c4 +1 değişmiş dosya +2 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+== senaryo-kdv-zincir-251 4.46 3.32 3.48 3/168 5614
+✓ senaryo-kdv-zincir-251: 12 geçti, 0 kaldı
+[kanit] m1k4-e2e-yeni-senaryo-kdv-zincir-251: GEÇTİ · çıkış 0 · 12/12 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 40ede14 +1 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+== senaryo-kdv-devreden-251 4.84 3.44 3.51 4/168 5767
+✓ senaryo-kdv-devreden-251: 14 geçti, 0 kaldı
+[kanit] m1k4-e2e-yeni-senaryo-kdv-devreden-251: GEÇTİ · çıkış 0 · 14/14 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 40ede14 +1 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+== senaryo-kdv-donemi-250 4.69 3.43 3.51 4/168 5898
+✓ senaryo-kdv-donemi-250: 23 geçti, 0 kaldı
+[kanit] m1k4-e2e-yeni-senaryo-kdv-donemi-250: GEÇTİ · çıkış 0 · 23/23 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 40ede14 +1 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+== senaryo-defter-243 4.27 3.42 3.51 2/168 6170
+✓ senaryo-defter-243: 33 geçti, 0 kaldı · depo /home/user/ofis---y-netimi/.claude/worktrees/agent-a7d99fd88f55969de · ekran görüntüleri /home/user/ofis---y-netimi/.claude/worktrees/agent-a7d99fd88f55969de/test/e2e/artifacts/senaryo-defter-243
+[kanit] m1k4-e2e-yeni-senaryo-defter-243: GEÇTİ · çıkış 0 · 33/33 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 40ede14 +1 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+== senaryo-c7b-kabul-250 3.93 3.41 3.50 5/190 6489
+✓ senaryo-c7b-kabul-250: 39 geçti, 0 kaldı
+[kanit] m1k4-e2e-yeni-senaryo-c7b-kabul-250: GEÇTİ · çıkış 0 · 39/39 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 40ede14 +1 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+== senaryo-mobil-247 4.63 3.60 3.56 3/183 7025
+77 geçti, 0 kaldı
+[kanit] m1k4-e2e-yeni-senaryo-mobil-247: GEÇTİ · çıkış 0 · 77/77 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 40ede14 +1 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4
+== senaryo-banka-210 6.20 4.05 3.71 6/211 7592
+[kanit] m1k4-e2e-yeni-senaryo-banka-210: GEÇTİ · çıkış 0 · 429/429 geçti, 0 başarısız, 0 iptal, 0 atlanan · commit 40ede14 +1 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4

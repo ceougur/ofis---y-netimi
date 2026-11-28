@@ -1,0 +1,22 @@
+(node:15029) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+A) Raporlar → Tüm Raporlar → KDV Özeti → Geçen Ay (Şubat 2026)
+  ✓ özet kartları Önceki / Ödenecek / Sonraki = 2.000 / 0 / 800 ({"Hesaplanan KDV (391) (İadeler Düşülmüş)":"₺1.200,00","İndirilecek KDV (191) (İadeler Düşülmüş)":"₺0,00","Alıcı Olarak Kesilen Tevkifat (2 No.lu)":"₺0,00","Önceki Dönemden Devreden KDV":"₺2.000,00","Ödenecek KDV":"₺0,00","Sonraki Döneme Devreden KDV":"₺800,00"})
+  ✓ tablo altı = özet ([["TOPLAM","","","1","₺6.000,00","₺1.200,00","₺0,00"],["","Önceki Dönemden Devreden KDV","","","","₺2.000,00",""],["","Ödenecek KDV","","","","₺0,00",""],["","Sonraki Döneme Devreden KDV","","","","₺800,00",""]])
+  ✓ eski 'Net KDV' satırı yok
+  ✓ 391 / 191 adlarında '(İadeler Düşülmüş)'
+  ✓ tek ay: tabloda yalnız belge satırı ([["Şubat 2026","Satış","%20","1","₺6.000,00","₺1.200,00","₺0,00"]])
+  ✓ önceki ay (Ocak) mahsuplu: 'Mahsup Edilmemiş Ay' notu yok
+B) KDV Mahsup Fişi Oluştur → Şubat: ön izleme rapordaki sayılarla aynı; onay
+  ✓ ön izleme: Sonraki Aya Devreden KDV (190): ₺800,00 · kullanılan devreden ₺2.000,00
+    [soru] "KDV Mahsup Fişi" → Evet (senaryo Şubat mahsubunu yazar)
+  ✓ veri tabanı: Şubat mahsubu {"cin":200000,"cout":80000,"pay":0} (2.000 / 800 / 0)
+  ✓ mahsuptan sonra rapor aynı ({"summary":["2000,00","0,00","800,00"],"foot":["2000,00","0,00","800,00"]})
+  ✓ özette KDV Mahsup Fişi: Şubat 2026
+C) Elle aralık 01.01.2026 – 28.02.2026 (tarih alanları + Ön İzle)
+  ✓ Ocak–Şubat: Önceki 0 / Ödenecek 0 / Sonraki 800 ({"summary":["0,00","0,00","800,00"],"foot":["0,00","0,00","800,00"]})
+  ✓ ay satırları ([["Ocak 2026","Alış","%20","1","₺10.000,00","₺2.000,00","₺0,00"],["Ocak 2026","Sonraki Döneme Devreden KDV","","","","₺2.000,00",""],["Şubat 2026","Satış","%20","1","₺6.000,00","₺1.200,00","₺0,00"],["Şubat 2026","Önceki Dönemden Devreden KDV","","","","₺2.000,00",""],["Şubat 2026","Sonraki Döneme Devreden KDV","","","","₺800,00",""]])
+  ✓ Bu Yıl: Sonraki 800, Ödenecek 0 ({"Hesaplanan KDV (391) (İadeler Düşülmüş)":"₺1.200,00","İndirilecek KDV (191) (İadeler Düşülmüş)":"₺2.000,00","Alıcı Olarak Kesilen Tevkifat (2 No.lu)":"₺0,00","Önceki Dönemden Devreden KDV":"₺0,00","Ödenecek KDV":"₺0,00","Sonraki Döneme Devreden KDV":"₺800,00","KDV Mahsup Fişi":"Ocak 2026, Şubat 2026"})
+  ✓ sayfa hatası yok
+
+✓ senaryo-kdv-devreden-251: 14 geçti, 0 kaldı

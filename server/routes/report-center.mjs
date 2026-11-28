@@ -65,7 +65,7 @@ const SEQUENCE = /^(sıra|sira|sıra no|no|#|sn|s\.?\s?no|nr)$/i;
 // Ay anahtarı (YYYY-AA) → "Eylül 2026"; aralıktaki aylar (v2.0.9 aylık raporlar).
 const MONTHS = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
 const monthLabel = key => `${MONTHS[Number(key.slice(5, 7)) - 1]} ${key.slice(0, 4)}`;
-// 2.5.1 M1 (KDV Özeti): ayın son günü (YYYY-AA-GG). (Önceki ay yardımcısı tur 2'de routes/tax.mjs vatView.pending'e geçti.)
+// 2.5.1 M1 (KDV Özeti): ayın son günü (YYYY-AA-GG). KDV Özeti'nin ay hesapları (önceki ay, mahsupsuz aylar, zincir) routes/tax.mjs'te (previousMonth, vatView).
 const monthEndOf = day => {
   const [year, month] = day.split("-").map(Number);
   return new Date(Date.UTC(year, month, 0)).toISOString().slice(0, 10);
@@ -2137,6 +2137,18 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
           },
         });
         const results = vat ? [["Önceki Dönemden Devreden KDV", vat.startMinor], ["Ödenecek KDV", vat.payableMinor], ["Sonraki Döneme Devreden KDV", vat.carryOutMinor]] : [];
+        // Zincirle uyuşmayan fişin cümlesi. Devredeni farklıysa iki devreden; yön de farklıysa (S-M1-2 = B, baş mimar: fiş devreden, zincir ödenecek ya da tersi) iki sonuç ayrıca.
+        // Devredeni aynı ama S4 emilimi farklıysa (araya giren mahsupsuz ay İndirilecek KDV'deki azalmayı zincirde zaten düştü — dar kontrol L) iki sonuç.
+        const resultText = (payable, carryOut) => (payable > 0 || carryOut <= 0 ? `ödenecek KDV ${lira(payable)}` : `sonraki döneme devreden KDV ${lira(carryOut)}`);
+        const mismatchText = item => {
+          const offsetResult = resultText(item.offsetPayableMinor, item.offsetCarryOutMinor);
+          const chainResult = resultText(item.payableMinor, item.carryOutMinor);
+          const turned = (item.offsetPayableMinor > 0 || item.offsetCarryOutMinor <= 0) !== (item.payableMinor > 0 || item.carryOutMinor <= 0);
+          if (item.usedMinor !== item.chainMinor) {
+            return `${item.label} fişi ${lira(item.usedMinor)} devredenle kesilmiş, sırayla mahsupta ${lira(item.chainMinor)} olmalıydı${turned ? `; fiş ${offsetResult} yazmış, sırayla mahsupta ${chainResult} çıkar` : ""}`;
+          }
+          return `${item.label} fişi ${offsetResult} yazmış, sırayla mahsupta ${chainResult} olmalıydı — İndirilecek KDV'deki azalma sırayla mahsupta daha önceki bir ayda düşülür`;
+        };
         // Ay ortasında başlayan / biten aralık: belge satırları aralıktaki günlerden, devreden / ödenecek ayın tamamından (KDV aylık) — dışarıda kalan belge varsa söylenir.
         const partial =
           view && ((range.from && range.from.slice(8) !== "01") || (range.to && range.to !== monthEndOf(range.to)))
@@ -2161,12 +2173,23 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
             ["İndirilecek KDV (191) (İadeler Düşülmüş)", money(roundMoney(heads.input))],
             ["Alıcı Olarak Kesilen Tevkifat (2 No.lu)", money(roundMoney(heads.withheld2))],
             ...results.map(([label, minor]) => [label, lira(minor)]),
-            // 2.4.3 MM3: aralıktaki aylardan mahsup edilenler ve mahsuptan sonra KDV'li kaydı değişen aylar (geri alıp yeniden yapılır).
+            // 2.4.3 MM3: aralıktaki aylardan mahsup edilenler ve mahsuptan sonra KDV'li kaydı değişen aylar. 2.5.1 M1 küçük tur: S-M1-3 = C — artıran değişiklik ("Güncel Değil"):
+            // sayılar bugünkü kayıtlardan, not geri alıp yeniden mahsubu söyler; S-DKM1-1 = A — ayın kendi İndirilecek KDV'si fişten sonra azaldı: ayın sonucu fişten, not söyler.
             ...(() => {
               const list = (view?.offsets || []).filter(item => item.status === "active" && (!range.from || item.date >= range.from) && (!range.to || item.month <= range.to.slice(0, 7)));
               if (!list.length) return [];
-              const stale = list.filter(item => item.stale);
-              return [["KDV Mahsup Fişi", list.map(item => item.label).join(", ")], ...(stale.length ? [["Mahsuptan Sonra Değişen Ay", `${stale.map(item => item.label).join(", ")} (mahsubu geri alıp yeniden yapın)`]] : [])];
+              // S-M1K-1 = A (karma ay — İ azaldı ve 391 değişti): güncel değil notu sayıların nereden geldiğini de söyler; ay öbür iki notta yinelenmez.
+              const mixed = (vat?.positions || []).filter(item => item.offsetState === "mixed");
+              const stale = list.filter(item => item.stale && !mixed.some(other => other.month === item.month));
+              const reduced = (vat?.positions || []).filter(item => item.offsetState === "reduced");
+              const parts = [
+                ...(stale.length ? [`${stale.map(item => item.label).join(", ")} (mahsup fişi güncel değil — mahsubu geri alıp yeniden mahsup edin)`] : []),
+                ...(mixed.length
+                  ? [`${mixed.map(item => monthLabel(item.month)).join(", ")} (mahsup fişi güncel değil — Hesaplanan KDV bugünkü kayıtlardan, İndirilecek KDV kesilmiş mahsup fişinden alındı, azalma sonraki mahsupta düşülür; mahsubu geri alıp yeniden mahsup edin)`]
+                  : []),
+                ...(reduced.length ? [`${reduced.map(item => monthLabel(item.month)).join(", ")} (bu ayın kayıtları fişten sonra değişti; ayın sonucu kesilmiş mahsup fişinden, İndirilecek KDV'deki azalma sonraki mahsupta düşülür)`] : []),
+              ];
+              return [["KDV Mahsup Fişi", list.map(item => item.label).join(", ")], ...(parts.length ? [["Mahsuptan Sonra Değişen Ay", parts.join("; ")]] : [])];
             })(),
             ...(vat?.pending.length
               ? [
@@ -2186,7 +2209,7 @@ export function registerReportCenter(router, { store, auth, audit, dataset, tax 
                     "Zincirle Uyuşmayan Mahsup Fişi",
                     `${vat.mismatches
                       .slice(0, 6)
-                      .map(item => `${item.label} fişi ${lira(item.usedMinor)} devredenle kesilmiş, sırayla mahsupta ${lira(item.chainMinor)} olmalıydı`)
+                      .map(mismatchText)
                       .join("; ")}${vat.mismatches.length > 6 ? ` ve ${vat.mismatches.length - 6} ay daha` : ""} (raporda sırayla mahsup sayıları; bu ayın ve sonraki mahsupları geri alıp ayları sırayla mahsup edin)`,
                   ],
                 ]

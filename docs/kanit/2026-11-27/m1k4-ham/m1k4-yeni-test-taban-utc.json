@@ -1,0 +1,73 @@
+{
+  "ad": "m1k4-yeni-test-taban-utc",
+  "komut": "node --test --test-reporter=tap test/kdv-ozeti-yalniz391-251.test.mjs test/kdv-ozeti-karma-251.test.mjs test/kdv-ozeti-mahsup-sonrasi-251.test.mjs test/kdv-ozeti-zincir-251.test.mjs test/kdv-ozeti-devreden-251.test.mjs",
+  "commit": "36b77d4be709caee21391dd8d1b3603a9dcd2ac7",
+  "dal": "HEAD",
+  "kirli": 3,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T21:10:35.329Z",
+  "sure_sn": 17.6,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 55,
+    "gecen": 47,
+    "basarisiz": 8,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 8 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.1 M1 küçük tur 3 — tutarlılık tablosu: hiçbiri / yalnız azalma / yalnız 391 (iki yönde, yön dönmesi) / ikisi birden / İ arttı (her biri ayrı şirkette) › devreden · İ arttı (S-M1K3-1 = A) + ödenecek · hiçbiri › 001 devreden · İ arttı (S-M1K3-1 = A): Mart [0,0,90000], Nisan [90000,10000,0], Mart–Nisan [0,10000,0] = 391 − 191; onarım",
+      "konum": "test/kdv-ozeti-yalniz391-251.test.mjs:293:9",
+      "hata": "devreden · İ arttı (S-M1K3-1 = A): Nisan [[\"Hesaplanan KDV (391) (İadeler Düşülmüş)\",\"1.000,00 TL\"],[\"İndirilecek KDV (191) (İadeler Düşülmüş)\",\"0,00 TL\"],[\"Alıcı Olarak Kesilen Tevkifat (2 No.lu)\",\"0,00 TL\"],[\"Önceki Dönemden Devreden KDV\",\"800,00 TL\"],[\"Ödenecek KDV\",\"200,00 TL\"],[\"Sonraki Döneme Devreden KDV\",\"0,00 TL\"],[\"KDV Mahsup Fişi\",\"Nisan 2026\"]] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.1 M1 küçük tur 3 — tutarlılık tablosu: hiçbiri / yalnız azalma / yalnız 391 (iki yönde, yön dönmesi) / ikisi birden / İ arttı (her biri ayrı şirkette) › ödenecek · yalnız 391 arttı (DEĞİŞMEZ) + ödenecek → devreden · yalnız 391 azaldı, yön döndü (S-M1K3-1 = A) › 002 ödenecek → devreden · yalnız 391 azaldı, yön döndü (S-M1K3-1 = A): Mart [0,0,30000], Nisan [30000,0,10000], Mart–Nisan [0,0,10000] = 391 − 191; onarım",
+      "konum": "test/kdv-ozeti-yalniz391-251.test.mjs:293:9",
+      "hata": "ödenecek → devreden · yalnız 391 azaldı, yön döndü (S-M1K3-1 = A): Nisan [[\"Hesaplanan KDV (391) (İadeler Düşülmüş)\",\"200,00 TL\"],[\"İndirilecek KDV (191) (İadeler Düşülmüş)\",\"0,00 TL\"],[\"Alıcı Olarak Kesilen Tevkifat (2 No.lu)\",\"0,00 TL\"],[\"Önceki Dönemden Devreden KDV\",\"0,00 TL\"],[\"Ödenecek KDV\",\"200,00 TL\"],[\"Sonraki Döneme Devreden KDV\",\"0,00 TL\"],[\"KDV Mahsup Fişi\",\"Nisan 2026\"]] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.1 M1 küçük tur 4 — devreden fişte İ ve 391 birlikte artar (tabanda kırmızı) + ödenecek fişte İ artar, ödenecek kalır (DEĞİŞMEZ) › 001 İ + 391 artar (devreden fiş): Mart sonraki 600, Nisan 600 / 400 + uyuşmazlık, Mart–Nisan 400 = 391 − 191 (taban: Nisan 800 / 200, Mart–Nisan 200); onarım",
+      "konum": "test/kdv-ozeti-yalniz391-251.test.mjs:489:3",
+      "hata": "Nisan [[\"Hesaplanan KDV (391) (İadeler Düşülmüş)\",\"1.000,00 TL\"],[\"İndirilecek KDV (191) (İadeler Düşülmüş)\",\"0,00 TL\"],[\"Alıcı Olarak Kesilen Tevkifat (2 No.lu)\",\"0,00 TL\"],[\"Önceki Dönemden Devreden KDV\",\"800,00 TL\"],[\"Ödenecek KDV\",\"200,00 TL\"],[\"Sonraki Döneme Devreden KDV\",\"0,00 TL\"],[\"KDV Mahsup Fişi\",\"Nisan 2026\"]] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.1 M1 küçük tur 4 — ödenecek fişli ay İ artışıyla devredene döner + iki ardışık 'güncel değil' ay (ikisi de tabanda kırmızı) › 001 ödenecek → devreden (İ arttı): Mart sonraki 200, Nisan 200 / 0 / 0 + uyuşmazlık, Mart–Nisan 0 = 391 − 191 (taban: Nisan 0 / 200, Mart–Nisan 200); onarım",
+      "konum": "test/kdv-ozeti-yalniz391-251.test.mjs:544:3",
+      "hata": "Nisan [[\"Hesaplanan KDV (391) (İadeler Düşülmüş)\",\"200,00 TL\"],[\"İndirilecek KDV (191) (İadeler Düşülmüş)\",\"0,00 TL\"],[\"Alıcı Olarak Kesilen Tevkifat (2 No.lu)\",\"0,00 TL\"],[\"Önceki Dönemden Devreden KDV\",\"0,00 TL\"],[\"Ödenecek KDV\",\"200,00 TL\"],[\"Sonraki Döneme Devreden KDV\",\"0,00 TL\"],[\"KDV Mahsup Fişi\",\"Nisan 2026\"]] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.1 M1 küçük tur 4 — ödenecek fişli ay İ artışıyla devredene döner + iki ardışık 'güncel değil' ay (ikisi de tabanda kırmızı) › 002 iki ardışık 'güncel değil' ay: Mart 800 (İ arttı), Nisan 800 / 0 / 300 (yalnız 391 azaldı, ödenecek fiş), Mayıs 300 / 100 + uyuşmazlık; Mart–Mayıs 100 = 391 − 191 (taban: Mayıs 0 / 400, 400); onarım",
+      "konum": "test/kdv-ozeti-yalniz391-251.test.mjs:558:3",
+      "hata": "Mayıs [[\"Hesaplanan KDV (391) (İadeler Düşülmüş)\",\"400,00 TL\"],[\"İndirilecek KDV (191) (İadeler Düşülmüş)\",\"0,00 TL\"],[\"Alıcı Olarak Kesilen Tevkifat (2 No.lu)\",\"0,00 TL\"],[\"Önceki Dönemden Devreden KDV\",\"0,00 TL\"],[\"Ödenecek KDV\",\"400,00 TL\"],[\"Sonraki Döneme Devreden KDV\",\"0,00 TL\"],[\"KDV Mahsup Fişi\",\"Mayıs 2026\"]] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.1 M1 küçük tur 4 — yıl dönümü: (a) ödenecek Aralık fişi → devreden, (b) devreden Aralık fişinde İ artar (ikisi de tabanda kırmızı; iki şirket) › 001 (a) Bu Yıl (2027) 300 / 0 / 100 + uyuşmazlık (yön cümlesiyle); 2026 yılı sonraki 300; Aralık–Ocak 0 / 100 = 391 − 191; ekran = PDF = Excel; onarım",
+      "konum": "test/kdv-ozeti-yalniz391-251.test.mjs:605:3",
+      "hata": "Bu Yıl [[\"Hesaplanan KDV (391) (İadeler Düşülmüş)\",\"200,00 TL\"],[\"İndirilecek KDV (191) (İadeler Düşülmüş)\",\"0,00 TL\"],[\"Alıcı Olarak Kesilen Tevkifat (2 No.lu)\",\"0,00 TL\"],[\"Önceki Dönemden Devreden KDV\",\"0,00 TL\"],[\"Ödenecek KDV\",\"200,00 TL\"],[\"Sonraki Döneme Devreden KDV\",\"0,00 TL\"],[\"KDV Mahsup Fişi\",\"Ocak 2027\"]] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.1 M1 küçük tur 4 — yıl dönümü: (a) ödenecek Aralık fişi → devreden, (b) devreden Aralık fişinde İ artar (ikisi de tabanda kırmızı; iki şirket) › 002 (b) Bu Yıl (2027) 900 / 100 + uyuşmazlık; 2026 yılı sonraki 900; Aralık–Ocak 100 = 391 − 191; onarım",
+      "konum": "test/kdv-ozeti-yalniz391-251.test.mjs:619:3",
+      "hata": "Bu Yıl [[\"Hesaplanan KDV (391) (İadeler Düşülmüş)\",\"1.000,00 TL\"],[\"İndirilecek KDV (191) (İadeler Düşülmüş)\",\"0,00 TL\"],[\"Alıcı Olarak Kesilen Tevkifat (2 No.lu)\",\"0,00 TL\"],[\"Önceki Dönemden Devreden KDV\",\"800,00 TL\"],[\"Ödenecek KDV\",\"200,00 TL\"],[\"Sonraki Döneme Devreden KDV\",\"0,00 TL\"],[\"KDV Mahsup Fişi\",\"Ocak 2027\"]] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.1 M1 tur 2 — KDV Özeti: zincirli devreden KDV (S-M1-1 = B) › 001 mahsuptan sonra artıran kayıt (Haziran 'Güncel Değil'): ay ay rapor = ön izleme (A = B, karar (3)); aralığın sonraki devredeni son KDV'li ayın sonucu",
+      "konum": "test/kdv-ozeti-zincir-251.test.mjs:236:3",
+      "hata": "Temmuz = Haziran'ın bugünkü devredeni 300 (S-M1K3-1 = A; tur 2–3: 200) · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/m1k4/kanit/2026-11-27/m1k4-yeni-test-taban-utc.log",
+  "klasor": "/dev/shm/m1k4-kdv/eski",
+  "ham_cikti_sha256": "8a4a893bc54828fa50b0bbaa73268c61ce536884387b7de809ed538195a2bb40",
+  "ham_cikti_bayt": 42286
+}

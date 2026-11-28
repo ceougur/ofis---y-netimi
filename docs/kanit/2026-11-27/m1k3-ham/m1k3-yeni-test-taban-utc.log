@@ -1,0 +1,686 @@
+TAP version 13
+# (node:13057) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.1 M1 — KDV Özeti: Önceki Dönemden Devreden KDV ve mahsup formülüyle Ödenecek / Sonraki Döneme Devreden
+    # Subtest: S261 (002): Şubat KDV Özeti — Önceki Dönemden Devreden 2.000, Ödenecek 0, Sonraki Döneme Devreden 800; mahsup ön izlemesiyle aynı; ekran = PDF = Excel
+    ok 1 - S261 (002): Şubat KDV Özeti — Önceki Dönemden Devreden 2.000, Ödenecek 0, Sonraki Döneme Devreden 800; mahsup ön izlemesiyle aynı; ekran = PDF = Excel
+      ---
+      duration_ms: 172.432682
+      type: 'test'
+      ...
+    # Subtest: MA (001): Mayıs ödenecek 60 (1.200 − 1.140); Mart / Nisan devreden 1.140 taşınır; Eylül ödenecek 0, sonraki 1.960 (kâhin: mali müşavir)
+    ok 2 - MA (001): Mayıs ödenecek 60 (1.200 − 1.140); Mart / Nisan devreden 1.140 taşınır; Eylül ödenecek 0, sonraki 1.960 (kâhin: mali müşavir)
+      ---
+      duration_ms: 196.635161
+      type: 'test'
+      ...
+    # Subtest: MA (001) yıllık 2026: Önceki 0, Ödenecek 60, Sonraki 1.960 = defterdeki 190; ay ay satırlar kendi devreden / ödenecek değeriyle; ekran = PDF = Excel
+    ok 3 - MA (001) yıllık 2026: Önceki 0, Ödenecek 60, Sonraki 1.960 = defterdeki 190; ay ay satırlar kendi devreden / ödenecek değeriyle; ekran = PDF = Excel
+      ---
+      duration_ms: 120.61545
+      type: 'test'
+      ...
+    # Subtest: boş ve gelecek dönem; iki şirket karışmaz; aralık yalnız mahsupsuz hareketsiz aylarsa devreden aynen
+    ok 4 - boş ve gelecek dönem; iki şirket karışmaz; aralık yalnız mahsupsuz hareketsiz aylarsa devreden aynen
+      ---
+      duration_ms: 22.226168
+      type: 'test'
+      ...
+    # Subtest: mahsup fişi kesilmemiş ay (S-M1-1 = B): rapor ZİNCİRLİ + 'Mahsup Edilmemiş Ay' notu, ön izleme defterden; mahsup kesilince / geri alınınca / yeniden kesilince rapor sayısı aynı
+    ok 5 - mahsup fişi kesilmemiş ay (S-M1-1 = B): rapor ZİNCİRLİ + 'Mahsup Edilmemiş Ay' notu, ön izleme defterden; mahsup kesilince / geri alınınca / yeniden kesilince rapor sayısı aynı
+      ---
+      duration_ms: 195.936605
+      type: 'test'
+      ...
+    # Subtest: ödenecek aydan sonra yeniden devreden; aralık yıl başını aşar (Aralık 2026 → Ocak 2027)
+    ok 6 - ödenecek aydan sonra yeniden devreden; aralık yıl başını aşar (Aralık 2026 → Ocak 2027)
+      ---
+      duration_ms: 177.784865
+      type: 'test'
+      ...
+    # Subtest: iadeler, alıcı olarak kesilen tevkifat, KDV İndirim Dönemi başka aya atılmış alış (002): rapor = mahsup ön izlemesi ay ay; 391 / 191 iadeler düşülmüş
+    ok 7 - iadeler, alıcı olarak kesilen tevkifat, KDV İndirim Dönemi başka aya atılmış alış (002): rapor = mahsup ön izlemesi ay ay; 391 / 191 iadeler düşülmüş
+      ---
+      duration_ms: 249.19287
+      type: 'test'
+      ...
+    # Subtest: S4 (002): Mart mahsubundan sonra Mart'ın tevkifatlı alışı İptal Et (191 −400) → Nisan: rapor = ön izleme (azaltan fark Nisan'a taşınır): önceki 1.000, sonraki 800
+    ok 8 - S4 (002): Mart mahsubundan sonra Mart'ın tevkifatlı alışı İptal Et (191 −400) → Nisan: rapor = ön izleme (azaltan fark Nisan'a taşınır): önceki 1.000, sonraki 800
+      ---
+      duration_ms: 67.55942
+      type: 'test'
+      ...
+# (node:13057) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: kilitli dönem ve Defter Türü (işletme): rapor sayıları değişmez; ay ortasında biten aralıkta not
+    ok 9 - kilitli dönem ve Defter Türü (işletme): rapor sayıları değişmez; ay ortasında biten aralıkta not
+      ---
+      duration_ms: 514.946072
+      type: 'test'
+      ...
+    # Subtest: yetki: finans raporu yetkisi olmayan 403; muhasebe aynı sayıları görür
+    ok 10 - yetki: finans raporu yetkisi olmayan 403; muhasebe aynı sayıları görür
+      ---
+      duration_ms: 346.245148
+      type: 'test'
+      ...
+    1..10
+ok 1 - 2.5.1 M1 — KDV Özeti: Önceki Dönemden Devreden KDV ve mahsup formülüyle Ödenecek / Sonraki Döneme Devreden
+  ---
+  duration_ms: 4567.800041
+  type: 'suite'
+  ...
+# (node:13058) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.1 M1 küçük tur 2 — KDV Özeti karma ay (S-M1K-1 = A): kararın örneği AYNEN, satış silinmesi + alış iptali, iki şirket
+    # Subtest: 001 kararın örneği: Ocak 600 (İ fişten 500, 391 bugünkü 1.100), Şubat 700, Ocak–Şubat 1.300 = 391; karma notu; fişler, ön izleme ve defter değişmez; ekran = PDF = Excel
+    ok 1 - 001 kararın örneği: Ocak 600 (İ fişten 500, 391 bugünkü 1.100), Şubat 700, Ocak–Şubat 1.300 = 391; karma notu; fişler, ön izleme ve defter değişmez; ekran = PDF = Excel
+      ---
+      duration_ms: 261.212651
+      type: 'test'
+      ...
+    # Subtest: 001 aralıklar: Mart fişi 400 → Ocak–Mart 1.700, Şubat–Mart 1.100 (notsuz), Bu Yıl ve Tüm Zamanlar 1.700 — hepsi 391 − 191
+    ok 2 - 001 aralıklar: Mart fişi 400 → Ocak–Mart 1.700, Şubat–Mart 1.100 (notsuz), Bu Yıl ve Tüm Zamanlar 1.700 — hepsi 391 − 191
+      ---
+      duration_ms: 79.432742
+      type: 'test'
+      ...
+    # Subtest: 002 satış silinmesi + alış iptali (391 azaldı, İ azaldı): Ocak 400 (900 − 500 fişten), Şubat 700, Ocak–Şubat 1.100 = 391; karma notu; 001 etkilenmez
+    ok 3 - 002 satış silinmesi + alış iptali (391 azaldı, İ azaldı): Ocak 400 (900 − 500 fişten), Şubat 700, Ocak–Şubat 1.100 = 391; karma notu; 001 etkilenmez
+      ---
+      duration_ms: 318.603672
+      type: 'test'
+      ...
+    1..3
+ok 2 - 2.5.1 M1 küçük tur 2 — KDV Özeti karma ay (S-M1K-1 = A): kararın örneği AYNEN, satış silinmesi + alış iptali, iki şirket
+  ---
+  duration_ms: 3078.828727
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M1 küçük tur 2 — KDV Özeti karma ay: devreden yönde, yön dönmesi ve yıl dönümü
+    # Subtest: 001 devreden yönde karma: Mart 300 − 1.000 → sonraki 700 (taban 300); Nisan zincirde 700 devredenle 700 + 'Zincirle Uyuşmayan' (fiş 800'le); Mart–Nisan 700 = 391 − 191; onarımda aynı
+    ok 1 - 001 devreden yönde karma: Mart 300 − 1.000 → sonraki 700 (taban 300); Nisan zincirde 700 devredenle 700 + 'Zincirle Uyuşmayan' (fiş 800'le); Mart–Nisan 700 = 391 − 191; onarımda aynı
+      ---
+      duration_ms: 227.864807
+      type: 'test'
+      ...
+    # Subtest: 002 yön dönmesi + yıl dönümü: Aralık 200 − 500 → sonraki 300 (taban: ödenecek 200); Ocak 2027 mahsupsuz 300 devredenle 400; Aralık–Ocak 400 = 391; Bu Yıl önceki 300; Ocak fişi sonra kesilirse uyuşmazlık; onarım
+    ok 2 - 002 yön dönmesi + yıl dönümü: Aralık 200 − 500 → sonraki 300 (taban: ödenecek 200); Ocak 2027 mahsupsuz 300 devredenle 400; Aralık–Ocak 400 = 391; Bu Yıl önceki 300; Ocak fişi sonra kesilirse uyuşmazlık; onarım
+      ---
+      duration_ms: 287.73649
+      type: 'test'
+      ...
+    1..2
+ok 3 - 2.5.1 M1 küçük tur 2 — KDV Özeti karma ay: devreden yönde, yön dönmesi ve yıl dönümü
+  ---
+  duration_ms: 2686.770177
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M1 küçük tur 2 — KDV Özeti tutarlılık tablosu: yalnız azalma / yalnız 391 / ikisi birden / hiçbiri / İ arttı (her biri ayrı şirkette)
+    # Subtest: hiçbiri + yalnız İ azaldı (S-DKM1-1 = A)
+        # Subtest: 001 hiçbiri: Ocak 500, Ocak–Şubat 700 = 391 − 191; not; onarımda fişler 500 / 200 (toplam = rapor)
+        ok 1 - 001 hiçbiri: Ocak 500, Ocak–Şubat 700 = 391 − 191; not; onarımda fişler 500 / 200 (toplam = rapor)
+          ---
+          duration_ms: 54.525809
+          type: 'test'
+          ...
+        # Subtest: 002 yalnız İ azaldı (S-DKM1-1 = A): Ocak 500, Ocak–Şubat 900 = 391 − 191; not; onarımda fişler 700 / 200 (toplam = rapor)
+        ok 2 - 002 yalnız İ azaldı (S-DKM1-1 = A): Ocak 500, Ocak–Şubat 900 = 391 − 191; not; onarımda fişler 700 / 200 (toplam = rapor)
+          ---
+          duration_ms: 55.109158
+          type: 'test'
+          ...
+        1..2
+    ok 1 - hiçbiri + yalnız İ azaldı (S-DKM1-1 = A)
+      ---
+      duration_ms: 2189.155166
+      type: 'suite'
+      ...
+    # Subtest: yalnız 391 değişti (S-M1-3 = C) + ikisi birden (S-M1K-1 = A)
+        # Subtest: 001 yalnız 391 değişti (S-M1-3 = C): Ocak 600, Ocak–Şubat 800 = 391 − 191; not; onarımda fişler 600 / 200 (toplam = rapor)
+        ok 1 - 001 yalnız 391 değişti (S-M1-3 = C): Ocak 600, Ocak–Şubat 800 = 391 − 191; not; onarımda fişler 600 / 200 (toplam = rapor)
+          ---
+          duration_ms: 80.121506
+          type: 'test'
+          ...
+        # Subtest: 002 ikisi birden (S-M1K-1 = A): Ocak 600, Ocak–Şubat 1000 = 391 − 191; not; onarımda fişler 800 / 200 (toplam = rapor)
+        ok 2 - 002 ikisi birden (S-M1K-1 = A): Ocak 600, Ocak–Şubat 1000 = 391 − 191; not; onarımda fişler 800 / 200 (toplam = rapor)
+          ---
+          duration_ms: 83.320654
+          type: 'test'
+          ...
+        1..2
+    ok 2 - yalnız 391 değişti (S-M1-3 = C) + ikisi birden (S-M1K-1 = A)
+      ---
+      duration_ms: 2205.765108
+      type: 'suite'
+      ...
+    # Subtest: İ arttı + 391 değişti (S-M1-3 = C)
+        # Subtest: 001 İ arttı + 391 değişti (S-M1-3 = C): Ocak 500, Ocak–Şubat 700 = 391 − 191; not; onarımda fişler 500 / 200 (toplam = rapor)
+        ok 1 - 001 İ arttı + 391 değişti (S-M1-3 = C): Ocak 500, Ocak–Şubat 700 = 391 − 191; not; onarımda fişler 500 / 200 (toplam = rapor)
+          ---
+          duration_ms: 49.110168
+          type: 'test'
+          ...
+        1..1
+    ok 3 - İ arttı + 391 değişti (S-M1-3 = C)
+      ---
+      duration_ms: 1194.9192
+      type: 'suite'
+      ...
+    1..3
+ok 4 - 2.5.1 M1 küçük tur 2 — KDV Özeti tutarlılık tablosu: yalnız azalma / yalnız 391 / ikisi birden / hiçbiri / İ arttı (her biri ayrı şirkette)
+  ---
+  duration_ms: 5590.525042
+  type: 'suite'
+  ...
+# (node:13059) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.1 M1 küçük tur — KDV Özeti: fişten sonra azalan İndirilecek KDV (S-DKM1-1 = A) ve S4 emilimiyle kopuk fiş (dar kontrol L)
+    # Subtest: 001 kararın örneği: Ocak 500 / Şubat 700 / Mart 400 (fişten), Ocak–Mart Ödenecek 1.600 = fişler = 391; Ocak'ta not; ön izleme ve defter değişmez; ekran = PDF = Excel
+    ok 1 - 001 kararın örneği: Ocak 500 / Şubat 700 / Mart 400 (fişten), Ocak–Mart Ödenecek 1.600 = fişler = 391; Ocak'ta not; ön izleme ve defter değişmez; ekran = PDF = Excel
+      ---
+      duration_ms: 267.123684
+      type: 'test'
+      ...
+    # Subtest: 001 aralığın kenarları: Ocak–Şubat 1.200, Şubat–Mart 1.100 (notsuz), Tüm Zamanlar 1.600, Mart–Nisan önceki 0; gelecek ay devreden 0
+    ok 2 - 001 aralığın kenarları: Ocak–Şubat 1.200, Şubat–Mart 1.100 (notsuz), Tüm Zamanlar 1.600, Mart–Nisan önceki 0; gelecek ay devreden 0
+      ---
+      duration_ms: 74.075597
+      type: 'test'
+      ...
+    # Subtest: 002 mahsupsuz Şubat İndirilecek KDV'deki azalmayı zincirde düşer (S4 emilimi): Şubat 700, Mart 400, Şubat–Mart 1.100 — Mart ikinci kez düşmez
+    ok 3 - 002 mahsupsuz Şubat İndirilecek KDV'deki azalmayı zincirde düşer (S4 emilimi): Şubat 700, Mart 400, Şubat–Mart 1.100 — Mart ikinci kez düşmez
+      ---
+      duration_ms: 47.060515
+      type: 'test'
+      ...
+    # Subtest: 002 dar kontrol L: Şubat atlanıp Mart fişi defter sırasıyla (azalmayı yeniden düşerek) 900 kesilir → rapor zinciri gösterir (Mart 400, Ocak–Mart 1.600) + 'Zincirle Uyuşmayan Mahsup Fişi'; onarım
+    ok 4 - 002 dar kontrol L: Şubat atlanıp Mart fişi defter sırasıyla (azalmayı yeniden düşerek) 900 kesilir → rapor zinciri gösterir (Mart 400, Ocak–Mart 1.600) + 'Zincirle Uyuşmayan Mahsup Fişi'; onarım
+      ---
+      duration_ms: 222.7795
+      type: 'test'
+      ...
+    # Subtest: 001 mahsubu geri alınan ay: Mart, Şubat, Ocak sırayla geri alınır — toplam her adımda 1.600; Ocak geri alınınca Ocak 1.000 / Şubat 200 (bugünkü kayıtlar), not kalkar; yeniden kesilince 1.000 / 200 / 400
+    ok 5 - 001 mahsubu geri alınan ay: Mart, Şubat, Ocak sırayla geri alınır — toplam her adımda 1.600; Ocak geri alınınca Ocak 1.000 / Şubat 200 (bugünkü kayıtlar), not kalkar; yeniden kesilince 1.000 / 200 / 400
+      ---
+      duration_ms: 187.132006
+      type: 'test'
+      ...
+    1..5
+ok 5 - 2.5.1 M1 küçük tur — KDV Özeti: fişten sonra azalan İndirilecek KDV (S-DKM1-1 = A) ve S4 emilimiyle kopuk fiş (dar kontrol L)
+  ---
+  duration_ms: 3528.014031
+  type: 'suite'
+  ...
+# Subtest: 2.5.1 M1 küçük tur — KDV Özeti: yön notu (S-M1-2), yıl dönümünde azalan ay, sonraki fişten sonra gelen azalma, 'Mahsup Edilmemiş Ay' 6 ay sınırı
+    # Subtest: 001 S-M1-2: fiş 'sonraki döneme devreden 1.000', zincir 'ödenecek 800' → rapor zinciri (200 / 800 / 0) gösterir, not yön farkını da yazar; ön izleme değişmez
+    ok 1 - 001 S-M1-2: fiş 'sonraki döneme devreden 1.000', zincir 'ödenecek 800' → rapor zinciri (200 / 800 / 0) gösterir, not yön farkını da yazar; ön izleme değişmez
+      ---
+      duration_ms: 70.69151
+      type: 'test'
+      ...
+    # Subtest: 001 yıl dönümü: Aralık 2026 fişi (ödenecek 400), Aralık alışı Ocak'ta iptal → Aralık 400 (fişten) + not; Ocak 2027 200 + 200 = 400; Bu Yıl 400; 2026 yılı 1.200; Aralık–Ocak 800 = 391
+    ok 2 - 001 yıl dönümü: Aralık 2026 fişi (ödenecek 400), Aralık alışı Ocak'ta iptal → Aralık 400 (fişten) + not; Ocak 2027 200 + 200 = 400; Bu Yıl 400; 2026 yılı 1.200; Aralık–Ocak 800 = 391
+      ---
+      duration_ms: 193.265781
+      type: 'test'
+      ...
+    # Subtest: 002 azalma sonraki ayın fişinden SONRA: Ocak 500 (fişten, not), Şubat 200 (fişten, NOT YOK — Şubat'ın kaydı değişmedi), Mart 900 (zincirde, azalmayı düşer); Ocak–Mart 1.600
+    ok 3 - 002 azalma sonraki ayın fişinden SONRA: Ocak 500 (fişten, not), Şubat 200 (fişten, NOT YOK — Şubat'ın kaydı değişmedi), Mart 900 (zincirde, azalmayı düşer); Ocak–Mart 1.600
+      ---
+      duration_ms: 17.875921
+      type: 'test'
+      ...
+    # Subtest: 002 'Mahsup Edilmemiş Ay' en çok 6 ay: Ekim (6 ay: Nisan–Eylül, eksiksiz) ve Kasım (7 ay: 6 ay + 've 1 ay daha')
+    ok 4 - 002 'Mahsup Edilmemiş Ay' en çok 6 ay: Ekim (6 ay: Nisan–Eylül, eksiksiz) ve Kasım (7 ay: 6 ay + 've 1 ay daha')
+      ---
+      duration_ms: 9.913946
+      type: 'test'
+      ...
+    1..4
+ok 6 - 2.5.1 M1 küçük tur — KDV Özeti: yön notu (S-M1-2), yıl dönümünde azalan ay, sonraki fişten sonra gelen azalma, 'Mahsup Edilmemiş Ay' 6 ay sınırı
+  ---
+  duration_ms: 2352.176263
+  type: 'suite'
+  ...
+# (node:13084) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.1 M1 küçük tur 3 — yalnız 391 devreden yönde (S-M1K2-1 = A): kararın örneği AYNEN, yıl dönümü, iki şirket
+    # Subtest: 001 kararın örneği: Mart sonraki 700, Nisan önceki 700 + ödenecek 300 + uyuşmazlık notu, Mart–Nisan 300 = 391 − 191; fiş / ön izleme / defter değişmez; ekran = PDF = Excel; onarımda aynı
+    not ok 1 - 001 kararın örneği: Mart sonraki 700, Nisan önceki 700 + ödenecek 300 + uyuşmazlık notu, Mart–Nisan 300 = 391 − 191; fiş / ön izleme / defter değişmez; ekran = PDF = Excel; onarımda aynı
+      ---
+      duration_ms: 23.808173
+      type: 'test'
+      location: '/dev/shm/m1k3-kdv/eski/test/kdv-ozeti-yalniz391-251.test.mjs:151:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Nisan: önceki 700, 1.000 − 700 = 300 (taban 800 / 200) [["Hesaplanan KDV (391) (İadeler Düşülmüş)","1.000,00 TL"],["İndirilecek KDV (191) (İadeler Düşülmüş)","0,00 TL"],["Alıcı Olarak Kesilen Tevkifat (2 No.lu)","0,00 TL"],["Önceki Dönemden Devreden KDV","800,00 TL"],["Ödenecek KDV","200,00 TL"],["Sonraki Döneme Devreden KDV","0,00 TL"],["KDV Mahsup Fişi","Nisan 2026"]]
+        + actual - expected
+        
+          [
+        +   80000,
+        +   20000,
+        -   70000,
+        -   30000,
+            0
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 70000
+        1: 30000
+        2: 0
+      actual:
+        0: 80000
+        1: 20000
+        2: 0
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m1k3-kdv/eski/test/kdv-ozeti-yalniz391-251.test.mjs:158:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    # Subtest: 002 yıl dönümü: Aralık 2026 sonraki 700; Bu Yıl (2027) önceki 700, ödenecek 300 + uyuşmazlık; 2026 yılı sonraki 700; Aralık–Ocak 300; 001 etkilenmez
+    not ok 2 - 002 yıl dönümü: Aralık 2026 sonraki 700; Bu Yıl (2027) önceki 700, ödenecek 300 + uyuşmazlık; 2026 yılı sonraki 700; Aralık–Ocak 300; 001 etkilenmez
+      ---
+      duration_ms: 10.805112
+      type: 'test'
+      location: '/dev/shm/m1k3-kdv/eski/test/kdv-ozeti-yalniz391-251.test.mjs:191:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Bu Yıl (2027): önceki 700, ödenecek 300 (taban 800 / 200) [["Hesaplanan KDV (391) (İadeler Düşülmüş)","1.000,00 TL"],["İndirilecek KDV (191) (İadeler Düşülmüş)","0,00 TL"],["Alıcı Olarak Kesilen Tevkifat (2 No.lu)","0,00 TL"],["Önceki Dönemden Devreden KDV","800,00 TL"],["Ödenecek KDV","200,00 TL"],["Sonraki Döneme Devreden KDV","0,00 TL"],["KDV Mahsup Fişi","Ocak 2027"]]
+        + actual - expected
+        
+          [
+        +   80000,
+        +   20000,
+        -   70000,
+        -   30000,
+            0
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 70000
+        1: 30000
+        2: 0
+      actual:
+        0: 80000
+        1: 20000
+        2: 0
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m1k3-kdv/eski/test/kdv-ozeti-yalniz391-251.test.mjs:196:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 7 - 2.5.1 M1 küçük tur 3 — yalnız 391 devreden yönde (S-M1K2-1 = A): kararın örneği AYNEN, yıl dönümü, iki şirket
+  ---
+  duration_ms: 2202.720974
+  type: 'suite'
+  location: '/dev/shm/m1k3-kdv/eski/test/kdv-ozeti-yalniz391-251.test.mjs:129:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.1 M1 küçük tur 3 — tutarlılık tablosu: hiçbiri / yalnız azalma / yalnız 391 (iki yönde, yön dönmesi) / ikisi birden / İ arttı (her biri ayrı şirkette)
+    # Subtest: devreden · hiçbiri + devreden · yalnız İ azaldı (S-DKM1-1 = A)
+        # Subtest: 001 devreden · hiçbiri: Mart [0,0,80000], Nisan [80000,20000,0], Mart–Nisan [0,20000,0] = 391 − 191; onarım
+        ok 1 - 001 devreden · hiçbiri: Mart [0,0,80000], Nisan [80000,20000,0], Mart–Nisan [0,20000,0] = 391 − 191; onarım
+          ---
+          duration_ms: 96.804214
+          type: 'test'
+          ...
+        # Subtest: 002 devreden · yalnız İ azaldı (S-DKM1-1 = A): Mart [0,0,80000], Nisan [80000,60000,0], Mart–Nisan [0,60000,0] = 391 − 191; onarım
+        ok 2 - 002 devreden · yalnız İ azaldı (S-DKM1-1 = A): Mart [0,0,80000], Nisan [80000,60000,0], Mart–Nisan [0,60000,0] = 391 − 191; onarım
+          ---
+          duration_ms: 74.592602
+          type: 'test'
+          ...
+        1..2
+    ok 1 - devreden · hiçbiri + devreden · yalnız İ azaldı (S-DKM1-1 = A)
+      ---
+      duration_ms: 2335.915949
+      type: 'suite'
+      ...
+    # Subtest: devreden · yalnız 391 arttı (S-M1K2-1 = A) + devreden · yalnız 391 azaldı (S-M1K2-1 = A)
+        # Subtest: 001 devreden · yalnız 391 arttı (S-M1K2-1 = A): Mart [0,0,70000], Nisan [70000,30000,0], Mart–Nisan [0,30000,0] = 391 − 191; onarım
+        not ok 1 - 001 devreden · yalnız 391 arttı (S-M1K2-1 = A): Mart [0,0,70000], Nisan [70000,30000,0], Mart–Nisan [0,30000,0] = 391 − 191; onarım
+          ---
+          duration_ms: 17.561902
+          type: 'test'
+          location: '/dev/shm/m1k3-kdv/eski/test/kdv-ozeti-yalniz391-251.test.mjs:279:9'
+          failureType: 'testCodeFailure'
+          error: |-
+            devreden · yalnız 391 arttı (S-M1K2-1 = A): Nisan [["Hesaplanan KDV (391) (İadeler Düşülmüş)","1.000,00 TL"],["İndirilecek KDV (191) (İadeler Düşülmüş)","0,00 TL"],["Alıcı Olarak Kesilen Tevkifat (2 No.lu)","0,00 TL"],["Önceki Dönemden Devreden KDV","800,00 TL"],["Ödenecek KDV","200,00 TL"],["Sonraki Döneme Devreden KDV","0,00 TL"],["KDV Mahsup Fişi","Nisan 2026"]]
+            + actual - expected
+            
+              [
+            +   80000,
+            +   20000,
+            -   70000,
+            -   30000,
+                0
+              ]
+            
+          code: 'ERR_ASSERTION'
+          name: 'AssertionError'
+          expected:
+            0: 70000
+            1: 30000
+            2: 0
+          actual:
+            0: 80000
+            1: 20000
+            2: 0
+          operator: 'deepStrictEqual'
+          stack: |-
+            TestContext.<anonymous> (file:///dev/shm/m1k3-kdv/eski/test/kdv-ozeti-yalniz391-251.test.mjs:285:18)
+            process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+            async Test.run (node:internal/test_runner/test:1054:7)
+            async Promise.all (index 0)
+            async Suite.run (node:internal/test_runner/test:1442:7)
+            async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+          ...
+        # Subtest: 002 devreden · yalnız 391 azaldı (S-M1K2-1 = A): Mart [0,0,100000], Nisan [100000,0,0], Mart–Nisan [0,0,0] = 391 − 191; onarım
+        not ok 2 - 002 devreden · yalnız 391 azaldı (S-M1K2-1 = A): Mart [0,0,100000], Nisan [100000,0,0], Mart–Nisan [0,0,0] = 391 − 191; onarım
+          ---
+          duration_ms: 11.62421
+          type: 'test'
+          location: '/dev/shm/m1k3-kdv/eski/test/kdv-ozeti-yalniz391-251.test.mjs:279:9'
+          failureType: 'testCodeFailure'
+          error: |-
+            devreden · yalnız 391 azaldı (S-M1K2-1 = A): Nisan [["Hesaplanan KDV (391) (İadeler Düşülmüş)","1.000,00 TL"],["İndirilecek KDV (191) (İadeler Düşülmüş)","0,00 TL"],["Alıcı Olarak Kesilen Tevkifat (2 No.lu)","0,00 TL"],["Önceki Dönemden Devreden KDV","800,00 TL"],["Ödenecek KDV","200,00 TL"],["Sonraki Döneme Devreden KDV","0,00 TL"],["KDV Mahsup Fişi","Nisan 2026"]]
+            + actual - expected
+            
+              [
+            +   80000,
+            +   20000,
+            -   100000,
+                0,
+            -   0
+              ]
+            
+          code: 'ERR_ASSERTION'
+          name: 'AssertionError'
+          expected:
+            0: 100000
+            1: 0
+            2: 0
+          actual:
+            0: 80000
+            1: 20000
+            2: 0
+          operator: 'deepStrictEqual'
+          stack: |-
+            TestContext.<anonymous> (file:///dev/shm/m1k3-kdv/eski/test/kdv-ozeti-yalniz391-251.test.mjs:285:18)
+            process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+            async Test.run (node:internal/test_runner/test:1054:7)
+            async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+          ...
+        1..2
+    not ok 2 - devreden · yalnız 391 arttı (S-M1K2-1 = A) + devreden · yalnız 391 azaldı (S-M1K2-1 = A)
+      ---
+      duration_ms: 1325.288357
+      type: 'suite'
+      location: '/dev/shm/m1k3-kdv/eski/test/kdv-ozeti-yalniz391-251.test.mjs:263:5'
+      failureType: 'subtestsFailed'
+      error: '2 subtests failed'
+      code: 'ERR_TEST_FAILURE'
+      ...
+    # Subtest: devreden → ödenecek · yalnız 391 arttı, yön döndü (S-M1K2-1 = A) + devreden · ikisi birden (S-M1K-1 = A, karma)
+        # Subtest: 001 devreden → ödenecek · yalnız 391 arttı, yön döndü (S-M1K2-1 = A): Mart [0,20000,0], Nisan [0,100000,0], Mart–Nisan [0,120000,0] = 391 − 191; onarım
+        not ok 1 - 001 devreden → ödenecek · yalnız 391 arttı, yön döndü (S-M1K2-1 = A): Mart [0,20000,0], Nisan [0,100000,0], Mart–Nisan [0,120000,0] = 391 − 191; onarım
+          ---
+          duration_ms: 10.742696
+          type: 'test'
+          location: '/dev/shm/m1k3-kdv/eski/test/kdv-ozeti-yalniz391-251.test.mjs:279:9'
+          failureType: 'testCodeFailure'
+          error: |-
+            devreden → ödenecek · yalnız 391 arttı, yön döndü (S-M1K2-1 = A): Nisan [["Hesaplanan KDV (391) (İadeler Düşülmüş)","1.000,00 TL"],["İndirilecek KDV (191) (İadeler Düşülmüş)","0,00 TL"],["Alıcı Olarak Kesilen Tevkifat (2 No.lu)","0,00 TL"],["Önceki Dönemden Devreden KDV","800,00 TL"],["Ödenecek KDV","200,00 TL"],["Sonraki Döneme Devreden KDV","0,00 TL"],["KDV Mahsup Fişi","Nisan 2026"]]
+            + actual - expected
+            
+              [
+            +   80000,
+            +   20000,
+                0,
+            -   100000,
+            -   0
+              ]
+            
+          code: 'ERR_ASSERTION'
+          name: 'AssertionError'
+          expected:
+            0: 0
+            1: 100000
+            2: 0
+          actual:
+            0: 80000
+            1: 20000
+            2: 0
+          operator: 'deepStrictEqual'
+          stack: |-
+            TestContext.<anonymous> (file:///dev/shm/m1k3-kdv/eski/test/kdv-ozeti-yalniz391-251.test.mjs:285:18)
+            process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+            async Test.run (node:internal/test_runner/test:1054:7)
+            async Promise.all (index 0)
+            async Suite.run (node:internal/test_runner/test:1442:7)
+            async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+          ...
+        # Subtest: 002 devreden · ikisi birden (S-M1K-1 = A, karma): Mart [0,0,70000], Nisan [70000,70000,0], Mart–Nisan [0,70000,0] = 391 − 191; onarım
+        ok 2 - 002 devreden · ikisi birden (S-M1K-1 = A, karma): Mart [0,0,70000], Nisan [70000,70000,0], Mart–Nisan [0,70000,0] = 391 − 191; onarım
+          ---
+          duration_ms: 59.212709
+          type: 'test'
+          ...
+        1..2
+    not ok 3 - devreden → ödenecek · yalnız 391 arttı, yön döndü (S-M1K2-1 = A) + devreden · ikisi birden (S-M1K-1 = A, karma)
+      ---
+      duration_ms: 1056.443164
+      type: 'suite'
+      location: '/dev/shm/m1k3-kdv/eski/test/kdv-ozeti-yalniz391-251.test.mjs:263:5'
+      failureType: 'subtestsFailed'
+      error: '1 subtest failed'
+      code: 'ERR_TEST_FAILURE'
+      ...
+    # Subtest: devreden · İ arttı (S-M1-3 = C, karar dışı) + ödenecek · hiçbiri
+        # Subtest: 001 devreden · İ arttı (S-M1-3 = C, karar dışı): Mart [0,0,90000], Nisan [80000,20000,0], Mart–Nisan [0,20000,0] (391 − 191'den 100 sapar — sabitlendi); onarım
+        ok 1 - 001 devreden · İ arttı (S-M1-3 = C, karar dışı): Mart [0,0,90000], Nisan [80000,20000,0], Mart–Nisan [0,20000,0] (391 − 191'den 100 sapar — sabitlendi); onarım
+          ---
+          duration_ms: 43.988438
+          type: 'test'
+          ...
+        # Subtest: 002 ödenecek · hiçbiri: Mart [0,50000,0], Nisan [0,20000,0], Mart–Nisan [0,70000,0] = 391 − 191; onarım
+        ok 2 - 002 ödenecek · hiçbiri: Mart [0,50000,0], Nisan [0,20000,0], Mart–Nisan [0,70000,0] = 391 − 191; onarım
+          ---
+          duration_ms: 75.152442
+          type: 'test'
+          ...
+        1..2
+    ok 4 - devreden · İ arttı (S-M1-3 = C, karar dışı) + ödenecek · hiçbiri
+      ---
+      duration_ms: 1194.408241
+      type: 'suite'
+      ...
+    # Subtest: ödenecek · yalnız 391 arttı (DEĞİŞMEZ) + ödenecek → devreden · yalnız 391 azaldı, yön döndü (DEĞİŞMEZ, karar dışı)
+        # Subtest: 001 ödenecek · yalnız 391 arttı (DEĞİŞMEZ): Mart [0,60000,0], Nisan [0,20000,0], Mart–Nisan [0,80000,0] = 391 − 191; onarım
+        ok 1 - 001 ödenecek · yalnız 391 arttı (DEĞİŞMEZ): Mart [0,60000,0], Nisan [0,20000,0], Mart–Nisan [0,80000,0] = 391 − 191; onarım
+          ---
+          duration_ms: 48.205615
+          type: 'test'
+          ...
+        # Subtest: 002 ödenecek → devreden · yalnız 391 azaldı, yön döndü (DEĞİŞMEZ, karar dışı): Mart [0,0,30000], Nisan [0,20000,0], Mart–Nisan [0,20000,0] (391 − 191'den 300 sapar — sabitlendi); onarım
+        ok 2 - 002 ödenecek → devreden · yalnız 391 azaldı, yön döndü (DEĞİŞMEZ, karar dışı): Mart [0,0,30000], Nisan [0,20000,0], Mart–Nisan [0,20000,0] (391 − 191'den 300 sapar — sabitlendi); onarım
+          ---
+          duration_ms: 46.947441
+          type: 'test'
+          ...
+        1..2
+    ok 5 - ödenecek · yalnız 391 arttı (DEĞİŞMEZ) + ödenecek → devreden · yalnız 391 azaldı, yön döndü (DEĞİŞMEZ, karar dışı)
+      ---
+      duration_ms: 1113.117666
+      type: 'suite'
+      ...
+    1..5
+not ok 8 - 2.5.1 M1 küçük tur 3 — tutarlılık tablosu: hiçbiri / yalnız azalma / yalnız 391 (iki yönde, yön dönmesi) / ikisi birden / İ arttı (her biri ayrı şirkette)
+  ---
+  duration_ms: 7026.307794
+  type: 'suite'
+  location: '/dev/shm/m1k3-kdv/eski/test/kdv-ozeti-yalniz391-251.test.mjs:259:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.1 M1 küçük tur 3 — zincirde: arada mahsupsuz ay; karma ay + sonraki ayda yalnız 391 (iki şirket)
+    # Subtest: 001 arada mahsupsuz ay: Mart sonraki 700 → Nisan 700 devredenle sonraki 400 → Mayıs 400 devredenle 600 + uyuşmazlık; Mart–Mayıs 600 = 391 − 191; 'Mahsup Edilmemiş Ay' Nisan
+    not ok 1 - 001 arada mahsupsuz ay: Mart sonraki 700 → Nisan 700 devredenle sonraki 400 → Mayıs 400 devredenle 600 + uyuşmazlık; Mart–Mayıs 600 = 391 − 191; 'Mahsup Edilmemiş Ay' Nisan
+      ---
+      duration_ms: 5.740996
+      type: 'test'
+      location: '/dev/shm/m1k3-kdv/eski/test/kdv-ozeti-yalniz391-251.test.mjs:340:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Nisan: 300 − 700 → sonraki 400 (taban 800 → 500) [["Hesaplanan KDV (391) (İadeler Düşülmüş)","300,00 TL"],["İndirilecek KDV (191) (İadeler Düşülmüş)","0,00 TL"],["Alıcı Olarak Kesilen Tevkifat (2 No.lu)","0,00 TL"],["Önceki Dönemden Devreden KDV","800,00 TL"],["Ödenecek KDV","0,00 TL"],["Sonraki Döneme Devreden KDV","500,00 TL"]]
+        + actual - expected
+        
+          [
+        +   80000,
+        -   70000,
+            0,
+        +   50000
+        -   40000
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 70000
+        1: 0
+        2: 40000
+      actual:
+        0: 80000
+        1: 0
+        2: 50000
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m1k3-kdv/eski/test/kdv-ozeti-yalniz391-251.test.mjs:342:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: 002 karma ay + sonraki ayda yalnız 391: Ocak 500 (karma), Şubat sonraki 600 (bugünkü), Mart 600 devredenle 400 + uyuşmazlık; Ocak–Mart 900 = 391 − 191; onarımda aynı
+    not ok 2 - 002 karma ay + sonraki ayda yalnız 391: Ocak 500 (karma), Şubat sonraki 600 (bugünkü), Mart 600 devredenle 400 + uyuşmazlık; Ocak–Mart 900 = 391 − 191; onarımda aynı
+      ---
+      duration_ms: 7.48347
+      type: 'test'
+      location: '/dev/shm/m1k3-kdv/eski/test/kdv-ozeti-yalniz391-251.test.mjs:361:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Ocak–Mart 900 (taban 1.000) [["Hesaplanan KDV (391) (İadeler Düşülmüş)","2.200,00 TL"],["İndirilecek KDV (191) (İadeler Düşülmüş)","1.300,00 TL"],["Alıcı Olarak Kesilen Tevkifat (2 No.lu)","0,00 TL"],["Önceki Dönemden Devreden KDV","0,00 TL"],["Ödenecek KDV","1.000,00 TL"],["Sonraki Döneme Devreden KDV","0,00 TL"],["KDV Mahsup Fişi","Ocak 2026, Şubat 2026, Mart 2026"],["Mahsuptan Sonra Değişen Ay","Şubat 2026 (mahsup fişi güncel değil — mahsubu geri alıp yeniden mahsup edin); Ocak 2026 (mahsup fişi güncel değil — Hesaplanan KDV bugünkü kayıtlardan, İndirilecek KDV kesilmiş mahsup fişinden alındı, azalma sonraki mahsupta düşülür; mahsubu geri alıp yeniden mahsup edin)"]]
+        + actual - expected
+        
+          [
+            0,
+        +   100000,
+        -   90000,
+            0
+          ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0: 0
+        1: 90000
+        2: 0
+      actual:
+        0: 0
+        1: 100000
+        2: 0
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///dev/shm/m1k3-kdv/eski/test/kdv-ozeti-yalniz391-251.test.mjs:364:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..2
+not ok 9 - 2.5.1 M1 küçük tur 3 — zincirde: arada mahsupsuz ay; karma ay + sonraki ayda yalnız 391 (iki şirket)
+  ---
+  duration_ms: 1126.184564
+  type: 'suite'
+  location: '/dev/shm/m1k3-kdv/eski/test/kdv-ozeti-yalniz391-251.test.mjs:308:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 2.5.1 M1 küçük tur 3 — S4 taşımalı karma (baş mimar kararı: önceki fişli ayın azalması bu aya taşınmış + bu ayın 391'i değişmiş) — elle hesap, tek okuma
+    # Subtest: Ocak 500 (fişten, azalan ay notu), Şubat 400 (karma), Mart 600 (S4 −200); Ocak–Şubat 900, Ocak–Mart 1.500 = 391 − 191; Mart fişi = rapor; onarımda toplam aynı
+    ok 1 - Ocak 500 (fişten, azalan ay notu), Şubat 400 (karma), Mart 600 (S4 −200); Ocak–Şubat 900, Ocak–Mart 1.500 = 391 − 191; Mart fişi = rapor; onarımda toplam aynı
+      ---
+      duration_ms: 160.035859
+      type: 'test'
+      ...
+    1..1
+ok 10 - 2.5.1 M1 küçük tur 3 — S4 taşımalı karma (baş mimar kararı: önceki fişli ayın azalması bu aya taşınmış + bu ayın 391'i değişmiş) — elle hesap, tek okuma
+  ---
+  duration_ms: 1128.196087
+  type: 'suite'
+  ...
+# (node:13091) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.5.1 M1 tur 2 — KDV Özeti: zincirli devreden KDV (S-M1-1 = B)
+    # Subtest: 001 hiç mahsup fişi yok: ay ay zincir (elle), yıl 0 / 500 / 200, Mart–Mayıs 1.000 / 500 / 400; ön izleme defterden (değişmedi); not bütün mahsupsuz ayları söyler
+    ok 1 - 001 hiç mahsup fişi yok: ay ay zincir (elle), yıl 0 / 500 / 200, Mart–Mayıs 1.000 / 500 / 400; ön izleme defterden (değişmedi); not bütün mahsupsuz ayları söyler
+      ---
+      duration_ms: 234.043674
+      type: 'test'
+      ...
+    # Subtest: 001 aylar SIRAYLA mahsup edilir: her adımda rapor aynı (zincir mahsuptan bağımsız); sonunda rapor = ön izleme = fiş = 190 (A = B)
+    ok 2 - 001 aylar SIRAYLA mahsup edilir: her adımda rapor aynı (zincir mahsuptan bağımsız); sonunda rapor = ön izleme = fiş = 190 (A = B)
+      ---
+      duration_ms: 182.446249
+      type: 'test'
+      ...
+    # Subtest: 002 kopuk zincir: Şubat atlanıp Mart mahsup edilmiş → rapor zinciri gösterir (Mart 1.600 / 0 / 600) + 'Zincirle Uyuşmayan Mahsup Fişi' notu; ön izleme ve defter değişmez
+    ok 3 - 002 kopuk zincir: Şubat atlanıp Mart mahsup edilmiş → rapor zinciri gösterir (Mart 1.600 / 0 / 600) + 'Zincirle Uyuşmayan Mahsup Fişi' notu; ön izleme ve defter değişmez
+      ---
+      duration_ms: 231.889794
+      type: 'test'
+      ...
+    # Subtest: iki şirket karışmaz: 001'in mahsupları 002'nin zincirine, 002'ninki 001'e girmez
+    ok 4 - iki şirket karışmaz: 001'in mahsupları 002'nin zincirine, 002'ninki 001'e girmez
+      ---
+      duration_ms: 16.75126
+      type: 'test'
+      ...
+    # Subtest: 001 mahsuptan sonra artıran kayıt (Haziran 'Güncel Değil'): ay ay rapor = ön izleme (A = B, karar (3)); aralığın sonraki devredeni son KDV'li ayın sonucu
+    ok 5 - 001 mahsuptan sonra artıran kayıt (Haziran 'Güncel Değil'): ay ay rapor = ön izleme (A = B, karar (3)); aralığın sonraki devredeni son KDV'li ayın sonucu
+      ---
+      duration_ms: 152.850377
+      type: 'test'
+      ...
+    1..5
+ok 11 - 2.5.1 M1 tur 2 — KDV Özeti: zincirli devreden KDV (S-M1-1 = B)
+  ---
+  duration_ms: 3007.98795
+  type: 'suite'
+  ...
+1..11
+# tests 49
+# suites 19
+# pass 42
+# fail 7
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 17888.23153

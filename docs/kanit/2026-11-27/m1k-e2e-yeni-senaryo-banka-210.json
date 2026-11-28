@@ -1,0 +1,32 @@
+{
+  "ad": "m1k-e2e-yeni-senaryo-banka-210",
+  "komut": "node test/e2e/senaryo-banka-210.mjs",
+  "commit": "ef0ccf1623cddf70219ca378a25712b4f56643d8",
+  "dal": "worktree-agent-af4f8faccec231727",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T15:45:14.399Z",
+  "sure_sn": 380.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 429,
+    "gecen": 429,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/m1k/kanit/2026-11-27/m1k-e2e-yeni-senaryo-banka-210.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-af4f8faccec231727",
+  "ham_cikti_sha256": "3b5a0371e8c0159f7ca6b9cef9929d5349c835cb47327adbd1f76eface144cd7",
+  "ham_cikti_bayt": 49529
+}

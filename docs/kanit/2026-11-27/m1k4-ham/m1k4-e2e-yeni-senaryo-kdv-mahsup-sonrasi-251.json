@@ -1,0 +1,32 @@
+{
+  "ad": "m1k4-e2e-yeni-senaryo-kdv-mahsup-sonrasi-251",
+  "komut": "node test/e2e/senaryo-kdv-mahsup-sonrasi-251.mjs",
+  "commit": "19446c4980e025d9c82c4293b120074d9ea4e5bc",
+  "dal": "worktree-agent-a7d99fd88f55969de",
+  "kirli": 1,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T21:12:22.193Z",
+  "sure_sn": 16.3,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 35,
+    "gecen": 35,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/m1k4/kanit/2026-11-27/m1k4-e2e-yeni-senaryo-kdv-mahsup-sonrasi-251.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a7d99fd88f55969de",
+  "ham_cikti_sha256": "cf9c743a9dc9edbdcf6164ddc0c9c64982b0aa21a699604131581cfa6ae6bd5a",
+  "ham_cikti_bayt": 9392
+}

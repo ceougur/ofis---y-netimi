@@ -1,0 +1,63 @@
+{
+  "ad": "m1k2-yeni-test-taban-utc",
+  "komut": "node --test --test-reporter=tap test/kdv-ozeti-karma-251.test.mjs test/kdv-ozeti-mahsup-sonrasi-251.test.mjs test/kdv-ozeti-zincir-251.test.mjs test/kdv-ozeti-devreden-251.test.mjs",
+  "commit": "52fb473f69a60d38f3681c5827ad37bfb3c61917",
+  "dal": "HEAD",
+  "kirli": 0,
+  "izlenmeyen": 2,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T18:54:33.935Z",
+  "sure_sn": 5.9,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 34,
+    "gecen": 28,
+    "basarisiz": 6,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 6 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "2.5.1 M1 küçük tur 2 — KDV Özeti karma ay (S-M1K-1 = A): kararın örneği AYNEN, satış silinmesi + alış iptali, iki şirket › 001 kararın örneği: Ocak 600 (İ fişten 500, 391 bugünkü 1.100), Şubat 700, Ocak–Şubat 1.300 = 391; karma notu; fişler, ön izleme ve defter değişmez; ekran = PDF = Excel",
+      "konum": "test/kdv-ozeti-karma-251.test.mjs:150:3",
+      "hata": "Ocak 600 (taban: bugünkü kayıtlarla 1.100) [[\"Hesaplanan KDV (391) (İadeler Düşülmüş)\",\"1.100,00 TL\"],[\"İndirilecek KDV (191) (İadeler Düşülmüş)\",\"0,00 TL\"],[\"Alıcı Olarak Kesilen Tevkifat (2 No.lu)\",\"0,00 TL\"],[\"Önceki Dönemden Devreden KDV\",\"0,00 TL\"],[\"Ödenecek KDV\",\"1.100,00 TL\"],[\"Sonraki Döneme Devreden KDV\",\"0,00 TL\"],[\"KDV Mahsup Fişi\",\"Ocak 2026\"],[\"Mahsuptan Sonra Değişen Ay\",\"Ocak 2026 (mahsup fişi güncel değil — mahsubu geri alıp yeniden mahsup edin)\"]] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.1 M1 küçük tur 2 — KDV Özeti karma ay (S-M1K-1 = A): kararın örneği AYNEN, satış silinmesi + alış iptali, iki şirket › 001 aralıklar: Mart fişi 400 → Ocak–Mart 1.700, Şubat–Mart 1.100 (notsuz), Bu Yıl ve Tüm Zamanlar 1.700 — hepsi 391 − 191",
+      "konum": "test/kdv-ozeti-karma-251.test.mjs:175:3",
+      "hata": "Ocak–Mart 1.700 (taban 2.200) [[\"Hesaplanan KDV (391) (İadeler Düşülmüş)\",\"1.700,00 TL\"],[\"İndirilecek KDV (191) (İadeler Düşülmüş)\",\"0,00 TL\"],[\"Alıcı Olarak Kesilen Tevkifat (2 No.lu)\",\"0,00 TL\"],[\"Önceki Dönemden Devreden KDV\",\"0,00 TL\"],[\"Ödenecek KDV\",\"2.200,00 TL\"],[\"Sonraki Döneme Devreden KDV\",\"0,00 TL\"],[\"KDV Mahsup Fişi\",\"Ocak 2026, Şubat 2026, Mart 2026\"],[\"Mahsuptan Sonra Değişen Ay\",\"Ocak 2026 (mahsup fişi güncel değil — mahsubu geri alıp yeniden mahsup edin)\"]] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.1 M1 küçük tur 2 — KDV Özeti karma ay (S-M1K-1 = A): kararın örneği AYNEN, satış silinmesi + alış iptali, iki şirket › 002 satış silinmesi + alış iptali (391 azaldı, İ azaldı): Ocak 400 (900 − 500 fişten), Şubat 700, Ocak–Şubat 1.100 = 391; karma notu; 001 etkilenmez",
+      "konum": "test/kdv-ozeti-karma-251.test.mjs:192:3",
+      "hata": "Ocak 400 (taban: 900) [[\"Hesaplanan KDV (391) (İadeler Düşülmüş)\",\"900,00 TL\"],[\"İndirilecek KDV (191) (İadeler Düşülmüş)\",\"0,00 TL\"],[\"Alıcı Olarak Kesilen Tevkifat (2 No.lu)\",\"0,00 TL\"],[\"Önceki Dönemden Devreden KDV\",\"0,00 TL\"],[\"Ödenecek KDV\",\"900,00 TL\"],[\"Sonraki Döneme Devreden KDV\",\"0,00 TL\"],[\"KDV Mahsup Fişi\",\"Ocak 2026\"],[\"Mahsuptan Sonra Değişen Ay\",\"Ocak 2026 (mahsup fişi güncel değil — mahsubu geri alıp yeniden mahsup edin)\"]] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.1 M1 küçük tur 2 — KDV Özeti karma ay: devreden yönde, yön dönmesi ve yıl dönümü › 001 devreden yönde karma: Mart 300 − 1.000 → sonraki 700 (taban 300); Nisan zincirde 700 devredenle 700 + 'Zincirle Uyuşmayan' (fiş 800'le); Mart–Nisan 700 = 391 − 191; onarımda aynı",
+      "konum": "test/kdv-ozeti-karma-251.test.mjs:241:3",
+      "hata": "Mart: 391 bugünkü 300, İ fişten 1.000 → devreden 700 [[\"Hesaplanan KDV (391) (İadeler Düşülmüş)\",\"300,00 TL\"],[\"İndirilecek KDV (191) (İadeler Düşülmüş)\",\"600,00 TL\"],[\"Alıcı Olarak Kesilen Tevkifat (2 No.lu)\",\"0,00 TL\"],[\"Önceki Dönemden Devreden KDV\",\"0,00 TL\"],[\"Ödenecek KDV\",\"0,00 TL\"],[\"Sonraki Döneme Devreden KDV\",\"300,00 TL\"],[\"KDV Mahsup Fişi\",\"Mart 2026\"],[\"Mahsuptan Sonra Değişen Ay\",\"Mart 2026 (mahsup fişi güncel değil — mahsubu geri alıp yeniden mahsup edin)\"]] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.1 M1 küçük tur 2 — KDV Özeti karma ay: devreden yönde, yön dönmesi ve yıl dönümü › 002 yön dönmesi + yıl dönümü: Aralık 200 − 500 → sonraki 300 (taban: ödenecek 200); Ocak 2027 mahsupsuz 300 devredenle 400; Aralık–Ocak 400 = 391; Bu Yıl önceki 300; Ocak fişi sonra kesilirse uyuşmazlık; onarım",
+      "konum": "test/kdv-ozeti-karma-251.test.mjs:267:3",
+      "hata": "Aralık: 391 bugünkü 200, İ fişten 500 → devreden 300 [[\"Hesaplanan KDV (391) (İadeler Düşülmüş)\",\"200,00 TL\"],[\"İndirilecek KDV (191) (İadeler Düşülmüş)\",\"0,00 TL\"],[\"Alıcı Olarak Kesilen Tevkifat (2 No.lu)\",\"0,00 TL\"],[\"Önceki Dönemden Devreden KDV\",\"0,00 TL\"],[\"Ödenecek KDV\",\"200,00 TL\"],[\"Sonraki Döneme Devreden KDV\",\"0,00 TL\"],[\"KDV Mahsup Fişi\",\"Aralık 2026\"],[\"Mahsuptan Sonra Değişen Ay\",\"Aralık 2026 (mahsup fişi güncel değil — mahsubu geri alıp yeniden mahsup edin)\"]] · + actual - expected · [ (beklenen , gelen )"
+    },
+    {
+      "ad": "2.5.1 M1 küçük tur 2 — KDV Özeti tutarlılık tablosu: yalnız azalma / yalnız 391 / ikisi birden / hiçbiri / İ arttı (her biri ayrı şirkette) › yalnız 391 değişti (S-M1-3 = C) + ikisi birden (S-M1K-1 = A) › 002 ikisi birden (S-M1K-1 = A): Ocak 600, Ocak–Şubat 1000 = 391 − 191; not; onarımda fişler 800 / 200 (toplam = rapor)",
+      "konum": "test/kdv-ozeti-karma-251.test.mjs:356:9",
+      "hata": "ikisi birden (S-M1K-1 = A): Ocak [[\"Hesaplanan KDV (391) (İadeler Düşülmüş)\",\"1.100,00 TL\"],[\"İndirilecek KDV (191) (İadeler Düşülmüş)\",\"300,00 TL\"],[\"Alıcı Olarak Kesilen Tevkifat (2 No.lu)\",\"0,00 TL\"],[\"Önceki Dönemden Devreden KDV\",\"0,00 TL\"],[\"Ödenecek KDV\",\"800,00 TL\"],[\"Sonraki Döneme Devreden KDV\",\"0,00 TL\"],[\"KDV Mahsup Fişi\",\"Ocak 2026\"],[\"Mahsuptan Sonra Değişen Ay\",\"Ocak 2026 (mahsup fişi güncel değil — mahsubu geri alıp yeniden mahsup edin)\"]] · + actual - expected · [ (beklenen , gelen )"
+    }
+  ],
+  "ham_cikti": "../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/m1k2/kanit/2026-11-27/m1k2-yeni-test-taban-utc.log",
+  "klasor": "/dev/shm/m1k2-kdv/eski",
+  "ham_cikti_sha256": "0d279a72bfcec8dc4c3dff6326d0a0291381f68250071421e0d2020b40c277dc",
+  "ham_cikti_bayt": 26827
+}

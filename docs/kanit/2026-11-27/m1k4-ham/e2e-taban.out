@@ -1,0 +1,10 @@
+== senaryo-kdv-mahsup-sonrasi-251 3.78 3.08 3.40 5/165 5063
+  ✗ güncel değil (a): Nisan 300 / 0 / 100 (taban 0 / 200 / 0), tablo altı = özet ({"summary":["0,00","200,00","0,00"],"foot":["0,00","200,00","0,00"]})
+  ✗ güncel değil (a): Nisan notu (ekranda): undefined
+  ✗ güncel değil (a): Mart–Nisan 0 / 0 / 100 (taban 0 / 200 / 0), tablo altı = özet ({"summary":["0,00","200,00","0,00"],"foot":["0,00","200,00","0,00"]})
+  ✗ güncel değil (a): ay satırları Mart devreden 300 / Nisan 300 devredenle sonraki 100 (taban Nisan ödenecek 200) ([["Mart 2026","Sonraki Döneme Devreden KDV","300,00"],["Nisan 2026","Ödenecek KDV","200,00"]])
+  ✗ güncel değil (a): Mart–Nisan'da da Nisan notu: undefined
+✗ senaryo-kdv-mahsup-sonrasi-251: 30 geçti, 5 kaldı
+[kanit] başarısız testler (6):
+  ✖ senaryo-kdv-mahsup-sonrasi-251: 30 geçti, 5 kaldı
+[kanit] m1k4-e2e-taban-senaryo-kdv-mahsup-sonrasi-251: BAŞARISIZ (çıkış 1; 5 başarısız, 0 iptal) · çıkış 1 · 30/35 geçti, 5 başarısız, 0 iptal, 0 atlanan · commit 36b77d4 +3 değişmiş dosya +1 izlenmeyen · linux 6.18.44-fc-v880 x64 · Node v22.23.4

@@ -1,0 +1,63 @@
+{
+  "ad": "m1k4-e2e-taban-senaryo-kdv-mahsup-sonrasi-251",
+  "komut": "node test/e2e/senaryo-kdv-mahsup-sonrasi-251.mjs",
+  "commit": "36b77d4be709caee21391dd8d1b3603a9dcd2ac7",
+  "dal": "HEAD",
+  "kirli": 3,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T21:12:05.797Z",
+  "sure_sn": 16.2,
+  "cikis_kodu": 1,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 35,
+    "gecen": 30,
+    "basarisiz": 5,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "BAŞARISIZ",
+  "neden": "çıkış 1; 5 başarısız, 0 iptal",
+  "basarisiz_testler": [
+    {
+      "ad": "güncel değil (a): Nisan 300 / 0 / 100 (taban 0 / 200 / 0), tablo altı = özet ({\"summary\":[\"0,00\",\"200,00\",\"0,00\"],\"foot\":[\"0,00\",\"200,00\",\"0,00\"]})",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "güncel değil (a): Nisan notu (ekranda): undefined",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "güncel değil (a): Mart–Nisan 0 / 0 / 100 (taban 0 / 200 / 0), tablo altı = özet ({\"summary\":[\"0,00\",\"200,00\",\"0,00\"],\"foot\":[\"0,00\",\"200,00\",\"0,00\"]})",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "güncel değil (a): ay satırları Mart devreden 300 / Nisan 300 devredenle sonraki 100 (taban Nisan ödenecek 200) ([[\"Mart 2026\",\"Sonraki Döneme Devreden KDV\",\"300,00\"],[\"Nisan 2026\",\"Ödenecek KDV\",\"200,00\"]])",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "güncel değil (a): Mart–Nisan'da da Nisan notu: undefined",
+      "konum": "",
+      "hata": ""
+    },
+    {
+      "ad": "senaryo-kdv-mahsup-sonrasi-251: 30 geçti, 5 kaldı",
+      "konum": "",
+      "hata": ""
+    }
+  ],
+  "ham_cikti": "../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/m1k4/kanit/2026-11-27/m1k4-e2e-taban-senaryo-kdv-mahsup-sonrasi-251.log",
+  "klasor": "/dev/shm/m1k4-kdv/eski",
+  "ham_cikti_sha256": "0d73cc615f78fb50ab5b01e9930344df70c51a329894de0e2d791dcd698a5484",
+  "ham_cikti_bayt": 8393
+}

@@ -1,0 +1,32 @@
+{
+  "ad": "m1k2-yeni-test-yeni-utc",
+  "komut": "node --test --test-reporter=tap test/kdv-ozeti-karma-251.test.mjs test/kdv-ozeti-mahsup-sonrasi-251.test.mjs test/kdv-ozeti-zincir-251.test.mjs test/kdv-ozeti-devreden-251.test.mjs",
+  "commit": "f12c092481c2f9b883ace8c7b33b53a39e72b3e5",
+  "dal": "worktree-agent-a341390f4f549e487",
+  "kirli": 2,
+  "izlenmeyen": 3,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T18:54:46.601Z",
+  "sure_sn": 6.8,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 34,
+    "gecen": 34,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/m1k2/kanit/2026-11-27/m1k2-yeni-test-yeni-utc.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a341390f4f549e487",
+  "ham_cikti_sha256": "cb9fa1e4f391c70997c3be945cfebf0840d1254a220c659943a167008e2d2669",
+  "ham_cikti_bayt": 17777
+}

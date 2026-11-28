@@ -1,0 +1,131 @@
+{
+ "tz": "UTC",
+ "kok": "/dev/shm/m1k5-kdv/mut-utc",
+ "sonuclar": [
+  {
+   "mutant": "T1 güncel değil ay S4 birikimine yine fişin saklı İ'siyle girer (taban davranışı)",
+   "cikis": 1,
+   "tests": "76",
+   "fail": "7",
+   "cancelled": "0",
+   "basarisiz": [
+    "not ok 1 - Ocak–Temmuz 2026, 300 tohum: sapma 0 (taban t251-m1k4: 11)",
+    "not ok 2 - yıl dönümü Eylül 2026 – Mart 2027, 150 tohum: sapma 0 (taban t251-m1k4: 2)",
+    "not ok 1 - 001 kararın örneği: Nisan 700, Ocak–Nisan 1.600 = 391 3.500 − 191 1.900; Şubat 'güncel değil' notu durur; fiş / ön izleme / defter değişmez; ekran = ",
+    "not ok 2 - 002 yıl dönümü: Bu Yıl (2027) 1.400 = 391 − 191 (Şubat 2027 700); 2026 yılı 200; Kasım–Şubat 1.600; 001 etkilenmez",
+    "not ok 3 - 001 yan etki: Nisan ön izlemeyle (500) mahsup edilirse fiş zincirle uyuşmaz, rapor 700 ve 1.600 kalır; onarımda (geri al + sırayla) rapor = fişler = ",
+    "not ok 1 - 001 iki ardışık 'güncel değil': Mayıs 700, Ocak–Mayıs 2.300 = 391 4.500 − 191 2.200 (taban 2.100); notlar; Mayıs ön izlemesi 500 (DEĞİŞMEDİ)",
+    "not ok 2 - 002 devreden yönlü 'güncel değil' + uyuşmayan Mart: Mayıs 700, Ocak–Mayıs 2.400 = 391 4.500 − 191 2.100 (taban 2.200); Mart uyuşmazlık notu"
+   ],
+   "oldu": true
+  },
+  {
+   "mutant": "T2 zincirde azalma birikimi min(0, …) yerine düz toplanır (artış da taşınır; ön izleme aynı)",
+   "cikis": 0,
+   "tests": "76",
+   "fail": "0",
+   "cancelled": "0",
+   "basarisiz": [],
+   "oldu": false
+  },
+  {
+   "mutant": "T2b azalma birikimi her yerde düz toplanır (ön izleme dahil)",
+   "cikis": 1,
+   "tests": "76",
+   "fail": "9",
+   "cancelled": "9",
+   "basarisiz": [
+    "not ok 1 - (d) Eylül mahsubundan sonra Eylül tarihli geç alış: Eylül Güncel Değil, Ekim ön izlemesi yalnız kendi 191'i",
+    "not ok 3 - İ arttı + 391 değişti (S-M1-3 = C)",
+    "not ok 1 - 001 kararın örneği: Nisan 700, Ocak–Nisan 1.600 = 391 3.500 − 191 1.900; Şubat 'güncel değil' notu durur; fiş / ön izleme / defter değişmez; ekran = ",
+    "not ok 2 - 002 yıl dönümü: Bu Yıl (2027) 1.400 = 391 − 191 (Şubat 2027 700); 2026 yılı 200; Kasım–Şubat 1.600; 001 etkilenmez",
+    "not ok 3 - 001 yan etki: Nisan ön izlemeyle (500) mahsup edilirse fiş zincirle uyuşmaz, rapor 700 ve 1.600 kalır; onarımda (geri al + sırayla) rapor = fişler = ",
+    "not ok 1 - 001 iki ardışık 'güncel değil': Mayıs 700, Ocak–Mayıs 2.300 = 391 4.500 − 191 2.200 (taban 2.100); notlar; Mayıs ön izlemesi 500 (DEĞİŞMEDİ)",
+    "not ok 2 - 002 devreden yönlü 'güncel değil' + uyuşmayan Mart: Mayıs 700, Ocak–Mayıs 2.400 = 391 4.500 − 191 2.100 (taban 2.200); Mart uyuşmazlık notu",
+    "not ok 1 - 001 yalnız İ artışı: Nisan 500, Ocak–Nisan 1.400 = 391 3.500 − 191 2.100 (artış bir kez)",
+    "not ok 2 - 002 azalan ay önce, 'güncel değil' sonra: Mart azalmayı kendisi düşer (700), Nisan 500; Ocak–Nisan 1.700 = 391 3.500 − 191 1.800",
+    "not ok 4 - devreden · İ arttı (S-M1K3-1 = A) + ödenecek · hiçbiri",
+    "not ok 1 - 001 İ + 391 artar (devreden fiş): Mart sonraki 600, Nisan 600 / 400 + uyuşmazlık, Mart–Nisan 400 = 391 − 191 (taban: Nisan 800 / 200, Mart–Nisan 200)",
+    "not ok 2 - 002 İ artar, ödenecek kalır (DEĞİŞMEZ): Mart 400, Nisan 0 / 200 (fiş zincirde, not yok), Mart–Nisan 600 = 391 − 191; onarım",
+    "not ok 1 - 001 ödenecek → devreden (İ arttı): Mart sonraki 200, Nisan 200 / 0 / 0 + uyuşmazlık, Mart–Nisan 0 = 391 − 191 (taban: Nisan 0 / 200, Mart–Nisan 200);",
+    "not ok 2 - 002 iki ardışık 'güncel değil' ay: Mart 800 (İ arttı), Nisan 800 / 0 / 300 (yalnız 391 azaldı, ödenecek fiş), Mayıs 300 / 100 + uyuşmazlık; Mart–Mayı",
+    "not ok 1 - 001 (a) Bu Yıl (2027) 300 / 0 / 100 + uyuşmazlık (yön cümlesiyle); 2026 yılı sonraki 300; Aralık–Ocak 0 / 100 = 391 − 191; ekran = PDF = Excel; onarı",
+    "not ok 2 - 002 (b) Bu Yıl (2027) 900 / 100 + uyuşmazlık; 2026 yılı sonraki 900; Aralık–Ocak 100 = 391 − 191; onarım",
+    "not ok 5 - 001 mahsuptan sonra artıran kayıt (Haziran 'Güncel Değil'): ay ay rapor = ön izleme (A = B, karar (3)); aralığın sonraki devredeni son KDV'li ayın so"
+   ],
+   "oldu": true
+  },
+  {
+   "mutant": "T3 güncel değil ay birikime kendi bugünkü İ'siyle (S4 taşıması düşülmeden) girer",
+   "cikis": 1,
+   "tests": "76",
+   "fail": "4",
+   "cancelled": "0",
+   "basarisiz": [
+    "not ok 1 - Ocak–Temmuz 2026, 300 tohum: sapma 0 (taban t251-m1k4: 11)",
+    "not ok 2 - yıl dönümü Eylül 2026 – Mart 2027, 150 tohum: sapma 0 (taban t251-m1k4: 2)",
+    "not ok 2 - 002 azalan ay önce, 'güncel değil' sonra: Mart azalmayı kendisi düşer (700), Nisan 500; Ocak–Nisan 1.700 = 391 3.500 − 191 1.800",
+    "not ok 2 - 002 karma ay + sonraki ayda yalnız 391: Ocak 500 (karma), Şubat sonraki 600 (bugünkü), Mart 600 devredenle 400 + uyuşmazlık; Ocak–Mart 900 = 391 − 19"
+   ],
+   "oldu": true
+  },
+  {
+   "mutant": "T4 karma ay da birikime bugünkü İ'yle girer (S-M1K-1 azalması kaybolur)",
+   "cikis": 1,
+   "tests": "76",
+   "fail": "11",
+   "cancelled": "0",
+   "basarisiz": [
+    "not ok 1 - 001 kararın örneği: Ocak 600 (İ fişten 500, 391 bugünkü 1.100), Şubat 700, Ocak–Şubat 1.300 = 391; karma notu; fişler, ön izleme ve defter değişmez; ",
+    "not ok 2 - 001 aralıklar: Mart fişi 400 → Ocak–Mart 1.700, Şubat–Mart 1.100 (notsuz), Bu Yıl ve Tüm Zamanlar 1.700 — hepsi 391 − 191",
+    "not ok 3 - 002 satış silinmesi + alış iptali (391 azaldı, İ azaldı): Ocak 400 (900 − 500 fişten), Şubat 700, Ocak–Şubat 1.100 = 391; karma notu; 001 etkilenmez",
+    "not ok 1 - 001 devreden yönde karma: Mart 300 − 1.000 → sonraki 700 (taban 300); Nisan zincirde 700 devredenle 700 + 'Zincirle Uyuşmayan' (fiş 800'le); Mart–Nis",
+    "not ok 2 - 002 yön dönmesi + yıl dönümü: Aralık 200 − 500 → sonraki 300 (taban: ödenecek 200); Ocak 2027 mahsupsuz 300 devredenle 400; Aralık–Ocak 400 = 391; Bu",
+    "not ok 2 - yalnız 391 değişti (S-M1-3 = C) + ikisi birden (S-M1K-1 = A)",
+    "not ok 1 - Ocak–Temmuz 2026, 300 tohum: sapma 0 (taban t251-m1k4: 11)",
+    "not ok 2 - yıl dönümü Eylül 2026 – Mart 2027, 150 tohum: sapma 0 (taban t251-m1k4: 2)",
+    "not ok 3 - devreden → ödenecek · yalnız 391 arttı, yön döndü (S-M1K2-1 = A) + devreden · ikisi birden (S-M1K-1 = A, karma)",
+    "not ok 2 - 002 karma ay + sonraki ayda yalnız 391: Ocak 500 (karma), Şubat sonraki 600 (bugünkü), Mart 600 devredenle 400 + uyuşmazlık; Ocak–Mart 900 = 391 − 19",
+    "not ok 1 - Ocak 500 (fişten, azalan ay notu), Şubat 400 (karma), Mart 600 (S4 −200); Ocak–Şubat 900, Ocak–Mart 1.500 = 391 − 191; Mart fişi = rapor; onarımda to"
+   ],
+   "oldu": true
+  },
+  {
+   "mutant": "T5 azalan ay (reduced) da birikime bugünkü İ'yle girer (S-DKM1-1 azalması kaybolur)",
+   "cikis": 1,
+   "tests": "76",
+   "fail": "27",
+   "cancelled": "0",
+   "basarisiz": [
+    "not ok 8 - S4 (002): Mart mahsubundan sonra Mart'ın tevkifatlı alışı İptal Et (191 −400) → Nisan: rapor = ön izleme (azaltan fark Nisan'a taşınır): önceki 1.000",
+    "not ok 1 - 001 kararın örneği: Ocak 600 (İ fişten 500, 391 bugünkü 1.100), Şubat 700, Ocak–Şubat 1.300 = 391; karma notu; fişler, ön izleme ve defter değişmez; ",
+    "not ok 2 - 001 aralıklar: Mart fişi 400 → Ocak–Mart 1.700, Şubat–Mart 1.100 (notsuz), Bu Yıl ve Tüm Zamanlar 1.700 — hepsi 391 − 191",
+    "not ok 3 - 002 satış silinmesi + alış iptali (391 azaldı, İ azaldı): Ocak 400 (900 − 500 fişten), Şubat 700, Ocak–Şubat 1.100 = 391; karma notu; 001 etkilenmez",
+    "not ok 1 - 001 devreden yönde karma: Mart 300 − 1.000 → sonraki 700 (taban 300); Nisan zincirde 700 devredenle 700 + 'Zincirle Uyuşmayan' (fiş 800'le); Mart–Nis",
+    "not ok 2 - 002 yön dönmesi + yıl dönümü: Aralık 200 − 500 → sonraki 300 (taban: ödenecek 200); Ocak 2027 mahsupsuz 300 devredenle 400; Aralık–Ocak 400 = 391; Bu",
+    "not ok 1 - hiçbiri + yalnız İ azaldı (S-DKM1-1 = A)",
+    "not ok 2 - yalnız 391 değişti (S-M1-3 = C) + ikisi birden (S-M1K-1 = A)",
+    "not ok 1 - 001 kararın örneği: Ocak 500 / Şubat 700 / Mart 400 (fişten), Ocak–Mart Ödenecek 1.600 = fişler = 391; Ocak'ta not; ön izleme ve defter değişmez; ekr",
+    "not ok 2 - 001 aralığın kenarları: Ocak–Şubat 1.200, Şubat–Mart 1.100 (notsuz), Tüm Zamanlar 1.600, Mart–Nisan önceki 0; gelecek ay devreden 0",
+    "not ok 3 - 002 mahsupsuz Şubat İndirilecek KDV'deki azalmayı zincirde düşer (S4 emilimi): Şubat 700, Mart 400, Şubat–Mart 1.100 — Mart ikinci kez düşmez",
+    "not ok 4 - 002 dar kontrol L: Şubat atlanıp Mart fişi defter sırasıyla (azalmayı yeniden düşerek) 900 kesilir → rapor zinciri gösterir (Mart 400, Ocak–Mart 1.60",
+    "not ok 5 - 001 mahsubu geri alınan ay: Mart, Şubat, Ocak sırayla geri alınır — toplam her adımda 1.600; Ocak geri alınınca Ocak 1.000 / Şubat 200 (bugünkü kayıt",
+    "not ok 2 - 001 yıl dönümü: Aralık 2026 fişi (ödenecek 400), Aralık alışı Ocak'ta iptal → Aralık 400 (fişten) + not; Ocak 2027 200 + 200 = 400; Bu Yıl 400; 2026 ",
+    "not ok 3 - 002 azalma sonraki ayın fişinden SONRA: Ocak 500 (fişten, not), Şubat 200 (fişten, NOT YOK — Şubat'ın kaydı değişmedi), Mart 900 (zincirde, azalmayı ",
+    "not ok 1 - Ocak–Temmuz 2026, 300 tohum: sapma 0 (taban t251-m1k4: 11)",
+    "not ok 2 - yıl dönümü Eylül 2026 – Mart 2027, 150 tohum: sapma 0 (taban t251-m1k4: 2)",
+    "not ok 1 - 001 kararın örneği: Nisan 700, Ocak–Nisan 1.600 = 391 3.500 − 191 1.900; Şubat 'güncel değil' notu durur; fiş / ön izleme / defter değişmez; ekran = ",
+    "not ok 2 - 002 yıl dönümü: Bu Yıl (2027) 1.400 = 391 − 191 (Şubat 2027 700); 2026 yılı 200; Kasım–Şubat 1.600; 001 etkilenmez",
+    "not ok 3 - 001 yan etki: Nisan ön izlemeyle (500) mahsup edilirse fiş zincirle uyuşmaz, rapor 700 ve 1.600 kalır; onarımda (geri al + sırayla) rapor = fişler = ",
+    "not ok 1 - 001 iki ardışık 'güncel değil': Mayıs 700, Ocak–Mayıs 2.300 = 391 4.500 − 191 2.200 (taban 2.100); notlar; Mayıs ön izlemesi 500 (DEĞİŞMEDİ)",
+    "not ok 2 - 002 devreden yönlü 'güncel değil' + uyuşmayan Mart: Mayıs 700, Ocak–Mayıs 2.400 = 391 4.500 − 191 2.100 (taban 2.200); Mart uyuşmazlık notu",
+    "not ok 2 - 002 azalan ay önce, 'güncel değil' sonra: Mart azalmayı kendisi düşer (700), Nisan 500; Ocak–Nisan 1.700 = 391 3.500 − 191 1.800",
+    "not ok 1 - devreden · hiçbiri + devreden · yalnız İ azaldı (S-DKM1-1 = A)",
+    "not ok 3 - devreden → ödenecek · yalnız 391 arttı, yön döndü (S-M1K2-1 = A) + devreden · ikisi birden (S-M1K-1 = A, karma)",
+    "not ok 2 - 002 karma ay + sonraki ayda yalnız 391: Ocak 500 (karma), Şubat sonraki 600 (bugünkü), Mart 600 devredenle 400 + uyuşmazlık; Ocak–Mart 900 = 391 − 19",
+    "not ok 1 - Ocak 500 (fişten, azalan ay notu), Şubat 400 (karma), Mart 600 (S4 −200); Ocak–Şubat 900, Ocak–Mart 1.500 = 391 − 191; Mart fişi = rapor; onarımda to"
+   ],
+   "oldu": true
+  }
+ ]
+}

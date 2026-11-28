@@ -1,0 +1,32 @@
+{
+  "ad": "m1k4-e2e-yeni-senaryo-kdv-devreden-251",
+  "komut": "node test/e2e/senaryo-kdv-devreden-251.mjs",
+  "commit": "40ede14e7e6a9b6eaab72b363f135de1be4bae9d",
+  "dal": "worktree-agent-a7d99fd88f55969de",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-27T21:12:47.003Z",
+  "sure_sn": 7.1,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "senaryo",
+    "toplam": 14,
+    "gecen": 14,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/m1k4/kanit/2026-11-27/m1k4-e2e-yeni-senaryo-kdv-devreden-251.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a7d99fd88f55969de",
+  "ham_cikti_sha256": "7200faf56b4e7947d4643646bb5c9d72c0ff29f20e0aaee11cabaf838fd1754c",
+  "ham_cikti_bayt": 2682
+}

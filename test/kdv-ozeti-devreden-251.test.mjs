@@ -314,6 +314,13 @@ describe("2.5.1 M1 — KDV Özeti: Önceki Dönemden Devreden KDV ve mahsup form
     assert.deepEqual([apr.value("Önceki Dönemden Devreden KDV"), apr.value("Ödenecek KDV"), apr.value("Sonraki Döneme Devreden KDV")], [100000, 0, 80000], "Nisan (S4 taşıması)");
     const p = await preview("2026-04", q2);
     assert.equal(p.carriedInMinor, -40000, "ön izleme: azaltan fark −400 Nisan'a taşındı");
+    // 2.5.1 M1 küçük tur (S-DKM1-1 = A): Mart'ın sonucu KESİLMİŞ FİŞTEN (800 / 0 / 1.000 — Nisan'ın önceki devredeniyle aynı); taban bugünkü kayıtlarla 800 / 0 / 600 gösteriyordu
+    // (azalan 400 hem Mart'ta hem Nisan'da sayılıyordu). Ön izleme bugünkü kayıtlardan (DEĞİŞMEDİ).
+    const mar = await report({ from: "2026-03-01", to: "2026-03-31" }, q2, "002 Mart (S4)");
+    assert.deepEqual([mar.value("Önceki Dönemden Devreden KDV"), mar.value("Ödenecek KDV"), mar.value("Sonraki Döneme Devreden KDV")], [80000, 0, 100000], "Mart fişten");
+    assert.match(mar.summary["Mahsuptan Sonra Değişen Ay"] || "", /^Mart 2026 \(bu ayın kayıtları fişten sonra değişti; /, "Mart notu");
+    const mp = await preview("2026-03", q2);
+    assert.deepEqual([mp.carryInMinor, mp.payableMinor, mp.carryOutMinor], [80000, 0, 60000], "Mart ön izlemesi bugünkü kayıtlardan (değişmedi)");
     const year = await report({ from: "2026-01-01", to: "2026-12-31" }, q2, "002 yıl (S4)");
     assert.deepEqual([year.value("Önceki Dönemden Devreden KDV"), year.value("Ödenecek KDV"), year.value("Sonraki Döneme Devreden KDV")], [0, 0, 80000], "002 yıl: sonraki 800 (Nisan)");
     await integrityOk(api, "S4");

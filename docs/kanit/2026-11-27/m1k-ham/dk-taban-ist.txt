@@ -1,0 +1,54 @@
+A.ocak-mahsup {"status":200,"offset":[0,0,200000],"error":""}
+A.subat-rapor [200000,0,80000,null]
+A.subat-onizleme [200000,0,80000]
+B.eylul-mahsup {"status":200,"offset":[0,0,196000],"error":""}
+B.kasim-rapor {"three":[156000,0,56000,null],"notes":[["Mahsup Edilmemiş Ay","Ekim 2026 (devreden ve ödenecek KDV bu aylar sırayla mahsup edilmiş gibi hesaplandı; KDV Mahsup Fişi ön izlemesi defterdeki devredeni gösterir, ayları sırayla mahsup edin)"]]}
+B.kasim-onizleme {"nums":[196000,0,96000],"warnings":["Ekim 2026 mahsup edilmedi; devreden KDV o ayın mahsubundan gelir. Önce Ekim 2026 ayını mahsup etmeniz önerilir."],"blocks":[]}
+B.yil {"three":[0,0,56000,null],"lines":["Eylül 2026|Sonraki Döneme Devreden KDV|196000","Ekim 2026|Önceki Dönemden Devreden KDV|196000","Ekim 2026|Sonraki Döneme Devreden KDV|156000","Kasım 2026|Önceki Dönemden Devreden KDV|156000","Kasım 2026|Sonraki Döneme Devreden KDV|56000"],"footers":["TOPLAM Satış|140000","TOPLAM Alış|196000","Önceki Dönemden Devreden KDV|0","Ödenecek KDV|0","Sonraki Döneme Devreden KDV|56000"],"notes":[["KDV Mahsup Fişi","Eylül 2026"],["Mahsup Edilmemiş Ay","Ekim 2026 (devreden ve ödenecek KDV bu aylar sırayla mahsup edilmiş gibi hesaplandı; KDV Mahsup Fişi ön izlemesi defterdeki devredeni gösterir, ayları sırayla mahsup edin)"]]}
+C.true.aralik-mahsup {"status":200,"offset":[0,0,100000],"error":""}
+C.true.buyil {"three":[100000,0,80000,null],"notes":[],"lines":["Ocak 2027|Önceki Dönemden Devreden KDV|100000","Ocak 2027|Sonraki Döneme Devreden KDV|80000"]}
+C.true.ocak [100000,0,80000,null]
+C.true.aralik [0,0,100000,null]
+C.true.ocak-onizleme [100000,0,80000]
+C.false.buyil {"three":[100000,0,80000,null],"notes":[["Mahsup Edilmemiş Ay","Aralık 2026 (devreden ve ödenecek KDV bu aylar sırayla mahsup edilmiş gibi hesaplandı; KDV Mahsup Fişi ön izlemesi defterdeki devredeni gösterir, ayları sırayla mahsup edin)"]],"lines":["Ocak 2027|Önceki Dönemden Devreden KDV|100000","Ocak 2027|Sonraki Döneme Devreden KDV|80000"]}
+C.false.ocak [100000,0,80000,null]
+C.false.aralik [0,0,100000,null]
+C.false.ocak-onizleme [0,20000,0]
+E.ocak {"status":200,"offset":[0,0,200000],"error":""}
+E.subat {"status":200,"offset":[200000,0,150000],"error":""}
+E.mart-once [150000,0,130000,null]
+E.subat-geri-al 200
+E.mart-sonra {"three":[150000,0,130000,null],"notes":[["Mahsup Edilmemiş Ay","Şubat 2026 (devreden ve ödenecek KDV bu aylar sırayla mahsup edilmiş gibi hesaplandı; KDV Mahsup Fişi ön izlemesi defterdeki devredeni gösterir, ayları sırayla mahsup edin)"]]}
+E.mart-onizleme [200000,0,180000]
+E.ocak-geri-al 200
+E.mart-hepsi-geri {"three":[150000,0,130000,null],"notes":[["Mahsup Edilmemiş Ay","Ocak 2026, Şubat 2026 (devreden ve ödenecek KDV bu aylar sırayla mahsup edilmiş gibi hesaplandı; KDV Mahsup Fişi ön izlemesi defterdeki devredeni gösterir, ayları sırayla mahsup edin)"]]}
+E.yil {"three":[0,0,130000,null],"notes":[["Mahsup Edilmemiş Ay","Ocak 2026, Şubat 2026 (devreden ve ödenecek KDV bu aylar sırayla mahsup edilmiş gibi hesaplandı; KDV Mahsup Fişi ön izlemesi defterdeki devredeni gösterir, ayları sırayla mahsup edin)"]],"footers":["TOPLAM Satış|70000","TOPLAM Alış|200000","Önceki Dönemden Devreden KDV|0","Ödenecek KDV|0","Sonraki Döneme Devreden KDV|130000"]}
+F.ocak {"status":200,"offset":[0,0,200000],"error":""}
+F.mart-mahsup {"status":200,"offset":[200000,0,180000],"error":""}
+F.kilit 200
+F.once [[150000,0,130000,null],[130000,0,70000,null],[70000,0,80000,null],[0,0,80000,null]]
+F.sonra [[150000,0,130000,null],[130000,0,70000,null],[70000,0,80000,null],[0,0,80000,null]]
+F.esit true
+F.haziran-onizleme [180000,0,120000]
+J.ocak {"status":200,"offset":[0,0,220000],"error":""}
+J.iptal "200 "
+J.mart [150000,0,130000,null]
+J.subat [220000,0,150000,null]
+J.subat-onizleme {"nums":[220000,0,150000],"warnings":["Önceki ayların mahsubundan sonra girilen, indirilecek KDV'yi azaltan kayıtlar (200,00 TL) bu ayın İndirilecek KDV'sinden düşüldü."],"blocks":[]}
+J.subat-mahsup {"status":200,"offset":[220000,0,150000],"error":""}
+J.mart-rapor-sonra [150000,0,130000,null]
+J.mart-onizleme [150000,0,130000]
+L.ocak-mahsup {"status":200,"offset":[0,50000,0],"error":""}
+L.ocak-alis-iptal "200 "
+L.mart-onizleme {"nums":[0,90000,0],"warnings":["Önceki ayların mahsubundan sonra girilen, indirilecek KDV'yi azaltan kayıtlar (500,00 TL) bu ayın İndirilecek KDV'sinden düşüldü.","Şubat 2026 mahsup edilmedi; devreden KDV o ayın mahsubundan gelir. Önce Şubat 2026 ayını mahsup etmeniz önerilir."],"blocks":[]}
+L.mart-mahsup {"status":200,"offset":[0,90000,0],"error":""}
+L.mart-rapor {"three":[0,40000,0,null],"notes":[["KDV Mahsup Fişi","Mart 2026"],["Mahsup Edilmemiş Ay","Şubat 2026 (devreden ve ödenecek KDV bu aylar sırayla mahsup edilmiş gibi hesaplandı; KDV Mahsup Fişi ön izlemesi defterdeki devredeni gösterir, ayları sırayla mahsup edin)"]]}
+L.subat-rapor {"three":[0,70000,0,null],"notes":[]}
+L.ocak-mart {"three":[0,210000,0,null],"notes":[["KDV Mahsup Fişi","Ocak 2026, Mart 2026"],["Mahsup Edilmemiş Ay","Şubat 2026 (devreden ve ödenecek KDV bu aylar sırayla mahsup edilmiş gibi hesaplandı; KDV Mahsup Fişi ön izlemesi defterdeki devredeni gösterir, ayları sırayla mahsup edin)"]],"lines":["Ocak 2026|Ödenecek KDV|100000","Şubat 2026|Ödenecek KDV|70000","Mart 2026|Ödenecek KDV|40000"]}
+L2.ocak-mahsup {"status":200,"offset":[0,50000,0],"error":""}
+L2.ocak-alis-iptal 200
+L2.subat-mahsup {"status":200,"offset":[0,70000,0],"error":""}
+L2.mart-mahsup {"status":200,"offset":[0,40000,0],"error":""}
+L2.aylar [[0,100000,0],[0,70000,0],[0,40000,0]]
+L2.ocak-mart {"three":[0,210000,0,null],"h391":160000,"h191":0,"notes":[["KDV Mahsup Fişi","Ocak 2026, Şubat 2026, Mart 2026"]],"lines":["Ocak 2026|Ödenecek KDV|100000","Şubat 2026|Ödenecek KDV|70000","Mart 2026|Ödenecek KDV|40000"]}
+L2.fisler [["2026-01",50000,false],["2026-02",70000,false],["2026-03",40000,false]]

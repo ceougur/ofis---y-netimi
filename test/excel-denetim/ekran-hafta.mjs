@@ -552,7 +552,9 @@ const REPORTS = [
   { key: "pos", id: "banka-pos-hareketleri", range: true, selects: { payMethod: "card" }, bulgu: "Bulgu 4", expect: e => ({ "Dönem Giriş": e.kasa.card.giris, "Dönem Çıkış": e.kasa.card.cikis }) },
   { key: "satis", id: "fatura-satis", range: true, bulgu: "Bulgu 2 (Kalan)", expect: e => ({ "Satış Faturası": e.fatura_sale.adet, Matrah: e.fatura_sale.matrah, KDV: e.fatura_sale.kdv, Ödenecek: e.fatura_sale.odenecek, Kalan: e.fatura_sale.kalan }) },
   { key: "alis", id: "fatura-alis", range: true, expect: e => ({ "Alış Faturası": e.fatura_purchase.adet, Matrah: e.fatura_purchase.matrah, KDV: e.fatura_purchase.kdv, Ödenecek: e.fatura_purchase.odenecek, Kalan: e.fatura_purchase.kalan }) },
-  { key: "kdv", id: "kdv-ozeti", range: true, expect: e => ({ "Hesaplanan KDV (391)": e.kdv.hesaplanan, "İndirilecek KDV (191)": e.kdv.indirilecek, [Number(e.kdv.sonuc) >= 0 ? "Ödenecek KDV" : "Devreden KDV"]: String(Math.abs(Number(e.kdv.sonuc)).toFixed(2)) }) },
+  // 2.5.1 M1: kart adları "(İadeler Düşülmüş)"; eski tek "Ödenecek / Devreden KDV" kartı yerine üç sonuç kartı (Önceki Dönemden Devreden / Ödenecek / Sonraki Döneme
+  // Devreden) — mahsup hesabıyla, AYIN TAMAMINDAN ve zincirli (önceki aylar). Üç kart checkReports'ta ayrıca (model yalnız haftayı hesaplar).
+  { key: "kdv", id: "kdv-ozeti", range: true, expect: e => ({ "Hesaplanan KDV (391) (İadeler Düşülmüş)": e.kdv.hesaplanan, "İndirilecek KDV (191) (İadeler Düşülmüş)": e.kdv.indirilecek }) },
   { key: "gider", id: "gider-raporu", range: true, expect: e => ({ "Toplam Gider": e.gider.toplam }) },
   { key: "mizan", id: "mizan", range: true, expect: e => ({ "Dönem Borç": e.mizan.donem_borc, "Dönem Alacak": e.mizan.donem_alacak, "Borçlular Toplamı": e.mizan.borclular, "Alacaklılar Toplamı": e.mizan.alacaklilar }) },
   { key: "cariler", id: "cari-listesi", expect: e => ({ "Toplam Borç (Anlaşılan)": e.cari_listesi.toplam_borc, "Toplam Alacak (Ödenen)": e.cari_listesi.toplam_alacak, Borçlular: e.cari_listesi.borclular, Alacaklılar: e.cari_listesi.alacaklilar }) },
@@ -705,6 +707,27 @@ function checkReports(read, expected, label) {
       if (!ok) bad.push(`${label} ${spec.id} · ${name}: ekran ${one.ozet[name] ?? "YOK"} · beklenen ${want}${spec.bulgu ? ` (${spec.bulgu})` : ""}`);
     }
     if (spec.key === "ekstre" && !/Borçlu/.test(one.ozet["Dönem Sonu"] || "")) bad.push(`${label} cari-ekstre · Dönem Sonu yönü: ${one.ozet["Dönem Sonu"]}`);
+    if (spec.key === "kdv") {
+      // 2.5.1 M1: üç sonuç kartı ayın tamamından ve önceki aylardan (zincir) gelir. Bağımsız model (model-hafta.py) yalnız haftanın 391 / 191'ini hesaplar; beklenen ancak
+      // ay = hafta ve önceki KDV'li ay yokken yazılabilir (mahsup fişi yok: önceki 0; fark artıysa Ödenecek, eksiyse Sonraki Döneme Devreden). Rapor bu iki koşulu kendi
+      // notlarıyla söyler: "Not" (ayın belgelerinin bir kısmı aralığın dışında), "Mahsup Edilmemiş Ay" (aralıktan önce KDV'li ay var). Not varsa kartlar karşılaştırılmaz
+      // (beklenen hesaplanamadı — ✗ sayılmaz, satırda yazılır).
+      const notes = ["Not", "Mahsup Edilmemiş Ay"].filter(name => one.ozet[name]);
+      const net = Number(expected.kdv.sonuc);
+      const three = { "Önceki Dönemden Devreden KDV": 0, "Ödenecek KDV": Math.max(0, net), "Sonraki Döneme Devreden KDV": Math.max(0, -net) };
+      for (const [name, want] of Object.entries(three)) {
+        const got = numberOf(one.ozet[name]);
+        if (notes.length) {
+          lines.push(`– ${label} kdv-ozeti · ${name}: ekran ${one.ozet[name] ?? "—"} · beklenen hesaplanamadı (raporda ${notes.join(", ")} notu: model yalnız haftayı hesaplar)`);
+          rows.push({ rapor: spec.key, kalem: name, beklenen: null, ekran: got, ok: true, bulgu: `beklenen hesaplanamadı (${notes.join(", ")})` });
+          continue;
+        }
+        const ok = got !== null && Number.isFinite(got) && Math.abs(got - want) < 0.005;
+        lines.push(`${ok ? "✓" : "✗"} ${label} kdv-ozeti · ${name}: ekran ${one.ozet[name] ?? "—"} · beklenen ${want.toFixed(2)}`);
+        rows.push({ rapor: spec.key, kalem: name, beklenen: want, ekran: got, ok, bulgu: "" });
+        if (!ok) bad.push(`${label} kdv-ozeti · ${name}: ekran ${one.ozet[name] ?? "YOK"} · beklenen ${want.toFixed(2)}`);
+      }
+    }
     if (spec.key === "bankaPos") {
       // Yol kolonundan: "Havale / EFT" banka, öbürleri (POS, Kredi Kartı) kart.
       const sums = { bank: { in: 0, out: 0 }, card: { in: 0, out: 0 } };
