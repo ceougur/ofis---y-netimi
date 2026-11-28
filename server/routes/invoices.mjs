@@ -1172,7 +1172,10 @@ export function registerInvoiceRoutes(router, { store, bank, auth, audit, events
           // 2.5.1 M2 tur 5 — SK-64 = A (28.11 06:13 UTC — KULLANICI KARARIYLA ÖNERİ UYGULANDI, 20:26 yetkisi; AYNEN: "… Alacak Yaz tutarının artırılması cariyi eksiye götürüyorsa … reddedilsin …
           // Öneri A: Değersiz'li caride eksiye götüren her kayıt değişikliği tek kural."): alacak yönlü belgenin (Alış Faturası) Düzenle'si AYNI caride tutarı ARTIRIYORSA aynı denetim (S-M2T2-2'nin
           // ayna yolu — Satıştan İade yukarıda). Cari değişimi eski cariden alacağı çıkarır (yükseltir) — denetlenmez.
-          : existing.kind === "purchase" && decrease < -0.005
+          // 2.5.1 M2 tur 6 — BAŞ MİMAR KARARI 28.11 11:55 UTC (1) (dar kontrol DK-M2T5 ORTA-1; SK-64 = A'nın eksik uygulanması): cari DEĞİŞMİYORSA denetim tutar koşulsuz kurulur —
+          // peşin ödeme cari kartında bir Ödeme satırıdır; tutar aynı kalıp peşin düşürülür / kaldırılırsa (ya da tutar düşerken peşin daha çok düşerse) bakiye düşer. Denetim yalnız
+          // 'bakiye düştü ve eksi' iken reddeder: net 0, tutar artışı ya da eksiye düşmeyen azaltma kabul. Hizmet ve Gider Alışı ile Stoğa Mal Alışı aynı tür (purchase).
+          : existing.kind === "purchase" && !(doc.account?.id && doc.account.id !== existing.accountId)
             ? writeOffBalanceGuard(store, existing.accountId, { action: "edit", kind: "purchase" })
             : null;
       // BULGU-2 (§19.6): faturanın KENDİ kartı açık, tahsilatsız ve yeni ödeme planı kayıtlıyla aynıysa kart kaldırılıp yeniden kurulmaz (writeIssued karar verir).

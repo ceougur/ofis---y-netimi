@@ -1,0 +1,32 @@
+{
+  "ad": "m2t6-yeni-Europe-Istanbul",
+  "komut": "node --test test/supheli-degersiz-m2t6-251.test.mjs test/supheli-degersiz-m2t5-251.test.mjs",
+  "commit": "3e4a56f4cb045018a635bdcb310ba3f1532f1831",
+  "dal": "worktree-agent-a961aa7259bce4276",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-28T12:02:26.305Z",
+  "sure_sn": 17,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 26,
+    "gecen": 26,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/m2t6-kanit/2026-11-28/m2t6-yeni-Europe-Istanbul.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-a961aa7259bce4276",
+  "ham_cikti_sha256": "edce02f01941871072c12ff6da909cea745d3f84046a873c20723f0da41d4409",
+  "ham_cikti_bayt": 13256
+}

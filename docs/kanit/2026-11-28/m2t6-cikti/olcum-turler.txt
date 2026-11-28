@@ -1,0 +1,14 @@
+== UTC
+(1) Alış 500 + peşin 800 (peşin > tutar): 400 payment-exceeds «Ödemeler (800,00 TL) faturanın ödenecek tutarını (500,00 TL) aşıyor.…» bakiye 423.55
+(2a) Alış 1.000 + Alıştan İade 500 (peşinsiz): 200 bakiye -76.45
+(2a) + avans 1.000 → bakiye -1076.45
+(2b) Alıştan İade Düzenle: peşin tahsilat 0 → 500 (bakiye −500): 200 bakiye -1576.45
+(3a) T + satış 500 + avans 1.500 → bakiye -576.45
+(3b) Satış Düzenle: peşin tahsilat 0 → 500 (bakiye −500): 200 bakiye -1076.45
+== Europe/Istanbul
+(1) Alış 500 + peşin 800 (peşin > tutar): 400 payment-exceeds «Ödemeler (800,00 TL) faturanın ödenecek tutarını (500,00 TL) aşıyor.…» bakiye 423.55
+(2a) Alış 1.000 + Alıştan İade 500 (peşinsiz): 200 bakiye -76.45
+(2a) + avans 1.000 → bakiye -1076.45
+(2b) Alıştan İade Düzenle: peşin tahsilat 0 → 500 (bakiye −500): 200 bakiye -1576.45
+(3a) T + satış 500 + avans 1.500 → bakiye -576.45
+(3b) Satış Düzenle: peşin tahsilat 0 → 500 (bakiye −500): 200 bakiye -1076.45
