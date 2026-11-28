@@ -5,7 +5,11 @@
 //     Değersiz Alacaklar → Sil)"; fatura "issued", bakiye 423,55 (veri tabanı).
 //   2 S2 1.000 (13.09) + S1 3.000 (15.09) + 01.10 bağsız 1.000 + Değersiz S1 3.000 @20.09 → cari kartında S2'nin × düğmesi → Evet: bildirim "Şüpheli alacak kaydı silinemez: bu kayıt silinirse
 //     carinin bağsız tahsilatı Değersiz Alacak yazılan kayda düşer …" (eski anlatım "yazıldığı andaki sınırı aşardı" YOK); S2 yerinde, bakiye 2.300.
-//   3 Mutabakat Testi tamam; sayfa hatası yok.
+//   3 (tur 3 — S-M2T2-1 = A) T + 05.10 avans 3.000 (bakiye −2.576,45) → fatura İptal Et: ret, ileti "… iptalden sonra cari 5.476,45 TL alacaklı … Değersiz Alacak satırı olmasaydı da
+//     cari 2.476,45 TL alacaklı olurdu …"; fatura "issued", bakiye −2.576,45.
+//   4 (tur 3 — S-M2T2-2 = A) T → fatura Düzenle → Birim Fiyat 2.900 → 100 (klavye) → Değişiklikleri Kaydet → "Değişiklikler Kaydedilsin mi?" Evet: ret, ileti "Fatura düzenlenemez: … düzenlemeden sonra cari 2.376,45 TL alacaklı …";
+//     fatura 2.900, bakiye 423,55.
+//   5 Mutabakat Testi tamam; sayfa hatası yok.
 // Çıkış: "N geçti, M kaldı" (kalan > 0 → çıkış 1). Ekran görüntüleri EKRAN_DIR (yoksa geçici klasör).
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -46,6 +50,19 @@ const s2 = (await must("S2", admin.post(`${ACC}/${F.id}/doubtful`, { amount: "10
 const s1 = (await must("S1", admin.post(`${ACC}/${F.id}/doubtful`, { amount: "3000", date: "2026-09-15", reason: "lawsuit" }))).record.id;
 await must("bağsız 1.000", admin.post(`${ACC}/${F.id}/entries`, { kind: "in", amount: "1000", date: "2026-10-01", method: "cash", cashForce: true, similarOk: true, note: "Bağsız" }));
 await must("Değersiz S1", admin.post(`${ACC}/${F.id}/doubtful/${s1}/write-off`, { amount: "3000", date: "2026-09-20" }));
+// Tur 3: aynı taban T iki cari daha — A avanslı (S-M2T2-1), D Düzenle (S-M2T2-2).
+const baseT = async name => {
+  const c = await must(`cari ${name}`, admin.post(ACC, { name, type: "customer", registeredOn: "2026-09-01" }));
+  const invoice = await must(`fatura ${name}`, admin.post(INV, { scenario: "service_sale", accountId: c.id, issueDate: "2026-09-10", lines: [{ name: "Hizmet", qty: 1, unitPrice: "2900", vatRate: 0 }], payment: { rest: "open" } }));
+  await must(`borç ${name}`, admin.post(`${ACC}/${c.id}/entries`, { kind: "debt", amount: "3400", date: "2026-09-12", note: "Borç" }));
+  await must(`bağlı ${name}`, admin.post(`${ACC}/${c.id}/entries`, { kind: "in", amount: "2876,45", date: "2026-09-17", method: "cash", cashForce: true, similarOk: true, note: "Bağlı", invoiceId: invoice.id }));
+  const record = (await must(`şüpheli ${name}`, admin.post(`${ACC}/${c.id}/doubtful`, { amount: "3000", date: "2026-09-17", reason: "lawsuit" }))).record.id;
+  await must(`Değersiz ${name}`, admin.post(`${ACC}/${c.id}/doubtful/${record}/write-off`, { amount: "3000", date: "2026-09-17" }));
+  return { c, invoice };
+};
+const A = await baseT("M2T3 Ekran Avanslı Müşteri");
+await must("avans", admin.post(`${ACC}/${A.c.id}/entries`, { kind: "in", amount: "3000", date: "2026-10-05", method: "cash", cashForce: true, similarOk: true, note: "Avans" }));
+const D = await baseT("M2T3 Ekran Düzenle Müşterisi");
 
 let passed = 0;
 let failed = 0;
@@ -123,7 +140,55 @@ try {
   await shot(page, "m2t2-2-silme-reddi");
   await closeAll(page);
 
-  console.log("\n■ 3 Mutabakat Testi ve sayfa hataları");
+  console.log("\n■ 3 (tur 3) Değersiz olmadan da eksi kalacak iptal de reddedilir (S-M2T2-1 = A)");
+  await page.evaluate(id => window.HOF.invoices.openDoc(id), A.invoice.id);
+  await page.waitForSelector(`${inv} [data-act="cancel"]:not([disabled])`);
+  await page.click(`${inv} [data-act="cancel"]`);
+  await page.waitForSelector(`${top} form [name="reason"]`);
+  await page.click(`${top} form [name="reason"]`);
+  await page.keyboard.type("Hatalı fatura", { delay: 70 });
+  await page.keyboard.press("Tab");
+  await page.click(`${top} form button[type="submit"]`);
+  await page.waitForSelector(`${top} .hof-form-error`, { timeout: 10000 }).catch(() => null);
+  await page.waitForTimeout(500);
+  const error3 = await textOf(page, `${top} .hof-form-error`);
+  ok(/^Fatura iptal edilemez: bu caride 17\.09\.2026 tarihli 3\.000,00 TL Değersiz Alacak satırı var; iptalden sonra cari 5\.476,45 TL alacaklı \(eksi bakiye\) olurdu/.test(error3), `ileti ne oldu: "${error3.slice(0, 160)}"`);
+  ok(error3.includes("Değersiz Alacak satırı olmasaydı da cari 2.476,45 TL alacaklı olurdu"), "ileti neden (Değersiz olmadan da eksi)");
+  ok(error3.includes(`Ne yapmalı: önce Değersiz Alacak satırını silin (${WHERE}), sonra faturayı iptal edin`), "ileti ne yapmalı + nereye");
+  ok(db().get("SELECT status FROM invoices WHERE id = ?", A.invoice.id).status === "issued", "veri tabanı: fatura iptal edilmedi");
+  ok((await balance(A.c.id)) === -2576.45, `bakiye ${await balance(A.c.id)} (−2.576,45)`);
+  await shot(page, "m2t3-3-avansli-iptal-reddi");
+  await closeAll(page);
+
+  console.log("\n■ 4 (tur 3) Değersiz'den sonra fatura tutarının Düzenle ile düşürülmesi reddedilir (S-M2T2-2 = A)");
+  await page.evaluate(id => window.HOF.invoices.openDoc(id), D.invoice.id);
+  await page.waitForSelector(`${inv} [data-act="modify"]:not([disabled]), ${inv} [data-act="edit"]:not([disabled])`, { timeout: 10000 });
+  await page.click(`${inv} [data-act="modify"], ${inv} [data-act="edit"]`);
+  const price = `${inv} [data-l="0"][data-f="unitPrice"]`;
+  await page.waitForSelector(price, { timeout: 10000 });
+  await page.click(price, { clickCount: 3 });
+  await page.keyboard.press("Control+A");
+  await page.keyboard.type("100", { delay: 90 });
+  await page.keyboard.press("Tab");
+  await page.waitForTimeout(600);
+  await page.click(`${inv} [data-act="issue"]`);
+  // Beklenen soru: VAR — ürünün Düzenle onayı "Değişiklikler Kaydedilsin mi?" (yeni tutar ₺100,00); kullanıcı gibi Evet denir, çünkü denenen sunucunun ret kararıdır (ders 34).
+  await page.waitForSelector(`${top} [data-answer="yes"]`, { timeout: 8000 }).catch(() => null);
+  const question = await textOf(page, top);
+  ok(question.includes("Değişiklikler Kaydedilsin mi?") && question.includes("₺100,00"), `beklenen onay sorusu: "${question.slice(0, 160)}"`);
+  await page.click(`${top} [data-answer="yes"]`);
+  await page.waitForTimeout(1500);
+  ok(!(await page.$(`${top} [data-answer="yes"]`)), "başka soru çıkmadı");
+  const error4 = await textOf(page, `${inv} [data-form-error]`);
+  ok(/^Fatura düzenlenemez: bu caride 17\.09\.2026 tarihli 3\.000,00 TL Değersiz Alacak satırı var; düzenlemeden sonra cari 2\.376,45 TL alacaklı \(eksi bakiye\) olurdu/.test(error4), `ileti ne oldu: "${error4.slice(0, 160)}"`);
+  ok(error4.includes(`Ne yapmalı: önce Değersiz Alacak satırını silin (${WHERE}), sonra faturayı düzenleyin`), "ileti ne yapmalı + nereye");
+  ok(Boolean(await page.$(price)), "form açık kalır");
+  ok(Number(db().get("SELECT payable_total AS p FROM invoices WHERE id = ?", D.invoice.id).p) === 2900, "veri tabanı: fatura 2.900 kaldı");
+  ok((await balance(D.c.id)) === 423.55, `bakiye ${await balance(D.c.id)} (423,55)`);
+  await shot(page, "m2t3-4-duzenle-reddi");
+  await closeAll(page);
+
+  console.log("\n■ 5 Mutabakat Testi ve sayfa hataları");
   const integrity = await must("Mutabakat Testi", admin.get("/api/workspace/ledger/integrity"));
   ok(integrity.ok === true, "Mutabakat Testi tamam");
   ok(errors.length === 0, `sayfa hatası yok${errors.length ? `: ${errors.join(" | ")}` : ""}`);
