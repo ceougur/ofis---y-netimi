@@ -1,0 +1,10 @@
+[
+ {
+  "mutant": "M5-bekleyen-yazi-yok",
+  "cikis": 1,
+  "sure_sn": 92,
+  "kirmizi": [
+   "✗ bekleyen seçim açıkça yazılı: \"Başlangıç ve bitiş günlerini seçin.\""
+  ]
+ }
+]

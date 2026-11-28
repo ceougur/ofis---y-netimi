@@ -1,0 +1,47 @@
+[
+ {
+  "mutant": "M1-kosul-eski",
+  "cikis": 1,
+  "sure_sn": 101,
+  "kirmizi": [
+   "✗ 'Tümüne WhatsApp' düğmesi yok (önce VAR idi: \"Süzgeçteki 2 cariye ekstre\")",
+   "✗ 'Tümüne WhatsApp' tıklandı: istek {\"all\":true,\"q\":\"\",\"type\":\"\",\"group\":\"\",\"subgroup\":\"\",\"status\":\"active\",\"balance\":\"all\",\"kind\":\"statement\",\"preset\":\"thisMonth\"} · pencere \"× 2 Cari WhatsApp ile Ekstre Gönder 3Cari3Geçerli Numara0Numarası Yok / Hatalı3Gönderilecek Ekstre DönemiBu AyGeçen AySon 3 AyTüm Hareketler Yalnız Borçlu Caril\"",
+   "✗ başlangıç > bitiş: \"Başlangıç tarihi bitiş tarihinden sonra olamaz. Ekran, PDF ve Excel şimdilik önceki seçimi gösteriyor: Bugün · 28.11.2026 · Bu Dönemde Ödeme Yapanlar.\" · ekran [\"Can Öğrenci\",\"Elif Öğrenci\"] · Tümüne WhatsApp yok"
+  ]
+ },
+ {
+  "mutant": "M2-pdf-donemsiz",
+  "cikis": 1,
+  "sure_sn": 97,
+  "kirmizi": [
+   "✗ PDF bağlantısı ekranın dönemiyle: period=yok paid=yok (beklenen today / 1)",
+   "✗ PDF'in satırları = ekran: [\"Can Öğrenci\",\"Deniz Grupsuz\",\"Elif Öğrenci\"]"
+  ]
+ },
+ {
+  "mutant": "M3-diger-kapali",
+  "cikis": 1,
+  "sure_sn": 4,
+  "kirmizi": [
+   "not ok 14 - (d) 'Diğer': Kredi Kartına İade Diğer sütununda (POS'a karışmaz) — Liste, Grup Özeti, TOPLAM, PDF, Excel ve 'Cari Bazında Tahsilat' raporuyla aynı",
+   "not ok 1 - Mİ-2 — dönemlik tahsilat ve Grup Özeti"
+  ]
+ },
+ {
+  "mutant": "M4-bekleme-yok",
+  "cikis": 1,
+  "sure_sn": 93,
+  "kirmizi": [
+   "✗ Grup Özeti (bekleyen seçim): kart \"₺1.500,00Tahsilat · Bugün · 28.11.2026 · 2 cari\", Excel range, PDF range",
+   "✗ başlangıç > bitiş: \"Başlangıç tarihi bitiş tarihinden sonra olamaz. Ekran, PDF ve Excel şimdilik dönemsiz.\" · ekran [] · Tümüne WhatsApp yok"
+  ]
+ },
+ {
+  "mutant": "M5-bekleyen-yazi-yok",
+  "cikis": 1,
+  "sure_sn": 95,
+  "kirmizi": [
+   "✗ bekleyen seçim açıkça yazılı: \"Başlangıç ve bitiş günlerini seçin.\""
+  ]
+ }
+]
