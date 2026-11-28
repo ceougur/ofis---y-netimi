@@ -352,7 +352,7 @@ describe("2.5.1 M2 tur 4 — ORTA-1: değişmez (i)'nin Silinenler taraması diz
       for (const [sql, args] of [[D.WRITE_OFF_TRASH_SQL, ["account-x", "2026-10-15T09:00:00.000Z"]], [D.WRITE_OFF_ACTIVITY_TRASH_SQL, ["2026-10-15T09:00:00.000Z", "account-x"]]]) {
         const plan = store.all(`EXPLAIN QUERY PLAN ${sql}`, ...args).map(row => row.detail);
         assert.ok(plan.some(line => /USING (COVERING )?INDEX idx_trash_open/.test(line)), plan.join(" | "));
-        assert.ok(!plan.some(line => /^SCAN trash\b/.test(line)), plan.join(" | "));
+        assert.ok(plan.filter(line => /^(SCAN|SEARCH) trash\b/.test(line)).every(line => /USING (COVERING )?INDEX idx_trash_open/.test(line)), plan.join(" | "));
       }
     } finally {
       server.close();
@@ -391,7 +391,9 @@ describe("2.5.1 M2 tur 4 — ORTA-1: değişmez (i)'nin Silinenler taraması diz
       assert.ok(seen.length >= 2, `iki Silinenler sorgusu koşmalı (koşan ${seen.length})`);
       for (const sql of new Set(seen)) {
         const plan = store.all(`EXPLAIN QUERY PLAN ${sql}`, ...(sql.includes("?2") ? ["a", "b"] : ["a"])).map(row => row.detail);
-        assert.ok(!plan.some(item => /^SCAN trash\b/.test(item)), `${sql.slice(0, 160)} → ${plan.join(" | ")}`);
+        // Her Silinenler erişimi dizinle (SQLite tam taramayı kimi zaman "SCAN trash", MAX ile "SEARCH trash" — dizinsiz — diye yazar).
+        assert.ok(plan.some(item => /^(SCAN|SEARCH) trash\b/.test(item)), plan.join(" | "));
+        assert.ok(plan.filter(item => /^(SCAN|SEARCH) trash\b/.test(item)).every(item => /USING (COVERING )?INDEX idx_trash_open/.test(item)), `${sql.slice(0, 160)} → ${plan.join(" | ")}`);
       }
       D.WRITE_OFF_TEST.fullTrash = true;
       try {
@@ -399,6 +401,38 @@ describe("2.5.1 M2 tur 4 — ORTA-1: değişmez (i)'nin Silinenler taraması diz
       } finally {
         D.WRITE_OFF_TEST.fullTrash = false;
       }
+    } finally {
+      server.close();
+    }
+  });
+  // Daraltmanın sınırı EN ESKİ Değersiz satırının yazım anı: iki Değersiz satırı ARASINDA silinen faturanın bağı kopan tahsilatı ilk satırın dünyasında "sonradan değişmiş"tir (tur 2 S-DKM2-2 = A).
+  // Elle: Fatura 2.900 + Borç 6.400 = 9.300; 17.09 bağlı 2.876,45; Şüpheliye Al 3.000; Değersiz 1.000 @17.09 (S264 — o günün bağlı payı sonra) → bakiye 5.423,55; fatura SİLİNİR → 2.523,55
+  // (eksi değil, ret yok; bağı kopan 2.876,45 artık bağsız, en eski açık kayda düşer); ikinci kayıt S2 1.000 @01.10 (silmeden önce alındı) → Değersiz 100 @15.10 (S2) → 2.423,55. İlk satırın
+  // dünyasından bağı kopan tahsilat çıkar → oda 3.000 ≥ 1.000 → ihlal YOK (daraltma en son satırdan yapılsaydı silme görülmez, tahsilat kayda düşer → oda 123,55 < 1.000 → yanlış kırmızı).
+  it("iki Değersiz satırı arasında silinen fatura: daraltılmış tarama tam taramayla aynı, ihlal yok, Mutabakat tamam", async () => {
+    const { server, api, store } = await boot();
+    try {
+      const a = await must("cari", api.post(ACC, { name: "M2T4 Ara Silme", type: "customer", registeredOn: "2026-09-01", phone: nextPhone("466") }));
+      const inv = await must("fatura", api.post(INV, saleBody(a.id, 2900)));
+      await must("borç", api.post(`${ACC}/${a.id}/entries`, { kind: "debt", amount: "6400", date: "2026-09-12", note: "Borç" }));
+      await must("bağlı", api.post(`${ACC}/${a.id}/entries`, pay("2876,45", "2026-09-17", inv.id)));
+      const s = (await must("şüpheli", api.post(`${ACC}/${a.id}/doubtful`, { amount: "3000", date: "2026-09-17", reason: "lawsuit" }))).record.id;
+      await must("Değersiz 1.000", api.post(`${ACC}/${a.id}/doubtful/${s}/write-off`, { amount: "1000", date: "2026-09-17" }));
+      assert.equal(await balanceOf(api, a.id), 5423.55);
+      const s2 = (await must("S2", api.post(`${ACC}/${a.id}/doubtful`, { amount: "1000", date: "2026-10-01", reason: "lawsuit" }))).record.id;
+      await must("faturayı sil", api.del(`${INV}/${inv.id}`));
+      assert.equal(await balanceOf(api, a.id), 2523.55);
+      await must("Değersiz 100", api.post(`${ACC}/${a.id}/doubtful/${s2}/write-off`, { amount: "100", date: TODAY }));
+      assert.equal(await balanceOf(api, a.id), 2423.55);
+      const fast = D.writeOffInvariantProblems(store, { parties: [a.id] });
+      assert.deepEqual(fast, []);
+      D.WRITE_OFF_TEST.fullTrash = true;
+      try {
+        assert.deepEqual(D.writeOffInvariantProblems(store, { parties: [a.id] }), fast);
+      } finally {
+        D.WRITE_OFF_TEST.fullTrash = false;
+      }
+      assert.equal((await integrityOf(api)).ok, true);
     } finally {
       server.close();
     }
