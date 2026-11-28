@@ -358,6 +358,51 @@ describe("2.5.1 M2 tur 4 — ORTA-1: değişmez (i)'nin Silinenler taraması diz
       server.close();
     }
   });
+  it("değişmezin GERÇEKTE koştuğu Silinenler sorguları (iki kol: (i) fatura silme anı, (ii) satırdan sonraki silme) dizinli; 200 silinmiş fatura varken sonuç tam taramayla aynı", async () => {
+    const { server, api, store } = await boot();
+    try {
+      const b = await base(api, "M2T4 Plan");
+      // Silinenler'de fatura: Değersiz yazımından ÖNCE silinmiş gibi (eski tarihli) 200 satır + bu carinin Değersiz'den SONRA silinen taslağı.
+      const db = server.app.db;
+      const insert = db.prepare("INSERT INTO trash (id, kind, ref, payload_json, deleted_at) VALUES (?, 'invoice', ?, ?, ?)");
+      for (let i = 0; i < 200; i += 1) insert.run(`trash-m2t4-${i}`, `invoice-m2t4-${i}`, JSON.stringify({ accountId: i % 2 ? b.a.id : `account-baska-${i}` }), "2026-08-01T10:00:00.000Z");
+      const draft = await must("taslak", api.post(INV, saleBody(b.a.id, 700, { date: "2026-10-01", status: "draft" })));
+      await must("taslağı sil", api.del(`${INV}/${draft.id}`));
+      // (ii) kolu: Değersiz satırından ÖNCE yazılmış (eski veri gibi) alacak satırı cariyi eksiye çeker → bakiye denetimi satırdan sonraki işlemleri (Silinenler dahil) sorar.
+      const line = store.get("SELECT created_at AS at FROM account_entries WHERE account_id = ? AND source = 'doubtful'", b.a.id);
+      db.prepare("INSERT INTO account_entries (id, account_id, kind, amount, date, note, created_by, created_at) VALUES ('m2t4-eski-alacak', ?, 'credit', 1000, '2026-09-11', 'eski', 'eski', ?)").run(b.a.id, "2026-01-01T00:00:00.000Z");
+      assert.ok(line.at > "2026-01-01T00:00:00.000Z");
+      const seen = [];
+      const spy = method => {
+        const original = store[method];
+        store[method] = (sql, ...args) => {
+          if (/\bFROM trash\b/.test(String(sql))) seen.push(String(sql));
+          return original.call(store, sql, ...args);
+        };
+        return () => { store[method] = original; };
+      };
+      const undo = [spy("get"), spy("all")];
+      let fast;
+      try {
+        fast = JSON.stringify(D.writeOffInvariantProblems(store, { parties: [b.a.id] }));
+      } finally {
+        for (const restore of undo) restore();
+      }
+      assert.ok(seen.length >= 2, `iki Silinenler sorgusu koşmalı (koşan ${seen.length})`);
+      for (const sql of new Set(seen)) {
+        const plan = store.all(`EXPLAIN QUERY PLAN ${sql}`, ...(sql.includes("?2") ? ["a", "b"] : ["a"])).map(row => row.detail);
+        assert.ok(!plan.some(item => /^SCAN trash\b/.test(item)), `${sql.slice(0, 160)} → ${plan.join(" | ")}`);
+      }
+      D.WRITE_OFF_TEST.fullTrash = true;
+      try {
+        assert.equal(fast, JSON.stringify(D.writeOffInvariantProblems(store, { parties: [b.a.id] })));
+      } finally {
+        D.WRITE_OFF_TEST.fullTrash = false;
+      }
+    } finally {
+      server.close();
+    }
+  });
 });
 
 // Rastgele: 'önerinin (ve altının) yazımı kabul edilir', 'sınırın 1 kuruş fazlası reddedilir', Borç Yaz silmesi kabul edildiyse cari Değersiz yüzünden eksiye düşmedi, Mutabakat her tohumun sonunda
