@@ -879,8 +879,28 @@
     }
     if (last < message.length) target.append(message.slice(last));
   };
+  // 2.5.1 aday UI turu (UI-1): uzun hata bildirimi (300 harften uzun ya da "Ne yapmalı:" yolu veren) geniş biçimde gösterilir, süreyle kapanmaz — yalnız ×
+  // ile kapanır (okunurken kaybolmaz). Pencere açıkken üst ortada değil altta durur (hof-ui.css): iletinin söylediği düğmeyi (ör. cari kartındaki Şüpheli Alacak
+  // satırının ×'ı) örtmez. En çok iki uzun bildirim görünür; yenisi gelince en eskisi kapanır (yığın ekrandan taşmaz). Kısa bildirimler eskisi gibi.
+  const LONG_TOAST_CHARS = 300;
+  const LONG_TOAST_MAX = 2;
+  HOF.isLongToast = (message, type = "info") => type === "error" && (String(message ?? "").length > LONG_TOAST_CHARS || String(message ?? "").includes("Ne yapmalı:"));
+  // Uzun bildirim kalıcı olduğu için SONRADAN açılan pencerenin (ör. iletinin söylediği × → "silinsin mi?" sorusu, Şüpheliden Çıkar formu) düğmelerini örtmemeli:
+  // bildirim, göründüğü andaki pencere derinliğini taşır; daha derin bir pencere açıkken gizlenir (is-behind), o pencere kapanınca yeniden görünür.
+  let modalDepth = () => 0;
+  const syncLongToasts = () => {
+    const host = document.getElementById("hof-toasts");
+    if (!host) return;
+    const depth = modalDepth();
+    for (const item of host.children) {
+      if (!item.classList.contains("hof-toast-long")) continue;
+      item.hofDepth = Math.min(item.hofDepth ?? depth, depth);
+      item.classList.toggle("is-behind", depth > item.hofDepth);
+    }
+  };
   HOF.toast = (message, { type = "info", action, timeout = 3600 } = {}) => {
     const host = toastHost();
+    const long = HOF.isLongToast(message, type);
     const sameKey = `${type}\u0001${String(message)}`;
     const duration = HOF.toastDuration(message, { type, timeout, action: Boolean(action) });
     const twin = !action && [...host.children].find(item => item.hofKey === sameKey && !item.hofLeaving);
@@ -888,7 +908,7 @@
       twin.hofRepeat(duration);
       return twin;
     }
-    const node = HOF.el("div", { class: `hof-toast hof-toast-${type}` });
+    const node = HOF.el("div", { class: `hof-toast hof-toast-${type}${long ? " hof-toast-long" : ""}` });
     node.hofKey = sameKey;
     const text = HOF.el("span", { class: "hof-toast-text" });
     fillToastText(text, String(message));
@@ -930,9 +950,18 @@
     close.onclick = () => node.remove();
     node.appendChild(close);
     host.appendChild(node);
+    if (long) {
+      node.hofDepth = modalDepth();
+      const longs = [...host.children].filter(item => item.classList.contains("hof-toast-long"));
+      while (longs.length > LONG_TOAST_MAX) longs.shift().remove();
+    }
     // En fazla 4 bildirim görünür; eskisi kapanır.
     while (host.children.length > 4) host.firstElementChild.remove();
-    requestAnimationFrame(() => node.classList.add("is-visible"));
+    requestAnimationFrame(() => {
+      node.classList.add("is-visible");
+      // Metin kutusuna sığmıyorsa (alçak / dar ekran) metin kendi içinde kaydırılır: yalnız o zaman fare tekerleğini alır.
+      if (long) node.classList.toggle("is-scroll", text.scrollHeight > text.clientHeight + 1);
+    });
     let remaining = duration;
     let startedAt = 0;
     let timer = 0;
@@ -954,6 +983,8 @@
     };
     const run = () => {
       clearTimeout(timer);
+      // Uzun hata bildirimi süreyle kapanmaz (yalnız ×).
+      if (long) return;
       startedAt = Date.now();
       timer = setTimeout(leave, remaining);
     };
@@ -1004,6 +1035,7 @@
 
   // ---------- Pencereler ----------
   const openModals = [];
+  modalDepth = () => openModals.length;
   let lastPressed = null;
   document.addEventListener("pointerdown", event => { lastPressed = event.target?.closest?.("button, a, [tabindex]") || null; }, true);
   // 2.4.3 (form durumu izole): kullanıcının kendi değiştirdiği alan "dokunulmuş" sayılır ve penceresini "kaydedilmemiş" yapar.
@@ -1064,6 +1096,7 @@
       node.classList.remove("is-visible");
       document.removeEventListener("keydown", onKey, true);
       openModals.splice(openModals.indexOf(api), 1);
+      syncLongToasts();
       setTimeout(() => node.remove(), 160);
       focusBack();
       // A10: Kaydet'ten sonra açan pencere kendini yeniden çizer (açan düğme yenisiyle değişir); odak boşa (body) düştüyse aynı anahtarlı
@@ -1185,6 +1218,7 @@
       },
     };
     openModals.push(api);
+    syncLongToasts();
     document.addEventListener("keydown", onKey, true);
     if (dismissible) {
       node.querySelector(".hof-modal-close").onclick = () => userClose();

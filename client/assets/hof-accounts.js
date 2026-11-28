@@ -1455,7 +1455,7 @@
     HOF.formModal({
       title: "Değersiz Alacak Yaz",
       eyebrow: `${account.name} · ${record.reasonLabel} · ${minorMoney(record.amountMinor)}`,
-      intro: `Kesinleşmiş kayıp: karşılık varsa önce 129'dan, kalanı 659 Diğer Olağandışı Gider'den düşer; A 128. Cari kartına "Değersiz Alacak" alacak satırı yazılır, bakiye o tutar kadar kapanır.`,
+      intro: `Kesinleşmiş kayıp: karşılık varsa önce 129'dan, kalanı 659 Diğer Olağan Gider ve Zararlar'dan düşer; A 128. Cari kartına "Değersiz Alacak" alacak satırı yazılır, bakiye o tutar kadar kapanır.`,
       fields: [
         { name: "amount", label: "Tutar (₺)", required: true, inputmode: "decimal", value: suggested, autofocus: true },
         { name: "date", label: "Tarih", type: "date", max: "today", required: true, value: today },

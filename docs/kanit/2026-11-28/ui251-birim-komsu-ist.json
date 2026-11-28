@@ -1,0 +1,32 @@
+{
+  "ad": "ui251-birim-komsu-ist",
+  "komut": "node --test test/yazim-duzeni.test.mjs test/banka-210-arayuz.test.mjs test/disa-aktarim-dugmeleri.test.mjs test/form-izolasyon.test.mjs test/gg243-cekirdek-kaynak.test.mjs test/hiz-243-hesap-defter.test.mjs test/kalan-metin-246.test.mjs test/kapi-para-245.test.mjs test/liste-kapisi-daha-fazla.test.mjs test/personel-ozluk-244.test.mjs test/static.test.mjs test/tyk-birlesik8-ekranlar-250.test.mjs test/uiux-244-ux9.test.mjs test/yetki-gorunurluk.test.mjs test/platform-tasinabilirlik.test.mjs",
+  "commit": "b9a8c462a6390fbe9af2d828657d2201930f8e60",
+  "dal": "worktree-agent-ab5e336bece8bb299",
+  "kirli": 0,
+  "izlenmeyen": 1,
+  "platform": "linux 6.18.44-fc-v880 x64",
+  "node": "v22.23.4",
+  "cpu": 4,
+  "bellek_gb": 16,
+  "basladi": "2026-11-28T14:46:36.488Z",
+  "sure_sn": 6.9,
+  "cikis_kodu": 0,
+  "sinyal": null,
+  "zaman_asimi": false,
+  "ozet": {
+    "bicim": "node:test",
+    "toplam": 108,
+    "gecen": 108,
+    "basarisiz": 0,
+    "iptal": 0,
+    "atlanan": 0
+  },
+  "hukum": "GEÇTİ",
+  "neden": "",
+  "basarisiz_testler": [],
+  "ham_cikti": "../../../../../../tmp/claude-0/-home-user/de5e1cbf-7e68-5683-b7bb-f27655eaed4f/scratchpad/ui251/kanit/2026-11-28/ui251-birim-komsu-ist.log",
+  "klasor": "/home/user/ofis---y-netimi/.claude/worktrees/agent-ab5e336bece8bb299",
+  "ham_cikti_sha256": "03b6334b97ac0c507569c98681bec3c2a42bb775926a619cf62c800d9c233ab6",
+  "ham_cikti_bayt": 40838
+}

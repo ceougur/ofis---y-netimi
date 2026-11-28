@@ -1,0 +1,878 @@
+TAP version 13
+# (node:20626) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Aşama 3 (dilim 2) — Banka arayüzünün kaynak kuralları
+    # Subtest: sol menü: Banka Taksitler'in hemen altında, bank.view ister, rozetli; tıklama HOF.bank.open'a gider
+    ok 1 - sol menü: Banka Taksitler'in hemen altında, bank.view ister, rozetli; tıklama HOF.bank.open'a gider
+      ---
+      duration_ms: 2.434203
+      type: 'test'
+      ...
+    # Subtest: hof-bank.js yükleme sırası ve HOF.office kuralı; yetki sınıfı CSS kuralı
+    ok 2 - hof-bank.js yükleme sırası ve HOF.office kuralı; yetki sınıfı CSS kuralı
+      ---
+      duration_ms: 3.4635
+      type: 'test'
+      ...
+    # Subtest: canlı yenileme: istemcide banka yazımı defter değişikliği (LEDGER_PATHS); sunucuda ANLIK DURUM türleri bank'ı kapsar
+    ok 3 - canlı yenileme: istemcide banka yazımı defter değişikliği (LEDGER_PATHS); sunucuda ANLIK DURUM türleri bank'ı kapsar
+      ---
+      duration_ms: 1.386188
+      type: 'test'
+      ...
+    # Subtest: Yönetim → İşlem Geçmişi: her banka işlem geçmişi türünün adı var (admin.js EVENT_LABELS)
+    ok 4 - Yönetim → İşlem Geçmişi: her banka işlem geçmişi türünün adı var (admin.js EVENT_LABELS)
+      ---
+      duration_ms: 3.957704
+      type: 'test'
+      ...
+    1..4
+ok 1 - Aşama 3 (dilim 2) — Banka arayüzünün kaynak kuralları
+  ---
+  duration_ms: 12.733016
+  type: 'suite'
+  ...
+# Subtest: Aşama 3 (dilim 2) — Banka arayüzünün sunucu uçları
+    # Subtest: kalemle ad: Banka, Fatura ve Raporlar adları kaydedilir; tanınmayan anahtar 400
+    ok 1 - kalemle ad: Banka, Fatura ve Raporlar adları kaydedilir; tanınmayan anahtar 400
+      ---
+      duration_ms: 17.618952
+      type: 'test'
+      ...
+    # Subtest: rozet: Hesabı Belirsiz Yeni Hareketler sayısı; personel 403
+    ok 2 - rozet: Hesabı Belirsiz Yeni Hareketler sayısı; personel 403
+      ---
+      duration_ms: 8.406117
+      type: 'test'
+      ...
+    # Subtest: Kurulum Sihirbazı ilk girişte: kapatma kişi ve şirket bazında kaydedilir; personel 403
+    ok 3 - Kurulum Sihirbazı ilk girişte: kapatma kişi ve şirket bazında kaydedilir; personel 403
+      ---
+      duration_ms: 255.987145
+      type: 'test'
+      ...
+# (node:20626) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+    # Subtest: Hesap Detayı: son hareketler (açılış dahil, işaretli, açıklamalı), başka hesabın hareketi yok; kilitli açılış işaretli
+    ok 4 - Hesap Detayı: son hareketler (açılış dahil, işaretli, açıklamalı), başka hesabın hareketi yok; kilitli açılış işaretli
+      ---
+      duration_ms: 358.421359
+      type: 'test'
+      ...
+    # Subtest: Ayarlar ekranı verisi: Ekstre görünmez (available false), POS 2.2.0'da görünür; hesap eşlemelerinde adlar
+    ok 5 - Ayarlar ekranı verisi: Ekstre görünmez (available false), POS 2.2.0'da görünür; hesap eşlemelerinde adlar
+      ---
+      duration_ms: 6.584701
+      type: 'test'
+      ...
+    # Subtest: Ayarlar: boş sayı alanı yalnız boş bırakılabilen kalemde kabul edilir (sessizce 0 olmaz)
+    ok 6 - Ayarlar: boş sayı alanı yalnız boş bırakılabilen kalemde kabul edilir (sessizce 0 olmaz)
+      ---
+      duration_ms: 23.98785
+      type: 'test'
+      ...
+    # Subtest: canlı yenileme: banka yazımı herkese overview.changed (kinds bank) yayımlar
+    ok 7 - canlı yenileme: banka yazımı herkese overview.changed (kinds bank) yayımlar
+      ---
+      duration_ms: 271.067143
+      type: 'test'
+      ...
+    1..7
+ok 2 - Aşama 3 (dilim 2) — Banka arayüzünün sunucu uçları
+  ---
+  duration_ms: 1727.323699
+  type: 'suite'
+  ...
+# Subtest: dışa aktarım düğmeleri (UI11)
+    # Subtest: eski düğme adları kalmadı (liste/rapor tek ad PDF / Excel)
+    ok 1 - eski düğme adları kalmadı (liste/rapor tek ad PDF / Excel)
+      ---
+      duration_ms: 7.214455
+      type: 'test'
+      ...
+    # Subtest: PDF / Excel bağlantıları ortak ailede (makbuz satırı ve kılavuz bağlantısı hariç)
+    ok 2 - PDF / Excel bağlantıları ortak ailede (makbuz satırı ve kılavuz bağlantısı hariç)
+      ---
+      duration_ms: 2.315696
+      type: 'test'
+      ...
+    # Subtest: Yazdır / dışa aktar / PDF düğmeleri elle yazılmıyor (HOF.outputButton)
+    ok 3 - Yazdır / dışa aktar / PDF düğmeleri elle yazılmıyor (HOF.outputButton)
+      ---
+      duration_ms: 2.309234
+      type: 'test'
+      ...
+    # Subtest: ortak yardımcı: tür sınıfı, simge, erişilebilir ad ve ipucu
+    ok 4 - ortak yardımcı: tür sınıfı, simge, erişilebilir ad ve ipucu
+      ---
+      duration_ms: 2.27964
+      type: 'test'
+      ...
+    1..4
+ok 3 - dışa aktarım düğmeleri (UI11)
+  ---
+  duration_ms: 15.127429
+  type: 'suite'
+  ...
+# Subtest: form izolasyonu (2.4.3) — kaynak taraması
+    # Subtest: kod maskesi şablonun ${…} kısmını kod sayar, metni ve yorumu boşaltır
+    ok 1 - kod maskesi şablonun ${…} kısmını kod sayar, metni ve yorumu boşaltır
+      ---
+      duration_ms: 3.417883
+      type: 'test'
+      ...
+    # Subtest: dosya / resim seçimi işleyicileri bulunuyor (test boşa geçmesin)
+    ok 2 - dosya / resim seçimi işleyicileri bulunuyor (test boşa geçmesin)
+      ---
+      duration_ms: 397.533543
+      type: 'test'
+      ...
+    # Subtest: hiçbir dosya seçimi işleyicisi dosya kutusunu içeren formu yeniden çizmez (D1)
+    ok 3 - hiçbir dosya seçimi işleyicisi dosya kutusunu içeren formu yeniden çizmez (D1)
+      ---
+      duration_ms: 279.069603
+      type: 'test'
+      ...
+    # Subtest: Fatura Ayarları: Logo / Kaşe seçme ve kaldırma renderSettings() çağırmaz
+    ok 4 - Fatura Ayarları: Logo / Kaşe seçme ve kaldırma renderSettings() çağırmaz
+      ---
+      duration_ms: 37.15519
+      type: 'test'
+      ...
+    # Subtest: ortak çekirdek: HOF.swap taslağı korur, pencere kapanırken kaydedilmemiş değişikliği sorar
+    ok 5 - ortak çekirdek: HOF.swap taslağı korur, pencere kapanırken kaydedilmemiş değişikliği sorar
+      ---
+      duration_ms: 1.01378
+      type: 'test'
+      ...
+    1..5
+ok 4 - form izolasyonu (2.4.3) — kaynak taraması
+  ---
+  duration_ms: 719.372134
+  type: 'suite'
+  ...
+#   background çağrıları: 23 (yazma: hof-stock.js:594, hof-whatsapp-api.js:596)
+# Subtest: gg243: ortak çekirdek — arka plan yazması ve odak anahtarı
+    # Subtest: \#3 bütün background çağrıları rawApi'den geçer; rawApi bayrağı sendApi'ye iletir; writeOrigin arka plan isteğine pencere vermez
+    ok 1 - \#3 bütün background çağrıları rawApi'den geçer; rawApi bayrağı sendApi'ye iletir; writeOrigin arka plan isteğine pencere vermez
+      ---
+      duration_ms: 28.736415
+      type: 'test'
+      ...
+    # Subtest: \#4 odak anahtarı satır data-* niteliklerini içerir; bulunamazsa yalnız tekil birincil anahtara döner
+    ok 2 - \#4 odak anahtarı satır data-* niteliklerini içerir; bulunamazsa yalnız tekil birincil anahtara döner
+      ---
+      duration_ms: 0.300684
+      type: 'test'
+      ...
+    1..2
+ok 5 - gg243: ortak çekirdek — arka plan yazması ve odak anahtarı
+  ---
+  duration_ms: 29.957186
+  type: 'suite'
+  ...
+# Subtest: yalnız hesaplayan / ön izleyen istekler defter değişikliği sayılmaz (2.4.3 H2)
+    # Subtest: fatura toplamı, görünüm ön izlemesi ve Excel ön izlemeleri olay yayımlamaz
+    ok 1 - fatura toplamı, görünüm ön izlemesi ve Excel ön izlemeleri olay yayımlamaz
+      ---
+      duration_ms: 3.713006
+      type: 'test'
+      ...
+    # Subtest: gerçek yazımlar eskisi gibi hemen bildirilir (tür listesiyle)
+    ok 2 - gerçek yazımlar eskisi gibi hemen bildirilir (tür listesiyle)
+      ---
+      duration_ms: 2.984043
+      type: 'test'
+      ...
+    1..2
+ok 6 - yalnız hesaplayan / ön izleyen istekler defter değişikliği sayılmaz (2.4.3 H2)
+  ---
+  duration_ms: 7.532922
+  type: 'suite'
+  ...
+# (node:20661) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.6 kalan metin — sunucu (B4, B5, B6, B7)
+    # Subtest: B4: Ayrıntılı Ekstre PDF'inde fatura numarası Belge No kolonunda bölünmez
+    ok 1 - B4: Ayrıntılı Ekstre PDF'inde fatura numarası Belge No kolonunda bölünmez
+      ---
+      duration_ms: 45.260589
+      type: 'test'
+      ...
+    # Subtest: B5: Cari Ekstre Excel'inde (ayrıntılı ve düz) Bakiye sayı — borçlu artı, alacaklı eksi; ekran B / A metni kalır
+    ok 2 - B5: Cari Ekstre Excel'inde (ayrıntılı ve düz) Bakiye sayı — borçlu artı, alacaklı eksi; ekran B / A metni kalır
+      ---
+      duration_ms: 57.988801
+      type: 'test'
+      ...
+    # Subtest: B5 (birim): yalnız tutar kolonunda ve tam "<tutar> TL B|A" biçiminde çevrilir; başka metin olduğu gibi
+    ok 3 - B5 (birim): yalnız tutar kolonunda ve tam "<tutar> TL B|A" biçiminde çevrilir; başka metin olduğu gibi
+      ---
+      duration_ms: 3.176946
+      type: 'test'
+      ...
+    # Subtest: B6: carinin vadeli borç kalemi Açıklamayı taşır (takvim ve Vade Takip); etiket aynı
+    ok 4 - B6: carinin vadeli borç kalemi Açıklamayı taşır (takvim ve Vade Takip); etiket aynı
+      ---
+      duration_ms: 21.504952
+      type: 'test'
+      ...
+    # Subtest: B7: planlı banka işleminin etiketi yazım düzeninde (Planlı Diğer Gider)
+    ok 5 - B7: planlı banka işleminin etiketi yazım düzeninde (Planlı Diğer Gider)
+      ---
+      duration_ms: 3.637937
+      type: 'test'
+      ...
+    1..5
+ok 7 - 2.4.6 kalan metin — sunucu (B4, B5, B6, B7)
+  ---
+  duration_ms: 937.207217
+  type: 'suite'
+  ...
+# Subtest: 2.4.6 kalan metin — kaynak (B3, B7, B8, B9, zil yönü, K-DB2)
+    # Subtest: B3: Raporlar'ın ilk sekmesi "Cari Mizanı ve Ekstresi" (Tüm Raporlar → Cari Ekstre ile iki ayrı "Cari Ekstre" yok)
+    ok 1 - B3: Raporlar'ın ilk sekmesi "Cari Mizanı ve Ekstresi" (Tüm Raporlar → Cari Ekstre ile iki ayrı "Cari Ekstre" yok)
+      ---
+      duration_ms: 1.003522
+      type: 'test'
+      ...
+    # Subtest: B7: Vade Takip alt notu Cari (vadeli) ve Planlı Banka İşlemi'ni sayar; pil kartında ödeme kalemi "Ödenecek"
+    ok 2 - B7: Vade Takip alt notu Cari (vadeli) ve Planlı Banka İşlemi'ni sayar; pil kartında ödeme kalemi "Ödenecek"
+      ---
+      duration_ms: 0.728969
+      type: 'test'
+      ...
+    # Subtest: B8: sektör önerisi "Tahsilat … araçları açık olur" demez; tablo şeridi "öncelikli doğru veri" demez
+    ok 3 - B8: sektör önerisi "Tahsilat … araçları açık olur" demez; tablo şeridi "öncelikli doğru veri" demez
+      ---
+      duration_ms: 2.321837
+      type: 'test'
+      ...
+    # Subtest: B8: Tablo Raporları'nda kişi kolonu "Kişi"
+    ok 4 - B8: Tablo Raporları'nda kişi kolonu "Kişi"
+      ---
+      duration_ms: 0.569412
+      type: 'test'
+      ...
+    # Subtest: B9 + zil yönü: rozet zil listesinin tamamını sayar; ödeme kalemi "ÖDEME YAPILMADI" / "… ÖDEME VAR", grupları ayrı
+    ok 5 - B9 + zil yönü: rozet zil listesinin tamamını sayar; ödeme kalemi "ÖDEME YAPILMADI" / "… ÖDEME VAR", grupları ayrı
+      ---
+      duration_ms: 0.591381
+      type: 'test'
+      ...
+    # Subtest: K-DB2: tahsilat / ödeme formundaki bilgi notu cari TÜRÜNE değil açık bakiyenin TARAFINA bakar
+    ok 6 - K-DB2: tahsilat / ödeme formundaki bilgi notu cari TÜRÜNE değil açık bakiyenin TARAFINA bakar
+      ---
+      duration_ms: 1.200577
+      type: 'test'
+      ...
+    1..6
+ok 8 - 2.4.6 kalan metin — kaynak (B3, B7, B8, B9, zil yönü, K-DB2)
+  ---
+  duration_ms: 7.031239
+  type: 'suite'
+  ...
+# (node:20668) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.5 madde 1–2: anahtar üretimde kapalı
+    # Subtest: varsayılan kapalı; ortam değişkeniyle açılmaz; üretim girişi (server/server.mjs) anahtar vermez
+    ok 1 - varsayılan kapalı; ortam değişkeniyle açılmaz; üretim girişi (server/server.mjs) anahtar vermez
+      ---
+      duration_ms: 4.356358
+      type: 'test'
+      ...
+    1..1
+ok 9 - 2.4.5 madde 1–2: anahtar üretimde kapalı
+  ---
+  duration_ms: 5.581589
+  type: 'suite'
+  ...
+# Subtest: 2.4.5 madde 1–2: test/helpers.mjs startTestServer anahtarı config'e iletir
+    # Subtest: { legacyCasePayments: false, legacyTableTransfer: false } → 410; seçenek verilmezse yardımcının varsayılanı açık (eski testler)
+    ok 1 - { legacyCasePayments: false, legacyTableTransfer: false } → 410; seçenek verilmezse yardımcının varsayılanı açık (eski testler)
+      ---
+      duration_ms: 984.46575
+      type: 'test'
+      ...
+    1..1
+ok 10 - 2.4.5 madde 1–2: test/helpers.mjs startTestServer anahtarı config'e iletir
+  ---
+  duration_ms: 984.822668
+  type: 'suite'
+  ...
+# Subtest: 2.4.5 madde 1–2: eski sürüm verisi (v2.4.4 gerçek kodu) yeni kodla — kapılar kapalı, eski satırlar aynen, sil / geri yükle / geri al açık
+    # Subtest: eski satırlar aynen: kayıt tahsilatı, Kasa, cari/kart satırları, işlem başlıkları, mizan ve yevmiye madde sayısı
+    ok 1 - eski satırlar aynen: kayıt tahsilatı, Kasa, cari/kart satırları, işlem başlıkları, mizan ve yevmiye madde sayısı
+      ---
+      duration_ms: 12.423649
+      type: 'test'
+      ...
+    # Subtest: POST kayıt tahsilatı 410 (istek kimliğiyle de); veri değişmez
+    ok 2 - POST kayıt tahsilatı 410 (istek kimliğiyle de); veri değişmez
+      ---
+      duration_ms: 10.982946
+      type: 'test'
+      ...
+    # Subtest: PUT eski kayıt tahsilatı 410; satırın tutarı, tarihi ve yolu aynı
+    ok 3 - PUT eski kayıt tahsilatı 410; satırın tutarı, tarihi ve yolu aynı
+      ---
+      duration_ms: 15.287223
+      type: 'test'
+      ...
+    # Subtest: oturumsuz 401; personel de 410 alır (Tablodan Aktar yetkisi olmasa da 410: kapı yetkiden önce); veri değişmez
+    ok 4 - oturumsuz 401; personel de 410 alır (Tablodan Aktar yetkisi olmasa da 410: kapı yetkiden önce); veri değişmez
+      ---
+      duration_ms: 103.916228
+      type: 'test'
+      ...
+    # Subtest: Tablodan Aktar POST 410; yükleme sonrası özet sormaz; veri değişmez; eski aktarım listede
+    ok 5 - Tablodan Aktar POST 410; yükleme sonrası özet sormaz; veri değişmez; eski aktarım listede
+      ---
+      duration_ms: 13.645391
+      type: 'test'
+      ...
+    # Subtest: DELETE açık (→ Silinenler), Silinenler'den geri yükleme açık: Kasa ve mizan eski hâline döner
+    ok 6 - DELETE açık (→ Silinenler), Silinenler'den geri yükleme açık: Kasa ve mizan eski hâline döner
+      ---
+      duration_ms: 59.505669
+      type: 'test'
+      ...
+    # Subtest: eski aktarımın Geri Al'ı açık: kartlar kalkar, karta taşınan kayıt tahsilatı kayda döner, Kasa aynı
+    ok 7 - eski aktarımın Geri Al'ı açık: kartlar kalkar, karta taşınan kayıt tahsilatı kayda döner, Kasa aynı
+      ---
+      duration_ms: 37.487697
+      type: 'test'
+      ...
+    1..7
+ok 11 - 2.4.5 madde 1–2: eski sürüm verisi (v2.4.4 gerçek kodu) yeni kodla — kapılar kapalı, eski satırlar aynen, sil / geri yükle / geri al açık
+  ---
+  duration_ms: 1209.538261
+  type: 'suite'
+  ...
+# Subtest: 2.4.5 madde 1–2: istek kimliği yinelemesi kapıyı aşmaz; anahtar açıkken eski davranış (testlerin ve üreticilerin yolu)
+    # Subtest: açıkken POST / PUT / Tablodan Aktar 200 ve yineleme 'replayed'; kapalı sunucuda aynı istek kimliği 410, satır sayısı aynı
+    ok 1 - açıkken POST / PUT / Tablodan Aktar 200 ve yineleme 'replayed'; kapalı sunucuda aynı istek kimliği 410, satır sayısı aynı
+      ---
+      duration_ms: 668.053265
+      type: 'test'
+      ...
+    1..1
+ok 12 - 2.4.5 madde 1–2: istek kimliği yinelemesi kapıyı aşmaz; anahtar açıkken eski davranış (testlerin ve üreticilerin yolu)
+  ---
+  duration_ms: 676.593206
+  type: 'suite'
+  ...
+# Subtest: 2.4.5 madde 1–2: 002 şirketi de kapalı (alt şirket aynı yapılandırmayla açılır)
+    # Subtest: 002'de POST / PUT / Tablodan Aktar 410; 002'nin Kasa'sı ve kaydın işlem geçmişi boş
+    ok 1 - 002'de POST / PUT / Tablodan Aktar 410; 002'nin Kasa'sı ve kaydın işlem geçmişi boş
+      ---
+      duration_ms: 576.997833
+      type: 'test'
+      ...
+    1..1
+ok 13 - 2.4.5 madde 1–2: 002 şirketi de kapalı (alt şirket aynı yapılandırmayla açılır)
+  ---
+  duration_ms: 611.767576
+  type: 'suite'
+  ...
+# Subtest: 2.4.5 madde 1–3: kaynakta kapılar
+    # Subtest: payments'a satır ekleyen her yer izinli: kapılı POST, Silinenler'den geri yükleme, eski aktarımın Geri Al'ı
+    ok 1 - payments'a satır ekleyen her yer izinli: kapılı POST, Silinenler'den geri yükleme, eski aktarımın Geri Al'ı
+      ---
+      duration_ms: 73.731141
+      type: 'test'
+      ...
+    # Subtest: payments'ın tutarını / tarihini değiştiren UPDATE yalnız kapılı PUT'ta (B1 bağ taşıma yalnız case_key, banka eşlemesi yalnız fin_ref değiştirir)
+    ok 2 - payments'ın tutarını / tarihini değiştiren UPDATE yalnız kapılı PUT'ta (B1 bağ taşıma yalnız case_key, banka eşlemesi yalnız fin_ref değiştirir)
+      ---
+      duration_ms: 68.251917
+      type: 'test'
+      ...
+    # Subtest: POST /cases/:key/payments ve PUT /payments/:id ilk iş kapıya bakar; DELETE kapısız; kapı 410 case-payments-closed
+    ok 3 - POST /cases/:key/payments ve PUT /payments/:id ilk iş kapıya bakar; DELETE kapısız; kapı 410 case-payments-closed
+      ---
+      duration_ms: 1.52969
+      type: 'test'
+      ...
+    # Subtest: POST /plans/from-table analizden önce kapıya bakar; özet kapalıyken sormaz; Geri Al kapısız
+    ok 4 - POST /plans/from-table analizden önce kapıya bakar; özet kapalıyken sormaz; Geri Al kapısız
+      ---
+      duration_ms: 0.719875
+      type: 'test'
+      ...
+    # Subtest: istemci: kayıt kartında Tahsilat düğmesi yok; Tablodan Aktar düğmesi yok (Son Aktarımlar var); ön dolumlar boş; eski tahsilatta düzelt yok
+    ok 5 - istemci: kayıt kartında Tahsilat düğmesi yok; Tablodan Aktar düğmesi yok (Son Aktarımlar var); ön dolumlar boş; eski tahsilatta düzelt yok
+      ---
+      duration_ms: 6.34638
+      type: 'test'
+      ...
+    1..5
+ok 14 - 2.4.5 madde 1–3: kaynakta kapılar
+  ---
+  duration_ms: 151.004266
+  type: 'suite'
+  ...
+# Subtest: liste kapısı: Daha Fazla ↔ arka plan yenilemesi (H4)
+    # Subtest: Daha Fazla tutulurken başka kayıt + arka plan yenilemesi: Daha Fazla yeni listenin sonundan yinelenir; liste = sunucunun ilk 6'sı
+    ok 1 - Daha Fazla tutulurken başka kayıt + arka plan yenilemesi: Daha Fazla yeni listenin sonundan yinelenir; liste = sunucunun ilk 6'sı
+      ---
+      duration_ms: 8.14435
+      type: 'test'
+      ...
+    # Subtest: arka plan yenilemesi tutulurken Daha Fazla yazıldı: yenileme yeni uzunlukla yinelenir (satırlar geri alınmaz, yeni kayıt görünür)
+    ok 2 - arka plan yenilemesi tutulurken Daha Fazla yazıldı: yenileme yeni uzunlukla yinelenir (satırlar geri alınmaz, yeni kayıt görünür)
+      ---
+      duration_ms: 5.233677
+      type: 'test'
+      ...
+    # Subtest: aynı sırada iki yenileme: sonra başlayan yazılır, önceki düşer (v2.0.22 kuralı); kullanıcı araması Daha Fazla'yı ve eski yenilemeyi geçersiz sayar
+    ok 3 - aynı sırada iki yenileme: sonra başlayan yazılır, önceki düşer (v2.0.22 kuralı); kullanıcı araması Daha Fazla'yı ve eski yenilemeyi geçersiz sayar
+      ---
+      duration_ms: 1.399971
+      type: 'test'
+      ...
+    # Subtest: rastgele sıralar (tohumlu, 300 tur): her sonuçta liste = sunucunun ilk N satırı, Daha Fazla geri alınmaz
+    ok 4 - rastgele sıralar (tohumlu, 300 tur): her sonuçta liste = sunucunun ilk N satırı, Daha Fazla geri alınmaz
+      ---
+      duration_ms: 40.718861
+      type: 'test'
+      ...
+    1..4
+ok 15 - liste kapısı: Daha Fazla ↔ arka plan yenilemesi (H4)
+  ---
+  duration_ms: 56.647978
+  type: 'suite'
+  ...
+# (node:20685) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: 2.4.4 Personel Özlük: yetki kataloğu
+    # Subtest: staff.view / staff.manage varsayılan yalnız yönetici; kişiye ve özel role verilebilir; havuzda Personel Özlük grubunda
+    ok 1 - staff.view / staff.manage varsayılan yalnız yönetici; kişiye ve özel role verilebilir; havuzda Personel Özlük grubunda
+      ---
+      duration_ms: 3.049228
+      type: 'test'
+      ...
+    # Subtest: istemci: Personel Raporu düğmesi reports.staff ile; CSS gizleme kuralı reports.view ya da staff.view (CRLF'ye dayanıklı)
+    ok 2 - istemci: Personel Raporu düğmesi reports.staff ile; CSS gizleme kuralı reports.view ya da staff.view (CRLF'ye dayanıklı)
+      ---
+      duration_ms: 5.04423
+      type: 'test'
+      ...
+    1..2
+ok 16 - 2.4.4 Personel Özlük: yetki kataloğu
+  ---
+  duration_ms: 9.256838
+  type: 'suite'
+  ...
+# Subtest: 2.4.4 Personel Özlük: API
+    # Subtest: boş veri: liste boş, kartların hepsi sıfır
+    ok 1 - boş veri: liste boş, kartların hepsi sıfır
+      ---
+      duration_ms: 19.501931
+      type: 'test'
+      ...
+    # Subtest: bütün alanlarla ekle: yaş doğum tarihinden (yarın doğum günü → 35), maaş kuruş, IBAN boşluksuz; listede fotoğraf yok, kartta var
+    ok 2 - bütün alanlarla ekle: yaş doğum tarihinden (yarın doğum günü → 35), maaş kuruş, IBAN boşluksuz; listede fotoğraf yok, kartta var
+      ---
+      duration_ms: 28.854161
+      type: 'test'
+      ...
+    # Subtest: doğrulama: TC, IBAN, tarih sırası, e-posta, öğrenim, izin günü — 400 ve hatalı alan; reddedilen istek kayıt yazmaz
+    ok 3 - doğrulama: TC, IBAN, tarih sırası, e-posta, öğrenim, izin günü — 400 ve hatalı alan; reddedilen istek kayıt yazmaz
+      ---
+      duration_ms: 65.021034
+      type: 'test'
+      ...
+    # Subtest: aynı adlı iki çalışan iki ayrı kart; aynı TC No ikinci kartta 409
+    ok 4 - aynı adlı iki çalışan iki ayrı kart; aynı TC No ikinci kartta 409
+      ---
+      duration_ms: 15.388173
+      type: 'test'
+      ...
+    # Subtest: İşten Ayrılış Tarihi yazılınca Ayrılanlar'a geçer, silinince döner; kartlar ve Toplam Maaş (yalnız aktif) sayılarla
+    ok 5 - İşten Ayrılış Tarihi yazılınca Ayrılanlar'a geçer, silinince döner; kartlar ve Toplam Maaş (yalnız aktif) sayılarla
+      ---
+      duration_ms: 20.224177
+      type: 'test'
+      ...
+    # Subtest: KVKK: işlem geçmişine yalnız alan ADLARI yazılır; ad, TC, IBAN, maaş, adres, e-posta, telefon değeri yok
+    ok 6 - KVKK: işlem geçmişine yalnız alan ADLARI yazılır; ad, TC, IBAN, maaş, adres, e-posta, telefon değeri yok
+      ---
+      duration_ms: 3.579524
+      type: 'test'
+      ...
+    # Subtest: maaş yalnız bilgi: Kasa, Banka, cari ve Ana Defter'de iz yok
+    ok 7 - maaş yalnız bilgi: Kasa, Banka, cari ve Ana Defter'de iz yok
+      ---
+      duration_ms: 5.414776
+      type: 'test'
+      ...
+    # Subtest: yetkisiz: personel ve muhasebe 403; görüntüleme verilince okur ama yazamaz; düzenleme de verilince yazar; kaldırılınca 403
+    ok 8 - yetkisiz: personel ve muhasebe 403; görüntüleme verilince okur ama yazamaz; düzenleme de verilince yazar; kaldırılınca 403
+      ---
+      duration_ms: 232.890223
+      type: 'test'
+      ...
+    # Subtest: 002 şirketi ayrı veri: 002'nin kartı 001'de görünmez, 001'inki 002'de görünmez
+    ok 9 - 002 şirketi ayrı veri: 002'nin kartı 001'de görünmez, 001'inki 002'de görünmez
+      ---
+      duration_ms: 237.4627
+      type: 'test'
+      ...
+    # Subtest: yedek tatbikatı (002): yedek → çalış → geri yükle → sayılar → yeniden çalış; Tüm Hareketleri Sil kartlara dokunmaz, Tümünü Sıfırla siler
+    ok 10 - yedek tatbikatı (002): yedek → çalış → geri yükle → sayılar → yeniden çalış; Tüm Hareketleri Sil kartlara dokunmaz, Tümünü Sıfırla siler
+      ---
+      duration_ms: 411.354565
+      type: 'test'
+      ...
+    1..10
+ok 17 - 2.4.4 Personel Özlük: API
+  ---
+  duration_ms: 1535.347853
+  type: 'suite'
+  ...
+# Subtest: 2.4.4 Personel Özlük: göç v31 (yalnız ekleyici)
+    # Subtest: v30 veri dosyası v31'e geçer: staff_members STRICT olarak açılır, eski tablolar ve satırlar değişmez; ikinci açılış bir şey yapmaz
+    ok 1 - v30 veri dosyası v31'e geçer: staff_members STRICT olarak açılır, eski tablolar ve satırlar değişmez; ikinci açılış bir şey yapmaz
+      ---
+      duration_ms: 188.586089
+      type: 'test'
+      ...
+    1..1
+ok 18 - 2.4.4 Personel Özlük: göç v31 (yalnız ekleyici)
+  ---
+  duration_ms: 188.745934
+  type: 'suite'
+  ...
+# Subtest: 2.4.4 Personel Özlük: ileri tarihli İşten Ayrılış Tarihi (Ayrılacak)
+    # Subtest: kural tek yerde: dün / bugün → Ayrılanlar; yarın / ileri tarih → Çalışanlar + Ayrılacak; tarih yok → Çalışanlar
+    ok 1 - kural tek yerde: dün / bugün → Ayrılanlar; yarın / ileri tarih → Çalışanlar + Ayrılacak; tarih yok → Çalışanlar
+      ---
+      duration_ms: 0.335065
+      type: 'test'
+      ...
+    # Subtest: API + sahte saat: yarın ayrılacak çalışan bugün sayılır, gün ilerleyince kendiliğinden Ayrılanlar'a geçer
+    ok 2 - API + sahte saat: yarın ayrılacak çalışan bugün sayılır, gün ilerleyince kendiliğinden Ayrılanlar'a geçer
+      ---
+      duration_ms: 436.488246
+      type: 'test'
+      ...
+    1..2
+ok 19 - 2.4.4 Personel Özlük: ileri tarihli İşten Ayrılış Tarihi (Ayrılacak)
+  ---
+  duration_ms: 437.070896
+  type: 'suite'
+  ...
+# Subtest: 2.4.4 Personel Özlük: iki kişi aynı kartı düzenler (E5, staff-stale)
+    # Subtest: donuk saatte: B (formu A'dan önce açtı) kaydedince 409 staff-stale; A'nın maaşı korunur; yeniden açınca B'nin kaydı geçer
+    ok 1 - donuk saatte: B (formu A'dan önce açtı) kaydedince 409 staff-stale; A'nın maaşı korunur; yeniden açınca B'nin kaydı geçer
+      ---
+      duration_ms: 27.135913
+      type: 'test'
+      ...
+    # Subtest: saat geri alınınca da sürüm ilerler: bayat kayıt yine 409
+    ok 2 - saat geri alınınca da sürüm ilerler: bayat kayıt yine 409
+      ---
+      duration_ms: 10.576376
+      type: 'test'
+      ...
+    # Subtest: gövde okunurken gelen yazım görülür: B'nin yavaş gövdesi A'nın kaydından sonra biterse 409
+    ok 3 - gövde okunurken gelen yazım görülür: B'nin yavaş gövdesi A'nın kaydından sonra biterse 409
+      ---
+      duration_ms: 167.038007
+      type: 'test'
+      ...
+    # Subtest: silinmiş karta yazım: 404 staff-missing, ileti ne olduğunu ve ne yapılacağını söyler, kart yeniden doğmaz
+    ok 4 - silinmiş karta yazım: 404 staff-missing, ileti ne olduğunu ve ne yapılacağını söyler, kart yeniden doğmaz
+      ---
+      duration_ms: 13.669561
+      type: 'test'
+      ...
+    # Subtest: 002 şirketinde aynı kural; sürüm göndermeyen kısmi çağrı yalnız gönderdiği alanı yazar
+    ok 5 - 002 şirketinde aynı kural; sürüm göndermeyen kısmi çağrı yalnız gönderdiği alanı yazar
+      ---
+      duration_ms: 282.630461
+      type: 'test'
+      ...
+    1..5
+ok 20 - 2.4.4 Personel Özlük: iki kişi aynı kartı düzenler (E5, staff-stale)
+  ---
+  duration_ms: 1003.276495
+  type: 'suite'
+  ...
+# Subtest: platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta yok
+    # Subtest: taranan dosya var
+    ok 1 - taranan dosya var
+      ---
+      duration_ms: 0.662844
+      type: 'test'
+      ...
+    # Subtest: import(path.join/resolve(…)) yerine import(pathToFileURL(…).href)
+    ok 2 - import(path.join/resolve(…)) yerine import(pathToFileURL(…).href)
+      ---
+      duration_ms: 252.236582
+      type: 'test'
+      ...
+    # Subtest: new URL(…, import.meta.url).pathname yerine fileURLToPath(…)
+    ok 3 - new URL(…, import.meta.url).pathname yerine fileURLToPath(…)
+      ---
+      duration_ms: 214.336253
+      type: 'test'
+      ...
+    # Subtest: signal === "SIGKILL" iddiası Windows kolu olmadan (process.platform === "win32")
+    ok 4 - signal === "SIGKILL" iddiası Windows kolu olmadan (process.platform === "win32")
+      ---
+      duration_ms: 179.299732
+      type: 'test'
+      ...
+    # Subtest: path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join("/"))
+    ok 5 - path.relative(…) bir alana ayırıcısı çevrilmeden atanmaz (.split(path.sep).join("/"))
+      ---
+      duration_ms: 417.429258
+      type: 'test'
+      ...
+    1..5
+ok 21 - platform taşınabilirliği: Windows'ta kırılan kalıplar kaynakta yok
+  ---
+  duration_ms: 1065.044955
+  type: 'suite'
+  ...
+# Subtest: platform taşınabilirliği: depodaki dosya adları Windows'ta açılır
+    # Subtest: dosya adlarında < > : " | ? * yok, ad boşluk ya da noktayla bitmiyor
+    ok 1 - dosya adlarında < > : " | ? * yok, ad boşluk ya da noktayla bitmiyor
+      ---
+      duration_ms: 76.91404
+      type: 'test'
+      ...
+    1..1
+ok 22 - platform taşınabilirliği: depodaki dosya adları Windows'ta açılır
+  ---
+  duration_ms: 77.056398
+  type: 'suite'
+  ...
+# (node:20701) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: statik dosyalar
+    # Subtest: ana sayfayı güvenlik başlıkları ve CSP ile sunar
+    ok 1 - ana sayfayı güvenlik başlıkları ve CSP ile sunar
+      ---
+      duration_ms: 27.490174
+      type: 'test'
+      ...
+    # Subtest: değişmeyen dosyada 304 döner ve sıkıştırma uygular
+    ok 2 - değişmeyen dosyada 304 döner ve sıkıştırma uygular
+      ---
+      duration_ms: 32.521094
+      type: 'test'
+      ...
+    # Subtest: klasör dışına çıkma ve gizli dosya denemelerini engeller
+    ok 3 - klasör dışına çıkma ve gizli dosya denemelerini engeller
+      ---
+      duration_ms: 12.118047
+      type: 'test'
+      ...
+    # Subtest: bilinmeyen sayfada tarayıcıya HTML 404 gösterir
+    ok 4 - bilinmeyen sayfada tarayıcıya HTML 404 gösterir
+      ---
+      duration_ms: 2.557511
+      type: 'test'
+      ...
+    # Subtest: bilinmeyen API ucu 404, desteklenmeyen yöntem 405 döner
+    ok 5 - bilinmeyen API ucu 404, desteklenmeyen yöntem 405 döner
+      ---
+      duration_ms: 12.437566
+      type: 'test'
+      ...
+    1..5
+ok 23 - statik dosyalar
+  ---
+  duration_ms: 540.231514
+  type: 'suite'
+  ...
+# (node:20712) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Birleşik tur 8 — İş 1: kartın göstergeleri yer tablosunun HER yerinde kart penceresiyle aynı (S129 = A, S142 = A)
+    # Subtest: KARAR ÖRNEĞİ (S129) + ORTA-A — kayda bağlı kart 900 (3 × 300), karta BAĞLANMADAN 500 tahsilat: her yerde Tahsil Edilen 500 · Kalan 400, satırlar 300 / 200 / 0
+    ok 1 - KARAR ÖRNEĞİ (S129) + ORTA-A — kayda bağlı kart 900 (3 × 300), karta BAĞLANMADAN 500 tahsilat: her yerde Tahsil Edilen 500 · Kalan 400, satırlar 300 / 200 / 0
+      ---
+      duration_ms: 217.497862
+      type: 'test'
+      ...
+    # Subtest: komşu 1 — BAĞSIZ tahsilat gecikmiş taksiti kapatır: kart 900 (ilk vade 40 gün önce), bağsız 300 ⇒ her yerde Tahsil Edilen 300, durum Gecikti · 1 taksit, sıradaki 2. taksit (S142: cari kartı satırı da)
+    ok 2 - komşu 1 — BAĞSIZ tahsilat gecikmiş taksiti kapatır: kart 900 (ilk vade 40 gün önce), bağsız 300 ⇒ her yerde Tahsil Edilen 300, durum Gecikti · 1 taksit, sıradaki 2. taksit (S142: cari kartı satırı da)
+      ---
+      duration_ms: 123.448785
+      type: 'test'
+      ...
+    # Subtest: komşu 2 — FAZLA ödeyen: kart 600 (2 × 300), bağsız 800 ⇒ her yerde Kalan 0 · Tamamlandı, sıradaki yok; cari 200 alacaklı
+    ok 3 - komşu 2 — FAZLA ödeyen: kart 600 (2 × 300), bağsız 800 ⇒ her yerde Kalan 0 · Tamamlandı, sıradaki yok; cari 200 alacaklı
+      ---
+      duration_ms: 124.775647
+      type: 'test'
+      ...
+    # Subtest: komşu 3 — İADE FATURASI almış taksitli fatura: 2 × 500 → iade faturası 1 adet ⇒ kart 500'e küçülür, her yerde Tahsil Edilen 0 · Kalan 500 (S151: iade faturasında bugünkü davranış aynen)
+    ok 4 - komşu 3 — İADE FATURASI almış taksitli fatura: 2 × 500 → iade faturası 1 adet ⇒ kart 500'e küçülür, her yerde Tahsil Edilen 0 · Kalan 500 (S151: iade faturasında bugünkü davranış aynen)
+      ---
+      duration_ms: 149.048232
+      type: 'test'
+      ...
+    # Subtest: komşu 4 — KAPATILMIŞ kart (S144 = C: gösterim bugünkü gibi): kart 900, karta 300, Kartı Kapat ⇒ her yerde Tahsil Edilen 300 · Kalan 600 (kartın kendi hesabı), durum Kapalı
+    ok 5 - komşu 4 — KAPATILMIŞ kart (S144 = C: gösterim bugünkü gibi): kart 900, karta 300, Kartı Kapat ⇒ her yerde Tahsil Edilen 300 · Kalan 600 (kartın kendi hesabı), durum Kapalı
+      ---
+      duration_ms: 122.635122
+      type: 'test'
+      ...
+    # Subtest: komşu 5 — VADESİ BUGÜN olan taksit geciken sayılmaz (Cari Listesi kısa kuyruk görünümü pencereyle aynı gün kuralı): kart 900, ilk vade bir ay önce, bağsız 300 ⇒ 1. taksit ödendi, 2. taksit bugün, N geciken 0
+    ok 6 - komşu 5 — VADESİ BUGÜN olan taksit geciken sayılmaz (Cari Listesi kısa kuyruk görünümü pencereyle aynı gün kuralı): kart 900, ilk vade bir ay önce, bağsız 300 ⇒ 1. taksit ödendi, 2. taksit bugün, N geciken 0
+      ---
+      duration_ms: 92.398007
+      type: 'test'
+      ...
+    # Subtest: mobil uçlar yer tablosundaki uçlara gider (17: aynı sayılar) — cari listesi, cari kartı, taksit özeti
+    ok 7 - mobil uçlar yer tablosundaki uçlara gider (17: aynı sayılar) — cari listesi, cari kartı, taksit özeti
+      ---
+      duration_ms: 1.608818
+      type: 'test'
+      ...
+    1..7
+ok 24 - Birleşik tur 8 — İş 1: kartın göstergeleri yer tablosunun HER yerinde kart penceresiyle aynı (S129 = A, S142 = A)
+  ---
+  duration_ms: 1305.309293
+  type: 'suite'
+  ...
+# Subtest: Birleşik tur 8 — İş 1: kart göstergelerinin yer tablosu kaynakla aynı (yeni bir gösterim yeri eklenince kırmızı)
+    # Subtest: routes/plans.mjs: kartın kendi biçimini (shape) okuyan yerler — detail (yazım içi), detailView (pencere, PDF; kuyruk), forCase (kayıt detayı; kuyruk), forAccount (cari kartı; queueSummaryOf)
+    ok 1 - routes/plans.mjs: kartın kendi biçimini (shape) okuyan yerler — detail (yazım içi), detailView (pencere, PDF; kuyruk), forCase (kayıt detayı; kuyruk), forAccount (cari kartı; queueSummaryOf)
+      ---
+      duration_ms: 3.884086
+      type: 'test'
+      ...
+    # Subtest: routes/plans.mjs ve öbür yollar: kartın kendi hesabını (allocate) kuran her yer kuyruk görünümüne bağlı ya da iç çağıran olarak listede
+    ok 2 - routes/plans.mjs ve öbür yollar: kartın kendi hesabını (allocate) kuran her yer kuyruk görünümüne bağlı ya da iç çağıran olarak listede
+      ---
+      duration_ms: 5.874391
+      type: 'test'
+      ...
+    # Subtest: routes/accounts.mjs: cari kartının taksit özeti queueSummaryOf (durum + sıradaki + Tahsil Edilen / Kalan), Cari Listesi kuyruğu summariesByAccount'a verir
+    ok 3 - routes/accounts.mjs: cari kartının taksit özeti queueSummaryOf (durum + sıradaki + Tahsil Edilen / Kalan), Cari Listesi kuyruğu summariesByAccount'a verir
+      ---
+      duration_ms: 1.247499
+      type: 'test'
+      ...
+    # Subtest: istemci: kart sayılarını gösteren dosyalar listede — yeni bir dosya kart toplamlarını okursa yer tablosuna eklenmeli
+    ok 4 - istemci: kart sayılarını gösteren dosyalar listede — yeni bir dosya kart toplamlarını okursa yer tablosuna eklenmeli
+      ---
+      duration_ms: 11.736409
+      type: 'test'
+      ...
+    1..4
+ok 25 - Birleşik tur 8 — İş 1: kart göstergelerinin yer tablosu kaynakla aynı (yeni bir gösterim yeri eklenince kırmızı)
+  ---
+  duration_ms: 23.076421
+  type: 'suite'
+  ...
+# Subtest: Birleşik tur 8 — İş 2: 'Kalanı Aşan Tutar' sorusu kartın KENDİ kalanını niteleyerek söyler (S118 = B kuralı aynen)
+    # Subtest: kart 900 (3 × 300) + bağsız 500 (pencere: Kalan 400): 901 → 409 plan-overpay, ileti 'kartın kendi tahsilatlarına göre kalan 900,00 TL'; 900 kabul (sınır kartın kendi kalanı)
+    ok 1 - kart 900 (3 × 300) + bağsız 500 (pencere: Kalan 400): 901 → 409 plan-overpay, ileti 'kartın kendi tahsilatlarına göre kalan 900,00 TL'; 900 kabul (sınır kartın kendi kalanı)
+      ---
+      duration_ms: 120.9642
+      type: 'test'
+      ...
+    1..1
+ok 26 - Birleşik tur 8 — İş 2: 'Kalanı Aşan Tutar' sorusu kartın KENDİ kalanını niteleyerek söyler (S118 = B kuralı aynen)
+  ---
+  duration_ms: 540.35219
+  type: 'suite'
+  ...
+# (node:20719) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: uiux-244 UX9 sunucu
+    # Subtest: partyIssues: her sorun cari formundaki bir alanı söyler; metinler partyProblems ile aynı
+    ok 1 - partyIssues: her sorun cari formundaki bir alanı söyler; metinler partyProblems ile aynı
+      ---
+      duration_ms: 3.076995
+      type: 'test'
+      ...
+    # Subtest: ön hesap partyFields döner: e-Arşiv ilsiz alıcıda ['city'], sorunsuz alıcıda [] (kâğıt belgede [] — e-Arşiv kullanıcısı kâğıt kesemez; partyIssues KAGIT durumu birinci testte)
+    ok 2 - ön hesap partyFields döner: e-Arşiv ilsiz alıcıda ['city'], sorunsuz alıcıda [] (kâğıt belgede [] — e-Arşiv kullanıcısı kâğıt kesemez; partyIssues KAGIT durumu birinci testte)
+      ---
+      duration_ms: 628.501692
+      type: 'test'
+      ...
+    # Subtest: partyIssues: tutar sınırından doğan sorunlar limit işaretli, öbürleri değil (31f U5)
+    ok 3 - partyIssues: tutar sınırından doğan sorunlar limit işaretli, öbürleri değil (31f U5)
+      ---
+      duration_ms: 0.362921
+      type: 'test'
+      ...
+    1..3
+ok 27 - uiux-244 UX9 sunucu
+  ---
+  duration_ms: 653.081533
+  type: 'suite'
+  ...
+# Subtest: yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+    # Subtest: arayüz dosyalarında kurala uymayan ad yok
+    ok 1 - arayüz dosyalarında kurala uymayan ad yok
+      ---
+      duration_ms: 82.487283
+      type: 'test'
+      ...
+    # Subtest: hareket türü adları ve programın varsayılan adları kurala uyuyor
+    ok 2 - hareket türü adları ve programın varsayılan adları kurala uyuyor
+      ---
+      duration_ms: 5.71808
+      type: 'test'
+      ...
+    # Subtest: derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+    ok 3 - derlenmiş arayüz paketinde (React) alan etiketleri ve başlıklar kurala uyuyor
+      ---
+      duration_ms: 2.004655
+      type: 'test'
+      ...
+    # Subtest: Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+    ok 4 - Maliyet Hesap Kartı şablonunun adları kurala uyuyor
+      ---
+      duration_ms: 4.818581
+      type: 'test'
+      ...
+    # Subtest: mobil görünümde (client/mobil) kurala uymayan ad yok
+    ok 5 - mobil görünümde (client/mobil) kurala uymayan ad yok
+      ---
+      duration_ms: 7.380366
+      type: 'test'
+      ...
+    # Subtest: rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+    ok 6 - rapor, PDF ve Excel başlıklarında kurala uymayan ad yok
+      ---
+      duration_ms: 56.573173
+      type: 'test'
+      ...
+    1..6
+ok 28 - yazım düzeni: başlıklarda her sözcüğün ilk harfi büyük
+  ---
+  duration_ms: 160.177018
+  type: 'suite'
+  ...
+# Subtest: yetkiye göre görünürlük
+    # Subtest: data-requires / requires ile kullanılan her yetkinin gizleme kuralı var
+    ok 1 - data-requires / requires ile kullanılan her yetkinin gizleme kuralı var
+      ---
+      duration_ms: 31.268862
+      type: 'test'
+      ...
+    1..1
+ok 29 - yetkiye göre görünürlük
+  ---
+  duration_ms: 32.398389
+  type: 'suite'
+  ...
+1..29
+# tests 108
+# suites 29
+# pass 108
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6863.191107

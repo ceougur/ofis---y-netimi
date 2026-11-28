@@ -1,0 +1,68 @@
+M1 uzun bildirim hiç tanınmaz: ÖLDÜ (çıkış 1; ('33', '24'); 40 sn)
+    ✗ 1440×900: bildirim geniş (380 px; beklenen 720)
+    ✗ 1440×900: ileti en çok 10 satır, kesiksiz (22 satır)
+    ✗ 1440×900 (olduğu gibi): iletinin söylediği × düğmeleri örtülmüyor (görünen 2, örtülen 1: [{"x":601,"y":363,"w":26,"h":26,"right":627,"bottom":389,"shown":true,"under":true}])
+    ✗ 1440×900 (Şüpheli bölümü üstte): iletinin söylediği × düğmeleri örtülmüyor (görünen 2, örtülen 1: [{"x":601,"y":363,"w":26,"h":26,"right":627,"bottom":389,"shown":true,"under":true}])
+M2 uzun bildirim süreyle kapanır: ÖLDÜ (çıkış 1; ('54', '3'); 37 sn)
+    ✗ 1440×900: 60 sn sonra ileti yerinde (süreyle kapanmadı)
+    ✗ 1440×900: üç retten sonra 2 ileti görünür, hepsi ekranın içinde ([])
+    ✗ 1440×900: en yeni ret (Borç) görünür
+    ✗ senaryo-ui251-gorunum: 54 geçti, 3 kaldı
+M3 en çok 2 uzun bildirim sınırı 3: ÖLDÜ (çıkış 1; ('56', '1'); 41 sn)
+    ✗ 1440×900: üç retten sonra 2 ileti görünür, hepsi ekranın içinde ([[244,451],[461,669],[679,886]])
+    ✗ senaryo-ui251-gorunum: 56 geçti, 1 kaldı
+M4 300 harf eşiği 800: ÖLDÜ (çıkış 1; ('56', '1'); 41 sn)
+    ✗ uzun bildirim yalnız hata + (300 harf üstü ya da 'Ne yapmalı:') ({"error350":false,"error250":false,"errorHint":true,"warn400":false,"info400":false})
+    ✗ senaryo-ui251-gorunum: 56 geçti, 1 kaldı
+M5 pencere açıkken altta kuralı yok: UYGULANAMADI (eşleşme 0)
+M6 geniş kutu yok (380 px): UYGULANAMADI (eşleşme 0)
+M7 metin yüksekliği sınırı yok: YAŞADI (çıkış 0; ('57', '0'); 41 sn)
+M8 KDV kartları sarılmaz: ÖLDÜ (çıkış 1; ('55', '2'); 41 sn)
+    ✗ 1366×768: KDV Özeti 6 kartın hepsi görünür, kesik yok (1 satır; dışarıda / kesik: ["Ödenecek KDV","Sonraki Döneme Devreden KDV"])
+    ✗ 1280×720: KDV Özeti 6 kartın hepsi görünür, kesik yok (1 satır; dışarıda / kesik: ["Önceki Dönemden Devreden KDV","Ödenecek KDV","Sonraki Döneme Devreden KDV"])
+    ✗ senaryo-ui251-gorunum: 55 geçti, 2 kaldı
+M9 KDV kuralı bütün raporlara: ÖLDÜ (çıkış 1; ('56', '1'); 41 sn)
+    ✗ 1366×768: Satış Faturaları özet kartları eskisi gibi tek satır (flex-wrap wrap)
+    ✗ senaryo-ui251-gorunum: 56 geçti, 1 kaldı
+M10 rozet satıra kırılmaz: YAŞADI (çıkış 0; ('57', '0'); 41 sn)
+M11 tutar başlıkları kırılmaz: ÖLDÜ (çıkış 1; ('54', '3'); 40 sn)
+    ✗ 1366×768: tablo yana taşmıyor, Geri Al görünür (tablo 819/760 px; düğme 998–1063, kutu 302–1064)
+    ✗ 1440×900: tablo yana taşmıyor, Geri Al görünür (tablo 819/760 px; düğme 1035–1100, kutu 339–1101)
+    ✗ 1920×1080: tablo yana taşmıyor, Geri Al görünür (tablo 819/760 px; düğme 1275–1340, kutu 579–1341)
+    ✗ senaryo-ui251-gorunum: 54 geçti, 3 kaldı
+M12 659 adı eski: ÖLDÜ (çıkış 1; ('55', '2'); 39 sn)
+    ✗ form metni hesap planındaki adla: "659 Diğer Olağan Gider ve Zararlar"
+    ✗ formda 'Olağandışı' yok
+    ✗ senaryo-ui251-gorunum: 55 geçti, 2 kaldı
+BİTTİ
+M7 metin yüksekliği sınırı yok: YAŞADI (çıkış 0; ('60', '0'); 46 sn)
+M10 rozet satıra kırılmaz: YAŞADI (çıkış 0; ('60', '0'); 44 sn)
+M5 pencere açıkken altta kuralı yok: ÖLDÜ (çıkış 1; ('57', '3'); 47 sn)
+    ✗ 1280×720 (olduğu gibi): iletinin söylediği × düğmeleri örtülmüyor (görünen 2, örtülen 1: [{"x":550,"y":183,"w":26,"h":26,"right":576,"bottom":209,"shown":true,"under":true}])
+    ✗ 1280×720 (Şüpheli bölümü üstte): iletinin söylediği × düğmeleri örtülmüyor (görünen 2, örtülen 1: [{"x":550,"y":183,"w":26,"h":26,"right":576,"bottom":209,"shown":true,"under":true}])
+    ✗ 390×844 (Şüpheli bölümü üstte): iletinin söylediği × düğmeleri örtülmüyor (görünen 2, örtülen 1: [{"x":19,"y":236,"w":26,"h":26,"right":45,"bottom":262,"shown":true,"under":true}])
+    ✗ senaryo-ui251-gorunum: 57 geçti, 3 kaldı
+M6 geniş kutu yok (380 px): ÖLDÜ (çıkış 1; ('54', '6'); 47 sn)
+    ✗ 1440×900: bildirim geniş (380 px; beklenen 720)
+    ✗ 1440×900: ileti en çok 10 satır, kesiksiz (16 satır)
+    ✗ 1366×768: bildirim geniş (380 px; beklenen 720)
+    ✗ 1366×768: ileti en çok 10 satır, kesiksiz (15 satır)
+M13 pencere açılınca eşitleme yok: ÖLDÜ (çıkış 1; ('59', '1'); 47 sn)
+    ✗ 1366×768: Değersiz × → soru penceresi açıkken uzun bildirim gizli, soru düğmeleri örtülmüyor ({"longShown":1,"buttons":2,"under":0})
+    ✗ senaryo-ui251-gorunum: 59 geçti, 1 kaldı
+M14 is-behind gizlemiyor: ÖLDÜ (çıkış 1; ('59', '1'); 43 sn)
+    ✗ 1366×768: Değersiz × → soru penceresi açıkken uzun bildirim gizli, soru düğmeleri örtülmüyor ({"longShown":1,"buttons":2,"under":0})
+    ✗ senaryo-ui251-gorunum: 59 geçti, 1 kaldı
+M15 pencere kapanınca eşitleme yok: ÖLDÜ (çıkış 1; ('11', '1'); 24 sn)
+    ✗ beklenmeyen hata: page.click: Timeout 15000ms exceeded.
+    ✗ senaryo-ui251-gorunum: 11 geçti, 1 kaldı
+BİTTİ
+M7 metin yüksekliği sınırı yok: ÖLDÜ (çıkış 1; ('69', '3'); 44 sn)
+    ✗ 360×640: telefonda bildirim ekranın yarısını geçmiyor (426 px; metin tam)
+    ✗ 360×640 (Şüpheli bölümü ortada): iletinin söylediği × düğmeleri örtülmüyor (görünen 2, örtülen 1: [{"x":19,"y":307,"w":26,"h":26,"right":45,"bottom":333,"shown":true,"under":true}])
+    ✗ 360×640: iki uzun ret ekranın içinde ([[-217,208],[218,626]])
+    ✗ senaryo-ui251-gorunum: 69 geçti, 3 kaldı
+M10 rozet satıra kırılmaz: ÖLDÜ (çıkış 1; ('71', '1'); 44 sn)
+    ✗ 768×1024: tablo yana taşmıyor, Geri Al görünür (tablo 708/672 px; düğme 655–720, kutu 47–721)
+    ✗ senaryo-ui251-gorunum: 71 geçti, 1 kaldı
+BİTTİ

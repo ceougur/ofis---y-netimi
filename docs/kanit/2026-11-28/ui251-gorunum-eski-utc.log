@@ -1,0 +1,88 @@
+(node:4421) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+# kurulum: D bakiye 0
+A) UI-1 — cari kartında Ödeme × → Sil: Değersiz Alacak ret iletisi geniş, düğmeleri örtmüyor, yalnız × ile kapanıyor
+    [ölçü 1440×900] bildirim {"x":530,"y":14,"w":380,"h":426,"right":910,"bottom":440} satır 22; Değersiz × [[601,363]] (bölüm üstte), [[601,437]] (ortada)
+  ✓ 1440×900: ret iletisi uzun ve 'Ne yapmalı:' yolu veriyor (760 harf)
+  ✗ 1440×900: bildirim geniş (380 px; beklenen 720)
+  ✓ 1440×900: bildirim ekranın içinde (y 14–440, ekran 900)
+  ✗ 1440×900: ileti en çok 10 satır, kesiksiz (22 satır)
+  ✗ 1440×900 (olduğu gibi): iletinin söylediği × düğmeleri örtülmüyor (görünen 2, örtülen 1: [{"x":601,"y":363,"w":26,"h":26,"right":627,"bottom":389,"shown":true,"under":true}])
+  ✗ 1440×900 (Şüpheli bölümü üstte): iletinin söylediği × düğmeleri örtülmüyor (görünen 2, örtülen 1: [{"x":601,"y":363,"w":26,"h":26,"right":627,"bottom":389,"shown":true,"under":true}])
+  ✗ 1440×900 (Şüpheli bölümü ortada): iletinin söylediği × düğmeleri örtülmüyor (görünen 2, örtülen 1: [{"x":601,"y":437,"w":26,"h":26,"right":627,"bottom":463,"shown":true,"under":true}])
+  ✗ 1440×900: 60 sn sonra ileti yerinde (süreyle kapanmadı)
+    [yığın] []
+  ✗ 1440×900: üç retten sonra 2 ileti görünür, hepsi ekranın içinde ([])
+  ✗ 1440×900: en yeni ret (Borç) görünür
+  ✓ 1440×900: × ile kapandılar
+    [ölçü 1366×768] bildirim {"x":493,"y":105,"w":380,"h":426,"right":873,"bottom":531} satır 22; Değersiz × [[564,231]] (bölüm üstte), [[564,371]] (ortada)
+  ✓ 1366×768: ret iletisi uzun ve 'Ne yapmalı:' yolu veriyor (760 harf)
+  ✗ 1366×768: bildirim geniş (380 px; beklenen 720)
+  ✓ 1366×768: bildirim ekranın içinde (y 105–531, ekran 768)
+  ✗ 1366×768: ileti en çok 10 satır, kesiksiz (22 satır)
+  ✗ 1366×768 (olduğu gibi): iletinin söylediği × düğmeleri örtülmüyor (görünen 2, örtülen 1: [{"x":564,"y":231,"w":26,"h":26,"right":590,"bottom":257,"shown":true,"under":true}])
+  ✗ 1366×768 (Şüpheli bölümü üstte): iletinin söylediği × düğmeleri örtülmüyor (görünen 2, örtülen 1: [{"x":564,"y":231,"w":26,"h":26,"right":590,"bottom":257,"shown":true,"under":true}])
+  ✗ 1366×768 (Şüpheli bölümü ortada): iletinin söylediği × düğmeleri örtülmüyor (görünen 2, örtülen 1: [{"x":564,"y":371,"w":26,"h":26,"right":590,"bottom":397,"shown":true,"under":true}])
+  ✗ 1366×768: Değersiz × → soru penceresi açıkken uzun bildirim gizli, soru düğmeleri örtülmüyor ({"longShown":0,"buttons":2,"under":2})
+  ✗ 1366×768: Vazgeç'ten sonra uzun bildirim yeniden görünür
+  ✓ 1366×768: Değersiz satırı yerinde (Vazgeç)
+    [ölçü 1280×720] bildirim {"x":450,"y":14,"w":380,"h":426,"right":830,"bottom":440} satır 22; Değersiz × [[550,183]] (bölüm üstte), [[550,347]] (ortada)
+  ✓ 1280×720: ret iletisi uzun ve 'Ne yapmalı:' yolu veriyor (760 harf)
+  ✗ 1280×720: bildirim geniş (380 px; beklenen 720)
+  ✓ 1280×720: bildirim ekranın içinde (y 14–440, ekran 720)
+  ✗ 1280×720: ileti en çok 10 satır, kesiksiz (22 satır)
+  ✗ 1280×720 (olduğu gibi): iletinin söylediği × düğmeleri örtülmüyor (görünen 2, örtülen 1: [{"x":550,"y":183,"w":26,"h":26,"right":576,"bottom":209,"shown":true,"under":true}])
+  ✗ 1280×720 (Şüpheli bölümü üstte): iletinin söylediği × düğmeleri örtülmüyor (görünen 2, örtülen 1: [{"x":550,"y":183,"w":26,"h":26,"right":576,"bottom":209,"shown":true,"under":true}])
+  ✗ 1280×720 (Şüpheli bölümü ortada): iletinin söylediği × düğmeleri örtülmüyor (görünen 2, örtülen 1: [{"x":550,"y":347,"w":26,"h":26,"right":576,"bottom":373,"shown":true,"under":true}])
+    [ölçü 390×844] bildirim {"x":18,"y":14,"w":354,"h":481,"right":372,"bottom":495} satır 25; Değersiz × [[19,236]] (bölüm üstte), [[19,409]] (ortada)
+  ✓ 390×844: ret iletisi uzun ve 'Ne yapmalı:' yolu veriyor (760 harf)
+  ✓ 390×844: bildirim geniş (354 px; beklenen 354)
+  ✓ 390×844: bildirim ekranın içinde (y 14–495, ekran 844)
+  ✗ 390×844: telefonda bildirim ekranın yarısını geçmiyor (481 px; metin tam)
+  ✓ 390×844 (olduğu gibi): iletinin söylediği × düğmeleri örtülmüyor (görünen 2, örtülen 0: [])
+  ✗ 390×844 (Şüpheli bölümü üstte): iletinin söylediği × düğmeleri örtülmüyor (görünen 2, örtülen 1: [{"x":19,"y":236,"w":26,"h":26,"right":45,"bottom":262,"shown":true,"under":true}])
+  ✗ 390×844 (Şüpheli bölümü ortada): iletinin söylediği × düğmeleri örtülmüyor (görünen 2, örtülen 1: [{"x":19,"y":409,"w":26,"h":26,"right":45,"bottom":435,"shown":true,"under":true}])
+  ✗ 390×844: ikinci ileti 1440×900'deki Borç reddi (0 harf)
+  ✗ 390×844: iki uzun ret ekranın içinde ([])
+    [ölçü 360×640] bildirim {"x":18,"y":14,"w":324,"h":535,"right":342,"bottom":549} satır 28; Değersiz × [[19,33]] (bölüm üstte), [[19,307]] (ortada)
+  ✓ 360×640: ret iletisi uzun ve 'Ne yapmalı:' yolu veriyor (760 harf)
+  ✓ 360×640: bildirim geniş (324 px; beklenen 324)
+  ✓ 360×640: bildirim ekranın içinde (y 14–549, ekran 640)
+  ✗ 360×640: telefonda bildirim ekranın yarısını geçmiyor (535 px; metin tam)
+  ✓ 360×640 (olduğu gibi): iletinin söylediği × düğmeleri örtülmüyor (görünen 2, örtülen 0: [])
+  ✗ 360×640 (Şüpheli bölümü üstte): iletinin söylediği × düğmeleri örtülmüyor (görünen 1, örtülen 1: [{"x":19,"y":33,"w":26,"h":26,"right":45,"bottom":59,"shown":true,"under":true}])
+  ✗ 360×640 (Şüpheli bölümü ortada): iletinin söylediği × düğmeleri örtülmüyor (görünen 2, örtülen 1: [{"x":19,"y":307,"w":26,"h":26,"right":45,"bottom":333,"shown":true,"under":true}])
+  ✗ 360×640: ikinci ileti 1440×900'deki Borç reddi (0 harf)
+  ✗ 360×640: iki uzun ret ekranın içinde ([])
+  ✓ ret: kart toplamları değişmedi (0)
+  ✓ ret: ödeme ve iki borç satırı yerinde
+B) Kısa bildirimler ve öbür raporlar eskisi gibi
+  ✓ pencere açıkken kısa bildirimler üst ortada, 380 px ([{"x":530,"y":14,"w":380,"long":false},{"x":530,"y":70,"w":380,"long":false}])
+  ✓ kısa bildirimler süreyle kapandı (9 sn)
+  ✓ pencere yokken kısa bildirim sağ altta, 380 px ({"right":1422,"bottom":728,"w":380})
+  ✗ uzun bildirim yalnız hata + (300 harf üstü ya da 'Ne yapmalı:') ({"error350":false,"error250":false,"errorHint":false,"warn400":false,"info400":false})
+C) UI-2 — Raporlar → KDV Özeti: tutar kartları alçak ekranda kesilmiyor / gizlenmiyor
+  ✗ 1366×768: KDV Özeti 6 kartın hepsi görünür, kesik yok (1 satır; dışarıda / kesik: ["Ödenecek KDV","Sonraki Döneme Devreden KDV"])
+  ✗ 1280×720: KDV Özeti 6 kartın hepsi görünür, kesik yok (1 satır; dışarıda / kesik: ["Önceki Dönemden Devreden KDV","Ödenecek KDV","Sonraki Döneme Devreden KDV"])
+  ✓ 1440×900: KDV Özeti 6 kartın hepsi görünür, kesik yok (2 satır; dışarıda / kesik: [])
+  ✓ 1920×1080: KDV Özeti 6 kartın hepsi görünür, kesik yok (1 satır; dışarıda / kesik: [])
+  ✓ 390×844: KDV Özeti 6 kartın hepsi görünür, kesik yok (5 satır; dışarıda / kesik: [])
+  ✓ 390×844: telefonda sayfa yana kaymıyor
+  ✓ 1366×768: Satış Faturaları özet kartları eskisi gibi tek satır (flex-wrap nowrap)
+D) UI-3 — KDV Mahsup Fişi → Mahsup Edilen Aylar: Geri Al yana kaydırmadan görünür
+  ✓ 1366×768: rozetli satır var, Geri Al en yeni mahsupta (Mart 2026)
+  ✗ 1366×768: tablo yana taşmıyor, Geri Al görünür (tablo 878/760 px; düğme 1012–1063, kutu 302–1064)
+  ✓ 1440×900: rozetli satır var, Geri Al en yeni mahsupta (Mart 2026)
+  ✗ 1440×900: tablo yana taşmıyor, Geri Al görünür (tablo 878/760 px; düğme 1049–1100, kutu 339–1101)
+  ✓ 1920×1080: rozetli satır var, Geri Al en yeni mahsupta (Mart 2026)
+  ✗ 1920×1080: tablo yana taşmıyor, Geri Al görünür (tablo 878/760 px; düğme 1286–1336, kutu 583–1337)
+  ✓ 834×1112: rozetli satır var, Geri Al en yeni mahsupta (Mart 2026)
+  ✗ 834×1112: tablo yana taşmıyor, Geri Al görünür (tablo 878/738 px; düğme 735–786, kutu 47–787)
+  ✓ 768×1024: rozetli satır var, Geri Al en yeni mahsupta (Mart 2026)
+  ✗ 768×1024: tablo yana taşmıyor, Geri Al görünür (tablo 878/672 px; düğme 669–720, kutu 47–721)
+E) D1 — Değersiz Alacak Yaz formunda 659'un adı
+  ✗ form metni hesap planındaki adla: "659 Diğer Olağan Gider ve Zararlar"
+  ✗ formda 'Olağandışı' yok
+  ✓ sayfa hatası yok
+
+✗ senaryo-ui251-gorunum: 32 geçti, 40 kaldı
