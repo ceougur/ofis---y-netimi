@@ -1,0 +1,154 @@
+HIZ m1k8 · nproc 4 · başta 0.60 1.23 2.52 1/112 6594 · 15:38:52
+=== eski · başta 0.60 1.23 2.52 1/112 6600
+kod /dev/shm/m1k8-kdv/eski · veri /dev/shm/m1k8-kdv/olc · yük (başta) 0.60 1.23 2.52
+veri: 34026 fatura, 61162 fatura satırı
+hazırlık: fişler 2026-01:200 2026-02:200 2026-03:200 2026-04:200 2026-05:200 2026-06:200 · Şubat alış 200 · Mart alış iptal 200
+etkin fiş 6, güncel değil 2026-02
+  tur 1 Bu Yıl (2026): 2284.2 ms · olay döngüsü en çok 0 ms · yük 1.21 1.26 2.44
+  tur 1 Tüm Zamanlar: 2481.4 ms · olay döngüsü en çok 2480.9 ms · yük 1.19 1.25 2.43
+  tur 1 Tek ay (Nisan): 2632.1 ms · olay döngüsü en çok 0 ms · yük 1.19 1.25 2.43
+  tur 1 Nisan–Aralık: 2436.3 ms · olay döngüsü en çok 0 ms · yük 1.17 1.25 2.43
+  tur 1 Tek ay (Temmuz): 2492.9 ms · olay döngüsü en çok 0 ms · yük 1.17 1.25 2.43
+  tur 2 Bu Yıl (2026): 2257.4 ms · olay döngüsü en çok 0 ms · yük 1.16 1.25 2.42
+  tur 2 Tüm Zamanlar: 2222 ms · olay döngüsü en çok 0 ms · yük 1.16 1.25 2.42
+  tur 2 Tek ay (Nisan): 2122.3 ms · olay döngüsü en çok 2115 ms · yük 1.15 1.24 2.41
+  tur 2 Nisan–Aralık: 2078.3 ms · olay döngüsü en çok 2077.2 ms · yük 1.15 1.24 2.41
+  tur 2 Tek ay (Temmuz): 2071.6 ms · olay döngüsü en çok 0 ms · yük 1.13 1.24 2.40
+  tur 3 Bu Yıl (2026): 2198.6 ms · olay döngüsü en çok 0 ms · yük 1.13 1.24 2.40
+  tur 3 Tüm Zamanlar: 2509.5 ms · olay döngüsü en çok 2508.2 ms · yük 1.12 1.23 2.40
+  tur 3 Tek ay (Nisan): 2170.1 ms · olay döngüsü en çok 0 ms · yük 1.12 1.23 2.40
+  tur 3 Nisan–Aralık: 2217.3 ms · olay döngüsü en çok 0 ms · yük 1.12 1.23 2.40
+  tur 3 Tek ay (Temmuz): 2096.9 ms · olay döngüsü en çok 2091.9 ms · yük 1.11 1.23 2.39
+  tur 4 Bu Yıl (2026): 2141.3 ms · olay döngüsü en çok 2137 ms · yük 1.11 1.23 2.39
+  tur 4 Tüm Zamanlar: 2437.2 ms · olay döngüsü en çok 2436.9 ms · yük 1.10 1.22 2.38
+  tur 4 Tek ay (Nisan): 2273 ms · olay döngüsü en çok 0 ms · yük 1.10 1.22 2.38
+  tur 4 Nisan–Aralık: 2032.6 ms · olay döngüsü en çok 0 ms · yük 1.10 1.22 2.37
+  tur 4 Tek ay (Temmuz): 2012.4 ms · olay döngüsü en çok 2012.2 ms · yük 1.10 1.22 2.37
+  tur 5 Bu Yıl (2026): 1918.2 ms · olay döngüsü en çok 0 ms · yük 1.10 1.22 2.37
+  tur 5 Tüm Zamanlar: 2133.1 ms · olay döngüsü en çok 0 ms · yük 1.09 1.22 2.36
+  tur 5 Tek ay (Nisan): 2023.3 ms · olay döngüsü en çok 0 ms · yük 1.09 1.22 2.36
+  tur 5 Nisan–Aralık: 2062.1 ms · olay döngüsü en çok 0 ms · yük 1.08 1.21 2.36
+  tur 5 Tek ay (Temmuz): 1975.8 ms · olay döngüsü en çok 0 ms · yük 1.08 1.21 2.36
+ORTANCA Bu Yıl (2026): 2198.6 ms (en az 1918.2)
+ORTANCA Tüm Zamanlar: 2437.2 ms (en az 2133.1)
+ORTANCA Tek ay (Nisan): 2170.1 ms (en az 2023.3)
+ORTANCA Nisan–Aralık: 2078.3 ms (en az 2032.6)
+ORTANCA Tek ay (Temmuz): 2071.6 ms (en az 1975.8)
+özet: [["Hesaplanan KDV (391) (İadeler Düşülmüş)","131.144,94 TL"],["İndirilecek KDV (191) (İadeler Düşülmüş)","479.710,35 TL"],["Önceki Dönemden Devreden KDV","9.322.245,63 TL"],["Ödenecek KDV","0,00 TL"],["Sonraki Döneme Devreden KDV","9.670.811,04 TL"],["KDV Mahsup Fişi","Nisan 2026"],["Mahsup Edilmemiş Ay","Ekim 2022, Kasım 2022, Aralık 2022, Ocak 2023, Şubat 2023, Mart 2023 ve 33 ay daha (devreden ve ödenecek KDV bu aylar sırayla mahsup edilmiş gibi hesaplandı; KDV Mahsup Fişi ön izlemesi defterdeki devredeni gösterir, ayları sırayla mahsup edin)"],["Zincirle Uyuşmayan Mahsup Fişi","Ocak 2026 fişi 0,00 TL devredenle kesilmiş, sırayla mahsupta 8.785.405,02 TL olmalıydı; Şubat 2026 fişi 15.215,85 TL devredenle kesilmiş, sırayla mahsupta 8.800.620,87 TL olmalıydı; Mart 2026 fişi 167.906,52 TL devredenle kesilmiş, sırayla mahsupta 8.953.611,54 TL olmalıydı; Nisan 2026 fişi 536.569,65 TL devredenle kesilmiş, sırayla mahsupta 9.322.245,63 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Ocak 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)"]]
+yük (sonda) 1.08 1.21 2.36
+çıkış 0 · sonda 1.08 1.21 2.36 1/112 6629
+=== yeni · başta 1.08 1.21 2.36 1/112 6634
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-a7024fa39f44e1be5 · veri /dev/shm/m1k8-kdv/olc · yük (başta) 1.08 1.21 2.36
+veri: 34026 fatura, 61162 fatura satırı
+hazırlık: fişler 2026-01:200 2026-02:200 2026-03:200 2026-04:200 2026-05:200 2026-06:200 · Şubat alış 200 · Mart alış iptal 200
+etkin fiş 6, güncel değil 2026-02
+  tur 1 Bu Yıl (2026): 2156.3 ms · olay döngüsü en çok 2155.9 ms · yük 1.15 1.20 2.28
+  tur 1 Tüm Zamanlar: 2432.7 ms · olay döngüsü en çok 0 ms · yük 1.14 1.20 2.27
+  tur 1 Tek ay (Nisan): 2176.6 ms · olay döngüsü en çok 0 ms · yük 1.14 1.20 2.27
+  tur 1 Nisan–Aralık: 2155.1 ms · olay döngüsü en çok 0 ms · yük 1.13 1.20 2.27
+  tur 1 Tek ay (Temmuz): 2114.3 ms · olay döngüsü en çok 0 ms · yük 1.13 1.20 2.27
+  tur 2 Bu Yıl (2026): 2054.9 ms · olay döngüsü en çok 0 ms · yük 1.13 1.20 2.27
+  tur 2 Tüm Zamanlar: 2350.9 ms · olay döngüsü en çok 2350.9 ms · yük 1.12 1.19 2.26
+  tur 2 Tek ay (Nisan): 2123.1 ms · olay döngüsü en çok 0 ms · yük 1.12 1.19 2.26
+  tur 2 Nisan–Aralık: 2158 ms · olay döngüsü en çok 2158 ms · yük 1.11 1.19 2.25
+  tur 2 Tek ay (Temmuz): 2107.4 ms · olay döngüsü en çok 0 ms · yük 1.11 1.19 2.25
+  tur 3 Bu Yıl (2026): 2324.7 ms · olay döngüsü en çok 0 ms · yük 1.10 1.19 2.24
+  tur 3 Tüm Zamanlar: 2137.6 ms · olay döngüsü en çok 0 ms · yük 1.10 1.19 2.24
+  tur 3 Tek ay (Nisan): 2065.2 ms · olay döngüsü en çok 0 ms · yük 1.10 1.19 2.24
+  tur 3 Nisan–Aralık: 2341.6 ms · olay döngüsü en çok 0 ms · yük 1.09 1.18 2.24
+  tur 3 Tek ay (Temmuz): 2128.7 ms · olay döngüsü en çok 2121.3 ms · yük 1.09 1.18 2.24
+  tur 4 Bu Yıl (2026): 2016.9 ms · olay döngüsü en çok 2016.4 ms · yük 1.08 1.18 2.23
+  tur 4 Tüm Zamanlar: 2188 ms · olay döngüsü en çok 0 ms · yük 1.08 1.18 2.23
+  tur 4 Tek ay (Nisan): 2099.1 ms · olay döngüsü en çok 0 ms · yük 1.08 1.18 2.22
+  tur 4 Nisan–Aralık: 2127.8 ms · olay döngüsü en çok 2123.4 ms · yük 1.08 1.18 2.22
+  tur 4 Tek ay (Temmuz): 1922.2 ms · olay döngüsü en çok 1915.7 ms · yük 1.08 1.18 2.22
+  tur 5 Bu Yıl (2026): 2095.5 ms · olay döngüsü en çok 2094 ms · yük 1.07 1.17 2.22
+  tur 5 Tüm Zamanlar: 2055.5 ms · olay döngüsü en çok 0 ms · yük 1.07 1.17 2.22
+  tur 5 Tek ay (Nisan): 2319.9 ms · olay döngüsü en çok 0 ms · yük 1.06 1.17 2.21
+  tur 5 Nisan–Aralık: 2065 ms · olay döngüsü en çok 0 ms · yük 1.06 1.17 2.21
+  tur 5 Tek ay (Temmuz): 2009 ms · olay döngüsü en çok 2008 ms · yük 1.06 1.17 2.20
+ORTANCA Bu Yıl (2026): 2095.5 ms (en az 2016.9)
+ORTANCA Tüm Zamanlar: 2187.9 ms (en az 2055.5)
+ORTANCA Tek ay (Nisan): 2123.1 ms (en az 2065.2)
+ORTANCA Nisan–Aralık: 2155 ms (en az 2065)
+ORTANCA Tek ay (Temmuz): 2107.3 ms (en az 1922.2)
+özet: [["Hesaplanan KDV (391) (İadeler Düşülmüş)","131.144,94 TL"],["İndirilecek KDV (191) (İadeler Düşülmüş)","479.710,35 TL"],["Önceki Dönemden Devreden KDV","9.322.245,63 TL"],["Ödenecek KDV","0,00 TL"],["Sonraki Döneme Devreden KDV","9.670.811,04 TL"],["KDV Mahsup Fişi","Nisan 2026"],["Mahsup Edilmemiş Ay","Ekim 2022, Kasım 2022, Aralık 2022, Ocak 2023, Şubat 2023, Mart 2023 ve 33 ay daha (devreden ve ödenecek KDV bu aylar sırayla mahsup edilmiş gibi hesaplandı; KDV Mahsup Fişi ön izlemesi defterdeki devredeni gösterir, ayları sırayla mahsup edin)"],["Zincirle Uyuşmayan Mahsup Fişi","Ocak 2026 fişi 0,00 TL devredenle kesilmiş, sırayla mahsupta 8.785.405,02 TL olmalıydı; Şubat 2026 fişi 15.215,85 TL devredenle kesilmiş, sırayla mahsupta 8.800.620,87 TL olmalıydı; Mart 2026 fişi 167.906,52 TL devredenle kesilmiş, sırayla mahsupta 8.953.611,54 TL olmalıydı; Nisan 2026 fişi 536.569,65 TL devredenle kesilmiş, sırayla mahsupta 9.322.245,63 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Ocak 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)"]]
+yük (sonda) 1.06 1.17 2.20
+çıkış 0 · sonda 1.06 1.17 2.20 1/112 6662
+=== yeni · başta 1.06 1.17 2.20 1/112 6667
+kod /home/user/ofis---y-netimi/.claude/worktrees/agent-a7024fa39f44e1be5 · veri /dev/shm/m1k8-kdv/olc · yük (başta) 1.06 1.17 2.20
+veri: 34026 fatura, 61162 fatura satırı
+hazırlık: fişler 2026-01:200 2026-02:200 2026-03:200 2026-04:200 2026-05:200 2026-06:200 · Şubat alış 200 · Mart alış iptal 200
+etkin fiş 6, güncel değil 2026-02
+  tur 1 Bu Yıl (2026): 2082.8 ms · olay döngüsü en çok 0 ms · yük 1.09 1.15 2.12
+  tur 1 Tüm Zamanlar: 2294.1 ms · olay döngüsü en çok 0 ms · yük 1.09 1.15 2.12
+  tur 1 Tek ay (Nisan): 1989.6 ms · olay döngüsü en çok 0 ms · yük 1.08 1.15 2.12
+  tur 1 Nisan–Aralık: 2103.9 ms · olay döngüsü en çok 0 ms · yük 1.08 1.15 2.12
+  tur 1 Tek ay (Temmuz): 2230.4 ms · olay döngüsü en çok 0 ms · yük 1.07 1.14 2.11
+  tur 2 Bu Yıl (2026): 2253.2 ms · olay döngüsü en çok 0 ms · yük 1.07 1.14 2.11
+  tur 2 Tüm Zamanlar: 2164.8 ms · olay döngüsü en çok 0 ms · yük 1.07 1.14 2.11
+  tur 2 Tek ay (Nisan): 2446.6 ms · olay döngüsü en çok 0 ms · yük 1.07 1.14 2.11
+  tur 2 Nisan–Aralık: 1962.2 ms · olay döngüsü en çok 1960.8 ms · yük 1.07 1.14 2.11
+  tur 2 Tek ay (Temmuz): 2190.6 ms · olay döngüsü en çok 0 ms · yük 1.06 1.14 2.10
+  tur 3 Bu Yıl (2026): 2237.4 ms · olay döngüsü en çok 0 ms · yük 1.06 1.14 2.10
+  tur 3 Tüm Zamanlar: 2732.2 ms · olay döngüsü en çok 2730.5 ms · yük 1.06 1.14 2.09
+  tur 3 Tek ay (Nisan): 2586 ms · olay döngüsü en çok 0 ms · yük 1.06 1.14 2.09
+  tur 3 Nisan–Aralık: 2354.5 ms · olay döngüsü en çok 0 ms · yük 1.05 1.13 2.09
+  tur 3 Tek ay (Temmuz): 2108.8 ms · olay döngüsü en çok 2104.5 ms · yük 1.05 1.13 2.09
+  tur 4 Bu Yıl (2026): 2216.3 ms · olay döngüsü en çok 2216.7 ms · yük 1.05 1.13 2.08
+  tur 4 Tüm Zamanlar: 2131 ms · olay döngüsü en çok 0 ms · yük 1.05 1.13 2.08
+  tur 4 Tek ay (Nisan): 2359.6 ms · olay döngüsü en çok 0 ms · yük 1.05 1.13 2.08
+  tur 4 Nisan–Aralık: 2200.8 ms · olay döngüsü en çok 0 ms · yük 1.04 1.13 2.07
+  tur 4 Tek ay (Temmuz): 2458 ms · olay döngüsü en çok 2457.9 ms · yük 1.04 1.13 2.07
+  tur 5 Bu Yıl (2026): 2503.3 ms · olay döngüsü en çok 0 ms · yük 1.04 1.13 2.07
+  tur 5 Tüm Zamanlar: 2561.2 ms · olay döngüsü en çok 0 ms · yük 1.04 1.13 2.07
+  tur 5 Tek ay (Nisan): 2184.4 ms · olay döngüsü en çok 0 ms · yük 1.04 1.12 2.06
+  tur 5 Nisan–Aralık: 2237 ms · olay döngüsü en çok 2235.6 ms · yük 1.04 1.12 2.06
+  tur 5 Tek ay (Temmuz): 2575 ms · olay döngüsü en çok 0 ms · yük 1.03 1.12 2.06
+ORTANCA Bu Yıl (2026): 2237.4 ms (en az 2082.8)
+ORTANCA Tüm Zamanlar: 2294.1 ms (en az 2131)
+ORTANCA Tek ay (Nisan): 2359.6 ms (en az 1989.4)
+ORTANCA Nisan–Aralık: 2200.8 ms (en az 1962.2)
+ORTANCA Tek ay (Temmuz): 2230.4 ms (en az 2108.8)
+özet: [["Hesaplanan KDV (391) (İadeler Düşülmüş)","131.144,94 TL"],["İndirilecek KDV (191) (İadeler Düşülmüş)","479.710,35 TL"],["Önceki Dönemden Devreden KDV","9.322.245,63 TL"],["Ödenecek KDV","0,00 TL"],["Sonraki Döneme Devreden KDV","9.670.811,04 TL"],["KDV Mahsup Fişi","Nisan 2026"],["Mahsup Edilmemiş Ay","Ekim 2022, Kasım 2022, Aralık 2022, Ocak 2023, Şubat 2023, Mart 2023 ve 33 ay daha (devreden ve ödenecek KDV bu aylar sırayla mahsup edilmiş gibi hesaplandı; KDV Mahsup Fişi ön izlemesi defterdeki devredeni gösterir, ayları sırayla mahsup edin)"],["Zincirle Uyuşmayan Mahsup Fişi","Ocak 2026 fişi 0,00 TL devredenle kesilmiş, sırayla mahsupta 8.785.405,02 TL olmalıydı; Şubat 2026 fişi 15.215,85 TL devredenle kesilmiş, sırayla mahsupta 8.800.620,87 TL olmalıydı; Mart 2026 fişi 167.906,52 TL devredenle kesilmiş, sırayla mahsupta 8.953.611,54 TL olmalıydı; Nisan 2026 fişi 536.569,65 TL devredenle kesilmiş, sırayla mahsupta 9.322.245,63 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Ocak 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)"]]
+yük (sonda) 1.03 1.12 2.06
+çıkış 0 · sonda 1.03 1.12 2.06 1/111 6695
+=== eski · başta 1.03 1.12 2.06 1/111 6700
+kod /dev/shm/m1k8-kdv/eski · veri /dev/shm/m1k8-kdv/olc · yük (başta) 1.03 1.12 2.06
+veri: 34026 fatura, 61162 fatura satırı
+hazırlık: fişler 2026-01:200 2026-02:200 2026-03:200 2026-04:200 2026-05:200 2026-06:200 · Şubat alış 200 · Mart alış iptal 200
+etkin fiş 6, güncel değil 2026-02
+  tur 1 Bu Yıl (2026): 2226.7 ms · olay döngüsü en çok 0 ms · yük 1.17 1.15 2.00
+  tur 1 Tüm Zamanlar: 2392.6 ms · olay döngüsü en çok 0 ms · yük 1.17 1.15 2.00
+  tur 1 Tek ay (Nisan): 2142.7 ms · olay döngüsü en çok 2141.2 ms · yük 1.16 1.15 1.99
+  tur 1 Nisan–Aralık: 2338.7 ms · olay döngüsü en çok 0 ms · yük 1.16 1.15 1.99
+  tur 1 Tek ay (Temmuz): 2319.3 ms · olay döngüsü en çok 0 ms · yük 1.15 1.15 1.99
+  tur 2 Bu Yıl (2026): 2266.8 ms · olay döngüsü en çok 0 ms · yük 1.15 1.15 1.99
+  tur 2 Tüm Zamanlar: 2423.2 ms · olay döngüsü en çok 0 ms · yük 1.13 1.14 1.98
+  tur 2 Tek ay (Nisan): 2052.2 ms · olay döngüsü en çok 0 ms · yük 1.13 1.14 1.98
+  tur 2 Nisan–Aralık: 2284.1 ms · olay döngüsü en çok 2283.8 ms · yük 1.12 1.14 1.98
+  tur 2 Tek ay (Temmuz): 2084.5 ms · olay döngüsü en çok 0 ms · yük 1.12 1.14 1.98
+  tur 3 Bu Yıl (2026): 2299.8 ms · olay döngüsü en çok 0 ms · yük 1.12 1.14 1.98
+  tur 3 Tüm Zamanlar: 2293.1 ms · olay döngüsü en çok 0 ms · yük 1.11 1.14 1.97
+  tur 3 Tek ay (Nisan): 2150 ms · olay döngüsü en çok 0 ms · yük 1.11 1.14 1.97
+  tur 3 Nisan–Aralık: 1920.6 ms · olay döngüsü en çok 0 ms · yük 1.10 1.14 1.96
+  tur 3 Tek ay (Temmuz): 2213.8 ms · olay döngüsü en çok 0 ms · yük 1.10 1.14 1.96
+  tur 4 Bu Yıl (2026): 2142.9 ms · olay döngüsü en çok 0 ms · yük 1.10 1.13 1.96
+  tur 4 Tüm Zamanlar: 2278.8 ms · olay döngüsü en çok 0 ms · yük 1.10 1.13 1.96
+  tur 4 Tek ay (Nisan): 2221 ms · olay döngüsü en çok 0 ms · yük 1.09 1.13 1.95
+  tur 4 Nisan–Aralık: 2378.9 ms · olay döngüsü en çok 0 ms · yük 1.09 1.13 1.95
+  tur 4 Tek ay (Temmuz): 2400.3 ms · olay döngüsü en çok 0 ms · yük 1.09 1.13 1.95
+  tur 5 Bu Yıl (2026): 2362.2 ms · olay döngüsü en çok 0 ms · yük 1.08 1.13 1.95
+  tur 5 Tüm Zamanlar: 2127.7 ms · olay döngüsü en çok 0 ms · yük 1.08 1.13 1.95
+  tur 5 Tek ay (Nisan): 2117.2 ms · olay döngüsü en çok 0 ms · yük 1.07 1.13 1.94
+  tur 5 Nisan–Aralık: 2094.4 ms · olay döngüsü en çok 0 ms · yük 1.07 1.13 1.94
+  tur 5 Tek ay (Temmuz): 2184 ms · olay döngüsü en çok 0 ms · yük 1.07 1.12 1.94
+ORTANCA Bu Yıl (2026): 2266.8 ms (en az 2142.9)
+ORTANCA Tüm Zamanlar: 2293.1 ms (en az 2127.7)
+ORTANCA Tek ay (Nisan): 2142.5 ms (en az 2052.2)
+ORTANCA Nisan–Aralık: 2284.1 ms (en az 1920.6)
+ORTANCA Tek ay (Temmuz): 2213.8 ms (en az 2084.5)
+özet: [["Hesaplanan KDV (391) (İadeler Düşülmüş)","131.144,94 TL"],["İndirilecek KDV (191) (İadeler Düşülmüş)","479.710,35 TL"],["Önceki Dönemden Devreden KDV","9.322.245,63 TL"],["Ödenecek KDV","0,00 TL"],["Sonraki Döneme Devreden KDV","9.670.811,04 TL"],["KDV Mahsup Fişi","Nisan 2026"],["Mahsup Edilmemiş Ay","Ekim 2022, Kasım 2022, Aralık 2022, Ocak 2023, Şubat 2023, Mart 2023 ve 33 ay daha (devreden ve ödenecek KDV bu aylar sırayla mahsup edilmiş gibi hesaplandı; KDV Mahsup Fişi ön izlemesi defterdeki devredeni gösterir, ayları sırayla mahsup edin)"],["Zincirle Uyuşmayan Mahsup Fişi","Ocak 2026 fişi 0,00 TL devredenle kesilmiş, sırayla mahsupta 8.785.405,02 TL olmalıydı; Şubat 2026 fişi 15.215,85 TL devredenle kesilmiş, sırayla mahsupta 8.800.620,87 TL olmalıydı; Mart 2026 fişi 167.906,52 TL devredenle kesilmiş, sırayla mahsupta 8.953.611,54 TL olmalıydı; Nisan 2026 fişi 536.569,65 TL devredenle kesilmiş, sırayla mahsupta 9.322.245,63 TL olmalıydı (raporda sırayla mahsup sayıları; mahsup fişi güncel olmayan ilk aydan (Ocak 2026) başlayarak mahsupları geri alın, ayları sırayla yeniden mahsup edin)"]]
+yük (sonda) 1.07 1.12 1.94
+çıkış 0 · sonda 1.07 1.12 1.94 1/111 6726
+bitti 15:46:51

@@ -157,7 +157,7 @@ describe("2.5.1 M1 küçük tur — KDV Özeti: fişten sonra azalan İndirilece
     const q1 = await h.report("001", { from: "2026-01-01", to: "2026-03-31" }, "001 Ocak–Mart");
     assert.deepEqual(q1.three, [0, 160000, 0], `Ocak–Mart Ödenecek 1.600 (taban 2.100) ${JSON.stringify(q1.data.summary)}`);
     assert.deepEqual([q1.h391, q1.h191], [160000, 0], "391 1.600 − 191 0 = Ödenecek");
-    assert.deepEqual(q1.lines, [["Ocak 2026", "Ödenecek KDV", 50000], ["Şubat 2026", "Ödenecek KDV", 70000], ["Mart 2026", "Ödenecek KDV", 40000]], "ay satırları");
+    assert.deepEqual(q1.lines, [["Ocak 2026", "Ödenecek KDV", 50000], ["Şubat 2026", "Önceki Dönem İndirilecek KDV Azalışı (Ocak 2026)", 50000], ["Şubat 2026", "Ödenecek KDV", 70000], ["Mart 2026", "Ödenecek KDV", 40000]], "ay satırları (küçük tur 8: Ocak'ın azalışı Şubat'ta — satırı)");
     assert.equal(q1.summary[CHANGED], `Ocak 2026 ${REDUCED_TEXT}`, "Ocak–Mart notu yalnız Ocak");
     assert.ok(!(MISMATCH in q1.summary) && !(PENDING in q1.summary), "zincir kopuk değil, mahsupsuz ay yok");
     const tb = await trialBalances(h.api, "?to=2026-03-31");
@@ -199,7 +199,7 @@ describe("2.5.1 M1 küçük tur — KDV Özeti: fişten sonra azalan İndirilece
     assert.deepEqual(await h.preview("002", "2026-03"), [0, 90000, 0], "Mart ön izlemesi değişmedi");
     const q1 = await h.report("002", { from: "2026-01-01", to: "2026-03-31" }, "002 Ocak–Mart");
     assert.deepEqual(q1.three, [0, 160000, 0], `Ocak–Mart 1.600 = 391 (taban 2.100) ${JSON.stringify(q1.data.summary)}`);
-    assert.deepEqual(q1.lines, [["Ocak 2026", "Ödenecek KDV", 50000], ["Şubat 2026", "Ödenecek KDV", 70000], ["Mart 2026", "Ödenecek KDV", 40000]], "002 ay satırları");
+    assert.deepEqual(q1.lines, [["Ocak 2026", "Ödenecek KDV", 50000], ["Şubat 2026", "Önceki Dönem İndirilecek KDV Azalışı (Ocak 2026)", 50000], ["Şubat 2026", "Ödenecek KDV", 70000], ["Mart 2026", "Ödenecek KDV", 40000]], "002 ay satırları");
     assert.equal(q1.summary[CHANGED], `Ocak 2026 ${REDUCED_TEXT}`, "Ocak notu");
     await h.sameFiles("002", monthRange("2026-03"), "002 Mart");
     // Onarım: Mart geri al, Şubat ve Mart sırayla → fişler 700 / 400; rapor aynı sayı, uyuşmazlık kalkar.
@@ -218,11 +218,11 @@ describe("2.5.1 M1 küçük tur — KDV Özeti: fişten sonra azalan İndirilece
     await h.reverse("001", "2026-03");
     let q1 = await h.report("001", { from: "2026-01-01", to: "2026-03-31" }, "001 Mart geri alındı");
     assert.deepEqual(q1.three, [0, 160000, 0], "Mart geri alındı");
-    assert.deepEqual(q1.lines.map(line => line[2]), [50000, 70000, 40000], "ay ay aynı");
+    assert.deepEqual(q1.lines.map(line => line[2]), [50000, 50000, 70000, 40000], "ay ay aynı (Şubat'ta düşülen Ocak azalışı 500 dahil)");
     await h.reverse("001", "2026-02");
     q1 = await h.report("001", { from: "2026-01-01", to: "2026-03-31" }, "001 Şubat geri alındı");
     assert.deepEqual(q1.three, [0, 160000, 0], "Şubat geri alındı");
-    assert.deepEqual(q1.lines.map(line => line[2]), [50000, 70000, 40000], "Şubat zincirde azalmayı düşer");
+    assert.deepEqual(q1.lines.map(line => line[2]), [50000, 50000, 70000, 40000], "Şubat zincirde azalmayı düşer (küçük tur 8: azalış satırı 500)");
     assert.equal(q1.summary[CHANGED], `Ocak 2026 ${REDUCED_TEXT}`, "Ocak fişi duruyor: not");
     await h.reverse("001", "2026-01");
     q1 = await h.report("001", { from: "2026-01-01", to: "2026-03-31" }, "001 hepsi geri alındı");

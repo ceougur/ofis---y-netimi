@@ -1,0 +1,56 @@
+== UTC
+mahsup 2026-01 [0,0,100000]
+mahsup 2026-02 [100000,50000,0]
+mahsup 2026-03 [0,0,40000]
+mahsup 2026-04 [40000,60000,0]
+mahsup 2026-05 [0,30000,0]
+mahsup 2026-06 [0,10000,0]
+--- Bu Yıl (iptalden önce): 391 390000 · 191 240000 · Önceki/Ödenecek/Sonraki 0 / 150000 / 0 · 391−191 = 150000
+   [KDV Mahsup Fişi] Ocak 2026, Şubat 2026, Mart 2026, Nisan 2026, Mayıs 2026, Haziran 2026
+--- Bu Yıl (Şubat alışı iptal): 391 390000 · 191 190000 · Önceki/Ödenecek/Sonraki 0 / 200000 / 0 · 391−191 = 200000
+   [KDV Mahsup Fişi] Ocak 2026, Şubat 2026, Mart 2026, Nisan 2026, Mayıs 2026, Haziran 2026
+   [Mahsuptan Sonra Değişen Ay] Şubat 2026 (bu ayın kayıtları fişten sonra değişti; ayın sonucu kesilmiş mahsup fişinden, İndirilecek KDV'deki azalma sonraki mahsupta düşülür)
+   [İndirilecek KDV Azalışı Düşülen Ay] Temmuz 2026: 500,00 TL (Şubat 2026) (önceki ayların mahsubundan sonra girilen, İndirilecek KDV'yi azaltan kayıtlar bu ayın İndirilecek KDV'sinden düşüldü; ödenecek ya da devreden KDV bununla hesaplandı)
+--- Ocak–Haziran: 391 390000 · 191 190000 · Önceki/Ödenecek/Sonraki 0 / 150000 / 0 · 391−191 = 200000
+   [KDV Mahsup Fişi] Ocak 2026, Şubat 2026, Mart 2026, Nisan 2026, Mayıs 2026, Haziran 2026
+   [Mahsuptan Sonra Değişen Ay] Şubat 2026 (bu ayın kayıtları fişten sonra değişti; ayın sonucu kesilmiş mahsup fişinden, İndirilecek KDV'deki azalma sonraki mahsupta düşülür)
+Temmuz ön izlemesi: [0,50000,0]
+--- Temmuz (kayıtsız): 391 0 · 191 0 · Önceki/Ödenecek/Sonraki 0 / 50000 / 0 · 391−191 = 0
+   [Önceki Dönem İndirilecek KDV Azalışı (Şubat 2026)] 500,00 TL
+   [İndirilecek KDV Azalışı Düşülen Ay] Temmuz 2026: 500,00 TL (Şubat 2026) (önceki ayların mahsubundan sonra girilen, İndirilecek KDV'yi azaltan kayıtlar bu ayın İndirilecek KDV'sinden düşüldü; ödenecek ya da devreden KDV bununla hesaplandı)
+Temmuz ön izlemesi (satış 100 KDV): [0,60000,0]
+--- Temmuz (satış 100): 391 10000 · 191 0 · Önceki/Ödenecek/Sonraki 0 / 60000 / 0 · 391−191 = 10000
+   [Önceki Dönem İndirilecek KDV Azalışı (Şubat 2026)] 500,00 TL
+   [İndirilecek KDV Azalışı Düşülen Ay] Temmuz 2026: 500,00 TL (Şubat 2026) (önceki ayların mahsubundan sonra girilen, İndirilecek KDV'yi azaltan kayıtlar bu ayın İndirilecek KDV'sinden düşüldü; ödenecek ya da devreden KDV bununla hesaplandı)
+--- Bu Yıl (Temmuz satışlı): 391 400000 · 191 190000 · Önceki/Ödenecek/Sonraki 0 / 210000 / 0 · 391−191 = 210000
+   [KDV Mahsup Fişi] Ocak 2026, Şubat 2026, Mart 2026, Nisan 2026, Mayıs 2026, Haziran 2026
+   [Mahsuptan Sonra Değişen Ay] Şubat 2026 (bu ayın kayıtları fişten sonra değişti; ayın sonucu kesilmiş mahsup fişinden, İndirilecek KDV'deki azalma sonraki mahsupta düşülür)
+   [İndirilecek KDV Azalışı Düşülen Ay] Temmuz 2026: 500,00 TL (Şubat 2026) (önceki ayların mahsubundan sonra girilen, İndirilecek KDV'yi azaltan kayıtlar bu ayın İndirilecek KDV'sinden düşüldü; ödenecek ya da devreden KDV bununla hesaplandı)
+== Europe/Istanbul
+mahsup 2026-01 [0,0,100000]
+mahsup 2026-02 [100000,50000,0]
+mahsup 2026-03 [0,0,40000]
+mahsup 2026-04 [40000,60000,0]
+mahsup 2026-05 [0,30000,0]
+mahsup 2026-06 [0,10000,0]
+--- Bu Yıl (iptalden önce): 391 390000 · 191 240000 · Önceki/Ödenecek/Sonraki 0 / 150000 / 0 · 391−191 = 150000
+   [KDV Mahsup Fişi] Ocak 2026, Şubat 2026, Mart 2026, Nisan 2026, Mayıs 2026, Haziran 2026
+--- Bu Yıl (Şubat alışı iptal): 391 390000 · 191 190000 · Önceki/Ödenecek/Sonraki 0 / 200000 / 0 · 391−191 = 200000
+   [KDV Mahsup Fişi] Ocak 2026, Şubat 2026, Mart 2026, Nisan 2026, Mayıs 2026, Haziran 2026
+   [Mahsuptan Sonra Değişen Ay] Şubat 2026 (bu ayın kayıtları fişten sonra değişti; ayın sonucu kesilmiş mahsup fişinden, İndirilecek KDV'deki azalma sonraki mahsupta düşülür)
+   [İndirilecek KDV Azalışı Düşülen Ay] Temmuz 2026: 500,00 TL (Şubat 2026) (önceki ayların mahsubundan sonra girilen, İndirilecek KDV'yi azaltan kayıtlar bu ayın İndirilecek KDV'sinden düşüldü; ödenecek ya da devreden KDV bununla hesaplandı)
+--- Ocak–Haziran: 391 390000 · 191 190000 · Önceki/Ödenecek/Sonraki 0 / 150000 / 0 · 391−191 = 200000
+   [KDV Mahsup Fişi] Ocak 2026, Şubat 2026, Mart 2026, Nisan 2026, Mayıs 2026, Haziran 2026
+   [Mahsuptan Sonra Değişen Ay] Şubat 2026 (bu ayın kayıtları fişten sonra değişti; ayın sonucu kesilmiş mahsup fişinden, İndirilecek KDV'deki azalma sonraki mahsupta düşülür)
+Temmuz ön izlemesi: [0,50000,0]
+--- Temmuz (kayıtsız): 391 0 · 191 0 · Önceki/Ödenecek/Sonraki 0 / 50000 / 0 · 391−191 = 0
+   [Önceki Dönem İndirilecek KDV Azalışı (Şubat 2026)] 500,00 TL
+   [İndirilecek KDV Azalışı Düşülen Ay] Temmuz 2026: 500,00 TL (Şubat 2026) (önceki ayların mahsubundan sonra girilen, İndirilecek KDV'yi azaltan kayıtlar bu ayın İndirilecek KDV'sinden düşüldü; ödenecek ya da devreden KDV bununla hesaplandı)
+Temmuz ön izlemesi (satış 100 KDV): [0,60000,0]
+--- Temmuz (satış 100): 391 10000 · 191 0 · Önceki/Ödenecek/Sonraki 0 / 60000 / 0 · 391−191 = 10000
+   [Önceki Dönem İndirilecek KDV Azalışı (Şubat 2026)] 500,00 TL
+   [İndirilecek KDV Azalışı Düşülen Ay] Temmuz 2026: 500,00 TL (Şubat 2026) (önceki ayların mahsubundan sonra girilen, İndirilecek KDV'yi azaltan kayıtlar bu ayın İndirilecek KDV'sinden düşüldü; ödenecek ya da devreden KDV bununla hesaplandı)
+--- Bu Yıl (Temmuz satışlı): 391 400000 · 191 190000 · Önceki/Ödenecek/Sonraki 0 / 210000 / 0 · 391−191 = 210000
+   [KDV Mahsup Fişi] Ocak 2026, Şubat 2026, Mart 2026, Nisan 2026, Mayıs 2026, Haziran 2026
+   [Mahsuptan Sonra Değişen Ay] Şubat 2026 (bu ayın kayıtları fişten sonra değişti; ayın sonucu kesilmiş mahsup fişinden, İndirilecek KDV'deki azalma sonraki mahsupta düşülür)
+   [İndirilecek KDV Azalışı Düşülen Ay] Temmuz 2026: 500,00 TL (Şubat 2026) (önceki ayların mahsubundan sonra girilen, İndirilecek KDV'yi azaltan kayıtlar bu ayın İndirilecek KDV'sinden düşüldü; ödenecek ya da devreden KDV bununla hesaplandı)

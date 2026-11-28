@@ -378,7 +378,7 @@ describe("2.5.1 M1 küçük tur 3 — zincirde: arada mahsupsuz ay; karma ay + s
     assert.deepEqual(all.three, [0, 90000, 0], `Ocak–Mart 900 (taban 1.000) ${JSON.stringify(all.data.summary)}`);
     assert.deepEqual([all.h391, all.h191], [220000, 130000], "391 2.200, 191 1.300");
     balanced(all, "002 Ocak–Mart");
-    assert.deepEqual(all.lines, [["Ocak 2026", "Ödenecek KDV", 50000], ["Şubat 2026", "Sonraki Döneme Devreden KDV", 60000], ["Mart 2026", "Önceki Dönemden Devreden KDV", 60000], ["Mart 2026", "Ödenecek KDV", 40000]], "ay satırları");
+    assert.deepEqual(all.lines, [["Ocak 2026", "Ödenecek KDV", 50000], ["Şubat 2026", "Önceki Dönem İndirilecek KDV Azalışı (Ocak 2026)", 20000], ["Şubat 2026", "Sonraki Döneme Devreden KDV", 60000], ["Mart 2026", "Önceki Dönemden Devreden KDV", 60000], ["Mart 2026", "Ödenecek KDV", 40000]], "ay satırları (küçük tur 8: Ocak'ın azalışı Şubat'ta)");
     assert.equal(all.summary[CHANGED], `Şubat 2026 ${STALE_TEXT}; Ocak 2026 ${MIXED_TEXT}`, "notlar: Şubat güncel değil, Ocak karma");
     assert.equal(all.summary[MISMATCH], mismatchOf("Mart 2026", "500,00 TL", "600,00 TL", "", "Ocak 2026"), "Mart uyuşmazlık notu");
     await h.sameFiles("002", { from: "2026-01-01", to: "2026-03-31" }, "002 Ocak–Mart");
@@ -425,7 +425,7 @@ describe("2.5.1 M1 küçük tur 3 — S4 taşımalı karma (baş mimar kararı: 
   // 391 − 191) — karar metniyle çelişir; tek okuma bu.
   it("Ocak 500 (fişten, azalan ay notu), Şubat 400 (karma), Mart 600 (S4 −200); Ocak–Şubat 900, Ocak–Mart 1.500 = 391 − 191; Mart fişi = rapor; onarımda toplam aynı", async () => {
     const all = await h.report("001", { from: "2026-01-01", to: "2026-03-31" }, "Ocak–Mart");
-    assert.deepEqual(all.lines, [["Ocak 2026", "Ödenecek KDV", 50000], ["Şubat 2026", "Ödenecek KDV", 40000], ["Mart 2026", "Ödenecek KDV", 60000]], `ay satırları ${JSON.stringify(all.data.summary)}`);
+    assert.deepEqual(all.lines, [["Ocak 2026", "Ödenecek KDV", 50000], ["Şubat 2026", "Ödenecek KDV", 40000], ["Mart 2026", "Önceki Dönem İndirilecek KDV Azalışı (Ocak 2026)", 20000], ["Mart 2026", "Ödenecek KDV", 60000]], `ay satırları (küçük tur 8: Ocak'ın azalışı Mart'ta) ${JSON.stringify(all.data.summary)}`);
     assert.deepEqual(all.three, [0, 150000, 0], "Ocak–Mart 1.500");
     assert.deepEqual([all.h391, all.h191], [220000, 70000], "391 2.200, 191 700");
     balanced(all, "Ocak–Mart");

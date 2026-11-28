@@ -1,0 +1,8 @@
+UTC ay: tohum 150 · ön izleme aynı 150 · fiş aynı 150 · defter aynı 150 · rapor farklı tohum 149 · 2. evre aralık 391−191 bozuk yeni 0 / eski 148 · bugünkü ay rapor≠ön izleme (önceki ay eşitken) yeni 40 / eski 0
+UTC yil: tohum 150 · ön izleme aynı 150 · fiş aynı 150 · defter aynı 150 · rapor farklı tohum 148 · 2. evre aralık 391−191 bozuk yeni 0 / eski 148 · bugünkü ay rapor≠ön izleme (önceki ay eşitken) yeni 40 / eski 0
+Europe_Istanbul ay: tohum 150 · ön izleme aynı 150 · fiş aynı 150 · defter aynı 150 · rapor farklı tohum 149 · 2. evre aralık 391−191 bozuk yeni 0 / eski 148 · bugünkü ay rapor≠ön izleme (önceki ay eşitken) yeni 40 / eski 0
+Europe_Istanbul yil: tohum 150 · ön izleme aynı 150 · fiş aynı 150 · defter aynı 150 · rapor farklı tohum 148 · 2. evre aralık 391−191 bozuk yeni 0 / eski 148 · bugünkü ay rapor≠ön izleme (önceki ay eşitken) yeni 40 / eski 0
+UTC ay işaretli 40 — son ayın fişi reddedilmiş (kayıtsız, azalış onda) 40
+UTC yil işaretli 40 — son ayın fişi reddedilmiş (kayıtsız, azalış onda) 40
+Europe_Istanbul ay işaretli 40 — son ayın fişi reddedilmiş (kayıtsız, azalış onda) 40
+Europe_Istanbul yil işaretli 40 — son ayın fişi reddedilmiş (kayıtsız, azalış onda) 40

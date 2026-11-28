@@ -1,0 +1,2 @@
+N7-hareketsiz-ay-devredeni-kayitli-aydan: çıkış 1 · {'tests': '82', 'pass': '81', 'fail': '1', 'cancelled': '0'} · YAKALANDI
+orijinal geri yüklendi (denetlendi)

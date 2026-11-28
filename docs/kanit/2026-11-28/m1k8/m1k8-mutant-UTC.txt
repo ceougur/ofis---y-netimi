@@ -1,0 +1,18 @@
+K1-absorbShort-hep-yok: çıkış 1 · {'tests': '82', 'pass': '77', 'fail': '5', 'cancelled': '0'} · YAKALANDI
+K2-ilk-ay-uyusmayan-fis-sayilmaz: çıkış 1 · {'tests': '82', 'pass': '81', 'fail': '1', 'cancelled': '0'} · YAKALANDI
+K3-devreden-farki-onarim-ayi-bos: çıkış 1 · {'tests': '82', 'pass': '59', 'fail': '23', 'cancelled': '0'} · YAKALANDI
+K4-kisa-not-etki-denetimi-yok: çıkış 1 · {'tests': '82', 'pass': '78', 'fail': '4', 'cancelled': '0'} · YAKALANDI
+K5-kisa-not-yalniz-ilk-ay: çıkış 1 · {'tests': '82', 'pass': '79', 'fail': '3', 'cancelled': '0'} · YAKALANDI
+K6-dondurulan-ay-bugunku-I: çıkış 1 · {'tests': '82', 'pass': '78', 'fail': '4', 'cancelled': '0'} · YAKALANDI
+K7-kisa-not-karma-haric: çıkış 0 · {'tests': '82', 'pass': '82', 'fail': '0', 'cancelled': '0'} · YAŞADI
+K8-eksi-yon-kendi-ayi-yok: çıkış 0 · {'tests': '82', 'pass': '82', 'fail': '0', 'cancelled': '0'} · YAŞADI
+K9-onarim-en-gec-ay: çıkış 0 · {'tests': '82', 'pass': '82', 'fail': '0', 'cancelled': '0'} · YAŞADI
+N1-kayitsiz-ay-zincire-girmez: çıkış 1 · {'tests': '82', 'pass': '77', 'fail': '5', 'cancelled': '0'} · YAKALANDI
+N2-azalis-ay-satiri-yok: çıkış 1 · {'tests': '82', 'pass': '67', 'fail': '15', 'cancelled': '0'} · YAKALANDI
+N3-azalis-ozet-satiri-yok: çıkış 1 · {'tests': '82', 'pass': '77', 'fail': '5', 'cancelled': '0'} · YAKALANDI
+N4-azalis-notu-yok: çıkış 1 · {'tests': '82', 'pass': '79', 'fail': '3', 'cancelled': '0'} · YAKALANDI
+N5-azalis-kaynagi-son-giren-once: çıkış 1 · {'tests': '82', 'pass': '81', 'fail': '1', 'cancelled': '0'} · YAKALANDI
+N6-ozet-satiri-aralik-ilk-ayi-dahil: çıkış 1 · {'tests': '82', 'pass': '81', 'fail': '1', 'cancelled': '0'} · YAKALANDI
+N7-hareketsiz-ay-devredeni-kayitli-aydan: çıkış 0 · {'tests': '82', 'pass': '82', 'fail': '0', 'cancelled': '0'} · YAŞADI
+N8-kayitsiz-ay-pending-sayilmaz: çıkış 1 · {'tests': '82', 'pass': '79', 'fail': '3', 'cancelled': '0'} · YAKALANDI
+orijinal geri yüklendi (denetlendi)

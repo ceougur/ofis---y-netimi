@@ -161,7 +161,7 @@ describe("2.5.1 M1 küçük tur 2 — KDV Özeti karma ay (S-M1K-1 = A): kararı
     assert.deepEqual(both.three, [0, 130000, 0], `Ocak–Şubat 1.300 (taban 1.800) ${JSON.stringify(both.data.summary)}`);
     assert.deepEqual([both.h391, both.h191], [130000, 0], "391 1.300 − 191 0");
     balanced(both, "001 Ocak–Şubat");
-    assert.deepEqual(both.lines, [["Ocak 2026", "Ödenecek KDV", 60000], ["Şubat 2026", "Ödenecek KDV", 70000]], "ay satırları");
+    assert.deepEqual(both.lines, [["Ocak 2026", "Ödenecek KDV", 60000], ["Şubat 2026", "Önceki Dönem İndirilecek KDV Azalışı (Ocak 2026)", 50000], ["Şubat 2026", "Ödenecek KDV", 70000]], "ay satırları (küçük tur 8: Ocak'ın 500'lük azalışı Şubat'ta düşülür — satırı)");
     assert.equal(both.summary[CHANGED], `Ocak 2026 ${MIXED_TEXT}`, "Ocak–Şubat notu yalnız Ocak");
     assert.ok(!(MISMATCH in both.summary) && !(PENDING in both.summary), "zincir kopuk değil, mahsupsuz ay yok");
     const tb = await trialBalances(h.api, "?to=2026-02-28");
@@ -179,7 +179,7 @@ describe("2.5.1 M1 küçük tur 2 — KDV Özeti karma ay (S-M1K-1 = A): kararı
     const q1 = await h.report("001", { from: "2026-01-01", to: "2026-03-31" }, "001 Ocak–Mart");
     assert.deepEqual(q1.three, [0, 170000, 0], `Ocak–Mart 1.700 (taban 2.200) ${JSON.stringify(q1.data.summary)}`);
     balanced(q1, "001 Ocak–Mart");
-    assert.deepEqual(q1.lines.map(line => line[2]), [60000, 70000, 40000], "ay satırları 600 / 700 / 400");
+    assert.deepEqual(q1.lines.map(line => line[2]), [60000, 50000, 70000, 40000], "ay satırları 600 / (Şubat'ta düşülen Ocak azalışı 500) 700 / 400");
     const late = await h.report("001", { from: "2026-02-01", to: "2026-03-31" }, "001 Şubat–Mart");
     assert.deepEqual(late.three, [0, 110000, 0], "Şubat–Mart 1.100");
     assert.ok(!(CHANGED in late.summary), "Şubat–Mart: karma ay aralıkta değil — not yok");
@@ -250,7 +250,7 @@ describe("2.5.1 M1 küçük tur 2 — KDV Özeti karma ay: devreden yönde, yön
     assert.deepEqual(both.three, [0, 70000, 0], `Mart–Nisan 700 (taban 600) ${JSON.stringify(both.data.summary)}`);
     assert.deepEqual([both.h391, both.h191], [130000, 60000], "391 1.300, 191 600");
     balanced(both, "001 Mart–Nisan");
-    assert.deepEqual(both.lines, [["Mart 2026", "Sonraki Döneme Devreden KDV", 70000], ["Nisan 2026", "Önceki Dönemden Devreden KDV", 70000], ["Nisan 2026", "Ödenecek KDV", 70000]], "ay satırları");
+    assert.deepEqual(both.lines, [["Mart 2026", "Sonraki Döneme Devreden KDV", 70000], ["Nisan 2026", "Önceki Dönemden Devreden KDV", 70000], ["Nisan 2026", "Önceki Dönem İndirilecek KDV Azalışı (Mart 2026)", 40000], ["Nisan 2026", "Ödenecek KDV", 70000]], "ay satırları (küçük tur 8: Mart'ın azalışı Nisan'da)");
     assert.deepEqual(await h.preview("001", "2026-03"), [0, 0, 30000], "Mart ön izlemesi bugünkü kayıtlardan (DEĞİŞMEDİ)");
     assert.deepEqual(await h.preview("001", "2026-04"), [80000, 60000, 0], "Nisan ön izlemesi defterin devredeniyle (DEĞİŞMEDİ)");
     await h.sameFiles("001", { from: "2026-03-01", to: "2026-04-30" }, "001 Mart–Nisan");
@@ -300,7 +300,7 @@ describe("2.5.1 M1 küçük tur 2 — KDV Özeti karma ay: devreden yönde, yön
 // Beklenen (ELLE): Ocak sonucu, notu, Şubat fişi, Ocak–Şubat Ödenecek (= 391 − 191) ve onarımdan (geri al + sırayla yeniden mahsup) sonraki fiş toplamı (= rapor).
 const TABLE = [
   { name: "hiçbiri", change: async () => {}, jan: 50000, note: null, feb: 20000, total: 70000, h391: 120000, h191: 50000, redo: [50000, 20000] },
-  { name: "yalnız İ azaldı (S-DKM1-1 = A)", change: async (h, tag, ids) => h.cancel(tag, ids.b200), jan: 50000, note: REDUCED_TEXT, feb: 40000, total: 90000, h391: 120000, h191: 30000, redo: [70000, 20000] },
+  { name: "yalnız İ azaldı (S-DKM1-1 = A)", change: async (h, tag, ids) => h.cancel(tag, ids.b200), jan: 50000, note: REDUCED_TEXT, red: 20000, feb: 40000, total: 90000, h391: 120000, h191: 30000, redo: [70000, 20000] },
   { name: "yalnız 391 değişti (S-M1-3 = C)", change: async (h, tag) => h.sell(tag, "2026-01-20", 500), jan: 60000, note: STALE_TEXT, feb: 20000, total: 80000, h391: 130000, h191: 50000, redo: [60000, 20000] },
   {
     name: "ikisi birden (S-M1K-1 = A)",
@@ -310,6 +310,7 @@ const TABLE = [
     },
     jan: 60000,
     note: MIXED_TEXT,
+    red: 20000,
     feb: 40000,
     total: 100000,
     h391: 130000,
@@ -363,7 +364,9 @@ describe("2.5.1 M1 küçük tur 2 — KDV Özeti tutarlılık tablosu: yalnız a
           assert.deepEqual(both.three, [0, row.total, 0], `${row.name}: Ocak–Şubat ${JSON.stringify(both.data.summary)}`);
           assert.deepEqual([both.h391, both.h191], [row.h391, row.h191], `${row.name}: 391 / 191`);
           balanced(both, row.name);
-          assert.deepEqual(both.lines.map(line => line[2]), [row.jan, row.feb], `${row.name}: ay satırları`);
+          assert.deepEqual(both.lines.map(line => line[2]), [row.jan, ...(row.red ? [row.red] : []), row.feb], `${row.name}: ay satırları`);
+          // Küçük tur 8: Ocak'ın azalışı Şubat'ta düşülür — Şubat'ın "Önceki Dönem İndirilecek KDV Azalışı (Ocak 2026)" satırı.
+          assert.deepEqual(both.lines.filter(line => line[1].startsWith("Önceki Dönem İndirilecek KDV Azalışı")), row.red ? [["Şubat 2026", "Önceki Dönem İndirilecek KDV Azalışı (Ocak 2026)", row.red]] : [], `${row.name}: azalış satırı`);
           assert.ok(!(MISMATCH in both.summary) && !(PENDING in both.summary), `${row.name}: zincir kopuk değil`);
           await h.reverse(tag, "2026-02");
           await h.reverse(tag, "2026-01");

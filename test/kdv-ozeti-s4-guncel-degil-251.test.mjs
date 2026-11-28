@@ -166,7 +166,7 @@ describe("2.5.1 M1 küçük tur 5 — S-DKM1K-1 = A: 'güncel değil' (İ artmı
     balanced(all, "001 Ocak–Nisan");
     assert.deepEqual(
       all.lines,
-      [["Ocak 2026", "Sonraki Döneme Devreden KDV", 100000], ["Şubat 2026", "Önceki Dönemden Devreden KDV", 100000], ["Şubat 2026", "Ödenecek KDV", 20000], ["Mart 2026", "Ödenecek KDV", 70000], ["Nisan 2026", "Ödenecek KDV", 70000]],
+      [["Ocak 2026", "Sonraki Döneme Devreden KDV", 100000], ["Şubat 2026", "Önceki Dönemden Devreden KDV", 100000], ["Şubat 2026", "Ödenecek KDV", 20000], ["Mart 2026", "Ödenecek KDV", 70000], ["Nisan 2026", "Önceki Dönem İndirilecek KDV Azalışı (Mart 2026)", 20000], ["Nisan 2026", "Ödenecek KDV", 70000]],
       "ay satırları: Şubat bugünkü kayıtlardan 200, Mart fişten 700, Nisan 500 + 200 = 700",
     );
     assert.equal(all.summary[CHANGED], `Şubat 2026 ${STALE_TEXT}; Mart 2026 ${REDUCED_TEXT}`, "Şubat 'güncel değil' notu durur; Mart azalan ay notu");
@@ -315,6 +315,7 @@ describe("2.5.1 M1 küçük tur 5 — S-DKM1K-1 = A: iki ardışık 'güncel de�
         ["Mart 2026", "Önceki Dönemden Devreden KDV", 80000],
         ["Mart 2026", "Ödenecek KDV", 100000],
         ["Nisan 2026", "Ödenecek KDV", 70000],
+        ["Mayıs 2026", "Önceki Dönem İndirilecek KDV Azalışı (Nisan 2026)", 20000],
         ["Mayıs 2026", "Ödenecek KDV", 70000],
       ],
       "ay satırları: Şubat bugünkü devreden 800 → Mart 1.000 (zincir), Nisan fişten 700, Mayıs 500 + 200",
