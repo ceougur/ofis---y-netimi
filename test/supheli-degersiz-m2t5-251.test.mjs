@@ -410,6 +410,41 @@ describe("2.5.1 M2 tur 5 — ORTA-B: Silinenler taraması Silinenler'deki fatura
   });
 });
 
+// Tek geçişin cari süzgeci dişli mi (mutant M23c — başka carinin silinen faturası bu carinin bağsız tahsilatını "sonradan değişmiş" saymamalı): iki caride ESKİ VERİ gibi sınırı aşan Değersiz
+// satırı (v2.4.9'un kabul ettiği sınıf; veri tabanında büyütülür). Elle: T; 01.10 bağsız 1.000 (Değersiz'den ÖNCE yazıldı) → bakiye 2.423,55; Değersiz 2.000 @17.09 (sınır: 3.000 − 1.000) →
+// 423,55; satır 3.000'e büyütülür → değişmez (i) ihlali (yazıldığı andaki sınır 2.000 < 3.000). Başka carinin faturası Değersiz'den SONRA silinir: bu carilerin hiçbir faturası silinmedi →
+// ihlal KALIR (tam tarama da öyle der). Süzgeç olmasaydı silme anı bu carilere de yazılır, bağsız 1.000 dünyadan çıkar, ihlal kaybolurdu.
+describe("2.5.1 M2 tur 5 — ORTA-B: tek geçişte başka carinin silinen faturası bu cariye sayılmaz (sınırı aşan eski Değersiz satırı görünür kalır)", () => {
+  it("iki caride sınırı aşan Değersiz satırı + başka carinin Değersiz'den sonra silinen faturası → iki ihlal, tam taramayla aynı", async () => {
+    const { server, api, store } = await boot();
+    try {
+      const parties = [];
+      for (let c = 0; c < 2; c += 1) {
+        const b = await base(api, `M2T5 Süzgeç ${c}`, { writeOff: false });
+        await must("bağsız 1.000", api.post(`${ACC}/${b.a.id}/entries`, pay("1000", "2026-10-01")));
+        await must("Değersiz 2.000", api.post(`${ACC}/${b.a.id}/doubtful/${b.s}/write-off`, { amount: "2000", date: "2026-09-17" }));
+        parties.push(b.a.id);
+      }
+      const stranger = await must("başka cari", api.post(ACC, { name: "M2T5 Süzgeç Başka", type: "customer", registeredOn: "2026-09-01", phone: nextPhone("476") }));
+      const inv = await must("başka fatura", api.post(INV, saleBody(stranger.id, 500, { date: "2026-10-02" })));
+      await must("başka faturayı sil", api.del(`${INV}/${inv.id}`));
+      // Bütün yazımlardan SONRA (kapı ihlali olan veriye yeni yazımı reddeder): iki Değersiz satırı eski veri gibi büyütülür.
+      for (const party of parties) server.app.db.prepare("UPDATE account_entries SET amount = 3000 WHERE account_id = ? AND source = 'doubtful' AND kind = 'credit'").run(party);
+      const fast = D.writeOffInvariantProblems(store, { parties });
+      // (ii) de görünür (bakiye 423,55 − 1.000 = −576,45; son işlem Değersiz satırı) — bu testin konusu (i).
+      assert.deepEqual(fast.filter(item => item.figure.kind === "writeoff-limit").map(item => [item.figure.minor, item.figure.roomMinor]), [[300000, 200000], [300000, 200000]], JSON.stringify(fast));
+      D.WRITE_OFF_TEST.fullTrash = true;
+      try {
+        assert.equal(JSON.stringify(fast), JSON.stringify(D.writeOffInvariantProblems(store, { parties })));
+      } finally {
+        D.WRITE_OFF_TEST.fullTrash = false;
+      }
+    } finally {
+      server.close();
+    }
+  });
+});
+
 // Rastgele (dar kontrolün d-rastgele düzeni; düzeltme ajanından bağımsız üretilmiş vakalar ana oturumda): her adımdan sonra değişmez (i)'nin sayımı tam Silinenler taramasıyla
 // (WRITE_OFF_TEST.fullTrash) BİREBİR; denetimli bir işlem (Ödeme sil / düşür, Alacak artır, Borç sil / düşür, kart Otomatik Dağıt) KABUL edildiyse Değersiz'li cari eksiye düşmedi; Mutabakat
 // sonunda tamam. Silinenler'de başka carilerin faturaları (Değersiz'den önce ve SONRA silinmiş), taslak silme, Silinenler'den geri yükleme, aynı gün Değersiz'den önce bağsız tahsilat.
